@@ -6,7 +6,8 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ArrowLeft, FileText, Link as LinkIcon, Folder, PieChart, Users } from 'lucide-react';
 
 const FundDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -36,6 +37,10 @@ const FundDetails = () => {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
+  };
+
+  const formatPercentage = (value: number) => {
+    return `${value}%`;
   };
 
   return (
@@ -83,6 +88,16 @@ const FundDetails = () => {
             ))}
           </div>
 
+          {/* Fund Category Section */}
+          <div className="mb-8 p-5 bg-gray-50 rounded-lg">
+            <div className="flex items-center mb-4">
+              <Folder className="w-5 h-5 mr-2 text-portugal-blue" />
+              <h2 className="text-2xl font-bold">Fund Category</h2>
+            </div>
+            <Badge className="px-3 py-1.5 text-base bg-portugal-blue hover:bg-portugal-blue">{fund.category}</Badge>
+          </div>
+
+          {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-700">Minimum Investment</h3>
@@ -105,16 +120,6 @@ const FundDetails = () => {
             </div>
             
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-gray-700">Management Fee</h3>
-              <p className="text-2xl font-bold text-portugal-blue">{fund.managementFee}%</p>
-            </div>
-            
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-gray-700">Performance Fee</h3>
-              <p className="text-2xl font-bold text-portugal-blue">{fund.performanceFee}%</p>
-            </div>
-            
-            <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-700">Established</h3>
               <p className="text-2xl font-bold text-portugal-blue">{fund.established}</p>
             </div>
@@ -130,6 +135,58 @@ const FundDetails = () => {
             </div>
           </div>
 
+          {/* Fee Structure Section */}
+          <div className="mb-8 p-5 bg-gray-50 rounded-lg">
+            <div className="flex items-center mb-4">
+              <FileText className="w-5 h-5 mr-2 text-portugal-blue" />
+              <h2 className="text-2xl font-bold">Fee Structure</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <h3 className="font-semibold text-gray-700">Management Fee</h3>
+                <p className="text-2xl font-bold text-portugal-blue">{formatPercentage(fund.managementFee)}</p>
+              </div>
+              
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <h3 className="font-semibold text-gray-700">Performance Fee</h3>
+                <p className="text-2xl font-bold text-portugal-blue">{formatPercentage(fund.performanceFee)}</p>
+              </div>
+              
+              {fund.subscriptionFee !== undefined && (
+                <div className="bg-white p-4 rounded-lg shadow-sm">
+                  <h3 className="font-semibold text-gray-700">Subscription Fee</h3>
+                  <p className="text-2xl font-bold text-portugal-blue">{formatPercentage(fund.subscriptionFee)}</p>
+                </div>
+              )}
+              
+              {fund.redemptionFee !== undefined && (
+                <div className="bg-white p-4 rounded-lg shadow-sm">
+                  <h3 className="font-semibold text-gray-700">Redemption Fee</h3>
+                  <p className="text-2xl font-bold text-portugal-blue">{formatPercentage(fund.redemptionFee)}</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Geographic Allocation Section */}
+          {fund.geographicAllocation && fund.geographicAllocation.length > 0 && (
+            <div className="mb-8 p-5 bg-gray-50 rounded-lg">
+              <div className="flex items-center mb-4">
+                <PieChart className="w-5 h-5 mr-2 text-portugal-blue" />
+                <h2 className="text-2xl font-bold">Geographic Allocation</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {fund.geographicAllocation.map((allocation, index) => (
+                  <div key={index} className="bg-white p-4 rounded-lg shadow-sm">
+                    <h3 className="font-semibold text-gray-700">{allocation.region}</h3>
+                    <p className="text-2xl font-bold text-portugal-blue">{formatPercentage(allocation.percentage)}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Fund Manager Section */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Fund Manager</h2>
             <div className="flex items-center gap-4">
@@ -146,12 +203,66 @@ const FundDetails = () => {
             </div>
           </div>
 
+          {/* Team Section */}
+          {fund.team && fund.team.length > 0 && (
+            <div className="mb-8 p-5 bg-gray-50 rounded-lg">
+              <div className="flex items-center mb-4">
+                <Users className="w-5 h-5 mr-2 text-portugal-blue" />
+                <h2 className="text-2xl font-bold">Investment Team</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {fund.team.map((member, index) => (
+                  <div key={index} className="bg-white p-4 rounded-lg shadow-sm flex items-start space-x-4">
+                    {member.photoUrl && (
+                      <img 
+                        src={member.photoUrl} 
+                        alt={member.name} 
+                        className="w-16 h-16 rounded-full object-cover"
+                      />
+                    )}
+                    <div>
+                      <h3 className="font-semibold">{member.name}</h3>
+                      <p className="text-sm text-portugal-blue mb-1">{member.position}</p>
+                      {member.bio && <p className="text-sm text-gray-600">{member.bio}</p>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Fund Description */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">About the Fund</h2>
             <div className="prose max-w-none">
               <p className="text-gray-700 whitespace-pre-line">{fund.detailedDescription}</p>
             </div>
           </div>
+
+          {/* Documents Section */}
+          {fund.documents && fund.documents.length > 0 && (
+            <div className="mb-8 p-5 bg-gray-50 rounded-lg">
+              <div className="flex items-center mb-4">
+                <FileText className="w-5 h-5 mr-2 text-portugal-blue" />
+                <h2 className="text-2xl font-bold">Documents</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {fund.documents.map((doc, index) => (
+                  <a 
+                    key={index} 
+                    href={doc.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center p-3 bg-white rounded-lg hover:shadow-md transition-shadow border border-gray-100"
+                  >
+                    <FileText className="w-5 h-5 mr-2 text-portugal-blue" />
+                    <span className="flex-grow">{doc.title}</span>
+                    <LinkIcon className="w-4 h-4 text-gray-400" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
 
           {fund.websiteUrl && (
             <div className="text-center mt-8">
