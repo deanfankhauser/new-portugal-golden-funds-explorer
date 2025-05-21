@@ -11,6 +11,8 @@ import About from "./pages/About";
 import Disclaimer from "./pages/Disclaimer";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
+import NewFund from "./pages/NewFund";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +29,8 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/new-fund" element={<NewFund />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
