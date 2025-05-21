@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -84,18 +83,22 @@ const FundForm: React.FC<FundFormProps> = ({
     defaultValues,
   });
 
+  // Update selectedTags when defaultValues change (important for edit mode)
+  useEffect(() => {
+    setSelectedTags(defaultValues.tags as FundTag[]);
+  }, [defaultValues.tags]);
+
   const handleTagToggle = (tag: FundTag) => {
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter(t => t !== tag));
-    } else {
-      setSelectedTags([...selectedTags, tag]);
-    }
+    const newSelectedTags = selectedTags.includes(tag)
+      ? selectedTags.filter(t => t !== tag)
+      : [...selectedTags, tag];
+    
+    setSelectedTags(newSelectedTags);
     
     // Update the form value for tags
-    form.setValue("tags", selectedTags.includes(tag) 
-      ? form.getValues("tags").filter(t => t !== tag) 
-      : [...form.getValues("tags"), tag]
-    );
+    form.setValue("tags", newSelectedTags, {
+      shouldValidate: true
+    });
   };
 
   return (

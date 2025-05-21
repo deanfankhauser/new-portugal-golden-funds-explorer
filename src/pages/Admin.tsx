@@ -75,7 +75,14 @@ const Admin = () => {
               </Button>
             </div>
             
-            {funds.length > 0 ? (
+            <div className="mb-6">
+              <p className="text-muted-foreground">
+                This page will allow you to manage funds. Navigate to the create new fund page to add a fund, 
+                or click on existing funds below to edit or delete them.
+              </p>
+            </div>
+            
+            {funds && funds.length > 0 ? (
               <div className="mt-6">
                 <h3 className="text-xl font-semibold mb-4">Existing Funds</h3>
                 <FundAdminTable 

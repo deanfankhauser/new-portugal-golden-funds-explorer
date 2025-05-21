@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
-import { getFundById } from "../data/funds";
+import { getFundById, funds } from "../data/funds";
 import FundForm, { FundFormValues } from '../components/FundForm';
 
 const EditFund = () => {
