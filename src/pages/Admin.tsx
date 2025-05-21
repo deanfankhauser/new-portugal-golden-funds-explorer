@@ -6,6 +6,8 @@ import Footer from '../components/Footer';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/sonner";
+import { funds } from '../data/funds';
+import FundAdminTable from '../components/FundAdminTable';
 
 const ADMIN_PASSWORD = "golden2024visa"; // Hardcoded password
 
@@ -27,6 +29,13 @@ const Admin = () => {
         description: "The password you entered is incorrect"
       });
     }
+  };
+
+  const handleDeleteFund = (fundId: string) => {
+    // In a real app, this would delete from a database
+    toast.success("Fund deleted", {
+      description: `Fund ${fundId} has been deleted`
+    });
   };
 
   return (
@@ -65,16 +74,23 @@ const Admin = () => {
                 Create New Fund
               </Button>
             </div>
-            <p className="text-gray-600 mb-8">
-              This page will allow you to manage funds. Navigate to the create new fund page to add a fund, 
-              or click on existing funds below to edit or delete them.
-            </p>
             
-            <div className="bg-muted p-8 rounded-lg text-center">
-              <p className="text-muted-foreground">
-                Fund management interface will be implemented in Part 2
-              </p>
-            </div>
+            {funds.length > 0 ? (
+              <div className="mt-6">
+                <h3 className="text-xl font-semibold mb-4">Existing Funds</h3>
+                <FundAdminTable 
+                  funds={funds} 
+                  onEdit={(id) => navigate(`/admin/edit-fund/${id}`)}
+                  onDelete={handleDeleteFund}
+                />
+              </div>
+            ) : (
+              <div className="bg-muted p-8 rounded-lg text-center">
+                <p className="text-muted-foreground">
+                  No funds have been created yet. Click "Create New Fund" to add your first fund.
+                </p>
+              </div>
+            )}
           </div>
         )}
       </main>
