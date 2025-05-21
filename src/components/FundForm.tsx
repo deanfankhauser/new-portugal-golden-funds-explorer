@@ -33,7 +33,11 @@ const FundForm: React.FC<FundFormProps> = ({
   isEditMode = false 
 }) => {
   const navigate = useNavigate();
-  const [selectedTags, setSelectedTags] = useState<FundTag[]>(defaultValues.tags || []);
+  // Properly cast the tags array to FundTag[] type
+  const initialTags = Array.isArray(defaultValues.tags) 
+    ? defaultValues.tags.filter((tag): tag is FundTag => typeof tag === 'string') 
+    : [];
+  const [selectedTags, setSelectedTags] = useState<FundTag[]>(initialTags);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FundFormValues>({
@@ -44,7 +48,11 @@ const FundForm: React.FC<FundFormProps> = ({
   // Update selectedTags when defaultValues change (important for edit mode)
   useEffect(() => {
     if (defaultValues.tags) {
-      setSelectedTags(defaultValues.tags as FundTag[]);
+      // Cast the tags array to FundTag[] type
+      const updatedTags = Array.isArray(defaultValues.tags)
+        ? defaultValues.tags.filter((tag): tag is FundTag => typeof tag === 'string')
+        : [];
+      setSelectedTags(updatedTags);
     }
   }, [defaultValues.tags]);
 
