@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -9,6 +9,7 @@ import FundForm, { FundFormValues } from '../components/FundForm';
 
 const NewFund = () => {
   const navigate = useNavigate();
+  const [isCreating, setIsCreating] = useState(false);
 
   const defaultValues: FundFormValues = {
     id: "",
@@ -31,13 +32,26 @@ const NewFund = () => {
     websiteUrl: "",
   };
 
-  const handleSubmit = (data: FundFormValues) => {
-    // In a real application, we would save this data to a database
-    console.log("Form submitted:", data);
-    toast.success("Fund created successfully", {
-      description: `Created fund: ${data.name}`
-    });
-    navigate('/admin');
+  const handleSubmit = async (data: FundFormValues) => {
+    setIsCreating(true);
+    try {
+      // In a real application, we would save this data to a database
+      console.log("Form submitted:", data);
+      
+      // Simulate some delay for better UX
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast.success("Fund created successfully", {
+        description: `Created fund: ${data.name}`
+      });
+      navigate('/admin');
+    } catch (error) {
+      toast.error("Failed to create fund", {
+        description: "Please try again"
+      });
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   return (

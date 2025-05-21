@@ -33,7 +33,8 @@ const FundForm: React.FC<FundFormProps> = ({
   isEditMode = false 
 }) => {
   const navigate = useNavigate();
-  const [selectedTags, setSelectedTags] = useState<FundTag[]>(defaultValues.tags as FundTag[]);
+  const [selectedTags, setSelectedTags] = useState<FundTag[]>(defaultValues.tags || []);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FundFormValues>({
     resolver: zodResolver(fundFormSchema),
@@ -42,7 +43,9 @@ const FundForm: React.FC<FundFormProps> = ({
 
   // Update selectedTags when defaultValues change (important for edit mode)
   useEffect(() => {
-    setSelectedTags(defaultValues.tags as FundTag[]);
+    if (defaultValues.tags) {
+      setSelectedTags(defaultValues.tags as FundTag[]);
+    }
   }, [defaultValues.tags]);
 
   const handleTagToggle = (tag: FundTag) => {
@@ -58,10 +61,19 @@ const FundForm: React.FC<FundFormProps> = ({
     });
   };
 
+  const handleSubmit = async (data: FundFormValues) => {
+    setIsSubmitting(true);
+    try {
+      await onSubmit(data);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="bg-white p-8 rounded-lg shadow-sm border">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           <FundBasicInfoSection form={form} isEditMode={isEditMode} />
           <FundDescriptionSection form={form} />
           <FundCategorySection form={form} />
@@ -76,7 +88,8 @@ const FundForm: React.FC<FundFormProps> = ({
           <FundDetailsSection form={form} />
           <FundFormActions 
             onCancel={() => navigate('/admin')} 
-            submitButtonText={submitButtonText} 
+            submitButtonText={submitButtonText}
+            isSubmitting={isSubmitting}
           />
         </form>
       </Form>
