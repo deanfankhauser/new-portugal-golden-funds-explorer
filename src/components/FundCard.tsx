@@ -5,7 +5,7 @@ import { Fund } from '../data/funds';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { GitCompare } from 'lucide-react';
+import { GitCompare, User } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 
 interface FundCardProps {
@@ -77,6 +77,15 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
           <div>
             <p className="text-sm text-muted-foreground">Term</p>
             <p className="font-medium">{fund.term} years</p>
+          </div>
+        </div>
+
+        {/* Fund Manager Section */}
+        <div className="flex items-center gap-2 mb-4 bg-slate-50 p-2 rounded-md">
+          <User className="w-4 h-4 text-[#EF4444]" />
+          <div>
+            <p className="text-sm text-muted-foreground">Fund Manager</p>
+            <p className="font-medium">{fund.managerName}</p>
           </div>
         </div>
 

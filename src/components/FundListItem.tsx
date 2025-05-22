@@ -5,7 +5,7 @@ import { Fund } from '../data/funds';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GitCompare, PieChart, Globe, Tag } from 'lucide-react';
+import { GitCompare, PieChart, Globe, Tag, User } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import IntroductionButton from './fund-details/IntroductionButton';
 import { formatPercentage } from './fund-details/utils/formatters';
@@ -60,7 +60,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             
             <p className="text-gray-600 mb-4 line-clamp-2">{fund.description}</p>
             
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
               <div className="flex items-center">
                 <Tag className="w-4 h-4 mr-2 text-[#EF4444]" />
                 <div>
@@ -88,6 +88,14 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 <div>
                   <p className="text-sm text-muted-foreground">Target Return</p>
                   <p className="font-medium">{fund.returnTarget}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center">
+                <User className="w-4 h-4 mr-2 text-[#EF4444]" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Fund Manager</p>
+                  <p className="font-medium">{fund.managerName}</p>
                 </div>
               </div>
             </div>
