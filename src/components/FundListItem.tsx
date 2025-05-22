@@ -3,6 +3,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../data/funds';
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { GitCompare } from 'lucide-react';
 
 interface FundListItemProps {
   fund: Fund;
@@ -53,6 +55,15 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
               </Link>
             ))}
           </div>
+          
+          <Button 
+            variant="outline" 
+            size="sm"
+            className="border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white mt-2"
+          >
+            <GitCompare className="mr-1 h-3 w-3" />
+            Compare
+          </Button>
         </div>
         
         <div className="flex flex-row md:flex-col gap-4 md:min-w-[180px] md:text-right">

@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { Fund } from '../data/funds';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { GitCompare } from 'lucide-react';
 
 interface FundCardProps {
   fund: Fund;
@@ -63,16 +65,27 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-1 mt-4">
-          {fund.tags.map((tag) => (
-            <Link 
-              key={tag} 
-              to={`/tags/${encodeURIComponent(tag)}`}
-              className="text-xs bg-secondary hover:bg-primary hover:text-white px-2 py-1 rounded-full transition-colors"
-            >
-              {tag}
-            </Link>
-          ))}
+        <div className="flex flex-wrap justify-between items-center mt-4">
+          <div className="flex flex-wrap gap-1">
+            {fund.tags.map((tag) => (
+              <Link 
+                key={tag} 
+                to={`/tags/${encodeURIComponent(tag)}`}
+                className="text-xs bg-secondary hover:bg-primary hover:text-white px-2 py-1 rounded-full transition-colors"
+              >
+                {tag}
+              </Link>
+            ))}
+          </div>
+          
+          <Button 
+            variant="outline" 
+            size="sm"
+            className="border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white mt-2"
+          >
+            <GitCompare className="mr-1 h-3 w-3" />
+            Compare
+          </Button>
         </div>
       </CardContent>
     </Card>
