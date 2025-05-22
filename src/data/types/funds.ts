@@ -1,3 +1,4 @@
+
 export type FundTag = 
   | 'Real Estate'
   | 'Private Equity'
@@ -17,6 +18,7 @@ export type FundTag =
   | 'Liquid'
   | 'Regulated'
   | 'Open Ended'
+  | 'Closed Ended'
   | 'Bitcoin'
   | 'Ethereum'
   | 'Solana'

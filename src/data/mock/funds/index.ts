@@ -4,6 +4,7 @@ import { optimizeGoldenOpportunities } from './optimize-golden-opportunities';
 import { threeCommaCGoldenIncome } from './3cc-golden-income';
 import { portugalInvestment1 } from './portugal-investment-1';
 import { steadyGrowthInvestment } from './steady-growth-investment';
+import { growthBlueFund } from './growth-blue-fund';
 import { Fund } from '../../types/funds';
 
 // Export all funds as an array
@@ -12,7 +13,8 @@ export const fundsData: Fund[] = [
   optimizeGoldenOpportunities,
   threeCommaCGoldenIncome,
   portugalInvestment1,
-  steadyGrowthInvestment
+  steadyGrowthInvestment,
+  growthBlueFund
 ];
 
 // Export individual funds
@@ -21,5 +23,6 @@ export {
   optimizeGoldenOpportunities,
   threeCommaCGoldenIncome,
   portugalInvestment1,
-  steadyGrowthInvestment
+  steadyGrowthInvestment,
+  growthBlueFund
 };
