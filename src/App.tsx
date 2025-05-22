@@ -10,6 +10,7 @@ import TagPage from "./pages/TagPage";
 import CategoryPage from "./pages/CategoryPage";
 import TagsHub from "./pages/TagsHub";
 import CategoriesHub from "./pages/CategoriesHub";
+import ManagersHub from "./pages/ManagersHub";
 import About from "./pages/About";
 import Disclaimer from "./pages/Disclaimer";
 import Privacy from "./pages/Privacy";
@@ -35,11 +36,12 @@ const App = () => (
             <Route path="/tags/:tag" element={<TagPage />} />
             <Route path="/categories" element={<CategoriesHub />} />
             <Route path="/categories/:category" element={<CategoryPage />} />
+            <Route path="/managers" element={<ManagersHub />} />
+            <Route path="/manager/:name" element={<FundManager />} />
             <Route path="/about" element={<About />} />
             <Route path="/disclaimer" element={<Disclaimer />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/compare" element={<ComparisonPage />} />
-            <Route path="/manager/:name" element={<FundManager />} />
             <Route path="/faqs" element={<FAQs />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
