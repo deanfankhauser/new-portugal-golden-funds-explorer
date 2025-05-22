@@ -1,4 +1,3 @@
-
 export type FundTag = 
   | 'Real Estate'
   | 'Private Equity'
@@ -46,7 +45,10 @@ export type FundTag =
   | 'Equity'
   | 'Debt'
   | 'Secondary Market'
-  | 'Long Term';
+  | 'Long Term'
+  | 'Hybrid'
+  | 'Dividends'
+  | '5 % Yield';
 
 export type FundCategory =
   | 'Venture Capital'
@@ -58,7 +60,8 @@ export type FundCategory =
   | 'Fixed Income & Digital Assets'
   | 'Balanced'
   | 'Multi-Asset'
-  | 'Private Equity & Venture Capital';
+  | 'Private Equity & Venture Capital'
+  | 'Private Debt & Hybrid Instruments';
 
 export type RedemptionFrequency =
   | 'Monthly'

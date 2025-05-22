@@ -6,6 +6,7 @@ import { portugalInvestment1 } from './portugal-investment-1';
 import { steadyGrowthInvestment } from './steady-growth-investment';
 import { growthBlueFund } from './growth-blue-fund';
 import { linceGrowthFund } from './lince-growth-fund';
+import { linceYieldFund } from './lince-yield-fund';
 import { Fund } from '../../types/funds';
 
 // Export all funds as an array
@@ -16,7 +17,8 @@ export const fundsData: Fund[] = [
   portugalInvestment1,
   steadyGrowthInvestment,
   growthBlueFund,
-  linceGrowthFund
+  linceGrowthFund,
+  linceYieldFund
 ];
 
 // Export individual funds
@@ -27,5 +29,6 @@ export {
   portugalInvestment1,
   steadyGrowthInvestment,
   growthBlueFund,
-  linceGrowthFund
+  linceGrowthFund,
+  linceYieldFund
 };
