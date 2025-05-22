@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
+import { ExternalLink } from 'lucide-react';
 
 interface FundWebsiteProps {
   websiteUrl?: string;
@@ -12,13 +13,14 @@ const FundWebsite: React.FC<FundWebsiteProps> = ({ websiteUrl }) => {
   }
 
   return (
-    <div className="text-center mt-8">
+    <div className="text-center">
       <Button
-        variant="default"
-        className="bg-[#EF4444] hover:bg-[#EF4444]/90 text-white"
+        variant="outline"
+        className="border-[#EF4444] text-[#EF4444] hover:bg-[#f0f0f0] hover:text-[#EF4444]"
         onClick={() => window.open(websiteUrl, '_blank', 'noopener,noreferrer')}
       >
         Visit Fund Website
+        <ExternalLink className="ml-2 h-4 w-4" />
       </Button>
     </div>
   );

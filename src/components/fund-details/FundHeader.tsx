@@ -21,15 +21,13 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
       removeFromComparison(fund.id);
     } else {
       addToComparison(fund);
-      // Optional: Navigate to the comparison page after adding
-      // navigate('/compare');
     }
   };
 
   return (
-    <>
-      <div className="flex justify-between items-start mb-4 flex-wrap gap-4">
-        <h1 className="text-3xl font-bold mb-0">{fund.name}</h1>
+    <div className="bg-gradient-to-r from-[#f5f7fa] to-[#c3cfe2] p-8 md:p-10">
+      <div className="flex justify-between items-start mb-6 flex-wrap gap-4">
+        <h1 className="text-3xl md:text-4xl font-bold mb-0 text-gray-800">{fund.name}</h1>
         <Button 
           variant={isSelected ? "default" : "outline"}
           className={isSelected ? 
@@ -42,20 +40,20 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
         </Button>
       </div>
 
-      <p className="text-xl text-gray-700 mb-8">{fund.description}</p>
+      <p className="text-xl text-gray-700 mb-8 max-w-3xl">{fund.description}</p>
 
-      <div className="flex flex-wrap mb-8 gap-2">
+      <div className="flex flex-wrap gap-2">
         {fund.tags.map(tag => (
           <Link 
             key={tag} 
             to={`/tags/${encodeURIComponent(tag)}`}
-            className="bg-white hover:bg-[#EF4444] hover:text-white text-[#EF4444] border border-[#EF4444] px-3 py-1 rounded-full transition-colors"
+            className="bg-white hover:bg-[#EF4444] hover:text-white text-[#EF4444] border border-[#EF4444] px-3 py-1 rounded-full transition-colors shadow-sm"
           >
             {tag}
           </Link>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

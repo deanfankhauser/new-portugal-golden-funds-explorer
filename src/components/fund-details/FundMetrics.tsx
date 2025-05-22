@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Fund } from '../../data/funds';
+import { Card, CardContent } from "@/components/ui/card";
 
 interface FundMetricsProps {
   fund: Fund;
@@ -9,41 +10,55 @@ interface FundMetricsProps {
 
 const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-700">Minimum Investment</h3>
-        <p className="text-2xl font-bold text-[#EF4444]">{formatCurrency(fund.minimumInvestment)}</p>
-      </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <Card className="bg-white border border-gray-100 shadow-sm hover:shadow transition-all">
+        <CardContent className="p-6">
+          <h3 className="font-semibold text-gray-500 mb-2">Minimum Investment</h3>
+          <p className="text-2xl font-bold text-[#EF4444]">{formatCurrency(fund.minimumInvestment)}</p>
+        </CardContent>
+      </Card>
       
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-700">Target Return</h3>
-        <p className="text-2xl font-bold text-[#EF4444]">{fund.returnTarget}</p>
-      </div>
+      <Card className="bg-white border border-gray-100 shadow-sm hover:shadow transition-all">
+        <CardContent className="p-6">
+          <h3 className="font-semibold text-gray-500 mb-2">Target Return</h3>
+          <p className="text-2xl font-bold text-[#EF4444]">{fund.returnTarget}</p>
+        </CardContent>
+      </Card>
       
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-700">Fund Size</h3>
-        <p className="text-2xl font-bold text-[#EF4444]">{fund.fundSize} Million EUR</p>
-      </div>
+      <Card className="bg-white border border-gray-100 shadow-sm hover:shadow transition-all">
+        <CardContent className="p-6">
+          <h3 className="font-semibold text-gray-500 mb-2">Fund Size</h3>
+          <p className="text-2xl font-bold text-[#EF4444]">{fund.fundSize} Million EUR</p>
+        </CardContent>
+      </Card>
       
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-700">Term</h3>
-        <p className="text-2xl font-bold text-[#EF4444]">{fund.term} years</p>
-      </div>
+      <Card className="bg-white border border-gray-100 shadow-sm hover:shadow transition-all">
+        <CardContent className="p-6">
+          <h3 className="font-semibold text-gray-500 mb-2">Term</h3>
+          <p className="text-2xl font-bold text-[#EF4444]">{fund.term} years</p>
+        </CardContent>
+      </Card>
       
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-700">Established</h3>
-        <p className="text-2xl font-bold text-[#EF4444]">{fund.established}</p>
-      </div>
+      <Card className="bg-white border border-gray-100 shadow-sm hover:shadow transition-all">
+        <CardContent className="p-6">
+          <h3 className="font-semibold text-gray-500 mb-2">Established</h3>
+          <p className="text-2xl font-bold text-[#EF4444]">{fund.established}</p>
+        </CardContent>
+      </Card>
       
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-700">Regulated By</h3>
-        <p className="text-2xl font-bold text-[#EF4444]">{fund.regulatedBy}</p>
-      </div>
+      <Card className="bg-white border border-gray-100 shadow-sm hover:shadow transition-all">
+        <CardContent className="p-6">
+          <h3 className="font-semibold text-gray-500 mb-2">Regulated By</h3>
+          <p className="text-2xl font-bold text-[#EF4444]">{fund.regulatedBy}</p>
+        </CardContent>
+      </Card>
       
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-gray-700">Location</h3>
-        <p className="text-2xl font-bold text-[#EF4444]">{fund.location}</p>
-      </div>
+      <Card className="bg-white border border-gray-100 shadow-sm hover:shadow transition-all">
+        <CardContent className="p-6">
+          <h3 className="font-semibold text-gray-500 mb-2">Location</h3>
+          <p className="text-2xl font-bold text-[#EF4444]">{fund.location}</p>
+        </CardContent>
+      </Card>
     </div>
   );
 };

@@ -18,6 +18,7 @@ import TeamSection from '../components/fund-details/TeamSection';
 import FundDescription from '../components/fund-details/FundDescription';
 import DocumentsSection from '../components/fund-details/DocumentsSection';
 import IntroductionButton from '../components/fund-details/IntroductionButton';
+import FundWebsite from '../components/fund-details/FundWebsite';
 import { formatCurrency, formatPercentage } from '../components/fund-details/utils/formatters';
 
 const FundDetails = () => {
@@ -42,57 +43,70 @@ const FundDetails = () => {
   if (!fund) return null;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       
-      <main className="container mx-auto px-4 py-8 flex-1">
-        <div className="mb-6">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate(-1)} 
-            className="flex items-center text-black hover:bg-[#f0f0f0]"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to funds
-          </Button>
-        </div>
+      <main className="flex-1 py-8">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="mb-8">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate(-1)} 
+              className="flex items-center text-black hover:bg-[#f0f0f0] hover:text-black group transition-all"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+              Back to funds
+            </Button>
+          </div>
 
-        <div className="bg-white rounded-lg shadow-sm border p-6">
-          {/* Fund Header Section */}
-          <FundHeader fund={fund} />
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            {/* Fund Header Section */}
+            <FundHeader fund={fund} />
 
-          {/* Fund Category Section */}
-          <FundCategory category={fund.category} />
+            <div className="p-6 md:p-8 space-y-12">
+              {/* Grid layout for key metrics */}
+              <FundMetrics fund={fund} formatCurrency={formatCurrency} />
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="space-y-8">
+                  {/* Fund Category Section */}
+                  <FundCategory category={fund.category} />
 
-          {/* Key Metrics */}
-          <FundMetrics fund={fund} formatCurrency={formatCurrency} />
+                  {/* Fee Structure Section */}
+                  <FeeStructure fund={fund} formatPercentage={formatPercentage} />
+                </div>
 
-          {/* Fee Structure Section */}
-          <FeeStructure fund={fund} formatPercentage={formatPercentage} />
+                <div className="space-y-8">
+                  {/* Geographic Allocation Section */}
+                  <GeographicAllocation 
+                    allocations={fund.geographicAllocation} 
+                    formatPercentage={formatPercentage} 
+                  />
 
-          {/* Geographic Allocation Section */}
-          <GeographicAllocation 
-            allocations={fund.geographicAllocation} 
-            formatPercentage={formatPercentage} 
-          />
+                  {/* Fund Manager Section */}
+                  <FundManager 
+                    managerName={fund.managerName} 
+                    managerLogo={fund.managerLogo} 
+                  />
+                </div>
+              </div>
 
-          {/* Fund Manager Section */}
-          <FundManager 
-            managerName={fund.managerName} 
-            managerLogo={fund.managerLogo} 
-          />
+              {/* Fund Description */}
+              <FundDescription description={fund.detailedDescription} />
 
-          {/* Team Section */}
-          <TeamSection team={fund.team} />
+              {/* Team Section */}
+              <TeamSection team={fund.team} />
 
-          {/* Fund Description */}
-          <FundDescription description={fund.detailedDescription} />
+              {/* Documents Section */}
+              <DocumentsSection documents={fund.documents} />
+              
+              {/* Fund Website */}
+              <FundWebsite websiteUrl={fund.websiteUrl} />
 
-          {/* Documents Section */}
-          <DocumentsSection documents={fund.documents} />
-
-          {/* Introduction Button */}
-          <IntroductionButton />
+              {/* Introduction Button */}
+              <IntroductionButton />
+            </div>
+          </div>
         </div>
       </main>
       
