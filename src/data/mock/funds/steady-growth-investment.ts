@@ -9,13 +9,13 @@ export const steadyGrowthInvestment: Fund = {
     'Golden Visa Eligible',
     'Bonds',
     'Equities',
+    'Gold',
+    'Deposits',
     'Liquid',
     'Balanced',
     'Low Risk',
-    'Capital Preservation',
-    'Capital Growth',
-    'Sustainability',
-    'Infrastructure'
+    'AI-Driven',
+    'Diversified'
   ],
   category: 'Multi-Asset',
   minimumInvestment: 0, // N/A

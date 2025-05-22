@@ -34,7 +34,11 @@ export type FundTag =
   | 'Lock-Up'
   | 'No Fees'
   | 'Tax Free'
-  | 'Capital Growth';
+  | 'Capital Growth'
+  | 'Gold'
+  | 'Deposits'
+  | 'AI-Driven'
+  | 'Diversified';
 
 export type FundCategory =
   | 'Venture Capital'
