@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Facebook, Linkedin, ExternalLink } from "lucide-react";
 
@@ -61,6 +62,9 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/tags" className="text-gray-600 hover:text-primary text-sm transition-colors">Tags</Link>
+              </li>
+              <li>
+                <Link to="/faqs" className="text-gray-600 hover:text-primary text-sm transition-colors">FAQs</Link>
               </li>
             </ul>
           </div>
