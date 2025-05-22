@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 interface FundMetricsProps {
   fund: Fund;
   formatCurrency: (amount: number) => string;
-  formatFundSize?: () => string;
+  formatFundSize?: () => React.ReactNode;
 }
 
 const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatFundSize }) => {
