@@ -41,6 +41,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
               'bg-red-500'
             } animate-pulse`}></span>
             <span className="font-medium">{fund.fundStatus}</span>
+            {fund.redemptionTerms?.frequency === 'Monthly' && fund.tags.includes('Open Ended') && (
+              <span className="ml-1 text-xs font-normal">(Flexible, with monthly subscriptions & redemptions)</span>
+            )}
           </div>
           
           {/* Report Button */}

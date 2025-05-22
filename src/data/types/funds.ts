@@ -11,7 +11,16 @@ export type FundTag =
   | 'Sustainability'
   | 'Low Risk'
   | 'Medium Risk'
-  | 'High Risk';
+  | 'High Risk'
+  | 'Golden Visa Eligible'
+  | 'Bonds'
+  | 'Crypto'
+  | 'Liquid'
+  | 'Regulated'
+  | 'Open Ended'
+  | 'Bitcoin'
+  | 'Ethereum'
+  | 'Solana';
 
 export type FundCategory =
   | 'Venture Capital'
@@ -19,7 +28,8 @@ export type FundCategory =
   | 'Real Estate'
   | 'Mixed'
   | 'Infrastructure'
-  | 'Debt';
+  | 'Debt'
+  | 'Fixed Income & Digital Assets';
 
 export type RedemptionFrequency =
   | 'Monthly'
