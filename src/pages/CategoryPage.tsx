@@ -62,7 +62,31 @@ const CategoryPage = () => {
           'description': fund.description,
           'url': `https://portugalvisafunds.com/funds/${fund.id}`
         }
-      }))
+      })),
+      // Adding breadcrumbs for better SEO
+      'breadcrumb': {
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          {
+            '@type': 'ListItem',
+            'position': 1,
+            'name': 'Home',
+            'item': 'https://portugalvisafunds.com'
+          },
+          {
+            '@type': 'ListItem',
+            'position': 2,
+            'name': 'Categories',
+            'item': 'https://portugalvisafunds.com/categories'
+          },
+          {
+            '@type': 'ListItem',
+            'position': 3,
+            'name': `${category}`,
+            'item': `https://portugalvisafunds.com/categories/${categorySlug}`
+          }
+        ]
+      }
     };
     
     script.textContent = JSON.stringify(structuredData);
@@ -84,7 +108,24 @@ const CategoryPage = () => {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       
-      <main className="container mx-auto px-4 py-8 flex-1">
+      <main className="container mx-auto px-4 py-8 flex-1" itemScope itemType="https://schema.org/CollectionPage">
+        {/* Visible breadcrumbs for users and search engines */}
+        <nav aria-label="breadcrumbs" className="mb-6">
+          <ol className="flex items-center text-sm text-gray-500">
+            <li>
+              <Link to="/" className="hover:text-[#EF4444]">Home</Link>
+            </li>
+            <li className="mx-2">/</li>
+            <li>
+              <span className="font-medium">Categories</span>
+            </li>
+            <li className="mx-2">/</li>
+            <li>
+              <span className="font-medium text-[#EF4444]">{category}</span>
+            </li>
+          </ol>
+        </nav>
+        
         <div className="mb-6">
           <Button 
             variant="ghost" 
@@ -102,11 +143,11 @@ const CategoryPage = () => {
             <span className="text-sm bg-gray-100 px-3 py-1 rounded-full">Category</span>
           </div>
           
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-center">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-center" itemProp="name">
             {category} Golden Visa Investment Funds
           </h1>
           
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto text-center">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto text-center" itemProp="description">
             Explore {category} Golden Visa Investment Funds and Compare
           </p>
         </div>
@@ -125,16 +166,22 @@ const CategoryPage = () => {
           <>
             <div className="flex justify-between items-center mb-6 bg-white p-4 rounded-lg shadow-sm">
               <p className="text-gray-600">
-                {funds.length} fund{funds.length !== 1 ? 's' : ''} in <span className="font-semibold">{category}</span> category
+                <span itemProp="numberOfItems">{funds.length}</span> fund{funds.length !== 1 ? 's' : ''} in <span className="font-semibold">{category}</span> category
               </p>
               <div className="text-sm text-gray-500">
                 Sorted by relevance
               </div>
             </div>
             
-            <div className="space-y-4">
-              {funds.map(fund => (
-                <FundListItem key={fund.id} fund={fund} />
+            <div className="space-y-4" itemProp="itemListElement" itemScope itemType="https://schema.org/ItemList">
+              {funds.map((fund, index) => (
+                <div key={fund.id} itemProp="item" itemScope itemType="https://schema.org/Product">
+                  <meta itemProp="position" content={`${index + 1}`} />
+                  <meta itemProp="name" content={fund.name} />
+                  <meta itemProp="description" content={fund.description} />
+                  <meta itemProp="url" content={`https://portugalvisafunds.com/funds/${fund.id}`} />
+                  <FundListItem fund={fund} />
+                </div>
               ))}
             </div>
             
