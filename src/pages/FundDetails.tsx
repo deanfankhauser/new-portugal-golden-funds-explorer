@@ -1,116 +1,37 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFundById } from '../data/funds';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from 'lucide-react';
 
 // Import our components
-import FundHeader from '../components/fund-details/FundHeader';
-import FundCategory from '../components/fund-details/FundCategory';
-import FundMetrics from '../components/fund-details/FundMetrics';
-import FeeStructure from '../components/fund-details/FeeStructure';
-import GeographicAllocation from '../components/fund-details/GeographicAllocation';
-import FundManager from '../components/fund-details/FundManager';
-import TeamSection from '../components/fund-details/TeamSection';
-import FundDescription from '../components/fund-details/FundDescription';
-import DocumentsSection from '../components/fund-details/DocumentsSection';
-import IntroductionButton from '../components/fund-details/IntroductionButton';
-import { formatCurrency, formatPercentage } from '../components/fund-details/utils/formatters';
+import BackToFundsButton from '../components/fund-details/BackToFundsButton';
+import FundDetailsContent from '../components/fund-details/FundDetailsContent';
+import FundDetailsSEO from '../components/fund-details/FundDetailsSEO';
 
 const FundDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const fund = id ? getFundById(id) : undefined;
 
-  useEffect(() => {
-    if (!fund) {
-      // If fund not found, redirect to homepage
-      navigate('/');
-      return;
-    }
-    
-    // Set page title and meta description for SEO
-    document.title = `${fund.name} | Movingto`;
-    
-    // Update meta description
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 
-        `Learn more about ${fund.name} in the Movingto Golden Visa funds directory. Compare with similar funds.`
-      );
-    }
-
-    // Scroll to top on page load
-    window.scrollTo(0, 0);
-  }, [fund, navigate]);
-
-  if (!fund) return null;
+  // If fund not found, redirect to homepage
+  if (!fund) {
+    navigate('/');
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
       <Header />
       
+      {/* SEO Component */}
+      <FundDetailsSEO fund={fund} />
+      
       <main className="flex-1 py-10">
         <div className="container mx-auto px-4 max-w-7xl">
-          <div className="mb-8">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate(-1)} 
-              className="flex items-center text-gray-600 hover:bg-gray-100 hover:text-black group transition-all"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-              Back to funds
-            </Button>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-            {/* Fund Header Section with built-in CTA */}
-            <FundHeader fund={fund} />
-
-            <div className="p-6 md:p-10 space-y-14">
-              {/* Grid layout for key metrics */}
-              <FundMetrics fund={fund} formatCurrency={formatCurrency} />
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="space-y-8">
-                  {/* Fund Category Section */}
-                  <FundCategory category={fund.category} />
-
-                  {/* Fee Structure Section */}
-                  <FeeStructure fund={fund} formatPercentage={formatPercentage} />
-                </div>
-
-                <div className="space-y-8">
-                  {/* Geographic Allocation Section */}
-                  <GeographicAllocation 
-                    allocations={fund.geographicAllocation} 
-                    formatPercentage={formatPercentage} 
-                  />
-
-                  {/* Fund Manager Section */}
-                  <FundManager 
-                    managerName={fund.managerName} 
-                    managerLogo={fund.managerLogo} 
-                  />
-                </div>
-              </div>
-
-              {/* Fund Description */}
-              <FundDescription description={fund.detailedDescription} />
-
-              {/* Team Section */}
-              <TeamSection team={fund.team} />
-
-              {/* Documents Section */}
-              <DocumentsSection documents={fund.documents} />
-              
-              {/* Introduction Button (full version at bottom) */}
-              <IntroductionButton variant="full" />
-            </div>
-          </div>
+          <BackToFundsButton />
+          <FundDetailsContent fund={fund} />
         </div>
       </main>
       
