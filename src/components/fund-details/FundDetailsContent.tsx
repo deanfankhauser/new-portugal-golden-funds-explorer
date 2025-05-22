@@ -22,6 +22,34 @@ interface FundDetailsContentProps {
 }
 
 const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
+  // Helper function to get status description based on fund characteristics
+  const getFundStatusDescription = () => {
+    if (fund.redemptionTerms?.frequency === 'Monthly' && fund.tags.includes('Open Ended')) {
+      return "(Flexible, with monthly subscriptions & redemptions)";
+    }
+    if (fund.redemptionTerms?.frequency === 'Daily' && fund.tags.includes('Open Ended')) {
+      if (fund.tags.includes('No Lock-Up')) {
+        return "(Open-ended, with daily liquidity; no lock-up)";
+      }
+      return "(Open-ended, with daily liquidity)";
+    }
+    return "";
+  };
+  
+  // Helper function to format target AUM and current AUM
+  const formatFundSize = () => {
+    // For 3CC fund with specific formatting
+    if (fund.id === '3cc-golden-income') {
+      return "Target €50 Million; Current >€25 Million";
+    }
+    // For funds with N/A fund size
+    if (fund.fundSize === 0) {
+      return "N/A";
+    }
+    // Default formatting
+    return `${fund.fundSize} Million EUR`;
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-shadow duration-300 hover:shadow-lg">
       {/* Fund Header Section with built-in CTA */}
@@ -41,12 +69,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
               'bg-red-500'
             } animate-pulse`}></span>
             <span className="font-medium">{fund.fundStatus}</span>
-            {fund.redemptionTerms?.frequency === 'Monthly' && fund.tags.includes('Open Ended') && (
-              <span className="ml-1 text-xs font-normal">(Flexible, with monthly subscriptions & redemptions)</span>
-            )}
-            {fund.redemptionTerms?.frequency === 'Daily' && fund.tags.includes('Open Ended') && (
-              <span className="ml-1 text-xs font-normal">(Open-ended, with daily liquidity)</span>
-            )}
+            <span className="ml-1 text-xs font-normal">{getFundStatusDescription()}</span>
           </div>
           
           {/* Report Button */}
@@ -64,7 +87,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
         </div>
         
         {/* Grid layout for key metrics */}
-        <FundMetrics fund={fund} formatCurrency={formatCurrency} />
+        <FundMetrics fund={fund} formatCurrency={formatCurrency} formatFundSize={formatFundSize} />
         
         {/* Main content with tabs */}
         <Tabs defaultValue="overview" className="w-full animate-fade-in">

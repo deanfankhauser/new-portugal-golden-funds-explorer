@@ -1,3 +1,4 @@
+
 export type FundTag = 
   | 'Real Estate'
   | 'Private Equity'
@@ -26,7 +27,8 @@ export type FundTag =
   | 'PFIC-Compliant'
   | 'QEF Eligible'
   | 'Daily NAV'
-  | 'No Lock-Up';
+  | 'No Lock-Up'
+  | 'Capital Preservation';
 
 export type FundCategory =
   | 'Venture Capital'
@@ -36,7 +38,8 @@ export type FundCategory =
   | 'Infrastructure'
   | 'Debt'
   | 'Fixed Income & Digital Assets'
-  | 'Balanced';
+  | 'Balanced'
+  | 'Multi-Asset';
 
 export type RedemptionFrequency =
   | 'Monthly'

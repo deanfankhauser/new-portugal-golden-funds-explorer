@@ -15,6 +15,10 @@ const RedemptionTermsComponent: React.FC<RedemptionTermsProps> = ({ redemptionTe
     return null;
   }
 
+  // Check if the redemption notes indicate a decreasing fee structure
+  const hasDecreasingFees = redemptionTerms.notes?.toLowerCase().includes('taper') || 
+                           redemptionTerms.notes?.toLowerCase().includes('decreases');
+
   return (
     <Card className="border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
       <CardContent className="p-6">
@@ -54,11 +58,16 @@ const RedemptionTermsComponent: React.FC<RedemptionTermsProps> = ({ redemptionTe
             {redemptionTerms.earlyRedemptionFee !== undefined && (
               <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
                 <h3 className="font-medium text-gray-700 text-sm uppercase tracking-wide">
-                  Early Redemption Fee
+                  {hasDecreasingFees ? "Redemption Fee (Starting)" : "Early Redemption Fee"}
                 </h3>
                 <p className="text-xl font-bold text-[#EF4444]">
                   {formatPercentage(redemptionTerms.earlyRedemptionFee)}
                 </p>
+                {hasDecreasingFees && (
+                  <p className="text-sm text-gray-600 mt-1">
+                    Decreases over time as specified
+                  </p>
+                )}
               </div>
             )}
 
