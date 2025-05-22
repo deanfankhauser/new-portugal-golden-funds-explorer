@@ -61,52 +61,19 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
     return `${fund.fundSize} Million EUR`;
   };
 
-  // Get the appropriate label for subscription status
-  const getSubscriptionStatusLabel = () => {
-    if (fund.fundStatus === 'Open') {
-      return 'Accepting New Investments';
-    } else if (fund.fundStatus === 'Closing Soon') {
-      return 'Closing Soon for New Investments';
-    } else {
-      return 'Not Accepting New Investments';
-    }
-  };
-
-  // Get the appropriate color for subscription status
-  const getSubscriptionStatusColor = () => {
-    if (fund.fundStatus === 'Open') {
-      return 'bg-green-100 text-green-800';
-    } else if (fund.fundStatus === 'Closing Soon') {
-      return 'bg-amber-100 text-amber-800';
-    } else {
-      return 'bg-red-100 text-red-800';
-    }
-  };
-
-  // Get the appropriate dot color for subscription status
-  const getSubscriptionStatusDotColor = () => {
-    if (fund.fundStatus === 'Open') {
-      return 'bg-green-500';
-    } else if (fund.fundStatus === 'Closing Soon') {
-      return 'bg-amber-500';
-    } else {
-      return 'bg-red-500';
-    }
-  };
-
   return (
     <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-shadow duration-300 hover:shadow-lg">
       {/* Fund Header Section with built-in CTA */}
       <FundHeader fund={fund} />
 
       <div className="p-6 md:p-10 space-y-10">
-        {/* Status indicator for fund */}
+        {/* Structure description only */}
         <div className="flex items-center justify-between">
-          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${getSubscriptionStatusColor()}`}>
-            <span className={`w-2 h-2 rounded-full ${getSubscriptionStatusDotColor()} animate-pulse`}></span>
-            <span className="font-medium">{getSubscriptionStatusLabel()}</span>
-            <span className="ml-1 text-xs font-normal">{getFundStructureDescription()}</span>
-          </div>
+          {getFundStructureDescription() && (
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-gray-700">
+              <span className="font-medium">{getFundStructureDescription()}</span>
+            </div>
+          )}
           
           {/* Report Button */}
           <Button

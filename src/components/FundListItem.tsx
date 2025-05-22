@@ -35,16 +35,6 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
     ? fund.geographicAllocation[0] 
     : null;
 
-  // Helper to get appropriate badge for fund subscription status
-  const getStatusBadge = () => {
-    if (fund.fundStatus === 'Closing Soon') {
-      return <Badge className="bg-amber-500 ml-2">Closing Soon for Investments</Badge>;
-    } else if (fund.fundStatus === 'Closed') {
-      return <Badge className="bg-red-600 ml-2">Not Accepting New Investments</Badge>;
-    }
-    return null;
-  };
-
   return (
     <Card className="border rounded-lg hover:border-gray-300 transition-colors bg-white shadow-sm">
       <CardContent className="p-6">
@@ -56,7 +46,6 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                   {fund.name}
                 </Link>
               </h3>
-              {getStatusBadge()}
             </div>
             
             <p className="text-gray-600 mb-4 line-clamp-2">{fund.description}</p>
