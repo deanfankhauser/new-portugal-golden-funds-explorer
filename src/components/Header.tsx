@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ComparisonIndicator from "./ComparisonIndicator";
-import { ExternalLink, ArrowLeft } from "lucide-react";
+import { ExternalLink, ArrowLeft, Plus } from "lucide-react";
 
 const Header = () => {
   return (
@@ -29,6 +29,22 @@ const Header = () => {
             </Link>
           </div>
           <div className="flex items-center gap-4">
+            <Link to="/add-fund">
+              <Button 
+                variant="outline" 
+                className="hidden sm:flex items-center gap-2 border-green-400 bg-green-400 text-[#1A1F2C] hover:bg-green-500 hover:border-green-500 transition-all duration-300"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Add Fund</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                size="icon"
+                className="sm:hidden border-green-400 bg-green-400 text-[#1A1F2C] hover:bg-green-500 hover:border-green-500 transition-all"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </Link>
             <ComparisonIndicator />
             <Button 
               variant="outline" 

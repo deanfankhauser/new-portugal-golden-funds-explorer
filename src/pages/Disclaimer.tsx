@@ -2,10 +2,11 @@
 import React, { useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { AlertTriangle } from 'lucide-react';
 
 const DisclaimerPage = () => {
   useEffect(() => {
-    document.title = "Disclaimer | Portugal Golden Visa Funds";
+    document.title = "Disclaimer | MovingTo Portugal Golden Visa Funds";
     window.scrollTo(0, 0);
   }, []);
 
@@ -15,60 +16,86 @@ const DisclaimerPage = () => {
       
       <main className="container mx-auto px-4 py-8 flex-1">
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-sm border p-6">
-          <h1 className="text-3xl font-bold mb-6">Disclaimer</h1>
+          <div className="flex items-center gap-3 mb-6">
+            <AlertTriangle className="text-amber-600 h-8 w-8" />
+            <h1 className="text-3xl font-bold">Disclaimer</h1>
+          </div>
           
-          <div className="prose max-w-none">
-            <h2>Information Purpose</h2>
-            <p>
-              The information provided on Portugal Golden Visa Funds is for general informational purposes only. 
-              All information on the site is provided in good faith, however, we make no representation or warranty 
-              of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, 
-              or completeness of any information on the site.
-            </p>
+          <div className="prose max-w-none space-y-6">
+            <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
+              <p className="text-amber-800 font-medium">
+                The information contained on this website is for general information purposes only. While we strive
+                to keep the information up to date and correct, we make no representations or warranties of any kind,
+                express or implied, about the completeness, accuracy, reliability, suitability or availability of the
+                information contained on this website.
+              </p>
+            </div>
             
-            <h2>Not Financial Advice</h2>
-            <p>
-              The information contained on this website is not intended as, and shall not be understood or construed as, 
-              financial advice. We are not an attorney, accountant, or financial advisor, nor are we holding ourselves 
-              out to be. The information contained on this website is not a substitute for financial advice from a 
-              professional who is aware of the facts and circumstances of your individual situation.
-            </p>
+            <section className="border-b border-gray-200 pb-6">
+              <h2 className="text-xl font-semibold text-gray-800">Information Purpose</h2>
+              <p className="text-gray-600">
+                The information provided on MovingTo Portugal Golden Visa Funds is for general informational purposes only. 
+                All information on the site is provided in good faith, however, we make no representation or warranty 
+                of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, 
+                or completeness of any information on the site.
+              </p>
+            </section>
             
-            <h2>Investment Risks</h2>
-            <p>
-              Investing in funds carries risks, including the loss of principal. Fund performance is not guaranteed, 
-              and past performance does not guarantee future results. Investment returns will fluctuate and are subject 
-              to market volatility, so that an investor's shares, when redeemed, or sold, may be worth more or less than 
-              their original cost.
-            </p>
+            <section className="border-b border-gray-200 pb-6 pt-6">
+              <h2 className="text-xl font-semibold text-gray-800">Not Financial Advice</h2>
+              <p className="text-gray-600">
+                The information contained on this website is not intended as, and shall not be understood or construed as, 
+                financial advice. We are not an attorney, accountant, or financial advisor, nor are we holding ourselves 
+                out to be. The information contained on this website is not a substitute for financial advice from a 
+                professional who is aware of the facts and circumstances of your individual situation.
+              </p>
+            </section>
             
-            <h2>Immigration and Visa Information</h2>
-            <p>
-              Information about the Portugal Golden Visa program is subject to change. Immigration laws, requirements, 
-              and procedures can change without notice. We do not guarantee that the information provided is current or 
-              accurate. For the most up-to-date information, please consult with a qualified immigration attorney or contact 
-              the Portuguese Immigration and Borders Service (SEF).
-            </p>
+            <section className="border-b border-gray-200 pb-6 pt-6">
+              <h2 className="text-xl font-semibold text-gray-800">Investment Risks</h2>
+              <p className="text-gray-600">
+                Investing in funds carries risks, including the loss of principal. Fund performance is not guaranteed, 
+                and past performance does not guarantee future results. Investment returns will fluctuate and are subject 
+                to market volatility, so that an investor's shares, when redeemed, or sold, may be worth more or less than 
+                their original cost.
+              </p>
+            </section>
             
-            <h2>No Endorsement</h2>
-            <p>
-              The listing of any fund in our directory does not constitute an endorsement or recommendation by 
-              Portugal Golden Visa Funds. We do not personally evaluate the funds for their investment merit, 
-              suitability for any particular investor, or compliance with applicable laws and regulations.
-            </p>
+            <section className="border-b border-gray-200 pb-6 pt-6">
+              <h2 className="text-xl font-semibold text-gray-800">Immigration and Visa Information</h2>
+              <p className="text-gray-600">
+                Information about the Portugal Golden Visa program is subject to change. Immigration laws, requirements, 
+                and procedures can change without notice. We do not guarantee that the information provided is current or 
+                accurate. For the most up-to-date information, please consult with a qualified immigration attorney or contact 
+                the Portuguese Immigration and Borders Service (SEF).
+              </p>
+            </section>
             
-            <h2>External Links</h2>
-            <p>
-              Our website may contain links to external websites that are not provided or maintained by or in any way 
-              affiliated with us. Please note that we do not guarantee the accuracy, relevance, timeliness, or completeness 
-              of any information on these external websites.
-            </p>
+            <section className="border-b border-gray-200 pb-6 pt-6">
+              <h2 className="text-xl font-semibold text-gray-800">No Endorsement</h2>
+              <p className="text-gray-600">
+                The listing of any fund in our directory does not constitute an endorsement or recommendation by 
+                MovingTo. We do not personally evaluate the funds for their investment merit, 
+                suitability for any particular investor, or compliance with applicable laws and regulations.
+              </p>
+            </section>
             
-            <h2>Contact Us</h2>
-            <p>
-              If you would like to contact us to understand more about this disclaimer or wish to contact us concerning 
-              any matter relating to it, please email us at info@portugalGoldenVisaFunds.com.
-            </p>
+            <section className="border-b border-gray-200 pb-6 pt-6">
+              <h2 className="text-xl font-semibold text-gray-800">External Links</h2>
+              <p className="text-gray-600">
+                Our website may contain links to external websites that are not provided or maintained by or in any way 
+                affiliated with us. Please note that we do not guarantee the accuracy, relevance, timeliness, or completeness 
+                of any information on these external websites.
+              </p>
+            </section>
+            
+            <section className="pt-6">
+              <h2 className="text-xl font-semibold text-gray-800">Contact Us</h2>
+              <p className="text-gray-600">
+                If you would like to contact us to understand more about this disclaimer or wish to contact us concerning 
+                any matter relating to it, please email us at info@movingto.io or visit our <a href="https://www.movingto.io/contact/contact-movingto" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">contact page</a>.
+              </p>
+            </section>
           </div>
         </div>
       </main>
