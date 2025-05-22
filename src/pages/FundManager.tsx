@@ -44,8 +44,8 @@ const FundManager = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
       <Helmet>
-        <title>{managerFunds[0].managerName} - Fund Manager | MovingTo</title>
-        <meta name="description" content={`Information about ${managerFunds[0].managerName} and their investment funds.`} />
+        <title>{managerFunds[0].managerName} Golden Visa Investment Funds</title>
+        <meta name="description" content={`Discover the different Golden Visa Investment Funds managed by ${managerFunds[0].managerName} and compare with other funds.`} />
       </Helmet>
       
       <Header />
