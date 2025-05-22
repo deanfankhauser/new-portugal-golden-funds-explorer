@@ -1,6 +1,6 @@
 
 import { Fund } from '../types/funds';
-import { fundsData } from '../mock/funds-data';
+import { fundsData } from '../mock/funds';
 
 // Function to get a fund by ID
 export const getFundById = (id: string): Fund | undefined => {

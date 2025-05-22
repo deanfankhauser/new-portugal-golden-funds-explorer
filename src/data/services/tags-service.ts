@@ -1,6 +1,6 @@
 
 import { FundTag, Fund } from '../types/funds';
-import { fundsData } from '../mock/funds-data';
+import { fundsData } from '../mock/funds';
 
 // Function to get all unique tags from funds
 export const getAllTags = (): FundTag[] => {

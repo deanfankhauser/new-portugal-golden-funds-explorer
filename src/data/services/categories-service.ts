@@ -1,6 +1,6 @@
 
 import { FundCategory, Fund } from '../types/funds';
-import { fundsData } from '../mock/funds-data';
+import { fundsData } from '../mock/funds';
 
 // Function to get all unique categories from funds
 export const getAllCategories = (): FundCategory[] => {
