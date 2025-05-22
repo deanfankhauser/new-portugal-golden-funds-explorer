@@ -14,7 +14,8 @@ import IntroductionButton from './IntroductionButton';
 import RedemptionTerms from './RedemptionTerms';
 import { formatCurrency, formatPercentage } from './utils/formatters';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, PieChart, User, Users, AlertCircle } from 'lucide-react';
+import { FileText, PieChart, User, Users, AlertCircle, Flag } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -28,7 +29,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
 
       <div className="p-6 md:p-10 space-y-10">
         {/* Status indicator for fund */}
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-between">
           <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${
             fund.fundStatus === 'Open' ? 'bg-green-100 text-green-800' : 
             fund.fundStatus === 'Closing Soon' ? 'bg-amber-100 text-amber-800' : 
@@ -41,6 +42,19 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
             } animate-pulse`}></span>
             <span className="font-medium">{fund.fundStatus}</span>
           </div>
+          
+          {/* Report Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-gray-500 hover:text-red-600 transition-colors"
+            onClick={() => {
+              window.location.href = `mailto:info@movingto.io?subject=Incorrect Information Report - ${fund.name}&body=I'd like to report incorrect information for fund: ${fund.name}`;
+            }}
+          >
+            <Flag className="w-4 h-4 mr-2" />
+            Report incorrect information
+          </Button>
         </div>
         
         {/* Grid layout for key metrics */}
