@@ -48,7 +48,14 @@ export type FundTag =
   | 'Long Term'
   | 'Hybrid'
   | 'Dividends'
-  | '5 % Yield';
+  | '5 % Yield'
+  | 'Renewable Energy'
+  | 'Solar'
+  | 'Battery Storage'
+  | 'Energy-as-a-Service'
+  | '12% Return'
+  | '5% Dividend'
+  | 'Climate';
 
 export type FundCategory =
   | 'Venture Capital'
@@ -61,7 +68,8 @@ export type FundCategory =
   | 'Balanced'
   | 'Multi-Asset'
   | 'Private Equity & Venture Capital'
-  | 'Private Debt & Hybrid Instruments';
+  | 'Private Debt & Hybrid Instruments'
+  | 'Clean Energy (Solar & Battery Storage)';
 
 export type RedemptionFrequency =
   | 'Monthly'
