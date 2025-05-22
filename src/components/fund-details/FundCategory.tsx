@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Badge } from "@/components/ui/badge";
 import { Folder } from 'lucide-react';
 import { Fund } from '../../data/funds';
@@ -17,7 +18,11 @@ const FundCategory: React.FC<FundCategoryProps> = ({ category }) => {
           <Folder className="w-5 h-5 mr-2 text-[#EF4444]" />
           <h2 className="text-xl font-bold">Fund Category</h2>
         </div>
-        <Badge className="px-3 py-1.5 text-base bg-[#EF4444] hover:bg-[#EF4444]/80 shadow-sm">{category}</Badge>
+        <Link to={`/categories/${encodeURIComponent(category)}`}>
+          <Badge className="px-3 py-1.5 text-base bg-[#EF4444] hover:bg-[#EF4444]/80 shadow-sm cursor-pointer">
+            {category}
+          </Badge>
+        </Link>
       </CardContent>
     </Card>
   );

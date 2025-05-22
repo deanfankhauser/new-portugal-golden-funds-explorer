@@ -1,3 +1,4 @@
+
 export type FundTag = 
   | 'Real Estate'
   | 'Private Equity'
@@ -243,9 +244,23 @@ export const getAllTags = (): FundTag[] => {
   return Array.from(tagsSet);
 };
 
+// Function to get all unique categories from funds
+export const getAllCategories = (): FundCategory[] => {
+  const categoriesSet = new Set<FundCategory>();
+  funds.forEach(fund => {
+    categoriesSet.add(fund.category);
+  });
+  return Array.from(categoriesSet);
+};
+
 // Function to get funds by tag
 export const getFundsByTag = (tag: FundTag): Fund[] => {
   return funds.filter(fund => fund.tags.includes(tag));
+};
+
+// Function to get funds by category
+export const getFundsByCategory = (category: FundCategory): Fund[] => {
+  return funds.filter(fund => fund.category === category);
 };
 
 // Function to get a fund by ID

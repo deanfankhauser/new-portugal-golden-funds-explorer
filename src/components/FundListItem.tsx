@@ -64,7 +64,11 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 <Tag className="w-4 h-4 mr-2 text-[#EF4444]" />
                 <div>
                   <p className="text-sm text-muted-foreground">Category</p>
-                  <p className="font-medium">{fund.category}</p>
+                  <p className="font-medium">
+                    <Link to={`/categories/${encodeURIComponent(fund.category)}`} className="hover:text-[#EF4444] transition-colors">
+                      {fund.category}
+                    </Link>
+                  </p>
                 </div>
               </div>
               
