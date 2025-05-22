@@ -5,7 +5,7 @@ import { Fund } from '../data/funds';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GitCompare, PieChart, Globe, Category } from 'lucide-react';
+import { GitCompare, PieChart, Globe, Tag } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import IntroductionButton from './fund-details/IntroductionButton';
 import { formatPercentage } from './fund-details/utils/formatters';
@@ -61,7 +61,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
               <div className="flex items-center">
-                <Category className="w-4 h-4 mr-2 text-[#EF4444]" />
+                <Tag className="w-4 h-4 mr-2 text-[#EF4444]" />
                 <div>
                   <p className="text-sm text-muted-foreground">Category</p>
                   <p className="font-medium">{fund.category}</p>
