@@ -17,7 +17,7 @@ const Footer = () => {
               />
             </Link>
             <p className="text-sm text-gray-600 mb-4">
-              Helping investors navigate the Portuguese Golden Visa program
+              Helping investors navigate the Portuguese Golden Visa investment funds
             </p>
             <div className="space-y-1">
               <p className="text-sm text-gray-600">Moving To Global Pte Ltd</p>
