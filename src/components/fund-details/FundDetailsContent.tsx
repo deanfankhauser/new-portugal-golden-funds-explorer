@@ -11,6 +11,7 @@ import TeamSection from './TeamSection';
 import FundDescription from './FundDescription';
 import DocumentsSection from './DocumentsSection';
 import IntroductionButton from './IntroductionButton';
+import RedemptionTerms from './RedemptionTerms';
 import { formatCurrency, formatPercentage } from './utils/formatters';
 
 interface FundDetailsContentProps {
@@ -34,6 +35,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
 
             {/* Fee Structure Section */}
             <FeeStructure fund={fund} formatPercentage={formatPercentage} />
+            
+            {/* Redemption Terms Section */}
+            <RedemptionTerms redemptionTerms={fund.redemptionTerms} />
           </div>
 
           <div className="space-y-8">

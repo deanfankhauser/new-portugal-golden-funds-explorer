@@ -21,6 +21,15 @@ export type FundCategory =
   | 'Infrastructure'
   | 'Debt';
 
+export type RedemptionFrequency =
+  | 'Monthly'
+  | 'Quarterly'
+  | 'Semi-Annual'
+  | 'Annual'
+  | 'End of Term'
+  | 'Upon Request'
+  | 'Not Available';
+
 export interface GeographicAllocation {
   region: string;
   percentage: number;
@@ -37,6 +46,15 @@ export interface TeamMember {
 export interface PdfDocument {
   title: string;
   url: string;
+}
+
+export interface RedemptionTerms {
+  frequency: RedemptionFrequency;
+  redemptionOpen: boolean;
+  noticePeriod?: number; // in days
+  earlyRedemptionFee?: number; // percentage
+  minimumHoldingPeriod?: number; // in months
+  notes?: string;
 }
 
 export interface Fund {
@@ -64,4 +82,5 @@ export interface Fund {
   geographicAllocation?: GeographicAllocation[];
   team?: TeamMember[];
   documents?: PdfDocument[];
+  redemptionTerms?: RedemptionTerms;
 }

@@ -55,7 +55,15 @@ export const fundsData: Fund[] = [
       { title: "Fund Prospectus", url: "https://example.com/lisboa-fund-prospectus.pdf" },
       { title: "Annual Report 2024", url: "https://example.com/lisboa-fund-annual-report-2024.pdf" },
       { title: "Golden Visa Eligibility", url: "https://example.com/lisboa-fund-golden-visa-eligibility.pdf" }
-    ]
+    ],
+    redemptionTerms: {
+      frequency: "Annual",
+      redemptionOpen: true,
+      noticePeriod: 90,
+      earlyRedemptionFee: 3,
+      minimumHoldingPeriod: 24,
+      notes: "Redemptions processed on the last business day of each calendar year, subject to fund liquidity."
+    }
   },
   {
     id: "portugal-golden-fund-2",
@@ -109,7 +117,15 @@ export const fundsData: Fund[] = [
       { title: "Fund Prospectus", url: "https://example.com/porto-ventures-prospectus.pdf" },
       { title: "Investment Strategy", url: "https://example.com/porto-ventures-strategy.pdf" },
       { title: "Portfolio Companies", url: "https://example.com/porto-ventures-portfolio.pdf" }
-    ]
+    ],
+    redemptionTerms: {
+      frequency: "End of Term",
+      redemptionOpen: false,
+      noticePeriod: 180,
+      earlyRedemptionFee: 5,
+      minimumHoldingPeriod: 36,
+      notes: "Early redemptions may be allowed in exceptional circumstances at the discretion of the fund manager."
+    }
   },
   {
     id: "portugal-golden-fund-3",
@@ -164,6 +180,14 @@ export const fundsData: Fund[] = [
       { title: "Fund Prospectus", url: "https://example.com/algarve-fund-prospectus.pdf" },
       { title: "Tourism Market Analysis", url: "https://example.com/algarve-fund-market-analysis.pdf" },
       { title: "Sustainability Report", url: "https://example.com/algarve-fund-sustainability.pdf" }
-    ]
+    ],
+    redemptionTerms: {
+      frequency: "Quarterly",
+      redemptionOpen: true,
+      noticePeriod: 60,
+      earlyRedemptionFee: 2.5,
+      minimumHoldingPeriod: 12,
+      notes: "Quarterly redemption windows subject to a maximum of 10% of fund NAV per quarter."
+    }
   }
 ];
