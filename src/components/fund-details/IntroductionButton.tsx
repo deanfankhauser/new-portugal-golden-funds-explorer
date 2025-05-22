@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Info } from 'lucide-react';
+import { Info, ExternalLink } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 
 interface IntroductionButtonProps {
@@ -9,12 +9,18 @@ interface IntroductionButtonProps {
 }
 
 const IntroductionButton: React.FC<IntroductionButtonProps> = ({ variant = 'full' }) => {
+  const handleIntroductionClick = () => {
+    window.open('https://www.movingto.io/contact/contact-movingto', '_blank');
+  };
+  
   if (variant === 'compact') {
     return (
       <Button 
         className="bg-[#EF4444] hover:bg-[#EF4444]/90 text-white font-medium shadow-sm transition-all duration-300"
+        onClick={handleIntroductionClick}
       >
         Get Introduction
+        <ExternalLink className="ml-2 h-4 w-4" />
       </Button>
     );
   }
@@ -37,8 +43,10 @@ const IntroductionButton: React.FC<IntroductionButtonProps> = ({ variant = 'full
           
           <Button 
             className="bg-[#EF4444] hover:bg-[#EF4444]/90 text-white w-full md:w-auto px-8 py-6 h-auto text-lg font-medium shadow-sm transition-all duration-300"
+            onClick={handleIntroductionClick}
           >
             Get Introduction
+            <ExternalLink className="ml-2 h-4 w-4" />
           </Button>
         </div>
       </CardContent>

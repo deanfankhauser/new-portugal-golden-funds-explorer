@@ -1,10 +1,9 @@
 
 import React from 'react';
-import { FileText } from 'lucide-react';
+import { FileText, ExternalLink } from 'lucide-react';
 import { PdfDocument } from '../../data/types/funds';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
 
 interface DocumentsSectionProps {
   documents?: PdfDocument[];
@@ -14,14 +13,6 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({ documents }) => {
   if (!documents || documents.length === 0) {
     return null;
   }
-
-  const handleRequestPDFs = () => {
-    // Show success toast when button is clicked
-    toast({
-      title: "Request Received",
-      description: "We'll get in touch with you about the fund documents soon.",
-    });
-  };
 
   return (
     <Card className="border border-gray-100 shadow-md hover:shadow-lg transition-all duration-300">
@@ -36,11 +27,12 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({ documents }) => {
             To receive PDF copies, please click the button below.
           </p>
           <Button 
-            onClick={handleRequestPDFs}
+            onClick={() => window.open('https://www.movingto.io/contact/contact-movingto', '_blank')}
             className="w-full sm:w-auto"
           >
             <FileText className="mr-2 h-4 w-4" />
             Request PDFs
+            <ExternalLink className="ml-2 h-4 w-4" />
           </Button>
         </div>
       </CardContent>
