@@ -2,20 +2,32 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ComparisonIndicator from "./ComparisonIndicator";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, ArrowLeft } from "lucide-react";
 
 const Header = () => {
   return (
     <header className="bg-[#1A1F2C] text-white py-3 shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-2">
-            <img 
-              src="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/65bf8df2803e405540708b3c_movingto-logo-white.svg" 
-              alt="MovingTo Logo" 
-              className="h-8 md:h-10"
-            />
-          </Link>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/10"
+              onClick={() => window.open("https://movingto.io", "_blank")}
+              aria-label="Go to MovingTo website"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <Link to="/" className="flex items-center gap-2">
+              <img 
+                src="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/65bf8df2803e405540708b3c_movingto-logo-white.svg" 
+                alt="MovingTo Logo" 
+                className="h-6 md:h-7.5"
+                style={{ height: "30px" }} // This is 25% smaller than the original 40px height
+              />
+            </Link>
+          </div>
           <div className="flex items-center gap-4">
             <ComparisonIndicator />
             <Button 
