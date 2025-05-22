@@ -13,7 +13,7 @@ import {
   AccordionContent
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, ArrowRight } from 'lucide-react';
 
 const AboutPage = () => {
   useEffect(() => {
@@ -39,7 +39,7 @@ const AboutPage = () => {
             <div className="md:col-span-3 p-8">
               <h2 className="text-3xl font-bold mb-4">Our Mission</h2>
               <p className="text-gray-700 mb-4 text-lg">
-                Portugal Golden Visa Funds is dedicated to providing comprehensive, up-to-date information 
+                MovingTo is dedicated to providing comprehensive, up-to-date information 
                 on qualified investment funds available for the Portugal Golden Visa program. 
               </p>
               <p className="text-gray-700 mb-6">
@@ -47,19 +47,30 @@ const AboutPage = () => {
                 with clear, organized, and detailed information, making the process more transparent 
                 and accessible.
               </p>
-              <Button 
-                className="group"
-                onClick={() => window.open("https://www.movingto.io/pt/portugal-golden-visa", "_blank")}
-              >
-                Learn more about Golden Visa
-                <ExternalLink className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Button>
+              <div className="flex flex-wrap gap-4">
+                <Button 
+                  className="group"
+                  onClick={() => window.open("https://www.movingto.io/pt/portugal-golden-visa", "_blank")}
+                >
+                  Learn more about Golden Visa
+                  <ExternalLink className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Button>
+                
+                <Button 
+                  variant="secondary"
+                  className="group"
+                  onClick={() => window.open("https://www.movingto.io/contact/contact-movingto", "_blank")}
+                >
+                  Get in touch
+                  <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </div>
             </div>
             <div className="md:col-span-2 bg-[#f8f9fa] flex items-center justify-center p-6">
               <img 
-                src="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/662d2c4380f3c5c6b49c6b31_about-illustration.svg" 
-                alt="Portugal Golden Visa Mission" 
-                className="w-full max-w-md mx-auto"
+                src="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/680c9bea4508a80787679af3_algarve.webp" 
+                alt="Algarve, Portugal" 
+                className="w-full h-full object-cover rounded-lg"
               />
             </div>
           </div>
@@ -110,7 +121,7 @@ const AboutPage = () => {
           <div className="bg-gray-50 p-6 border-b">
             <h2 className="text-2xl font-bold">Our Directory</h2>
             <p className="text-gray-600">
-              We provide comprehensive information on funds eligible for the Portugal Golden Visa program.
+              MovingTo provides comprehensive information on funds eligible for the Portugal Golden Visa program.
             </p>
           </div>
           <CardContent className="p-6">
