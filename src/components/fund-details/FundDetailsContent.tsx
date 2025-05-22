@@ -33,6 +33,14 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       }
       return "(Open-ended, with daily liquidity)";
     }
+    if (fund.tags.includes('Lock-Up') && fund.redemptionTerms?.minimumHoldingPeriod) {
+      const lockupYears = Math.floor(fund.redemptionTerms.minimumHoldingPeriod / 12);
+      const lockupMonths = fund.redemptionTerms.minimumHoldingPeriod % 12;
+      const lockupText = lockupYears > 0 
+        ? `${lockupYears} ${lockupYears === 1 ? 'year' : 'years'}${lockupMonths > 0 ? ` ${lockupMonths} ${lockupMonths === 1 ? 'month' : 'months'}` : ''}`
+        : `${lockupMonths} ${lockupMonths === 1 ? 'month' : 'months'}`;
+      return `(Open-ended with ${lockupText} lock-up)`;
+    }
     return "";
   };
   

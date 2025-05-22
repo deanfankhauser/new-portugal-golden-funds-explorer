@@ -19,6 +19,9 @@ const RedemptionTermsComponent: React.FC<RedemptionTermsProps> = ({ redemptionTe
   const hasDecreasingFees = redemptionTerms.notes?.toLowerCase().includes('taper') || 
                            redemptionTerms.notes?.toLowerCase().includes('decreases');
 
+  // Check if fund is completely locked until maturity
+  const isLocked = redemptionTerms.frequency === 'End of Term' && !redemptionTerms.redemptionOpen;
+
   return (
     <Card className="border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
       <CardContent className="p-6">
@@ -31,9 +34,13 @@ const RedemptionTermsComponent: React.FC<RedemptionTermsProps> = ({ redemptionTe
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h3 className="font-medium text-gray-700 text-sm uppercase tracking-wide">Redemption Status</h3>
-              <Badge className={redemptionTerms.redemptionOpen ? "bg-green-500" : "bg-red-500"}>
-                {redemptionTerms.redemptionOpen ? "Open for Redemption" : "Closed for Redemption"}
-              </Badge>
+              {isLocked ? (
+                <Badge className="bg-red-500">Locked Until Maturity</Badge>
+              ) : (
+                <Badge className={redemptionTerms.redemptionOpen ? "bg-green-500" : "bg-red-500"}>
+                  {redemptionTerms.redemptionOpen ? "Open for Redemption" : "Closed for Redemption"}
+                </Badge>
+              )}
             </div>
 
             <div>
@@ -78,6 +85,12 @@ const RedemptionTermsComponent: React.FC<RedemptionTermsProps> = ({ redemptionTe
                 </h3>
                 <p className="text-xl font-bold">
                   {redemptionTerms.minimumHoldingPeriod} months
+                  {redemptionTerms.minimumHoldingPeriod >= 12 && (
+                    <span className="text-sm text-gray-500 ml-1">
+                      ({Math.floor(redemptionTerms.minimumHoldingPeriod / 12)} {Math.floor(redemptionTerms.minimumHoldingPeriod / 12) === 1 ? 'year' : 'years'}
+                      {redemptionTerms.minimumHoldingPeriod % 12 > 0 ? `, ${redemptionTerms.minimumHoldingPeriod % 12} months` : ''})
+                    </span>
+                  )}
                 </p>
               </div>
             )}

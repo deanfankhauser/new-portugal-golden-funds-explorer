@@ -1,4 +1,3 @@
-
 export type FundTag = 
   | 'Real Estate'
   | 'Private Equity'
@@ -28,7 +27,14 @@ export type FundTag =
   | 'QEF Eligible'
   | 'Daily NAV'
   | 'No Lock-Up'
-  | 'Capital Preservation';
+  | 'Capital Preservation'
+  | 'Special Situations'
+  | 'SMEs'
+  | 'Mid-Cap'
+  | 'Lock-Up'
+  | 'No Fees'
+  | 'Tax Free'
+  | 'Capital Growth';
 
 export type FundCategory =
   | 'Venture Capital'
@@ -39,7 +45,8 @@ export type FundCategory =
   | 'Debt'
   | 'Fixed Income & Digital Assets'
   | 'Balanced'
-  | 'Multi-Asset';
+  | 'Multi-Asset'
+  | 'Private Equity & Venture Capital';
 
 export type RedemptionFrequency =
   | 'Monthly'
