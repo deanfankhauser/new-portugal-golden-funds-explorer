@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import FundDetails from "./pages/FundDetails";
 import TagPage from "./pages/TagPage";
@@ -21,21 +22,23 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <ComparisonProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/funds/:id" element={<FundDetails />} />
-            <Route path="/tags/:tag" element={<TagPage />} />
-            <Route path="/categories/:category" element={<CategoryPage />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/disclaimer" element={<Disclaimer />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/compare" element={<ComparisonPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <HelmetProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/funds/:id" element={<FundDetails />} />
+              <Route path="/tags/:tag" element={<TagPage />} />
+              <Route path="/categories/:category" element={<CategoryPage />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/disclaimer" element={<Disclaimer />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/compare" element={<ComparisonPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </HelmetProvider>
       </ComparisonProvider>
     </TooltipProvider>
   </QueryClientProvider>

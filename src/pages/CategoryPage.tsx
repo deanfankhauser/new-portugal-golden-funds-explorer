@@ -8,7 +8,7 @@ import FundCard from '../components/FundCard';
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Folder } from 'lucide-react';
 import { slugToCategory } from '@/lib/utils';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 const CategoryPage = () => {
   const { category: categorySlug } = useParams<{ category: string }>();

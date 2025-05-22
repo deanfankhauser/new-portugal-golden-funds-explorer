@@ -8,7 +8,7 @@ import FundCard from '../components/FundCard';
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Tag as TagIcon } from 'lucide-react';
 import { slugToTag, tagToSlug } from '@/lib/utils';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 const TagPage = () => {
   const { tag: tagSlug } = useParams<{ tag: string }>();
