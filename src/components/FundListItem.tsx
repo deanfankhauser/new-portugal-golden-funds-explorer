@@ -85,7 +85,12 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 <User className="w-4 h-4 mr-2 text-[#EF4444]" />
                 <div>
                   <p className="text-sm text-muted-foreground">Fund Manager</p>
-                  <p className="font-medium">{fund.managerName}</p>
+                  <Link 
+                    to={`/manager/${encodeURIComponent(fund.managerName)}`} 
+                    className="font-medium hover:text-[#EF4444] transition-colors"
+                  >
+                    {fund.managerName}
+                  </Link>
                 </div>
               </div>
             </div>
