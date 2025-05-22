@@ -60,7 +60,7 @@ const FundDetails = () => {
           </div>
 
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            {/* Fund Header Section */}
+            {/* Fund Header Section with built-in CTA */}
             <FundHeader fund={fund} />
 
             <div className="p-6 md:p-8 space-y-12">
@@ -103,8 +103,8 @@ const FundDetails = () => {
               {/* Fund Website */}
               <FundWebsite websiteUrl={fund.websiteUrl} />
 
-              {/* Introduction Button */}
-              <IntroductionButton />
+              {/* Introduction Button (full version at bottom) */}
+              <IntroductionButton variant="full" />
             </div>
           </div>
         </div>
