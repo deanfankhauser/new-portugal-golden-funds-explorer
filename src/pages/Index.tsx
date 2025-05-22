@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -51,10 +50,10 @@ const IndexPage = () => {
       <main className="container mx-auto px-4 py-8 flex-1">
         <div className="mb-10 text-center md:text-left max-w-4xl mx-auto md:mx-0">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-800">
-            Portugal Golden Visa Funds
+            Portugal Golden Visa Investment Funds
           </h1>
           <p className="text-xl text-gray-600">
-            Explore qualified investment funds for the Portugal Golden Visa program with our comprehensive directory.
+            Explore our qualified Portugal Golden Visa Investment funds list with our comprehensive directory.
           </p>
         </div>
 
