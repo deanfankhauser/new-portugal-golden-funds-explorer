@@ -30,6 +30,7 @@ export interface TeamMember {
   position: string;
   bio?: string;
   photoUrl?: string;
+  linkedinUrl?: string;
 }
 
 export interface PdfDocument {
@@ -96,19 +97,22 @@ export const funds: Fund[] = [
         name: "António Silva", 
         position: "Fund Manager",
         bio: "Over 20 years of experience in Portuguese real estate investment. Previously worked at CBRE and Savills.",
-        photoUrl: "https://randomuser.me/api/portraits/men/22.jpg"
+        photoUrl: "https://randomuser.me/api/portraits/men/22.jpg",
+        linkedinUrl: "https://linkedin.com/in/antonio-silva"
       },
       { 
         name: "Maria Fernandes", 
         position: "Investment Director",
         bio: "15 years experience in real estate development and asset management across Southern Europe.",
-        photoUrl: "https://randomuser.me/api/portraits/women/17.jpg"
+        photoUrl: "https://randomuser.me/api/portraits/women/17.jpg",
+        linkedinUrl: "https://linkedin.com/in/maria-fernandes"
       },
       { 
         name: "João Pereira", 
         position: "Legal Counsel",
         bio: "Specialized in Portuguese real estate law and Golden Visa regulations.",
-        photoUrl: "https://randomuser.me/api/portraits/men/45.jpg"
+        photoUrl: "https://randomuser.me/api/portraits/men/45.jpg",
+        linkedinUrl: "https://linkedin.com/in/joao-pereira"
       }
     ],
     documents: [
@@ -147,19 +151,22 @@ export const funds: Fund[] = [
         name: "Luís Carvalho", 
         position: "Managing Partner",
         bio: "Serial tech entrepreneur with two successful exits. Angel investor in over 30 startups.",
-        photoUrl: "https://randomuser.me/api/portraits/men/32.jpg"
+        photoUrl: "https://randomuser.me/api/portraits/men/32.jpg",
+        linkedinUrl: "https://linkedin.com/in/luis-carvalho"
       },
       { 
         name: "Sofia Almeida", 
         position: "Investment Partner",
         bio: "Previously at Atomico and Accel Partners. Specialized in SaaS and AI investments.",
-        photoUrl: "https://randomuser.me/api/portraits/women/26.jpg"
+        photoUrl: "https://randomuser.me/api/portraits/women/26.jpg",
+        linkedinUrl: "https://linkedin.com/in/sofia-almeida"
       },
       { 
         name: "Eduardo Martins", 
         position: "Technical Partner",
         bio: "Former CTO of a unicorn startup. Expert in software architecture and technical due diligence.",
-        photoUrl: "https://randomuser.me/api/portraits/men/58.jpg"
+        photoUrl: "https://randomuser.me/api/portraits/men/58.jpg",
+        linkedinUrl: "https://linkedin.com/in/eduardo-martins"
       }
     ],
     documents: [
@@ -199,19 +206,22 @@ export const funds: Fund[] = [
         name: "Ricardo Santos", 
         position: "CEO & Fund Manager",
         bio: "25+ years in luxury hospitality development across Mediterranean markets.",
-        photoUrl: "https://randomuser.me/api/portraits/men/72.jpg"
+        photoUrl: "https://randomuser.me/api/portraits/men/72.jpg",
+        linkedinUrl: "https://linkedin.com/in/ricardo-santos"
       },
       { 
         name: "Helena Costa", 
         position: "Head of Acquisitions",
         bio: "Expert in tourism property valuation with experience at Four Seasons and Marriott development.",
-        photoUrl: "https://randomuser.me/api/portraits/women/42.jpg"
+        photoUrl: "https://randomuser.me/api/portraits/women/42.jpg",
+        linkedinUrl: "https://linkedin.com/in/helena-costa"
       },
       { 
         name: "Miguel Ferreira", 
         position: "Operations Director",
         bio: "Former Regional Director for a major international hotel chain in Southern Europe.",
-        photoUrl: "https://randomuser.me/api/portraits/men/62.jpg"
+        photoUrl: "https://randomuser.me/api/portraits/men/62.jpg",
+        linkedinUrl: "https://linkedin.com/in/miguel-ferreira"
       }
     ],
     documents: [
