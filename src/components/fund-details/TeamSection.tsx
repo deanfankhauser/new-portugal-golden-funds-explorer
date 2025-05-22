@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { Users, Linkedin } from 'lucide-react';
-import { TeamMember } from '../../data/funds';
+import { Users } from 'lucide-react';
+import { TeamMember } from '../../data/types/funds';
 import { Card, CardContent } from "@/components/ui/card";
 
 interface TeamSectionProps {
@@ -23,22 +23,9 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {team.map((member, index) => (
             <div key={index} className="bg-slate-50 p-5 rounded-lg hover:shadow-md transition-all duration-300 border border-slate-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold text-gray-800 text-lg">{member.name}</h3>
-                  <p className="text-sm text-[#EF4444] mb-1 font-medium">{member.position}</p>
-                </div>
-                {member.linkedinUrl && (
-                  <a 
-                    href={member.linkedinUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#EF4444] hover:text-[#EF4444]/80 transition-colors p-2 hover:bg-white rounded-full"
-                    aria-label={`${member.name}'s LinkedIn profile`}
-                  >
-                    <Linkedin className="w-5 h-5" />
-                  </a>
-                )}
+              <div>
+                <h3 className="font-semibold text-gray-800 text-lg">{member.name}</h3>
+                <p className="text-sm text-[#EF4444] mb-1 font-medium">{member.position}</p>
               </div>
             </div>
           ))}
