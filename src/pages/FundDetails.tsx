@@ -1,13 +1,24 @@
 
 import React, { useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getFundById } from '../data/funds';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ArrowLeft, FileText, Link as LinkIcon, Folder, PieChart, Users, Linkedin } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
+
+// Import our new components
+import FundHeader from '../components/fund-details/FundHeader';
+import FundCategory from '../components/fund-details/FundCategory';
+import FundMetrics from '../components/fund-details/FundMetrics';
+import FeeStructure from '../components/fund-details/FeeStructure';
+import GeographicAllocation from '../components/fund-details/GeographicAllocation';
+import FundManager from '../components/fund-details/FundManager';
+import TeamSection from '../components/fund-details/TeamSection';
+import FundDescription from '../components/fund-details/FundDescription';
+import DocumentsSection from '../components/fund-details/DocumentsSection';
+import FundWebsite from '../components/fund-details/FundWebsite';
+import { formatCurrency, formatPercentage } from '../components/fund-details/utils/formatters';
 
 const FundDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -30,19 +41,6 @@ const FundDetails = () => {
 
   if (!fund) return null;
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'EUR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
-
-  const formatPercentage = (value: number) => {
-    return `${value}%`;
-  };
-
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -52,7 +50,7 @@ const FundDetails = () => {
           <Button 
             variant="ghost" 
             onClick={() => navigate(-1)} 
-            className="flex items-center text-primary hover:text-primary/80"
+            className="flex items-center text-[#EF4444] hover:text-[#EF4444]/80"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to funds
@@ -60,227 +58,41 @@ const FundDetails = () => {
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border p-6">
-          <div className="flex justify-between items-start mb-4 flex-wrap gap-4">
-            <h1 className="text-3xl font-bold mb-0">{fund.name}</h1>
-            <Badge 
-              className={`
-                text-base px-4 py-1
-                ${fund.fundStatus === 'Open' ? 'bg-green-600' : ''} 
-                ${fund.fundStatus === 'Closing Soon' ? 'bg-amber-500' : ''}
-                ${fund.fundStatus === 'Closed' ? 'bg-red-600' : ''}
-              `}
-            >
-              {fund.fundStatus}
-            </Badge>
-          </div>
-
-          <p className="text-xl text-gray-700 mb-8">{fund.description}</p>
-
-          <div className="flex flex-wrap mb-8 gap-2">
-            {fund.tags.map(tag => (
-              <Link 
-                key={tag} 
-                to={`/tags/${encodeURIComponent(tag)}`}
-                className="bg-secondary hover:bg-primary hover:text-white px-3 py-1 rounded-full transition-colors"
-              >
-                {tag}
-              </Link>
-            ))}
-          </div>
+          {/* Fund Header Section */}
+          <FundHeader fund={fund} />
 
           {/* Fund Category Section */}
-          <div className="mb-8 p-5 bg-gray-50 rounded-lg">
-            <div className="flex items-center mb-4">
-              <Folder className="w-5 h-5 mr-2 text-primary" />
-              <h2 className="text-2xl font-bold">Fund Category</h2>
-            </div>
-            <Badge className="px-3 py-1.5 text-base bg-primary hover:bg-primary/80">{fund.category}</Badge>
-          </div>
+          <FundCategory category={fund.category} />
 
           {/* Key Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-gray-700">Minimum Investment</h3>
-              <p className="text-2xl font-bold text-primary">{formatCurrency(fund.minimumInvestment)}</p>
-            </div>
-            
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-gray-700">Target Return</h3>
-              <p className="text-2xl font-bold text-primary">{fund.returnTarget}</p>
-            </div>
-            
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-gray-700">Fund Size</h3>
-              <p className="text-2xl font-bold text-primary">{fund.fundSize} Million EUR</p>
-            </div>
-            
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-gray-700">Term</h3>
-              <p className="text-2xl font-bold text-primary">{fund.term} years</p>
-            </div>
-            
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-gray-700">Established</h3>
-              <p className="text-2xl font-bold text-primary">{fund.established}</p>
-            </div>
-            
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-gray-700">Regulated By</h3>
-              <p className="text-2xl font-bold text-primary">{fund.regulatedBy}</p>
-            </div>
-            
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-gray-700">Location</h3>
-              <p className="text-2xl font-bold text-primary">{fund.location}</p>
-            </div>
-          </div>
+          <FundMetrics fund={fund} formatCurrency={formatCurrency} />
 
           {/* Fee Structure Section */}
-          <div className="mb-8 p-5 bg-gray-50 rounded-lg">
-            <div className="flex items-center mb-4">
-              <FileText className="w-5 h-5 mr-2 text-primary" />
-              <h2 className="text-2xl font-bold">Fee Structure</h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <h3 className="font-semibold text-gray-700">Management Fee</h3>
-                <p className="text-2xl font-bold text-primary">{formatPercentage(fund.managementFee)}</p>
-              </div>
-              
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <h3 className="font-semibold text-gray-700">Performance Fee</h3>
-                <p className="text-2xl font-bold text-primary">{formatPercentage(fund.performanceFee)}</p>
-              </div>
-              
-              {fund.subscriptionFee !== undefined && (
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <h3 className="font-semibold text-gray-700">Subscription Fee</h3>
-                  <p className="text-2xl font-bold text-primary">{formatPercentage(fund.subscriptionFee)}</p>
-                </div>
-              )}
-              
-              {fund.redemptionFee !== undefined && (
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <h3 className="font-semibold text-gray-700">Redemption Fee</h3>
-                  <p className="text-2xl font-bold text-primary">{formatPercentage(fund.redemptionFee)}</p>
-                </div>
-              )}
-            </div>
-          </div>
+          <FeeStructure fund={fund} formatPercentage={formatPercentage} />
 
           {/* Geographic Allocation Section */}
-          {fund.geographicAllocation && fund.geographicAllocation.length > 0 && (
-            <div className="mb-8 p-5 bg-gray-50 rounded-lg">
-              <div className="flex items-center mb-4">
-                <PieChart className="w-5 h-5 mr-2 text-primary" />
-                <h2 className="text-2xl font-bold">Geographic Allocation</h2>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {fund.geographicAllocation.map((allocation, index) => (
-                  <div key={index} className="bg-white p-4 rounded-lg shadow-sm">
-                    <h3 className="font-semibold text-gray-700">{allocation.region}</h3>
-                    <p className="text-2xl font-bold text-primary">{formatPercentage(allocation.percentage)}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          <GeographicAllocation 
+            allocations={fund.geographicAllocation} 
+            formatPercentage={formatPercentage} 
+          />
 
           {/* Fund Manager Section */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4">Fund Manager</h2>
-            <div className="flex items-center gap-4">
-              {fund.managerLogo && (
-                <img 
-                  src={fund.managerLogo} 
-                  alt={fund.managerName}
-                  className="w-16 h-16 object-contain"
-                />
-              )}
-              <div>
-                <h3 className="text-xl font-semibold">{fund.managerName}</h3>
-              </div>
-            </div>
-          </div>
+          <FundManager 
+            managerName={fund.managerName} 
+            managerLogo={fund.managerLogo} 
+          />
 
-          {/* Team Section - Modified to remove images and descriptions, add LinkedIn links */}
-          {fund.team && fund.team.length > 0 && (
-            <div className="mb-8 p-5 bg-gray-50 rounded-lg">
-              <div className="flex items-center mb-4">
-                <Users className="w-5 h-5 mr-2 text-primary" />
-                <h2 className="text-2xl font-bold">Investment Team</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {fund.team.map((member, index) => (
-                  <div key={index} className="bg-white p-4 rounded-lg shadow-sm">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-semibold">{member.name}</h3>
-                        <p className="text-sm text-primary mb-1">{member.position}</p>
-                      </div>
-                      {member.linkedinUrl && (
-                        <a 
-                          href={member.linkedinUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary hover:text-primary/80 transition-colors"
-                          aria-label={`${member.name}'s LinkedIn profile`}
-                        >
-                          <Linkedin className="w-5 h-5" />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* Team Section */}
+          <TeamSection team={fund.team} />
 
           {/* Fund Description */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4">About the Fund</h2>
-            <div className="prose max-w-none">
-              <p className="text-gray-700 whitespace-pre-line">{fund.detailedDescription}</p>
-            </div>
-          </div>
+          <FundDescription description={fund.detailedDescription} />
 
           {/* Documents Section */}
-          {fund.documents && fund.documents.length > 0 && (
-            <div className="mb-8 p-5 bg-gray-50 rounded-lg">
-              <div className="flex items-center mb-4">
-                <FileText className="w-5 h-5 mr-2 text-primary" />
-                <h2 className="text-2xl font-bold">Documents</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {fund.documents.map((doc, index) => (
-                  <a 
-                    key={index} 
-                    href={doc.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center p-3 bg-white rounded-lg hover:shadow-md transition-shadow border border-gray-100"
-                  >
-                    <FileText className="w-5 h-5 mr-2 text-primary" />
-                    <span className="flex-grow">{doc.title}</span>
-                    <LinkIcon className="w-4 h-4 text-gray-400" />
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
+          <DocumentsSection documents={fund.documents} />
 
-          {fund.websiteUrl && (
-            <div className="text-center mt-8">
-              <a 
-                href={fund.websiteUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-md font-medium transition-colors"
-              >
-                Visit Fund Website
-              </a>
-            </div>
-          )}
+          {/* Fund Website */}
+          <FundWebsite websiteUrl={fund.websiteUrl} />
         </div>
       </main>
       
