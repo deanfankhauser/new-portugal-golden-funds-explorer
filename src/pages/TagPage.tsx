@@ -39,9 +39,44 @@ const TagPage = () => {
       );
     }
 
+    // Create JSON-LD structured data for search engines
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    
+    const structuredData = {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'mainEntityOfPage': {
+        '@type': 'WebPage',
+        '@id': `https://portugalvisafunds.com/tags/${tagSlug}`
+      },
+      'name': `${tagName} Golden Visa Investment Funds`,
+      'description': `Explore ${tagName} Golden Visa investment funds. Find and compare the best ${tagName} funds for your Golden Visa investment.`,
+      'numberOfItems': funds.length,
+      'itemListElement': funds.map((fund, index) => ({
+        '@type': 'ListItem',
+        'position': index + 1,
+        'item': {
+          '@type': 'Product',
+          'name': fund.name,
+          'description': fund.description,
+          'url': `https://portugalvisafunds.com/funds/${fund.id}`
+        }
+      }))
+    };
+    
+    script.textContent = JSON.stringify(structuredData);
+    
+    // Remove any existing JSON-LD scripts
+    const existingScripts = document.querySelectorAll('script[type="application/ld+json"]');
+    existingScripts.forEach(s => s.remove());
+    
+    // Add the new structured data script
+    document.head.appendChild(script);
+
     // Scroll to top on page load
     window.scrollTo(0, 0);
-  }, [tagName, tagExists, navigate]);
+  }, [tagName, tagExists, navigate, funds, tagSlug]);
 
   if (!tagExists) return null;
 
