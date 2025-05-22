@@ -22,8 +22,8 @@ interface FundDetailsContentProps {
 }
 
 const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
-  // Helper function to get status description based on fund characteristics
-  const getFundStatusDescription = () => {
+  // Helper function to get structure description based on fund characteristics
+  const getFundStructureDescription = () => {
     if (fund.redemptionTerms?.frequency === 'Monthly' && fund.tags.includes('Open Ended')) {
       return "(Flexible, with monthly subscriptions & redemptions)";
     }
@@ -40,6 +40,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
         ? `${lockupYears} ${lockupYears === 1 ? 'year' : 'years'}${lockupMonths > 0 ? ` ${lockupMonths} ${lockupMonths === 1 ? 'month' : 'months'}` : ''}`
         : `${lockupMonths} ${lockupMonths === 1 ? 'month' : 'months'}`;
       return `(Open-ended with ${lockupText} lock-up)`;
+    }
+    if (fund.tags.includes('Closed Ended')) {
+      return "(Closed-ended, fixed term investment)";
     }
     return "";
   };
@@ -58,6 +61,39 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
     return `${fund.fundSize} Million EUR`;
   };
 
+  // Get the appropriate label for subscription status
+  const getSubscriptionStatusLabel = () => {
+    if (fund.fundStatus === 'Open') {
+      return 'Open for Subscription';
+    } else if (fund.fundStatus === 'Closing Soon') {
+      return 'Closing Soon';
+    } else {
+      return 'Closed for Subscription';
+    }
+  };
+
+  // Get the appropriate color for subscription status
+  const getSubscriptionStatusColor = () => {
+    if (fund.fundStatus === 'Open') {
+      return 'bg-green-100 text-green-800';
+    } else if (fund.fundStatus === 'Closing Soon') {
+      return 'bg-amber-100 text-amber-800';
+    } else {
+      return 'bg-red-100 text-red-800';
+    }
+  };
+
+  // Get the appropriate dot color for subscription status
+  const getSubscriptionStatusDotColor = () => {
+    if (fund.fundStatus === 'Open') {
+      return 'bg-green-500';
+    } else if (fund.fundStatus === 'Closing Soon') {
+      return 'bg-amber-500';
+    } else {
+      return 'bg-red-500';
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-shadow duration-300 hover:shadow-lg">
       {/* Fund Header Section with built-in CTA */}
@@ -66,18 +102,10 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       <div className="p-6 md:p-10 space-y-10">
         {/* Status indicator for fund */}
         <div className="flex items-center justify-between">
-          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${
-            fund.fundStatus === 'Open' ? 'bg-green-100 text-green-800' : 
-            fund.fundStatus === 'Closing Soon' ? 'bg-amber-100 text-amber-800' : 
-            'bg-red-100 text-red-800'
-          }`}>
-            <span className={`w-2 h-2 rounded-full ${
-              fund.fundStatus === 'Open' ? 'bg-green-500' : 
-              fund.fundStatus === 'Closing Soon' ? 'bg-amber-500' : 
-              'bg-red-500'
-            } animate-pulse`}></span>
-            <span className="font-medium">{fund.fundStatus}</span>
-            <span className="ml-1 text-xs font-normal">{getFundStatusDescription()}</span>
+          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${getSubscriptionStatusColor()}`}>
+            <span className={`w-2 h-2 rounded-full ${getSubscriptionStatusDotColor()} animate-pulse`}></span>
+            <span className="font-medium">{getSubscriptionStatusLabel()}</span>
+            <span className="ml-1 text-xs font-normal">{getFundStructureDescription()}</span>
           </div>
           
           {/* Report Button */}
