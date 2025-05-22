@@ -7,18 +7,19 @@ import Footer from '../components/Footer';
 import FundCard from '../components/FundCard';
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from 'lucide-react';
+import { slugToCategory } from '@/lib/utils';
 
 const CategoryPage = () => {
-  const { category: categoryParam } = useParams<{ category: string }>();
+  const { category: categorySlug } = useParams<{ category: string }>();
   const navigate = useNavigate();
   
-  // Convert URL param to actual category
-  const decodedCategory = categoryParam ? decodeURIComponent(categoryParam) : '';
+  // Convert URL slug to actual category
+  const category = categorySlug ? slugToCategory(categorySlug) : '';
   const allCategories = getAllCategories();
   
   // Check if the category exists
-  const categoryExists = allCategories.includes(decodedCategory as any);
-  const funds = categoryExists ? getFundsByCategory(decodedCategory as any) : [];
+  const categoryExists = allCategories.includes(category as any);
+  const funds = categoryExists ? getFundsByCategory(category as any) : [];
 
   useEffect(() => {
     if (!categoryExists) {
@@ -28,19 +29,19 @@ const CategoryPage = () => {
     }
 
     // Set page title for SEO
-    document.title = `${decodedCategory} Funds | Portugal Golden Visa Funds`;
+    document.title = `${category} Funds | Portugal Golden Visa Funds`;
     
     // Set meta description for SEO
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', 
-        `Explore Portugal Golden Visa ${decodedCategory} investment funds. Find the best ${decodedCategory} funds for your Golden Visa investment.`
+        `Explore Portugal Golden Visa ${category} investment funds. Find the best ${category} funds for your Golden Visa investment.`
       );
     }
 
     // Scroll to top on page load
     window.scrollTo(0, 0);
-  }, [decodedCategory, categoryExists, navigate]);
+  }, [category, categoryExists, navigate]);
 
   if (!categoryExists) return null;
 
@@ -62,10 +63,10 @@ const CategoryPage = () => {
 
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            {decodedCategory} Funds
+            {category} Funds
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Explore Portugal Golden Visa funds in the {decodedCategory} category.
+            Explore Portugal Golden Visa funds in the {category} category.
           </p>
         </div>
         
@@ -73,7 +74,7 @@ const CategoryPage = () => {
           <div className="text-center py-10">
             <h3 className="text-xl font-medium mb-2">No funds found</h3>
             <p className="text-gray-500">
-              No funds are currently in the {decodedCategory} category
+              No funds are currently in the {category} category
             </p>
             <Link to="/" className="inline-block mt-4 text-[#EF4444] hover:underline">
               View all funds
@@ -82,7 +83,7 @@ const CategoryPage = () => {
         ) : (
           <>
             <p className="mb-6 text-gray-600">
-              {funds.length} fund{funds.length !== 1 ? 's' : ''} in {decodedCategory} category
+              {funds.length} fund{funds.length !== 1 ? 's' : ''} in {category} category
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {funds.map(fund => (

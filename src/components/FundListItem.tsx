@@ -9,6 +9,7 @@ import { GitCompare, PieChart, Globe, Tag } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import IntroductionButton from './fund-details/IntroductionButton';
 import { formatPercentage } from './fund-details/utils/formatters';
+import { tagToSlug, categoryToSlug } from '@/lib/utils';
 
 interface FundListItemProps {
   fund: Fund;
@@ -65,7 +66,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 <div>
                   <p className="text-sm text-muted-foreground">Category</p>
                   <p className="font-medium">
-                    <Link to={`/categories/${encodeURIComponent(fund.category)}`} className="hover:text-[#EF4444] transition-colors">
+                    <Link to={`/categories/${categoryToSlug(fund.category)}`} className="hover:text-[#EF4444] transition-colors">
                       {fund.category}
                     </Link>
                   </p>
@@ -95,7 +96,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
               {fund.tags.map((tag) => (
                 <Link 
                   key={tag} 
-                  to={`/tags/${encodeURIComponent(tag.toLowerCase().replace(/\s+/g, '-'))}`}
+                  to={`/tags/${tagToSlug(tag)}`}
                   className="text-xs bg-secondary hover:bg-primary hover:text-white px-2 py-1 rounded-full transition-colors"
                 >
                   {tag}
