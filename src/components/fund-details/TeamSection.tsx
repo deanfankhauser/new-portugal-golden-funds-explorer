@@ -14,7 +14,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
   }
 
   return (
-    <Card className="border border-gray-100 shadow-sm hover:shadow transition-all">
+    <Card className="border border-gray-100 shadow-md hover:shadow-lg transition-all duration-300">
       <CardContent className="p-6">
         <div className="flex items-center mb-6">
           <Users className="w-5 h-5 mr-2 text-[#EF4444]" />
@@ -22,18 +22,18 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {team.map((member, index) => (
-            <div key={index} className="bg-gray-50 p-4 rounded-lg hover:shadow-md transition-all">
+            <div key={index} className="bg-slate-50 p-5 rounded-lg hover:shadow-md transition-all duration-300 border border-slate-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-semibold text-gray-800">{member.name}</h3>
-                  <p className="text-sm text-[#EF4444] mb-1">{member.position}</p>
+                  <h3 className="font-semibold text-gray-800 text-lg">{member.name}</h3>
+                  <p className="text-sm text-[#EF4444] mb-1 font-medium">{member.position}</p>
                 </div>
                 {member.linkedinUrl && (
                   <a 
                     href={member.linkedinUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#EF4444] hover:text-[#EF4444]/80 transition-colors"
+                    className="text-[#EF4444] hover:text-[#EF4444]/80 transition-colors p-2 hover:bg-white rounded-full"
                     aria-label={`${member.name}'s LinkedIn profile`}
                   >
                     <Linkedin className="w-5 h-5" />

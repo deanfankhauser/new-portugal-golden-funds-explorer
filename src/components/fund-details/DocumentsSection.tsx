@@ -14,7 +14,7 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({ documents }) => {
   }
 
   return (
-    <Card className="border border-gray-100 shadow-sm hover:shadow transition-all">
+    <Card className="border border-gray-100 shadow-md hover:shadow-lg transition-all duration-300">
       <CardContent className="p-6">
         <div className="flex items-center mb-6">
           <FileText className="w-5 h-5 mr-2 text-[#EF4444]" />
@@ -27,7 +27,7 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({ documents }) => {
               href={doc.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center p-4 bg-gray-50 rounded-lg hover:shadow-md transition-all hover:bg-gray-100 group"
+              className="flex items-center p-4 bg-slate-50 rounded-lg hover:shadow-md transition-all hover:bg-slate-100 group border border-slate-100"
             >
               <FileText className="w-5 h-5 mr-3 text-[#EF4444]" />
               <span className="flex-grow font-medium">{doc.title}</span>

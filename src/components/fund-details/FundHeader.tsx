@@ -27,17 +27,17 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-[#f5f7fa] to-[#c3cfe2] p-8 md:p-10">
+    <div className="bg-gradient-to-r from-slate-50 to-slate-100 p-8 md:p-10 border-b border-gray-100">
       <div className="flex justify-between items-start mb-6 flex-wrap gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-0 text-gray-800">{fund.name}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-800 tracking-tight">{fund.name}</h1>
         </div>
         <div className="flex items-center gap-3">
           <Button 
             variant={isSelected ? "default" : "outline"}
             className={isSelected ? 
-              "bg-[#EF4444] text-white hover:bg-[#EF4444]/90" : 
-              "border-[#EF4444] text-[#EF4444] hover:bg-[#f0f0f0] hover:text-[#EF4444]"}
+              "bg-[#EF4444] text-white hover:bg-[#EF4444]/90 shadow-sm" : 
+              "border-[#EF4444] text-[#EF4444] hover:bg-[#f0f0f0] hover:text-[#EF4444] shadow-sm"}
             onClick={handleCompareClick}
           >
             <GitCompare className="mr-2 h-4 w-4" />
@@ -47,14 +47,14 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
         </div>
       </div>
 
-      <p className="text-xl text-gray-700 mb-8 max-w-3xl">{fund.description}</p>
+      <p className="text-xl text-gray-700 mb-8 max-w-3xl leading-relaxed">{fund.description}</p>
 
       <div className="flex flex-wrap gap-2">
         {fund.tags.map(tag => (
           <Link 
             key={tag} 
             to={`/tags/${tagToSlug(tag)}`}
-            className="bg-white hover:bg-[#EF4444] hover:text-white text-[#EF4444] border border-[#EF4444] px-3 py-1 rounded-full transition-colors shadow-sm"
+            className="bg-white/80 hover:bg-[#EF4444] hover:text-white text-[#EF4444] border border-[#EF4444] px-3 py-1 rounded-full transition-all duration-300 shadow-sm text-sm font-medium"
           >
             {tag}
           </Link>

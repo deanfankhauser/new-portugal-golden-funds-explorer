@@ -18,7 +18,6 @@ import TeamSection from '../components/fund-details/TeamSection';
 import FundDescription from '../components/fund-details/FundDescription';
 import DocumentsSection from '../components/fund-details/DocumentsSection';
 import IntroductionButton from '../components/fund-details/IntroductionButton';
-import FundWebsite from '../components/fund-details/FundWebsite';
 import { formatCurrency, formatPercentage } from '../components/fund-details/utils/formatters';
 
 const FundDetails = () => {
@@ -43,27 +42,27 @@ const FundDetails = () => {
   if (!fund) return null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
       <Header />
       
-      <main className="flex-1 py-8">
+      <main className="flex-1 py-10">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="mb-8">
             <Button 
               variant="ghost" 
               onClick={() => navigate(-1)} 
-              className="flex items-center text-black hover:bg-[#f0f0f0] hover:text-black group transition-all"
+              className="flex items-center text-gray-600 hover:bg-gray-100 hover:text-black group transition-all"
             >
               <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
               Back to funds
             </Button>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-shadow duration-300 hover:shadow-lg">
             {/* Fund Header Section with built-in CTA */}
             <FundHeader fund={fund} />
 
-            <div className="p-6 md:p-8 space-y-12">
+            <div className="p-6 md:p-10 space-y-14">
               {/* Grid layout for key metrics */}
               <FundMetrics fund={fund} formatCurrency={formatCurrency} />
               
@@ -100,9 +99,6 @@ const FundDetails = () => {
               {/* Documents Section */}
               <DocumentsSection documents={fund.documents} />
               
-              {/* Fund Website */}
-              <FundWebsite websiteUrl={fund.websiteUrl} />
-
               {/* Introduction Button (full version at bottom) */}
               <IntroductionButton variant="full" />
             </div>
