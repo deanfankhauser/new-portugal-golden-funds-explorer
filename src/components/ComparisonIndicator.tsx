@@ -17,7 +17,7 @@ const ComparisonIndicator = () => {
   return (
     <Button
       variant="outline"
-      className="border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white"
+      className="border-white text-white hover:bg-white hover:text-[#1A1F2C] transition-all duration-300"
       onClick={() => navigate('/compare')}
     >
       <GitCompare className="mr-2 h-4 w-4" />

@@ -1,36 +1,39 @@
 
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import ComparisonIndicator from "./ComparisonIndicator";
+import { ExternalLink } from "lucide-react";
 
 const Header = () => {
   return (
-    <header className="bg-black text-white py-4 shadow-md">
+    <header className="bg-[#1A1F2C] text-white py-3 shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
-          <Link to="/" className="text-xl font-bold flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-              <path d="M2 17l10 5 10-5"></path>
-              <path d="M2 12l10 5 10-5"></path>
-            </svg>
-            Portugal Golden Visa Funds
+          <Link to="/" className="flex items-center gap-2">
+            <img 
+              src="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/65bf8df2803e405540708b3c_movingto-logo-white.svg" 
+              alt="MovingTo Logo" 
+              className="h-8 md:h-10"
+            />
           </Link>
           <div className="flex items-center gap-4">
             <ComparisonIndicator />
-            <nav>
-              <ul className="flex space-x-4">
-                <li>
-                  <Link to="/" className="hover:text-primary transition-colors">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/about" className="hover:text-primary transition-colors">
-                    About
-                  </Link>
-                </li>
-              </ul>
-            </nav>
+            <Button 
+              variant="outline" 
+              className="hidden sm:flex items-center gap-2 text-white border-white hover:bg-white hover:text-[#1A1F2C] transition-all duration-300"
+              onClick={() => window.open("https://www.movingto.io/contact/contact-movingto", "_blank")}
+            >
+              <span>Get in touch</span>
+              <ExternalLink className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="icon"
+              className="sm:hidden text-white border-white hover:bg-white hover:text-[#1A1F2C] transition-all"
+              onClick={() => window.open("https://www.movingto.io/contact/contact-movingto", "_blank")}
+            >
+              <ExternalLink className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </div>
