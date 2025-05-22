@@ -29,13 +29,13 @@ const TagPage = () => {
     }
 
     // Set page title for SEO
-    document.title = `${tagName} Funds | Portugal Golden Visa Funds`;
+    document.title = `${tagName} Golden Visa Investment Funds | Portugal Golden Visa Funds`;
     
     // Set meta description for SEO
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', 
-        `Explore Portugal Golden Visa ${tagName} investment funds. Find the best ${tagName} funds for your Golden Visa investment.`
+        `Explore ${tagName} Golden Visa investment funds. Find and compare the best ${tagName} funds for your Golden Visa investment.`
       );
     }
 
@@ -63,10 +63,10 @@ const TagPage = () => {
 
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            {tagName} Funds
+            {tagName} Golden Visa Investment Funds
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Explore Portugal Golden Visa funds specializing in {tagName.toLowerCase()}.
+            Explore {tagName} Golden Visa Investment Funds and Compare
           </p>
         </div>
         
