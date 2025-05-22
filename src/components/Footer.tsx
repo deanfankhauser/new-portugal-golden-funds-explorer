@@ -34,6 +34,17 @@ const Footer = () => {
               </ul>
             </div>
             <div>
+              <h3 className="text-lg font-semibold mb-2">Explore</h3>
+              <ul className="space-y-1 text-sm">
+                <li>
+                  <Link to="/categories" className="text-gray-600 hover:text-primary">All Categories</Link>
+                </li>
+                <li>
+                  <Link to="/tags" className="text-gray-600 hover:text-primary">All Tags</Link>
+                </li>
+              </ul>
+            </div>
+            <div>
               <h3 className="text-lg font-semibold mb-2">Legal</h3>
               <ul className="space-y-1 text-sm">
                 <li>

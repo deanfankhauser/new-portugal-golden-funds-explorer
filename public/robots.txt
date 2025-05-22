@@ -9,7 +9,9 @@ Allow: /categories/
 
 # Explicitly specify important listing pages
 Allow: /funds/*
+Allow: /tags
 Allow: /tags/*
+Allow: /categories
 Allow: /categories/*
 
 Sitemap: https://portugalvisafunds.com/sitemap.xml
