@@ -23,7 +23,7 @@ const ComparisonPage = () => {
           <Button 
             variant="ghost" 
             onClick={() => navigate(-1)} 
-            className="flex items-center text-[#EF4444] hover:text-[#EF4444]/80"
+            className="flex items-center hover:bg-[#f0f0f0] hover:text-black"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
