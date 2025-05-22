@@ -1,4 +1,3 @@
-
 export type FundTag = 
   | 'Real Estate'
   | 'Private Equity'
@@ -20,7 +19,14 @@ export type FundTag =
   | 'Open Ended'
   | 'Bitcoin'
   | 'Ethereum'
-  | 'Solana';
+  | 'Solana'
+  | 'Equities'
+  | 'Balanced'
+  | 'UCITS'
+  | 'PFIC-Compliant'
+  | 'QEF Eligible'
+  | 'Daily NAV'
+  | 'No Lock-Up';
 
 export type FundCategory =
   | 'Venture Capital'
@@ -29,7 +35,8 @@ export type FundCategory =
   | 'Mixed'
   | 'Infrastructure'
   | 'Debt'
-  | 'Fixed Income & Digital Assets';
+  | 'Fixed Income & Digital Assets'
+  | 'Balanced';
 
 export type RedemptionFrequency =
   | 'Monthly'
@@ -38,7 +45,8 @@ export type RedemptionFrequency =
   | 'Annual'
   | 'End of Term'
   | 'Upon Request'
-  | 'Not Available';
+  | 'Not Available'
+  | 'Daily';
 
 export interface GeographicAllocation {
   region: string;

@@ -37,10 +37,15 @@ const RedemptionTermsComponent: React.FC<RedemptionTermsProps> = ({ redemptionTe
               <p className="text-lg font-bold">{redemptionTerms.frequency}</p>
             </div>
 
-            {redemptionTerms.noticePeriod && (
+            {redemptionTerms.noticePeriod && redemptionTerms.noticePeriod > 0 && (
               <div>
                 <h3 className="font-medium text-gray-700 text-sm uppercase tracking-wide">Notice Period</h3>
-                <p className="text-lg font-bold">{redemptionTerms.noticePeriod} days</p>
+                <p className="text-lg font-bold">
+                  {redemptionTerms.frequency === 'Daily' && redemptionTerms.noticePeriod <= 5 
+                    ? `${redemptionTerms.noticePeriod} business days` 
+                    : `${redemptionTerms.noticePeriod} days`
+                  }
+                </p>
               </div>
             )}
           </div>

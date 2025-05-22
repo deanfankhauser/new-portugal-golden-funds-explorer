@@ -44,6 +44,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
             {fund.redemptionTerms?.frequency === 'Monthly' && fund.tags.includes('Open Ended') && (
               <span className="ml-1 text-xs font-normal">(Flexible, with monthly subscriptions & redemptions)</span>
             )}
+            {fund.redemptionTerms?.frequency === 'Daily' && fund.tags.includes('Open Ended') && (
+              <span className="ml-1 text-xs font-normal">(Open-ended, with daily liquidity)</span>
+            )}
           </div>
           
           {/* Report Button */}
