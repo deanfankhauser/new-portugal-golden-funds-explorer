@@ -74,9 +74,14 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
         {/* Fund Manager Section */}
         <div className="flex items-center gap-2 mb-4 bg-slate-50 p-2 rounded-md">
           <User className="w-4 h-4 text-[#EF4444]" />
-          <div>
+          <div className="flex-1">
             <p className="text-sm text-muted-foreground">Fund Manager</p>
-            <p className="font-medium">{fund.managerName}</p>
+            <Link 
+              to={`/manager/${encodeURIComponent(fund.managerName)}`}
+              className="font-medium hover:text-[#EF4444] transition-colors"
+            >
+              {fund.managerName}
+            </Link>
           </div>
         </div>
 

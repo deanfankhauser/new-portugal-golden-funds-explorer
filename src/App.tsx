@@ -16,6 +16,7 @@ import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 import { ComparisonProvider } from "./contexts/ComparisonContext";
 import ComparisonPage from "./pages/ComparisonPage";
+import FundManager from "./pages/FundManager";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/disclaimer" element={<Disclaimer />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/compare" element={<ComparisonPage />} />
+            <Route path="/manager/:name" element={<FundManager />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
