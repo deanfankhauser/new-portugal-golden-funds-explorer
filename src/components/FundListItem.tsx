@@ -4,8 +4,11 @@ import { Link } from 'react-router-dom';
 import { Fund } from '../data/funds';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { GitCompare } from 'lucide-react';
+import { Card, CardContent } from "@/components/ui/card";
+import { GitCompare, PieChart, Globe, Category } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
+import IntroductionButton from './fund-details/IntroductionButton';
+import { formatPercentage } from './fund-details/utils/formatters';
 
 interface FundListItemProps {
   fund: Fund;
@@ -26,78 +29,97 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
     }
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'EUR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+  // Get the main geographic allocation (first one)
+  const mainGeoAllocation = fund.geographicAllocation && fund.geographicAllocation.length > 0 
+    ? fund.geographicAllocation[0] 
+    : null;
 
   return (
-    <div className="border rounded-lg p-4 hover:border-portugal-blue transition-colors bg-white shadow-sm">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex-1">
-          <div className="flex items-start justify-between">
-            <h3 className="text-xl font-semibold mb-2">
-              <Link to={`/funds/${fund.id}`} className="hover:text-portugal-blue transition-colors">
-                {fund.name}
-              </Link>
-            </h3>
-            <Badge 
-              className={`
-                ml-2 whitespace-nowrap
-                ${fund.fundStatus === 'Open' ? 'bg-green-600' : ''} 
-                ${fund.fundStatus === 'Closing Soon' ? 'bg-amber-500' : ''}
-                ${fund.fundStatus === 'Closed' ? 'bg-red-600' : ''}
-              `}
+    <Card className="border rounded-lg hover:border-gray-300 transition-colors bg-white shadow-sm">
+      <CardContent className="p-6">
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex-1">
+            <div className="flex items-start justify-between mb-2">
+              <h3 className="text-xl font-semibold">
+                <Link to={`/funds/${fund.id}`} className="hover:text-[#EF4444] transition-colors">
+                  {fund.name}
+                </Link>
+              </h3>
+              {fund.fundStatus === 'Closing Soon' && (
+                <Badge className="bg-amber-500 ml-2">
+                  Closing Soon
+                </Badge>
+              )}
+              {fund.fundStatus === 'Closed' && (
+                <Badge className="bg-red-600 ml-2">
+                  Closed
+                </Badge>
+              )}
+            </div>
+            
+            <p className="text-gray-600 mb-4 line-clamp-2">{fund.description}</p>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+              <div className="flex items-center">
+                <Category className="w-4 h-4 mr-2 text-[#EF4444]" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Category</p>
+                  <p className="font-medium">{fund.category}</p>
+                </div>
+              </div>
+              
+              {mainGeoAllocation && (
+                <div className="flex items-center">
+                  <Globe className="w-4 h-4 mr-2 text-[#EF4444]" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Main Region</p>
+                    <p className="font-medium">{mainGeoAllocation.region} ({formatPercentage(mainGeoAllocation.percentage)})</p>
+                  </div>
+                </div>
+              )}
+              
+              <div className="flex items-center">
+                <PieChart className="w-4 h-4 mr-2 text-[#EF4444]" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Target Return</p>
+                  <p className="font-medium">{fund.returnTarget}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex flex-wrap gap-1 mb-4">
+              {fund.tags.map((tag) => (
+                <Link 
+                  key={tag} 
+                  to={`/tags/${encodeURIComponent(tag.toLowerCase().replace(/\s+/g, '-'))}`}
+                  className="text-xs bg-secondary hover:bg-primary hover:text-white px-2 py-1 rounded-full transition-colors"
+                >
+                  {tag}
+                </Link>
+              ))}
+            </div>
+          </div>
+          
+          <div className="flex flex-col gap-3 justify-center min-w-[160px]">
+            <IntroductionButton variant="compact" />
+            
+            <Button 
+              variant="outline" 
+              size="sm"
+              className={`${
+                isSelected 
+                  ? 'bg-[#EF4444] text-white' 
+                  : 'border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white'
+              }`}
+              onClick={handleCompareClick}
             >
-              {fund.fundStatus}
-            </Badge>
-          </div>
-          
-          <p className="text-gray-600 mb-3 line-clamp-2">{fund.description}</p>
-          
-          <div className="flex flex-wrap gap-1 mb-3">
-            {fund.tags.map((tag) => (
-              <Link 
-                key={tag} 
-                to={`/tags/${encodeURIComponent(tag)}`}
-                className="text-xs bg-secondary hover:bg-primary hover:text-white px-2 py-1 rounded-full transition-colors"
-              >
-                {tag}
-              </Link>
-            ))}
-          </div>
-          
-          <Button 
-            variant="outline" 
-            size="sm"
-            className={`${
-              isSelected 
-                ? 'bg-[#EF4444] text-white' 
-                : 'border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white'
-            } mt-2`}
-            onClick={handleCompareClick}
-          >
-            <GitCompare className="mr-1 h-3 w-3" />
-            {isSelected ? 'Added to Compare' : 'Compare'}
-          </Button>
-        </div>
-        
-        <div className="flex flex-row md:flex-col gap-4 md:min-w-[180px] md:text-right">
-          <div>
-            <p className="text-sm text-muted-foreground">Min Investment</p>
-            <p className="font-medium">{formatCurrency(fund.minimumInvestment)}</p>
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground">Target Return</p>
-            <p className="font-medium">{fund.returnTarget}</p>
+              <GitCompare className="mr-1 h-3 w-3" />
+              {isSelected ? 'Added to Compare' : 'Compare'}
+            </Button>
           </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
