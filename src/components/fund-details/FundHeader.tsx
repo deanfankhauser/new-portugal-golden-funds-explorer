@@ -5,6 +5,7 @@ import { Fund } from '../../data/funds';
 import { Button } from "@/components/ui/button";
 import { GitCompare } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
+import { tagToSlug } from '@/lib/utils';
 
 interface FundHeaderProps {
   fund: Fund;
@@ -46,7 +47,7 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
         {fund.tags.map(tag => (
           <Link 
             key={tag} 
-            to={`/tags/${encodeURIComponent(tag)}`}
+            to={`/tags/${tagToSlug(tag)}`}
             className="bg-white hover:bg-[#EF4444] hover:text-white text-[#EF4444] border border-[#EF4444] px-3 py-1 rounded-full transition-colors shadow-sm"
           >
             {tag}
