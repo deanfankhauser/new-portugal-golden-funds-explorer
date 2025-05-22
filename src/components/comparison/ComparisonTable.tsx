@@ -86,7 +86,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             <td className="py-3 px-4 font-medium">Term</td>
             {funds.map(fund => (
               <td key={fund.id} className="py-3 px-4">
-                {fund.term} years
+                {fund.term === 0 ? "Perpetual (open-ended)" : `${fund.term} years`}
               </td>
             ))}
           </tr>
@@ -127,6 +127,60 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             {funds.map(fund => (
               <td key={fund.id} className="py-3 px-4">
                 {fund.redemptionFee ? `${fund.redemptionFee}%` : "N/A"}
+              </td>
+            ))}
+          </tr>
+          
+          {/* Geographic Allocation */}
+          <tr className="border-b">
+            <td className="py-3 px-4 font-medium">Geographic Allocation</td>
+            {funds.map(fund => (
+              <td key={fund.id} className="py-3 px-4">
+                {fund.geographicAllocation && fund.geographicAllocation.length > 0 ? (
+                  <div className="space-y-1">
+                    {fund.geographicAllocation.map((allocation, index) => (
+                      <div key={index}>
+                        {allocation.region}: {allocation.percentage}%
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  "N/A"
+                )}
+              </td>
+            ))}
+          </tr>
+          
+          {/* Redemption Terms */}
+          <tr className="border-b">
+            <td className="py-3 px-4 font-medium">Redemption Frequency</td>
+            {funds.map(fund => (
+              <td key={fund.id} className="py-3 px-4">
+                {fund.redemptionTerms?.frequency || "N/A"}
+              </td>
+            ))}
+          </tr>
+          
+          {/* Notice Period */}
+          <tr className="border-b">
+            <td className="py-3 px-4 font-medium">Notice Period</td>
+            {funds.map(fund => (
+              <td key={fund.id} className="py-3 px-4">
+                {fund.redemptionTerms?.noticePeriod ? 
+                  `${fund.redemptionTerms.noticePeriod} days` : 
+                  "None"}
+              </td>
+            ))}
+          </tr>
+          
+          {/* Minimum Holding Period */}
+          <tr className="border-b">
+            <td className="py-3 px-4 font-medium">Minimum Holding Period</td>
+            {funds.map(fund => (
+              <td key={fund.id} className="py-3 px-4">
+                {fund.redemptionTerms?.minimumHoldingPeriod ? 
+                  `${fund.redemptionTerms.minimumHoldingPeriod} months` : 
+                  "None"}
               </td>
             ))}
           </tr>
