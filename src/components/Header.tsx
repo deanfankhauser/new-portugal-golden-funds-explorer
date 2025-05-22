@@ -32,7 +32,7 @@ const Header = () => {
             <Link to="/add-fund">
               <Button 
                 variant="outline" 
-                className="hidden sm:flex items-center gap-2 border-green-400 bg-green-400 text-[#1A1F2C] hover:bg-green-500 hover:border-green-500 transition-all duration-300"
+                className="hidden sm:flex items-center gap-2 border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"
               >
                 <Plus className="h-4 w-4" />
                 <span>Add Fund</span>
@@ -40,7 +40,7 @@ const Header = () => {
               <Button 
                 variant="outline" 
                 size="icon"
-                className="sm:hidden border-green-400 bg-green-400 text-[#1A1F2C] hover:bg-green-500 hover:border-green-500 transition-all"
+                className="sm:hidden border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all"
               >
                 <Plus className="h-4 w-4" />
               </Button>
