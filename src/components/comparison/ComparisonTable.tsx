@@ -139,14 +139,6 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             allSame={allSame}
           />
           
-          {/* Fund Status */}
-          <StandardRow 
-            funds={funds}
-            field="fundStatus"
-            label="Status"
-            allSame={allSame}
-          />
-          
           {/* Established */}
           <StandardRow 
             funds={funds}

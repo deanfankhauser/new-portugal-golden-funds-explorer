@@ -57,8 +57,7 @@ const ComparisonPage = () => {
                 <h3 className="font-medium text-blue-800 mb-1">About Fund Comparison</h3>
                 <p className="text-sm text-blue-700">
                   This tool allows you to compare different investment funds side by side. 
-                  Highlighted cells indicate differences between funds. Structure type 
-                  (Open-ended/Closed-ended) is shown in the details.
+                  Highlighted cells indicate differences between funds.
                 </p>
               </div>
             </div>
