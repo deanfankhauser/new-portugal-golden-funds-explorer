@@ -11,25 +11,30 @@ import About from "./pages/About";
 import Disclaimer from "./pages/Disclaimer";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
+import { ComparisonProvider } from "./contexts/ComparisonContext";
+import ComparisonPage from "./pages/ComparisonPage";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/funds/:id" element={<FundDetails />} />
-          <Route path="/tags/:tag" element={<TagPage />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/disclaimer" element={<Disclaimer />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <ComparisonProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/funds/:id" element={<FundDetails />} />
+            <Route path="/tags/:tag" element={<TagPage />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/disclaimer" element={<Disclaimer />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/compare" element={<ComparisonPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </ComparisonProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

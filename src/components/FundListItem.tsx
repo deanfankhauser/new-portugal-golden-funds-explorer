@@ -5,12 +5,27 @@ import { Fund } from '../data/funds';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { GitCompare } from 'lucide-react';
+import { useComparison } from '../contexts/ComparisonContext';
 
 interface FundListItemProps {
   fund: Fund;
 }
 
 const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
+  const { addToComparison, removeFromComparison, isInComparison } = useComparison();
+  
+  const isSelected = isInComparison(fund.id);
+  
+  const handleCompareClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation to fund details
+    
+    if (isSelected) {
+      removeFromComparison(fund.id);
+    } else {
+      addToComparison(fund);
+    }
+  };
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -59,10 +74,15 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           <Button 
             variant="outline" 
             size="sm"
-            className="border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white mt-2"
+            className={`${
+              isSelected 
+                ? 'bg-[#EF4444] text-white' 
+                : 'border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white'
+            } mt-2`}
+            onClick={handleCompareClick}
           >
             <GitCompare className="mr-1 h-3 w-3" />
-            Compare
+            {isSelected ? 'Added to Compare' : 'Compare'}
           </Button>
         </div>
         
