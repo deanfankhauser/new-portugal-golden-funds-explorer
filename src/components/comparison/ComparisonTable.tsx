@@ -31,6 +31,14 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             allSame={allSame}
           />
           
+          {/* Fund Manager */}
+          <StandardRow 
+            funds={funds}
+            field="managerName"
+            label="Fund Manager"
+            allSame={allSame}
+          />
+          
           {/* Minimum Investment */}
           <StandardRow 
             funds={funds}
