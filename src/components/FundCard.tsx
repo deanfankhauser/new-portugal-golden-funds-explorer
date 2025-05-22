@@ -39,11 +39,11 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
   // Helper to get appropriate badge for fund subscription status
   const getStatusBadge = () => {
     if (fund.fundStatus === 'Open') {
-      return <Badge className="bg-green-600">Open for Subscription</Badge>;
+      return <Badge className="bg-green-600">Accepting New Investments</Badge>;
     } else if (fund.fundStatus === 'Closing Soon') {
-      return <Badge className="bg-amber-500">Closing Soon</Badge>;
+      return <Badge className="bg-amber-500">Closing Soon for Investments</Badge>;
     } else {
-      return <Badge className="bg-red-600">Closed for Subscription</Badge>;
+      return <Badge className="bg-red-600">Not Accepting New Investments</Badge>;
     }
   };
 

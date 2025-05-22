@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useComparison } from '../contexts/ComparisonContext';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, X } from 'lucide-react';
+import { ArrowLeft, X, Info } from 'lucide-react';
 import { formatCurrency } from '../components/fund-details/utils/formatters';
 import ComparisonTable from '../components/comparison/ComparisonTable';
 import EmptyComparison from '../components/comparison/EmptyComparison';
@@ -48,6 +48,19 @@ const ComparisonPage = () => {
               >
                 Add more funds
               </Button>
+            </div>
+
+            {/* Comparison info box */}
+            <div className="bg-blue-50 p-4 rounded-lg mb-6 flex items-start gap-3">
+              <Info className="text-blue-600 w-5 h-5 mt-0.5 flex-shrink-0" />
+              <div>
+                <h3 className="font-medium text-blue-800 mb-1">About Fund Comparison</h3>
+                <p className="text-sm text-blue-700">
+                  This tool allows you to compare different investment funds side by side. 
+                  Highlighted cells indicate differences between funds. Status refers to whether the fund is currently 
+                  accepting new investments. Structure type (Open-ended/Closed-ended) is shown in the details.
+                </p>
+              </div>
             </div>
 
             <div className="mb-6">

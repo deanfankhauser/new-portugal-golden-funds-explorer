@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../data/funds';
@@ -37,9 +38,9 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
   // Helper to get appropriate badge for fund subscription status
   const getStatusBadge = () => {
     if (fund.fundStatus === 'Closing Soon') {
-      return <Badge className="bg-amber-500 ml-2">Closing Soon</Badge>;
+      return <Badge className="bg-amber-500 ml-2">Closing Soon for Investments</Badge>;
     } else if (fund.fundStatus === 'Closed') {
-      return <Badge className="bg-red-600 ml-2">Closed for Subscription</Badge>;
+      return <Badge className="bg-red-600 ml-2">Not Accepting New Investments</Badge>;
     }
     return null;
   };

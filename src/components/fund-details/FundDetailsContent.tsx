@@ -64,11 +64,11 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
   // Get the appropriate label for subscription status
   const getSubscriptionStatusLabel = () => {
     if (fund.fundStatus === 'Open') {
-      return 'Open for Subscription';
+      return 'Accepting New Investments';
     } else if (fund.fundStatus === 'Closing Soon') {
-      return 'Closing Soon';
+      return 'Closing Soon for New Investments';
     } else {
-      return 'Closed for Subscription';
+      return 'Not Accepting New Investments';
     }
   };
 
