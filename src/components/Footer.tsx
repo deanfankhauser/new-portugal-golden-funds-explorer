@@ -9,7 +9,7 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-6 md:mb-0">
-            <Link to="/" className="text-lg font-bold text-portugal-blue flex items-center gap-2">
+            <Link to="/" className="text-lg font-bold text-black flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
                 <path d="M2 17l10 5 10-5"></path>
@@ -26,10 +26,10 @@ const Footer = () => {
               <h3 className="text-lg font-semibold mb-2">Quick Links</h3>
               <ul className="space-y-1 text-sm">
                 <li>
-                  <Link to="/" className="text-gray-600 hover:text-portugal-blue">Home</Link>
+                  <Link to="/" className="text-gray-600 hover:text-primary">Home</Link>
                 </li>
                 <li>
-                  <Link to="/about" className="text-gray-600 hover:text-portugal-blue">About</Link>
+                  <Link to="/about" className="text-gray-600 hover:text-primary">About</Link>
                 </li>
               </ul>
             </div>
@@ -37,10 +37,10 @@ const Footer = () => {
               <h3 className="text-lg font-semibold mb-2">Legal</h3>
               <ul className="space-y-1 text-sm">
                 <li>
-                  <Link to="/disclaimer" className="text-gray-600 hover:text-portugal-blue">Disclaimer</Link>
+                  <Link to="/disclaimer" className="text-gray-600 hover:text-primary">Disclaimer</Link>
                 </li>
                 <li>
-                  <Link to="/privacy" className="text-gray-600 hover:text-portugal-blue">Privacy Policy</Link>
+                  <Link to="/privacy" className="text-gray-600 hover:text-primary">Privacy Policy</Link>
                 </li>
               </ul>
             </div>

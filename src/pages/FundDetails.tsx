@@ -7,7 +7,7 @@ import Footer from '../components/Footer';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ArrowLeft, FileText, Link as LinkIcon, Folder, PieChart, Users } from 'lucide-react';
+import { ArrowLeft, FileText, Link as LinkIcon, Folder, PieChart, Users, Linkedin } from 'lucide-react';
 
 const FundDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -52,7 +52,7 @@ const FundDetails = () => {
           <Button 
             variant="ghost" 
             onClick={() => navigate(-1)} 
-            className="flex items-center text-portugal-blue hover:text-portugal-darkblue"
+            className="flex items-center text-primary hover:text-primary/80"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to funds
@@ -91,78 +91,78 @@ const FundDetails = () => {
           {/* Fund Category Section */}
           <div className="mb-8 p-5 bg-gray-50 rounded-lg">
             <div className="flex items-center mb-4">
-              <Folder className="w-5 h-5 mr-2 text-portugal-blue" />
+              <Folder className="w-5 h-5 mr-2 text-primary" />
               <h2 className="text-2xl font-bold">Fund Category</h2>
             </div>
-            <Badge className="px-3 py-1.5 text-base bg-portugal-blue hover:bg-portugal-blue">{fund.category}</Badge>
+            <Badge className="px-3 py-1.5 text-base bg-primary hover:bg-primary/80">{fund.category}</Badge>
           </div>
 
           {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-700">Minimum Investment</h3>
-              <p className="text-2xl font-bold text-portugal-blue">{formatCurrency(fund.minimumInvestment)}</p>
+              <p className="text-2xl font-bold text-primary">{formatCurrency(fund.minimumInvestment)}</p>
             </div>
             
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-700">Target Return</h3>
-              <p className="text-2xl font-bold text-portugal-blue">{fund.returnTarget}</p>
+              <p className="text-2xl font-bold text-primary">{fund.returnTarget}</p>
             </div>
             
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-700">Fund Size</h3>
-              <p className="text-2xl font-bold text-portugal-blue">{fund.fundSize} Million EUR</p>
+              <p className="text-2xl font-bold text-primary">{fund.fundSize} Million EUR</p>
             </div>
             
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-700">Term</h3>
-              <p className="text-2xl font-bold text-portugal-blue">{fund.term} years</p>
+              <p className="text-2xl font-bold text-primary">{fund.term} years</p>
             </div>
             
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-700">Established</h3>
-              <p className="text-2xl font-bold text-portugal-blue">{fund.established}</p>
+              <p className="text-2xl font-bold text-primary">{fund.established}</p>
             </div>
             
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-700">Regulated By</h3>
-              <p className="text-2xl font-bold text-portugal-blue">{fund.regulatedBy}</p>
+              <p className="text-2xl font-bold text-primary">{fund.regulatedBy}</p>
             </div>
             
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-700">Location</h3>
-              <p className="text-2xl font-bold text-portugal-blue">{fund.location}</p>
+              <p className="text-2xl font-bold text-primary">{fund.location}</p>
             </div>
           </div>
 
           {/* Fee Structure Section */}
           <div className="mb-8 p-5 bg-gray-50 rounded-lg">
             <div className="flex items-center mb-4">
-              <FileText className="w-5 h-5 mr-2 text-portugal-blue" />
+              <FileText className="w-5 h-5 mr-2 text-primary" />
               <h2 className="text-2xl font-bold">Fee Structure</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-white p-4 rounded-lg shadow-sm">
                 <h3 className="font-semibold text-gray-700">Management Fee</h3>
-                <p className="text-2xl font-bold text-portugal-blue">{formatPercentage(fund.managementFee)}</p>
+                <p className="text-2xl font-bold text-primary">{formatPercentage(fund.managementFee)}</p>
               </div>
               
               <div className="bg-white p-4 rounded-lg shadow-sm">
                 <h3 className="font-semibold text-gray-700">Performance Fee</h3>
-                <p className="text-2xl font-bold text-portugal-blue">{formatPercentage(fund.performanceFee)}</p>
+                <p className="text-2xl font-bold text-primary">{formatPercentage(fund.performanceFee)}</p>
               </div>
               
               {fund.subscriptionFee !== undefined && (
                 <div className="bg-white p-4 rounded-lg shadow-sm">
                   <h3 className="font-semibold text-gray-700">Subscription Fee</h3>
-                  <p className="text-2xl font-bold text-portugal-blue">{formatPercentage(fund.subscriptionFee)}</p>
+                  <p className="text-2xl font-bold text-primary">{formatPercentage(fund.subscriptionFee)}</p>
                 </div>
               )}
               
               {fund.redemptionFee !== undefined && (
                 <div className="bg-white p-4 rounded-lg shadow-sm">
                   <h3 className="font-semibold text-gray-700">Redemption Fee</h3>
-                  <p className="text-2xl font-bold text-portugal-blue">{formatPercentage(fund.redemptionFee)}</p>
+                  <p className="text-2xl font-bold text-primary">{formatPercentage(fund.redemptionFee)}</p>
                 </div>
               )}
             </div>
@@ -172,14 +172,14 @@ const FundDetails = () => {
           {fund.geographicAllocation && fund.geographicAllocation.length > 0 && (
             <div className="mb-8 p-5 bg-gray-50 rounded-lg">
               <div className="flex items-center mb-4">
-                <PieChart className="w-5 h-5 mr-2 text-portugal-blue" />
+                <PieChart className="w-5 h-5 mr-2 text-primary" />
                 <h2 className="text-2xl font-bold">Geographic Allocation</h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {fund.geographicAllocation.map((allocation, index) => (
                   <div key={index} className="bg-white p-4 rounded-lg shadow-sm">
                     <h3 className="font-semibold text-gray-700">{allocation.region}</h3>
-                    <p className="text-2xl font-bold text-portugal-blue">{formatPercentage(allocation.percentage)}</p>
+                    <p className="text-2xl font-bold text-primary">{formatPercentage(allocation.percentage)}</p>
                   </div>
                 ))}
               </div>
@@ -203,27 +203,32 @@ const FundDetails = () => {
             </div>
           </div>
 
-          {/* Team Section */}
+          {/* Team Section - Modified to remove images and descriptions, add LinkedIn links */}
           {fund.team && fund.team.length > 0 && (
             <div className="mb-8 p-5 bg-gray-50 rounded-lg">
               <div className="flex items-center mb-4">
-                <Users className="w-5 h-5 mr-2 text-portugal-blue" />
+                <Users className="w-5 h-5 mr-2 text-primary" />
                 <h2 className="text-2xl font-bold">Investment Team</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {fund.team.map((member, index) => (
-                  <div key={index} className="bg-white p-4 rounded-lg shadow-sm flex items-start space-x-4">
-                    {member.photoUrl && (
-                      <img 
-                        src={member.photoUrl} 
-                        alt={member.name} 
-                        className="w-16 h-16 rounded-full object-cover"
-                      />
-                    )}
-                    <div>
-                      <h3 className="font-semibold">{member.name}</h3>
-                      <p className="text-sm text-portugal-blue mb-1">{member.position}</p>
-                      {member.bio && <p className="text-sm text-gray-600">{member.bio}</p>}
+                  <div key={index} className="bg-white p-4 rounded-lg shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold">{member.name}</h3>
+                        <p className="text-sm text-primary mb-1">{member.position}</p>
+                      </div>
+                      {member.linkedinUrl && (
+                        <a 
+                          href={member.linkedinUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:text-primary/80 transition-colors"
+                          aria-label={`${member.name}'s LinkedIn profile`}
+                        >
+                          <Linkedin className="w-5 h-5" />
+                        </a>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -243,7 +248,7 @@ const FundDetails = () => {
           {fund.documents && fund.documents.length > 0 && (
             <div className="mb-8 p-5 bg-gray-50 rounded-lg">
               <div className="flex items-center mb-4">
-                <FileText className="w-5 h-5 mr-2 text-portugal-blue" />
+                <FileText className="w-5 h-5 mr-2 text-primary" />
                 <h2 className="text-2xl font-bold">Documents</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -255,7 +260,7 @@ const FundDetails = () => {
                     rel="noopener noreferrer"
                     className="flex items-center p-3 bg-white rounded-lg hover:shadow-md transition-shadow border border-gray-100"
                   >
-                    <FileText className="w-5 h-5 mr-2 text-portugal-blue" />
+                    <FileText className="w-5 h-5 mr-2 text-primary" />
                     <span className="flex-grow">{doc.title}</span>
                     <LinkIcon className="w-4 h-4 text-gray-400" />
                   </a>
@@ -270,7 +275,7 @@ const FundDetails = () => {
                 href={fund.websiteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block bg-portugal-blue hover:bg-portugal-darkblue text-white px-6 py-3 rounded-md font-medium transition-colors"
+                className="inline-block bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-md font-medium transition-colors"
               >
                 Visit Fund Website
               </a>

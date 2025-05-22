@@ -26,7 +26,7 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: 'hsl(var(--primary))',
+					DEFAULT: '#EF4444',
 					foreground: 'hsl(var(--primary-foreground))'
 				},
 				secondary: {
@@ -42,7 +42,7 @@ export default {
 					foreground: 'hsl(var(--muted-foreground))'
 				},
 				accent: {
-					DEFAULT: 'hsl(var(--accent))',
+					DEFAULT: '#EF4444',
 					foreground: 'hsl(var(--accent-foreground))'
 				},
 				popover: {
@@ -62,13 +62,6 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				},
-				portugal: {
-					blue: '#0057B7',
-					darkblue: '#003B7A',
-					red: '#D70F37',
-					gold: '#FFD700',
-					green: '#006600',
 				}
 			},
 			borderRadius: {
