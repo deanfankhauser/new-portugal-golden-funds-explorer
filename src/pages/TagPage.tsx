@@ -4,9 +4,9 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getFundsByTag, getAllTags } from '../data/funds';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import FundCard from '../components/FundCard';
+import FundListItem from '../components/FundListItem';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Tag as TagIcon } from 'lucide-react';
 import { slugToTag, tagToSlug } from '@/lib/utils';
 
 const TagPage = () => {
@@ -81,7 +81,7 @@ const TagPage = () => {
   if (!tagExists) return null;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       
       <main className="container mx-auto px-4 py-8 flex-1">
@@ -96,17 +96,23 @@ const TagPage = () => {
           </Button>
         </div>
 
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+        <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
+          <div className="flex items-center justify-center mb-4">
+            <TagIcon className="w-6 h-6 text-[#EF4444] mr-2" />
+            <span className="text-sm bg-gray-100 px-3 py-1 rounded-full">Tag</span>
+          </div>
+          
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-center">
             {tagName} Golden Visa Investment Funds
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto text-center">
             Explore {tagName} Golden Visa Investment Funds and Compare
           </p>
         </div>
         
         {funds.length === 0 ? (
-          <div className="text-center py-10">
+          <div className="text-center py-10 bg-white rounded-lg shadow-sm">
             <h3 className="text-xl font-medium mb-2">No funds found</h3>
             <p className="text-gray-500">
               No funds are currently tagged with {tagName}
@@ -117,13 +123,38 @@ const TagPage = () => {
           </div>
         ) : (
           <>
-            <p className="mb-6 text-gray-600">
-              {funds.length} fund{funds.length !== 1 ? 's' : ''} tagged with {tagName}
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex justify-between items-center mb-6 bg-white p-4 rounded-lg shadow-sm">
+              <p className="text-gray-600">
+                {funds.length} fund{funds.length !== 1 ? 's' : ''} tagged with <span className="font-semibold">{tagName}</span>
+              </p>
+              <div className="text-sm text-gray-500">
+                Sorted by relevance
+              </div>
+            </div>
+            
+            <div className="space-y-4">
               {funds.map(fund => (
-                <FundCard key={fund.id} fund={fund} />
+                <FundListItem key={fund.id} fund={fund} />
               ))}
+            </div>
+            
+            <div className="mt-8 pt-4 border-t border-gray-200">
+              <h2 className="text-xl font-semibold mb-4">Related Tags</h2>
+              <div className="flex flex-wrap gap-2">
+                {allTags
+                  .filter(tag => tag !== tagName)
+                  .slice(0, 10)
+                  .map(tag => (
+                    <Link 
+                      key={tag} 
+                      to={`/tags/${tagToSlug(tag)}`}
+                      className="px-3 py-1 bg-white border border-gray-200 rounded-full hover:bg-gray-100 text-sm"
+                    >
+                      {tag}
+                    </Link>
+                  ))
+                }
+              </div>
             </div>
           </>
         )}
