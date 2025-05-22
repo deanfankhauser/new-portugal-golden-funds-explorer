@@ -79,7 +79,8 @@ export type RedemptionFrequency =
   | 'End of Term'
   | 'Upon Request'
   | 'Not Available'
-  | 'Daily';
+  | 'Daily'
+  | 'Continuous trading';
 
 export interface GeographicAllocation {
   region: string;

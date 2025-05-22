@@ -27,7 +27,7 @@ export const solarFutureFund: Fund = {
   term: 0, // N/A, using 0 to represent open-ended/no fixed term
   managerName: "Tejo Ventures & Green One Capital",
   returnTarget: "12% p.a.",
-  fundStatus: "Fundraising",
+  fundStatus: "Open", // Changed from "Fundraising" to "Open" to match allowed values
   established: 0, // N/A, using 0 to represent not specified
   regulatedBy: "CMVM",
   location: "Portugal",
@@ -69,7 +69,7 @@ export const solarFutureFund: Fund = {
     }
   ],
   redemptionTerms: {
-    frequency: "Continuous trading",
+    frequency: "Daily", // Changed from "Continuous trading" to "Daily" to match allowed values
     redemptionOpen: true,
     noticePeriod: 0,
     earlyRedemptionFee: 0,
