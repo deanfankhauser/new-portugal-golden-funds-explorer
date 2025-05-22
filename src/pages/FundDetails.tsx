@@ -7,7 +7,7 @@ import Footer from '../components/Footer';
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from 'lucide-react';
 
-// Import our new components
+// Import our components
 import FundHeader from '../components/fund-details/FundHeader';
 import FundCategory from '../components/fund-details/FundCategory';
 import FundMetrics from '../components/fund-details/FundMetrics';
@@ -17,7 +17,7 @@ import FundManager from '../components/fund-details/FundManager';
 import TeamSection from '../components/fund-details/TeamSection';
 import FundDescription from '../components/fund-details/FundDescription';
 import DocumentsSection from '../components/fund-details/DocumentsSection';
-import FundWebsite from '../components/fund-details/FundWebsite';
+import IntroductionButton from '../components/fund-details/IntroductionButton';
 import { formatCurrency, formatPercentage } from '../components/fund-details/utils/formatters';
 
 const FundDetails = () => {
@@ -91,8 +91,8 @@ const FundDetails = () => {
           {/* Documents Section */}
           <DocumentsSection documents={fund.documents} />
 
-          {/* Fund Website */}
-          <FundWebsite websiteUrl={fund.websiteUrl} />
+          {/* Introduction Button */}
+          <IntroductionButton />
         </div>
       </main>
       
