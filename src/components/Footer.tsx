@@ -10,16 +10,22 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-6 md:mb-0">
             <Link to="/" className="text-lg font-bold text-black flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                <path d="M2 17l10 5 10-5"></path>
-                <path d="M2 12l10 5 10-5"></path>
-              </svg>
-              Portugal Golden Visa Funds
+              <img 
+                src="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/65bf8df2803e405540708b3c_movingto-logo-white.svg" 
+                alt="MovingTo Logo" 
+                className="h-6 md:h-7.5 invert"
+                style={{ height: "30px" }}
+              />
             </Link>
             <p className="text-sm text-gray-600 mt-2">
               Helping investors navigate the Portuguese Golden Visa program
             </p>
+            <div className="mt-4">
+              <p className="text-sm text-gray-600">Moving To Global Pte Ltd</p>
+              <p className="text-sm text-gray-600">160 Robinson Road, #14-04</p>
+              <p className="text-sm text-gray-600">Singapore Business Federation Center</p>
+              <p className="text-sm text-gray-600">Singapore 068914</p>
+            </div>
           </div>
           <div className="flex flex-col md:flex-row gap-8">
             <div>

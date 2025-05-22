@@ -13,5 +13,9 @@ Allow: /tags
 Allow: /tags/*
 Allow: /categories
 Allow: /categories/*
+Allow: /about
+Allow: /disclaimer
+Allow: /privacy
+Allow: /compare
 
 Sitemap: https://portugalvisafunds.com/sitemap.xml
