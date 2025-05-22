@@ -29,7 +29,7 @@ const Header = () => {
             </Link>
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/add-fund">
+            <a href="mailto:info@movingto.io">
               <Button 
                 variant="outline" 
                 className="hidden sm:flex items-center gap-2 border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"
@@ -44,7 +44,7 @@ const Header = () => {
               >
                 <Plus className="h-4 w-4" />
               </Button>
-            </Link>
+            </a>
             <ComparisonIndicator />
             <Button 
               variant="outline" 
