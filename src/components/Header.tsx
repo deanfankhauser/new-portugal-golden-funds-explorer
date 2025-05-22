@@ -1,5 +1,6 @@
 
 import { Link } from "react-router-dom";
+import ComparisonIndicator from "./ComparisonIndicator";
 
 const Header = () => {
   return (
@@ -14,20 +15,23 @@ const Header = () => {
             </svg>
             Portugal Golden Visa Funds
           </Link>
-          <nav>
-            <ul className="flex space-x-4">
-              <li>
-                <Link to="/" className="hover:text-primary transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="hover:text-primary transition-colors">
-                  About
-                </Link>
-              </li>
-            </ul>
-          </nav>
+          <div className="flex items-center gap-4">
+            <ComparisonIndicator />
+            <nav>
+              <ul className="flex space-x-4">
+                <li>
+                  <Link to="/" className="hover:text-primary transition-colors">
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/about" className="hover:text-primary transition-colors">
+                    About
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
       </div>
     </header>
