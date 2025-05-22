@@ -20,7 +20,7 @@ const Header = () => {
             <ComparisonIndicator />
             <Button 
               variant="outline" 
-              className="hidden sm:flex items-center gap-2 text-white border-white hover:bg-white hover:text-[#1A1F2C] transition-all duration-300"
+              className="hidden sm:flex items-center gap-2 border-white bg-primary text-white hover:bg-white hover:text-[#1A1F2C] transition-all duration-300"
               onClick={() => window.open("https://www.movingto.io/contact/contact-movingto", "_blank")}
             >
               <span>Get in touch</span>
@@ -29,7 +29,7 @@ const Header = () => {
             <Button 
               variant="outline" 
               size="icon"
-              className="sm:hidden text-white border-white hover:bg-white hover:text-[#1A1F2C] transition-all"
+              className="sm:hidden border-white bg-primary text-white hover:bg-white hover:text-[#1A1F2C] transition-all"
               onClick={() => window.open("https://www.movingto.io/contact/contact-movingto", "_blank")}
             >
               <ExternalLink className="h-4 w-4" />
