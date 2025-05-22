@@ -40,7 +40,13 @@ export type FundTag =
   | 'Gold'
   | 'Deposits'
   | 'AI-Driven'
-  | 'Diversified';
+  | 'Diversified'
+  | 'Industrial'
+  | 'Circular Economy'
+  | 'Equity'
+  | 'Debt'
+  | 'Secondary Market'
+  | 'Long Term';
 
 export type FundCategory =
   | 'Venture Capital'
