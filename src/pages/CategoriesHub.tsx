@@ -12,13 +12,13 @@ const CategoriesHub = () => {
   
   useEffect(() => {
     // Set page title for SEO
-    document.title = 'All Golden Visa Fund Categories | Portugal Golden Visa Funds';
+    document.title = 'All Golden Visa Fund Categories | Movingto';
     
     // Set meta description for SEO
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', 
-        'Browse all Golden Visa fund categories. Find and compare Portugal Golden Visa funds by their investment categories including real estate, private equity, venture capital, and more.'
+        'Browse all Golden Visa fund categories. Find and compare Portugal Golden Visa funds by their investment categories.'
       );
     }
 

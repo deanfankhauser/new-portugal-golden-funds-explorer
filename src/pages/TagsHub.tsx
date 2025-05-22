@@ -12,7 +12,7 @@ const TagsHub = () => {
   
   useEffect(() => {
     // Set page title for SEO
-    document.title = 'All Golden Visa Fund Tags | Portugal Golden Visa Funds';
+    document.title = 'All Golden Visa Fund Tags | Movingto';
     
     // Set meta description for SEO
     const metaDescription = document.querySelector('meta[name="description"]');

@@ -29,10 +29,18 @@ const FundDetails = () => {
     if (!fund) {
       // If fund not found, redirect to homepage
       navigate('/');
+      return;
     }
-    // Set page title for SEO
-    if (fund) {
-      document.title = `${fund.name} | Portugal Golden Visa Funds`;
+    
+    // Set page title and meta description for SEO
+    document.title = `${fund.name} | Movingto`;
+    
+    // Update meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 
+        `Learn more about ${fund.name} in the Movingto Golden Visa funds directory. Compare with similar funds.`
+      );
     }
 
     // Scroll to top on page load

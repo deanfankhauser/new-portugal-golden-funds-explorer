@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import FundListItem from '../components/FundListItem';
@@ -9,6 +9,22 @@ import { Fund, FundTag, funds, searchFunds } from '../data/funds';
 const IndexPage = () => {
   const [selectedTags, setSelectedTags] = useState<FundTag[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    // Set page title and meta description for SEO
+    document.title = "Portugal Golden Visa Investment Funds | Eligible Investments 2025";
+    
+    // Update meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 
+        "Explore our Portugal Golden Visa Investment Funds List for 2025. Find eligible investment funds to secure residency with a €500,000 investment. Start your journey today!"
+      );
+    }
+    
+    // Scroll to top on page load
+    window.scrollTo(0, 0);
+  }, []);
 
   const filteredFunds = useMemo(() => {
     let result = [...funds];

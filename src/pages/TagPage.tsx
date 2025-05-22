@@ -28,14 +28,14 @@ const TagPage = () => {
       return;
     }
 
-    // Set page title for SEO
-    document.title = `${tagName} Golden Visa Investment Funds | Portugal Golden Visa Funds`;
+    // Set page title and meta description for SEO
+    document.title = `Top ${tagName} Golden Visa Funds | Movingto`;
     
-    // Set meta description for SEO
+    // Update meta description
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', 
-        `Explore ${tagName} Golden Visa investment funds. Find and compare the best ${tagName} funds for your Golden Visa investment.`
+        `Discover ${tagName} Golden Visa funds. Browse and compare to find the best Golden Visa fund for you.`
       );
     }
 

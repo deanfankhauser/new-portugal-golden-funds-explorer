@@ -17,7 +17,17 @@ import { ExternalLink, ArrowRight } from 'lucide-react';
 
 const AboutPage = () => {
   useEffect(() => {
-    document.title = "About | Portugal Golden Visa Funds";
+    // Set page title and meta description for SEO
+    document.title = "About the Golden Visa Funds Directory by Movingto";
+    
+    // Update meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 
+        "Learn more about the Movingto Golden Visa Funds Directory and how it can help you learn more about the right fund for you."
+      );
+    }
+    
     window.scrollTo(0, 0);
   }, []);
 
