@@ -51,7 +51,7 @@ const TagPage = () => {
           <Button 
             variant="ghost" 
             onClick={() => navigate('/')} 
-            className="flex items-center text-portugal-blue hover:text-portugal-darkblue"
+            className="flex items-center text-black hover:bg-[#f0f0f0]"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to all funds
@@ -73,7 +73,7 @@ const TagPage = () => {
             <p className="text-gray-500">
               No funds are currently tagged with {decodedTag}
             </p>
-            <Link to="/" className="inline-block mt-4 text-portugal-blue hover:underline">
+            <Link to="/" className="inline-block mt-4 text-[#EF4444] hover:underline">
               View all funds
             </Link>
           </div>

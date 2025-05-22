@@ -15,7 +15,7 @@ const EmptyComparison = () => {
       </p>
       <Button
         onClick={() => navigate('/')}
-        className="bg-[#EF4444] hover:bg-[#EF4444]/90"
+        className="bg-[#EF4444] hover:bg-[#EF4444]/90 text-white"
       >
         Browse Funds
       </Button>

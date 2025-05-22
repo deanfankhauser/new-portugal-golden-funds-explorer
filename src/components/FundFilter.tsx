@@ -58,7 +58,9 @@ const FundFilter: React.FC<FundFilterProps> = ({
               variant={selectedTags.includes(tag) ? "default" : "outline"}
               size="sm"
               onClick={() => toggleTag(tag)}
-              className={selectedTags.includes(tag) ? "bg-portugal-blue hover:bg-portugal-darkblue" : ""}
+              className={selectedTags.includes(tag) ? 
+                "bg-[#EF4444] hover:bg-[#EF4444]/90 text-white" : 
+                "border-gray-300 hover:bg-[#f0f0f0] text-gray-700 hover:text-gray-800"}
             >
               {tag}
             </Button>
@@ -76,7 +78,7 @@ const FundFilter: React.FC<FundFilterProps> = ({
             variant="ghost" 
             size="sm" 
             onClick={clearFilters}
-            className="text-sm text-red-600 hover:text-red-800 hover:bg-red-50 flex items-center"
+            className="text-sm text-[#EF4444] hover:text-[#EF4444] hover:bg-[#f0f0f0] flex items-center"
           >
             <X className="w-4 h-4 mr-1" />
             Clear filters

@@ -31,8 +31,10 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
       <div className="flex justify-between items-start mb-4 flex-wrap gap-4">
         <h1 className="text-3xl font-bold mb-0">{fund.name}</h1>
         <Button 
-          variant="outline" 
-          className={`${isSelected ? 'bg-[#EF4444] text-white' : 'border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white'}`}
+          variant={isSelected ? "default" : "outline"}
+          className={isSelected ? 
+            "bg-[#EF4444] text-white hover:bg-[#EF4444]/90" : 
+            "border-[#EF4444] text-[#EF4444] hover:bg-[#f0f0f0] hover:text-[#EF4444]"}
           onClick={handleCompareClick}
         >
           <GitCompare className="mr-2 h-4 w-4" />

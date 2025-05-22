@@ -20,7 +20,7 @@ const IntroductionButton: React.FC = () => {
         </div>
         
         <Button 
-          className="bg-[#EF4444] hover:bg-[#EF4444]/90 text-white px-6 py-3 text-base"
+          className="bg-[#EF4444] hover:bg-[#EF4444]/90 text-white"
         >
           Get Introduction
         </Button>

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Button } from "@/components/ui/button";
 
 interface FundWebsiteProps {
   websiteUrl?: string;
@@ -12,14 +13,13 @@ const FundWebsite: React.FC<FundWebsiteProps> = ({ websiteUrl }) => {
 
   return (
     <div className="text-center mt-8">
-      <a 
-        href={websiteUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-block bg-[#EF4444] hover:bg-[#EF4444]/80 text-white px-6 py-3 rounded-md font-medium transition-colors"
+      <Button
+        variant="default"
+        className="bg-[#EF4444] hover:bg-[#EF4444]/90 text-white"
+        onClick={() => window.open(websiteUrl, '_blank', 'noopener,noreferrer')}
       >
         Visit Fund Website
-      </a>
+      </Button>
     </div>
   );
 };
