@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { FundManagerStructuredDataService, FundManagerData } from '../services/fundManagerStructuredDataService';
 import { StructuredDataService } from '../services/structuredDataService';
 
-export { FundManagerData } from '../services/fundManagerStructuredDataService';
+export type { FundManagerData } from '../services/fundManagerStructuredDataService';
 
 export const useFundManagerStructuredData = (managerData: FundManagerData) => {
   useEffect(() => {
