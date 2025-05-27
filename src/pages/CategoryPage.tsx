@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getFundsByCategory, getAllCategories } from '../data/funds';
@@ -8,6 +7,7 @@ import FundListItem from '../components/FundListItem';
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Folder } from 'lucide-react';
 import { slugToCategory, categoryToSlug } from '@/lib/utils';
+import CategoryPageFAQ from '../components/category/CategoryPageFAQ';
 
 const CategoryPage = () => {
   const { category: categorySlug } = useParams<{ category: string }>();
@@ -202,6 +202,13 @@ const CategoryPage = () => {
                 }
               </div>
             </div>
+            
+            {/* FAQ Section */}
+            <CategoryPageFAQ 
+              categoryName={category} 
+              categorySlug={categorySlug || ''} 
+              fundsCount={funds.length} 
+            />
           </>
         )}
       </main>
