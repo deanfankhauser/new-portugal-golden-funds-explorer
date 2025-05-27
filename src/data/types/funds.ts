@@ -72,7 +72,10 @@ export type FundTag =
   | 'High-risk'
   | '< 3% annual yield'
   | '3-5% annual yield'
-  | '> 5% annual yield';
+  | '> 5% annual yield'
+  | '< 5-year lock-up'
+  | '5-10 year lock-up'
+  | '> 10-year lock-up';
 
 export type FundCategory =
   | 'Venture Capital'

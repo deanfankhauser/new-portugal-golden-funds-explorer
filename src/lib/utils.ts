@@ -17,7 +17,9 @@ export function tagToSlug(tag: string): string {
     .replace(/</g, 'lt') // Convert < to lt
     .replace(/>/g, 'gt') // Convert > to gt
     .replace(/%/g, 'pct') // Convert % to pct
-    .replace(/annual-yield$/g, ''); // Remove 'annual-yield' suffix for cleaner URLs
+    .replace(/annual-yield$/g, '') // Remove 'annual-yield' suffix for cleaner URLs
+    .replace(/-year-lock-up$/g, '') // Remove '-year-lock-up' suffix for cleaner URLs
+    .replace(/year/g, ''); // Remove 'year' for lock-up tags
 }
 
 // Function to convert slug back to tag
@@ -35,6 +37,16 @@ export function slugToTag(slug: string): string {
       'gt-5': '> 5% annual yield'
     };
     return apyMap[slug];
+  }
+  
+  // Handle lock-up period tags specifically
+  if (['lt-5', '5-10', 'gt-10'].includes(slug)) {
+    const lockupMap: { [key: string]: string } = {
+      'lt-5': '< 5-year lock-up',
+      '5-10': '5-10 year lock-up',
+      'gt-10': '> 10-year lock-up'
+    };
+    return lockupMap[slug];
   }
   
   return slug

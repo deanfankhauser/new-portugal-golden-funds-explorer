@@ -47,3 +47,9 @@ export {
   generateAPYTags,
   getFundsByAPYLevel
 } from './services/apy-tags-service';
+
+// Re-export lock-up period related functions
+export {
+  generateLockupTags,
+  getFundsByLockupPeriod
+} from './services/lockup-tags-service';

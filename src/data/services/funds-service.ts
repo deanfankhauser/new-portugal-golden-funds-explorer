@@ -1,19 +1,20 @@
-
 import { Fund } from '../types/funds';
 import { fundsData } from '../mock/funds';
 import { generateInvestmentTags } from './investment-tags-service';
 import { generateRiskTags } from './risk-tags-service';
 import { generateAPYTags } from './apy-tags-service';
+import { generateLockupTags } from './lockup-tags-service';
 
-// Function to add investment, risk, and APY tags to funds
+// Function to add investment, risk, APY, and lock-up tags to funds
 const addTagsToFunds = (funds: Fund[]): Fund[] => {
   return funds.map(fund => {
     const investmentTags = generateInvestmentTags(fund.minimumInvestment);
     const riskTags = generateRiskTags(fund);
     const apyTags = generateAPYTags(fund);
+    const lockupTags = generateLockupTags(fund);
     return {
       ...fund,
-      tags: [...fund.tags, ...investmentTags, ...riskTags, ...apyTags]
+      tags: [...fund.tags, ...investmentTags, ...riskTags, ...apyTags, ...lockupTags]
     };
   });
 };
