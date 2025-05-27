@@ -106,5 +106,67 @@ export const threeCommaCGoldenIncome: Fund = {
     earlyRedemptionFee: 5, // Year 1 rate
     minimumHoldingPeriod: 60, // 5 years in months for Golden Visa
     notes: "Redemption fees taper from 5% in year 1 to 0% after 5 years + 1 day. No lock-up; full liquidity subject to standard processing."
-  }
+  },
+  faqs: [
+    {
+      question: 'What is the Portugal Golden Income Fund?',
+      answer: 'An open-ended Alternative Investment Fund (mutual fund) designed and managed by 3 Comma Capital SCR, S.A., it\'s the first Golden Visa-eligible multi-asset vehicle in Portugal, blending 70 % fixed-income with 30 % growth assets to pursue capital preservation and attractive returns.'
+    },
+    {
+      question: 'Who manages and oversees the fund?',
+      answer: 'The fund is managed by 3 Comma Capital SCR, S.A. (CMVM licence no. 182126), a Portuguese regulated asset management and venture capital company, which acts as both Investment Manager and Responsible Entity.'
+    },
+    {
+      question: 'Under what regulatory framework is the fund established?',
+      answer: 'It\'s authorised and supervised by the Portuguese Securities Market Commission (CMVM) as an open-ended Alternative Investment Fund, offering daily liquidity under a highly transparent, regulated structure.'
+    },
+    {
+      question: 'What is the target and current assets under management (AuM)?',
+      answer: 'The fund targets € 50 million of committed capital; since its April 2025 launch it has onboarded over 60 investors in seven months and expects to surpass € 25 million AuM imminently.'
+    },
+    {
+      question: 'How is the portfolio allocated across asset classes?',
+      answer: 'Stability (70 %): Portuguese investment-grade corporate bonds\nGrowth (30 %): 15 % US/World equities and 15 % digital assets (primarily Bitcoin, Ethereum & Solana via regulated crypto vehicles).'
+    },
+    {
+      question: 'What are the fund\'s key investor advantages?',
+      answer: 'Open-ended, perpetual structure with no lock-up\nDaily liquidity and daily NAV transparency\nNo subscription fee or other entry costs\nTwo share classes (Accumulation "A" & Distribution "D")\nExpected ROI of 10 % p.a.'
+    },
+    {
+      question: 'What share classes are offered and what are the minimum investments?',
+      answer: 'Share Class A (Accumulation): Minimum € 100 000\nShare Class D (Distribution): Minimum € 300 000'
+    },
+    {
+      question: 'What fees and charges apply?',
+      answer: 'Subscription fee: 0 %\nManagement fee: 1.50 % p.a. (Class A), 1.75 % p.a. (Class D)\nPerformance fee: 20 % of gains above a 5 % net high-water mark\nRedemption fee: 5 % in Year 1, tapering to 0 % after 5 years + 1 day'
+    },
+    {
+      question: 'What is the fund\'s expected return profile?',
+      answer: 'An annualised 10 % p.a. net of fees and costs, based on the historical performance of its underlying benchmarks.'
+    },
+    {
+      question: 'How liquid is the fund?',
+      answer: 'Units may be purchased or redeemed daily at the published NAV, with positions integrated directly into investors\' bank account statements.'
+    },
+    {
+      question: 'What investment guidelines and restrictions apply?',
+      answer: 'Debt instruments: ≥ 65 % of AUM in EUR-denominated bonds issued by Portuguese corporates\nEquities: 10 %–30 % of AUM via global public-market ETFs\nDigital assets: 0 %–20 % of AUM via regulated crypto funds or ETFs\nBond criteria: Fixed coupon; credit rating > BB-; issuer LQA > 60; issuance > € 500 million; duration < 7 years'
+    },
+    {
+      question: 'How is the bond portfolio constructed?',
+      answer: 'A model portfolio of 10–15 bonds, each from a distinct issuer, selected via comprehensive issuer analysis, probability-of-default and loss-given-default studies, and strict risk metrics (CDS, OAS, DV01), reviewed monthly.'
+    },
+    {
+      question: 'What are the portfolio\'s top bond holdings and metrics?',
+      answer: 'As of 14-04-2025, holdings include Millennium BCP, Fidelidade PERP, Novobanco, Caixa Geral de Depósitos, EDP, Galp, Crédito Agrícola, REN, with an average modified duration of 3.61 years, yield to maturity of 3.92 %, and a BBB composite rating.'
+    },
+    {
+      question: 'What growth-oriented assets are included?',
+      answer: 'US/World equities: S&P 500 and/or MSCI World ETFs for broad market exposure\nDigital assets: via the 3CC Global Crypto Fund or Bitcoin ETFs, with a long-term BTC target of $300 000.'
+    },
+    {
+      question: 'What performance scenarios have been modelled?',
+      answer: 'For a € 100 000 investment:\nModerate: € 106 204 after 1 year (6.20 % p.a.), € 173 689 after 5 years (11.67 % p.a.)\nFavorable: € 124 601 after 1 year (24.60 % p.a.), € 249 004 after 5 years (20.02 % p.a.)\nUnfavorable: € 90 127 after 1 year (–9.87 % p.a.), € 120 604 after 5 years (3.82 % p.a.)'
+    }
+  ]
 };
