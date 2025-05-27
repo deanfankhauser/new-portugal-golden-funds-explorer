@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from '../contexts/AuthContext';
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 
 interface PasswordDialogProps {
   open: boolean;
@@ -56,9 +56,9 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Client Access Required</DialogTitle>
+          <DialogTitle>MovingTo Client Access Required</DialogTitle>
           <DialogDescription>
-            Please enter your client password to access premium features including fund comparison, advanced filters, and search functionality.
+            These premium features are exclusively available to MovingTo clients. Please enter your client password to access advanced search, filtering, and fund comparison tools.
           </DialogDescription>
         </DialogHeader>
         
@@ -92,8 +92,18 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
           </div>
         </form>
         
-        <div className="text-xs text-gray-500 text-center">
-          Don't have access? <a href="#" className="text-[#EF4444] hover:underline">Contact MovingTo</a> to become a client.
+        <div className="text-center pt-4 border-t">
+          <p className="text-xs text-gray-500 mb-2">
+            Not a MovingTo client yet?
+          </p>
+          <a 
+            href="https://movingto.io/contact" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-[#EF4444] hover:underline font-medium text-sm"
+          >
+            Contact MovingTo to become a client →
+          </a>
         </div>
       </DialogContent>
     </Dialog>

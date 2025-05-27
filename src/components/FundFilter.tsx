@@ -37,12 +37,17 @@ const FundFilter: React.FC<FundFilterProps> = ({
     }
   };
 
-  const handleSearchChange = (value: string) => {
-    if (!isAuthenticated && value.trim()) {
+  const handleSearchClick = () => {
+    if (!isAuthenticated) {
       setShowPasswordDialog(true);
       return;
     }
-    setSearchQuery(value);
+  };
+
+  const handleSearchChange = (value: string) => {
+    if (isAuthenticated) {
+      setSearchQuery(value);
+    }
   };
 
   const clearFilters = () => {
@@ -64,15 +69,16 @@ const FundFilter: React.FC<FundFilterProps> = ({
           <Input
             id="search"
             type="text"
-            placeholder={isAuthenticated ? "Search funds..." : "Client access required for search"}
-            value={searchQuery}
+            placeholder={isAuthenticated ? "Search funds..." : "Click to access client features"}
+            value={isAuthenticated ? searchQuery : ''}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="w-full"
-            disabled={!isAuthenticated}
+            onClick={handleSearchClick}
+            className="w-full cursor-pointer"
+            readOnly={!isAuthenticated}
           />
           {!isAuthenticated && (
             <p className="text-xs text-gray-500 mt-1">
-              Enter client password to use search functionality
+              MovingTo client access required for search functionality
             </p>
           )}
         </div>
@@ -81,7 +87,7 @@ const FundFilter: React.FC<FundFilterProps> = ({
           <label className="block mb-2 text-sm font-medium">Filter by Tags</label>
           {!isAuthenticated && (
             <p className="text-xs text-gray-500 mb-2">
-              Client access required for advanced filtering
+              MovingTo client access required for advanced filtering
             </p>
           )}
           <div className="flex flex-wrap gap-2">
@@ -91,10 +97,9 @@ const FundFilter: React.FC<FundFilterProps> = ({
                 variant={selectedTags.includes(tag) ? "default" : "outline"}
                 size="sm"
                 onClick={() => toggleTag(tag)}
-                disabled={!isAuthenticated}
                 className={selectedTags.includes(tag) ? 
                   "bg-[#EF4444] hover:bg-[#EF4444]/90 text-white" : 
-                  "border-gray-300 hover:bg-[#f0f0f0] text-gray-700 hover:text-gray-800 disabled:opacity-50"}
+                  "border-gray-300 hover:bg-[#f0f0f0] text-gray-700 hover:text-gray-800"}
               >
                 {tag}
               </Button>
@@ -112,8 +117,7 @@ const FundFilter: React.FC<FundFilterProps> = ({
               variant="ghost" 
               size="sm" 
               onClick={clearFilters}
-              disabled={!isAuthenticated}
-              className="text-sm text-[#EF4444] hover:text-[#EF4444] hover:bg-[#f0f0f0] flex items-center disabled:opacity-50"
+              className="text-sm text-[#EF4444] hover:text-[#EF4444] hover:bg-[#f0f0f0] flex items-center"
             >
               <X className="w-4 h-4 mr-1" />
               Clear filters
