@@ -11,7 +11,8 @@ export function tagToSlug(tag: string): string {
   return tag.toLowerCase()
     .replace(/€/g, 'eur')
     .replace(/\s+/g, '-')
-    .replace(/[+]/g, 'plus');
+    .replace(/[+]/g, 'plus')
+    .replace(/[€]/g, 'eur'); // Extra safety for Euro symbol
 }
 
 // Function to convert slug back to tag
@@ -19,8 +20,16 @@ export function slugToTag(slug: string): string {
   return slug
     .replace(/eur/g, '€')
     .replace(/plus/g, '+')
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .replace(/-/g, ' ')
+    .split(' ')
+    .map(word => {
+      // Handle special cases for Euro amounts
+      if (word.includes('€')) {
+        return word;
+      }
+      // Capitalize first letter of regular words
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
     .join(' ');
 }
 
