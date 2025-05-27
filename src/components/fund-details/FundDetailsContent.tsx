@@ -13,6 +13,7 @@ import InvestorNotice from './InvestorNotice';
 import FundFAQSection from './FundFAQSection';
 import PremiumCTA from '../cta/PremiumCTA';
 import ROICalculator from './ROICalculator';
+import AlternativeFunds from './AlternativeFunds';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -52,6 +53,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           <IntroductionButton variant="full" />
         </div>
       </div>
+      
+      {/* Alternative Funds Section */}
+      <AlternativeFunds currentFund={fund} />
       
       {/* ROI Calculator */}
       <ROICalculator fund={fund} />
