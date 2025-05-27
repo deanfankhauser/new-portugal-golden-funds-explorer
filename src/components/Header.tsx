@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ComparisonIndicator from "./ComparisonIndicator";
-import { ExternalLink, ArrowLeft, Mail, Calculator } from "lucide-react";
+import { ExternalLink, ArrowLeft, Mail, Calculator, ClipboardCheck } from "lucide-react";
 
 const Header = () => {
   return (
@@ -29,6 +29,22 @@ const Header = () => {
             </Link>
           </div>
           <div className="flex items-center gap-4">
+            <Link to="/fund-quiz">
+              <Button 
+                variant="outline" 
+                className="hidden sm:flex items-center gap-2 border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"
+              >
+                <ClipboardCheck className="h-4 w-4" />
+                <span>Fund Quiz</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                size="icon"
+                className="sm:hidden border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all"
+              >
+                <ClipboardCheck className="h-4 w-4" />
+              </Button>
+            </Link>
             <Link to="/roi-calculator">
               <Button 
                 variant="outline" 
