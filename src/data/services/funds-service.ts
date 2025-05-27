@@ -7,8 +7,9 @@ import { generateAPYTags } from './apy-tags-service';
 import { generateLockupTags } from './lockup-tags-service';
 import { generateManagementFeeTags } from './management-fee-tags-service';
 import { generateFundSizeTags } from './fund-size-tags-service';
+import { generateAudienceTags } from './audience-tags-service';
 
-// Function to add investment, risk, APY, lock-up, management fee, and fund size tags to funds
+// Function to add investment, risk, APY, lock-up, management fee, fund size, and audience tags to funds
 const addTagsToFunds = (funds: Fund[]): Fund[] => {
   return funds.map(fund => {
     const investmentTags = generateInvestmentTags(fund.minimumInvestment);
@@ -17,9 +18,10 @@ const addTagsToFunds = (funds: Fund[]): Fund[] => {
     const lockupTags = generateLockupTags(fund);
     const managementFeeTags = generateManagementFeeTags(fund);
     const fundSizeTags = generateFundSizeTags(fund);
+    const audienceTags = generateAudienceTags(fund);
     return {
       ...fund,
-      tags: [...fund.tags, ...investmentTags, ...riskTags, ...apyTags, ...lockupTags, ...managementFeeTags, ...fundSizeTags]
+      tags: [...fund.tags, ...investmentTags, ...riskTags, ...apyTags, ...lockupTags, ...managementFeeTags, ...fundSizeTags, ...audienceTags]
     };
   });
 };

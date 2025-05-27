@@ -65,3 +65,9 @@ export {
   generateFundSizeTags,
   getFundsByFundSizeLevel
 } from './services/fund-size-tags-service';
+
+// Re-export audience segment related functions
+export {
+  generateAudienceTags,
+  getFundsByAudienceSegment
+} from './services/audience-tags-service';

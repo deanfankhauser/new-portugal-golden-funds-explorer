@@ -81,7 +81,12 @@ export type FundTag =
   | '> 1.5% management fee'
   | 'Small-cap < €50M'
   | 'Mid-cap €50-100M'
-  | 'Large-cap > €100M';
+  | 'Large-cap > €100M'
+  | 'Golden Visa funds for U.S. citizens'
+  | 'Golden Visa funds for Australian citizens'
+  | 'Golden Visa funds for UK citizens'
+  | 'Golden Visa funds for Canadian citizens'
+  | 'Golden Visa funds for Chinese citizens';
 
 export type FundCategory =
   | 'Venture Capital'

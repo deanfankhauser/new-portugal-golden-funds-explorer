@@ -1,4 +1,3 @@
-
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -20,11 +19,25 @@ export function tagToSlug(tag: string): string {
     .replace(/annual-yield$/g, '') // Remove 'annual-yield' suffix for cleaner URLs
     .replace(/-year-lock-up$/g, '') // Remove '-year-lock-up' suffix for cleaner URLs
     .replace(/year/g, '') // Remove 'year' for lock-up tags
-    .replace(/m$/g, ''); // Remove 'M' for fund size tags
+    .replace(/m$/g, '') // Remove 'M' for fund size tags
+    .replace(/golden-visa-funds-for-/g, '') // Remove prefix for audience tags
+    .replace(/-citizens$/g, ''); // Remove '-citizens' suffix for audience tags
 }
 
 // Function to convert slug back to tag
 export function slugToTag(slug: string): string {
+  // Handle audience segment tags specifically
+  if (['us', 'australian', 'uk', 'canadian', 'chinese'].includes(slug)) {
+    const audienceMap: { [key: string]: string } = {
+      'us': 'Golden Visa funds for U.S. citizens',
+      'australian': 'Golden Visa funds for Australian citizens',
+      'uk': 'Golden Visa funds for UK citizens',
+      'canadian': 'Golden Visa funds for Canadian citizens',
+      'chinese': 'Golden Visa funds for Chinese citizens'
+    };
+    return audienceMap[slug];
+  }
+  
   // Handle risk level tags specifically
   if (['low', 'medium', 'high'].includes(slug)) {
     return `${slug.charAt(0).toUpperCase() + slug.slice(1)}-risk`;
