@@ -12,11 +12,17 @@ export function tagToSlug(tag: string): string {
     .replace(/€/g, 'eur')
     .replace(/\s+/g, '-')
     .replace(/[+]/g, 'plus')
-    .replace(/[€]/g, 'eur'); // Extra safety for Euro symbol
+    .replace(/[€]/g, 'eur') // Extra safety for Euro symbol
+    .replace(/-risk$/g, ''); // Remove '-risk' suffix for cleaner URLs
 }
 
 // Function to convert slug back to tag
 export function slugToTag(slug: string): string {
+  // Handle risk level tags specifically
+  if (['low', 'medium', 'high'].includes(slug)) {
+    return `${slug.charAt(0).toUpperCase() + slug.slice(1)}-risk`;
+  }
+  
   return slug
     .replace(/eur/g, '€')
     .replace(/plus/g, '+')

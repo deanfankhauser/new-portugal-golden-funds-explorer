@@ -1,4 +1,3 @@
-
 // Re-export types
 export type {
   Fund,
@@ -36,3 +35,9 @@ export {
   getFundsByInvestmentRange,
   getFundsUnderAmount
 } from './services/investment-tags-service';
+
+// Re-export risk-related functions
+export {
+  generateRiskTags,
+  getFundsByRiskLevel
+} from './services/risk-tags-service';

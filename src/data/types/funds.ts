@@ -66,7 +66,10 @@ export type FundTag =
   | '€300k-€400k'
   | '€350k-€500k'
   | '€400k-€600k'
-  | '€500k+';
+  | '€500k+'
+  | 'Low-risk'
+  | 'Medium-risk'
+  | 'High-risk';
 
 export type FundCategory =
   | 'Venture Capital'
