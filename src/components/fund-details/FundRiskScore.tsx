@@ -1,0 +1,173 @@
+
+import React from 'react';
+import { Fund } from '../../data/funds';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Shield, AlertTriangle, TrendingUp, Globe, FileText } from 'lucide-react';
+
+interface FundRiskScoreProps {
+  fund: Fund;
+}
+
+const FundRiskScore: React.FC<FundRiskScoreProps> = ({ fund }) => {
+  // Calculate risk scores based on fund characteristics
+  const calculateManagerQuality = (fund: Fund): number => {
+    // Higher scores for established managers with larger AUM
+    if (fund.managerName.includes('Lince') || fund.managerName.includes('Octanova')) return 3;
+    if (fund.fundSize >= 100) return 2;
+    return 1;
+  };
+
+  const calculateStrategyRisk = (fund: Fund): number => {
+    // Higher scores for more volatile/concentrated strategies
+    if (fund.tags.includes('Crypto') || fund.tags.includes('Bitcoin')) return 5;
+    if (fund.category === 'Venture Capital') return 4;
+    if (fund.category === 'Private Equity') return 3;
+    if (fund.tags.includes('Real Estate')) return 2;
+    return 1; // Conservative strategies
+  };
+
+  const calculateMacroESG = (fund: Fund): number => {
+    // Portugal/EU exposure - generally stable
+    return 1;
+  };
+
+  const calculateRegulatoryRisk = (fund: Fund): number => {
+    // Higher scores for complex structures
+    if (fund.tags.includes('Crypto') || fund.tags.includes('Bitcoin')) return 3;
+    if (fund.tags.includes('UCITS')) return 1;
+    return 1; // Standard regulated vehicles
+  };
+
+  const calculateOverallScore = (mq: number, sr: number, me: number, rr: number): number => {
+    // Weighted average with strategy risk having highest weight
+    return Math.round((mq * 0.3 + sr * 0.4 + me * 0.15 + rr * 0.15));
+  };
+
+  const managerQuality = calculateManagerQuality(fund);
+  const strategyRisk = calculateStrategyRisk(fund);
+  const macroESG = calculateMacroESG(fund);
+  const regulatoryRisk = calculateRegulatoryRisk(fund);
+  const overallScore = calculateOverallScore(managerQuality, strategyRisk, macroESG, regulatoryRisk);
+
+  const getScoreColor = (score: number) => {
+    if (score <= 2) return 'text-green-600 bg-green-50 border-green-200';
+    if (score <= 3) return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+    return 'text-red-600 bg-red-50 border-red-200';
+  };
+
+  const getScoreIcon = (score: number) => {
+    if (score <= 2) return <Shield className="w-4 h-4" />;
+    if (score <= 3) return <TrendingUp className="w-4 h-4" />;
+    return <AlertTriangle className="w-4 h-4" />;
+  };
+
+  const getRiskLabel = (score: number) => {
+    if (score <= 2) return 'Low Risk';
+    if (score <= 3) return 'Medium Risk';
+    return 'High Risk';
+  };
+
+  const ScoreDisplay = ({ score, label, icon }: { score: number; label: string; icon: React.ReactNode }) => (
+    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+      <div className="flex items-center gap-2">
+        {icon}
+        <span className="text-sm font-medium text-gray-700">{label}</span>
+      </div>
+      <Badge className={`${getScoreColor(score)} font-semibold`}>
+        {score}
+      </Badge>
+    </div>
+  );
+
+  return (
+    <Card className="bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-xl text-gray-900">
+          <Shield className="w-5 h-5 text-blue-600" />
+          Proprietary Risk Assessment
+        </CardTitle>
+        <p className="text-gray-600">
+          Our comprehensive risk scoring methodology evaluates funds across multiple dimensions
+        </p>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Overall Score */}
+        <div className="text-center p-6 bg-white rounded-xl border border-gray-200">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            {getScoreIcon(overallScore)}
+            <h3 className="text-lg font-semibold text-gray-900">Overall Risk Score</h3>
+          </div>
+          <div className={`inline-flex items-center px-4 py-2 rounded-full text-2xl font-bold border ${getScoreColor(overallScore)}`}>
+            {overallScore}/5
+          </div>
+          <p className="text-sm text-gray-600 mt-2">{getRiskLabel(overallScore)}</p>
+        </div>
+
+        {/* Individual Scores */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <ScoreDisplay 
+            score={managerQuality} 
+            label="Manager Quality" 
+            icon={<TrendingUp className="w-4 h-4 text-blue-500" />} 
+          />
+          <ScoreDisplay 
+            score={strategyRisk} 
+            label="Strategy Risk" 
+            icon={<AlertTriangle className="w-4 h-4 text-orange-500" />} 
+          />
+          <ScoreDisplay 
+            score={macroESG} 
+            label="Macro & ESG" 
+            icon={<Globe className="w-4 h-4 text-green-500" />} 
+          />
+          <ScoreDisplay 
+            score={regulatoryRisk} 
+            label="Regulatory Risk" 
+            icon={<FileText className="w-4 h-4 text-purple-500" />} 
+          />
+        </div>
+
+        {/* Methodology Explanation */}
+        <div className="bg-white rounded-lg p-4 border border-gray-200">
+          <h4 className="font-semibold text-gray-900 mb-3">Key Assumptions & Mappings</h4>
+          <div className="space-y-2 text-sm text-gray-600">
+            <div className="flex items-start gap-2">
+              <TrendingUp className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <strong>Manager Quality:</strong> Based on GP's tenure, AUM scale and realized track record.
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <strong>Strategy Risk:</strong> Underlying asset volatility, liquidity profile and concentration.
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <Globe className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <strong>Macro & ESG:</strong> Portugal/EU political-stability percentile.
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <FileText className="w-4 h-4 text-purple-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <strong>Regulatory Risk:</strong> Vehicle complexity (UCITS vs. AIF vs. crypto exposures).
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Disclaimer */}
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+          <p className="text-xs text-amber-800">
+            <strong>Disclaimer:</strong> This proprietary risk assessment is for informational purposes only and should not be considered as investment advice. Risk scores are based on our internal methodology and may not reflect all relevant factors. Past performance does not guarantee future results. Please consult with a qualified financial advisor before making investment decisions.
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default FundRiskScore;

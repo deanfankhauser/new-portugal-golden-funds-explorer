@@ -14,6 +14,7 @@ import FundFAQSection from './FundFAQSection';
 import PremiumCTA from '../cta/PremiumCTA';
 import ROICalculator from './ROICalculator';
 import AlternativeFunds from './AlternativeFunds';
+import FundRiskScore from './FundRiskScore';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -39,6 +40,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
             formatCurrency={formatCurrency} 
             formatFundSize={() => <FundSizeFormatter fund={fund} />} 
           />
+          
+          {/* Fund Risk Score */}
+          <FundRiskScore fund={fund} />
           
           {/* Premium CTA after metrics */}
           <PremiumCTA variant="full" location={`fund-details-${fund.id}`} />
