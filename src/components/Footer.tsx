@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Facebook, Linkedin, ExternalLink } from "lucide-react";
+import RecentlyViewedFunds from "./RecentlyViewedFunds";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -7,7 +8,10 @@ const Footer = () => {
   return (
     <footer className="bg-gray-100 py-10 mt-12 border-t border-gray-200">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* Recently Viewed Funds Section */}
+        <RecentlyViewedFunds />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
           <div className="col-span-1 md:col-span-1 lg:col-span-1">
             <Link to="/" className="inline-block mb-4">
               <img 
@@ -137,7 +141,6 @@ const Footer = () => {
           <p className="text-gray-600 text-sm mt-2 md:mt-0">This website is for informational purposes only and does not constitute investment advice.</p>
         </div>
 
-        {/* Global Disclaimer */}
         <div className="mt-8 pt-6 border-t border-gray-200">
           <div className="bg-gray-50 p-4 rounded-lg">
             <p className="text-gray-600 text-sm text-center">

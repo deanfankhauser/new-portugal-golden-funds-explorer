@@ -1,9 +1,10 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFundById } from '../data/funds';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 
 // Import our components
 import BackToFundsButton from '../components/fund-details/BackToFundsButton';
@@ -17,11 +18,19 @@ const FundDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const fund = id ? getFundById(id) : undefined;
+  const { addToRecentlyViewed } = useRecentlyViewed();
 
   // Add structured data for the fund
   if (fund) {
     useFundStructuredData(fund);
   }
+
+  // Add fund to recently viewed when component mounts
+  useEffect(() => {
+    if (fund) {
+      addToRecentlyViewed(fund);
+    }
+  }, [fund, addToRecentlyViewed]);
 
   // If fund not found, redirect to homepage
   if (!fund) {
