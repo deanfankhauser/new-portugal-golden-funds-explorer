@@ -104,18 +104,6 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                   </div>
                 </div>
               </div>
-              
-              <div className="flex flex-wrap gap-1 mb-4">
-                {fund.tags.map((tag) => (
-                  <Link 
-                    key={tag} 
-                    to={`/tags/${tagToSlug(tag)}`}
-                    className="text-xs bg-secondary hover:bg-primary hover:text-white px-2 py-1 rounded-full transition-colors"
-                  >
-                    {tag}
-                  </Link>
-                ))}
-              </div>
             </div>
             
             <div className="flex flex-col gap-3 justify-center min-w-[160px]">

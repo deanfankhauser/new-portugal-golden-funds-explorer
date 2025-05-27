@@ -95,19 +95,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             </div>
           </div>
 
-          <div className="flex flex-wrap justify-between items-center mt-4">
-            <div className="flex flex-wrap gap-1">
-              {fund.tags.map((tag) => (
-                <Link 
-                  key={tag} 
-                  to={`/tags/${encodeURIComponent(tag)}`}
-                  className="text-xs bg-secondary hover:bg-primary hover:text-white px-2 py-1 rounded-full transition-colors"
-                >
-                  {tag}
-                </Link>
-              ))}
-            </div>
-            
+          <div className="flex justify-end mt-4">
             <Button 
               variant="outline" 
               size="sm"
@@ -115,7 +103,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
                 isSelected 
                   ? 'bg-[#EF4444] text-white' 
                   : 'border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white'
-              } mt-2`}
+              }`}
               onClick={handleCompareClick}
             >
               <GitCompare className="mr-1 h-3 w-3" />
