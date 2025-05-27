@@ -11,7 +11,7 @@ import EmptyComparison from '../components/comparison/EmptyComparison';
 import ComparisonUpgradeCTA from '../components/cta/ComparisonUpgradeCTA';
 
 const ComparisonPage = () => {
-  const { selectedFunds, clearComparison } = useComparison();
+  const { compareFunds, clearComparison } = useComparison();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -38,10 +38,10 @@ const ComparisonPage = () => {
 
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Compare Funds</h1>
-          {selectedFunds.length > 0 && (
+          {compareFunds.length > 0 && (
             <div className="flex justify-between items-center">
               <p className="text-gray-600">
-                Comparing {selectedFunds.length} fund{selectedFunds.length !== 1 ? 's' : ''}
+                Comparing {compareFunds.length} fund{compareFunds.length !== 1 ? 's' : ''}
               </p>
               <Button 
                 variant="outline" 
@@ -54,14 +54,14 @@ const ComparisonPage = () => {
           )}
         </div>
 
-        {selectedFunds.length === 0 ? (
+        {compareFunds.length === 0 ? (
           <EmptyComparison />
         ) : (
           <div className="space-y-8">
             {/* Upgrade CTA for advanced comparison features */}
             <ComparisonUpgradeCTA />
             
-            <ComparisonTable funds={selectedFunds} />
+            <ComparisonTable funds={compareFunds} />
           </div>
         )}
       </main>
