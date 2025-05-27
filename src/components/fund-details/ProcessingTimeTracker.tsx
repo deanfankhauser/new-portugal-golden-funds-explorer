@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Fund } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,7 +37,7 @@ const ProcessingTimeTracker: React.FC<ProcessingTimeTrackerProps> = ({ fund }) =
     ];
 
     // Add fund-specific steps
-    if (fund.tags.includes('Golden Visa')) {
+    if (fund.tags.includes('Golden Visa Eligible')) {
       baseSteps.push({
         id: 'golden-visa-review',
         title: 'Golden Visa Review',
