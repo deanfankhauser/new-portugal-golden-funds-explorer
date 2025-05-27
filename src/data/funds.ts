@@ -53,3 +53,9 @@ export {
   generateLockupTags,
   getFundsByLockupPeriod
 } from './services/lockup-tags-service';
+
+// Re-export management fee related functions
+export {
+  generateManagementFeeTags,
+  getFundsByManagementFeeLevel
+} from './services/management-fee-tags-service';

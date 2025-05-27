@@ -75,7 +75,10 @@ export type FundTag =
   | '> 5% annual yield'
   | '< 5-year lock-up'
   | '5-10 year lock-up'
-  | '> 10-year lock-up';
+  | '> 10-year lock-up'
+  | '< 1% management fee'
+  | '1-1.5% management fee'
+  | '> 1.5% management fee';
 
 export type FundCategory =
   | 'Venture Capital'

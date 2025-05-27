@@ -1,4 +1,3 @@
-
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -47,6 +46,16 @@ export function slugToTag(slug: string): string {
       'gt-10': '> 10-year lock-up'
     };
     return lockupMap[slug];
+  }
+  
+  // Handle management fee tags specifically
+  if (['lt-1', '1-1.5', 'gt-1.5'].includes(slug)) {
+    const managementFeeMap: { [key: string]: string } = {
+      'lt-1': '< 1% management fee',
+      '1-1.5': '1-1.5% management fee',
+      'gt-1.5': '> 1.5% management fee'
+    };
+    return managementFeeMap[slug];
   }
   
   return slug
