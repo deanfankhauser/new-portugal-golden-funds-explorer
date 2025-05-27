@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import FundHeader from './FundHeader';
 import FundMetrics from './FundMetrics';
@@ -16,6 +17,8 @@ import ROICalculator from './ROICalculator';
 import AlternativeFunds from './AlternativeFunds';
 import FundRiskScore from './FundRiskScore';
 import ProcessingTimeTracker from './ProcessingTimeTracker';
+import { Button } from '@/components/ui/button';
+import { ClipboardCheck } from 'lucide-react';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -47,6 +50,20 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           
           {/* Processing Time Tracker */}
           <ProcessingTimeTracker fund={fund} />
+          
+          {/* Fund Quiz CTA */}
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border border-green-200">
+            <div className="text-center">
+              <h3 className="font-semibold text-green-900 mb-2">Want to see how this fund compares to others?</h3>
+              <p className="text-sm text-green-700 mb-4">Take our quiz to get personalized recommendations based on your investment profile</p>
+              <Link to="/fund-quiz">
+                <Button className="bg-green-600 hover:bg-green-700">
+                  <ClipboardCheck className="mr-2 h-4 w-4" />
+                  Take Fund Quiz
+                </Button>
+              </Link>
+            </div>
+          </div>
           
           {/* Premium CTA after metrics */}
           <PremiumCTA variant="full" location={`fund-details-${fund.id}`} />
