@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Fund } from '../../data/funds';
 import FundHeader from './FundHeader';
@@ -11,6 +12,7 @@ import FundSizeFormatter from './FundSizeFormatter';
 import InvestorNotice from './InvestorNotice';
 import FundFAQSection from './FundFAQSection';
 import PremiumCTA from '../cta/PremiumCTA';
+import ROICalculator from './ROICalculator';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -50,6 +52,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           <IntroductionButton variant="full" />
         </div>
       </div>
+      
+      {/* ROI Calculator */}
+      <ROICalculator fund={fund} />
       
       {/* FAQ Section */}
       <FundFAQSection fund={fund} />
