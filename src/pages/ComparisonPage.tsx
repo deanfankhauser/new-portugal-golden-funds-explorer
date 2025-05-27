@@ -1,97 +1,67 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useComparison } from '../contexts/ComparisonContext';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useComparison } from '../contexts/ComparisonContext';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, X, Info } from 'lucide-react';
-import { formatCurrency } from '../components/fund-details/utils/formatters';
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import ComparisonTable from '../components/comparison/ComparisonTable';
 import EmptyComparison from '../components/comparison/EmptyComparison';
+import ComparisonUpgradeCTA from '../components/cta/ComparisonUpgradeCTA';
 
 const ComparisonPage = () => {
+  const { selectedFunds, clearComparison } = useComparison();
   const navigate = useNavigate();
-  const { compareFunds, removeFromComparison } = useComparison();
+
+  React.useEffect(() => {
+    document.title = "Compare Funds | Portugal Golden Visa Investment Funds";
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       
       <main className="container mx-auto px-4 py-8 flex-1">
-        <div className="mb-6 flex justify-between items-center">
+        {/* Back Button */}
+        <div className="mb-6">
           <Button 
             variant="ghost" 
-            onClick={() => navigate(-1)} 
-            className="flex items-center hover:bg-[#f0f0f0] hover:text-black"
+            onClick={() => navigate('/')} 
+            className="flex items-center text-black hover:bg-[#f0f0f0]"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
+            Back to funds
           </Button>
-          <h1 className="text-3xl font-bold mb-0">Fund Comparison</h1>
         </div>
 
-        {compareFunds.length === 0 ? (
-          <EmptyComparison />
-        ) : (
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <div className="flex flex-wrap justify-between items-center mb-6">
-              <p className="text-xl text-gray-700">
-                {compareFunds.length === 1 
-                  ? "1 fund selected" 
-                  : `${compareFunds.length} funds selected`}
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Compare Funds</h1>
+          {selectedFunds.length > 0 && (
+            <div className="flex justify-between items-center">
+              <p className="text-gray-600">
+                Comparing {selectedFunds.length} fund{selectedFunds.length !== 1 ? 's' : ''}
               </p>
               <Button 
-                variant="outline"
-                className="text-gray-600 border-gray-300"
-                onClick={() => navigate('/')}
+                variant="outline" 
+                onClick={clearComparison}
+                className="text-red-600 border-red-600 hover:bg-red-50"
               >
-                Add more funds
+                Clear all
               </Button>
             </div>
+          )}
+        </div>
 
-            {/* Comparison info box */}
-            <div className="bg-blue-50 p-4 rounded-lg mb-6 flex items-start gap-3">
-              <Info className="text-blue-600 w-5 h-5 mt-0.5 flex-shrink-0" />
-              <div>
-                <h3 className="font-medium text-blue-800 mb-1">About Fund Comparison</h3>
-                <p className="text-sm text-blue-700">
-                  This tool allows you to compare different investment funds side by side. 
-                  Highlighted cells indicate differences between funds.
-                </p>
-              </div>
-            </div>
-
-            <div className="mb-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {compareFunds.map(fund => (
-                  <div 
-                    key={fund.id} 
-                    className="relative bg-gray-50 rounded-lg p-4 border"
-                  >
-                    <button 
-                      onClick={() => removeFromComparison(fund.id)}
-                      className="absolute top-2 right-2 text-gray-500 hover:text-[#EF4444]"
-                      aria-label="Remove from comparison"
-                    >
-                      <X size={18} />
-                    </button>
-                    <h3 className="font-medium text-lg mb-2">{fund.name}</h3>
-                    <p className="text-sm text-gray-600 mb-2 line-clamp-2">{fund.description}</p>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => navigate(`/funds/${fund.id}`)}
-                      className="mt-2 w-full"
-                    >
-                      View Details
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <ComparisonTable funds={compareFunds} />
+        {selectedFunds.length === 0 ? (
+          <EmptyComparison />
+        ) : (
+          <div className="space-y-8">
+            {/* Upgrade CTA for advanced comparison features */}
+            <ComparisonUpgradeCTA />
+            
+            <ComparisonTable funds={selectedFunds} />
           </div>
         )}
       </main>

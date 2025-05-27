@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Fund } from '../../data/funds';
 import FundHeader from './FundHeader';
@@ -11,6 +10,7 @@ import ReportButton from './ReportButton';
 import FundSizeFormatter from './FundSizeFormatter';
 import InvestorNotice from './InvestorNotice';
 import FundFAQSection from './FundFAQSection';
+import PremiumCTA from '../cta/PremiumCTA';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -36,6 +36,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
             formatCurrency={formatCurrency} 
             formatFundSize={() => <FundSizeFormatter fund={fund} />} 
           />
+          
+          {/* Premium CTA after metrics */}
+          <PremiumCTA variant="full" location={`fund-details-${fund.id}`} />
           
           {/* Main content with tabs */}
           <FundTabsSection fund={fund} />

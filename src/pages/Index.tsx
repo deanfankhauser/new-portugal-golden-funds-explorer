@@ -4,6 +4,7 @@ import Footer from '../components/Footer';
 import FundListItem from '../components/FundListItem';
 import FundFilter from '../components/FundFilter';
 import { Fund, FundTag, funds, searchFunds } from '../data/funds';
+import PremiumCTA from '../components/cta/PremiumCTA';
 
 const IndexPage = () => {
   const [selectedTags, setSelectedTags] = useState<FundTag[]>([]);
@@ -57,6 +58,11 @@ const IndexPage = () => {
           </p>
         </div>
 
+        {/* Premium CTA Banner */}
+        <div className="mb-8">
+          <PremiumCTA variant="banner" location="homepage" />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-1">
             <div className="sticky top-4">
@@ -81,8 +87,16 @@ const IndexPage = () => {
               <>
                 <p className="mb-4 text-gray-600 font-medium">{filteredFunds.length} fund{filteredFunds.length !== 1 ? 's' : ''} found</p>
                 <div className="space-y-6">
-                  {filteredFunds.map(fund => (
-                    <FundListItem key={fund.id} fund={fund} />
+                  {filteredFunds.map((fund, index) => (
+                    <div key={fund.id}>
+                      <FundListItem fund={fund} />
+                      {/* Insert Premium CTA after every 3 funds */}
+                      {(index + 1) % 3 === 0 && index < filteredFunds.length - 1 && (
+                        <div className="my-6">
+                          <PremiumCTA variant="full" location={`homepage-after-fund-${index + 1}`} />
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </div>
               </>

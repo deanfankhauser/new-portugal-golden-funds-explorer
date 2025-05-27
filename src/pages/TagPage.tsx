@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFundsByTag, getAllTags } from '../data/funds';
@@ -7,6 +6,7 @@ import Footer from '../components/Footer';
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from 'lucide-react';
 import { slugToTag } from '@/lib/utils';
+import PremiumCTA from '../components/cta/PremiumCTA';
 
 // Import our new components
 import TagBreadcrumbs from '../components/tag/TagBreadcrumbs';
@@ -69,6 +69,11 @@ const TagPage = () => {
         {/* Page Header */}
         <TagPageHeader tagName={tagName} />
         
+        {/* Premium CTA Banner for tag-specific insights */}
+        <div className="mb-8">
+          <PremiumCTA variant="banner" location={`tag-${tagSlug}`} />
+        </div>
+        
         {/* Fund Display Section */}
         {funds.length === 0 ? (
           <TagPageEmptyState tagName={tagName} />
@@ -77,6 +82,11 @@ const TagPage = () => {
             <TagPageFundSummary count={funds.length} tagName={tagName} />
             <TagPageFundList funds={funds} />
             <RelatedTags allTags={allTags} currentTag={tagName} />
+            
+            {/* Premium CTA at bottom of tag page */}
+            <div className="mt-12">
+              <PremiumCTA variant="full" location={`tag-bottom-${tagSlug}`} />
+            </div>
           </>
         )}
       </main>
