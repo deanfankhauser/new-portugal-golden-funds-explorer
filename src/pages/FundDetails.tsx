@@ -10,10 +10,18 @@ import BackToFundsButton from '../components/fund-details/BackToFundsButton';
 import FundDetailsContent from '../components/fund-details/FundDetailsContent';
 import FundDetailsSEO from '../components/fund-details/FundDetailsSEO';
 
+// Import structured data hook
+import { useFundStructuredData } from '../hooks/useStructuredData';
+
 const FundDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const fund = id ? getFundById(id) : undefined;
+
+  // Add structured data for the fund
+  if (fund) {
+    useFundStructuredData(fund);
+  }
 
   // If fund not found, redirect to homepage
   if (!fund) {

@@ -1,0 +1,187 @@
+
+import { Fund } from '../data/funds';
+
+export interface StructuredDataSchema {
+  '@context': string;
+  '@type': string;
+  [key: string]: any;
+}
+
+export class StructuredDataService {
+  
+  // Generate Product schema for a fund
+  static generateFundProductSchema(fund: Fund): StructuredDataSchema {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'FinancialProduct',
+      'name': fund.name,
+      'description': fund.description,
+      'category': fund.category,
+      'provider': {
+        '@type': 'Organization',
+        'name': fund.managerName,
+        'url': fund.websiteUrl
+      },
+      'offers': {
+        '@type': 'Offer',
+        'price': fund.minimumInvestment,
+        'priceCurrency': 'EUR',
+        'availability': fund.fundStatus === 'Open' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+        'priceSpecification': {
+          '@type': 'PriceSpecification',
+          'price': fund.minimumInvestment,
+          'priceCurrency': 'EUR',
+          'valueAddedTaxIncluded': false
+        }
+      },
+      'additionalProperty': [
+        {
+          '@type': 'PropertyValue',
+          'name': 'Management Fee',
+          'value': `${fund.managementFee}%`
+        },
+        {
+          '@type': 'PropertyValue',
+          'name': 'Performance Fee',
+          'value': `${fund.performanceFee}%`
+        },
+        {
+          '@type': 'PropertyValue',
+          'name': 'Fund Size',
+          'value': `${fund.fundSize} Million EUR`
+        },
+        {
+          '@type': 'PropertyValue',
+          'name': 'Term',
+          'value': fund.term === 0 ? 'Perpetual' : `${fund.term} years`
+        },
+        {
+          '@type': 'PropertyValue',
+          'name': 'Target Return',
+          'value': fund.returnTarget
+        }
+      ],
+      'keywords': fund.tags.join(', '),
+      'url': `${window.location.origin}/funds/${fund.id}`,
+      'identifier': fund.id
+    };
+  }
+
+  // Generate Organization schema for fund manager
+  static generateFundManagerSchema(fund: Fund): StructuredDataSchema {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      'name': fund.managerName,
+      'foundingDate': fund.established.toString(),
+      'address': {
+        '@type': 'PostalAddress',
+        'addressCountry': 'PT',
+        'addressRegion': fund.location
+      },
+      'url': fund.websiteUrl,
+      'logo': fund.managerLogo,
+      'knowsAbout': fund.category,
+      'serviceArea': {
+        '@type': 'Place',
+        'name': 'Portugal'
+      }
+    };
+  }
+
+  // Generate Investment schema
+  static generateInvestmentSchema(fund: Fund): StructuredDataSchema {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Investment',
+      'name': `Investment in ${fund.name}`,
+      'description': `Investment opportunity in ${fund.name} managed by ${fund.managerName}`,
+      'investmentType': fund.category,
+      'minimumInvestment': {
+        '@type': 'MonetaryAmount',
+        'currency': 'EUR',
+        'value': fund.minimumInvestment
+      },
+      'expectedReturn': fund.returnTarget,
+      'riskLevel': fund.tags.includes('Low Risk') ? 'Low' : 
+                   fund.tags.includes('Medium Risk') ? 'Medium' : 
+                   fund.tags.includes('High Risk') ? 'High' : 'Medium',
+      'provider': {
+        '@type': 'Organization',
+        'name': fund.managerName
+      }
+    };
+  }
+
+  // Generate WebPage schema for fund detail page
+  static generateFundPageSchema(fund: Fund): StructuredDataSchema {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': `${fund.name} | Fund Details`,
+      'description': fund.description,
+      'url': `${window.location.origin}/funds/${fund.id}`,
+      'mainEntity': {
+        '@type': 'FinancialProduct',
+        'name': fund.name,
+        'identifier': fund.id
+      },
+      'breadcrumb': {
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          {
+            '@type': 'ListItem',
+            'position': 1,
+            'name': 'Home',
+            'item': window.location.origin
+          },
+          {
+            '@type': 'ListItem',
+            'position': 2,
+            'name': 'Funds',
+            'item': `${window.location.origin}/#funds`
+          },
+          {
+            '@type': 'ListItem',
+            'position': 3,
+            'name': fund.name,
+            'item': `${window.location.origin}/funds/${fund.id}`
+          }
+        ]
+      },
+      'potentialAction': {
+        '@type': 'CompareAction',
+        'name': 'Compare Fund',
+        'description': `Compare ${fund.name} with other investment funds`
+      }
+    };
+  }
+
+  // Add structured data to page head
+  static addStructuredData(schemas: StructuredDataSchema[], dataId: string = 'structured-data'): void {
+    // Remove existing structured data
+    const existingScript = document.querySelector(`script[data-schema="${dataId}"]`);
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    // Create new script element
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-schema', dataId);
+    
+    // If multiple schemas, wrap in array
+    const schemaContent = schemas.length === 1 ? schemas[0] : schemas;
+    script.textContent = JSON.stringify(schemaContent, null, 2);
+    
+    document.head.appendChild(script);
+  }
+
+  // Remove structured data from page head
+  static removeStructuredData(dataId: string = 'structured-data'): void {
+    const script = document.querySelector(`script[data-schema="${dataId}"]`);
+    if (script) {
+      script.remove();
+    }
+  }
+}
