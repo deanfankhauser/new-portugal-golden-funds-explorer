@@ -75,5 +75,67 @@ export const growthBlueFund: Fund = {
     redemptionOpen: false,
     minimumHoldingPeriod: 120, // 10 years in months
     notes: 'Capital is locked for the 10-year term; no secondary repurchase mechanism.'
-  }
+  },
+  faqs: [
+    {
+      question: 'What is the Growth Blue Fund?',
+      answer: 'Growth Blue is a CMVM-regulated Private Equity fund managed by Growth Partners Capital that pursues a growth-equity strategy in Portugal\'s "Blue Economy," investing in profitable SMEs and mid-caps to generate both financial returns and sustainable ocean-resource impact.'
+    },
+    {
+      question: 'What size of capital is the fund targeting and who are its anchor investors?',
+      answer: 'The fund seeks €50 million of total commitments and has secured a €28 million anchor investment from the European Investment Fund (EIF), alongside commitments from national and international private investors.'
+    },
+    {
+      question: 'What is the minimum investment commitment?',
+      answer: 'Investors can join the fund with a minimum subscription of €100 000.'
+    },
+    {
+      question: 'Who manages the fund and under what regulatory framework?',
+      answer: 'Growth Partners Capital, S.A.—a CMVM-licensed Private Equity firm—is the fund manager, and Deloitte serves as the independent auditor.'
+    },
+    {
+      question: "What are the fund's term and investment period?",
+      answer: 'Growth Blue has a 10-year lifespan from the initial closing, with a 5-year investment window structured as three years plus two one-year extension options.'
+    },
+    {
+      question: 'What fees and performance incentives apply?',
+      answer: 'A 2 % annual management fee is charged on committed capital, and a 20 % carried-interest applies on profits above a 7 % preferred-return hurdle.'
+    },
+    {
+      question: 'What target returns does the fund pursue?',
+      answer: 'The fund aims for an internal rate of return (IRR) above 20 % per annum and a money-on-money multiple of 3.3× over its life, with annual dividend distributions to investors.'
+    },
+    {
+      question: 'Where will the fund primarily invest its capital?',
+      answer: 'Over 85 % of Growth Blue\'s investments will be in Portuguese SMEs and mid-caps, leveraging Portugal\'s strategic maritime position, large exclusive economic zone, and strong Blue-economy tradition.'
+    },
+    {
+      question: 'Which sectors within the Blue Economy are targeted?',
+      answer: 'Core areas include Offshore Renewable Energy, Seafood & Aquaculture, and the Blue Bioeconomy, plus related technologies—each chosen for Portugal\'s competitive advantage and strong growth prospects.'
+    },
+    {
+      question: 'What profiles do target companies have, and what ticket sizes are typical?',
+      answer: 'The fund invests in profitable SMEs and mid-caps with EBITDA above €2 million, deploying approximately €5 – 10 million per deal for large minority or controlling equity stakes.'
+    },
+    {
+      question: 'How does Growth Blue create value in portfolio companies?',
+      answer: 'Value is added through hands-on initiatives—100-day operational plans, cost and supplier optimization, professionalizing management, strategic planning, and support for scale-up and international expansion.'
+    },
+    {
+      question: 'How are investments structured to protect downside?',
+      answer: 'Deals include dividend and liquidation preferences, anti-dilution and non-competition clauses, board representation, drag-along/tag-along rights, and the fund employs no leverage at its own level.'
+    },
+    {
+      question: 'What diversification and governance measures are in place?',
+      answer: 'Single-company exposure is capped at 15 % and sector exposure at 30 %. ESG adoption, biannual investor reporting, a formal Advisory Committee, and thorough legal/financial/ESG due diligence underpin the governance framework.'
+    },
+    {
+      question: 'How many transactions does the fund plan, and what does its current pipeline look like?',
+      answer: 'Depending on final size, Growth Blue anticipates 8 – 10 transactions. It currently has at least three pipeline projects under negotiation or analysis, with tickets ranging from €3.5 million to €7 million.'
+    },
+    {
+      question: "How are the GP's interests aligned with investors'?",
+      answer: 'The management team commits up to 4 % of total fund capital alongside investors, and carried-interest catch-up mechanics ensure the GP only earns performance fees after investors achieve their preferred return.'
+    }
+  ]
 };
