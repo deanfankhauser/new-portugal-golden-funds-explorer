@@ -1,18 +1,12 @@
 
 import React from 'react';
 import { Fund } from '../../data/funds';
-import FundCategory from './FundCategory';
-import FeeStructure from './FeeStructure';
-import GeographicAllocation from './GeographicAllocation';
-import FundManager from './FundManager';
-import TeamSection from './TeamSection';
-import FundDescription from './FundDescription';
-import DocumentsSection from './DocumentsSection';
-import IntroductionButton from './IntroductionButton';
-import RedemptionTerms from './RedemptionTerms';
-import { formatPercentage } from './utils/formatters';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, PieChart, Users } from 'lucide-react';
+import FundOverviewTab from './tabs/FundOverviewTab';
+import FundStructureTab from './tabs/FundStructureTab';
+import FundTeamTab from './tabs/FundTeamTab';
+import FundDocumentsTab from './tabs/FundDocumentsTab';
 
 interface FundTabsSectionProps {
   fund: Fund;
@@ -40,51 +34,20 @@ const FundTabsSection: React.FC<FundTabsSectionProps> = ({ fund }) => {
         </TabsTrigger>
       </TabsList>
       
-      <TabsContent value="overview" className="space-y-8 animate-fade-in">
-        {/* Fund Description */}
-        <FundDescription description={fund.detailedDescription} />
-        
-        {/* Fund Manager Section */}
-        <FundManager 
-          managerName={fund.managerName} 
-          managerLogo={fund.managerLogo} 
-        />
-        
-        {/* Introduction Button (compact version in overview) */}
-        <IntroductionButton variant="compact" />
+      <TabsContent value="overview">
+        <FundOverviewTab fund={fund} />
       </TabsContent>
       
-      <TabsContent value="structure" className="animate-fade-in">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="space-y-8">
-            {/* Fund Category Section */}
-            <FundCategory category={fund.category} />
-
-            {/* Fee Structure Section */}
-            <FeeStructure fund={fund} formatPercentage={formatPercentage} />
-            
-            {/* Redemption Terms Section */}
-            <RedemptionTerms redemptionTerms={fund.redemptionTerms} />
-          </div>
-
-          <div className="space-y-8">
-            {/* Geographic Allocation Section */}
-            <GeographicAllocation 
-              allocations={fund.geographicAllocation} 
-              formatPercentage={formatPercentage} 
-            />
-          </div>
-        </div>
+      <TabsContent value="structure">
+        <FundStructureTab fund={fund} />
       </TabsContent>
       
-      <TabsContent value="team" className="animate-fade-in">
-        {/* Team Section */}
-        <TeamSection team={fund.team} />
+      <TabsContent value="team">
+        <FundTeamTab fund={fund} />
       </TabsContent>
       
-      <TabsContent value="documents" className="animate-fade-in">
-        {/* Documents Section */}
-        <DocumentsSection documents={fund.documents} />
+      <TabsContent value="documents">
+        <FundDocumentsTab fund={fund} />
       </TabsContent>
     </Tabs>
   );

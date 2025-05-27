@@ -1,0 +1,30 @@
+
+import React from 'react';
+import { Fund } from '../../../data/funds';
+import FundDescription from '../FundDescription';
+import FundManager from '../FundManager';
+import IntroductionButton from '../IntroductionButton';
+
+interface FundOverviewTabProps {
+  fund: Fund;
+}
+
+const FundOverviewTab: React.FC<FundOverviewTabProps> = ({ fund }) => {
+  return (
+    <div className="space-y-8 animate-fade-in">
+      {/* Fund Description */}
+      <FundDescription description={fund.detailedDescription} />
+      
+      {/* Fund Manager Section */}
+      <FundManager 
+        managerName={fund.managerName} 
+        managerLogo={fund.managerLogo} 
+      />
+      
+      {/* Introduction Button (compact version in overview) */}
+      <IntroductionButton variant="compact" />
+    </div>
+  );
+};
+
+export default FundOverviewTab;
