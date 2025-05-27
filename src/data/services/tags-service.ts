@@ -1,11 +1,11 @@
 
 import { FundTag, Fund } from '../types/funds';
-import { fundsData } from '../mock/funds';
+import { funds } from './funds-service';
 
-// Function to get all unique tags from funds
+// Function to get all unique tags from funds (now includes investment tags)
 export const getAllTags = (): FundTag[] => {
   const tagsSet = new Set<FundTag>();
-  fundsData.forEach(fund => {
+  funds.forEach(fund => {
     fund.tags.forEach(tag => {
       tagsSet.add(tag);
     });
@@ -13,7 +13,7 @@ export const getAllTags = (): FundTag[] => {
   return Array.from(tagsSet);
 };
 
-// Function to get funds by tag
+// Function to get funds by tag (now works with investment tags)
 export const getFundsByTag = (tag: FundTag): Fund[] => {
-  return fundsData.filter(fund => fund.tags.includes(tag));
+  return funds.filter(fund => fund.tags.includes(tag));
 };

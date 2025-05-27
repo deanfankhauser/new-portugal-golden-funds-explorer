@@ -1,4 +1,3 @@
-
 export type FundTag = 
   | 'Real Estate'
   | 'Private Equity'
@@ -56,7 +55,18 @@ export type FundTag =
   | 'Energy-as-a-Service'
   | '12% Return'
   | '5% Dividend'
-  | 'Climate';
+  | 'Climate'
+  | 'Under €250k'
+  | 'Under €300k'
+  | 'Under €350k'
+  | 'Under €400k'
+  | 'Under €500k'
+  | '€250k-€350k'
+  | '€280k-€350k'
+  | '€300k-€400k'
+  | '€350k-€500k'
+  | '€400k-€600k'
+  | '€500k+';
 
 export type FundCategory =
   | 'Venture Capital'

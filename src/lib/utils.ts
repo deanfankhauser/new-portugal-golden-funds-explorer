@@ -8,14 +8,20 @@ export function cn(...inputs: ClassValue[]) {
 
 // Function to convert tag to URL-friendly slug
 export function tagToSlug(tag: string): string {
-  return tag.toLowerCase().replace(/\s+/g, '-');
+  return tag.toLowerCase()
+    .replace(/€/g, 'eur')
+    .replace(/\s+/g, '-')
+    .replace(/[+]/g, 'plus');
 }
 
 // Function to convert slug back to tag
 export function slugToTag(slug: string): string {
-  return slug.split('-').map(word => 
-    word.charAt(0).toUpperCase() + word.slice(1)
-  ).join(' ');
+  return slug
+    .replace(/eur/g, '€')
+    .replace(/plus/g, '+')
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }
 
 // Function to convert category to URL-friendly slug

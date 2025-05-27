@@ -9,7 +9,7 @@ export type {
   PdfDocument
 } from './types/funds';
 
-// Re-export funds data
+// Re-export funds data (now with investment tags)
 export { funds } from './services/funds-service';
 
 // Re-export tag related functions
@@ -29,3 +29,10 @@ export {
   getFundById,
   searchFunds
 } from './services/funds-service';
+
+// Re-export investment-related functions
+export {
+  generateInvestmentTags,
+  getFundsByInvestmentRange,
+  getFundsUnderAmount
+} from './services/investment-tags-service';
