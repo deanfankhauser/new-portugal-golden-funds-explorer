@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -5,10 +6,12 @@ import FundListItem from '../components/FundListItem';
 import FundFilter from '../components/FundFilter';
 import { Fund, FundTag, funds, searchFunds } from '../data/funds';
 import PremiumCTA from '../components/cta/PremiumCTA';
+import { useAuth } from '../contexts/AuthContext';
 
 const IndexPage = () => {
   const [selectedTags, setSelectedTags] = useState<FundTag[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     // Set page title and meta description for SEO
@@ -58,10 +61,12 @@ const IndexPage = () => {
           </p>
         </div>
 
-        {/* Premium CTA Banner */}
-        <div className="mb-8">
-          <PremiumCTA variant="banner" location="homepage" />
-        </div>
+        {/* Premium CTA Banner - only show for non-authenticated users */}
+        {!isAuthenticated && (
+          <div className="mb-8">
+            <PremiumCTA variant="banner" location="homepage" />
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-1">
@@ -90,8 +95,8 @@ const IndexPage = () => {
                   {filteredFunds.map((fund, index) => (
                     <div key={fund.id}>
                       <FundListItem fund={fund} />
-                      {/* Insert Premium CTA after every 3 funds */}
-                      {(index + 1) % 3 === 0 && index < filteredFunds.length - 1 && (
+                      {/* Insert Premium CTA after every 3 funds - only for non-authenticated users */}
+                      {!isAuthenticated && (index + 1) % 3 === 0 && index < filteredFunds.length - 1 && (
                         <div className="my-6">
                           <PremiumCTA variant="full" location={`homepage-after-fund-${index + 1}`} />
                         </div>

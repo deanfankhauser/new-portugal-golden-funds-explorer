@@ -16,6 +16,7 @@ import Disclaimer from "./pages/Disclaimer";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 import { ComparisonProvider } from "./contexts/ComparisonContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import ComparisonPage from "./pages/ComparisonPage";
 import FundManager from "./pages/FundManager";
 import FAQs from "./pages/FAQs";
@@ -25,28 +26,30 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <ComparisonProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/funds/:id" element={<FundDetails />} />
-            <Route path="/tags" element={<TagsHub />} />
-            <Route path="/tags/:tag" element={<TagPage />} />
-            <Route path="/categories" element={<CategoriesHub />} />
-            <Route path="/categories/:category" element={<CategoryPage />} />
-            <Route path="/managers" element={<ManagersHub />} />
-            <Route path="/manager/:name" element={<FundManager />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/disclaimer" element={<Disclaimer />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/compare" element={<ComparisonPage />} />
-            <Route path="/faqs" element={<FAQs />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </ComparisonProvider>
+      <AuthProvider>
+        <ComparisonProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/funds/:id" element={<FundDetails />} />
+              <Route path="/tags" element={<TagsHub />} />
+              <Route path="/tags/:tag" element={<TagPage />} />
+              <Route path="/categories" element={<CategoriesHub />} />
+              <Route path="/categories/:category" element={<CategoryPage />} />
+              <Route path="/managers" element={<ManagersHub />} />
+              <Route path="/manager/:name" element={<FundManager />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/disclaimer" element={<Disclaimer />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/compare" element={<ComparisonPage />} />
+              <Route path="/faqs" element={<FAQs />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </ComparisonProvider>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
