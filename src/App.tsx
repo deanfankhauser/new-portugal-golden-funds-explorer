@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +22,7 @@ import FundManager from "./pages/FundManager";
 import FAQs from "./pages/FAQs";
 import FundComparison from "./pages/FundComparison";
 import ComparisonsHub from "./pages/ComparisonsHub";
+import ROICalculator from "./pages/ROICalculator";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +50,7 @@ const App = () => (
               <Route path="/comparisons" element={<ComparisonsHub />} />
               <Route path="/compare/:slug" element={<FundComparison />} />
               <Route path="/faqs" element={<FAQs />} />
+              <Route path="/roi-calculator" element={<ROICalculator />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

@@ -70,6 +70,9 @@ const Footer = () => {
                 <Link to="/comparisons" className="text-gray-600 hover:text-primary text-sm transition-colors">Fund Comparisons</Link>
               </li>
               <li>
+                <Link to="/roi-calculator" className="text-gray-600 hover:text-primary text-sm transition-colors">ROI Calculator</Link>
+              </li>
+              <li>
                 <Link to="/faqs" className="text-gray-600 hover:text-primary text-sm transition-colors">FAQs</Link>
               </li>
             </ul>
