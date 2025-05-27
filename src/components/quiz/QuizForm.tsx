@@ -128,7 +128,7 @@ const QuizForm: React.FC<QuizFormProps> = ({ onSubmit }) => {
   const isStepValid = () => {
     const fieldName = currentQuestion.key as keyof QuizFormData;
     const value = form.watch(fieldName);
-    return value !== undefined && value !== '';
+    return value !== undefined;
   };
 
   return (
