@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useComparison } from '../contexts/ComparisonContext';
 import Header from '../components/Header';
@@ -9,13 +8,26 @@ import { useNavigate } from 'react-router-dom';
 import ComparisonTable from '../components/comparison/ComparisonTable';
 import EmptyComparison from '../components/comparison/EmptyComparison';
 import ComparisonUpgradeCTA from '../components/cta/ComparisonUpgradeCTA';
+import { useComparisonStructuredData } from '../hooks/useComparisonStructuredData';
 
 const ComparisonPage = () => {
   const { compareFunds, clearComparison } = useComparison();
   const navigate = useNavigate();
 
+  // Add structured data for comparison page
+  useComparisonStructuredData(compareFunds, 'comparison');
+
   React.useEffect(() => {
     document.title = "Compare Funds | Portugal Golden Visa Investment Funds";
+    
+    // Update meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 
+        'Compare Portugal Golden Visa investment funds side-by-side. Analyze fees, returns, minimum investments, and more to find the best fund for your needs.'
+      );
+    }
+    
     window.scrollTo(0, 0);
   }, []);
 

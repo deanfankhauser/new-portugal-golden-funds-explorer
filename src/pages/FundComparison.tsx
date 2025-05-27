@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getComparisonBySlug } from '../data/services/comparison-service';
@@ -8,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from 'lucide-react';
 import ComparisonTable from '../components/comparison/ComparisonTable';
 import ComparisonUpgradeCTA from '../components/cta/ComparisonUpgradeCTA';
+import { useComparisonStructuredData } from '../hooks/useComparisonStructuredData';
 
 const FundComparison = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -22,6 +22,10 @@ const FundComparison = () => {
   }
 
   const { fund1, fund2 } = comparison;
+  const funds = [fund1, fund2];
+
+  // Add structured data for fund vs fund comparison
+  useComparisonStructuredData(funds, 'fund-vs-fund');
 
   React.useEffect(() => {
     document.title = `${fund1.name} vs ${fund2.name} | Portugal Golden Visa Fund Comparison`;
@@ -33,6 +37,24 @@ const FundComparison = () => {
         `Compare ${fund1.name} and ${fund2.name} - detailed side-by-side analysis of fees, returns, minimum investment, and more for Portugal Golden Visa funds.`
       );
     }
+
+    // Add Open Graph meta tags for social sharing
+    const updateOrCreateMeta = (property: string, content: string) => {
+      let meta = document.querySelector(`meta[property="${property}"]`);
+      if (meta) {
+        meta.setAttribute('content', content);
+      } else {
+        meta = document.createElement('meta');
+        meta.setAttribute('property', property);
+        meta.setAttribute('content', content);
+        document.head.appendChild(meta);
+      }
+    };
+
+    updateOrCreateMeta('og:title', `${fund1.name} vs ${fund2.name} | Fund Comparison`);
+    updateOrCreateMeta('og:description', `Compare ${fund1.name} and ${fund2.name} - detailed analysis of Portugal Golden Visa investment funds.`);
+    updateOrCreateMeta('og:type', 'website');
+    updateOrCreateMeta('og:url', window.location.href);
 
     window.scrollTo(0, 0);
   }, [fund1, fund2]);
