@@ -1,3 +1,4 @@
+
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -18,7 +19,8 @@ export function tagToSlug(tag: string): string {
     .replace(/%/g, 'pct') // Convert % to pct
     .replace(/annual-yield$/g, '') // Remove 'annual-yield' suffix for cleaner URLs
     .replace(/-year-lock-up$/g, '') // Remove '-year-lock-up' suffix for cleaner URLs
-    .replace(/year/g, ''); // Remove 'year' for lock-up tags
+    .replace(/year/g, '') // Remove 'year' for lock-up tags
+    .replace(/m$/g, ''); // Remove 'M' for fund size tags
 }
 
 // Function to convert slug back to tag
@@ -56,6 +58,16 @@ export function slugToTag(slug: string): string {
       'gt-1.5': '> 1.5% management fee'
     };
     return managementFeeMap[slug];
+  }
+  
+  // Handle fund size tags specifically
+  if (['lt-50m', '50-100m', 'gt-100m'].includes(slug)) {
+    const fundSizeMap: { [key: string]: string } = {
+      'lt-50m': 'Small-cap < €50M',
+      '50-100m': 'Mid-cap €50-100M',
+      'gt-100m': 'Large-cap > €100M'
+    };
+    return fundSizeMap[slug];
   }
   
   return slug

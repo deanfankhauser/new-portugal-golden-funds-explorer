@@ -59,3 +59,9 @@ export {
   generateManagementFeeTags,
   getFundsByManagementFeeLevel
 } from './services/management-fee-tags-service';
+
+// Re-export fund size related functions
+export {
+  generateFundSizeTags,
+  getFundsByFundSizeLevel
+} from './services/fund-size-tags-service';

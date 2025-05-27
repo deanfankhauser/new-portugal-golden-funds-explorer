@@ -78,7 +78,10 @@ export type FundTag =
   | '> 10-year lock-up'
   | '< 1% management fee'
   | '1-1.5% management fee'
-  | '> 1.5% management fee';
+  | '> 1.5% management fee'
+  | 'Small-cap < €50M'
+  | 'Mid-cap €50-100M'
+  | 'Large-cap > €100M';
 
 export type FundCategory =
   | 'Venture Capital'
