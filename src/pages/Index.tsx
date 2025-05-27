@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -7,6 +6,7 @@ import FundFilter from '../components/FundFilter';
 import { Fund, FundTag, funds, searchFunds } from '../data/funds';
 import PremiumCTA from '../components/cta/PremiumCTA';
 import { useAuth } from '../contexts/AuthContext';
+import { StructuredDataService } from '../services/structuredDataService';
 
 const IndexPage = () => {
   const [selectedTags, setSelectedTags] = useState<FundTag[]>([]);
@@ -25,69 +25,65 @@ const IndexPage = () => {
       );
     }
 
-    // Create JSON-LD structured data for the fund listings
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    
-    const structuredData = {
-      '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      'mainEntityOfPage': {
-        '@type': 'WebPage',
-        '@id': 'https://portugalvisafunds.com/'
-      },
-      'name': 'Portugal Golden Visa Investment Funds Directory',
-      'description': 'Comprehensive directory of eligible investment funds for the Portugal Golden Visa program',
-      'numberOfItems': funds.length,
-      'itemListElement': funds.map((fund, index) => ({
-        '@type': 'ListItem',
-        'position': index + 1,
-        'item': {
-          '@type': 'FinancialProduct',
-          'name': fund.name,
-          'description': fund.description,
-          'category': fund.category,
-          'provider': {
-            '@type': 'Organization',
-            'name': fund.managerName
-          },
-          'url': `https://portugalvisafunds.com/funds/${fund.id}`,
-          'offers': {
-            '@type': 'Offer',
-            'price': fund.minimumInvestment,
-            'priceCurrency': 'EUR'
-          }
-        }
-      })),
-      'breadcrumb': {
-        '@type': 'BreadcrumbList',
-        'itemListElement': [
-          {
+    // Generate structured data schemas using our service
+    const schemas = [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        'mainEntityOfPage': {
+          '@type': 'WebPage',
+          '@id': 'https://portugalvisafunds.com/'
+        },
+        'name': 'Portugal Golden Visa Investment Funds Directory',
+        'description': 'Comprehensive directory of eligible investment funds for the Portugal Golden Visa program',
+        'numberOfItems': funds.length,
+        'mainEntity': {
+          '@type': 'ItemList',
+          'numberOfItems': funds.length,
+          'itemListElement': funds.map((fund, index) => ({
             '@type': 'ListItem',
-            'position': 1,
-            'name': 'Home',
-            'item': 'https://portugalvisafunds.com'
-          }
-        ]
+            'position': index + 1,
+            'item': {
+              '@type': 'FinancialProduct',
+              'name': fund.name,
+              'description': fund.description,
+              'category': fund.category,
+              'provider': {
+                '@type': 'Organization',
+                'name': fund.managerName
+              },
+              'url': `https://portugalvisafunds.com/funds/${fund.id}`,
+              'offers': {
+                '@type': 'Offer',
+                'price': fund.minimumInvestment,
+                'priceCurrency': 'EUR'
+              }
+            }
+          }))
+        },
+        'breadcrumb': {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': 'https://portugalvisafunds.com'
+            }
+          ]
+        }
       }
-    };
-    
-    script.textContent = JSON.stringify(structuredData);
-    
-    // Remove any existing JSON-LD scripts
-    const existingScripts = document.querySelectorAll('script[type="application/ld+json"]');
-    existingScripts.forEach(s => s.remove());
-    
-    // Add the new structured data script
-    document.head.appendChild(script);
+    ];
+
+    // Add structured data using our service
+    StructuredDataService.addStructuredData(schemas, 'homepage');
     
     // Scroll to top on page load
     window.scrollTo(0, 0);
 
     // Cleanup function
     return () => {
-      const scripts = document.querySelectorAll('script[type="application/ld+json"]');
-      scripts.forEach(s => s.remove());
+      StructuredDataService.removeStructuredData('homepage');
     };
   }, []);
 

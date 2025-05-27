@@ -1,5 +1,6 @@
 
 import React, { useEffect } from 'react';
+import { StructuredDataService } from '../../services/structuredDataService';
 
 interface TagPageSEOProps {
   tagName: string;
@@ -9,6 +10,9 @@ interface TagPageSEOProps {
     id: string;
     name: string;
     description: string;
+    category?: string;
+    managerName?: string;
+    minimumInvestment?: number;
   }>;
 }
 
@@ -25,72 +29,78 @@ const TagPageSEO = ({ tagName, tagSlug, fundsCount, funds }: TagPageSEOProps) =>
       );
     }
 
-    // Create JSON-LD structured data for search engines
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    
-    const structuredData = {
-      '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      'mainEntityOfPage': {
-        '@type': 'WebPage',
-        '@id': `https://portugalvisafunds.com/tags/${tagSlug}`
-      },
-      'name': `${tagName} Golden Visa Investment Funds`,
-      'description': `Explore ${tagName} Golden Visa investment funds. Find and compare the best ${tagName} funds for your Golden Visa investment.`,
-      'numberOfItems': fundsCount,
-      'itemListElement': funds.map((fund, index) => ({
-        '@type': 'ListItem',
-        'position': index + 1,
-        'item': {
-          '@type': 'Product',
-          'name': fund.name,
-          'description': fund.description,
-          'url': `https://portugalvisafunds.com/funds/${fund.id}`
+    // Generate structured data schemas using our service
+    const schemas = [
+      // CollectionPage schema
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        'mainEntityOfPage': {
+          '@type': 'WebPage',
+          '@id': `https://portugalvisafunds.com/tags/${tagSlug}`
+        },
+        'name': `${tagName} Golden Visa Investment Funds`,
+        'description': `Explore ${tagName} Golden Visa investment funds. Find and compare the best ${tagName} funds for your Golden Visa investment.`,
+        'numberOfItems': fundsCount,
+        'mainEntity': {
+          '@type': 'ItemList',
+          'numberOfItems': fundsCount,
+          'itemListElement': funds.map((fund, index) => ({
+            '@type': 'ListItem',
+            'position': index + 1,
+            'item': {
+              '@type': 'FinancialProduct',
+              'name': fund.name,
+              'description': fund.description,
+              'url': `https://portugalvisafunds.com/funds/${fund.id}`,
+              'category': fund.category || 'Investment Fund',
+              'provider': {
+                '@type': 'Organization',
+                'name': fund.managerName || 'Fund Manager'
+              },
+              'offers': {
+                '@type': 'Offer',
+                'price': fund.minimumInvestment || 500000,
+                'priceCurrency': 'EUR'
+              }
+            }
+          }))
+        },
+        'breadcrumb': {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': 'https://portugalvisafunds.com'
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Tags',
+              'item': 'https://portugalvisafunds.com/tags'
+            },
+            {
+              '@type': 'ListItem',
+              'position': 3,
+              'name': tagName,
+              'item': `https://portugalvisafunds.com/tags/${tagSlug}`
+            }
+          ]
         }
-      })),
-      // Adding breadcrumbs for better SEO
-      'breadcrumb': {
-        '@type': 'BreadcrumbList',
-        'itemListElement': [
-          {
-            '@type': 'ListItem',
-            'position': 1,
-            'name': 'Home',
-            'item': 'https://portugalvisafunds.com'
-          },
-          {
-            '@type': 'ListItem',
-            'position': 2,
-            'name': 'Tags',
-            'item': 'https://portugalvisafunds.com/tags'
-          },
-          {
-            '@type': 'ListItem',
-            'position': 3,
-            'name': `${tagName}`,
-            'item': `https://portugalvisafunds.com/tags/${tagSlug}`
-          }
-        ]
       }
-    };
-    
-    script.textContent = JSON.stringify(structuredData);
-    
-    // Remove any existing JSON-LD scripts
-    const existingScripts = document.querySelectorAll('script[type="application/ld+json"]');
-    existingScripts.forEach(s => s.remove());
-    
-    // Add the new structured data script
-    document.head.appendChild(script);
+    ];
+
+    // Add structured data using our service
+    StructuredDataService.addStructuredData(schemas, `tag-${tagSlug}`);
 
     // Scroll to top on page load
     window.scrollTo(0, 0);
 
     // Cleanup function
     return () => {
-      const scripts = document.querySelectorAll('script[type="application/ld+json"]');
-      scripts.forEach(s => s.remove());
+      StructuredDataService.removeStructuredData(`tag-${tagSlug}`);
     };
   }, [tagName, fundsCount, funds, tagSlug]);
 

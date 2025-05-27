@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { categoryToSlug } from '@/lib/utils';
 import { Folder } from 'lucide-react';
+import { StructuredDataService } from '../services/structuredDataService';
 
 const CategoriesHub = () => {
   const allCategories = getAllCategories();
@@ -22,59 +23,62 @@ const CategoriesHub = () => {
       );
     }
 
-    // Create JSON-LD structured data for search engines
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    
-    const structuredData = {
-      '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      'mainEntityOfPage': {
-        '@type': 'WebPage',
-        '@id': 'https://portugalvisafunds.com/categories'
-      },
-      'name': 'All Golden Visa Fund Categories',
-      'description': 'Browse all Golden Visa fund categories. Find and compare Portugal Golden Visa funds by their investment categories.',
-      'numberOfItems': allCategories.length,
-      'itemListElement': allCategories.map((category, index) => ({
-        '@type': 'ListItem',
-        'position': index + 1,
-        'item': {
-          '@type': 'Thing',
-          'name': category,
-          'url': `https://portugalvisafunds.com/categories/${categoryToSlug(category)}`
+    // Generate structured data schemas using our service
+    const schemas = [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        'mainEntityOfPage': {
+          '@type': 'WebPage',
+          '@id': 'https://portugalvisafunds.com/categories'
+        },
+        'name': 'All Golden Visa Fund Categories',
+        'description': 'Browse all Golden Visa fund categories. Find and compare Portugal Golden Visa funds by their investment categories.',
+        'numberOfItems': allCategories.length,
+        'mainEntity': {
+          '@type': 'ItemList',
+          'numberOfItems': allCategories.length,
+          'itemListElement': allCategories.map((category, index) => ({
+            '@type': 'ListItem',
+            'position': index + 1,
+            'item': {
+              '@type': 'Thing',
+              'name': category,
+              'url': `https://portugalvisafunds.com/categories/${categoryToSlug(category)}`,
+              'description': `Golden Visa funds in the ${category} category`
+            }
+          }))
+        },
+        'breadcrumb': {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': 'https://portugalvisafunds.com'
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Categories',
+              'item': 'https://portugalvisafunds.com/categories'
+            }
+          ]
         }
-      })),
-      'breadcrumb': {
-        '@type': 'BreadcrumbList',
-        'itemListElement': [
-          {
-            '@type': 'ListItem',
-            'position': 1,
-            'name': 'Home',
-            'item': 'https://portugalvisafunds.com'
-          },
-          {
-            '@type': 'ListItem',
-            'position': 2,
-            'name': 'Categories',
-            'item': 'https://portugalvisafunds.com/categories'
-          }
-        ]
       }
-    };
-    
-    script.textContent = JSON.stringify(structuredData);
-    
-    // Remove any existing JSON-LD scripts
-    const existingScripts = document.querySelectorAll('script[type="application/ld+json"]');
-    existingScripts.forEach(s => s.remove());
-    
-    // Add the new structured data script
-    document.head.appendChild(script);
+    ];
+
+    // Add structured data using our service
+    StructuredDataService.addStructuredData(schemas, 'categories-hub');
 
     // Scroll to top on page load
     window.scrollTo(0, 0);
+
+    // Cleanup function
+    return () => {
+      StructuredDataService.removeStructuredData('categories-hub');
+    };
   }, [allCategories.length]);
 
   return (

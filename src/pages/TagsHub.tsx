@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { tagToSlug } from '@/lib/utils';
 import { Tag as TagIcon } from 'lucide-react';
+import { StructuredDataService } from '../services/structuredDataService';
 
 const TagsHub = () => {
   const allTags = getAllTags();
@@ -22,59 +23,62 @@ const TagsHub = () => {
       );
     }
 
-    // Create JSON-LD structured data for search engines
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    
-    const structuredData = {
-      '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      'mainEntityOfPage': {
-        '@type': 'WebPage',
-        '@id': 'https://portugalvisafunds.com/tags'
-      },
-      'name': 'All Golden Visa Fund Tags',
-      'description': 'Browse all Golden Visa fund tags. Find and compare Portugal Golden Visa funds by their investment types, risk levels, and focus areas.',
-      'numberOfItems': allTags.length,
-      'itemListElement': allTags.map((tag, index) => ({
-        '@type': 'ListItem',
-        'position': index + 1,
-        'item': {
-          '@type': 'Thing',
-          'name': tag,
-          'url': `https://portugalvisafunds.com/tags/${tagToSlug(tag)}`
+    // Generate structured data schemas using our service
+    const schemas = [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        'mainEntityOfPage': {
+          '@type': 'WebPage',
+          '@id': 'https://portugalvisafunds.com/tags'
+        },
+        'name': 'All Golden Visa Fund Tags',
+        'description': 'Browse all Golden Visa fund tags. Find and compare Portugal Golden Visa funds by their investment types, risk levels, and focus areas.',
+        'numberOfItems': allTags.length,
+        'mainEntity': {
+          '@type': 'ItemList',
+          'numberOfItems': allTags.length,
+          'itemListElement': allTags.map((tag, index) => ({
+            '@type': 'ListItem',
+            'position': index + 1,
+            'item': {
+              '@type': 'Thing',
+              'name': tag,
+              'url': `https://portugalvisafunds.com/tags/${tagToSlug(tag)}`,
+              'description': `Golden Visa funds tagged with ${tag}`
+            }
+          }))
+        },
+        'breadcrumb': {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': 'https://portugalvisafunds.com'
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Tags',
+              'item': 'https://portugalvisafunds.com/tags'
+            }
+          ]
         }
-      })),
-      'breadcrumb': {
-        '@type': 'BreadcrumbList',
-        'itemListElement': [
-          {
-            '@type': 'ListItem',
-            'position': 1,
-            'name': 'Home',
-            'item': 'https://portugalvisafunds.com'
-          },
-          {
-            '@type': 'ListItem',
-            'position': 2,
-            'name': 'Tags',
-            'item': 'https://portugalvisafunds.com/tags'
-          }
-        ]
       }
-    };
-    
-    script.textContent = JSON.stringify(structuredData);
-    
-    // Remove any existing JSON-LD scripts
-    const existingScripts = document.querySelectorAll('script[type="application/ld+json"]');
-    existingScripts.forEach(s => s.remove());
-    
-    // Add the new structured data script
-    document.head.appendChild(script);
+    ];
+
+    // Add structured data using our service
+    StructuredDataService.addStructuredData(schemas, 'tags-hub');
 
     // Scroll to top on page load
     window.scrollTo(0, 0);
+
+    // Cleanup function
+    return () => {
+      StructuredDataService.removeStructuredData('tags-hub');
+    };
   }, [allTags.length]);
 
   return (
