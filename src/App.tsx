@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,6 +19,8 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ComparisonPage from "./pages/ComparisonPage";
 import FundManager from "./pages/FundManager";
 import FAQs from "./pages/FAQs";
+import FundComparison from "./pages/FundComparison";
+import ComparisonsHub from "./pages/ComparisonsHub";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,8 @@ const App = () => (
               <Route path="/disclaimer" element={<Disclaimer />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/compare" element={<ComparisonPage />} />
+              <Route path="/comparisons" element={<ComparisonsHub />} />
+              <Route path="/compare/:slug" element={<FundComparison />} />
               <Route path="/faqs" element={<FAQs />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
