@@ -1,3 +1,4 @@
+
 export type FundTag = 
   | 'Real Estate'
   | 'Private Equity'
@@ -109,6 +110,11 @@ export interface RedemptionTerms {
   notes?: string;
 }
 
+export interface FAQItem {
+  question: string;
+  answer: string;
+}
+
 export interface Fund {
   id: string;
   name: string;
@@ -135,4 +141,5 @@ export interface Fund {
   team?: TeamMember[];
   documents?: PdfDocument[];
   redemptionTerms?: RedemptionTerms;
+  faqs?: FAQItem[];
 }
