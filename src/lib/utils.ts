@@ -13,7 +13,11 @@ export function tagToSlug(tag: string): string {
     .replace(/\s+/g, '-')
     .replace(/[+]/g, 'plus')
     .replace(/[€]/g, 'eur') // Extra safety for Euro symbol
-    .replace(/-risk$/g, ''); // Remove '-risk' suffix for cleaner URLs
+    .replace(/-risk$/g, '') // Remove '-risk' suffix for cleaner URLs
+    .replace(/</g, 'lt') // Convert < to lt
+    .replace(/>/g, 'gt') // Convert > to gt
+    .replace(/%/g, 'pct') // Convert % to pct
+    .replace(/annual-yield$/g, ''); // Remove 'annual-yield' suffix for cleaner URLs
 }
 
 // Function to convert slug back to tag
@@ -23,9 +27,22 @@ export function slugToTag(slug: string): string {
     return `${slug.charAt(0).toUpperCase() + slug.slice(1)}-risk`;
   }
   
+  // Handle APY level tags specifically
+  if (['lt-3', '3-5', 'gt-5'].includes(slug)) {
+    const apyMap: { [key: string]: string } = {
+      'lt-3': '< 3% annual yield',
+      '3-5': '3-5% annual yield',
+      'gt-5': '> 5% annual yield'
+    };
+    return apyMap[slug];
+  }
+  
   return slug
     .replace(/eur/g, '€')
     .replace(/plus/g, '+')
+    .replace(/lt/g, '<')
+    .replace(/gt/g, '>')
+    .replace(/pct/g, '%')
     .replace(/-/g, ' ')
     .split(' ')
     .map(word => {

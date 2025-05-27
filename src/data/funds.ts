@@ -41,3 +41,9 @@ export {
   generateRiskTags,
   getFundsByRiskLevel
 } from './services/risk-tags-service';
+
+// Re-export APY-related functions
+export {
+  generateAPYTags,
+  getFundsByAPYLevel
+} from './services/apy-tags-service';

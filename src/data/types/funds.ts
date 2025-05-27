@@ -69,7 +69,10 @@ export type FundTag =
   | '€500k+'
   | 'Low-risk'
   | 'Medium-risk'
-  | 'High-risk';
+  | 'High-risk'
+  | '< 3% annual yield'
+  | '3-5% annual yield'
+  | '> 5% annual yield';
 
 export type FundCategory =
   | 'Venture Capital'
