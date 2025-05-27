@@ -49,5 +49,67 @@ export const optimizeGoldenOpportunities: Fund = {
     earlyRedemptionFee: 0,
     minimumHoldingPeriod: 60, // 5 years in months (for Golden Visa)
     notes: "No lock-up, no penalties, full liquidity subject to business-day processing. The minimum investment must be maintained for five years to satisfy Golden Visa requirements."
-  }
+  },
+  faqs: [
+    {
+      question: 'What is the Portugal Golden Opportunities Fund?',
+      answer: 'An open-ended, UCITS-compliant multi-asset fund designed to meet Portugal\'s Golden Visa ARI requirements by investing exclusively in publicly traded stocks and bonds—no real estate exposure.'
+    },
+    {
+      question: 'Who manages the fund?',
+      answer: 'It\'s managed by Optimize Investment Partners, a Portuguese asset management company (CMVM Reg. No. 327) founded in 2008, with €380 million AUM across 18 funds and over 25,000 clients.'
+    },
+    {
+      question: 'What minimum investment is required?',
+      answer: 'A € 500,000 qualifying investment (plus approx. €5,255 in taxes/fees) is required to subscribe, which also satisfies the Golden Visa threshold.'
+    },
+    {
+      question: 'How is the portfolio allocated?',
+      answer: 'The target allocation is 75 % fixed-income (investment-grade corporate bonds) and 25 % equities (listed Portuguese stocks) to balance return and volatility.'
+    },
+    {
+      question: 'What asset classes does the fund hold?',
+      answer: 'Only publicly traded Portuguese corporate bonds and Portuguese-listed equities—no direct or indirect real estate positions.'
+    },
+    {
+      question: 'What geographic exposure do portfolio companies have?',
+      answer: 'All issuers are Portuguese, yet the underlying companies generate approximately 50 % of their revenues outside Portugal, adding international diversification.'
+    },
+    {
+      question: 'How has the fund performed to date?',
+      answer: 'Annual returns have been +4.2 % in 2022, +17.3 % in 2023, +6.3 % in 2024, and +8.4 % through April 30, 2025.'
+    },
+    {
+      question: 'How liquid is the fund?',
+      answer: 'Open-ended with daily liquidity—investors may redeem units within five business days at the published NAV.'
+    },
+    {
+      question: 'What are the fund\'s main advantages?',
+      answer: '• Broad diversification across issuers, sectors and asset classes\n• Lower volatility via corporate bonds\n• Daily NAV transparency and liquidity\n• PFIC- and FATCA-compliant for U.S. investors\n• Direct IRA investment possible'
+    },
+    {
+      question: 'Is the fund PFIC- and FATCA-compliant?',
+      answer: 'Yes—fully PFIC-compliant and FATCA-registered, simplifying U.S. tax reporting and allowing QEF elections.'
+    },
+    {
+      question: 'Under what regulatory framework does it operate?',
+      answer: 'A UCITS fund regulated by the Portuguese Securities Market Commission (CMVM) under EU directives.'
+    },
+    {
+      question: 'How do I subscribe?',
+      answer: 'Simply open an Optimize asset-management account (no need for a Portuguese bank account if you qualify for the Optimize special advantage), then transfer your € 500,000 investment.'
+    },
+    {
+      question: 'Who is eligible to invest?',
+      answer: 'The fund is open to all nationalities, with a streamlined process for investors from the U.S., Canada, Australia, New Zealand, Hong Kong, South Africa, Turkey, South Korea, Indonesia, Brazil, Taiwan, Japan, UK, Uruguay, Singapore, Israel and Malaysia.'
+    },
+    {
+      question: 'Does the fund include any real-estate exposure?',
+      answer: 'No—by design it holds only listed securities, ensuring full compliance with the ARI requirement of zero real-estate investment.'
+    },
+    {
+      question: 'Is there any lock-up or term limit?',
+      answer: 'No lock-up—this is a perpetual, open-ended fund you can redeem at any time (subject to the five-business-day settlement).'
+    }
+  ]
 };
