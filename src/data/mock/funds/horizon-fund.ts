@@ -64,5 +64,67 @@ export const horizonFund: Fund = {
     earlyRedemptionFee: 2,
     minimumHoldingPeriod: 60, // 5 years in months
     notes: "Fees apply on any redemption within the first five years; thereafter redemptions processed daily"
-  }
+  },
+  faqs: [
+    {
+      question: 'What is the Horizon Fund?',
+      answer: 'The Horizon Fund is a CMVM-regulated, open-ended investment vehicle managed by Octanova SCR, combining a diversified fixed-income portfolio with large-cap digital assets to pursue superior risk-adjusted returns.'
+    },
+    {
+      question: 'Who manages the Horizon Fund?',
+      answer: 'Octanova SCR, S.A., a Portuguese asset manager registered with and supervised by the CMVM, serves as both Investment Manager and Responsible Entity for the fund.'
+    },
+    {
+      question: 'What is the minimum investment commitment?',
+      answer: 'The minimum investor commitment to the Horizon Fund (Category A) is €100,000.'
+    },
+    {
+      question: 'What is the target fund size?',
+      answer: 'The fund seeks to raise a total of €100 million in committed capital.'
+    },
+    {
+      question: 'Which asset classes does the Horizon Fund invest in?',
+      answer: 'It allocates 65 % to Portuguese fixed-income instruments and 35 % to large-cap digital assets (e.g., Bitcoin, Ethereum).'
+    },
+    {
+      question: 'How is the fixed-income sleeve structured?',
+      answer: 'The bond portfolio is diversified across 16–20 PSI-20 issuers, with a maximum exposure of 10 % per issuer, and is managed to maintain a low-risk profile.'
+    },
+    {
+      question: 'How is the digital-assets allocation managed?',
+      answer: 'Digital assets are held via top-tier partners (e.g., Interactive Brokers, Gemini Trust Company), focusing on 1–3 large-cap cryptocurrencies to capture asymmetric upside.'
+    },
+    {
+      question: 'What is the fund\'s investment strategy?',
+      answer: 'By blending a stable fixed-income base with a diversified digital-asset sleeve and applying rigorous risk controls (VaR, DV01, stress tests), the Horizon Fund seeks to deliver a projected 15–20 % IRR while limiting downside.'
+    },
+    {
+      question: 'What return profile is targeted?',
+      answer: 'The fund projects a 15–20 % annualized internal rate of return through its combined strategy of yield-generating bonds and high-growth digital assets.'
+    },
+    {
+      question: 'What fees apply?',
+      answer: 'Subscription fee: 0 %\nSetup fee: 2 % one-off\nManagement fee: 2 % per annum (Category A)\nPerformance fee: 20 % of returns above the fund\'s benchmark hurdle'
+    },
+    {
+      question: 'How liquid is the fund?',
+      answer: 'The Horizon Fund is open-ended with monthly subscriptions and redemptions, subject to an early-redemption fee if units are redeemed within the first five years, and NAV is published daily.'
+    },
+    {
+      question: 'What benchmark or hurdle is used for performance fees?',
+      answer: 'Performance fees are charged on any net returns exceeding the fund\'s predetermined benchmark return (the specific benchmark is set in the fund\'s prospectus).'
+    },
+    {
+      question: 'Who provides custody and operational support?',
+      answer: 'Custodian Bank: Millennium BCP, S.A.\nDigital-asset custody/brokerage: Interactive Brokers & Gemini Trust Company\nLegal & Tax Advisor: Pares Advogados | Antas da Cunha ECIJA'
+    },
+    {
+      question: 'What risk-management processes are in place?',
+      answer: 'An active portfolio-management framework employs value-at-risk (VaR), DV01, and stress-testing scenarios, combined with quarterly compliance reviews and ongoing regulator dialogue.'
+    },
+    {
+      question: 'What performance scenarios have been modelled?',
+      answer: 'Three scenarios over a 2025–2032 horizon include:\nBase case: 158 % portfolio return (20 % BTC, 5 % bond yield)\nPositive case: 311 % return (56 % BTC, 6.25 % bond yield)\nAdverse case: –19 % return (–21 % BTC, 3 % bond yield)'
+    }
+  ]
 };
