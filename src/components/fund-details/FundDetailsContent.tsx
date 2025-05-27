@@ -15,6 +15,7 @@ import PremiumCTA from '../cta/PremiumCTA';
 import ROICalculator from './ROICalculator';
 import AlternativeFunds from './AlternativeFunds';
 import FundRiskScore from './FundRiskScore';
+import ProcessingTimeTracker from './ProcessingTimeTracker';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -43,6 +44,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           
           {/* Fund Risk Score */}
           <FundRiskScore fund={fund} />
+          
+          {/* Processing Time Tracker */}
+          <ProcessingTimeTracker fund={fund} />
           
           {/* Premium CTA after metrics */}
           <PremiumCTA variant="full" location={`fund-details-${fund.id}`} />
