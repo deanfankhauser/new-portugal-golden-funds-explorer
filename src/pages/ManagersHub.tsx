@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,9 +8,97 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import { cn } from "@/lib/utils";
 import { getAllFundManagers, getFundsCountByManager, getTotalFundSizeByManager } from '../data/services/managers-service';
+import { StructuredDataService } from '../services/structuredDataService';
 
 const ManagersHub = () => {
   const managers = getAllFundManagers();
+
+  useEffect(() => {
+    // Set page title for SEO
+    document.title = 'Investment Fund Managers | Portugal Golden Visa Funds';
+    
+    // Set meta description for SEO
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 
+        'Explore all fund managers offering Golden Visa eligible investment funds in Portugal. Compare different management companies and their investment strategies.'
+      );
+    }
+
+    // Generate structured data schemas
+    const schemas = [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        'mainEntityOfPage': {
+          '@type': 'WebPage',
+          '@id': 'https://portugalvisafunds.com/managers'
+        },
+        'name': 'Golden Visa Fund Managers Directory',
+        'description': 'Explore all fund managers offering Golden Visa eligible investment funds in Portugal. Compare different management companies and their investment strategies.',
+        'numberOfItems': managers.length,
+        'mainEntity': {
+          '@type': 'ItemList',
+          'numberOfItems': managers.length,
+          'itemListElement': managers.map((manager, index) => ({
+            '@type': 'ListItem',
+            'position': index + 1,
+            'item': {
+              '@type': 'Organization',
+              'name': manager.name,
+              'url': `https://portugalvisafunds.com/manager/${encodeURIComponent(manager.name)}`,
+              'logo': manager.logo,
+              'serviceType': 'Investment Fund Management',
+              'areaServed': {
+                '@type': 'Place',
+                'name': 'Portugal'
+              },
+              'additionalProperty': [
+                {
+                  '@type': 'PropertyValue',
+                  'name': 'Number of Funds',
+                  'value': getFundsCountByManager(manager.name)
+                },
+                {
+                  '@type': 'PropertyValue',
+                  'name': 'Total Fund Size',
+                  'value': `${getTotalFundSizeByManager(manager.name)} Million EUR`
+                }
+              ]
+            }
+          }))
+        },
+        'breadcrumb': {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': 'https://portugalvisafunds.com'
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Fund Managers',
+              'item': 'https://portugalvisafunds.com/managers'
+            }
+          ]
+        }
+      }
+    ];
+
+    // Add structured data using our service
+    StructuredDataService.addStructuredData(schemas, 'managers-hub');
+
+    // Scroll to top on page load
+    window.scrollTo(0, 0);
+
+    // Cleanup function
+    return () => {
+      StructuredDataService.removeStructuredData('managers-hub');
+    };
+  }, [managers.length]);
 
   return (
     <>

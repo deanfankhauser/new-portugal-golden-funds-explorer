@@ -10,6 +10,8 @@ import FundListItem from '@/components/FundListItem';
 import { Helmet } from 'react-helmet';
 import FundManagerAbout from '../components/fund-manager/FundManagerAbout';
 import FundManagerFAQs from '../components/fund-manager/FundManagerFAQs';
+import FundManagerSEO from '../components/fund-manager/FundManagerSEO';
+import { FundManagerData } from '../hooks/useFundManagerStructuredData';
 
 const FundManager = () => {
   const { name } = useParams<{ name: string }>();
@@ -43,8 +45,27 @@ const FundManager = () => {
     );
   }
 
+  // Prepare manager data for structured data
+  const managerData: FundManagerData = {
+    name: managerFunds[0].managerName,
+    logo: managerFunds[0].managerLogo,
+    fundsCount: managerFunds.length,
+    totalFundSize: managerFunds.reduce((sum, fund) => sum + fund.fundSize, 0),
+    funds: managerFunds.map(fund => ({
+      id: fund.id,
+      name: fund.name,
+      description: fund.description,
+      category: fund.category,
+      minimumInvestment: fund.minimumInvestment,
+      fundSize: fund.fundSize,
+      returnTarget: fund.returnTarget
+    }))
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
+      <FundManagerSEO managerData={managerData} />
+      
       <Helmet>
         <title>{managerFunds[0].managerName} Golden Visa Investment Funds</title>
         <meta name="description" content={`Discover the different Golden Visa Investment Funds managed by ${managerFunds[0].managerName} and compare with other funds.`} />
