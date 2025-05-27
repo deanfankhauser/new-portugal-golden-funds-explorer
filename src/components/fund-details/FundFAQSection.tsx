@@ -15,11 +15,10 @@ interface FAQItem {
 
 interface FundFAQSectionProps {
   fund: Fund;
-  faqs?: FAQItem[];
 }
 
-const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund, faqs = [] }) => {
-  // Default FAQs if none provided
+const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
+  // Default FAQs if none provided in fund data
   const defaultFAQs: FAQItem[] = [
     {
       question: `What is the minimum investment for ${fund.name}?`,
@@ -35,14 +34,15 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund, faqs = [] }) => {
     }
   ];
 
-  const activeFAQs = faqs.length > 0 ? faqs : defaultFAQs;
+  // Use fund-specific FAQs if available, otherwise use default FAQs
+  const activeFAQs = (fund as any).faqs && (fund as any).faqs.length > 0 ? (fund as any).faqs : defaultFAQs;
 
   useEffect(() => {
     // Create FAQ Page schema for SEO
     const faqSchema = {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      'mainEntity': activeFAQs.map((faq) => ({
+      'mainEntity': activeFAQs.map((faq: FAQItem) => ({
         '@type': 'Question',
         'name': faq.question,
         'acceptedAnswer': {
@@ -85,7 +85,7 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund, faqs = [] }) => {
       </h2>
       
       <Accordion type="single" collapsible className="w-full space-y-4">
-        {activeFAQs.map((faq, index) => (
+        {activeFAQs.map((faq: FAQItem, index: number) => (
           <AccordionItem 
             key={index} 
             value={`item-${index}`}
