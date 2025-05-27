@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFundsByTag, getAllTags } from '../data/funds';
@@ -8,7 +9,7 @@ import { ArrowLeft } from 'lucide-react';
 import { slugToTag } from '@/lib/utils';
 import PremiumCTA from '../components/cta/PremiumCTA';
 
-// Import our new components
+// Import our components
 import TagBreadcrumbs from '../components/tag/TagBreadcrumbs';
 import TagPageHeader from '../components/tag/TagPageHeader';
 import TagPageFundSummary from '../components/tag/TagPageFundSummary';
@@ -16,6 +17,7 @@ import TagPageEmptyState from '../components/tag/TagPageEmptyState';
 import TagPageFundList from '../components/tag/TagPageFundList';
 import RelatedTags from '../components/tag/RelatedTags';
 import TagPageSEO from '../components/tag/TagPageSEO';
+import TagPageFAQ from '../components/tag/TagPageFAQ';
 
 const TagPage = () => {
   const { tag: tagSlug } = useParams<{ tag: string }>();
@@ -81,6 +83,14 @@ const TagPage = () => {
           <>
             <TagPageFundSummary count={funds.length} tagName={tagName} />
             <TagPageFundList funds={funds} />
+            
+            {/* FAQ Section */}
+            <TagPageFAQ 
+              tagName={tagName} 
+              tagSlug={tagSlug || ''} 
+              fundsCount={funds.length} 
+            />
+            
             <RelatedTags allTags={allTags} currentTag={tagName} />
             
             {/* Premium CTA at bottom of tag page */}
