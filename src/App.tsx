@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -35,7 +36,7 @@ const App = () => (
           <ComparisonProvider>
             <Toaster />
             <Sonner />
-            <BrowserRouter>
+            <BrowserRouter basename="/funds">
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/funds/:id" element={<FundDetails />} />
