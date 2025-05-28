@@ -2,7 +2,7 @@
 User-agent: *
 Allow: /
 
-# Important paths - now under /funds/ base path
+# Important paths
 Allow: /funds/
 Allow: /tags/
 Allow: /categories/
@@ -18,4 +18,4 @@ Allow: /disclaimer
 Allow: /privacy
 Allow: /compare
 
-Sitemap: https://movingto.com/funds/sitemap.xml
+Sitemap: https://portugalvisafunds.com/sitemap.xml
