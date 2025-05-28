@@ -45,7 +45,7 @@ const FundDetails = () => {
       {/* SEO Component */}
       <FundDetailsSEO fund={fund} />
       
-      <main className="flex-1 py-10">
+      <main className="flex-1 py-6 md:py-10">
         <div className="container mx-auto px-4 max-w-7xl">
           <BackToFundsButton />
           <FundDetailsContent fund={fund} />

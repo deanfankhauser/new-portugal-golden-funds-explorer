@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Fund } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -72,9 +71,9 @@ const FundRiskScore: React.FC<FundRiskScoreProps> = ({ fund }) => {
     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
       <div className="flex items-center gap-2">
         {icon}
-        <span className="text-sm font-medium text-gray-700">{label}</span>
+        <span className="text-xs md:text-sm font-medium text-gray-700">{label}</span>
       </div>
-      <Badge className={`${getScoreColor(score)} font-semibold`}>
+      <Badge className={`${getScoreColor(score)} font-semibold text-xs`}>
         {score}
       </Badge>
     </div>
@@ -82,30 +81,30 @@ const FundRiskScore: React.FC<FundRiskScoreProps> = ({ fund }) => {
 
   return (
     <Card className="bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-xl text-gray-900">
-          <Shield className="w-5 h-5 text-blue-600" />
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-2 text-lg md:text-xl text-gray-900">
+          <Shield className="w-4 h-4 md:w-5 md:h-5 text-blue-600" />
           Proprietary Risk Assessment
         </CardTitle>
-        <p className="text-gray-600">
+        <p className="text-sm md:text-base text-gray-600">
           Our comprehensive risk scoring methodology evaluates funds across multiple dimensions
         </p>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4 md:space-y-6">
         {/* Overall Score */}
-        <div className="text-center p-6 bg-white rounded-xl border border-gray-200">
+        <div className="text-center p-4 md:p-6 bg-white rounded-xl border border-gray-200">
           <div className="flex items-center justify-center gap-2 mb-2">
             {getScoreIcon(overallScore)}
-            <h3 className="text-lg font-semibold text-gray-900">Overall Risk Score</h3>
+            <h3 className="text-base md:text-lg font-semibold text-gray-900">Overall Risk Score</h3>
           </div>
-          <div className={`inline-flex items-center px-4 py-2 rounded-full text-2xl font-bold border ${getScoreColor(overallScore)}`}>
+          <div className={`inline-flex items-center px-3 py-2 md:px-4 md:py-2 rounded-full text-xl md:text-2xl font-bold border ${getScoreColor(overallScore)}`}>
             {overallScore}/5
           </div>
-          <p className="text-sm text-gray-600 mt-2">{getRiskLabel(overallScore)}</p>
+          <p className="text-xs md:text-sm text-gray-600 mt-2">{getRiskLabel(overallScore)}</p>
         </div>
 
         {/* Individual Scores */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           <ScoreDisplay 
             score={managerQuality} 
             label="Manager Quality" 
@@ -129,29 +128,29 @@ const FundRiskScore: React.FC<FundRiskScoreProps> = ({ fund }) => {
         </div>
 
         {/* Methodology Explanation */}
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
-          <h4 className="font-semibold text-gray-900 mb-3">Key Assumptions & Mappings</h4>
-          <div className="space-y-2 text-sm text-gray-600">
+        <div className="bg-white rounded-lg p-3 md:p-4 border border-gray-200">
+          <h4 className="font-semibold text-gray-900 mb-2 md:mb-3 text-sm md:text-base">Key Assumptions & Mappings</h4>
+          <div className="space-y-2 text-xs md:text-sm text-gray-600">
             <div className="flex items-start gap-2">
-              <TrendingUp className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
+              <TrendingUp className="w-3 h-3 md:w-4 md:h-4 text-blue-500 mt-0.5 flex-shrink-0" />
               <div>
                 <strong>Manager Quality:</strong> Based on GP's tenure, AUM scale and realized track record.
               </div>
             </div>
             <div className="flex items-start gap-2">
-              <AlertTriangle className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
+              <AlertTriangle className="w-3 h-3 md:w-4 md:h-4 text-orange-500 mt-0.5 flex-shrink-0" />
               <div>
                 <strong>Strategy Risk:</strong> Underlying asset volatility, liquidity profile and concentration.
               </div>
             </div>
             <div className="flex items-start gap-2">
-              <Globe className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+              <Globe className="w-3 h-3 md:w-4 md:h-4 text-green-500 mt-0.5 flex-shrink-0" />
               <div>
                 <strong>Macro & ESG:</strong> Portugal/EU political-stability percentile.
               </div>
             </div>
             <div className="flex items-start gap-2">
-              <FileText className="w-4 h-4 text-purple-500 mt-0.5 flex-shrink-0" />
+              <FileText className="w-3 h-3 md:w-4 md:h-4 text-purple-500 mt-0.5 flex-shrink-0" />
               <div>
                 <strong>Regulatory Risk:</strong> Vehicle complexity (UCITS vs. AIF vs. crypto exposures).
               </div>
@@ -160,7 +159,7 @@ const FundRiskScore: React.FC<FundRiskScoreProps> = ({ fund }) => {
         </div>
 
         {/* Disclaimer */}
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 md:p-4">
           <p className="text-xs text-amber-800">
             <strong>Disclaimer:</strong> This proprietary risk assessment is for informational purposes only and should not be considered as investment advice. Risk scores are based on our internal methodology and may not reflect all relevant factors. Past performance does not guarantee future results. Please consult with a qualified financial advisor before making investment decisions.
           </p>
