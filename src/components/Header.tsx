@@ -1,15 +1,25 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 import ComparisonIndicator from "./ComparisonIndicator";
-import { ExternalLink, ArrowLeft, Mail, Calculator, ClipboardCheck } from "lucide-react";
+import MobileNavigation from "./MobileNavigation";
+import { ArrowLeft, Mail, Calculator, ClipboardCheck, Users, ExternalLink } from "lucide-react";
 
 const Header = () => {
   return (
     <header className="bg-[#1A1F2C] text-white py-3 shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
+          {/* Left section - Logo and back button */}
+          <div className="flex items-center gap-3">
             <Button
               variant="ghost"
               size="icon"
@@ -19,81 +29,110 @@ const Header = () => {
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/" className="flex items-center">
               <img 
                 src="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/65bf8df2803e405540708b3c_movingto-logo-white.svg" 
                 alt="MovingTo Logo" 
-                className="h-6 md:h-7.5"
-                style={{ height: "30px" }}
+                className="h-8"
               />
             </Link>
           </div>
-          <div className="flex items-center gap-4">
-            <Link to="/fund-quiz">
-              <Button 
-                variant="outline" 
-                className="hidden sm:flex items-center gap-2 border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"
-              >
-                <ClipboardCheck className="h-4 w-4" />
-                <span>Fund Quiz</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                size="icon"
-                className="sm:hidden border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all"
-              >
-                <ClipboardCheck className="h-4 w-4" />
-              </Button>
-            </Link>
-            <Link to="/roi-calculator">
-              <Button 
-                variant="outline" 
-                className="hidden sm:flex items-center gap-2 border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"
-              >
-                <Calculator className="h-4 w-4" />
-                <span>ROI Calculator</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                size="icon"
-                className="sm:hidden border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all"
-              >
-                <Calculator className="h-4 w-4" />
-              </Button>
-            </Link>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-6">
+            <NavigationMenu>
+              <NavigationMenuList>
+                {/* Tools Dropdown */}
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent text-white hover:bg-white/10 data-[state=open]:bg-white/10">
+                    Tools
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="w-64 p-4">
+                      <div className="space-y-2">
+                        <NavigationMenuLink asChild>
+                          <Link to="/fund-quiz" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
+                            <ClipboardCheck className="h-5 w-5 text-[#EF4444]" />
+                            <div>
+                              <div className="font-medium">Fund Quiz</div>
+                              <div className="text-sm text-gray-500">Find your ideal fund</div>
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <Link to="/roi-calculator" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
+                            <Calculator className="h-5 w-5 text-[#EF4444]" />
+                            <div>
+                              <div className="font-medium">ROI Calculator</div>
+                              <div className="text-sm text-gray-500">Calculate returns</div>
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
+                      </div>
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
+                {/* Browse Dropdown */}
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent text-white hover:bg-white/10 data-[state=open]:bg-white/10">
+                    Browse
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="w-64 p-4">
+                      <div className="space-y-2">
+                        <NavigationMenuLink asChild>
+                          <Link to="/managers" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
+                            <Users className="h-5 w-5 text-[#EF4444]" />
+                            <div>
+                              <div className="font-medium">Fund Managers</div>
+                              <div className="text-sm text-gray-500">Explore managers</div>
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <Link to="/categories" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
+                            <ExternalLink className="h-5 w-5 text-[#EF4444]" />
+                            <div>
+                              <div className="font-medium">Categories</div>
+                              <div className="text-sm text-gray-500">Browse by category</div>
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <Link to="/tags" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
+                            <ExternalLink className="h-5 w-5 text-[#EF4444]" />
+                            <div>
+                              <div className="font-medium">Tags</div>
+                              <div className="text-sm text-gray-500">Browse by tags</div>
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
+                      </div>
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+
+            {/* Direct Actions */}
             <a href="https://www.movingto.io/contact/contact-movingto" target="_blank" rel="noopener noreferrer">
               <Button 
                 variant="outline" 
-                className="hidden sm:flex items-center gap-2 border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"
+                className="border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"
               >
-                <Mail className="h-4 w-4" />
-                <span>Get in touch</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                size="icon"
-                className="sm:hidden border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all"
-              >
-                <Mail className="h-4 w-4" />
+                <Mail className="h-4 w-4 mr-2" />
+                Get in Touch
               </Button>
             </a>
+
             <ComparisonIndicator />
-            <Link to="/managers">
-              <Button 
-                variant="outline" 
-                className="hidden sm:flex items-center gap-2 border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"
-              >
-                <span>Fund Managers</span>
-                <ExternalLink className="h-4 w-4" />
-              </Button>
-              <Button 
-                variant="outline" 
-                size="icon"
-                className="sm:hidden border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all"
-              >
-                <ExternalLink className="h-4 w-4" />
-              </Button>
-            </Link>
+          </div>
+
+          {/* Mobile Navigation and Comparison */}
+          <div className="flex md:hidden items-center gap-2">
+            <ComparisonIndicator />
+            <MobileNavigation />
           </div>
         </div>
       </div>
