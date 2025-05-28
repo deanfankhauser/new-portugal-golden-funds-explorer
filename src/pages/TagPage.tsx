@@ -52,18 +52,18 @@ const TagPage = () => {
         funds={funds} 
       />
       
-      <main className="container mx-auto px-4 py-8 flex-1" itemScope itemType="https://schema.org/CollectionPage">
+      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1" itemScope itemType="https://schema.org/CollectionPage">
         {/* Breadcrumbs */}
         <TagBreadcrumbs tagName={tagName} tagSlug={tagSlug || ''} />
 
         {/* Back Button */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <Button 
             variant="ghost" 
             onClick={() => navigate('/')} 
-            className="flex items-center text-black hover:bg-[#f0f0f0]"
+            className="flex items-center text-black hover:bg-[#f0f0f0] text-sm sm:text-base"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
             Back to all funds
           </Button>
         </div>
@@ -72,7 +72,7 @@ const TagPage = () => {
         <TagPageHeader tagName={tagName} />
         
         {/* Premium CTA Banner for tag-specific insights */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <PremiumCTA variant="banner" location={`tag-${tagSlug}`} />
         </div>
         
@@ -94,7 +94,7 @@ const TagPage = () => {
             <RelatedTags allTags={allTags} currentTag={tagName} />
             
             {/* Premium CTA at bottom of tag page */}
-            <div className="mt-12">
+            <div className="mt-10 sm:mt-12">
               <PremiumCTA variant="full" location={`tag-bottom-${tagSlug}`} />
             </div>
           </>

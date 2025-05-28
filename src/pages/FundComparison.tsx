@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getComparisonBySlug } from '../data/services/comparison-service';
@@ -63,30 +64,30 @@ const FundComparison = () => {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       
-      <main className="container mx-auto px-4 py-8 flex-1">
+      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
         {/* Back Button */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <Button 
             variant="ghost" 
             onClick={() => navigate('/comparisons')} 
-            className="flex items-center text-black hover:bg-[#f0f0f0]"
+            className="flex items-center text-black hover:bg-[#f0f0f0] text-sm sm:text-base"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
             Back to comparisons
           </Button>
         </div>
 
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 leading-tight">
             {fund1.name} vs {fund2.name}
           </h1>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-base sm:text-lg">
             Detailed comparison of two Portugal Golden Visa investment funds
           </p>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
           {/* Upgrade CTA */}
           <ComparisonUpgradeCTA />
           
@@ -94,12 +95,12 @@ const FundComparison = () => {
           <ComparisonTable funds={[fund1, fund2]} />
           
           {/* Summary Section */}
-          <div className="bg-white rounded-lg shadow-sm border p-8">
-            <h2 className="text-2xl font-bold mb-6">Comparison Summary</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="bg-white rounded-lg shadow-sm border p-6 sm:p-8">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Comparison Summary</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
               <div>
-                <h3 className="text-xl font-semibold mb-4 text-[#EF4444]">{fund1.name}</h3>
-                <ul className="space-y-2 text-gray-700">
+                <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-[#EF4444]">{fund1.name}</h3>
+                <ul className="space-y-1 sm:space-y-2 text-gray-700 text-sm sm:text-base">
                   <li><strong>Category:</strong> {fund1.category}</li>
                   <li><strong>Minimum Investment:</strong> €{fund1.minimumInvestment.toLocaleString()}</li>
                   <li><strong>Target Return:</strong> {fund1.returnTarget}</li>
@@ -108,8 +109,8 @@ const FundComparison = () => {
                 </ul>
               </div>
               <div>
-                <h3 className="text-xl font-semibold mb-4 text-[#EF4444]">{fund2.name}</h3>
-                <ul className="space-y-2 text-gray-700">
+                <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-[#EF4444]">{fund2.name}</h3>
+                <ul className="space-y-1 sm:space-y-2 text-gray-700 text-sm sm:text-base">
                   <li><strong>Category:</strong> {fund2.category}</li>
                   <li><strong>Minimum Investment:</strong> €{fund2.minimumInvestment.toLocaleString()}</li>
                   <li><strong>Target Return:</strong> {fund2.returnTarget}</li>

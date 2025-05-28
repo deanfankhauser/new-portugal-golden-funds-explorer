@@ -56,11 +56,11 @@ const FundManager = () => {
       
       <Header />
       
-      <main className="flex-1 py-10">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="mb-6">
-            <Link to="/" className="text-gray-600 hover:text-[#EF4444] transition-colors flex items-center gap-1 mb-4">
-              <ChevronRight className="w-4 h-4 rotate-180" />
+      <main className="flex-1 py-6 sm:py-8 md:py-10">
+        <div className="container mx-auto px-3 sm:px-4 max-w-7xl">
+          <div className="mb-4 sm:mb-6">
+            <Link to="/" className="text-gray-600 hover:text-[#EF4444] transition-colors flex items-center gap-1 mb-3 sm:mb-4 text-sm sm:text-base">
+              <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 rotate-180" />
               Back to funds
             </Link>
           </div>

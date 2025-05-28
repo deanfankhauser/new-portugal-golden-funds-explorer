@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useComparison } from '../contexts/ComparisonContext';
 import Header from '../components/Header';
@@ -35,30 +36,30 @@ const ComparisonPage = () => {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       
-      <main className="container mx-auto px-4 py-8 flex-1">
+      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
         {/* Back Button */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <Button 
             variant="ghost" 
             onClick={() => navigate('/')} 
-            className="flex items-center text-black hover:bg-[#f0f0f0]"
+            className="flex items-center text-black hover:bg-[#f0f0f0] text-sm sm:text-base"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
             Back to funds
           </Button>
         </div>
 
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Compare Funds</h1>
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Compare Funds</h1>
           {compareFunds.length > 0 && (
-            <div className="flex justify-between items-center">
-              <p className="text-gray-600">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+              <p className="text-gray-600 text-sm sm:text-base">
                 Comparing {compareFunds.length} fund{compareFunds.length !== 1 ? 's' : ''}
               </p>
               <Button 
                 variant="outline" 
                 onClick={clearComparison}
-                className="text-red-600 border-red-600 hover:bg-red-50"
+                className="text-red-600 border-red-600 hover:bg-red-50 w-full sm:w-auto text-sm sm:text-base"
               >
                 Clear all
               </Button>
@@ -69,7 +70,7 @@ const ComparisonPage = () => {
         {compareFunds.length === 0 ? (
           <EmptyComparison />
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             {/* Upgrade CTA for advanced comparison features */}
             <ComparisonUpgradeCTA />
             

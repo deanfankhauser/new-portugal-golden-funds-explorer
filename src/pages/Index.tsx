@@ -24,19 +24,19 @@ const IndexPage = () => {
       <HomepageSEO />
       <Header />
       
-      <main className="container mx-auto px-4 py-8 flex-1">
-        <div className="mb-10 text-center md:text-left max-w-4xl mx-auto md:mx-0">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-800">
+      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
+        <div className="mb-8 sm:mb-10 text-center md:text-left max-w-4xl mx-auto md:mx-0">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 text-gray-800 leading-tight">
             Portugal Golden Visa Investment Funds
           </h1>
-          <p className="text-xl text-gray-600 mb-6">
+          <p className="text-lg sm:text-xl text-gray-600 mb-4 sm:mb-6 px-2 sm:px-0">
             Explore our qualified Portugal Golden Visa Investment funds list with our comprehensive directory.
           </p>
         </div>
 
         {/* Premium CTA Banner - only show for non-authenticated users */}
         {!isAuthenticated && (
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             <PremiumCTA variant="banner" location="homepage" />
           </div>
         )}
