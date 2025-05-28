@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../data/funds';
@@ -51,7 +50,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
             <CardTitle className="text-xl">
-              <Link to={`/funds/${fund.id}`} className="hover:text-portugal-blue transition-colors">
+              <Link to={`/${fund.id}`} className="hover:text-portugal-blue transition-colors">
                 {fund.name}
               </Link>
             </CardTitle>

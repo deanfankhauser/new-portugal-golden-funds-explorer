@@ -39,7 +39,7 @@ const App = () => (
             <BrowserRouter basename="/funds">
               <Routes>
                 <Route path="/" element={<Index />} />
-                <Route path="/funds/:id" element={<FundDetails />} />
+                <Route path="/:id" element={<FundDetails />} />
                 <Route path="/tags" element={<TagsHub />} />
                 <Route path="/tags/:tag" element={<TagPage />} />
                 <Route path="/categories" element={<CategoriesHub />} />
