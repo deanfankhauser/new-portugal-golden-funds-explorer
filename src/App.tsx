@@ -1,8 +1,10 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import Index from "./pages/Index";
 import FundDetails from "./pages/FundDetails";
 import TagPage from "./pages/TagPage";
@@ -24,8 +26,21 @@ import FundComparison from "./pages/FundComparison";
 import ComparisonsHub from "./pages/ComparisonsHub";
 import ROICalculator from "./pages/ROICalculator";
 import FundQuiz from "./pages/FundQuiz";
+import { analytics } from "./utils/analytics";
 
 const queryClient = new QueryClient();
+
+// Component to handle route tracking
+const RouteTracker = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Track page view on route change
+    analytics.trackPageView(location.pathname + location.search);
+  }, [location]);
+
+  return null;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -36,6 +51,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <RouteTracker />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/funds/:id" element={<FundDetails />} />

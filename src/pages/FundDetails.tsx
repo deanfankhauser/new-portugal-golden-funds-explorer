@@ -5,6 +5,7 @@ import { getFundById } from '../data/funds';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
+import { analytics } from '../utils/analytics';
 
 // Import our components
 import BackToFundsButton from '../components/fund-details/BackToFundsButton';
@@ -25,10 +26,12 @@ const FundDetails = () => {
     useFundStructuredData(fund);
   }
 
-  // Add fund to recently viewed when component mounts
+  // Add fund to recently viewed and track analytics when component mounts
   useEffect(() => {
     if (fund) {
       addToRecentlyViewed(fund);
+      // Track fund view
+      analytics.trackFundView(fund.id, fund.name, fund.category);
     }
   }, [fund, addToRecentlyViewed]);
 

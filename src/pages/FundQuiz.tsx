@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -9,6 +8,7 @@ import { Fund } from '../data/types/funds';
 import { Helmet } from 'react-helmet';
 import { Card, CardContent } from '@/components/ui/card';
 import { ClipboardCheck, Sparkles, Target, TrendingUp } from 'lucide-react';
+import { analytics } from '../utils/analytics';
 
 const FundQuiz = () => {
   const [recommendations, setRecommendations] = useState<(Fund & { score: number })[]>([]);
@@ -18,6 +18,13 @@ const FundQuiz = () => {
   const onSubmit = async (data: QuizFormData) => {
     setIsProcessing(true);
     
+    // Track quiz start
+    analytics.trackEvent('quiz_start', {
+      risk_tolerance: data.riskTolerance,
+      investment_amount: data.investmentAmount,
+      investment_horizon: data.investmentHorizon
+    });
+    
     // Add a small delay to show processing state
     await new Promise(resolve => setTimeout(resolve, 1500));
     
@@ -25,12 +32,25 @@ const FundQuiz = () => {
     setRecommendations(recommendations);
     setShowResults(true);
     setIsProcessing(false);
+
+    // Track quiz completion
+    analytics.trackQuizCompletion(
+      recommendations.map(r => r.name),
+      {
+        riskTolerance: data.riskTolerance,
+        investmentAmount: data.investmentAmount,
+        investmentHorizon: data.investmentHorizon
+      }
+    );
   };
 
   const resetQuiz = () => {
     setShowResults(false);
     setRecommendations([]);
     setIsProcessing(false);
+    
+    // Track quiz reset
+    analytics.trackEvent('quiz_reset');
   };
 
   const formatCurrency = (amount: number) => {

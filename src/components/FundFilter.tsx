@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { FundTag, getAllTags } from '../data/funds';
 import { Input } from "@/components/ui/input";
@@ -6,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { X, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import PasswordDialog from './PasswordDialog';
+import { analytics } from '../utils/analytics';
 
 interface FundFilterProps {
   selectedTags: FundTag[];
@@ -35,11 +35,14 @@ const FundFilter: React.FC<FundFilterProps> = ({
       return;
     }
     
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter(t => t !== tag));
-    } else {
-      setSelectedTags([...selectedTags, tag]);
-    }
+    const newTags = selectedTags.includes(tag) 
+      ? selectedTags.filter(t => t !== tag)
+      : [...selectedTags, tag];
+    
+    setSelectedTags(newTags);
+    
+    // Track filter usage
+    analytics.trackFilterUsage(newTags, searchQuery);
   };
 
   const handleSearchClick = () => {
@@ -52,6 +55,11 @@ const FundFilter: React.FC<FundFilterProps> = ({
   const handleSearchChange = (value: string) => {
     if (isAuthenticated) {
       setSearchQuery(value);
+      
+      // Track search if there's a value
+      if (value.trim()) {
+        analytics.trackSearch(value.trim(), 0); // Results count will be updated from parent component
+      }
     }
   };
 
@@ -62,6 +70,9 @@ const FundFilter: React.FC<FundFilterProps> = ({
     }
     setSelectedTags([]);
     setSearchQuery('');
+    
+    // Track filter clear
+    analytics.trackEvent('filters_cleared');
   };
 
   return (
