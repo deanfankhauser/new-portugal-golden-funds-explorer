@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -42,7 +41,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
           </div>
           <Button 
             variant="outline"
-            className="bg-white text-[#EF4444] border-white hover:bg-gray-100"
+            className="bg-white text-[#EF4444] border-white hover:bg-gray-100 hover:text-[#EF4444]"
             onClick={handleCTAClick}
           >
             Start Now
