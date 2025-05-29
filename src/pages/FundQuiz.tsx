@@ -20,8 +20,8 @@ const FundQuiz = () => {
     
     // Track quiz start
     analytics.trackEvent('quiz_start', {
-      risk_tolerance: data.riskTolerance,
-      investment_amount: data.investmentAmount,
+      risk_appetite: data.riskAppetite,
+      ticket_size: data.ticketSize,
       investment_horizon: data.investmentHorizon
     });
     
@@ -37,8 +37,8 @@ const FundQuiz = () => {
     analytics.trackQuizCompletion(
       recommendations.map(r => r.name),
       {
-        riskTolerance: data.riskTolerance,
-        investmentAmount: data.investmentAmount,
+        riskTolerance: data.riskAppetite,
+        investmentAmount: data.ticketSize,
         investmentHorizon: data.investmentHorizon
       }
     );
