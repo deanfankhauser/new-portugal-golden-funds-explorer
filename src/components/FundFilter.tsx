@@ -66,7 +66,7 @@ const FundFilter: React.FC<FundFilterProps> = ({
 
   return (
     <>
-      <div className="bg-white p-4 rounded-lg shadow-sm border mb-6">
+      <div className="bg-white p-4 rounded-lg shadow-sm border mb-6 overflow-hidden">
         <h2 className="text-lg font-semibold mb-4">Filter Funds</h2>
         
         <div className="mb-4">
@@ -83,20 +83,22 @@ const FundFilter: React.FC<FundFilterProps> = ({
           />
         </div>
         
-        <div>
+        <div className="overflow-hidden">
           <label className="block mb-2 text-sm font-medium">Filter by Tags</label>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 w-full">
             {visibleTags.map(tag => (
               <Button
                 key={tag}
                 variant={selectedTags.includes(tag) ? "default" : "outline"}
                 size="sm"
                 onClick={() => toggleTag(tag)}
-                className={selectedTags.includes(tag) ? 
+                className={`${selectedTags.includes(tag) ? 
                   "bg-[#EF4444] hover:bg-[#EF4444]/90 text-white" : 
-                  "border-gray-300 hover:bg-[#f0f0f0] text-gray-700 hover:text-gray-800"}
+                  "border-gray-300 hover:bg-[#f0f0f0] text-gray-700 hover:text-gray-800"} 
+                  text-xs px-2 py-1 h-auto min-h-[28px] break-words hyphens-auto max-w-full`}
+                style={{ wordBreak: 'break-word' }}
               >
-                {tag}
+                <span className="leading-tight">{tag}</span>
               </Button>
             ))}
           </div>
