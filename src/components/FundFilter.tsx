@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { FundTag, getAllTags } from '../data/funds';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { X } from 'lucide-react';
+import { X, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import PasswordDialog from './PasswordDialog';
 
@@ -23,6 +23,11 @@ const FundFilter: React.FC<FundFilterProps> = ({
   const allTags = getAllTags();
   const { isAuthenticated } = useAuth();
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [showAllTags, setShowAllTags] = useState(false);
+  
+  // Show first 6 tags initially, then show all when expanded
+  const visibleTags = showAllTags ? allTags : allTags.slice(0, 6);
+  const hasMoreTags = allTags.length > 6;
   
   const toggleTag = (tag: FundTag) => {
     if (!isAuthenticated) {
@@ -76,22 +81,12 @@ const FundFilter: React.FC<FundFilterProps> = ({
             className="w-full cursor-pointer"
             readOnly={!isAuthenticated}
           />
-          {!isAuthenticated && (
-            <p className="text-xs text-gray-500 mt-1">
-              MovingTo client access required for search functionality
-            </p>
-          )}
         </div>
         
         <div>
           <label className="block mb-2 text-sm font-medium">Filter by Tags</label>
-          {!isAuthenticated && (
-            <p className="text-xs text-gray-500 mb-2">
-              MovingTo client access required for advanced filtering
-            </p>
-          )}
           <div className="flex flex-wrap gap-2">
-            {allTags.map(tag => (
+            {visibleTags.map(tag => (
               <Button
                 key={tag}
                 variant={selectedTags.includes(tag) ? "default" : "outline"}
@@ -105,6 +100,27 @@ const FundFilter: React.FC<FundFilterProps> = ({
               </Button>
             ))}
           </div>
+          
+          {hasMoreTags && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowAllTags(!showAllTags)}
+              className="mt-3 text-gray-600 hover:text-gray-800 hover:bg-gray-50 flex items-center gap-1"
+            >
+              {showAllTags ? (
+                <>
+                  <ChevronUp className="w-4 h-4" />
+                  Show less
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-4 h-4" />
+                  Show more ({allTags.length - 6} more)
+                </>
+              )}
+            </Button>
+          )}
         </div>
         
         {(selectedTags.length > 0 || searchQuery) && (
