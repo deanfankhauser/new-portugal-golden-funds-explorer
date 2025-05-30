@@ -92,7 +92,7 @@ const DisclaimerPage = () => {
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-3">Contact Us</h2>
               <p className="text-gray-600">
                 If you would like to contact us to understand more about this disclaimer or wish to contact us concerning 
-                any matter relating to it, please email us at info@movingto.io or visit our <a href="https://www.movingto.io/contact/contact-movingto" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">contact page</a>.
+                any matter relating to it, please email us at info@movingto.com or visit our <a href="https://www.movingto.com/contact/contact-movingto" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">contact page</a>.
               </p>
             </section>
           </div>

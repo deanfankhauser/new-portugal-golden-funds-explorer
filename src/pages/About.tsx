@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -60,7 +59,7 @@ const AboutPage = () => {
               <div className="flex flex-wrap gap-4">
                 <Button 
                   className="group"
-                  onClick={() => window.open("https://www.movingto.io/pt/portugal-golden-visa", "_blank")}
+                  onClick={() => window.open("https://www.movingto.com/pt/portugal-golden-visa", "_blank")}
                 >
                   Learn more about Golden Visa
                   <ExternalLink className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -69,7 +68,7 @@ const AboutPage = () => {
                 <Button 
                   variant="secondary"
                   className="group"
-                  onClick={() => window.open("https://www.movingto.io/contact/contact-movingto", "_blank")}
+                  onClick={() => window.open("https://www.movingto.com/contact/contact-movingto", "_blank")}
                 >
                   Get in touch
                   <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />

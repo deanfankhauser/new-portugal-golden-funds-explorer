@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -124,7 +123,7 @@ const PrivacyPage = () => {
             <section className="pt-6">
               <h2 className="text-xl font-semibold text-gray-800">Contact Us</h2>
               <p className="text-gray-600">
-                If you have any questions about this Privacy Policy, please contact us at privacy@movingto.io or visit our <a href="https://www.movingto.io/contact/contact-movingto" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">contact page</a>.
+                If you have any questions about this Privacy Policy, please contact us at privacy@movingto.com or visit our <a href="https://www.movingto.com/contact/contact-movingto" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">contact page</a>.
               </p>
             </section>
           </div>
