@@ -1,8 +1,6 @@
 
-import { funds } from '../data/funds';
-import { categories } from '../data/services/categories-service';
-import { tags } from '../data/services/tags-service';
-import { managers } from '../data/services/managers-service';
+import { funds, getAllCategories, getAllTags } from '../data/funds';
+import { getAllFundManagers } from '../data/services/managers-service';
 import { URL_CONFIG } from '../utils/urlConfig';
 
 export class SitemapService {
@@ -73,9 +71,11 @@ export class SitemapService {
     });
 
     // Category pages
+    const categories = getAllCategories();
     categories.forEach(category => {
+      const categorySlug = category.toLowerCase().replace(/\s+/g, '-').replace(/[()&]/g, '');
       urls.push({
-        loc: URL_CONFIG.buildCategoryUrl(category.slug),
+        loc: `${baseUrl}/categories/${categorySlug}`,
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: '0.8'
@@ -83,9 +83,11 @@ export class SitemapService {
     });
 
     // Tag pages
+    const tags = getAllTags();
     tags.forEach(tag => {
+      const tagSlug = tag.toLowerCase().replace(/\s+/g, '-').replace(/[()&%€]/g, '');
       urls.push({
-        loc: URL_CONFIG.buildTagUrl(tag.slug),
+        loc: `${baseUrl}/tags/${tagSlug}`,
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: '0.7'
@@ -93,9 +95,11 @@ export class SitemapService {
     });
 
     // Manager pages
+    const managers = getAllFundManagers();
     managers.forEach(manager => {
+      const managerSlug = manager.name.toLowerCase().replace(/\s+/g, '-').replace(/[()&]/g, '');
       urls.push({
-        loc: URL_CONFIG.buildManagerUrl(manager.name),
+        loc: `${baseUrl}/managers/${managerSlug}`,
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: '0.8'
