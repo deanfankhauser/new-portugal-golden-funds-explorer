@@ -26,6 +26,7 @@ import FundComparison from "./pages/FundComparison";
 import ComparisonsHub from "./pages/ComparisonsHub";
 import ROICalculator from "./pages/ROICalculator";
 import FundQuiz from "./pages/FundQuiz";
+import PerformanceDashboard from "./components/common/PerformanceDashboard";
 import { analytics } from "./utils/analytics";
 
 const queryClient = new QueryClient();
@@ -72,6 +73,7 @@ const App = () => (
                 <Route path="/fund-quiz" element={<FundQuiz />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              <PerformanceDashboard />
             </BrowserRouter>
           </ComparisonProvider>
         </RecentlyViewedProvider>

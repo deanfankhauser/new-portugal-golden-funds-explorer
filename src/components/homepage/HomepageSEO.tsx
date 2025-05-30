@@ -5,16 +5,20 @@ import { StructuredDataService } from '../../services/structuredDataService';
 import { EnhancedStructuredDataService } from '../../services/enhancedStructuredDataService';
 import { SEOService } from '../../services/seoService';
 import { PerformanceService } from '../../services/performanceService';
+import { usePerformanceMonitoring } from '../../hooks/usePerformanceMonitoring';
 import { URL_CONFIG } from '../../utils/urlConfig';
 
 const HomepageSEO = () => {
+  // Initialize performance monitoring
+  const { metrics, performanceBudgetMet } = usePerformanceMonitoring();
+
   useEffect(() => {
     const currentUrl = window.location.href;
     
     // Initialize comprehensive SEO
     SEOService.initializeSEO(currentUrl);
     
-    // Initialize performance optimizations
+    // Initialize enhanced performance optimizations
     PerformanceService.initializePerformanceOptimizations();
 
     // Set optimized page title and meta description
@@ -80,7 +84,7 @@ const HomepageSEO = () => {
         }
       },
       EnhancedStructuredDataService.generateInvestmentHowToSchema(),
-      EnhancedStructuredDataService.generateComparisonTableSchema(funds.slice(0, 5)), // Top 5 funds
+      EnhancedStructuredDataService.generateComparisonTableSchema(funds.slice(0, 5)),
       EnhancedStructuredDataService.generateArticleSchema(
         'Portugal Golden Visa Investment Funds Directory',
         'Complete guide to qualified investment funds for Portugal Golden Visa residency program',
@@ -94,13 +98,19 @@ const HomepageSEO = () => {
     // Scroll to top on page load
     window.scrollTo(0, 0);
 
+    // Log performance metrics
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Performance Metrics:', metrics);
+      console.log('Performance Budget Met:', performanceBudgetMet);
+    }
+
     // Cleanup function
     return () => {
       StructuredDataService.removeStructuredData('homepage');
     };
-  }, []);
+  }, [metrics, performanceBudgetMet]);
 
-  return null; // This component doesn't render anything
+  return null;
 };
 
 export default HomepageSEO;
