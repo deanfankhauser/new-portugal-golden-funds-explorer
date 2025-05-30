@@ -1,6 +1,17 @@
 
 import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
 
+// Declare gtag types
+declare global {
+  interface Window {
+    gtag?: (
+      command: 'config' | 'event' | 'js' | 'set',
+      targetId: string | Date,
+      config?: Record<string, any>
+    ) => void;
+  }
+}
+
 export class AdvancedPerformanceService {
   private static performanceData: Record<string, number> = {};
   
@@ -21,8 +32,8 @@ export class AdvancedPerformanceService {
       this.performanceData[metric.name] = metric.value;
       
       // Send to analytics if available
-      if (typeof gtag !== 'undefined') {
-        gtag('event', metric.name, {
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', metric.name, {
           event_category: 'Web Vitals',
           value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
           non_interaction: true,
