@@ -2,6 +2,7 @@
 import { useEffect } from 'react';
 import { funds } from '../../data/funds';
 import { StructuredDataService } from '../../services/structuredDataService';
+import { URL_CONFIG } from '../../utils/urlConfig';
 
 const HomepageSEO = () => {
   useEffect(() => {
@@ -23,7 +24,7 @@ const HomepageSEO = () => {
         '@type': 'CollectionPage',
         'mainEntityOfPage': {
           '@type': 'WebPage',
-          '@id': 'https://portugalvisafunds.com/'
+          '@id': URL_CONFIG.BASE_URL
         },
         'name': 'Portugal Golden Visa Investment Funds Directory',
         'description': 'Comprehensive directory of eligible investment funds for the Portugal Golden Visa program',
@@ -43,7 +44,7 @@ const HomepageSEO = () => {
                 '@type': 'Organization',
                 'name': fund.managerName
               },
-              'url': `https://portugalvisafunds.com/funds/${fund.id}`,
+              'url': URL_CONFIG.buildFundUrl(fund.id),
               'offers': {
                 '@type': 'Offer',
                 'price': fund.minimumInvestment,
@@ -59,7 +60,7 @@ const HomepageSEO = () => {
               '@type': 'ListItem',
               'position': 1,
               'name': 'Home',
-              'item': 'https://portugalvisafunds.com'
+              'item': URL_CONFIG.BASE_URL
             }
           ]
         }

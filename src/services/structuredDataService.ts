@@ -1,5 +1,6 @@
 
 import { Fund } from '../data/funds';
+import { URL_CONFIG } from '../utils/urlConfig';
 
 export interface StructuredDataSchema {
   '@context': string;
@@ -62,7 +63,7 @@ export class StructuredDataService {
         }
       ],
       'keywords': fund.tags.join(', '),
-      'url': `${window.location.origin}/funds/${fund.id}`,
+      'url': URL_CONFIG.buildFundUrl(fund.id),
       'identifier': fund.id
     };
   }
@@ -120,7 +121,7 @@ export class StructuredDataService {
       '@type': 'WebPage',
       'name': `${fund.name} | Fund Details`,
       'description': fund.description,
-      'url': `${window.location.origin}/funds/${fund.id}`,
+      'url': URL_CONFIG.buildFundUrl(fund.id),
       'mainEntity': {
         '@type': 'FinancialProduct',
         'name': fund.name,
@@ -133,19 +134,19 @@ export class StructuredDataService {
             '@type': 'ListItem',
             'position': 1,
             'name': 'Home',
-            'item': window.location.origin
+            'item': URL_CONFIG.BASE_URL
           },
           {
             '@type': 'ListItem',
             'position': 2,
             'name': 'Funds',
-            'item': `${window.location.origin}/#funds`
+            'item': `${URL_CONFIG.BASE_URL}/#funds`
           },
           {
             '@type': 'ListItem',
             'position': 3,
             'name': fund.name,
-            'item': `${window.location.origin}/funds/${fund.id}`
+            'item': URL_CONFIG.buildFundUrl(fund.id)
           }
         ]
       },

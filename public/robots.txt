@@ -2,20 +2,29 @@
 User-agent: *
 Allow: /
 
-# Important paths
+# Important paths for movingto.com/funds
 Allow: /funds/
-Allow: /tags/
-Allow: /categories/
+Allow: /funds/funds/
+Allow: /funds/tags/
+Allow: /funds/categories/
+Allow: /funds/managers/
 
 # Explicitly specify important listing pages
-Allow: /funds/*
-Allow: /tags
-Allow: /tags/*
-Allow: /categories
-Allow: /categories/*
-Allow: /about
-Allow: /disclaimer
-Allow: /privacy
-Allow: /compare
+Allow: /funds/funds/*
+Allow: /funds/tags
+Allow: /funds/tags/*
+Allow: /funds/categories
+Allow: /funds/categories/*
+Allow: /funds/managers
+Allow: /funds/managers/*
+Allow: /funds/manager/*
+Allow: /funds/about
+Allow: /funds/disclaimer
+Allow: /funds/privacy
+Allow: /funds/compare
+Allow: /funds/comparisons
+Allow: /funds/faqs
+Allow: /funds/roi-calculator
+Allow: /funds/fund-quiz
 
-Sitemap: https://portugalvisafunds.com/sitemap.xml
+Sitemap: https://movingto.com/funds/sitemap.xml
