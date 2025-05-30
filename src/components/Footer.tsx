@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Facebook, Linkedin, ExternalLink } from "lucide-react";
 import RecentlyViewedFunds from "./RecentlyViewedFunds";
@@ -89,7 +90,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <a 
-                  href="https://www.movingto.io/pt/portugal-golden-visa" 
+                  href="https://www.movingto.com/pt/portugal-golden-visa" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-gray-600 hover:text-primary text-sm transition-colors inline-flex items-center"
@@ -100,7 +101,7 @@ const Footer = () => {
               </li>
               <li>
                 <a 
-                  href="https://www.movingto.io/pt/best-portugal-golden-visa-law-firms" 
+                  href="https://www.movingto.com/pt/best-portugal-golden-visa-law-firms" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-gray-600 hover:text-primary text-sm transition-colors inline-flex items-center"
@@ -111,7 +112,7 @@ const Footer = () => {
               </li>
               <li>
                 <a 
-                  href="https://www.movingto.io/statistics/portugal-golden-visa-statistics" 
+                  href="https://www.movingto.com/statistics/portugal-golden-visa-statistics" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-gray-600 hover:text-primary text-sm transition-colors inline-flex items-center"

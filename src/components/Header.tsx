@@ -24,7 +24,7 @@ const Header = () => {
               variant="ghost"
               size="icon"
               className="text-white hover:bg-white/10 hover:text-white"
-              onClick={() => window.open("https://movingto.io", "_blank")}
+              onClick={() => window.open("https://movingto.com", "_blank")}
               aria-label="Go to MovingTo website"
             >
               <ArrowLeft className="h-5 w-5" />
@@ -116,7 +116,7 @@ const Header = () => {
             </NavigationMenu>
 
             {/* Direct Actions */}
-            <a href="https://www.movingto.io/contact/contact-movingto" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.movingto.com/contact/contact-movingto" target="_blank" rel="noopener noreferrer">
               <Button 
                 variant="outline" 
                 className="border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"

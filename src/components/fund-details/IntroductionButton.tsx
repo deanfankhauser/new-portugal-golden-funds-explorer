@@ -10,7 +10,7 @@ interface IntroductionButtonProps {
 
 const IntroductionButton: React.FC<IntroductionButtonProps> = ({ variant = 'full' }) => {
   const handleIntroductionClick = () => {
-    window.open('https://www.movingto.io/contact/contact-movingto', '_blank');
+    window.open('https://www.movingto.com/contact/contact-movingto', '_blank');
   };
   
   if (variant === 'compact') {

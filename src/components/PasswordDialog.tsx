@@ -97,7 +97,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
             Not a MovingTo client yet?
           </p>
           <a 
-            href="https://movingto.io/contact" 
+            href="https://movingto.com/contact" 
             target="_blank" 
             rel="noopener noreferrer"
             className="text-[#EF4444] hover:underline font-medium text-sm"

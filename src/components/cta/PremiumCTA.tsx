@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,17 +13,17 @@ interface PremiumCTAProps {
 const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'general' }) => {
   const handleCTAClick = () => {
     // Track the CTA click with location for analytics
-    analytics.trackCTAClick(location, `premium-${variant}`, 'https://www.movingto.io/contact/contact-movingto');
+    analytics.trackCTAClick(location, `premium-${variant}`, 'https://www.movingto.com/contact/contact-movingto');
     
     // Track external link click
     analytics.trackExternalLink(
-      'https://www.movingto.io/contact/contact-movingto',
+      'https://www.movingto.com/contact/contact-movingto',
       'Get Premium Access',
       `cta-${location}`
     );
     
     console.log(`Premium CTA clicked from: ${location}`);
-    window.open('https://www.movingto.io/contact/contact-movingto', '_blank');
+    window.open('https://www.movingto.com/contact/contact-movingto', '_blank');
   };
 
   if (variant === 'compact') {

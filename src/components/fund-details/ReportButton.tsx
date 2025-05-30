@@ -9,7 +9,7 @@ interface ReportButtonProps {
 
 const ReportButton: React.FC<ReportButtonProps> = ({ fundName }) => {
   const handleReport = () => {
-    window.location.href = `mailto:info@movingto.io?subject=Incorrect Information Report - ${fundName}&body=I'd like to report incorrect information for fund: ${fundName}`;
+    window.location.href = `mailto:info@movingto.com?subject=Incorrect Information Report - ${fundName}&body=I'd like to report incorrect information for fund: ${fundName}`;
   };
 
   return (
