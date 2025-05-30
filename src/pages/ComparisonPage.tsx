@@ -10,6 +10,7 @@ import ComparisonTable from '../components/comparison/ComparisonTable';
 import EmptyComparison from '../components/comparison/EmptyComparison';
 import ComparisonUpgradeCTA from '../components/cta/ComparisonUpgradeCTA';
 import { useComparisonStructuredData } from '../hooks/useComparisonStructuredData';
+import { URL_CONFIG } from '../utils/urlConfig';
 
 const ComparisonPage = () => {
   const { compareFunds, clearComparison } = useComparison();
@@ -28,6 +29,24 @@ const ComparisonPage = () => {
         'Compare Portugal Golden Visa investment funds side-by-side. Analyze fees, returns, minimum investments, and more to find the best fund for your needs.'
       );
     }
+
+    // Add Open Graph meta tags for social sharing
+    const updateOrCreateMeta = (property: string, content: string) => {
+      let meta = document.querySelector(`meta[property="${property}"]`);
+      if (meta) {
+        meta.setAttribute('content', content);
+      } else {
+        meta = document.createElement('meta');
+        meta.setAttribute('property', property);
+        meta.setAttribute('content', content);
+        document.head.appendChild(meta);
+      }
+    };
+
+    updateOrCreateMeta('og:title', 'Compare Funds | Portugal Golden Visa Investment Funds');
+    updateOrCreateMeta('og:description', 'Compare Portugal Golden Visa investment funds side-by-side. Analyze fees, returns, minimum investments, and more to find the best fund for your needs.');
+    updateOrCreateMeta('og:type', 'website');
+    updateOrCreateMeta('og:url', URL_CONFIG.buildUrl('compare'));
     
     window.scrollTo(0, 0);
   }, []);

@@ -9,6 +9,7 @@ import { ArrowLeft } from 'lucide-react';
 import ComparisonTable from '../components/comparison/ComparisonTable';
 import ComparisonUpgradeCTA from '../components/cta/ComparisonUpgradeCTA';
 import { useComparisonStructuredData } from '../hooks/useComparisonStructuredData';
+import { URL_CONFIG } from '../utils/urlConfig';
 
 const FundComparison = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -55,10 +56,10 @@ const FundComparison = () => {
     updateOrCreateMeta('og:title', `${fund1.name} vs ${fund2.name} | Fund Comparison`);
     updateOrCreateMeta('og:description', `Compare ${fund1.name} and ${fund2.name} - detailed analysis of Portugal Golden Visa investment funds.`);
     updateOrCreateMeta('og:type', 'website');
-    updateOrCreateMeta('og:url', window.location.href);
+    updateOrCreateMeta('og:url', URL_CONFIG.buildComparisonUrl(slug!));
 
     window.scrollTo(0, 0);
-  }, [fund1, fund2]);
+  }, [fund1, fund2, slug]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">

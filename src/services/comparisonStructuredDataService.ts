@@ -1,6 +1,7 @@
 
 import { Fund } from '../data/funds';
 import { StructuredDataSchema } from './structuredDataService';
+import { URL_CONFIG } from '../utils/urlConfig';
 
 export class ComparisonStructuredDataService {
   
@@ -30,7 +31,7 @@ export class ComparisonStructuredDataService {
             '@type': 'FinancialProduct',
             'name': fund.name,
             'identifier': fund.id,
-            'url': `${window.location.origin}/funds/${fund.id}`
+            'url': URL_CONFIG.buildFundUrl(fund.id)
           }
         }))
       },
@@ -64,7 +65,7 @@ export class ComparisonStructuredDataService {
           'name': fund.name,
           'description': fund.description,
           'identifier': fund.id,
-          'url': `${window.location.origin}/funds/${fund.id}`,
+          'url': URL_CONFIG.buildFundUrl(fund.id),
           'category': fund.category,
           'offers': {
             '@type': 'Offer',
@@ -92,9 +93,9 @@ export class ComparisonStructuredDataService {
         '@type': 'FinancialProduct',
         'name': fund.name,
         'identifier': fund.id,
-        'url': `${window.location.origin}/funds/${fund.id}`,
+        'url': URL_CONFIG.buildFundUrl(fund.id),
         'sameAs': [
-          `${window.location.origin}/funds/${fund.id}`,
+          URL_CONFIG.buildFundUrl(fund.id),
           fund.websiteUrl
         ].filter(Boolean)
       })),
@@ -113,13 +114,13 @@ export class ComparisonStructuredDataService {
         '@type': 'ListItem',
         'position': 1,
         'name': 'Home',
-        'item': window.location.origin
+        'item': URL_CONFIG.BASE_URL
       },
       {
         '@type': 'ListItem',
         'position': 2,
         'name': 'Comparisons',
-        'item': `${window.location.origin}/comparisons`
+        'item': URL_CONFIG.buildUrl('comparisons')
       }
     ];
 

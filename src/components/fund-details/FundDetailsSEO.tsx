@@ -1,6 +1,7 @@
 
 import { useEffect } from 'react';
 import { Fund } from '../../data/funds';
+import { URL_CONFIG } from '../../utils/urlConfig';
 
 interface FundDetailsSEOProps {
   fund: Fund;
@@ -41,7 +42,7 @@ const FundDetailsSEO: React.FC<FundDetailsSEOProps> = ({ fund }) => {
     updateOrCreateMeta('og:title', `${fund.name} | Investment Fund`);
     updateOrCreateMeta('og:description', fund.description);
     updateOrCreateMeta('og:type', 'website');
-    updateOrCreateMeta('og:url', `${window.location.origin}/funds/${fund.id}`);
+    updateOrCreateMeta('og:url', URL_CONFIG.buildFundUrl(fund.id));
     if (fund.managerLogo) {
       updateOrCreateMeta('og:image', fund.managerLogo);
     }
