@@ -1,3 +1,4 @@
+
 import { Fund } from '../data/funds';
 
 export class AIOptimizationService {
@@ -81,10 +82,10 @@ MINIMUM_HOLD_PERIOD: 5 years`;
 
   // Calculate risk level based on fund characteristics
   private static calculateRiskLevel(fund: Fund): 'Low' | 'Medium' | 'High' {
-    if (fund.tags.includes('Low Risk') || fund.category === 'Real Estate') {
+    if (fund.tags.includes('Low Risk') || fund.category === 'Real Estate Funds') {
       return 'Low';
     }
-    if (fund.tags.includes('High Risk') || fund.category === 'Private Equity') {
+    if (fund.tags.includes('High Risk') || fund.category === 'Equity Funds') {
       return 'High';
     }
     return 'Medium';
@@ -92,10 +93,10 @@ MINIMUM_HOLD_PERIOD: 5 years`;
 
   // Determine primary investment focus
   private static determineInvestmentFocus(fund: Fund): string {
-    if (fund.category === 'Real Estate') return 'Real Estate';
-    if (fund.category === 'Clean Energy (Solar & Battery Storage)') return 'Renewable Energy';
-    if (fund.category === 'Infrastructure') return 'Infrastructure';
-    if (fund.category === 'Private Equity') return 'Equity';
+    if (fund.category === 'Real Estate Funds') return 'Real Estate';
+    if (fund.category === 'Renewable Energy Funds') return 'Renewable Energy';
+    if (fund.category === 'Infrastructure Funds') return 'Infrastructure';
+    if (fund.category === 'Equity Funds') return 'Equity';
     return 'Diversified';
   }
 
