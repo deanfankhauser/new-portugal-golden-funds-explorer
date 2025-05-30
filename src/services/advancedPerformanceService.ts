@@ -1,5 +1,4 @@
-
-import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
+import { onCLS, onFID, onFCP, onLCP, onTTFB } from 'web-vitals';
 
 // Declare gtag types
 declare global {
@@ -41,11 +40,11 @@ export class AdvancedPerformanceService {
       }
     };
 
-    getCLS(reportMetric);
-    getFID(reportMetric);
-    getFCP(reportMetric);
-    getLCP(reportMetric);
-    getTTFB(reportMetric);
+    onCLS(reportMetric);
+    onFID(reportMetric);
+    onFCP(reportMetric);
+    onLCP(reportMetric);
+    onTTFB(reportMetric);
   }
 
   // Advanced image optimization with progressive loading
