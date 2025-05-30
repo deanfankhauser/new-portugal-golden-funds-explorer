@@ -1,6 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { FundManagerData, useFundManagerStructuredData } from '../../hooks/useFundManagerStructuredData';
+import { URL_CONFIG } from '../../utils/urlConfig';
 
 interface FundManagerSEOProps {
   managerData: FundManagerData;
@@ -44,7 +45,7 @@ const FundManagerSEO: React.FC<FundManagerSEOProps> = ({ managerData }) => {
     updateOrCreateMeta('og:title', `${managerData.name} | Fund Manager Profile`);
     updateOrCreateMeta('og:description', `Learn about ${managerData.name}, managing ${managerData.fundsCount} Golden Visa investment funds with €${managerData.totalFundSize} million in combined assets.`);
     updateOrCreateMeta('og:type', 'website');
-    updateOrCreateMeta('og:url', `${window.location.origin}/manager/${encodeURIComponent(managerData.name)}`);
+    updateOrCreateMeta('og:url', URL_CONFIG.buildManagerUrl(managerData.name));
     if (managerData.logo) {
       updateOrCreateMeta('og:image', managerData.logo);
     }

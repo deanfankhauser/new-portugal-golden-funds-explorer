@@ -7,6 +7,7 @@ import Footer from '../components/Footer';
 import { tagToSlug } from '@/lib/utils';
 import { Tag as TagIcon } from 'lucide-react';
 import { StructuredDataService } from '../services/structuredDataService';
+import { URL_CONFIG } from '../utils/urlConfig';
 
 const TagsHub = () => {
   const allTags = getAllTags();
@@ -30,7 +31,7 @@ const TagsHub = () => {
         '@type': 'CollectionPage',
         'mainEntityOfPage': {
           '@type': 'WebPage',
-          '@id': 'https://portugalvisafunds.com/tags'
+          '@id': URL_CONFIG.buildUrl('tags')
         },
         'name': 'All Golden Visa Fund Tags',
         'description': 'Browse all Golden Visa fund tags. Find and compare Portugal Golden Visa funds by their investment types, risk levels, and focus areas.',
@@ -44,7 +45,7 @@ const TagsHub = () => {
             'item': {
               '@type': 'Thing',
               'name': tag,
-              'url': `https://portugalvisafunds.com/tags/${tagToSlug(tag)}`,
+              'url': URL_CONFIG.buildTagUrl(tagToSlug(tag)),
               'description': `Golden Visa funds tagged with ${tag}`
             }
           }))
@@ -56,13 +57,13 @@ const TagsHub = () => {
               '@type': 'ListItem',
               'position': 1,
               'name': 'Home',
-              'item': 'https://portugalvisafunds.com'
+              'item': URL_CONFIG.BASE_URL
             },
             {
               '@type': 'ListItem',
               'position': 2,
               'name': 'Tags',
-              'item': 'https://portugalvisafunds.com/tags'
+              'item': URL_CONFIG.buildUrl('tags')
             }
           ]
         }

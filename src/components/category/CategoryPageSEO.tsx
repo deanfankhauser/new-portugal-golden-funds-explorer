@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { Fund } from '../../data/funds';
 import { StructuredDataService } from '../../services/structuredDataService';
+import { URL_CONFIG } from '../../utils/urlConfig';
 
 interface CategoryPageSEOProps {
   categoryName: string;
@@ -36,7 +37,7 @@ const CategoryPageSEO: React.FC<CategoryPageSEOProps> = ({
         '@type': 'CollectionPage',
         'mainEntityOfPage': {
           '@type': 'WebPage',
-          '@id': `https://portugalvisafunds.com/categories/${categorySlug}`
+          '@id': URL_CONFIG.buildCategoryUrl(categorySlug)
         },
         'name': `${categoryName} Golden Visa Investment Funds`,
         'description': `Explore ${categoryName} Golden Visa investment funds. Find and compare the best ${categoryName} funds for your Golden Visa investment.`,
@@ -51,7 +52,7 @@ const CategoryPageSEO: React.FC<CategoryPageSEOProps> = ({
               '@type': 'FinancialProduct',
               'name': fund.name,
               'description': fund.description,
-              'url': `https://portugalvisafunds.com/funds/${fund.id}`,
+              'url': URL_CONFIG.buildFundUrl(fund.id),
               'category': fund.category,
               'provider': {
                 '@type': 'Organization',
@@ -72,19 +73,19 @@ const CategoryPageSEO: React.FC<CategoryPageSEOProps> = ({
               '@type': 'ListItem',
               'position': 1,
               'name': 'Home',
-              'item': 'https://portugalvisafunds.com'
+              'item': URL_CONFIG.BASE_URL
             },
             {
               '@type': 'ListItem',
               'position': 2,
               'name': 'Categories',
-              'item': 'https://portugalvisafunds.com/categories'
+              'item': URL_CONFIG.buildUrl('categories')
             },
             {
               '@type': 'ListItem',
               'position': 3,
               'name': categoryName,
-              'item': `https://portugalvisafunds.com/categories/${categorySlug}`
+              'item': URL_CONFIG.buildCategoryUrl(categorySlug)
             }
           ]
         }

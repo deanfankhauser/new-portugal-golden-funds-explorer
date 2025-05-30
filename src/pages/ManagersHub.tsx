@@ -9,6 +9,7 @@ import Header from '../components/Header';
 import { cn } from "@/lib/utils";
 import { getAllFundManagers, getFundsCountByManager, getTotalFundSizeByManager } from '../data/services/managers-service';
 import { StructuredDataService } from '../services/structuredDataService';
+import { URL_CONFIG } from '../utils/urlConfig';
 
 const ManagersHub = () => {
   const managers = getAllFundManagers();
@@ -32,7 +33,7 @@ const ManagersHub = () => {
         '@type': 'CollectionPage',
         'mainEntityOfPage': {
           '@type': 'WebPage',
-          '@id': 'https://portugalvisafunds.com/managers'
+          '@id': URL_CONFIG.buildUrl('managers')
         },
         'name': 'Golden Visa Fund Managers Directory',
         'description': 'Explore all fund managers offering Golden Visa eligible investment funds in Portugal. Compare different management companies and their investment strategies.',
@@ -46,7 +47,7 @@ const ManagersHub = () => {
             'item': {
               '@type': 'Organization',
               'name': manager.name,
-              'url': `https://portugalvisafunds.com/manager/${encodeURIComponent(manager.name)}`,
+              'url': URL_CONFIG.buildManagerUrl(manager.name),
               'logo': manager.logo,
               'serviceType': 'Investment Fund Management',
               'areaServed': {
@@ -75,13 +76,13 @@ const ManagersHub = () => {
               '@type': 'ListItem',
               'position': 1,
               'name': 'Home',
-              'item': 'https://portugalvisafunds.com'
+              'item': URL_CONFIG.BASE_URL
             },
             {
               '@type': 'ListItem',
               'position': 2,
               'name': 'Fund Managers',
-              'item': 'https://portugalvisafunds.com/managers'
+              'item': URL_CONFIG.buildUrl('managers')
             }
           ]
         }

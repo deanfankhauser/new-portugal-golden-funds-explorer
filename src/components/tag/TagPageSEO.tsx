@@ -1,6 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { StructuredDataService } from '../../services/structuredDataService';
+import { URL_CONFIG } from '../../utils/urlConfig';
 
 interface TagPageSEOProps {
   tagName: string;
@@ -37,7 +38,7 @@ const TagPageSEO = ({ tagName, tagSlug, fundsCount, funds }: TagPageSEOProps) =>
         '@type': 'CollectionPage',
         'mainEntityOfPage': {
           '@type': 'WebPage',
-          '@id': `https://portugalvisafunds.com/tags/${tagSlug}`
+          '@id': URL_CONFIG.buildTagUrl(tagSlug || '')
         },
         'name': `${tagName} Golden Visa Investment Funds`,
         'description': `Explore ${tagName} Golden Visa investment funds. Find and compare the best ${tagName} funds for your Golden Visa investment.`,
@@ -52,7 +53,7 @@ const TagPageSEO = ({ tagName, tagSlug, fundsCount, funds }: TagPageSEOProps) =>
               '@type': 'FinancialProduct',
               'name': fund.name,
               'description': fund.description,
-              'url': `https://portugalvisafunds.com/funds/${fund.id}`,
+              'url': URL_CONFIG.buildFundUrl(fund.id),
               'category': fund.category || 'Investment Fund',
               'provider': {
                 '@type': 'Organization',
@@ -73,19 +74,19 @@ const TagPageSEO = ({ tagName, tagSlug, fundsCount, funds }: TagPageSEOProps) =>
               '@type': 'ListItem',
               'position': 1,
               'name': 'Home',
-              'item': 'https://portugalvisafunds.com'
+              'item': URL_CONFIG.BASE_URL
             },
             {
               '@type': 'ListItem',
               'position': 2,
               'name': 'Tags',
-              'item': 'https://portugalvisafunds.com/tags'
+              'item': URL_CONFIG.buildUrl('tags')
             },
             {
               '@type': 'ListItem',
               'position': 3,
               'name': tagName,
-              'item': `https://portugalvisafunds.com/tags/${tagSlug}`
+              'item': URL_CONFIG.buildTagUrl(tagSlug || '')
             }
           ]
         }

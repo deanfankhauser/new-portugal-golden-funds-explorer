@@ -7,6 +7,7 @@ import Footer from '../components/Footer';
 import { categoryToSlug } from '@/lib/utils';
 import { Folder } from 'lucide-react';
 import { StructuredDataService } from '../services/structuredDataService';
+import { URL_CONFIG } from '../utils/urlConfig';
 
 const CategoriesHub = () => {
   const allCategories = getAllCategories();
@@ -30,7 +31,7 @@ const CategoriesHub = () => {
         '@type': 'CollectionPage',
         'mainEntityOfPage': {
           '@type': 'WebPage',
-          '@id': 'https://portugalvisafunds.com/categories'
+          '@id': URL_CONFIG.buildUrl('categories')
         },
         'name': 'All Golden Visa Fund Categories',
         'description': 'Browse all Golden Visa fund categories. Find and compare Portugal Golden Visa funds by their investment categories.',
@@ -44,7 +45,7 @@ const CategoriesHub = () => {
             'item': {
               '@type': 'Thing',
               'name': category,
-              'url': `https://portugalvisafunds.com/categories/${categoryToSlug(category)}`,
+              'url': URL_CONFIG.buildCategoryUrl(categoryToSlug(category)),
               'description': `Golden Visa funds in the ${category} category`
             }
           }))
@@ -56,13 +57,13 @@ const CategoriesHub = () => {
               '@type': 'ListItem',
               'position': 1,
               'name': 'Home',
-              'item': 'https://portugalvisafunds.com'
+              'item': URL_CONFIG.BASE_URL
             },
             {
               '@type': 'ListItem',
               'position': 2,
               'name': 'Categories',
-              'item': 'https://portugalvisafunds.com/categories'
+              'item': URL_CONFIG.buildUrl('categories')
             }
           ]
         }

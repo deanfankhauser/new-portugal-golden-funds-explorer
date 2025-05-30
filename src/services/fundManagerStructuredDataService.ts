@@ -1,5 +1,6 @@
 
 import { StructuredDataSchema } from './structuredDataService';
+import { URL_CONFIG } from '../utils/urlConfig';
 
 export interface FundManagerData {
   name: string;
@@ -25,7 +26,7 @@ export class FundManagerStructuredDataService {
       '@context': 'https://schema.org',
       '@type': 'Organization',
       'name': managerData.name,
-      'url': `${window.location.origin}/manager/${encodeURIComponent(managerData.name)}`,
+      'url': URL_CONFIG.buildManagerUrl(managerData.name),
       'logo': managerData.logo,
       'address': {
         '@type': 'PostalAddress',
@@ -44,7 +45,7 @@ export class FundManagerStructuredDataService {
       'owns': managerData.funds.map(fund => ({
         '@type': 'FinancialProduct',
         'name': fund.name,
-        'url': `${window.location.origin}/funds/${fund.id}`,
+        'url': URL_CONFIG.buildFundUrl(fund.id),
         'category': fund.category
       }))
     };
@@ -57,7 +58,7 @@ export class FundManagerStructuredDataService {
       '@type': 'CollectionPage',
       'mainEntityOfPage': {
         '@type': 'WebPage',
-        '@id': `${window.location.origin}/manager/${encodeURIComponent(managerData.name)}`
+        '@id': URL_CONFIG.buildManagerUrl(managerData.name)
       },
       'name': `${managerData.name} Golden Visa Investment Funds`,
       'description': `Explore all Golden Visa investment funds managed by ${managerData.name}. Compare ${managerData.fundsCount} funds with combined assets of €${managerData.totalFundSize} million.`,
@@ -72,7 +73,7 @@ export class FundManagerStructuredDataService {
             '@type': 'FinancialProduct',
             'name': fund.name,
             'description': fund.description,
-            'url': `${window.location.origin}/funds/${fund.id}`,
+            'url': URL_CONFIG.buildFundUrl(fund.id),
             'category': fund.category,
             'provider': {
               '@type': 'Organization',
@@ -105,19 +106,19 @@ export class FundManagerStructuredDataService {
             '@type': 'ListItem',
             'position': 1,
             'name': 'Home',
-            'item': window.location.origin
+            'item': URL_CONFIG.BASE_URL
           },
           {
             '@type': 'ListItem',
             'position': 2,
             'name': 'Fund Managers',
-            'item': `${window.location.origin}/managers`
+            'item': URL_CONFIG.buildUrl('managers')
           },
           {
             '@type': 'ListItem',
             'position': 3,
             'name': managerData.name,
-            'item': `${window.location.origin}/manager/${encodeURIComponent(managerData.name)}`
+            'item': URL_CONFIG.buildManagerUrl(managerData.name)
           }
         ]
       }
@@ -131,7 +132,7 @@ export class FundManagerStructuredDataService {
       '@type': 'WebPage',
       'name': `${managerData.name} | Fund Manager Profile`,
       'description': `Learn about ${managerData.name}, managing ${managerData.fundsCount} Golden Visa investment funds with €${managerData.totalFundSize} million in combined assets.`,
-      'url': `${window.location.origin}/manager/${encodeURIComponent(managerData.name)}`,
+      'url': URL_CONFIG.buildManagerUrl(managerData.name),
       'mainEntity': {
         '@type': 'Organization',
         'name': managerData.name
@@ -143,19 +144,19 @@ export class FundManagerStructuredDataService {
             '@type': 'ListItem',
             'position': 1,
             'name': 'Home',
-            'item': window.location.origin
+            'item': URL_CONFIG.BASE_URL
           },
           {
             '@type': 'ListItem',
             'position': 2,
             'name': 'Fund Managers',
-            'item': `${window.location.origin}/managers`
+            'item': URL_CONFIG.buildUrl('managers')
           },
           {
             '@type': 'ListItem',
             'position': 3,
             'name': managerData.name,
-            'item': `${window.location.origin}/manager/${encodeURIComponent(managerData.name)}`
+            'item': URL_CONFIG.buildManagerUrl(managerData.name)
           }
         ]
       },
