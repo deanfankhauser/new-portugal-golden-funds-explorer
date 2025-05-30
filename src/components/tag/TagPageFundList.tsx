@@ -2,6 +2,7 @@
 import React from 'react';
 import FundListItem from '../FundListItem';
 import { Fund } from '@/data/funds';
+import { URL_CONFIG } from '../../utils/urlConfig';
 
 interface TagPageFundListProps {
   funds: Fund[];
@@ -15,7 +16,7 @@ const TagPageFundList = ({ funds }: TagPageFundListProps) => {
           <meta itemProp="position" content={`${index + 1}`} />
           <meta itemProp="name" content={fund.name} />
           <meta itemProp="description" content={fund.description} />
-          <meta itemProp="url" content={`https://portugalvisafunds.com/funds/${fund.id}`} />
+          <meta itemProp="url" content={URL_CONFIG.buildFundUrl(fund.id)} />
           <FundListItem fund={fund} />
         </div>
       ))}

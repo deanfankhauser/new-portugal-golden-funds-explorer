@@ -133,7 +133,7 @@ const TagsHub = () => {
                   <div>
                     <meta itemProp="position" content={`${index + 1}`} />
                     <span itemProp="name" className="font-medium text-base sm:text-lg text-gray-800">{tag}</span>
-                    <meta itemProp="url" content={`https://portugalvisafunds.com/tags/${tagToSlug(tag)}`} />
+                    <meta itemProp="url" content={URL_CONFIG.buildTagUrl(tagToSlug(tag))} />
                   </div>
                   <span className="text-[#EF4444]">→</span>
                 </Link>

@@ -135,7 +135,7 @@ const CategoriesHub = () => {
                     <div>
                       <meta itemProp="position" content={`${index + 1}`} />
                       <span itemProp="name" className="font-medium text-lg text-gray-800">{category}</span>
-                      <meta itemProp="url" content={`https://portugalvisafunds.com/categories/${categoryToSlug(category)}`} />
+                      <meta itemProp="url" content={URL_CONFIG.buildCategoryUrl(categoryToSlug(category))} />
                     </div>
                   </div>
                   <span className="text-[#EF4444]">→</span>
