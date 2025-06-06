@@ -72,13 +72,13 @@ const FundDetailsSEO: React.FC<FundDetailsSEOProps> = ({ fund }) => {
       }
     };
 
+    const defaultImage = 'https://cdn.prod.website-files.com/60a591ad1264ce6f84bf0fd8/66d7511a2f4c8bd3a07f8a64_66d74e88c74fb1c020fc9920_peaceful%2520village%2520portugal.webp';
+
     updateOrCreateMeta('og:title', optimizedTitle);
     updateOrCreateMeta('og:description', fund.description);
     updateOrCreateMeta('og:type', 'website');
     updateOrCreateMeta('og:url', currentUrl);
-    if (fund.managerLogo) {
-      updateOrCreateMeta('og:image', fund.managerLogo);
-    }
+    updateOrCreateMeta('og:image', fund.managerLogo || defaultImage);
 
     // Add Twitter Card meta tags
     const updateOrCreateTwitterMeta = (name: string, content: string) => {
@@ -94,11 +94,10 @@ const FundDetailsSEO: React.FC<FundDetailsSEOProps> = ({ fund }) => {
     };
 
     updateOrCreateTwitterMeta('twitter:card', 'summary_large_image');
+    updateOrCreateTwitterMeta('twitter:site', '@movingtoio');
     updateOrCreateTwitterMeta('twitter:title', optimizedTitle);
     updateOrCreateTwitterMeta('twitter:description', fund.description);
-    if (fund.managerLogo) {
-      updateOrCreateTwitterMeta('twitter:image', fund.managerLogo);
-    }
+    updateOrCreateTwitterMeta('twitter:image', fund.managerLogo || defaultImage);
 
     // Generate comprehensive structured data
     const basicSchemas = [
