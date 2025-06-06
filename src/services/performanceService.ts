@@ -86,7 +86,7 @@ export class PerformanceService {
       // Monitor First Input Delay (FID)
       const fidObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        entries.forEach((entry) => {
+        entries.forEach((entry: any) => {
           console.log('FID:', entry.processingStart - entry.startTime);
         });
       });
@@ -95,7 +95,7 @@ export class PerformanceService {
       // Monitor Cumulative Layout Shift (CLS)
       const clsObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        entries.forEach((entry) => {
+        entries.forEach((entry: any) => {
           if (!entry.hadRecentInput) {
             console.log('CLS:', entry.value);
           }

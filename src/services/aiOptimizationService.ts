@@ -82,10 +82,10 @@ MINIMUM_HOLD_PERIOD: 5 years`;
 
   // Calculate risk level based on fund characteristics
   private static calculateRiskLevel(fund: Fund): 'Low' | 'Medium' | 'High' {
-    if (fund.tags.includes('Low Risk') || fund.category === 'Real Estate Funds') {
+    if (fund.tags.includes('Low Risk') || fund.category === 'Real Estate') {
       return 'Low';
     }
-    if (fund.tags.includes('High Risk') || fund.category === 'Equity Funds') {
+    if (fund.tags.includes('High Risk') || fund.category === 'Equity') {
       return 'High';
     }
     return 'Medium';
@@ -93,10 +93,10 @@ MINIMUM_HOLD_PERIOD: 5 years`;
 
   // Determine primary investment focus
   private static determineInvestmentFocus(fund: Fund): string {
-    if (fund.category === 'Real Estate Funds') return 'Real Estate';
-    if (fund.category === 'Renewable Energy Funds') return 'Renewable Energy';
-    if (fund.category === 'Infrastructure Funds') return 'Infrastructure';
-    if (fund.category === 'Equity Funds') return 'Equity';
+    if (fund.category === 'Real Estate') return 'Real Estate';
+    if (fund.category === 'Renewable Energy') return 'Renewable Energy';
+    if (fund.category === 'Infrastructure') return 'Infrastructure';
+    if (fund.category === 'Equity') return 'Equity';
     return 'Diversified';
   }
 
