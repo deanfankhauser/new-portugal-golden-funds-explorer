@@ -52,16 +52,36 @@ const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categor
   const faqs = generateCategoryFAQs(categoryName, fundsCount);
 
   useEffect(() => {
-    // Create FAQ Page schema for SEO
+    // Create enhanced FAQ Page schema for SEO
     const faqSchema = {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
+      'name': `${categoryName} Golden Visa Funds FAQ`,
+      'description': `Frequently asked questions about ${categoryName} Golden Visa investment funds`,
+      'author': {
+        '@type': 'Person',
+        'name': 'Dean Fankhauser',
+        'jobTitle': 'CEO',
+        'worksFor': {
+          '@type': 'Organization',
+          'name': 'Movingto'
+        }
+      },
+      'publisher': {
+        '@type': 'Organization',
+        'name': 'Movingto'
+      },
+      'dateModified': new Date().toISOString(),
       'mainEntity': faqs.map((faq: FAQItem) => ({
         '@type': 'Question',
         'name': faq.question,
         'acceptedAnswer': {
           '@type': 'Answer',
-          'text': faq.answer
+          'text': faq.answer,
+          'author': {
+            '@type': 'Person',
+            'name': 'Dean Fankhauser'
+          }
         }
       }))
     };
@@ -86,7 +106,7 @@ const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categor
         schemaScript.remove();
       }
     };
-  }, [faqs, categorySlug]);
+  }, [faqs, categorySlug, categoryName, fundsCount]);
 
   return (
     <section className="bg-white rounded-lg p-6 shadow-sm border mt-8" itemScope itemType="https://schema.org/FAQPage">
