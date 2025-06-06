@@ -20,11 +20,11 @@ const HomepageSEO = () => {
     // Set optimized page title and meta description
     document.title = "Portugal Golden Visa Investment Funds | Eligible Investments 2025";
     
-    // Update meta description with optimized keywords
+    // Update meta description with optimized keywords (ensure it stays under 155 characters)
     const metaDescription = document.querySelector('meta[name="description"]');
     const optimizedDescription = SEOService.optimizeMetaDescription(
-      "Explore our Portugal Golden Visa Investment Funds List for 2025. Find eligible investment funds to secure residency with a €500,000 investment. Start your journey today!",
-      ['Golden Visa', 'Portugal Investment', 'Residency by Investment', 'EU Residency']
+      "Explore our Portugal Golden Visa Investment Funds List for 2025. Find eligible investment funds to secure residency with a €500,000 investment.",
+      ['Golden Visa', 'Portugal Investment']
     );
     
     if (metaDescription) {

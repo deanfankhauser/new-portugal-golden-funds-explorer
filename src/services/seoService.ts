@@ -65,36 +65,20 @@ export class SEOService {
     });
   }
 
-  // Optimize meta descriptions with better keywords
+  // Optimize meta descriptions with better keywords (limit to 155 characters)
   static optimizeMetaDescription(description: string, keywords: string[] = []): string {
+    if (description.length > 155) {
+      return description.substring(0, 155);
+    }
     const keywordString = keywords.length > 0 ? ` | ${keywords.join(', ')}` : '';
-    return `${description}${keywordString}`.substring(0, 160);
+    const fullDescription = `${description}${keywordString}`;
+    return fullDescription.substring(0, 155);
   }
 
-  // Add hreflang tags for international SEO (fixed to remove non-existent Portuguese route)
-  static addHreflangTags(currentUrl: string): void {
-    const languages = [
-      { lang: 'en', href: currentUrl },
-      { lang: 'x-default', href: currentUrl }
-    ];
-
-    // Remove existing hreflang tags
-    document.querySelectorAll('link[hreflang]').forEach(link => link.remove());
-
-    languages.forEach(({ lang, href }) => {
-      const hreflang = document.createElement('link');
-      hreflang.rel = 'alternate';
-      hreflang.hreflang = lang;
-      hreflang.href = href;
-      document.head.appendChild(hreflang);
-    });
-  }
-
-  // Initialize all SEO enhancements
+  // Initialize all SEO enhancements (removed redundant hreflang function)
   static initializeSEO(currentUrl: string): void {
     this.setCanonicalUrl(currentUrl);
     this.addPreloadDirectives();
     this.addSecurityHeaders();
-    this.addHreflangTags(currentUrl);
   }
 }
