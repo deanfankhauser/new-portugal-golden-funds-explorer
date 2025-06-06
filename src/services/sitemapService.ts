@@ -1,5 +1,6 @@
 
-import { getAllFunds, getAllCategories, getAllTags, getAllManagers } from '../data/funds';
+import { funds, getAllCategories, getAllTags } from '../data/funds';
+import { getAllFundManagers } from '../data/services/managers-service';
 import { categoryToSlug, tagToSlug } from '../lib/utils';
 import { URL_CONFIG } from '../utils/urlConfig';
 
@@ -95,7 +96,6 @@ export class SitemapService {
   // Generate fund detail pages
   private static getFundPages(): SitemapEntry[] {
     const currentDate = this.getCurrentDate();
-    const funds = getAllFunds();
     
     return funds.map(fund => ({
       url: URL_CONFIG.buildFundUrl(fund.id),
@@ -134,10 +134,10 @@ export class SitemapService {
   // Generate manager pages
   private static getManagerPages(): SitemapEntry[] {
     const currentDate = this.getCurrentDate();
-    const managers = getAllManagers();
+    const managers = getAllFundManagers();
     
     return managers.map(manager => ({
-      url: URL_CONFIG.buildManagerUrl(encodeURIComponent(manager)),
+      url: URL_CONFIG.buildManagerUrl(encodeURIComponent(manager.name)),
       lastmod: currentDate,
       changefreq: 'weekly' as const,
       priority: 0.8
