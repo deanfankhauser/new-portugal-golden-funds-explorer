@@ -9,9 +9,12 @@ export const useFundManagerStructuredData = (managerData: FundManagerData) => {
   useEffect(() => {
     // Generate all structured data schemas for the fund manager
     const schemas = [
+      FundManagerStructuredDataService.generateWebSiteSchema(),
+      FundManagerStructuredDataService.generateMovingtoOrganizationSchema(),
       FundManagerStructuredDataService.generateFundManagerOrganizationSchema(managerData),
       FundManagerStructuredDataService.generateManagerFundsCollectionSchema(managerData),
       FundManagerStructuredDataService.generateManagerPageSchema(managerData),
+      FundManagerStructuredDataService.generateManagerArticleSchema(managerData),
       FundManagerStructuredDataService.generateFinancialServiceSchema(managerData)
     ];
 

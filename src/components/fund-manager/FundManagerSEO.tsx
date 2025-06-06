@@ -1,6 +1,8 @@
 
 import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import { FundManagerData, useFundManagerStructuredData } from '../../hooks/useFundManagerStructuredData';
+import { SEOService } from '../../services/seoService';
 import { URL_CONFIG } from '../../utils/urlConfig';
 
 interface FundManagerSEOProps {
@@ -11,70 +13,59 @@ const FundManagerSEO: React.FC<FundManagerSEOProps> = ({ managerData }) => {
   // Add structured data using our hook
   useFundManagerStructuredData(managerData);
 
+  const pageUrl = URL_CONFIG.buildManagerUrl(managerData.name);
+  const title = `${managerData.name} Golden Visa Investment Funds | Fund Manager Profile`;
+  const description = SEOService.optimizeMetaDescription(
+    `Discover ${managerData.name}'s ${managerData.fundsCount} Golden Visa investment funds with €${managerData.totalFundSize} million in combined assets. Compare funds and investment strategies.`,
+    ['Golden Visa', managerData.name, 'Investment Funds', 'Portugal']
+  );
+  const socialImageUrl = managerData.logo || 'https://pbs.twimg.com/profile_images/1763893053666768848/DnlafcQV_400x400.jpg';
+
   useEffect(() => {
-    // Set page title for SEO
-    document.title = `${managerData.name} Golden Visa Investment Funds | Fund Manager Profile`;
-    
-    // Update meta description
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 
-        `Discover ${managerData.name}'s ${managerData.fundsCount} Golden Visa investment funds with €${managerData.totalFundSize} million in combined assets. Compare funds and investment strategies.`
-      );
-    } else {
-      // Create meta description if it doesn't exist
-      const meta = document.createElement('meta');
-      meta.name = 'description';
-      meta.content = `Discover ${managerData.name}'s ${managerData.fundsCount} Golden Visa investment funds with €${managerData.totalFundSize} million in combined assets. Compare funds and investment strategies.`;
-      document.head.appendChild(meta);
-    }
-
-    // Add Open Graph meta tags for social sharing
-    const updateOrCreateMeta = (property: string, content: string) => {
-      let meta = document.querySelector(`meta[property="${property}"]`);
-      if (meta) {
-        meta.setAttribute('content', content);
-      } else {
-        meta = document.createElement('meta');
-        meta.setAttribute('property', property);
-        meta.setAttribute('content', content);
-        document.head.appendChild(meta);
-      }
-    };
-
-    updateOrCreateMeta('og:title', `${managerData.name} | Fund Manager Profile`);
-    updateOrCreateMeta('og:description', `Learn about ${managerData.name}, managing ${managerData.fundsCount} Golden Visa investment funds with €${managerData.totalFundSize} million in combined assets.`);
-    updateOrCreateMeta('og:type', 'website');
-    updateOrCreateMeta('og:url', URL_CONFIG.buildManagerUrl(managerData.name));
-    if (managerData.logo) {
-      updateOrCreateMeta('og:image', managerData.logo);
-    }
-
-    // Add Twitter Card meta tags
-    const updateOrCreateTwitterMeta = (name: string, content: string) => {
-      let meta = document.querySelector(`meta[name="${name}"]`);
-      if (meta) {
-        meta.setAttribute('content', content);
-      } else {
-        meta = document.createElement('meta');
-        meta.setAttribute('name', name);
-        meta.setAttribute('content', content);
-        document.head.appendChild(meta);
-      }
-    };
-
-    updateOrCreateTwitterMeta('twitter:card', 'summary_large_image');
-    updateOrCreateTwitterMeta('twitter:title', `${managerData.name} | Fund Manager Profile`);
-    updateOrCreateTwitterMeta('twitter:description', `Learn about ${managerData.name}, managing ${managerData.fundsCount} Golden Visa investment funds with €${managerData.totalFundSize} million in combined assets.`);
-    if (managerData.logo) {
-      updateOrCreateTwitterMeta('twitter:image', managerData.logo);
-    }
+    // Initialize comprehensive SEO setup
+    SEOService.initializeSEO(pageUrl);
 
     // Scroll to top on page load
     window.scrollTo(0, 0);
-  }, [managerData]);
+  }, [managerData, pageUrl]);
 
-  return null; // This component doesn't render anything
+  return (
+    <Helmet>
+      {/* Basic Meta Tags */}
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      <meta name="keywords" content={`${managerData.name}, Golden Visa, Investment Funds, Portugal, Fund Manager, ${managerData.fundsCount} funds`} />
+      <meta name="author" content="Dean Fankhauser, CEO" />
+      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+      <link rel="canonical" href={pageUrl} />
+
+      {/* Open Graph Meta Tags */}
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content={`${managerData.name} | Fund Manager Profile`} />
+      <meta property="og:description" content={`Learn about ${managerData.name}, managing ${managerData.fundsCount} Golden Visa investment funds with €${managerData.totalFundSize} million in combined assets.`} />
+      <meta property="og:url" content={pageUrl} />
+      <meta property="og:site_name" content="Movingto" />
+      <meta property="og:image" content={socialImageUrl} />
+      <meta property="og:image:width" content="400" />
+      <meta property="og:image:height" content="400" />
+      <meta property="og:image:alt" content={`${managerData.name} - Fund Manager Profile`} />
+      <meta property="og:locale" content="en_US" />
+
+      {/* Twitter Card Meta Tags */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content="@movingtoio" />
+      <meta name="twitter:creator" content="@movingtoio" />
+      <meta name="twitter:title" content={`${managerData.name} | Fund Manager Profile`} />
+      <meta name="twitter:description" content={`Learn about ${managerData.name}, managing ${managerData.fundsCount} Golden Visa investment funds with €${managerData.totalFundSize} million in combined assets.`} />
+      <meta name="twitter:image" content={socialImageUrl} />
+      <meta name="twitter:image:alt" content={`${managerData.name} - Fund Manager Profile`} />
+
+      {/* Additional Meta Tags */}
+      <meta name="theme-color" content="#EF4444" />
+      <meta name="msapplication-TileColor" content="#EF4444" />
+      <meta name="format-detection" content="telephone=no" />
+    </Helmet>
+  );
 };
 
 export default FundManagerSEO;

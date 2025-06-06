@@ -20,6 +20,48 @@ export interface FundManagerData {
 
 export class FundManagerStructuredDataService {
   
+  // Generate WebSite schema
+  static generateWebSiteSchema(): StructuredDataSchema {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      'name': 'Movingto',
+      'url': URL_CONFIG.BASE_URL,
+      'description': 'Find and compare the best Golden Visa investment funds in Portugal',
+      'publisher': {
+        '@type': 'Organization',
+        'name': 'Movingto',
+        'url': URL_CONFIG.BASE_URL
+      },
+      'potentialAction': {
+        '@type': 'SearchAction',
+        'target': `${URL_CONFIG.BASE_URL}/search?q={search_term_string}`,
+        'query-input': 'required name=search_term_string'
+      }
+    };
+  }
+
+  // Generate Organization schema for Movingto
+  static generateMovingtoOrganizationSchema(): StructuredDataSchema {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      'name': 'Movingto',
+      'url': URL_CONFIG.BASE_URL,
+      'logo': 'https://pbs.twimg.com/profile_images/1763893053666768848/DnlafcQV_400x400.jpg',
+      'description': 'Leading platform for Golden Visa investment fund comparison and research',
+      'founder': {
+        '@type': 'Person',
+        'name': 'Dean Fankhauser'
+      },
+      'knowsAbout': ['Golden Visa', 'Portugal Investment', 'Investment Funds', 'Fund Managers'],
+      'serviceArea': {
+        '@type': 'Place',
+        'name': 'Worldwide'
+      }
+    };
+  }
+
   // Generate Organization schema for the fund manager
   static generateFundManagerOrganizationSchema(managerData: FundManagerData): StructuredDataSchema {
     return {
@@ -63,6 +105,21 @@ export class FundManagerStructuredDataService {
       'name': `${managerData.name} Golden Visa Investment Funds`,
       'description': `Explore all Golden Visa investment funds managed by ${managerData.name}. Compare ${managerData.fundsCount} funds with combined assets of €${managerData.totalFundSize} million.`,
       'numberOfItems': managerData.fundsCount,
+      'author': {
+        '@type': 'Person',
+        'name': 'Dean Fankhauser',
+        'jobTitle': 'CEO',
+        'worksFor': {
+          '@type': 'Organization',
+          'name': 'Movingto'
+        }
+      },
+      'publisher': {
+        '@type': 'Organization',
+        'name': 'Movingto',
+        'url': URL_CONFIG.BASE_URL
+      },
+      'dateModified': new Date().toISOString(),
       'mainEntity': {
         '@type': 'ItemList',
         'numberOfItems': managerData.fundsCount,
@@ -165,6 +222,37 @@ export class FundManagerStructuredDataService {
         'name': 'View Fund Manager Profile',
         'description': `View detailed information about ${managerData.name} and their investment funds`
       }
+    };
+  }
+
+  // Generate Article schema for manager profile content
+  static generateManagerArticleSchema(managerData: FundManagerData): StructuredDataSchema {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      'headline': `${managerData.name} Fund Manager Profile`,
+      'description': `Learn about ${managerData.name}, managing ${managerData.fundsCount} Golden Visa investment funds with €${managerData.totalFundSize} million in combined assets.`,
+      'author': {
+        '@type': 'Person',
+        'name': 'Dean Fankhauser',
+        'jobTitle': 'CEO'
+      },
+      'publisher': {
+        '@type': 'Organization',
+        'name': 'Movingto',
+        'logo': {
+          '@type': 'ImageObject',
+          'url': 'https://pbs.twimg.com/profile_images/1763893053666768848/DnlafcQV_400x400.jpg'
+        }
+      },
+      'datePublished': new Date().toISOString(),
+      'dateModified': new Date().toISOString(),
+      'mainEntityOfPage': {
+        '@type': 'WebPage',
+        '@id': URL_CONFIG.buildManagerUrl(managerData.name)
+      },
+      'articleSection': 'Fund Managers',
+      'keywords': [managerData.name, 'Golden Visa', 'Portugal', 'Investment Funds', 'Fund Manager'].join(', ')
     };
   }
 
