@@ -1,155 +1,182 @@
 
-import { funds } from '../data/funds';
-import { getAllCategories } from '../data/services/categories-service';
-import { getAllTags } from '../data/services/tags-service';
-import { getAllFundManagers } from '../data/services/managers-service';
+import { getAllFunds, getAllCategories, getAllTags, getAllManagers } from '../data/funds';
+import { categoryToSlug, tagToSlug } from '../lib/utils';
 import { URL_CONFIG } from '../utils/urlConfig';
 
+export interface SitemapEntry {
+  url: string;
+  lastmod: string;
+  changefreq: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+  priority: number;
+}
+
 export class SitemapService {
-  
-  static generateXMLSitemap(): string {
-    const baseUrl = URL_CONFIG.BASE_URL;
-    const currentDate = new Date().toISOString().split('T')[0];
-
-    const urls: Array<{
-      loc: string;
-      lastmod: string;
-      changefreq: string;
-      priority: string;
-    }> = [];
-
-    // Homepage
-    urls.push({
-      loc: baseUrl,
-      lastmod: currentDate,
-      changefreq: 'daily',
-      priority: '1.0'
-    });
-
-    // Hub pages
-    const hubPages = [
-      { path: 'categories', priority: '0.8' },
-      { path: 'tags', priority: '0.8' },
-      { path: 'managers', priority: '0.8' },
-      { path: 'comparisons', priority: '0.7' }
-    ];
-
-    hubPages.forEach(page => {
-      urls.push({
-        loc: `${baseUrl}/${page.path}`,
-        lastmod: currentDate,
-        changefreq: 'weekly',
-        priority: page.priority
-      });
-    });
-
-    // Static pages
-    const staticPages = [
-      { path: 'about', priority: '0.6' },
-      { path: 'faqs', priority: '0.7' },
-      { path: 'roi-calculator', priority: '0.6' },
-      { path: 'fund-quiz', priority: '0.6' },
-      { path: 'disclaimer', priority: '0.3' },
-      { path: 'privacy', priority: '0.3' }
-    ];
-
-    staticPages.forEach(page => {
-      urls.push({
-        loc: `${baseUrl}/${page.path}`,
-        lastmod: currentDate,
-        changefreq: 'monthly',
-        priority: page.priority
-      });
-    });
-
-    // Fund detail pages
-    funds.forEach(fund => {
-      urls.push({
-        loc: URL_CONFIG.buildFundUrl(fund.id),
-        lastmod: currentDate,
-        changefreq: 'weekly',
-        priority: '0.9'
-      });
-    });
-
-    // Category pages
-    const categories = getAllCategories();
-    categories.forEach(category => {
-      urls.push({
-        loc: URL_CONFIG.buildCategoryUrl(category.toLowerCase().replace(/\s+/g, '-')),
-        lastmod: currentDate,
-        changefreq: 'weekly',
-        priority: '0.8'
-      });
-    });
-
-    // Tag pages
-    const tags = getAllTags();
-    tags.forEach(tag => {
-      urls.push({
-        loc: URL_CONFIG.buildTagUrl(tag.toLowerCase().replace(/\s+/g, '-')),
-        lastmod: currentDate,
-        changefreq: 'weekly',
-        priority: '0.7'
-      });
-    });
-
-    // Manager pages
-    const managers = getAllFundManagers();
-    managers.forEach(manager => {
-      urls.push({
-        loc: URL_CONFIG.buildManagerUrl(manager.name),
-        lastmod: currentDate,
-        changefreq: 'weekly',
-        priority: '0.8'
-      });
-    });
-
-    // Generate XML
-    const xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-    const xmlFooter = '</urlset>';
-    
-    const xmlUrls = urls.map(url => `  <url>
-    <loc>${url.loc}</loc>
-    <lastmod>${url.lastmod}</lastmod>
-    <changefreq>${url.changefreq}</changefreq>
-    <priority>${url.priority}</priority>
-  </url>`).join('\n');
-
-    return xmlHeader + xmlUrls + '\n' + xmlFooter;
+  private static getCurrentDate(): string {
+    return new Date().toISOString().split('T')[0];
   }
 
-  static generateRobotsTxt(): string {
-    const baseUrl = URL_CONFIG.BASE_URL;
+  // Static pages configuration
+  private static getStaticPages(): SitemapEntry[] {
+    const currentDate = this.getCurrentDate();
     
-    return `User-agent: *
-Allow: /
+    return [
+      // Homepage
+      {
+        url: URL_CONFIG.BASE_URL,
+        lastmod: currentDate,
+        changefreq: 'daily',
+        priority: 1.0
+      },
+      // Hub Pages
+      {
+        url: `${URL_CONFIG.BASE_URL}/categories`,
+        lastmod: currentDate,
+        changefreq: 'weekly',
+        priority: 0.8
+      },
+      {
+        url: `${URL_CONFIG.BASE_URL}/tags`,
+        lastmod: currentDate,
+        changefreq: 'weekly',
+        priority: 0.8
+      },
+      {
+        url: `${URL_CONFIG.BASE_URL}/managers`,
+        lastmod: currentDate,
+        changefreq: 'weekly',
+        priority: 0.8
+      },
+      {
+        url: `${URL_CONFIG.BASE_URL}/comparisons`,
+        lastmod: currentDate,
+        changefreq: 'weekly',
+        priority: 0.7
+      },
+      // Static Pages
+      {
+        url: `${URL_CONFIG.BASE_URL}/about`,
+        lastmod: currentDate,
+        changefreq: 'monthly',
+        priority: 0.6
+      },
+      {
+        url: `${URL_CONFIG.BASE_URL}/disclaimer`,
+        lastmod: currentDate,
+        changefreq: 'monthly',
+        priority: 0.3
+      },
+      {
+        url: `${URL_CONFIG.BASE_URL}/privacy`,
+        lastmod: currentDate,
+        changefreq: 'monthly',
+        priority: 0.3
+      },
+      {
+        url: `${URL_CONFIG.BASE_URL}/faqs`,
+        lastmod: currentDate,
+        changefreq: 'monthly',
+        priority: 0.7
+      },
+      {
+        url: `${URL_CONFIG.BASE_URL}/roi-calculator`,
+        lastmod: currentDate,
+        changefreq: 'monthly',
+        priority: 0.6
+      },
+      {
+        url: `${URL_CONFIG.BASE_URL}/fund-quiz`,
+        lastmod: currentDate,
+        changefreq: 'monthly',
+        priority: 0.6
+      }
+    ];
+  }
 
-# Important paths for ${baseUrl}
-Allow: /funds/
-Allow: /funds/funds/
-Allow: /funds/tags/
-Allow: /funds/categories/
-Allow: /funds/managers/
+  // Generate fund detail pages
+  private static getFundPages(): SitemapEntry[] {
+    const currentDate = this.getCurrentDate();
+    const funds = getAllFunds();
+    
+    return funds.map(fund => ({
+      url: URL_CONFIG.buildFundUrl(fund.id),
+      lastmod: currentDate,
+      changefreq: 'weekly' as const,
+      priority: 0.9
+    }));
+  }
 
-# Explicitly specify important listing pages
-Allow: /funds/funds/*
-Allow: /funds/tags
-Allow: /funds/tags/*
-Allow: /funds/categories
-Allow: /funds/categories/*
-Allow: /funds/managers
-Allow: /funds/managers/*
-Allow: /funds/manager/*
-Allow: /funds/about
-Allow: /funds/disclaimer
-Allow: /funds/privacy
-Allow: /funds/compare
-Allow: /funds/comparisons
-Allow: /funds/faqs
-Allow: /funds/roi-calculator
-Allow: /funds/fund-quiz
+  // Generate category pages
+  private static getCategoryPages(): SitemapEntry[] {
+    const currentDate = this.getCurrentDate();
+    const categories = getAllCategories();
+    
+    return categories.map(category => ({
+      url: URL_CONFIG.buildCategoryUrl(categoryToSlug(category)),
+      lastmod: currentDate,
+      changefreq: 'weekly' as const,
+      priority: 0.8
+    }));
+  }
 
-Sitemap: ${baseUrl}/sitemap.xml`;
+  // Generate tag pages
+  private static getTagPages(): SitemapEntry[] {
+    const currentDate = this.getCurrentDate();
+    const tags = getAllTags();
+    
+    return tags.map(tag => ({
+      url: URL_CONFIG.buildTagUrl(tagToSlug(tag)),
+      lastmod: currentDate,
+      changefreq: 'weekly' as const,
+      priority: 0.7
+    }));
+  }
+
+  // Generate manager pages
+  private static getManagerPages(): SitemapEntry[] {
+    const currentDate = this.getCurrentDate();
+    const managers = getAllManagers();
+    
+    return managers.map(manager => ({
+      url: URL_CONFIG.buildManagerUrl(encodeURIComponent(manager)),
+      lastmod: currentDate,
+      changefreq: 'weekly' as const,
+      priority: 0.8
+    }));
+  }
+
+  // Generate complete sitemap entries
+  static generateSitemapEntries(): SitemapEntry[] {
+    return [
+      ...this.getStaticPages(),
+      ...this.getFundPages(),
+      ...this.getCategoryPages(),
+      ...this.getTagPages(),
+      ...this.getManagerPages()
+    ];
+  }
+
+  // Convert entries to XML format
+  static generateSitemapXML(): string {
+    const entries = this.generateSitemapEntries();
+    
+    const urlElements = entries.map(entry => `  <url>
+    <loc>${entry.url}</loc>
+    <lastmod>${entry.lastmod}</lastmod>
+    <changefreq>${entry.changefreq}</changefreq>
+    <priority>${entry.priority}</priority>
+  </url>`).join('\n\n');
+
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urlElements}
+</urlset>`;
+  }
+
+  // Update the sitemap file
+  static updateSitemap(): void {
+    const sitemapXML = this.generateSitemapXML();
+    // In a real application, this would write to the public/sitemap.xml file
+    // For now, we'll just return the XML content
+    console.log('Generated sitemap with', this.generateSitemapEntries().length, 'entries');
   }
 }
