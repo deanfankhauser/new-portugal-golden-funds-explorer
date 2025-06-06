@@ -155,22 +155,28 @@ export class EnhancedStructuredDataService {
 
   // Generate Article schema for informational content
   static generateArticleSchema(title: string, description: string, url: string): StructuredDataSchema {
+    const currentDate = new Date().toISOString().split('T')[0];
+    
     return {
       '@context': 'https://schema.org',
       '@type': 'Article',
       'headline': title,
       'description': description,
       'url': url,
-      'datePublished': '2024-12-19',
-      'dateModified': new Date().toISOString().split('T')[0],
+      'datePublished': currentDate,
+      'dateModified': currentDate,
       'author': {
-        '@type': 'Organization',
-        'name': 'MovingTo',
-        'url': 'https://www.movingto.com'
+        '@type': 'Person',
+        'name': 'Dean Fankhauser, CEO',
+        'jobTitle': 'CEO',
+        'worksFor': {
+          '@type': 'Organization',
+          'name': 'Movingto'
+        }
       },
       'publisher': {
         '@type': 'Organization',
-        'name': 'MovingTo',
+        'name': 'Movingto',
         'logo': {
           '@type': 'ImageObject',
           'url': 'https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/66fbc14f0b738f09e77cadb8_fav.png'
@@ -246,5 +252,69 @@ export class EnhancedStructuredDataService {
     }
 
     return schemas;
+  }
+
+  // Generate WebSite schema for homepage
+  static generateWebSiteSchema(): StructuredDataSchema {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      'name': 'Movingto Portugal Golden Visa Funds',
+      'alternateName': 'Movingto',
+      'url': URL_CONFIG.BASE_URL,
+      'description': 'Comprehensive directory of qualified investment funds for the Portugal Golden Visa program',
+      'publisher': {
+        '@type': 'Organization',
+        'name': 'Movingto'
+      },
+      'potentialAction': {
+        '@type': 'SearchAction',
+        'target': {
+          '@type': 'EntryPoint',
+          'urlTemplate': `${URL_CONFIG.BASE_URL}?search={search_term_string}`
+        },
+        'query-input': 'required name=search_term_string'
+      }
+    };
+  }
+
+  // Generate Organization schema
+  static generateOrganizationSchema(): StructuredDataSchema {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      'name': 'Movingto',
+      'url': URL_CONFIG.BASE_URL,
+      'logo': 'https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/66fbc14f0b738f09e77cadb8_fav.png',
+      'description': 'Leading platform for Portugal Golden Visa investment funds and residency by investment services',
+      'founder': {
+        '@type': 'Person',
+        'name': 'Dean Fankhauser, CEO'
+      },
+      'sameAs': [
+        'https://twitter.com/movingtoio'
+      ]
+    };
+  }
+
+  // Generate LocalBusiness schema
+  static generateLocalBusinessSchema(): StructuredDataSchema {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'ProfessionalService',
+      'name': 'Movingto Portugal Golden Visa Services',
+      'url': URL_CONFIG.BASE_URL,
+      'description': 'Professional investment advisory services for Portugal Golden Visa eligible funds',
+      'serviceType': 'Investment Advisory',
+      'areaServed': {
+        '@type': 'Country',
+        'name': 'Portugal'
+      },
+      'offers': {
+        '@type': 'Service',
+        'name': 'Portugal Golden Visa Investment Fund Directory',
+        'description': 'Comprehensive directory and advisory services for qualified investment funds'
+      }
+    };
   }
 }

@@ -71,11 +71,10 @@ export class SEOService {
     return `${description}${keywordString}`.substring(0, 160);
   }
 
-  // Add hreflang tags for international SEO
+  // Add hreflang tags for international SEO (fixed to remove non-existent Portuguese route)
   static addHreflangTags(currentUrl: string): void {
     const languages = [
       { lang: 'en', href: currentUrl },
-      { lang: 'pt', href: currentUrl.replace('/funds', '/pt/funds') },
       { lang: 'x-default', href: currentUrl }
     ];
 

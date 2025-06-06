@@ -9,7 +9,7 @@ import { URL_CONFIG } from '../../utils/urlConfig';
 
 const HomepageSEO = () => {
   useEffect(() => {
-    const currentUrl = window.location.href;
+    const currentUrl = URL_CONFIG.BASE_URL;
     
     // Initialize comprehensive SEO
     SEOService.initializeSEO(currentUrl);
@@ -31,7 +31,9 @@ const HomepageSEO = () => {
       metaDescription.setAttribute('content', optimizedDescription);
     }
 
-    // Generate enhanced structured data
+    // Generate enhanced structured data with current date
+    const currentDate = new Date().toISOString().split('T')[0];
+    
     const schemas = [
       {
         '@context': 'https://schema.org',
@@ -79,6 +81,9 @@ const HomepageSEO = () => {
           ]
         }
       },
+      EnhancedStructuredDataService.generateWebSiteSchema(),
+      EnhancedStructuredDataService.generateOrganizationSchema(),
+      EnhancedStructuredDataService.generateLocalBusinessSchema(),
       EnhancedStructuredDataService.generateInvestmentHowToSchema(),
       EnhancedStructuredDataService.generateComparisonTableSchema(funds.slice(0, 5)), // Top 5 funds
       EnhancedStructuredDataService.generateArticleSchema(
