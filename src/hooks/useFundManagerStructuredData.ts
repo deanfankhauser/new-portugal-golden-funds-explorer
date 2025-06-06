@@ -1,9 +1,11 @@
 
 import { useEffect } from 'react';
-import { FundManagerStructuredDataService, FundManagerData } from '../services/fundManagerStructuredDataService';
+import { FundManagerStructuredDataService } from '../services/fundManagerStructuredDataService';
 import { StructuredDataService } from '../services/structuredDataService';
 
-export type { FundManagerData } from '../services/fundManagerStructuredDataService';
+// Import from the new types file
+export type { FundManagerData } from '../types/fundManagerTypes';
+import type { FundManagerData } from '../types/fundManagerTypes';
 
 export const useFundManagerStructuredData = (managerData: FundManagerData) => {
   useEffect(() => {
