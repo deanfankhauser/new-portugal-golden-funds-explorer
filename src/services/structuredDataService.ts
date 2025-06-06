@@ -81,7 +81,6 @@ export class StructuredDataService {
         'addressRegion': fund.location
       },
       'url': fund.websiteUrl,
-      'logo': fund.managerLogo,
       'knowsAbout': fund.category,
       'serviceArea': {
         '@type': 'Place',

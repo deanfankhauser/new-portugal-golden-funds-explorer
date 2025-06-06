@@ -1,4 +1,3 @@
-
 import { useEffect } from 'react';
 import { Fund } from '../../data/funds';
 import { StructuredDataService } from '../../services/structuredDataService';
@@ -22,11 +21,10 @@ const FundDetailsSEO: React.FC<FundDetailsSEOProps> = ({ fund }) => {
     const optimizedTitle = `${fund.name} | Investment Fund Details | Movingto`;
     document.title = optimizedTitle;
     
-    // Generate optimized meta description with key metrics
-    const keyMetrics = AIOptimizationService.extractKeyMetrics(fund);
+    // Generate optimized meta description with key metrics (keep under 155 chars)
     const optimizedDescription = SEOService.optimizeMetaDescription(
-      `Invest in ${fund.name} - ${fund.description} Minimum investment: €${fund.minimumInvestment.toLocaleString()}. Target return: ${fund.returnTarget}. Managed by ${fund.managerName}.`,
-      [fund.category, 'Golden Visa', 'Portugal Investment', `€${fund.minimumInvestment.toLocaleString()}`, fund.returnTarget]
+      `${fund.name} - ${fund.description.length > 50 ? fund.description.substring(0, 50) + '...' : fund.description} Min: €${fund.minimumInvestment.toLocaleString()}.`,
+      []
     );
     
     const metaDescription = document.querySelector('meta[name="description"]');
@@ -47,6 +45,7 @@ const FundDetailsSEO: React.FC<FundDetailsSEOProps> = ({ fund }) => {
     document.head.appendChild(summaryMeta);
 
     // Add key metrics as JSON-LD for AI parsing
+    const keyMetrics = AIOptimizationService.extractKeyMetrics(fund);
     const keyMetricsMeta = document.createElement('script');
     keyMetricsMeta.type = 'application/ld+json';
     keyMetricsMeta.id = 'fund-metrics';
@@ -59,7 +58,7 @@ const FundDetailsSEO: React.FC<FundDetailsSEOProps> = ({ fund }) => {
     });
     document.head.appendChild(keyMetricsMeta);
 
-    // Update Open Graph meta tags
+    // Update Open Graph meta tags with proper fallback image
     const updateOrCreateMeta = (property: string, content: string) => {
       let meta = document.querySelector(`meta[property="${property}"]`);
       if (meta) {
@@ -72,13 +71,14 @@ const FundDetailsSEO: React.FC<FundDetailsSEOProps> = ({ fund }) => {
       }
     };
 
-    const defaultImage = 'https://cdn.prod.website-files.com/60a591ad1264ce6f84bf0fd8/66d7511a2f4c8bd3a07f8a64_66d74e88c74fb1c020fc9920_peaceful%2520village%2520portugal.webp';
+    const fallbackImage = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
 
     updateOrCreateMeta('og:title', optimizedTitle);
-    updateOrCreateMeta('og:description', fund.description);
+    updateOrCreateMeta('og:description', optimizedDescription);
     updateOrCreateMeta('og:type', 'website');
     updateOrCreateMeta('og:url', currentUrl);
-    updateOrCreateMeta('og:image', fund.managerLogo || defaultImage);
+    updateOrCreateMeta('og:image', fallbackImage);
+    updateOrCreateMeta('og:site_name', 'Movingto Portugal Golden Visa Funds');
 
     // Add Twitter Card meta tags
     const updateOrCreateTwitterMeta = (name: string, content: string) => {
@@ -96,23 +96,27 @@ const FundDetailsSEO: React.FC<FundDetailsSEOProps> = ({ fund }) => {
     updateOrCreateTwitterMeta('twitter:card', 'summary_large_image');
     updateOrCreateTwitterMeta('twitter:site', '@movingtoio');
     updateOrCreateTwitterMeta('twitter:title', optimizedTitle);
-    updateOrCreateTwitterMeta('twitter:description', fund.description);
-    updateOrCreateTwitterMeta('twitter:image', fund.managerLogo || defaultImage);
+    updateOrCreateTwitterMeta('twitter:description', optimizedDescription);
+    updateOrCreateTwitterMeta('twitter:image', fallbackImage);
 
-    // Generate comprehensive structured data
-    const basicSchemas = [
+    // Generate comprehensive structured data (avoid duplicates by using different schemas)
+    const schemas = [
       StructuredDataService.generateFundProductSchema(fund),
       StructuredDataService.generateFundManagerSchema(fund),
       StructuredDataService.generateInvestmentSchema(fund),
-      StructuredDataService.generateFundPageSchema(fund)
+      StructuredDataService.generateFundPageSchema(fund),
+      ...EnhancedStructuredDataService.generateComprehensiveFundSchemas(fund),
+      EnhancedStructuredDataService.generateWebSiteSchema(),
+      EnhancedStructuredDataService.generateOrganizationSchema(),
+      EnhancedStructuredDataService.generateArticleSchema(
+        `${fund.name} Investment Fund Details`,
+        optimizedDescription,
+        currentUrl
+      )
     ];
 
-    const enhancedSchemas = EnhancedStructuredDataService.generateComprehensiveFundSchemas(fund);
-    
-    const allSchemas = [...basicSchemas, ...enhancedSchemas];
-
     // Add structured data using our service
-    StructuredDataService.addStructuredData(allSchemas, 'fund-page-schema');
+    StructuredDataService.addStructuredData(schemas, 'fund-page-schema');
 
     // Scroll to top on page load
     window.scrollTo(0, 0);

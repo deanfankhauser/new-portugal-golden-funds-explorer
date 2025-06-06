@@ -179,7 +179,7 @@ export class EnhancedStructuredDataService {
         'name': 'Movingto',
         'logo': {
           '@type': 'ImageObject',
-          'url': 'https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/66fbc14f0b738f09e77cadb8_fav.png'
+          'url': 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg'
         }
       },
       'mainEntityOfPage': {
@@ -213,13 +213,16 @@ export class EnhancedStructuredDataService {
       return null;
     }
 
+    const currentDate = new Date();
+    const futureDate = new Date(currentDate.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
+
     return {
       '@context': 'https://schema.org',
       '@type': 'Event',
       'name': `${fund.name} Investment Deadline`,
       'description': `Last chance to invest in ${fund.name} before it closes to new investors`,
-      'startDate': new Date().toISOString(),
-      'endDate': new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+      'startDate': currentDate.toISOString(),
+      'endDate': futureDate.toISOString(),
       'eventStatus': 'https://schema.org/EventScheduled',
       'eventAttendanceMode': 'https://schema.org/OnlineEventAttendanceMode',
       'location': {
@@ -285,7 +288,7 @@ export class EnhancedStructuredDataService {
       '@type': 'Organization',
       'name': 'Movingto',
       'url': URL_CONFIG.BASE_URL,
-      'logo': 'https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/66fbc14f0b738f09e77cadb8_fav.png',
+      'logo': 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg',
       'description': 'Leading platform for Portugal Golden Visa investment funds and residency by investment services',
       'founder': {
         '@type': 'Person',
