@@ -1,5 +1,5 @@
 
-import { RouteRecordRaw } from 'vue-router'
+import { RouteRecordRaw } from 'vite-ssg'
 
 // Import all page components
 import Index from './pages/Index'
