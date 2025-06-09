@@ -75,10 +75,12 @@ export class SEOService {
     return fullDescription.substring(0, 155);
   }
 
-  // Initialize all SEO enhancements (removed redundant hreflang function)
+  // Initialize technical SEO enhancements only (no meta tag content setting)
   static initializeSEO(currentUrl: string): void {
-    this.setCanonicalUrl(currentUrl);
+    console.log('SEOService: Initializing technical SEO for:', currentUrl);
+    // Note: Removed setCanonicalUrl as MetaTagManager now handles this
     this.addPreloadDirectives();
     this.addSecurityHeaders();
+    console.log('SEOService: Technical SEO initialized');
   }
 }
