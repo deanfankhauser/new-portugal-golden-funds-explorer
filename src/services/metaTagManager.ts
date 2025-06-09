@@ -3,6 +3,7 @@ export class MetaTagManager {
   
   // List of all meta tags that should be managed by page SEO components
   private static readonly MANAGED_META_SELECTORS = [
+    'title',
     'meta[name="description"]',
     'meta[name="keywords"]', 
     'meta[name="robots"]',
@@ -27,7 +28,7 @@ export class MetaTagManager {
     'link[rel="canonical"]'
   ];
 
-  // Clear all managed meta tags
+  // Clear all managed meta tags including title
   static clearAllManagedMetaTags(): void {
     console.log('MetaTagManager: Clearing all managed meta tags');
     this.MANAGED_META_SELECTORS.forEach(selector => {
@@ -60,8 +61,8 @@ export class MetaTagManager {
     document.title = title;
   }
 
-  // Complete meta tag setup for a page
-  static setupPageMetaTags(config: {
+  // Simplified meta tag setup using hardcoded data
+  static setupPageMetaTags(metaData: {
     title: string;
     description: string;
     keywords: string;
@@ -74,28 +75,28 @@ export class MetaTagManager {
     imageUrl?: string;
     imageAlt?: string;
   }): void {
-    console.log('MetaTagManager: Setting up meta tags for page:', config.title);
+    console.log('MetaTagManager: Setting up meta tags for:', metaData.title);
     
     // Set page title
-    this.setPageTitle(config.title);
+    this.setPageTitle(metaData.title);
     
     // Create all meta tags
-    this.createMetaTag({ name: 'description', content: config.description });
-    this.createMetaTag({ name: 'keywords', content: config.keywords });
+    this.createMetaTag({ name: 'description', content: metaData.description });
+    this.createMetaTag({ name: 'keywords', content: metaData.keywords });
     this.createMetaTag({ name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' });
     this.createMetaTag({ name: 'author', content: 'Dean Fankhauser, CEO' });
 
     // Open Graph meta tags
-    this.createMetaTag({ property: 'og:title', content: config.ogTitle });
-    this.createMetaTag({ property: 'og:description', content: config.ogDescription });
+    this.createMetaTag({ property: 'og:title', content: metaData.ogTitle });
+    this.createMetaTag({ property: 'og:description', content: metaData.ogDescription });
     this.createMetaTag({ property: 'og:type', content: 'website' });
-    this.createMetaTag({ property: 'og:url', content: config.ogUrl });
+    this.createMetaTag({ property: 'og:url', content: metaData.ogUrl });
     this.createMetaTag({ property: 'og:site_name', content: 'Movingto Portugal Golden Visa Funds' });
     this.createMetaTag({ property: 'og:locale', content: 'en_US' });
 
     // Image meta tags
-    const imageUrl = config.imageUrl || 'https://pbs.twimg.com/profile_images/1763893053666768848/DnlafcQV_400x400.jpg';
-    const imageAlt = config.imageAlt || 'Portugal Golden Visa Investment Funds';
+    const imageUrl = metaData.imageUrl || 'https://pbs.twimg.com/profile_images/1763893053666768848/DnlafcQV_400x400.jpg';
+    const imageAlt = metaData.imageAlt || 'Portugal Golden Visa Investment Funds';
     
     this.createMetaTag({ property: 'og:image', content: imageUrl });
     this.createMetaTag({ property: 'og:image:width', content: '400' });
@@ -106,13 +107,13 @@ export class MetaTagManager {
     this.createMetaTag({ name: 'twitter:card', content: 'summary_large_image' });
     this.createMetaTag({ name: 'twitter:site', content: '@movingtoio' });
     this.createMetaTag({ name: 'twitter:creator', content: '@movingtoio' });
-    this.createMetaTag({ name: 'twitter:title', content: config.twitterTitle });
-    this.createMetaTag({ name: 'twitter:description', content: config.twitterDescription });
+    this.createMetaTag({ name: 'twitter:title', content: metaData.twitterTitle });
+    this.createMetaTag({ name: 'twitter:description', content: metaData.twitterDescription });
     this.createMetaTag({ name: 'twitter:image', content: imageUrl });
     this.createMetaTag({ name: 'twitter:image:alt', content: imageAlt });
 
     // Add canonical URL
-    this.createLinkTag({ rel: 'canonical', href: config.canonicalUrl });
+    this.createLinkTag({ rel: 'canonical', href: metaData.canonicalUrl });
 
     console.log('MetaTagManager: Meta tags setup complete');
   }

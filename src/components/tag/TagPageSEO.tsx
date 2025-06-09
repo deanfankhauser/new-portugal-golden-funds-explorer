@@ -1,9 +1,9 @@
-
 import React, { useEffect } from 'react';
 import { StructuredDataService } from '../../services/structuredDataService';
 import { EnhancedStructuredDataService } from '../../services/enhancedStructuredDataService';
 import { SEOService } from '../../services/seoService';
 import { MetaTagManager } from '../../services/metaTagManager';
+import { TAG_META_DATA } from '../../data/metaData';
 import { URL_CONFIG } from '../../utils/urlConfig';
 
 interface TagPageSEOProps {
@@ -22,7 +22,6 @@ interface TagPageSEOProps {
 
 const TagPageSEO = ({ tagName, tagSlug, fundsCount, funds }: TagPageSEOProps) => {
   useEffect(() => {
-    // Use setTimeout to ensure DOM is ready and avoid timing issues
     const applyMetaTags = () => {
       const currentUrl = URL_CONFIG.buildTagUrl(tagSlug || '');
       
@@ -32,32 +31,31 @@ const TagPageSEO = ({ tagName, tagSlug, fundsCount, funds }: TagPageSEOProps) =>
       // Initialize comprehensive SEO (without setting meta tags)
       SEOService.initializeSEO(currentUrl);
 
-      // Generate optimized SEO content
-      const optimizedTitle = `Top ${tagName} Golden Visa Funds | Movingto`;
-      const optimizedDescription = SEOService.optimizeMetaDescription(
-        `Discover ${tagName} Golden Visa funds. Browse and compare to find the best Golden Visa fund for you.`,
-        []
-      );
-      const keywords = `${tagName}, Golden Visa, Investment Funds, Portugal, Fund Manager, ${fundsCount} funds`;
+      // Get hardcoded meta data for this tag
+      const metaData = TAG_META_DATA[tagSlug || ''];
+      
+      if (!metaData) {
+        console.error('TagPageSEO: No meta data found for tag:', tagSlug);
+        return;
+      }
 
-      console.log('TagPageSEO: Generated meta title:', optimizedTitle);
-      console.log('TagPageSEO: Generated meta description:', optimizedDescription);
+      console.log('TagPageSEO: Using hardcoded meta data:', metaData.title);
 
       // Clear all existing managed meta tags
       MetaTagManager.clearAllManagedMetaTags();
 
-      // Set up all meta tags using the unified manager
+      // Set up all meta tags using hardcoded data
       MetaTagManager.setupPageMetaTags({
-        title: optimizedTitle,
-        description: optimizedDescription,
-        keywords: keywords,
+        title: metaData.title,
+        description: metaData.description,
+        keywords: metaData.keywords,
         canonicalUrl: currentUrl,
-        ogTitle: optimizedTitle,
-        ogDescription: optimizedDescription,
+        ogTitle: metaData.ogTitle,
+        ogDescription: metaData.ogDescription,
         ogUrl: currentUrl,
-        twitterTitle: optimizedTitle,
-        twitterDescription: optimizedDescription,
-        imageAlt: `${tagName} Golden Visa Investment Funds`
+        twitterTitle: metaData.twitterTitle,
+        twitterDescription: metaData.twitterDescription,
+        imageAlt: metaData.imageAlt
       });
 
       console.log('TagPageSEO: Meta tags applied successfully');
@@ -128,7 +126,7 @@ const TagPageSEO = ({ tagName, tagSlug, fundsCount, funds }: TagPageSEOProps) =>
         EnhancedStructuredDataService.generateOrganizationSchema(),
         EnhancedStructuredDataService.generateArticleSchema(
           `${tagName} Golden Visa Investment Funds Directory`,
-          optimizedDescription,
+          metaData.description,
           currentUrl
         )
       ];
@@ -168,7 +166,7 @@ const TagPageSEO = ({ tagName, tagSlug, fundsCount, funds }: TagPageSEOProps) =>
     };
 
     // Apply meta tags with a small delay to ensure DOM is ready
-    setTimeout(applyMetaTags, 100);
+    setTimeout(applyMetaTags, 200);
 
     // Cleanup function
     return () => {

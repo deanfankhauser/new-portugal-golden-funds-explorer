@@ -1,4 +1,3 @@
-
 import { useEffect } from 'react';
 import { funds } from '../../data/funds';
 import { StructuredDataService } from '../../services/structuredDataService';
@@ -6,12 +5,11 @@ import { EnhancedStructuredDataService } from '../../services/enhancedStructured
 import { SEOService } from '../../services/seoService';
 import { MetaTagManager } from '../../services/metaTagManager';
 import { PerformanceService } from '../../services/performanceService';
-import { StaticGenerationService } from '../../services/staticGenerationService';
+import { HOMEPAGE_META } from '../../data/metaData';
 import { URL_CONFIG } from '../../utils/urlConfig';
 
 const HomepageSEO = () => {
   useEffect(() => {
-    // Use setTimeout to ensure DOM is ready and avoid timing issues
     const applyMetaTags = () => {
       const currentUrl = URL_CONFIG.BASE_URL;
       
@@ -23,27 +21,21 @@ const HomepageSEO = () => {
       PerformanceService.initializePerformanceOptimizations();
       PerformanceService.addResourceHints();
 
-      // Generate and set optimized meta data
-      const metaData = StaticGenerationService.generateRouteMetaData('/');
-      
-      console.log('HomepageSEO: Generated meta title:', metaData.title);
-      console.log('HomepageSEO: Generated meta description:', metaData.description);
-
       // Clear all existing managed meta tags
       MetaTagManager.clearAllManagedMetaTags();
 
-      // Set up all meta tags using the unified manager
+      // Set up all meta tags using hardcoded data
       MetaTagManager.setupPageMetaTags({
-        title: metaData.title,
-        description: metaData.description,
-        keywords: metaData.keywords.join(', '),
+        title: HOMEPAGE_META.title,
+        description: HOMEPAGE_META.description,
+        keywords: HOMEPAGE_META.keywords,
         canonicalUrl: currentUrl,
-        ogTitle: metaData.title,
-        ogDescription: metaData.description,
+        ogTitle: HOMEPAGE_META.ogTitle,
+        ogDescription: HOMEPAGE_META.ogDescription,
         ogUrl: currentUrl,
-        twitterTitle: metaData.title,
-        twitterDescription: metaData.description,
-        imageAlt: 'Portugal Golden Visa Investment Funds Directory'
+        twitterTitle: HOMEPAGE_META.twitterTitle,
+        twitterDescription: HOMEPAGE_META.twitterDescription,
+        imageAlt: HOMEPAGE_META.imageAlt
       });
 
       console.log('HomepageSEO: Meta tags applied successfully');

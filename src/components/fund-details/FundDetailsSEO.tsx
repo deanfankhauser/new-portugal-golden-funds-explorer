@@ -1,11 +1,10 @@
-
 import { useEffect } from 'react';
 import { Fund } from '../../data/funds';
 import { StructuredDataService } from '../../services/structuredDataService';
 import { EnhancedStructuredDataService } from '../../services/enhancedStructuredDataService';
 import { SEOService } from '../../services/seoService';
-import { FundSeoService } from '../../services/fundSeoService';
 import { MetaTagManager } from '../../services/metaTagManager';
+import { FUND_META_DATA } from '../../data/metaData';
 import { URL_CONFIG } from '../../utils/urlConfig';
 
 interface FundDetailsSEOProps {
@@ -14,7 +13,6 @@ interface FundDetailsSEOProps {
 
 const FundDetailsSEO: React.FC<FundDetailsSEOProps> = ({ fund }) => {
   useEffect(() => {
-    // Use setTimeout to ensure DOM is ready and avoid timing issues
     const applyMetaTags = () => {
       const currentUrl = URL_CONFIG.buildFundUrl(fund.id);
       
@@ -24,32 +22,31 @@ const FundDetailsSEO: React.FC<FundDetailsSEOProps> = ({ fund }) => {
       // Initialize comprehensive SEO (without setting meta tags)
       SEOService.initializeSEO(currentUrl);
 
-      // Generate fund-specific SEO content
-      const metaTitle = FundSeoService.generateMetaTitle(fund);
-      const metaDescription = FundSeoService.generateMetaDescription(fund);
-      const ogTitle = FundSeoService.generateOGTitle(fund);
-      const ogDescription = FundSeoService.generateOGDescription(fund);
-      const twitterDescription = FundSeoService.generateTwitterDescription(fund);
-      const keywords = FundSeoService.generateKeywords(fund);
+      // Get hardcoded meta data for this fund
+      const metaData = FUND_META_DATA[fund.id];
+      
+      if (!metaData) {
+        console.error('FundDetailsSEO: No meta data found for fund:', fund.id);
+        return;
+      }
 
-      console.log('FundDetailsSEO: Generated meta title:', metaTitle);
-      console.log('FundDetailsSEO: Generated meta description:', metaDescription);
+      console.log('FundDetailsSEO: Using hardcoded meta data:', metaData.title);
 
       // Clear all existing managed meta tags
       MetaTagManager.clearAllManagedMetaTags();
 
-      // Set up all meta tags using the unified manager
+      // Set up all meta tags using hardcoded data
       MetaTagManager.setupPageMetaTags({
-        title: metaTitle,
-        description: metaDescription,
-        keywords: keywords,
+        title: metaData.title,
+        description: metaData.description,
+        keywords: metaData.keywords,
         canonicalUrl: currentUrl,
-        ogTitle: ogTitle,
-        ogDescription: ogDescription,
+        ogTitle: metaData.ogTitle,
+        ogDescription: metaData.ogDescription,
         ogUrl: currentUrl,
-        twitterTitle: ogTitle,
-        twitterDescription: twitterDescription,
-        imageAlt: `${fund.name} - Portuguese Golden Visa Investment Fund`
+        twitterTitle: metaData.twitterTitle,
+        twitterDescription: metaData.twitterDescription,
+        imageAlt: metaData.imageAlt
       });
 
       console.log('FundDetailsSEO: Meta tags applied successfully');
@@ -64,17 +61,17 @@ const FundDetailsSEO: React.FC<FundDetailsSEOProps> = ({ fund }) => {
         EnhancedStructuredDataService.generateWebSiteSchema(),
         EnhancedStructuredDataService.generateOrganizationSchema(),
         EnhancedStructuredDataService.generateArticleSchema(
-          metaTitle,
-          metaDescription,
+          metaData.title,
+          metaData.description,
           currentUrl
         )
       ];
 
       // Add FAQ structured data if available
-      const faqSchema = FundSeoService.generateFAQStructuredData(fund);
-      if (faqSchema) {
-        schemas.push(faqSchema);
-      }
+      // const faqSchema = FundSeoService.generateFAQStructuredData(fund);
+      // if (faqSchema) {
+      //   schemas.push(faqSchema);
+      // }
 
       // Add structured data
       StructuredDataService.addStructuredData(schemas, 'fund-page-schema');
@@ -84,7 +81,7 @@ const FundDetailsSEO: React.FC<FundDetailsSEOProps> = ({ fund }) => {
     };
 
     // Apply meta tags with a small delay to ensure DOM is ready
-    setTimeout(applyMetaTags, 100);
+    setTimeout(applyMetaTags, 200);
 
     // Cleanup function
     return () => {
