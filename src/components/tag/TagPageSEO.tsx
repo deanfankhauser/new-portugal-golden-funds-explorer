@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { StructuredDataService } from '../../services/structuredDataService';
 import { EnhancedStructuredDataService } from '../../services/enhancedStructuredDataService';
@@ -26,39 +27,47 @@ const TagPageSEO = ({ tagName, tagSlug, fundsCount, funds }: TagPageSEOProps) =>
       const currentUrl = URL_CONFIG.buildTagUrl(tagSlug || '');
       
       console.log('TagPageSEO: Setting SEO for tag:', tagName);
+      console.log('TagPageSEO: Tag slug:', tagSlug);
       console.log('TagPageSEO: Current URL:', currentUrl);
       
-      // Initialize comprehensive SEO (without setting meta tags)
-      SEOService.initializeSEO(currentUrl);
-
       // Get hardcoded meta data for this tag
       const metaData = TAG_META_DATA[tagSlug || ''];
       
       if (!metaData) {
         console.error('TagPageSEO: No meta data found for tag:', tagSlug);
+        console.log('TagPageSEO: Available tags in TAG_META_DATA:', Object.keys(TAG_META_DATA));
         return;
       }
 
-      console.log('TagPageSEO: Using hardcoded meta data:', metaData.title);
+      console.log('TagPageSEO: Found meta data:', metaData);
+      console.log('TagPageSEO: Using hardcoded meta data title:', metaData.title);
 
-      // Clear all existing managed meta tags
+      // Clear all existing managed meta tags FIRST
       MetaTagManager.clearAllManagedMetaTags();
+      
+      // Wait a moment for clearing to complete, then set new tags
+      setTimeout(() => {
+        console.log('TagPageSEO: Setting new meta tags after clearing');
+        
+        // Set up all meta tags using hardcoded data
+        MetaTagManager.setupPageMetaTags({
+          title: metaData.title,
+          description: metaData.description,
+          keywords: metaData.keywords,
+          canonicalUrl: currentUrl,
+          ogTitle: metaData.ogTitle,
+          ogDescription: metaData.ogDescription,
+          ogUrl: currentUrl,
+          twitterTitle: metaData.twitterTitle,
+          twitterDescription: metaData.twitterDescription,
+          imageAlt: metaData.imageAlt
+        });
 
-      // Set up all meta tags using hardcoded data
-      MetaTagManager.setupPageMetaTags({
-        title: metaData.title,
-        description: metaData.description,
-        keywords: metaData.keywords,
-        canonicalUrl: currentUrl,
-        ogTitle: metaData.ogTitle,
-        ogDescription: metaData.ogDescription,
-        ogUrl: currentUrl,
-        twitterTitle: metaData.twitterTitle,
-        twitterDescription: metaData.twitterDescription,
-        imageAlt: metaData.imageAlt
-      });
-
-      console.log('TagPageSEO: Meta tags applied successfully');
+        console.log('TagPageSEO: Meta tags applied successfully');
+        
+        // Initialize technical SEO after meta tags are set
+        SEOService.initializeSEO(currentUrl);
+      }, 100);
 
       // Generate enhanced structured data schemas
       const schemas = [
@@ -166,10 +175,11 @@ const TagPageSEO = ({ tagName, tagSlug, fundsCount, funds }: TagPageSEOProps) =>
     };
 
     // Apply meta tags with a small delay to ensure DOM is ready
-    setTimeout(applyMetaTags, 200);
+    const timeoutId = setTimeout(applyMetaTags, 300);
 
     // Cleanup function
     return () => {
+      clearTimeout(timeoutId);
       StructuredDataService.removeStructuredData(`tag-${tagSlug}`);
     };
   }, [tagName, fundsCount, funds, tagSlug]);
