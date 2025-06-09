@@ -46,8 +46,8 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
     ? fund.geographicAllocation[0] 
     : null;
 
-  // Generate fund logo placeholder or use actual logo if available
-  const fundLogoSrc = fund.logo || `https://images.unsplash.com/photo-1518770660439-4636190af475?w=240&h=160&fit=crop&auto=format`;
+  // Generate fund logo placeholder (funds don't have individual logos, use generic placeholder)
+  const fundLogoSrc = `https://images.unsplash.com/photo-1518770660439-4636190af475?w=240&h=160&fit=crop&auto=format`;
   const fundLogoAlt = ImageOptimizationService.generateFundLogoAlt(fund.name, fund.managerName);
 
   return (

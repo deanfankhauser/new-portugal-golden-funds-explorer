@@ -48,8 +48,8 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
     }).format(amount);
   };
 
-  // Generate fund logo placeholder or use actual logo if available
-  const fundLogoSrc = fund.logo || `https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=120&fit=crop&auto=format`;
+  // Generate fund logo placeholder (funds don't have individual logos, use generic placeholder)
+  const fundLogoSrc = `https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=120&fit=crop&auto=format`;
   const fundLogoAlt = ImageOptimizationService.generateFundLogoAlt(fund.name, fund.managerName);
 
   return (
