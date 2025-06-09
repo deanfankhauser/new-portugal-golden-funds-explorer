@@ -80,22 +80,13 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       </div>
       
       {/* Alternative Funds Section */}
-      <section>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Alternative Investment Options</h2>
-        <AlternativeFunds currentFund={fund} />
-      </section>
+      <AlternativeFunds currentFund={fund} />
       
       {/* ROI Calculator */}
-      <section>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">ROI Calculator</h2>
-        <ROICalculator fund={fund} />
-      </section>
+      <ROICalculator fund={fund} />
       
       {/* FAQ Section */}
-      <section>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
-        <FundFAQSection fund={fund} />
-      </section>
+      <FundFAQSection fund={fund} />
     </div>
   );
 };

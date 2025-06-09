@@ -14,7 +14,7 @@ export const URL_CONFIG = {
   
   // Helper function to build fund detail URLs
   buildFundUrl: (fundId: string) => {
-    return `${URL_CONFIG.BASE_URL}/${fundId}`;
+    return `${URL_CONFIG.BASE_URL}/funds/${fundId}`;
   },
   
   // Helper function to build tag URLs

@@ -1,10 +1,10 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import FundListItem from '../FundListItem';
 import FundFilter from '../FundFilter';
 import PremiumCTA from '../cta/PremiumCTA';
-import FundListItemSkeleton from '../skeletons/FundListItemSkeleton';
 import { FundTag } from '../../data/funds';
 import { Button } from '@/components/ui/button';
 import { ClipboardCheck, Filter, X } from 'lucide-react';
@@ -16,7 +16,6 @@ interface HomepageContentProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   isAuthenticated: boolean;
-  isLoading?: boolean;
 }
 
 const HomepageContent: React.FC<HomepageContentProps> = ({
@@ -25,8 +24,7 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
   setSelectedTags,
   searchQuery,
   setSearchQuery,
-  isAuthenticated,
-  isLoading = false
+  isAuthenticated
 }) => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
 
@@ -108,20 +106,7 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
         
         {/* Main Content */}
         <div className="lg:col-span-3 order-1 lg:order-2">
-          {isLoading ? (
-            <>
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6 gap-2">
-                <p className="text-gray-600 font-medium text-sm sm:text-base">
-                  Loading funds...
-                </p>
-              </div>
-              <div className="space-y-4 sm:space-y-6">
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <FundListItemSkeleton key={index} />
-                ))}
-              </div>
-            </>
-          ) : filteredFunds.length === 0 ? (
+          {filteredFunds.length === 0 ? (
             <div className="text-center py-10 sm:py-12 bg-white rounded-xl shadow-sm border p-6 sm:p-8">
               <div className="max-w-md mx-auto">
                 <div className="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">

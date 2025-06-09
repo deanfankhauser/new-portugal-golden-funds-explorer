@@ -12,8 +12,6 @@ interface FundOverviewTabProps {
 const FundOverviewTab: React.FC<FundOverviewTabProps> = ({ fund }) => {
   return (
     <div className="space-y-8 animate-fade-in">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Fund Overview</h2>
-      
       {/* Fund Description */}
       <FundDescription description={fund.detailedDescription} />
       
