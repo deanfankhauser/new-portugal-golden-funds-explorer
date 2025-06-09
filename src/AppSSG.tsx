@@ -6,10 +6,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ComparisonProvider } from "./contexts/ComparisonContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { RecentlyViewedProvider } from "./contexts/RecentlyViewedContext";
+import { RouterView } from 'vue-router';
 
 const queryClient = new QueryClient();
 
-const AppSSG = ({ children }: { children: React.ReactNode }) => (
+const AppSSG = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AuthProvider>
@@ -17,7 +18,7 @@ const AppSSG = ({ children }: { children: React.ReactNode }) => (
           <ComparisonProvider>
             <Toaster />
             <Sonner />
-            {children}
+            <RouterView />
           </ComparisonProvider>
         </RecentlyViewedProvider>
       </AuthProvider>

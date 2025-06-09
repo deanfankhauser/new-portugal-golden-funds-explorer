@@ -7,11 +7,10 @@ async function buildSSG() {
   console.log('Building SSG with vite-ssg...');
   
   try {
-    // Build using vite-ssg with the correct entry point
-    execSync('npx vite-ssg build --mode production', { 
+    // Build using vite-ssg
+    execSync('npx vite-ssg build', { 
       stdio: 'inherit',
-      cwd: process.cwd(),
-      env: { ...process.env, VITE_SSG: 'true' }
+      cwd: process.cwd()
     });
     
     console.log('✅ SSG build completed successfully!');
