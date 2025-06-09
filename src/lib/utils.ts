@@ -1,3 +1,4 @@
+
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -110,6 +111,38 @@ export function categoryToSlug(category: string): string {
 // Function to convert slug back to category
 export function slugToCategory(slug: string): string {
   return slug.split('-').map(word => 
+    word.charAt(0).toUpperCase() + word.slice(1)
+  ).join(' ');
+}
+
+// Function to convert manager name to URL-friendly slug
+export function managerToSlug(managerName: string): string {
+  return managerName
+    .toLowerCase()
+    .replace(/[&]/g, 'and') // Convert & to 'and'
+    .replace(/[,\.]/g, '') // Remove commas and periods
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/[^\w\-]/g, '') // Remove any remaining non-word characters except hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+    .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
+}
+
+// Function to convert slug back to manager name (for URL parsing)
+export function slugToManager(slug: string): string {
+  // This is a reverse mapping - we'll need to match against actual manager names
+  // since the transformation isn't perfectly reversible
+  const commonReplacements: { [key: string]: string } = {
+    'and': '&',
+    '-': ' '
+  };
+  
+  let result = slug;
+  Object.entries(commonReplacements).forEach(([from, to]) => {
+    result = result.replace(new RegExp(from, 'g'), to);
+  });
+  
+  // Capitalize each word
+  return result.split(' ').map(word => 
     word.charAt(0).toUpperCase() + word.slice(1)
   ).join(' ');
 }

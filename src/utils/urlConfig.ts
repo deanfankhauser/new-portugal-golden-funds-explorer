@@ -1,4 +1,6 @@
 
+import { managerToSlug } from '../lib/utils';
+
 // Centralized URL configuration for the application
 export const URL_CONFIG = {
   BASE_URL: 'https://movingto.com/funds',
@@ -25,9 +27,9 @@ export const URL_CONFIG = {
     return `${URL_CONFIG.BASE_URL}/categories/${category}`;
   },
   
-  // Helper function to build manager URLs
+  // Helper function to build manager URLs with SEO-friendly slugs
   buildManagerUrl: (managerName: string) => {
-    return `${URL_CONFIG.BASE_URL}/manager/${managerName}`;
+    return `${URL_CONFIG.BASE_URL}/manager/${managerToSlug(managerName)}`;
   },
   
   // Helper function to build comparison URLs

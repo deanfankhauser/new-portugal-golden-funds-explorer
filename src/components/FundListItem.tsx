@@ -11,7 +11,7 @@ import { useAuth } from '../contexts/AuthContext';
 import IntroductionButton from './fund-details/IntroductionButton';
 import PasswordDialog from './PasswordDialog';
 import { formatPercentage } from './fund-details/utils/formatters';
-import { tagToSlug, categoryToSlug } from '@/lib/utils';
+import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 
 interface FundListItemProps {
   fund: Fund;
@@ -96,7 +96,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                   <div>
                     <p className="text-sm text-muted-foreground">Fund Manager</p>
                     <Link 
-                      to={`/manager/${encodeURIComponent(fund.managerName)}`} 
+                      to={`/manager/${managerToSlug(fund.managerName)}`} 
                       className="font-medium hover:text-[#EF4444] transition-colors"
                     >
                       {fund.managerName}

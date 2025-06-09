@@ -11,6 +11,7 @@ import { getAllFundManagers, getFundsCountByManager, getTotalFundSizeByManager }
 import { StructuredDataService } from '../services/structuredDataService';
 import { SEOService } from '../services/seoService';
 import { URL_CONFIG } from '../utils/urlConfig';
+import { managerToSlug } from '../lib/utils';
 
 const ManagersHub = () => {
   const managers = getAllFundManagers();
@@ -211,7 +212,7 @@ const ManagersHub = () => {
             return (
               <Link 
                 key={manager.name}
-                to={`/manager/${encodeURIComponent(manager.name)}`}
+                to={`/manager/${managerToSlug(manager.name)}`}
                 className="block hover:no-underline"
               >
                 <Card className={cn(

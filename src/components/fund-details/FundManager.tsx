@@ -4,6 +4,7 @@ import { Fund } from '../../data/funds';
 import { Card, CardContent } from "@/components/ui/card";
 import { User, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { managerToSlug } from '../../lib/utils';
 
 interface FundManagerProps {
   managerName: Fund['managerName'];
@@ -19,7 +20,7 @@ const FundManager: React.FC<FundManagerProps> = ({ managerName, managerLogo }) =
           <h2 className="text-xl font-bold">Fund Manager</h2>
         </div>
         <Link 
-          to={`/manager/${encodeURIComponent(managerName)}`}
+          to={`/manager/${managerToSlug(managerName)}`}
           className="flex items-center gap-4 bg-slate-50 p-5 rounded-lg border border-slate-100 hover:bg-slate-100 transition-colors"
         >
           {managerLogo && (

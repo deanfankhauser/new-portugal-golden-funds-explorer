@@ -1,7 +1,7 @@
 
 import { funds, getAllCategories, getAllTags } from '../data/funds';
 import { getAllFundManagers } from '../data/services/managers-service';
-import { categoryToSlug, tagToSlug } from '../lib/utils';
+import { categoryToSlug, tagToSlug, managerToSlug } from '../lib/utils';
 import { URL_CONFIG } from '../utils/urlConfig';
 
 export interface SitemapEntry {
@@ -131,13 +131,13 @@ export class SitemapService {
     }));
   }
 
-  // Generate manager pages
+  // Generate manager pages with SEO-friendly URLs
   private static getManagerPages(): SitemapEntry[] {
     const currentDate = this.getCurrentDate();
     const managers = getAllFundManagers();
     
     return managers.map(manager => ({
-      url: URL_CONFIG.buildManagerUrl(encodeURIComponent(manager.name)),
+      url: URL_CONFIG.buildManagerUrl(manager.name),
       lastmod: currentDate,
       changefreq: 'weekly' as const,
       priority: 0.8

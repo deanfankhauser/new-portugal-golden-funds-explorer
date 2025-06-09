@@ -11,6 +11,8 @@ import FundManagerHeader from '../components/fund-manager/FundManagerHeader';
 import FundManagerContent from '../components/fund-manager/FundManagerContent';
 import FundManagerNotFound from '../components/fund-manager/FundManagerNotFound';
 import { FundManagerData } from '../hooks/useFundManagerStructuredData';
+import { slugToManager } from '../lib/utils';
+import { getAllFundManagers } from '../data/services/managers-service';
 
 const FundManager = () => {
   const { name } = useParams<{ name: string }>();
@@ -18,10 +20,39 @@ const FundManager = () => {
   // Decode the URL-encoded manager name
   const decodedManagerName = name ? decodeURIComponent(name) : '';
   
-  // Find all funds managed by this manager
-  const managerFunds = funds.filter(fund => 
+  // Try to find manager by exact match first (for old URLs)
+  let managerFunds = funds.filter(fund => 
     fund.managerName.toLowerCase() === decodedManagerName.toLowerCase()
   );
+  
+  // If no exact match found, try slug-to-manager conversion (for new URLs)
+  if (managerFunds.length === 0 && name) {
+    const convertedManagerName = slugToManager(name);
+    
+    // Get all available managers and find closest match
+    const allManagers = getAllFundManagers();
+    const exactMatch = allManagers.find(manager => 
+      manager.name.toLowerCase() === convertedManagerName.toLowerCase()
+    );
+    
+    if (exactMatch) {
+      managerFunds = funds.filter(fund => 
+        fund.managerName.toLowerCase() === exactMatch.name.toLowerCase()
+      );
+    } else {
+      // Try partial matching for better compatibility
+      const partialMatch = allManagers.find(manager => 
+        manager.name.toLowerCase().includes(convertedManagerName.toLowerCase()) ||
+        convertedManagerName.toLowerCase().includes(manager.name.toLowerCase())
+      );
+      
+      if (partialMatch) {
+        managerFunds = funds.filter(fund => 
+          fund.managerName.toLowerCase() === partialMatch.name.toLowerCase()
+        );
+      }
+    }
+  }
   
   // If no funds found, return an empty state
   if (managerFunds.length === 0) {

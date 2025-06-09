@@ -9,6 +9,7 @@ import { GitCompare, User } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { useAuth } from '../contexts/AuthContext';
 import PasswordDialog from './PasswordDialog';
+import { managerToSlug } from '../lib/utils';
 
 interface FundCardProps {
   fund: Fund;
@@ -87,7 +88,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             <div className="flex-1">
               <p className="text-sm text-muted-foreground">Fund Manager</p>
               <Link 
-                to={`/manager/${encodeURIComponent(fund.managerName)}`}
+                to={`/manager/${managerToSlug(fund.managerName)}`}
                 className="font-medium hover:text-[#EF4444] transition-colors"
               >
                 {fund.managerName}
