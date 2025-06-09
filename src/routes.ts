@@ -1,9 +1,9 @@
 
 import { PageSEOProps } from './types/seo';
 import { funds } from './data/services/funds-service';
-import { getManagers } from './data/services/managers-service';
-import { getCategories } from './data/services/categories-service';
-import { getTags } from './data/services/tags-service';
+import { getAllFundManagers } from './data/services/managers-service';
+import { getAllCategories } from './data/services/categories-service';
+import { getAllTags } from './data/services/tags-service';
 
 export interface RouteConfig {
   path: string;
@@ -23,8 +23,8 @@ const generateDynamicRoutes = (): RouteConfig[] => {
   });
   
   // Manager pages
-  const managers = getManagers();
-  managers.forEach(manager => {
+  const managers = getAllFundManagers();
+  managers.forEach((manager: { name: string; logo?: string }) => {
     const slug = manager.name.toLowerCase().replace(/\s+/g, '-');
     routes.push({
       path: `/manager/${slug}`,
@@ -33,8 +33,8 @@ const generateDynamicRoutes = (): RouteConfig[] => {
   });
   
   // Category pages
-  const categories = getCategories();
-  categories.forEach(category => {
+  const categories = getAllCategories();
+  categories.forEach((category: string) => {
     const slug = category.toLowerCase().replace(/\s+/g, '-');
     routes.push({
       path: `/categories/${slug}`,
@@ -43,8 +43,8 @@ const generateDynamicRoutes = (): RouteConfig[] => {
   });
   
   // Tag pages
-  const tags = getTags();
-  tags.forEach(tag => {
+  const tags = getAllTags();
+  tags.forEach((tag: string) => {
     const slug = tag.toLowerCase().replace(/\s+/g, '-');
     routes.push({
       path: `/tags/${slug}`,
