@@ -1,4 +1,3 @@
-
 export interface PageMetaData {
   title: string;
   description: string;
@@ -265,5 +264,99 @@ export const STATIC_PAGES_META: Record<string, PageMetaData> = {
     twitterTitle: "Fund Quiz - Portugal Golden Visa",
     twitterDescription: "Discover the ideal Portugal Golden Visa investment fund with our personalized quiz and recommendations.",
     imageAlt: "Portugal Golden Visa Fund Quiz"
+  }
+};
+
+// Manager-specific meta data by manager name slug
+export const MANAGER_META_DATA: Record<string, PageMetaData> = {
+  "lince-capital": {
+    title: "Lince Capital | Portugal Golden Visa Fund Manager Profile",
+    description: "Lince Capital manages 2 Golden Visa investment funds for Portugal residency. Explore Growth and Yield funds with €500,000 minimum investment.",
+    keywords: "Lince Capital, Portugal Golden Visa, Fund Manager, Investment Funds, EU Residency",
+    ogTitle: "Lince Capital - Portugal Golden Visa Fund Manager",
+    ogDescription: "Leading fund manager for Portugal Golden Visa investments. Manage Growth and Yield funds for EU residency.",
+    twitterTitle: "Lince Capital - Golden Visa Fund Manager",
+    twitterDescription: "Leading fund manager for Portugal Golden Visa investments. Manage Growth and Yield funds for EU residency.",
+    imageAlt: "Lince Capital - Portugal Golden Visa Fund Manager"
+  },
+  "3cc-fund-management": {
+    title: "3CC Fund Management | Portugal Golden Visa Fund Manager",
+    description: "3CC Fund Management specializes in Golden Visa investment funds for Portugal residency. Real estate focused investments with €500,000 minimum.",
+    keywords: "3CC Fund Management, Portugal Golden Visa, Real Estate Funds, Investment Manager, EU Residency",
+    ogTitle: "3CC Fund Management - Portugal Golden Visa Specialist",
+    ogDescription: "Real estate focused Golden Visa investment funds for Portugal residency. €500,000 minimum investment.",
+    twitterTitle: "3CC Fund Management - Golden Visa",
+    twitterDescription: "Real estate focused Golden Visa investment funds for Portugal residency. €500,000 minimum investment.",
+    imageAlt: "3CC Fund Management - Portugal Golden Visa Specialist"
+  },
+  "optimize-investment-partners": {
+    title: "Optimize Investment Partners | Portugal Golden Visa Manager",
+    description: "Optimize Investment Partners offers specialized Golden Visa investment funds for Portugal residency. Optimized investment strategies.",
+    keywords: "Optimize Investment Partners, Portugal Golden Visa, Investment Manager, EU Residency, Optimized Funds",
+    ogTitle: "Optimize Investment Partners - Golden Visa Manager",
+    ogDescription: "Specialized Golden Visa investment funds optimized for Portugal residency eligibility.",
+    twitterTitle: "Optimize Investment Partners - Golden Visa",
+    twitterDescription: "Specialized Golden Visa investment funds optimized for Portugal residency eligibility.",
+    imageAlt: "Optimize Investment Partners - Golden Visa Manager"
+  },
+  "growth-blue-partners": {
+    title: "Growth Blue Partners | Portugal Golden Visa Fund Manager",
+    description: "Growth Blue Partners manages private equity funds for Portugal Golden Visa eligibility. Professional investment management for EU residency.",
+    keywords: "Growth Blue Partners, Portugal Golden Visa, Private Equity, Fund Manager, EU Residency",
+    ogTitle: "Growth Blue Partners - Golden Visa Fund Manager",
+    ogDescription: "Private equity investment management for Portugal Golden Visa eligibility and EU residency.",
+    twitterTitle: "Growth Blue Partners - Golden Visa",
+    twitterDescription: "Private equity investment management for Portugal Golden Visa eligibility and EU residency.",
+    imageAlt: "Growth Blue Partners - Golden Visa Fund Manager"
+  },
+  "horizon-capital": {
+    title: "Horizon Capital | Portugal Golden Visa Investment Manager",
+    description: "Horizon Capital specializes in real estate investment funds for Portugal Golden Visa. Professional management for EU residency investments.",
+    keywords: "Horizon Capital, Portugal Golden Visa, Real Estate Investment, Fund Manager, EU Residency",
+    ogTitle: "Horizon Capital - Golden Visa Investment Manager",
+    ogDescription: "Real estate investment funds managed by Horizon Capital for Portugal Golden Visa eligibility.",
+    twitterTitle: "Horizon Capital - Golden Visa",
+    twitterDescription: "Real estate investment funds managed by Horizon Capital for Portugal Golden Visa eligibility.",
+    imageAlt: "Horizon Capital - Golden Visa Investment Manager"
+  },
+  "mercurio-capital": {
+    title: "Mercurio Capital | Portugal Golden Visa Fund Manager",
+    description: "Mercurio Capital offers investment opportunities for Portugal Golden Visa eligibility. Professional fund management for EU residency.",
+    keywords: "Mercurio Capital, Portugal Golden Visa, Investment Manager, Fund Management, EU Residency",
+    ogTitle: "Mercurio Capital - Golden Visa Fund Manager",
+    ogDescription: "Professional investment fund management for Portugal Golden Visa eligibility and EU residency.",
+    twitterTitle: "Mercurio Capital - Golden Visa",
+    twitterDescription: "Professional investment fund management for Portugal Golden Visa eligibility and EU residency.",
+    imageAlt: "Mercurio Capital - Golden Visa Fund Manager"
+  },
+  "portugal-fund-management": {
+    title: "Portugal Fund Management | Golden Visa Investment Manager",
+    description: "Portugal Fund Management offers direct investment funds for Golden Visa eligibility. Specialized Portuguese investment management.",
+    keywords: "Portugal Fund Management, Golden Visa, Portuguese Investment, Fund Manager, EU Residency",
+    ogTitle: "Portugal Fund Management - Golden Visa Manager",
+    ogDescription: "Direct Portuguese investment funds for Golden Visa eligibility managed by local experts.",
+    twitterTitle: "Portugal Fund Management - Golden Visa",
+    twitterDescription: "Direct Portuguese investment funds for Golden Visa eligibility managed by local experts.",
+    imageAlt: "Portugal Fund Management - Golden Visa Manager"
+  },
+  "solar-future-capital": {
+    title: "Solar Future Capital | Green Energy Golden Visa Manager",
+    description: "Solar Future Capital manages sustainable investment funds for Portugal Golden Visa. Green energy investments for EU residency.",
+    keywords: "Solar Future Capital, Portugal Golden Visa, Green Energy, Sustainable Investment, EU Residency",
+    ogTitle: "Solar Future Capital - Green Golden Visa Manager",
+    ogDescription: "Sustainable green energy investment funds for Portugal Golden Visa and EU residency.",
+    twitterTitle: "Solar Future Capital - Green Golden Visa",
+    twitterDescription: "Sustainable green energy investment funds for Portugal Golden Visa and EU residency.",
+    imageAlt: "Solar Future Capital - Green Golden Visa Manager"
+  },
+  "steady-growth-partners": {
+    title: "Steady Growth Partners | Portugal Golden Visa Manager",
+    description: "Steady Growth Partners offers stable investment funds for Portugal Golden Visa. Conservative growth strategies for EU residency.",
+    keywords: "Steady Growth Partners, Portugal Golden Visa, Stable Investment, Conservative Growth, EU Residency",
+    ogTitle: "Steady Growth Partners - Golden Visa Manager",
+    ogDescription: "Stable, conservative investment funds for Portugal Golden Visa eligibility and EU residency.",
+    twitterTitle: "Steady Growth Partners - Golden Visa",
+    twitterDescription: "Stable, conservative investment funds for Portugal Golden Visa eligibility and EU residency.",
+    imageAlt: "Steady Growth Partners - Golden Visa Manager"
   }
 };
