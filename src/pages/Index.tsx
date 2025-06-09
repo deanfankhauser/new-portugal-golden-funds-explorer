@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -24,8 +25,8 @@ const IndexPage = () => {
       <HomepageSEO />
       <Header />
       
-      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
-        <div className="mb-8 sm:mb-10 text-center md:text-left max-w-4xl mx-auto md:mx-0">
+      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1" role="main" aria-label="Portugal Golden Visa Investment Funds Directory">
+        <header className="mb-8 sm:mb-10 text-center md:text-left max-w-4xl mx-auto md:mx-0">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 text-gray-800 leading-tight">
             Portugal Golden Visa Investment Funds
           </h1>
@@ -37,25 +38,29 @@ const IndexPage = () => {
           <div className="flex justify-center md:justify-start mb-4">
             <LastUpdated />
           </div>
-        </div>
+        </header>
 
         {/* Premium CTA Banner - only show for non-authenticated users */}
         {!isAuthenticated && (
-          <div className="mb-6 sm:mb-8">
+          <aside className="mb-6 sm:mb-8" aria-label="Premium features promotion">
             <PremiumCTA variant="banner" location="homepage" />
-          </div>
+          </aside>
         )}
 
-        <HomepageContent
-          filteredFunds={filteredFunds}
-          selectedTags={selectedTags}
-          setSelectedTags={setSelectedTags}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          isAuthenticated={isAuthenticated}
-        />
+        <section aria-label="Fund directory and filters">
+          <HomepageContent
+            filteredFunds={filteredFunds}
+            selectedTags={selectedTags}
+            setSelectedTags={setSelectedTags}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            isAuthenticated={isAuthenticated}
+          />
+        </section>
 
-        <HomepageInfoSections />
+        <section aria-label="Additional information">
+          <HomepageInfoSections />
+        </section>
       </main>
       
       <Footer />

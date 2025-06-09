@@ -10,6 +10,8 @@ import { useComparison } from '../contexts/ComparisonContext';
 import { useAuth } from '../contexts/AuthContext';
 import PasswordDialog from './PasswordDialog';
 import { managerToSlug } from '../lib/utils';
+import OptimizedImage from './common/OptimizedImage';
+import { ImageOptimizationService } from '../services/imageOptimizationService';
 
 interface FundCardProps {
   fund: Fund;
@@ -46,16 +48,32 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
     }).format(amount);
   };
 
+  // Generate fund logo placeholder or use actual logo if available
+  const fundLogoSrc = fund.logo || `https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=120&fit=crop&auto=format`;
+  const fundLogoAlt = ImageOptimizationService.generateFundLogoAlt(fund.name, fund.managerName);
+
   return (
     <>
-      <Card className="h-full hover:shadow-lg transition-shadow">
+      <Card className="h-full hover:shadow-lg transition-shadow" role="article" aria-labelledby={`fund-${fund.id}-title`}>
         <CardHeader className="pb-2">
-          <div className="flex justify-between items-start">
-            <CardTitle className="text-xl">
-              <Link to={`/funds/${fund.id}`} className="hover:text-portugal-blue transition-colors">
-                {fund.name}
-              </Link>
-            </CardTitle>
+          <div className="flex justify-between items-start gap-4">
+            <div className="flex-1">
+              <CardTitle className="text-xl" id={`fund-${fund.id}-title`}>
+                <Link to={`/funds/${fund.id}`} className="hover:text-portugal-blue transition-colors">
+                  {fund.name}
+                </Link>
+              </CardTitle>
+            </div>
+            <div className="flex-shrink-0">
+              <OptimizedImage
+                src={fundLogoSrc}
+                alt={fundLogoAlt}
+                width={60}
+                height={40}
+                className="rounded object-contain bg-white border border-gray-100 p-1"
+                lazy={true}
+              />
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -63,33 +81,42 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             {fund.description}
           </div>
 
-          <div className="grid grid-cols-2 gap-2 mb-4">
+          <div className="grid grid-cols-2 gap-2 mb-4" role="group" aria-label="Fund details">
             <div>
               <p className="text-sm text-muted-foreground">Min Investment</p>
-              <p className="font-medium">{formatCurrency(fund.minimumInvestment)}</p>
+              <p className="font-medium" aria-label={`Minimum investment ${formatCurrency(fund.minimumInvestment)}`}>
+                {formatCurrency(fund.minimumInvestment)}
+              </p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Target Return</p>
-              <p className="font-medium">{fund.returnTarget}</p>
+              <p className="font-medium" aria-label={`Target return ${fund.returnTarget}`}>
+                {fund.returnTarget}
+              </p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Fund Size</p>
-              <p className="font-medium">{fund.fundSize}M EUR</p>
+              <p className="font-medium" aria-label={`Fund size ${fund.fundSize} million euros`}>
+                {fund.fundSize}M EUR
+              </p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Term</p>
-              <p className="font-medium">{fund.term} years</p>
+              <p className="font-medium" aria-label={`Investment term ${fund.term} years`}>
+                {fund.term} years
+              </p>
             </div>
           </div>
 
           {/* Fund Manager Section */}
-          <div className="flex items-center gap-2 mb-4 bg-slate-50 p-2 rounded-md">
-            <User className="w-4 h-4 text-[#EF4444]" />
+          <div className="flex items-center gap-2 mb-4 bg-slate-50 p-2 rounded-md" role="group" aria-label="Fund manager information">
+            <User className="w-4 h-4 text-[#EF4444]" aria-hidden="true" />
             <div className="flex-1">
               <p className="text-sm text-muted-foreground">Fund Manager</p>
               <Link 
                 to={`/manager/${managerToSlug(fund.managerName)}`}
                 className="font-medium hover:text-[#EF4444] transition-colors"
+                aria-label={`View ${fund.managerName} manager details`}
               >
                 {fund.managerName}
               </Link>
@@ -106,8 +133,10 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
                   : 'border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white'
               }`}
               onClick={handleCompareClick}
+              aria-label={isSelected ? `Remove ${fund.name} from comparison` : `Add ${fund.name} to comparison`}
+              aria-pressed={isSelected}
             >
-              <GitCompare className="mr-1 h-3 w-3" />
+              <GitCompare className="mr-1 h-3 w-3" aria-hidden="true" />
               {isSelected ? 'Added to Compare' : 'Compare'}
             </Button>
           </div>
