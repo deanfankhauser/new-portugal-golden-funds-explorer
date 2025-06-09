@@ -29,49 +29,78 @@ const FundDetailsSEO: React.FC<FundDetailsSEOProps> = ({ fund }) => {
     // Set page title
     document.title = metaTitle;
     
-    // Update or create meta description
-    const updateOrCreateMeta = (name: string, content: string, useProperty = false) => {
-      const selector = useProperty ? `meta[property="${name}"]` : `meta[name="${name}"]`;
-      let meta = document.querySelector(selector) as HTMLMetaElement;
-      if (meta) {
-        meta.content = content;
-      } else {
-        meta = document.createElement('meta');
-        if (useProperty) {
-          meta.setAttribute('property', name);
-        } else {
-          meta.setAttribute('name', name);
-        }
-        meta.content = content;
-        document.head.appendChild(meta);
-      }
+    // Function to remove existing meta tags before setting new ones
+    const removeExistingMeta = (selector: string) => {
+      const existing = document.querySelectorAll(selector);
+      existing.forEach(meta => meta.remove());
     };
 
-    // Update meta tags
-    updateOrCreateMeta('description', metaDescription);
-    updateOrCreateMeta('keywords', keywords);
-    updateOrCreateMeta('robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+    // Function to create new meta tag
+    const createMeta = (name: string, content: string, useProperty = false) => {
+      const meta = document.createElement('meta');
+      if (useProperty) {
+        meta.setAttribute('property', name);
+      } else {
+        meta.setAttribute('name', name);
+      }
+      meta.content = content;
+      document.head.appendChild(meta);
+    };
 
-    // Update Open Graph meta tags
-    updateOrCreateMeta('og:title', ogTitle, true);
-    updateOrCreateMeta('og:description', ogDescription, true);
-    updateOrCreateMeta('og:type', 'website', true);
-    updateOrCreateMeta('og:url', currentUrl, true);
-    updateOrCreateMeta('og:site_name', 'Movingto Portugal Golden Visa Funds', true);
-    updateOrCreateMeta('og:image', 'https://pbs.twimg.com/profile_images/1763893053666768848/DnlafcQV_400x400.jpg', true);
-    updateOrCreateMeta('og:image:width', '400', true);
-    updateOrCreateMeta('og:image:height', '400', true);
-    updateOrCreateMeta('og:image:alt', `${fund.name} - Portuguese Golden Visa Investment Fund`, true);
-    updateOrCreateMeta('og:locale', 'en_US', true);
+    // Remove and recreate meta tags to ensure they override index.html defaults
+    removeExistingMeta('meta[name="description"]');
+    removeExistingMeta('meta[name="keywords"]'); 
+    removeExistingMeta('meta[name="robots"]');
+    createMeta('description', metaDescription);
+    createMeta('keywords', keywords);
+    createMeta('robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
 
-    // Update Twitter Card meta tags
-    updateOrCreateMeta('twitter:card', 'summary_large_image');
-    updateOrCreateMeta('twitter:site', '@movingtoio');
-    updateOrCreateMeta('twitter:creator', '@movingtoio');
-    updateOrCreateMeta('twitter:title', ogTitle);
-    updateOrCreateMeta('twitter:description', twitterDescription);
-    updateOrCreateMeta('twitter:image', 'https://pbs.twimg.com/profile_images/1763893053666768848/DnlafcQV_400x400.jpg');
-    updateOrCreateMeta('twitter:image:alt', `${fund.name} - Portuguese Golden Visa Investment Fund`);
+    // Remove and recreate Open Graph meta tags
+    removeExistingMeta('meta[property="og:title"]');
+    removeExistingMeta('meta[property="og:description"]');
+    removeExistingMeta('meta[property="og:type"]');
+    removeExistingMeta('meta[property="og:url"]');
+    removeExistingMeta('meta[property="og:site_name"]');
+    removeExistingMeta('meta[property="og:image"]');
+    removeExistingMeta('meta[property="og:image:width"]');
+    removeExistingMeta('meta[property="og:image:height"]');
+    removeExistingMeta('meta[property="og:image:alt"]');
+    removeExistingMeta('meta[property="og:locale"]');
+    
+    createMeta('og:title', ogTitle, true);
+    createMeta('og:description', ogDescription, true);
+    createMeta('og:type', 'website', true);
+    createMeta('og:url', currentUrl, true);
+    createMeta('og:site_name', 'Movingto Portugal Golden Visa Funds', true);
+    createMeta('og:image', 'https://pbs.twimg.com/profile_images/1763893053666768848/DnlafcQV_400x400.jpg', true);
+    createMeta('og:image:width', '400', true);
+    createMeta('og:image:height', '400', true);
+    createMeta('og:image:alt', `${fund.name} - Portuguese Golden Visa Investment Fund`, true);
+    createMeta('og:locale', 'en_US', true);
+
+    // Remove and recreate Twitter Card meta tags
+    removeExistingMeta('meta[name="twitter:card"]');
+    removeExistingMeta('meta[name="twitter:site"]');
+    removeExistingMeta('meta[name="twitter:creator"]');
+    removeExistingMeta('meta[name="twitter:title"]');
+    removeExistingMeta('meta[name="twitter:description"]');
+    removeExistingMeta('meta[name="twitter:image"]');
+    removeExistingMeta('meta[name="twitter:image:alt"]');
+    
+    createMeta('twitter:card', 'summary_large_image');
+    createMeta('twitter:site', '@movingtoio');
+    createMeta('twitter:creator', '@movingtoio');
+    createMeta('twitter:title', ogTitle);
+    createMeta('twitter:description', twitterDescription);
+    createMeta('twitter:image', 'https://pbs.twimg.com/profile_images/1763893053666768848/DnlafcQV_400x400.jpg');
+    createMeta('twitter:image:alt', `${fund.name} - Portuguese Golden Visa Investment Fund`);
+
+    // Add canonical URL
+    removeExistingMeta('link[rel="canonical"]');
+    const canonical = document.createElement('link');
+    canonical.rel = 'canonical';
+    canonical.href = currentUrl;
+    document.head.appendChild(canonical);
 
     // Generate comprehensive structured data
     const schemas = [
