@@ -7,16 +7,24 @@ async function buildSSG() {
   console.log('Building SSG with vite-ssg...');
   
   try {
-    // Build using vite-ssg
-    execSync('npx vite-ssg build --config vite.config.ts', { 
+    // Build using vite-ssg with the correct entry point
+    execSync('npx vite-ssg build --mode production', { 
       stdio: 'inherit',
-      cwd: process.cwd()
+      cwd: process.cwd(),
+      env: { ...process.env, VITE_SSG: 'true' }
     });
     
     console.log('✅ SSG build completed successfully!');
     
     // Verify some key files exist
-    const keyFiles = ['dist/index.html', 'dist/about/index.html', 'dist/managers/index.html'];
+    const keyFiles = [
+      'dist/index.html', 
+      'dist/about/index.html', 
+      'dist/managers/index.html',
+      'dist/categories/index.html',
+      'dist/tags/index.html'
+    ];
+    
     keyFiles.forEach(file => {
       if (existsSync(file)) {
         console.log(`✅ Generated: ${file}`);
