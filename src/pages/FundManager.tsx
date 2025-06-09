@@ -6,7 +6,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { ChevronRight } from 'lucide-react';
 import { Helmet } from 'react-helmet';
-import FundManagerSEO from '../components/fund-manager/FundManagerSEO';
+import PageSEO from '../components/common/PageSEO';
 import FundManagerHeader from '../components/fund-manager/FundManagerHeader';
 import FundManagerContent from '../components/fund-manager/FundManagerContent';
 import FundManagerNotFound from '../components/fund-manager/FundManagerNotFound';
@@ -78,7 +78,7 @@ const FundManager = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
-      <FundManagerSEO managerData={managerData} />
+      <PageSEO pageType="manager" managerName={managerFunds[0].managerName} />
       
       <Helmet>
         <title>{managerFunds[0].managerName} Golden Visa Investment Funds</title>
