@@ -8,9 +8,9 @@ function buildSSG() {
   console.log('🚀 Building static site with SSG...');
   
   try {
-    // Step 1: Run the regular Vite build
+    // Step 1: Run the regular Vite build first
     console.log('\n📦 Step 1/3: Running Vite build...');
-    execSync('npm run build', { stdio: 'inherit' });
+    execSync('vite build', { stdio: 'inherit' });
     
     // Step 2: Verify build output
     const distDir = path.join(process.cwd(), 'dist');
