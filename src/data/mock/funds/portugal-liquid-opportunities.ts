@@ -8,14 +8,13 @@ export const portugalLiquidOpportunities: Fund = {
   tags: [
     'Golden Visa Eligible',
     'Equity',
-    'Public Equity',
-    'International Equity',
+    'Equities',
     'Liquid',
     'Open Ended',
-    'FACTA Compliant',
+    'PFIC-Compliant',
     'Low Risk',
-    'No Redemption Fee',
-    'Daily Liquidity',
+    'No Fees',
+    'Daily NAV',
     'Portugal'
   ],
   category: 'Mixed',
