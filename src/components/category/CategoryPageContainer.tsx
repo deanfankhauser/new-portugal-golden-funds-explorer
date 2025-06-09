@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFundsByCategory, getAllCategories } from '../../data/funds';
 import { slugToCategory } from '@/lib/utils';
-import CategoryPageContent from './CategoryPageContent';
 
 const CategoryPageContainer = () => {
   const { category: categorySlug } = useParams<{ category: string }>();
@@ -15,7 +14,6 @@ const CategoryPageContainer = () => {
   
   // Check if the category exists
   const categoryExists = allCategories.includes(category as any);
-  const funds = categoryExists ? getFundsByCategory(category as any) : [];
 
   useEffect(() => {
     if (!categoryExists) {
@@ -25,17 +23,11 @@ const CategoryPageContainer = () => {
     }
   }, [categoryExists, navigate]);
 
+  // This component is no longer needed since we moved everything to CategoryPage
+  // Just redirect to maintain compatibility
   if (!categoryExists) return null;
-
-  return (
-    <CategoryPageContent 
-      category={category}
-      categorySlug={categorySlug || ''}
-      funds={funds}
-      allCategories={allCategories}
-      navigate={navigate}
-    />
-  );
+  
+  return null;
 };
 
 export default CategoryPageContainer;

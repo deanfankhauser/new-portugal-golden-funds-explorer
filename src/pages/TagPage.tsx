@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from 'lucide-react';
 import { slugToTag } from '@/lib/utils';
 import PremiumCTA from '../components/cta/PremiumCTA';
+import PageSEO from '../components/common/PageSEO';
 
 // Import our components
 import TagBreadcrumbs from '../components/tag/TagBreadcrumbs';
@@ -16,7 +17,6 @@ import TagPageFundSummary from '../components/tag/TagPageFundSummary';
 import TagPageEmptyState from '../components/tag/TagPageEmptyState';
 import TagPageFundList from '../components/tag/TagPageFundList';
 import RelatedTags from '../components/tag/RelatedTags';
-import TagPageSEO from '../components/tag/TagPageSEO';
 import TagPageFAQ from '../components/tag/TagPageFAQ';
 
 const TagPage = () => {
@@ -45,12 +45,7 @@ const TagPage = () => {
       <Header />
       
       {/* SEO Component */}
-      <TagPageSEO 
-        tagName={tagName} 
-        tagSlug={tagSlug} 
-        fundsCount={funds.length} 
-        funds={funds} 
-      />
+      <PageSEO pageType="tag" tagName={tagName} />
       
       <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1" itemScope itemType="https://schema.org/CollectionPage">
         {/* Breadcrumbs */}
