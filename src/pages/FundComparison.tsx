@@ -9,7 +9,7 @@ import { ArrowLeft } from 'lucide-react';
 import ComparisonTable from '../components/comparison/ComparisonTable';
 import ComparisonUpgradeCTA from '../components/cta/ComparisonUpgradeCTA';
 import { useComparisonStructuredData } from '../hooks/useComparisonStructuredData';
-import { URL_CONFIG } from '../utils/urlConfig';
+import PageSEO from '../components/common/PageSEO';
 
 const FundComparison = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -25,44 +25,19 @@ const FundComparison = () => {
 
   const { fund1, fund2 } = comparison;
   const funds = [fund1, fund2];
+  const comparisonTitle = `${fund1.name} vs ${fund2.name}`;
 
   // Add structured data for fund vs fund comparison
   useComparisonStructuredData(funds, 'fund-vs-fund');
 
   React.useEffect(() => {
-    document.title = `${fund1.name} vs ${fund2.name} | Portugal Golden Visa Fund Comparison`;
-    
-    // Update meta description
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 
-        `Compare ${fund1.name} and ${fund2.name} - detailed side-by-side analysis of fees, returns, minimum investment, and more for Portugal Golden Visa funds.`
-      );
-    }
-
-    // Add Open Graph meta tags for social sharing
-    const updateOrCreateMeta = (property: string, content: string) => {
-      let meta = document.querySelector(`meta[property="${property}"]`);
-      if (meta) {
-        meta.setAttribute('content', content);
-      } else {
-        meta = document.createElement('meta');
-        meta.setAttribute('property', property);
-        meta.setAttribute('content', content);
-        document.head.appendChild(meta);
-      }
-    };
-
-    updateOrCreateMeta('og:title', `${fund1.name} vs ${fund2.name} | Fund Comparison`);
-    updateOrCreateMeta('og:description', `Compare ${fund1.name} and ${fund2.name} - detailed analysis of Portugal Golden Visa investment funds.`);
-    updateOrCreateMeta('og:type', 'website');
-    updateOrCreateMeta('og:url', URL_CONFIG.buildComparisonUrl(slug!));
-
     window.scrollTo(0, 0);
-  }, [fund1, fund2, slug]);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
+      <PageSEO pageType="fund-comparison" comparisonTitle={comparisonTitle} />
+      
       <Header />
       
       <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">

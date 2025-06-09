@@ -8,11 +8,11 @@ import ROICalculatorForm from '../components/roi-calculator/ROICalculatorForm';
 import ROICalculatorResults from '../components/roi-calculator/ROICalculatorResults';
 import ROICalculatorEmailGate from '../components/roi-calculator/ROICalculatorEmailGate';
 import { useAuth } from '@/contexts/AuthContext';
-import { Helmet } from 'react-helmet';
 import { StructuredDataService } from '../services/structuredDataService';
 import { EnhancedStructuredDataService } from '../services/enhancedStructuredDataService';
 import { SEOService } from '../services/seoService';
 import { URL_CONFIG } from '../utils/urlConfig';
+import PageSEO from '../components/common/PageSEO';
 
 const ROICalculatorPage: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -121,37 +121,9 @@ const ROICalculatorPage: React.FC = () => {
 
   const showEmailGate = !isAuthenticated && !emailSubmitted && (selectedFund && results);
 
-  const fallbackImage = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
-  const currentUrl = `${URL_CONFIG.BASE_URL}/roi-calculator`;
-  const optimizedTitle = 'Golden Visa Fund ROI Calculator | Calculate Investment Returns | Movingto';
-  const optimizedDescription = 'Calculate potential returns on Portuguese Golden Visa fund investments. Free ROI calculator for all eligible funds with detailed projections.';
-
   return (
     <div className="min-h-screen bg-gray-50">
-      <Helmet>
-        <title>{optimizedTitle}</title>
-        <meta name="description" content={optimizedDescription} />
-        <meta name="author" content="Dean Fankhauser, CEO" />
-        <meta name="robots" content="index, follow, max-image-preview:large" />
-        
-        {/* Canonical URL */}
-        <link rel="canonical" href={currentUrl} />
-        
-        {/* Open Graph meta tags */}
-        <meta property="og:title" content={optimizedTitle} />
-        <meta property="og:description" content={optimizedDescription} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={currentUrl} />
-        <meta property="og:image" content={fallbackImage} />
-        <meta property="og:site_name" content="Movingto Portugal Golden Visa Funds" />
-        
-        {/* Twitter Card meta tags */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@movingtoio" />
-        <meta name="twitter:title" content={optimizedTitle} />
-        <meta name="twitter:description" content={optimizedDescription} />
-        <meta name="twitter:image" content={fallbackImage} />
-      </Helmet>
+      <PageSEO pageType="roi-calculator" />
       
       <Header />
       

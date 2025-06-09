@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { generateFundComparisons } from '../data/services/comparison-service';
@@ -6,25 +5,19 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Card, CardContent } from "@/components/ui/card";
 import { GitCompare } from 'lucide-react';
+import PageSEO from '../components/common/PageSEO';
 
 const ComparisonsHub = () => {
   const comparisons = generateFundComparisons();
 
   React.useEffect(() => {
-    document.title = "Fund Comparisons | Portugal Golden Visa Investment Funds";
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 
-        'Compare Portugal Golden Visa investment funds side-by-side. Detailed analysis of fees, returns, minimum investments, and more across all available funds.'
-      );
-    }
-
     window.scrollTo(0, 0);
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
+      <PageSEO pageType="comparisons-hub" />
+      
       <Header />
       
       <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">

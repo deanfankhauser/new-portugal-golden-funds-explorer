@@ -3,6 +3,7 @@ import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import PageSEO from '../components/common/PageSEO';
 
 const NotFound = () => {
   const location = useLocation();
@@ -16,6 +17,8 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <PageSEO pageType="homepage" />
+      
       <Header />
       
       <main className="flex-1 flex items-center justify-center py-12 px-4">

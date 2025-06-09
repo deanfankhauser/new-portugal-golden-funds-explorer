@@ -3,11 +3,12 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 
 interface PageSEOProps {
-  pageType: 'homepage' | 'fund' | 'manager' | 'category' | 'tag';
+  pageType: 'homepage' | 'fund' | 'manager' | 'category' | 'tag' | '404' | 'disclaimer' | 'about' | 'faqs' | 'privacy' | 'comparison' | 'comparisons-hub' | 'fund-comparison' | 'roi-calculator' | 'fund-quiz' | 'managers-hub' | 'categories-hub' | 'tags-hub';
   fundName?: string;
   managerName?: string;
   categoryName?: string;
   tagName?: string;
+  comparisonTitle?: string;
 }
 
 const PageSEO: React.FC<PageSEOProps> = ({ 
@@ -15,7 +16,8 @@ const PageSEO: React.FC<PageSEOProps> = ({
   fundName, 
   managerName, 
   categoryName, 
-  tagName 
+  tagName,
+  comparisonTitle
 }) => {
   const baseUrl = 'https://movingto.com/funds';
   const defaultImage = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
@@ -99,6 +101,110 @@ const PageSEO: React.FC<PageSEOProps> = ({
             'name': `${tagName} Golden Visa Investment Funds`,
             'description': `Collection of ${tagName} Golden Visa investment funds`
           }
+        };
+
+      case '404':
+        return {
+          title: 'Page Not Found | Portugal Golden Visa Investment Funds',
+          description: 'The page you are looking for could not be found. Return to our Golden Visa investment funds directory.',
+          url: baseUrl,
+          structuredData: {}
+        };
+
+      case 'disclaimer':
+        return {
+          title: 'Disclaimer | Portugal Golden Visa Investment Funds',
+          description: 'Important disclaimer and legal information about using our Golden Visa investment funds directory.',
+          url: `${baseUrl}/disclaimer`,
+          structuredData: {}
+        };
+
+      case 'about':
+        return {
+          title: 'About | Portugal Golden Visa Investment Funds',
+          description: 'Learn about our mission to help investors find the best Portugal Golden Visa investment funds.',
+          url: `${baseUrl}/about`,
+          structuredData: {}
+        };
+
+      case 'faqs':
+        return {
+          title: 'FAQs | Portugal Golden Visa Investment Funds',
+          description: 'Frequently asked questions about Portugal Golden Visa investment funds and the application process.',
+          url: `${baseUrl}/faqs`,
+          structuredData: {}
+        };
+
+      case 'privacy':
+        return {
+          title: 'Privacy Policy | Portugal Golden Visa Investment Funds',
+          description: 'Our privacy policy and how we handle your personal information.',
+          url: `${baseUrl}/privacy`,
+          structuredData: {}
+        };
+
+      case 'comparison':
+        return {
+          title: 'Compare Funds | Portugal Golden Visa Investment Funds',
+          description: 'Compare Portugal Golden Visa investment funds side-by-side. Analyze fees, returns, minimum investments, and more.',
+          url: `${baseUrl}/compare`,
+          structuredData: {}
+        };
+
+      case 'comparisons-hub':
+        return {
+          title: 'Fund Comparisons Hub | Portugal Golden Visa Investment Funds',
+          description: 'Browse detailed fund comparisons for Portugal Golden Visa investment funds.',
+          url: `${baseUrl}/comparisons`,
+          structuredData: {}
+        };
+
+      case 'fund-comparison':
+        return {
+          title: `${comparisonTitle} | Fund Comparison`,
+          description: `Detailed comparison of Portugal Golden Visa investment funds: ${comparisonTitle}`,
+          url: `${baseUrl}/compare/${comparisonTitle?.toLowerCase().replace(/\s+/g, '-')}`,
+          structuredData: {}
+        };
+
+      case 'roi-calculator':
+        return {
+          title: 'ROI Calculator | Portugal Golden Visa Investment Funds',
+          description: 'Calculate potential returns on Portugal Golden Visa fund investments with our free ROI calculator.',
+          url: `${baseUrl}/roi-calculator`,
+          structuredData: {}
+        };
+
+      case 'fund-quiz':
+        return {
+          title: 'Fund Quiz | Find Your Perfect Golden Visa Investment',
+          description: 'Take our quiz to get personalized Portugal Golden Visa fund recommendations based on your investment profile.',
+          url: `${baseUrl}/fund-quiz`,
+          structuredData: {}
+        };
+
+      case 'managers-hub':
+        return {
+          title: 'Fund Managers | Portugal Golden Visa Investment Funds',
+          description: 'Browse fund managers offering Portugal Golden Visa investment opportunities.',
+          url: `${baseUrl}/managers`,
+          structuredData: {}
+        };
+
+      case 'categories-hub':
+        return {
+          title: 'Fund Categories | Portugal Golden Visa Investment Funds',
+          description: 'Explore different categories of Portugal Golden Visa investment funds.',
+          url: `${baseUrl}/categories`,
+          structuredData: {}
+        };
+
+      case 'tags-hub':
+        return {
+          title: 'Fund Tags | Portugal Golden Visa Investment Funds',
+          description: 'Browse funds by tags to find the perfect Portugal Golden Visa investment.',
+          url: `${baseUrl}/tags`,
+          structuredData: {}
         };
       
       default:

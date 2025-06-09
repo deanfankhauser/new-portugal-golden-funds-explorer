@@ -2,15 +2,17 @@ import React, { useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { AlertTriangle } from 'lucide-react';
+import PageSEO from '../components/common/PageSEO';
 
 const DisclaimerPage = () => {
   useEffect(() => {
-    document.title = "Disclaimer | MovingTo Portugal Golden Visa Funds";
     window.scrollTo(0, 0);
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
+      <PageSEO pageType="disclaimer" />
+      
       <Header />
       
       <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
