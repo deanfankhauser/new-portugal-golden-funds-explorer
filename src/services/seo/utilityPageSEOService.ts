@@ -1,0 +1,60 @@
+
+import { SEOData } from '../../types/seo';
+import { BaseSEOService } from './baseSEOService';
+
+export class UtilityPageSEOService extends BaseSEOService {
+  static getAboutPageSEO(): SEOData {
+    return {
+      title: 'About the Golden Visa Funds Directory | Movingto',
+      description: 'Learn more about the Movingto Golden Visa Funds Directory and how it can help you find the right fund for you.',
+      url: `${this.baseUrl}/about`,
+      structuredData: {
+        ...this.createBaseStructuredData(),
+        '@type': 'AboutPage',
+        'name': 'About Portugal Golden Visa Funds',
+        'description': 'Learn about our mission to help investors find the best Portugal Golden Visa investment funds'
+      }
+    };
+  }
+
+  static getFAQsPageSEO(): SEOData {
+    return {
+      title: 'Portugal Golden Visa Investment Funds FAQs',
+      description: 'Frequently asked questions about Portugal Golden Visa Investment Funds. Learn about eligibility, requirements, and how to invest.',
+      url: `${this.baseUrl}/faqs`,
+      structuredData: {
+        ...this.createBaseStructuredData(),
+        '@type': 'FAQPage',
+        'name': 'Portugal Golden Visa Investment Funds FAQs',
+        'description': 'Frequently asked questions about Portugal Golden Visa investment funds and the application process'
+      }
+    };
+  }
+
+  static getDisclaimerPageSEO(): SEOData {
+    return {
+      title: 'Disclaimer | Portugal Golden Visa Investment Funds',
+      description: 'Important disclaimer and legal information about using our Golden Visa investment funds directory.',
+      url: `${this.baseUrl}/disclaimer`,
+      structuredData: {}
+    };
+  }
+
+  static getPrivacyPageSEO(): SEOData {
+    return {
+      title: 'Privacy Policy | MovingTo Portugal Golden Visa Funds',
+      description: 'Our privacy policy and how we handle your personal information when using the Portugal Golden Visa Funds directory.',
+      url: `${this.baseUrl}/privacy`,
+      structuredData: {}
+    };
+  }
+
+  static getNotFoundPageSEO(): SEOData {
+    return {
+      title: 'Page Not Found | Portugal Golden Visa Investment Funds',
+      description: 'The page you are looking for could not be found. Return to our Golden Visa investment funds directory.',
+      url: this.baseUrl,
+      structuredData: {}
+    };
+  }
+}
