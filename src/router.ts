@@ -1,5 +1,12 @@
 
-import { RouteRecordRaw } from 'vite-ssg'
+
+interface RouteRecord {
+  path: string;
+  component: React.ComponentType<any>;
+  meta?: {
+    seoProps: { pageType: string };
+  };
+}
 
 // Import all page components
 import Index from './pages/Index'
@@ -20,7 +27,7 @@ import ROICalculator from './pages/ROICalculator'
 import FundQuiz from './pages/FundQuiz'
 import FAQs from './pages/FAQs'
 
-export const routes: RouteRecordRaw[] = [
+export const routes: RouteRecord[] = [
   {
     path: '/',
     component: Index,
@@ -141,3 +148,4 @@ export const routes: RouteRecordRaw[] = [
     }
   }
 ]
+
