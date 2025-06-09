@@ -7,18 +7,22 @@ const Sitemap = () => {
     // Generate the sitemap XML
     const sitemapXML = SitemapService.generateSitemapXML();
     
-    // Set the proper content type for XML
-    document.contentType = 'application/xml';
+    // Create a blob with XML content type
+    const blob = new Blob([sitemapXML], { type: 'application/xml' });
+    const url = URL.createObjectURL(blob);
     
-    // Replace the page content with the XML
-    document.open();
-    document.write(sitemapXML);
-    document.close();
+    // Replace the current page with the XML content
+    window.location.replace(url);
   }, []);
 
-  // This component won't actually render anything visible
-  // as it replaces the document content with XML
-  return null;
+  // Show loading state while redirecting
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="text-center">
+        <p className="text-gray-600">Generating sitemap...</p>
+      </div>
+    </div>
+  );
 };
 
 export default Sitemap;
