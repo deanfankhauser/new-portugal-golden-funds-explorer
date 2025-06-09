@@ -1,9 +1,8 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
+import PageSEO from '../common/PageSEO';
 import { StructuredDataService } from '../../services/structuredDataService';
 import { EnhancedStructuredDataService } from '../../services/enhancedStructuredDataService';
-import { SEOService } from '../../services/seoService';
-import { MetaTagManager } from '../../services/metaTagManager';
 import { TAG_META_DATA } from '../../data/metaData';
 import { URL_CONFIG } from '../../utils/urlConfig';
 
@@ -22,169 +21,102 @@ interface TagPageSEOProps {
 }
 
 const TagPageSEO = ({ tagName, tagSlug, fundsCount, funds }: TagPageSEOProps) => {
-  useEffect(() => {
-    const applyMetaTags = () => {
-      const currentUrl = URL_CONFIG.buildTagUrl(tagSlug || '');
-      
-      console.log('TagPageSEO: Setting SEO for tag:', tagName);
-      console.log('TagPageSEO: Tag slug:', tagSlug);
-      console.log('TagPageSEO: Current URL:', currentUrl);
-      
-      // Get hardcoded meta data for this tag
-      const metaData = TAG_META_DATA[tagSlug || ''];
-      
-      if (!metaData) {
-        console.error('TagPageSEO: No meta data found for tag:', tagSlug);
-        console.log('TagPageSEO: Available tags in TAG_META_DATA:', Object.keys(TAG_META_DATA));
-        return;
+  const currentUrl = URL_CONFIG.buildTagUrl(tagSlug || '');
+  const metaData = TAG_META_DATA[tagSlug || ''];
+
+  if (!metaData) {
+    console.error('TagPageSEO: No meta data found for tag:', tagSlug);
+    return null;
+  }
+
+  // Generate structured data schemas
+  const schemas = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'mainEntityOfPage': {
+        '@type': 'WebPage',
+        '@id': currentUrl
+      },
+      'name': `${tagName} Golden Visa Investment Funds`,
+      'description': `Explore ${tagName} Golden Visa investment funds. Find and compare the best ${tagName} funds for your Golden Visa investment.`,
+      'numberOfItems': fundsCount,
+      'mainEntity': {
+        '@type': 'ItemList',
+        'numberOfItems': fundsCount,
+        'itemListElement': funds.map((fund, index) => ({
+          '@type': 'ListItem',
+          'position': index + 1,
+          'item': {
+            '@type': 'FinancialProduct',
+            'name': fund.name,
+            'description': fund.description,
+            'url': URL_CONFIG.buildFundUrl(fund.id),
+            'category': fund.category || 'Investment Fund',
+            'provider': {
+              '@type': 'Organization',
+              'name': fund.managerName || 'Fund Manager'
+            },
+            'offers': {
+              '@type': 'Offer',
+              'price': fund.minimumInvestment || 500000,
+              'priceCurrency': 'EUR'
+            }
+          }
+        }))
       }
+    },
+    EnhancedStructuredDataService.generateWebSiteSchema(),
+    EnhancedStructuredDataService.generateOrganizationSchema(),
+    EnhancedStructuredDataService.generateArticleSchema(
+      `${tagName} Golden Visa Investment Funds Directory`,
+      metaData.description,
+      currentUrl
+    )
+  ];
 
-      console.log('TagPageSEO: Found meta data:', metaData);
-      console.log('TagPageSEO: Using hardcoded meta data title:', metaData.title);
-
-      // Clear all existing managed meta tags FIRST
-      MetaTagManager.clearAllManagedMetaTags();
-      
-      // Wait a moment for clearing to complete, then set new tags
-      setTimeout(() => {
-        console.log('TagPageSEO: Setting new meta tags after clearing');
-        
-        // Set up all meta tags using hardcoded data
-        MetaTagManager.setupPageMetaTags({
-          title: metaData.title,
-          description: metaData.description,
-          keywords: metaData.keywords,
-          canonicalUrl: currentUrl,
-          ogTitle: metaData.ogTitle,
-          ogDescription: metaData.ogDescription,
-          ogUrl: currentUrl,
-          twitterTitle: metaData.twitterTitle,
-          twitterDescription: metaData.twitterDescription,
-          imageAlt: metaData.imageAlt
-        });
-
-        console.log('TagPageSEO: Meta tags applied successfully');
-        
-        // Initialize technical SEO after meta tags are set
-        SEOService.initializeSEO(currentUrl);
-      }, 100);
-
-      // Generate enhanced structured data schemas
-      const schemas = [
-        // Original CollectionPage schema
+  // Add FAQ schema if there are funds
+  if (fundsCount > 0) {
+    const tagFAQSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'mainEntity': [
         {
-          '@context': 'https://schema.org',
-          '@type': 'CollectionPage',
-          'mainEntityOfPage': {
-            '@type': 'WebPage',
-            '@id': currentUrl
-          },
-          'name': `${tagName} Golden Visa Investment Funds`,
-          'description': `Explore ${tagName} Golden Visa investment funds. Find and compare the best ${tagName} funds for your Golden Visa investment.`,
-          'numberOfItems': fundsCount,
-          'mainEntity': {
-            '@type': 'ItemList',
-            'numberOfItems': fundsCount,
-            'itemListElement': funds.map((fund, index) => ({
-              '@type': 'ListItem',
-              'position': index + 1,
-              'item': {
-                '@type': 'FinancialProduct',
-                'name': fund.name,
-                'description': fund.description,
-                'url': URL_CONFIG.buildFundUrl(fund.id),
-                'category': fund.category || 'Investment Fund',
-                'provider': {
-                  '@type': 'Organization',
-                  'name': fund.managerName || 'Fund Manager'
-                },
-                'offers': {
-                  '@type': 'Offer',
-                  'price': fund.minimumInvestment || 500000,
-                  'priceCurrency': 'EUR'
-                }
-              }
-            }))
-          },
-          'breadcrumb': {
-            '@type': 'BreadcrumbList',
-            'itemListElement': [
-              {
-                '@type': 'ListItem',
-                'position': 1,
-                'name': 'Home',
-                'item': URL_CONFIG.BASE_URL
-              },
-              {
-                '@type': 'ListItem',
-                'position': 2,
-                'name': 'Tags',
-                'item': URL_CONFIG.buildUrl('tags')
-              },
-              {
-                '@type': 'ListItem',
-                'position': 3,
-                'name': tagName,
-                'item': currentUrl
-              }
-            ]
+          '@type': 'Question',
+          'name': `What are ${tagName} Golden Visa funds?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `${tagName} Golden Visa funds are specialized investment vehicles eligible for Portugal's Golden Visa program, requiring a minimum investment of €500,000.`
           }
         },
-        // Add enhanced schemas
-        EnhancedStructuredDataService.generateWebSiteSchema(),
-        EnhancedStructuredDataService.generateOrganizationSchema(),
-        EnhancedStructuredDataService.generateArticleSchema(
-          `${tagName} Golden Visa Investment Funds Directory`,
-          metaData.description,
-          currentUrl
-        )
-      ];
-
-      // Add tag-specific FAQ schema
-      if (fundsCount > 0) {
-        const tagFAQSchema = {
-          '@context': 'https://schema.org',
-          '@type': 'FAQPage',
-          'mainEntity': [
-            {
-              '@type': 'Question',
-              'name': `What are ${tagName} Golden Visa funds?`,
-              'acceptedAnswer': {
-                '@type': 'Answer',
-                'text': `${tagName} Golden Visa funds are specialized investment vehicles eligible for Portugal's Golden Visa program, requiring a minimum investment of €500,000.`
-              }
-            },
-            {
-              '@type': 'Question',
-              'name': `How many ${tagName} funds are available?`,
-              'acceptedAnswer': {
-                '@type': 'Answer',
-                'text': `There are currently ${fundsCount} ${tagName.toLowerCase()} funds available that meet Golden Visa eligibility requirements.`
-              }
-            }
-          ]
-        };
-        schemas.push(tagFAQSchema);
-      }
-
-      // Add structured data using our service
-      StructuredDataService.addStructuredData(schemas, `tag-${tagSlug}`);
-
-      // Scroll to top on page load
-      window.scrollTo(0, 0);
+        {
+          '@type': 'Question',
+          'name': `How many ${tagName} funds are available?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `There are currently ${fundsCount} ${tagName.toLowerCase()} funds available that meet Golden Visa eligibility requirements.`
+          }
+        }
+      ]
     };
+    schemas.push(tagFAQSchema);
+  }
 
-    // Apply meta tags with a small delay to ensure DOM is ready
-    const timeoutId = setTimeout(applyMetaTags, 300);
-
-    // Cleanup function
-    return () => {
-      clearTimeout(timeoutId);
-      StructuredDataService.removeStructuredData(`tag-${tagSlug}`);
-    };
-  }, [tagName, fundsCount, funds, tagSlug]);
-
-  return null; // This component doesn't render anything
+  return (
+    <PageSEO
+      title={metaData.title}
+      description={metaData.description}
+      keywords={metaData.keywords}
+      canonicalUrl={currentUrl}
+      ogTitle={metaData.ogTitle}
+      ogDescription={metaData.ogDescription}
+      twitterTitle={metaData.twitterTitle}
+      twitterDescription={metaData.twitterDescription}
+      imageAlt={metaData.imageAlt}
+      schemas={schemas}
+      schemaId={`tag-${tagSlug}`}
+    />
+  );
 };
 
 export default TagPageSEO;
