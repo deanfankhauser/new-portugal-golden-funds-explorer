@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -27,6 +26,7 @@ import ComparisonsHub from "./pages/ComparisonsHub";
 import ROICalculator from "./pages/ROICalculator";
 import FundQuiz from "./pages/FundQuiz";
 import { analytics } from "./utils/analytics";
+import Sitemap from "./components/Sitemap";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +54,7 @@ const App = () => (
               <RouteTracker />
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/sitemap.xml" element={<Sitemap />} />
                 <Route path="/funds/:id" element={<FundDetails />} />
                 <Route path="/tags" element={<TagsHub />} />
                 <Route path="/tags/:tag" element={<TagPage />} />
