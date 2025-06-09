@@ -1,24 +1,77 @@
 
 const { execSync } = require('child_process');
 const { prerenderRoutes } = require('./prerender');
+const fs = require('fs');
+const path = require('path');
 
 function buildSSG() {
-  console.log('Building static site...');
+  console.log('🚀 Building static site with SSG...');
   
   try {
-    // Run the regular Vite build
-    console.log('Running Vite build...');
+    // Step 1: Run the regular Vite build
+    console.log('\n📦 Step 1/3: Running Vite build...');
     execSync('npm run build', { stdio: 'inherit' });
     
-    // Run the prerendering
-    console.log('Generating static pages...');
+    // Step 2: Verify build output
+    const distDir = path.join(process.cwd(), 'dist');
+    if (!fs.existsSync(distDir)) {
+      throw new Error('Vite build failed - dist directory not found');
+    }
+    
+    console.log('✅ Vite build completed successfully');
+
+    // Step 3: Run the pre-rendering
+    console.log('\n🎨 Step 2/3: Generating static pages...');
     prerenderRoutes();
     
-    console.log('Static site generation complete!');
-    console.log('Run "npm run preview" to test the generated site.');
+    // Step 4: Final verification
+    console.log('\n🔍 Step 3/3: Verifying generated files...');
+    
+    const indexFile = path.join(distDir, 'index.html');
+    const sitemapFile = path.join(distDir, 'sitemap.xml');
+    
+    if (fs.existsSync(indexFile)) {
+      console.log('✅ Homepage generated successfully');
+    } else {
+      console.warn('⚠️  Homepage not found');
+    }
+    
+    if (fs.existsSync(sitemapFile)) {
+      console.log('✅ Sitemap generated successfully');
+    } else {
+      console.warn('⚠️  Sitemap not found');
+    }
+    
+    // Count generated pages
+    const countFiles = (dir) => {
+      let count = 0;
+      const files = fs.readdirSync(dir);
+      for (const file of files) {
+        const filePath = path.join(dir, file);
+        if (fs.statSync(filePath).isDirectory()) {
+          count += countFiles(filePath);
+        } else if (file === 'index.html') {
+          count++;
+        }
+      }
+      return count;
+    };
+    
+    const pageCount = countFiles(distDir);
+    console.log(`📄 Total pages generated: ${pageCount}`);
+    
+    console.log('\n🎉 Static site generation complete!');
+    console.log('🔗 Run "npm run preview" to test the generated site.');
+    console.log(`📁 Files are ready in: ${distDir}`);
     
   } catch (error) {
-    console.error('Build failed:', error.message);
+    console.error('\n❌ Build failed:', error.message);
+    if (error.stdout) {
+      console.error('STDOUT:', error.stdout.toString());
+    }
+    if (error.stderr) {
+      console.error('STDERR:', error.stderr.toString());
+    }
     process.exit(1);
   }
 }

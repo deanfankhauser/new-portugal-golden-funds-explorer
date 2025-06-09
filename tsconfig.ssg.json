@@ -8,14 +8,32 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "react-jsx",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": false,
+    "declaration": false,
+    "sourceMap": false,
+    "isolatedModules": false,
+    "allowJs": true,
+    "resolveJsonModule": true
   },
   "include": [
     "src/ssg/**/*",
-    "scripts/**/*"
+    "scripts/**/*",
+    "src/services/**/*",
+    "src/data/**/*",
+    "src/pages/**/*",
+    "src/types/**/*"
   ],
   "exclude": [
     "node_modules",
-    "dist"
-  ]
+    "dist",
+    "src/main.tsx",
+    "src/App.tsx"
+  ],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  }
 }

@@ -3,29 +3,70 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { Routes, Route } from 'react-router-dom';
 import { SEODataService } from '../services/seoDataService';
-import { SEOService } from '../services/seoService';
 import { StaticRoute } from './routeDiscovery';
 
-// Import all page components
-import Index from '../pages/Index';
-import FundDetails from '../pages/FundDetails';
-import TagPage from '../pages/TagPage';
-import CategoryPage from '../pages/CategoryPage';
-import TagsHub from '../pages/TagsHub';
-import CategoriesHub from '../pages/CategoriesHub';
-import ManagersHub from '../pages/ManagersHub';
-import About from '../pages/About';
-import Disclaimer from '../pages/Disclaimer';
-import Privacy from '../pages/Privacy';
-import ComparisonPage from '../pages/ComparisonPage';
-import FundManager from '../pages/FundManager';
-import FAQs from '../pages/FAQs';
-import ComparisonsHub from '../pages/ComparisonsHub';
-import ROICalculator from '../pages/ROICalculator';
-import FundQuiz from '../pages/FundQuiz';
+// Mock TooltipProvider for SSR
+const TooltipProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+
+// Import all page components with error handling
+let Index: React.ComponentType<any>;
+let FundDetails: React.ComponentType<any>;
+let TagPage: React.ComponentType<any>;
+let CategoryPage: React.ComponentType<any>;
+let TagsHub: React.ComponentType<any>;
+let CategoriesHub: React.ComponentType<any>;
+let ManagersHub: React.ComponentType<any>;
+let About: React.ComponentType<any>;
+let Disclaimer: React.ComponentType<any>;
+let Privacy: React.ComponentType<any>;
+let ComparisonPage: React.ComponentType<any>;
+let FundManager: React.ComponentType<any>;
+let FAQs: React.ComponentType<any>;
+let ComparisonsHub: React.ComponentType<any>;
+let ROICalculator: React.ComponentType<any>;
+let FundQuiz: React.ComponentType<any>;
+
+try {
+  Index = require('../pages/Index').default;
+  FundDetails = require('../pages/FundDetails').default;
+  TagPage = require('../pages/TagPage').default;
+  CategoryPage = require('../pages/CategoryPage').default;
+  TagsHub = require('../pages/TagsHub').default;
+  CategoriesHub = require('../pages/CategoriesHub').default;
+  ManagersHub = require('../pages/ManagersHub').default;
+  About = require('../pages/About').default;
+  Disclaimer = require('../pages/Disclaimer').default;
+  Privacy = require('../pages/Privacy').default;
+  ComparisonPage = require('../pages/ComparisonPage').default;
+  FundManager = require('../pages/FundManager').default;
+  FAQs = require('../pages/FAQs').default;
+  ComparisonsHub = require('../pages/ComparisonsHub').default;
+  ROICalculator = require('../pages/ROICalculator').default;
+  FundQuiz = require('../pages/FundQuiz').default;
+} catch (error) {
+  console.warn('Some page components could not be loaded for SSR:', error.message);
+  
+  // Fallback components
+  const FallbackComponent = () => React.createElement('div', null, 'Page loading...');
+  Index = Index || FallbackComponent;
+  FundDetails = FundDetails || FallbackComponent;
+  TagPage = TagPage || FallbackComponent;
+  CategoryPage = CategoryPage || FallbackComponent;
+  TagsHub = TagsHub || FallbackComponent;
+  CategoriesHub = CategoriesHub || FallbackComponent;
+  ManagersHub = ManagersHub || FallbackComponent;
+  About = About || FallbackComponent;
+  Disclaimer = Disclaimer || FallbackComponent;
+  Privacy = Privacy || FallbackComponent;
+  ComparisonPage = ComparisonPage || FallbackComponent;
+  FundManager = FundManager || FallbackComponent;
+  FAQs = FAQs || FallbackComponent;
+  ComparisonsHub = ComparisonsHub || FallbackComponent;
+  ROICalculator = ROICalculator || FallbackComponent;
+  FundQuiz = FundQuiz || FallbackComponent;
+}
 
 export class SSRUtils {
   static renderRoute(route: StaticRoute): { html: string; seoData: any } {
@@ -47,34 +88,40 @@ export class SSRUtils {
       tagName: route.params?.tagName,
     });
 
-    const AppRouter = () => (
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <StaticRouter location={route.path}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/funds/:id" element={<FundDetails />} />
-              <Route path="/tags" element={<TagsHub />} />
-              <Route path="/tags/:tag" element={<TagPage />} />
-              <Route path="/categories" element={<CategoriesHub />} />
-              <Route path="/categories/:category" element={<CategoryPage />} />
-              <Route path="/managers" element={<ManagersHub />} />
-              <Route path="/manager/:name" element={<FundManager />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/disclaimer" element={<Disclaimer />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/compare" element={<ComparisonPage />} />
-              <Route path="/comparisons" element={<ComparisonsHub />} />
-              <Route path="/faqs" element={<FAQs />} />
-              <Route path="/roi-calculator" element={<ROICalculator />} />
-              <Route path="/fund-quiz" element={<FundQuiz />} />
-            </Routes>
-          </StaticRouter>
-        </TooltipProvider>
-      </QueryClientProvider>
+    const AppRouter = () => React.createElement(
+      QueryClientProvider,
+      { client: queryClient },
+      React.createElement(
+        TooltipProvider,
+        null,
+        React.createElement(
+          StaticRouter,
+          { location: route.path },
+          React.createElement(
+            Routes,
+            null,
+            React.createElement(Route, { path: '/', element: React.createElement(Index) }),
+            React.createElement(Route, { path: '/funds/:id', element: React.createElement(FundDetails) }),
+            React.createElement(Route, { path: '/tags', element: React.createElement(TagsHub) }),
+            React.createElement(Route, { path: '/tags/:tag', element: React.createElement(TagPage) }),
+            React.createElement(Route, { path: '/categories', element: React.createElement(CategoriesHub) }),
+            React.createElement(Route, { path: '/categories/:category', element: React.createElement(CategoryPage) }),
+            React.createElement(Route, { path: '/managers', element: React.createElement(ManagersHub) }),
+            React.createElement(Route, { path: '/manager/:name', element: React.createElement(FundManager) }),
+            React.createElement(Route, { path: '/about', element: React.createElement(About) }),
+            React.createElement(Route, { path: '/disclaimer', element: React.createElement(Disclaimer) }),
+            React.createElement(Route, { path: '/privacy', element: React.createElement(Privacy) }),
+            React.createElement(Route, { path: '/compare', element: React.createElement(ComparisonPage) }),
+            React.createElement(Route, { path: '/comparisons', element: React.createElement(ComparisonsHub) }),
+            React.createElement(Route, { path: '/faqs', element: React.createElement(FAQs) }),
+            React.createElement(Route, { path: '/roi-calculator', element: React.createElement(ROICalculator) }),
+            React.createElement(Route, { path: '/fund-quiz', element: React.createElement(FundQuiz) })
+          )
+        )
+      )
     );
 
-    const html = renderToString(<AppRouter />);
+    const html = renderToString(React.createElement(AppRouter));
 
     return { html, seoData };
   }
