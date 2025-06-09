@@ -9,10 +9,16 @@ export const createApp = ViteSSG(
   {
     routes: routes.map(route => ({
       path: route.path,
-      component: () => import('./App')
+      component: () => import('./App'),
+      meta: {
+        seoProps: route.seoProps
+      }
     }))
   },
   ({ app, router, routes, isClient, initialState }) => {
-    // Client-side logic if needed
+    // Initialize any client-side logic if needed
+    if (isClient) {
+      console.log('SSG: Client-side initialization');
+    }
   }
 );

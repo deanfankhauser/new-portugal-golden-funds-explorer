@@ -26,5 +26,10 @@ export default defineConfig(({ mode }) => ({
     crittersOptions: {
       reduceInlineStyles: false,
     },
+    routes: async () => {
+      // Import the routes configuration
+      const { routes } = await import('./src/routes');
+      return routes.map(route => route.path);
+    },
   },
 }));
