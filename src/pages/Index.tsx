@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -8,6 +7,7 @@ import { useFundFiltering } from '../hooks/useFundFiltering';
 import HomepageSEO from '../components/homepage/HomepageSEO';
 import HomepageContent from '../components/homepage/HomepageContent';
 import HomepageInfoSections from '../components/homepage/HomepageInfoSections';
+import LastUpdated from '../components/common/LastUpdated';
 
 const IndexPage = () => {
   const { isAuthenticated } = useAuth();
@@ -32,6 +32,11 @@ const IndexPage = () => {
           <p className="text-lg sm:text-xl text-gray-600 mb-4 sm:mb-6 px-2 sm:px-0">
             Explore our qualified Portugal Golden Visa Investment funds list with our comprehensive directory.
           </p>
+          
+          {/* Last Updated Timestamp */}
+          <div className="flex justify-center md:justify-start mb-4">
+            <LastUpdated />
+          </div>
         </div>
 
         {/* Premium CTA Banner - only show for non-authenticated users */}
