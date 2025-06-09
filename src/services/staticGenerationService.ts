@@ -1,6 +1,7 @@
 
 import { funds } from '../data/funds';
-import { getAllCategories, getAllTags } from '../data/services/tags-service';
+import { getAllTags } from '../data/services/tags-service';
+import { getAllCategories } from '../data/services/categories-service';
 import { getAllFundManagers } from '../data/services/managers-service';
 
 export interface StaticRoute {
