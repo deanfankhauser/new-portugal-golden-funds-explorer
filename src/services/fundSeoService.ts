@@ -26,7 +26,7 @@ export class FundSeoService {
                       fund.tags.includes('> 5% annual yield') ? 'high-yield' :
                       fund.tags.includes('Capital Growth') ? 'growth-focused' : 'diversified';
     
-    return `${fund.name}: ${keyBenefit} ${fund.category.toLowerCase()} for Portuguese Golden Visa. Min €${minInvestment}, managed by ${fund.managerName}. Apply now.`;
+    return `${fund.name}: ${keyBenefit} ${fund.category.toLowerCase()} for Portuguese Golden Visa. Min ${minInvestment}, managed by ${fund.managerName}. Apply now.`;
   }
 
   // Generate fund-specific OG title
