@@ -23,8 +23,8 @@ export class FundSeoService {
       `€${fund.minimumInvestment / 1000}k`;
     
     const keyBenefit = fund.tags.includes('Low Risk') ? 'low-risk' :
-                      fund.tags.includes('High Yield') ? 'high-yield' :
-                      fund.tags.includes('Growth') ? 'growth-focused' : 'diversified';
+                      fund.tags.includes('> 5% annual yield') ? 'high-yield' :
+                      fund.tags.includes('Capital Growth') ? 'growth-focused' : 'diversified';
     
     return `${fund.name}: ${keyBenefit} ${fund.category.toLowerCase()} for Portuguese Golden Visa. Min €${minInvestment}, managed by ${fund.managerName}. Apply now.`;
   }
