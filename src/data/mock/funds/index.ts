@@ -9,6 +9,7 @@ import { linceGrowthFund } from './lince-growth-fund';
 import { linceYieldFund } from './lince-yield-fund';
 import { solarFutureFund } from './solar-future-fund';
 import { mercurioFundII } from './mercurio-fund-ii';
+import { portugalLiquidOpportunities } from './portugal-liquid-opportunities';
 import { Fund } from '../../types/funds';
 
 // Export all funds as an array
@@ -22,7 +23,8 @@ export const fundsData: Fund[] = [
   linceGrowthFund,
   linceYieldFund,
   solarFutureFund,
-  mercurioFundII
+  mercurioFundII,
+  portugalLiquidOpportunities
 ];
 
 // Export individual funds
@@ -36,5 +38,6 @@ export {
   linceGrowthFund,
   linceYieldFund,
   solarFutureFund,
-  mercurioFundII
+  mercurioFundII,
+  portugalLiquidOpportunities
 };
