@@ -10,9 +10,24 @@ import PageSEO from '../components/common/PageSEO';
 import FundManagerHeader from '../components/fund-manager/FundManagerHeader';
 import FundManagerContent from '../components/fund-manager/FundManagerContent';
 import FundManagerNotFound from '../components/fund-manager/FundManagerNotFound';
-import { FundManagerData } from '../hooks/useFundManagerStructuredData';
 import { slugToManager } from '../lib/utils';
 import { getAllFundManagers } from '../data/services/managers-service';
+
+interface FundManagerData {
+  name: string;
+  logo?: string;
+  fundsCount: number;
+  totalFundSize: number;
+  funds: Array<{
+    id: string;
+    name: string;
+    description: string;
+    category: string;
+    minimumInvestment: number;
+    fundSize: number;
+    returnTarget: string;
+  }>;
+}
 
 const FundManager = () => {
   const { name } = useParams<{ name: string }>();

@@ -2,7 +2,22 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { User } from 'lucide-react';
-import { FundManagerData } from '../../hooks/useFundManagerStructuredData';
+
+interface FundManagerData {
+  name: string;
+  logo?: string;
+  fundsCount: number;
+  totalFundSize: number;
+  funds: Array<{
+    id: string;
+    name: string;
+    description: string;
+    category: string;
+    minimumInvestment: number;
+    fundSize: number;
+    returnTarget: string;
+  }>;
+}
 
 interface FundManagerHeaderProps {
   managerData: FundManagerData;
