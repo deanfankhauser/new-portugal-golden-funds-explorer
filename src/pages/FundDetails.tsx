@@ -6,25 +6,17 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 import { analytics } from '../utils/analytics';
+import PageSEO from '../components/common/PageSEO';
 
 // Import our components
 import BackToFundsButton from '../components/fund-details/BackToFundsButton';
 import FundDetailsContent from '../components/fund-details/FundDetailsContent';
-import FundDetailsSEO from '../components/fund-details/FundDetailsSEO';
-
-// Import structured data hook
-import { useFundStructuredData } from '../hooks/useStructuredData';
 
 const FundDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const fund = id ? getFundById(id) : undefined;
   const { addToRecentlyViewed } = useRecentlyViewed();
-
-  // Add structured data for the fund
-  if (fund) {
-    useFundStructuredData(fund);
-  }
 
   // Add fund to recently viewed and track analytics when component mounts
   useEffect(() => {
@@ -46,7 +38,7 @@ const FundDetails = () => {
       <Header />
       
       {/* SEO Component */}
-      <FundDetailsSEO fund={fund} />
+      <PageSEO pageType="fund" fundName={fund.name} />
       
       <main className="flex-1 py-6 md:py-10">
         <div className="container mx-auto px-4 max-w-7xl">
