@@ -1,10 +1,11 @@
+
 import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PremiumCTA from '../components/cta/PremiumCTA';
 import { useAuth } from '../contexts/AuthContext';
 import { useFundFiltering } from '../hooks/useFundFiltering';
-import HomepageSEO from '../components/homepage/HomepageSEO';
+import PageSEO from '../components/common/PageSEO';
 import HomepageContent from '../components/homepage/HomepageContent';
 import HomepageInfoSections from '../components/homepage/HomepageInfoSections';
 import LastUpdated from '../components/common/LastUpdated';
@@ -21,7 +22,7 @@ const IndexPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
-      <HomepageSEO />
+      <PageSEO pageType="homepage" />
       <Header />
       
       <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
