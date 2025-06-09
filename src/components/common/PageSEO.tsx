@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 
 interface PageSEOProps {
@@ -112,6 +112,22 @@ const PageSEO: React.FC<PageSEOProps> = ({
   };
 
   const seoData = getSEOData();
+
+  // Debug logging to track meta tag updates
+  useEffect(() => {
+    console.log(`SEO: Setting meta tags for ${pageType}`, {
+      title: seoData.title,
+      description: seoData.description,
+      url: seoData.url
+    });
+    
+    // Force a small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      console.log('SEO: Meta tags should now be updated');
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [pageType, seoData.title, seoData.description, seoData.url]);
 
   return (
     <Helmet>
