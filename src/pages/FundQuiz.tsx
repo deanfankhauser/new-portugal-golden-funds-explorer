@@ -1,18 +1,15 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import QuizForm, { QuizFormData } from '../components/quiz/QuizForm';
 import QuizResults from '../components/quiz/QuizResults';
+import PageSEO from '../components/common/PageSEO';
 import { getRecommendations } from '../utils/quizRecommendationEngine';
 import { Fund } from '../data/types/funds';
-import { Helmet } from 'react-helmet';
 import { Card, CardContent } from '@/components/ui/card';
 import { ClipboardCheck, Sparkles, Target, TrendingUp } from 'lucide-react';
 import { analytics } from '../utils/analytics';
-import { StructuredDataService } from '../services/structuredDataService';
-import { EnhancedStructuredDataService } from '../services/enhancedStructuredDataService';
-import { SEOService } from '../services/seoService';
-import { URL_CONFIG } from '../utils/urlConfig';
 
 const FundQuiz = () => {
   const [recommendations, setRecommendations] = useState<(Fund & { score: number })[]>([]);
@@ -20,77 +17,8 @@ const FundQuiz = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    const currentUrl = `${URL_CONFIG.BASE_URL}/fund-quiz`;
-    
-    // Initialize comprehensive SEO
-    SEOService.initializeSEO(currentUrl);
-
-    // Generate structured data schemas
-    const schemas = [
-      // Quiz/Assessment schema
-      {
-        '@context': 'https://schema.org',
-        '@type': 'Quiz',
-        'name': 'Fund Recommendation Quiz',
-        'description': 'Personalized Portugal Golden Visa fund recommendations based on your investment profile',
-        'url': currentUrl,
-        'educationalLevel': 'Advanced',
-        'about': {
-          '@type': 'Thing',
-          'name': 'Portugal Golden Visa Investment Funds'
-        },
-        'provider': {
-          '@type': 'Organization',
-          'name': 'Movingto'
-        }
-      },
-      // WebApplication schema
-      {
-        '@context': 'https://schema.org',
-        '@type': 'WebApplication',
-        'name': 'Golden Visa Fund Recommendation Quiz',
-        'description': 'Get personalized Portugal Golden Visa fund recommendations tailored to your profile',
-        'url': currentUrl,
-        'applicationCategory': 'Investment Assessment Tool',
-        'operatingSystem': 'Web Browser',
-        'provider': {
-          '@type': 'Organization',
-          'name': 'Movingto'
-        }
-      },
-      // FAQ schema for quiz questions
-      {
-        '@context': 'https://schema.org',
-        '@type': 'FAQPage',
-        'mainEntity': [
-          {
-            '@type': 'Question',
-            'name': 'How does the fund recommendation quiz work?',
-            'acceptedAnswer': {
-              '@type': 'Answer',
-              'text': 'Our quiz analyzes your risk appetite, investment timeline, budget, and citizenship to recommend the most suitable Portugal Golden Visa funds.'
-            }
-          },
-          {
-            '@type': 'Question',
-            'name': 'How many fund recommendations will I receive?',
-            'acceptedAnswer': {
-              '@type': 'Answer',
-              'text': 'You will receive up to 5 personalized fund recommendations ranked by compatibility with your investment profile.'
-            }
-          }
-        ]
-      },
-      // Add enhanced schemas
-      EnhancedStructuredDataService.generateWebSiteSchema(),
-      EnhancedStructuredDataService.generateOrganizationSchema()
-    ];
-
-    StructuredDataService.addStructuredData(schemas, 'fund-quiz');
-
-    return () => {
-      StructuredDataService.removeStructuredData('fund-quiz');
-    };
+    // Scroll to top on page load
+    window.scrollTo(0, 0);
   }, []);
 
   const onSubmit = async (data: QuizFormData) => {
@@ -140,18 +68,10 @@ const FundQuiz = () => {
     }).format(amount);
   };
 
-  const fallbackImage = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
-  const currentUrl = `${URL_CONFIG.BASE_URL}/fund-quiz`;
-  const optimizedTitle = 'Fund Recommendation Quiz | Get Personalized Golden Visa Fund Matches | Movingto';
-  const optimizedDescription = 'Take our investor profile quiz to get personalized Portugal Golden Visa fund recommendations based on your risk appetite and investment goals.';
-
   if (isProcessing) {
     return (
       <div className="min-h-screen flex flex-col bg-slate-50">
-        <Helmet>
-          <title>Processing Your Results | Portugal Golden Visa Investment Funds</title>
-          <meta name="robots" content="noindex, nofollow" />
-        </Helmet>
+        <PageSEO pageType="fund-quiz" />
         
         <Header />
         
@@ -190,30 +110,7 @@ const FundQuiz = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
-      <Helmet>
-        <title>{optimizedTitle}</title>
-        <meta name="description" content={optimizedDescription} />
-        <meta name="author" content="Dean Fankhauser, CEO" />
-        <meta name="robots" content="index, follow, max-image-preview:large" />
-        
-        {/* Canonical URL */}
-        <link rel="canonical" href={currentUrl} />
-        
-        {/* Open Graph meta tags */}
-        <meta property="og:title" content={optimizedTitle} />
-        <meta property="og:description" content={optimizedDescription} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={currentUrl} />
-        <meta property="og:image" content={fallbackImage} />
-        <meta property="og:site_name" content="Movingto Portugal Golden Visa Funds" />
-        
-        {/* Twitter Card meta tags */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@movingtoio" />
-        <meta name="twitter:title" content={optimizedTitle} />
-        <meta name="twitter:description" content={optimizedDescription} />
-        <meta name="twitter:image" content={fallbackImage} />
-      </Helmet>
+      <PageSEO pageType="fund-quiz" />
       
       <Header />
       
