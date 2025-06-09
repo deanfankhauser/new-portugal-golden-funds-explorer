@@ -1,8 +1,8 @@
 
-import { fundsData } from '../data/funds';
-import { managersService } from '../data/services/managers-service';
-import { categoriesService } from '../data/services/categories-service';
-import { tagsService } from '../data/services/tags-service';
+import { fundsData } from '../data/mock/funds';
+import { getAllFundManagers } from '../data/services/managers-service';
+import { getAllCategories } from '../data/services/categories-service';
+import { getAllTags } from '../data/services/tags-service';
 
 export interface StaticRoute {
   path: string;
@@ -40,18 +40,18 @@ export class RouteDiscovery {
     });
 
     // Manager pages
-    const managers = managersService.getAllManagers();
+    const managers = getAllFundManagers();
     managers.forEach(manager => {
-      const slug = manager.toLowerCase().replace(/\s+/g, '-');
+      const slug = manager.name.toLowerCase().replace(/\s+/g, '-');
       routes.push({
         path: `/manager/${slug}`,
         pageType: 'manager',
-        params: { managerName: manager }
+        params: { managerName: manager.name }
       });
     });
 
     // Category pages
-    const categories = categoriesService.getAllCategories();
+    const categories = getAllCategories();
     categories.forEach(category => {
       const slug = category.toLowerCase().replace(/\s+/g, '-');
       routes.push({
@@ -62,7 +62,7 @@ export class RouteDiscovery {
     });
 
     // Tag pages
-    const tags = tagsService.getAllTags();
+    const tags = getAllTags();
     tags.forEach(tag => {
       const slug = tag.toLowerCase().replace(/\s+/g, '-');
       routes.push({
