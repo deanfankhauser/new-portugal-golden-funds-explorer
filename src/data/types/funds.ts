@@ -86,7 +86,8 @@ export type FundTag =
   | 'Golden Visa funds for Australian citizens'
   | 'Golden Visa funds for UK citizens'
   | 'Golden Visa funds for Canadian citizens'
-  | 'Golden Visa funds for Chinese citizens';
+  | 'Golden Visa funds for Chinese citizens'
+  | 'Portugal';
 
 export type FundCategory =
   | 'Venture Capital'
@@ -100,7 +101,8 @@ export type FundCategory =
   | 'Multi-Asset'
   | 'Private Equity & Venture Capital'
   | 'Private Debt & Hybrid Instruments'
-  | 'Clean Energy (Solar & Battery Storage)';
+  | 'Clean Energy (Solar & Battery Storage)'
+  | 'Private Equity & Debt';
 
 export type RedemptionFrequency =
   | 'Monthly'
