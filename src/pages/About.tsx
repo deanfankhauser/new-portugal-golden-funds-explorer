@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { 
@@ -13,25 +13,13 @@ import {
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { ExternalLink, ArrowRight } from 'lucide-react';
+import PageSEO from '../components/common/PageSEO';
 
 const AboutPage = () => {
-  useEffect(() => {
-    // Set page title and meta description for SEO
-    document.title = "About the Golden Visa Funds Directory by Movingto";
-    
-    // Update meta description
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 
-        "Learn more about the Movingto Golden Visa Funds Directory and how it can help you learn more about the right fund for you."
-      );
-    }
-    
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <div className="min-h-screen flex flex-col">
+      <PageSEO pageType="about" />
+      
       <Header />
       
       <main className="container mx-auto px-4 py-12 flex-1 max-w-6xl">

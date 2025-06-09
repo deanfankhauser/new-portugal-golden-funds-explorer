@@ -121,24 +121,34 @@ const PageSEO: React.FC<PageSEOProps> = ({
 
       case 'about':
         return {
-          title: 'About | Portugal Golden Visa Investment Funds',
-          description: 'Learn about our mission to help investors find the best Portugal Golden Visa investment funds.',
+          title: 'About the Golden Visa Funds Directory | Movingto',
+          description: 'Learn more about the Movingto Golden Visa Funds Directory and how it can help you find the right fund for you.',
           url: `${baseUrl}/about`,
-          structuredData: {}
+          structuredData: {
+            '@context': 'https://schema.org',
+            '@type': 'AboutPage',
+            'name': 'About Portugal Golden Visa Funds',
+            'description': 'Learn about our mission to help investors find the best Portugal Golden Visa investment funds'
+          }
         };
 
       case 'faqs':
         return {
-          title: 'FAQs | Portugal Golden Visa Investment Funds',
-          description: 'Frequently asked questions about Portugal Golden Visa investment funds and the application process.',
+          title: 'Portugal Golden Visa Investment Funds FAQs',
+          description: 'Frequently asked questions about Portugal Golden Visa Investment Funds. Learn about eligibility, requirements, and how to invest.',
           url: `${baseUrl}/faqs`,
-          structuredData: {}
+          structuredData: {
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            'name': 'Portugal Golden Visa Investment Funds FAQs',
+            'description': 'Frequently asked questions about Portugal Golden Visa investment funds and the application process'
+          }
         };
 
       case 'privacy':
         return {
-          title: 'Privacy Policy | Portugal Golden Visa Investment Funds',
-          description: 'Our privacy policy and how we handle your personal information.',
+          title: 'Privacy Policy | MovingTo Portugal Golden Visa Funds',
+          description: 'Our privacy policy and how we handle your personal information when using the Portugal Golden Visa Funds directory.',
           url: `${baseUrl}/privacy`,
           structuredData: {}
         };

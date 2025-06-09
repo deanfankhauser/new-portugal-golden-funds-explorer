@@ -1,8 +1,7 @@
-
 import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { Helmet } from 'react-helmet';
+import PageSEO from '../components/common/PageSEO';
 import { 
   Accordion,
   AccordionContent,
@@ -13,13 +12,7 @@ import {
 const FAQs = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
-      <Helmet>
-        <title>Portugal Golden Visa Investment Funds FAQs</title>
-        <meta 
-          name="description" 
-          content="Frequently asked questions about Portugal Golden Visa Investment Funds. Learn about eligibility, requirements, and how to invest." 
-        />
-      </Helmet>
+      <PageSEO pageType="faqs" />
       
       <Header />
       

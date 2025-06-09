@@ -2,15 +2,17 @@ import React, { useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Shield } from 'lucide-react';
+import PageSEO from '../components/common/PageSEO';
 
 const PrivacyPage = () => {
   useEffect(() => {
-    document.title = "Privacy Policy | MovingTo Portugal Golden Visa Funds";
     window.scrollTo(0, 0);
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
+      <PageSEO pageType="privacy" />
+      
       <Header />
       
       <main className="container mx-auto px-4 py-8 flex-1">

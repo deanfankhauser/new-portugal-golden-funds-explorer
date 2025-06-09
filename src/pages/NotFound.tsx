@@ -17,7 +17,7 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <PageSEO pageType="homepage" />
+      <PageSEO pageType="404" />
       
       <Header />
       
