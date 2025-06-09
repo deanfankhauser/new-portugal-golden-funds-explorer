@@ -19,7 +19,7 @@ interface FundListItemProps {
   fund: Fund;
 }
 
-const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
+const FundListItem: React.FC<FundListItemProps> = React.memo(({ fund }) => {
   const { addToComparison, removeFromComparison, isInComparison } = useComparison();
   const { isAuthenticated } = useAuth();
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
@@ -161,6 +161,8 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
       />
     </>
   );
-};
+});
+
+FundListItem.displayName = 'FundListItem';
 
 export default FundListItem;

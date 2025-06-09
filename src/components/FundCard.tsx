@@ -17,7 +17,7 @@ interface FundCardProps {
   fund: Fund;
 }
 
-const FundCard: React.FC<FundCardProps> = ({ fund }) => {
+const FundCard: React.FC<FundCardProps> = React.memo(({ fund }) => {
   const { addToComparison, removeFromComparison, isInComparison } = useComparison();
   const { isAuthenticated } = useAuth();
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
@@ -149,6 +149,8 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
       />
     </>
   );
-};
+});
+
+FundCard.displayName = 'FundCard';
 
 export default FundCard;

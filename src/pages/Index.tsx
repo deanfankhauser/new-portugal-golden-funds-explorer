@@ -17,7 +17,8 @@ const IndexPage = () => {
     setSelectedTags,
     searchQuery,
     setSearchQuery,
-    filteredFunds
+    filteredFunds,
+    isLoading
   } = useFundFiltering();
 
   return (
@@ -55,6 +56,7 @@ const IndexPage = () => {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             isAuthenticated={isAuthenticated}
+            isLoading={isLoading}
           />
         </section>
 
