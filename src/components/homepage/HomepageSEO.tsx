@@ -5,31 +5,61 @@ import { StructuredDataService } from '../../services/structuredDataService';
 import { EnhancedStructuredDataService } from '../../services/enhancedStructuredDataService';
 import { SEOService } from '../../services/seoService';
 import { PerformanceService } from '../../services/performanceService';
+import { StaticGenerationService } from '../../services/staticGenerationService';
 import { URL_CONFIG } from '../../utils/urlConfig';
 
 const HomepageSEO = () => {
   useEffect(() => {
     const currentUrl = URL_CONFIG.BASE_URL;
     
-    // Initialize comprehensive SEO
+    // Initialize comprehensive SEO and performance optimizations
     SEOService.initializeSEO(currentUrl);
-    
-    // Initialize performance optimizations
     PerformanceService.initializePerformanceOptimizations();
+    PerformanceService.addResourceHints();
 
-    // Set optimized page title and meta description
-    document.title = "Portugal Golden Visa Investment Funds | Eligible Investments 2025";
+    // Generate and set optimized meta data
+    const metaData = StaticGenerationService.generateRouteMetaData('/');
+    document.title = metaData.title;
     
-    // Update meta description with optimized keywords (ensure it stays under 155 characters)
+    // Update meta description
     const metaDescription = document.querySelector('meta[name="description"]');
-    const optimizedDescription = SEOService.optimizeMetaDescription(
-      "Explore our Portugal Golden Visa Investment Funds List for 2025. Find eligible investment funds to secure residency with a €500,000 investment.",
-      ['Golden Visa', 'Portugal Investment']
-    );
-    
     if (metaDescription) {
-      metaDescription.setAttribute('content', optimizedDescription);
+      metaDescription.setAttribute('content', metaData.description);
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'description';
+      meta.content = metaData.description;
+      document.head.appendChild(meta);
     }
+
+    // Add keywords meta tag
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) {
+      metaKeywords.setAttribute('content', metaData.keywords.join(', '));
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'keywords';
+      meta.content = metaData.keywords.join(', ');
+      document.head.appendChild(meta);
+    }
+
+    // Add author and other important meta tags
+    const updateOrCreateMeta = (name: string, content: string) => {
+      let meta = document.querySelector(`meta[name="${name}"]`);
+      if (meta) {
+        meta.setAttribute('content', content);
+      } else {
+        meta = document.createElement('meta');
+        meta.setAttribute('name', name);
+        meta.setAttribute('content', content);
+        document.head.appendChild(meta);
+      }
+    };
+
+    updateOrCreateMeta('author', 'Dean Fankhauser, CEO');
+    updateOrCreateMeta('robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+    updateOrCreateMeta('theme-color', '#EF4444');
+    updateOrCreateMeta('msapplication-TileColor', '#EF4444');
 
     // Generate enhanced structured data with current date
     const currentDate = new Date().toISOString().split('T')[0];
@@ -45,6 +75,7 @@ const HomepageSEO = () => {
         'name': 'Portugal Golden Visa Investment Funds Directory',
         'description': 'Comprehensive directory of eligible investment funds for the Portugal Golden Visa program',
         'numberOfItems': funds.length,
+        'lastReviewed': currentDate,
         'mainEntity': {
           '@type': 'ItemList',
           'numberOfItems': funds.length,
@@ -64,7 +95,8 @@ const HomepageSEO = () => {
               'offers': {
                 '@type': 'Offer',
                 'price': fund.minimumInvestment,
-                'priceCurrency': 'EUR'
+                'priceCurrency': 'EUR',
+                'availability': fund.fundStatus === 'Open' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'
               }
             }
           }))
@@ -88,7 +120,7 @@ const HomepageSEO = () => {
       EnhancedStructuredDataService.generateComparisonTableSchema(funds.slice(0, 5)), // Top 5 funds
       EnhancedStructuredDataService.generateArticleSchema(
         'Portugal Golden Visa Investment Funds Directory',
-        'Complete guide to qualified investment funds for Portugal Golden Visa residency program',
+        'Complete guide to qualified investment funds for Portugal Golden Visa residency program with detailed comparisons and analysis',
         currentUrl
       )
     ];

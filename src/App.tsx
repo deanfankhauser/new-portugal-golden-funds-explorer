@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -26,6 +27,8 @@ import ComparisonsHub from "./pages/ComparisonsHub";
 import ROICalculator from "./pages/ROICalculator";
 import FundQuiz from "./pages/FundQuiz";
 import { analytics } from "./utils/analytics";
+import { PerformanceService } from "./services/performanceService";
+import { AccessibilityService } from "./services/accessibilityService";
 import Sitemap from "./components/Sitemap";
 
 const queryClient = new QueryClient();
@@ -42,6 +45,20 @@ const RouteTracker = () => {
   return null;
 };
 
+// Component to initialize global services
+const AppInitializer = () => {
+  useEffect(() => {
+    // Initialize performance optimizations
+    PerformanceService.initializePerformanceOptimizations();
+    PerformanceService.addResourceHints();
+    
+    // Initialize accessibility enhancements
+    AccessibilityService.initializeAccessibility();
+  }, []);
+
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -51,28 +68,31 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <AppInitializer />
               <RouteTracker />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/sitemap.xml" element={<Sitemap />} />
-                <Route path="/funds/:id" element={<FundDetails />} />
-                <Route path="/tags" element={<TagsHub />} />
-                <Route path="/tags/:tag" element={<TagPage />} />
-                <Route path="/categories" element={<CategoriesHub />} />
-                <Route path="/categories/:category" element={<CategoryPage />} />
-                <Route path="/managers" element={<ManagersHub />} />
-                <Route path="/manager/:name" element={<FundManager />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/disclaimer" element={<Disclaimer />} />
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/compare" element={<ComparisonPage />} />
-                <Route path="/comparisons" element={<ComparisonsHub />} />
-                <Route path="/compare/:slug" element={<FundComparison />} />
-                <Route path="/faqs" element={<FAQs />} />
-                <Route path="/roi-calculator" element={<ROICalculator />} />
-                <Route path="/fund-quiz" element={<FundQuiz />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <main role="main" aria-label="Main content">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/sitemap.xml" element={<Sitemap />} />
+                  <Route path="/funds/:id" element={<FundDetails />} />
+                  <Route path="/tags" element={<TagsHub />} />
+                  <Route path="/tags/:tag" element={<TagPage />} />
+                  <Route path="/categories" element={<CategoriesHub />} />
+                  <Route path="/categories/:category" element={<CategoryPage />} />
+                  <Route path="/managers" element={<ManagersHub />} />
+                  <Route path="/manager/:name" element={<FundManager />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/disclaimer" element={<Disclaimer />} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/compare" element={<ComparisonPage />} />
+                  <Route path="/comparisons" element={<ComparisonsHub />} />
+                  <Route path="/compare/:slug" element={<FundComparison />} />
+                  <Route path="/faqs" element={<FAQs />} />
+                  <Route path="/roi-calculator" element={<ROICalculator />} />
+                  <Route path="/fund-quiz" element={<FundQuiz />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
             </BrowserRouter>
           </ComparisonProvider>
         </RecentlyViewedProvider>
