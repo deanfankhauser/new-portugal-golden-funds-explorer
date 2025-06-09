@@ -9,6 +9,8 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"
+        "build:ssg": "node scripts/build-ssg.js",
+    "preview:ssg": "npm run preview"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
