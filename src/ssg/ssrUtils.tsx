@@ -4,7 +4,6 @@ import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Routes, Route } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import { SEODataService } from '../services/seoDataService';
 import { StaticRoute } from './routeDiscovery';
 
@@ -122,29 +121,9 @@ export class SSRUtils {
       )
     );
 
-    // Clear any previous helmet state
-    Helmet.rewind();
-    
-    // Render the component to extract helmet data
     const html = renderToString(React.createElement(AppRouter));
-    
-    // Get helmet data after rendering
-    const helmet = Helmet.rewind();
 
-    // Merge helmet data with our SEO data, prioritizing our SEO data
-    const finalSeoData = {
-      ...seoData,
-      title: seoData.title, // Always use our SEO service title
-      description: seoData.description, // Always use our SEO service description
-      helmetData: {
-        title: helmet.title.toString(),
-        meta: helmet.meta.toString(),
-        link: helmet.link.toString(),
-        script: helmet.script.toString()
-      }
-    };
-
-    return { html, seoData: finalSeoData };
+    return { html, seoData };
   }
 
   static generateMetaTags(seoData: any): string {
