@@ -50,12 +50,13 @@ export default defineConfig(({ mode }) => ({
           ],
           data: ['src/data/funds', 'src/data/mock/funds-data']
         },
-        // Ensure consistent chunk naming
+        // Ensure consistent chunk naming with proper null checking
         chunkFileNames: (chunkInfo) => {
-          const facadeModuleId = chunkInfo.facadeModuleId
-            ? chunkInfo.facadeModuleId.split('/').pop().replace(/\.[^/.]+$/, '')
+          const facadeModuleId = chunkInfo.facadeModuleId;
+          const fileName = facadeModuleId 
+            ? facadeModuleId.split('/').pop()?.replace(/\.[^/.]+$/, '') || 'chunk'
             : 'chunk';
-          return `${facadeModuleId}-[hash].js`;
+          return `${fileName}-[hash].js`;
         }
       }
     },
