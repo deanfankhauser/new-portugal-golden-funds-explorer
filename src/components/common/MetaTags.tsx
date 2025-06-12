@@ -12,14 +12,14 @@ const MetaTags: React.FC<MetaTagsProps> = ({ seoData }) => {
 
   return (
     <Helmet>
-      {/* Basic Meta Tags */}
+      {/* Basic Meta Tags - Force override */}
       <title>{seoData.title}</title>
       <meta name="description" content={seoData.description} />
       <meta name="author" content="Dean Fankhauser, CEO" />
       <meta name="robots" content="index, follow, max-image-preview:large" />
       <link rel="canonical" href={seoData.url} />
 
-      {/* Open Graph Meta Tags */}
+      {/* Open Graph Meta Tags - Force override */}
       <meta property="og:type" content="website" />
       <meta property="og:title" content={seoData.title} />
       <meta property="og:description" content={seoData.description} />
@@ -31,7 +31,7 @@ const MetaTags: React.FC<MetaTagsProps> = ({ seoData }) => {
       <meta property="og:image:alt" content="Movingto - Golden Visa Investment Funds" />
       <meta property="og:locale" content="en_US" />
 
-      {/* Twitter Card Meta Tags */}
+      {/* Twitter Card Meta Tags - Force override */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content="@movingtoio" />
       <meta name="twitter:creator" content="@movingtoio" />
@@ -46,7 +46,7 @@ const MetaTags: React.FC<MetaTagsProps> = ({ seoData }) => {
       <meta name="format-detection" content="telephone=no" />
 
       {/* Structured Data */}
-      {Object.keys(seoData.structuredData).length > 0 && (
+      {seoData.structuredData && Object.keys(seoData.structuredData).length > 0 && (
         <script type="application/ld+json">
           {JSON.stringify(seoData.structuredData, null, 2)}
         </script>
