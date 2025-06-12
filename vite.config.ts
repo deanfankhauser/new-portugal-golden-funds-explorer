@@ -34,21 +34,7 @@ export default defineConfig(({ mode }) => ({
           query: ['@tanstack/react-query'],
           charts: ['recharts'],
           icons: ['lucide-react'],
-          carousel: ['embla-carousel-react'],
-          
-          // App-specific chunks
-          pages: [
-            'src/pages/Index',
-            'src/pages/FundDetails', 
-            'src/pages/TagPage',
-            'src/pages/CategoryPage'
-          ],
-          services: [
-            'src/services/seoDataService',
-            'src/services/seoService',
-            'src/data/services/funds-service'
-          ],
-          data: ['src/data/funds', 'src/data/mock/funds-data']
+          carousel: ['embla-carousel-react']
         },
         // Ensure consistent chunk naming with proper null checking
         chunkFileNames: (chunkInfo) => {
