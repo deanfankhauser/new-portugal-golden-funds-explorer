@@ -9,7 +9,7 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-        "build:ssg": "node scripts/build-ssg.js",
+    "build:ssg": "node scripts/build-ssg.js",
     "preview:ssg": "npm run preview"
   },
   "dependencies": {
@@ -63,6 +63,7 @@
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "terser": "^5.42.0",
     "ts-node": "^10.9.2",
     "vaul": "^0.9.3",
     "zod": "^3.23.8"

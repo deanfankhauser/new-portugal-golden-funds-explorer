@@ -48,13 +48,16 @@ export default defineConfig(({ mode }) => ({
     },
     // Target modern browsers for better compression
     target: 'esnext',
-    // Enable minification
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: mode === 'production',
-        drop_debugger: mode === 'production'
+    // Enable minification only in production
+    minify: mode === 'production' ? 'terser' : false,
+    // Terser options only apply when minification is enabled
+    ...(mode === 'production' && {
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true
+        }
       }
-    }
+    })
   }
 }));
