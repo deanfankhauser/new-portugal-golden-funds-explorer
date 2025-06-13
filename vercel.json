@@ -1,6 +1,11 @@
 
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ]
+    {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap.xml"
+    }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
 }

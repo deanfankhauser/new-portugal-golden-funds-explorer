@@ -45,20 +45,41 @@ function buildSSG() {
     // Count generated pages
     const countFiles = (dir) => {
       let count = 0;
-      const files = fs.readdirSync(dir);
-      for (const file of files) {
-        const filePath = path.join(dir, file);
-        if (fs.statSync(filePath).isDirectory()) {
-          count += countFiles(filePath);
-        } else if (file === 'index.html') {
-          count++;
+      try {
+        const files = fs.readdirSync(dir);
+        for (const file of files) {
+          const filePath = path.join(dir, file);
+          if (fs.statSync(filePath).isDirectory()) {
+            count += countFiles(filePath);
+          } else if (file === 'index.html') {
+            count++;
+          }
         }
+      } catch (error) {
+        console.warn(`Could not read directory: ${dir}`);
       }
       return count;
     };
     
     const pageCount = countFiles(distDir);
     console.log(`📄 Total pages generated: ${pageCount}`);
+    
+    // Verify some key pages exist
+    const keyPages = [
+      'funds',
+      'categories', 
+      'tags',
+      'managers'
+    ];
+    
+    keyPages.forEach(page => {
+      const pagePath = path.join(distDir, page, 'index.html');
+      if (fs.existsSync(pagePath)) {
+        console.log(`✅ /${page} page generated`);
+      } else {
+        console.warn(`⚠️  /${page} page not found`);
+      }
+    });
     
     console.log('\n🎉 Static site generation complete!');
     console.log('🔗 Run "npm run preview" to test the generated site.');
