@@ -3,27 +3,31 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 
-// Function to compile and run TypeScript files in Node.js
+// Function to compile TypeScript to JavaScript and execute
 function compileAndRunTSFile(tsFilePath, functionName, ...args) {
   try {
-    // Create a temporary execution script
+    // Read the TypeScript file
+    const tsContent = fs.readFileSync(tsFilePath, 'utf8');
+    
+    // Create a temporary execution script that imports the compiled module
     const tempScriptContent = `
-import { ${functionName} } from '${tsFilePath}';
+import { ${functionName} } from './${tsFilePath.replace('.ts', '.js')}';
 
 const result = ${functionName}(${args.map(arg => JSON.stringify(arg)).join(', ')});
 console.log(JSON.stringify(result, null, 2));
 `;
     
-    const tempScriptPath = path.join(process.cwd(), 'temp-script.mjs');
+    const tempScriptPath = path.join(process.cwd(), 'temp-exec.mjs');
     fs.writeFileSync(tempScriptPath, tempScriptContent);
     
-    // Execute with node directly using ES modules
-    const command = `node --loader ts-node/esm --experimental-specifier-resolution=node ${tempScriptPath}`;
+    // Compile TypeScript files first
+    console.log('Compiling TypeScript files...');
+    execSync('npx tsc -p tsconfig.ssg.json', { stdio: 'inherit' });
     
-    const result = execSync(command, { 
-      encoding: 'utf8', 
-      cwd: process.cwd(),
-      env: { ...process.env, NODE_OPTIONS: '--loader ts-node/esm' }
+    // Execute the compiled JavaScript
+    const result = execSync(`node ${tempScriptPath}`, { 
+      encoding: 'utf8',
+      cwd: process.cwd()
     });
     
     // Clean up temp file
@@ -36,7 +40,7 @@ console.log(JSON.stringify(result, null, 2));
     console.error(`Error running ${tsFilePath}:`, error.message);
     
     // Clean up temp file on error
-    const tempScriptPath = path.join(process.cwd(), 'temp-script.mjs');
+    const tempScriptPath = path.join(process.cwd(), 'temp-exec.mjs');
     if (fs.existsSync(tempScriptPath)) {
       fs.unlinkSync(tempScriptPath);
     }
@@ -57,7 +61,7 @@ export function prerenderRoutes() {
 
   try {
     // Get all routes from the route discovery service
-    const routes = compileAndRunTSFile('./src/ssg/routeDiscovery', 'RouteDiscovery.getAllStaticRoutes');
+    const routes = compileAndRunTSFile('./src/ssg/routeDiscovery.ts', 'RouteDiscovery.getAllStaticRoutes');
     
     if (!routes || routes.length === 0) {
       console.error('No routes found for pre-rendering');
@@ -75,7 +79,7 @@ export function prerenderRoutes() {
         console.log(`Rendering: ${route.path}`);
         
         // Get the rendered HTML and SEO data for this route
-        const renderResult = compileAndRunTSFile('./src/ssg/ssrUtils', 'SSRUtils.renderRoute', route);
+        const renderResult = compileAndRunTSFile('./src/ssg/ssrUtils.tsx', 'SSRUtils.renderRoute', route);
         
         if (!renderResult) {
           console.warn(`Failed to render route: ${route.path}`);
@@ -86,7 +90,7 @@ export function prerenderRoutes() {
         const { html, seoData } = renderResult;
         
         // Generate the complete HTML document
-        const fullHTML = compileAndRunTSFile('./src/ssg/ssrUtils', 'SSRUtils.generateHTMLTemplate', html, seoData);
+        const fullHTML = compileAndRunTSFile('./src/ssg/ssrUtils.tsx', 'SSRUtils.generateHTMLTemplate', html, seoData);
         
         // Determine the output file path
         let outputPath;
@@ -112,7 +116,7 @@ export function prerenderRoutes() {
 
     // Generate sitemap
     console.log('Generating sitemap...');
-    const sitemap = compileAndRunTSFile('./src/ssg/routeDiscovery', 'RouteDiscovery.generateSitemap');
+    const sitemap = compileAndRunTSFile('./src/ssg/routeDiscovery.ts', 'RouteDiscovery.generateSitemap');
     
     if (sitemap) {
       fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap);

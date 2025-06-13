@@ -18,11 +18,12 @@
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": false,
     "allowImportingTsExtensions": false,
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": false,
+    "outDir": "./dist-ssg",
+    "rootDir": "./src"
   },
   "include": [
     "src/ssg/**/*",
-    "scripts/**/*",
     "src/services/**/*",
     "src/data/**/*",
     "src/pages/**/*",
@@ -31,15 +32,8 @@
   "exclude": [
     "node_modules",
     "dist",
+    "dist-ssg",
     "src/main.tsx",
     "src/App.tsx"
-  ],
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": "node",
-    "compilerOptions": {
-      "module": "ESNext",
-      "target": "ES2022"
-    }
-  }
+  ]
 }

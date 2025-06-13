@@ -206,3 +206,7 @@ export class SSRUtils {
 </html>`;
   }
 }
+
+// Export functions for direct access
+export const renderRoute = (route: StaticRoute) => SSRUtils.renderRoute(route);
+export const generateHTMLTemplate = (content: string, seoData: any) => SSRUtils.generateHTMLTemplate(content, seoData);

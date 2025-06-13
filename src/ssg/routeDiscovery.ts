@@ -94,3 +94,7 @@ ${urls}
 </urlset>`;
   }
 }
+
+// Export functions for direct access
+export const getAllStaticRoutes = () => RouteDiscovery.getAllStaticRoutes();
+export const generateSitemap = () => RouteDiscovery.generateSitemap();
