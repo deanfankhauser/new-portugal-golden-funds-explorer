@@ -1,4 +1,3 @@
-
 import { execSync } from 'child_process';
 import { prerenderRoutes } from './prerender.js';
 import fs from 'fs';
@@ -29,15 +28,38 @@ export function buildSSG() {
       console.log('Continuing with basic build...');
     }
     
-    // Step 4: Final verification
-    console.log('\n🔍 Step 3/3: Verifying generated files...');
+    // Step 4: Create additional route files for better SEO (but keep SPA routing)
+    console.log('\n📄 Step 3/3: Setting up SPA routing...');
     
     const indexFile = path.join(distDir, 'index.html');
     
     if (fs.existsSync(indexFile)) {
-      console.log('✅ Homepage generated successfully');
+      console.log('✅ Index file exists');
+      
+      // Read the main index.html content
+      const indexContent = fs.readFileSync(indexFile, 'utf8');
+      
+      // Create some key directory structures for better SEO
+      const keyRoutes = [
+        'funds',
+        'categories', 
+        'tags',
+        'managers',
+        'about',
+        'compare'
+      ];
+      
+      keyRoutes.forEach(route => {
+        const routeDir = path.join(distDir, route);
+        if (!fs.existsSync(routeDir)) {
+          fs.mkdirSync(routeDir, { recursive: true });
+          // Copy index.html to each route directory for better SPA routing
+          fs.writeFileSync(path.join(routeDir, 'index.html'), indexContent);
+        }
+      });
+      
     } else {
-      console.warn('⚠️  Homepage not found');
+      console.warn('⚠️  Index file not found');
     }
     
     // Generate basic sitemap if not exists
