@@ -6,9 +6,12 @@ import { execSync } from 'child_process';
 // Function to compile and run TypeScript files in Node.js
 function compileAndRunTSFile(tsFilePath, functionName, ...args) {
   try {
+    // Remove .ts extension for import - Node.js/ts-node will resolve it
+    const importPath = tsFilePath.replace(/\.ts$/, '');
+    
     // Use ts-node to execute TypeScript directly with ES module syntax
     const command = `npx ts-node -P tsconfig.ssg.json -e "
-      import('${tsFilePath}').then(module => {
+      import('${importPath}').then(module => {
         const result = module.${functionName}(${args.map(arg => JSON.stringify(arg)).join(', ')});
         console.log(JSON.stringify(result, null, 2));
       }).catch(err => {
@@ -37,7 +40,7 @@ export function prerenderRoutes() {
 
   try {
     // Get all routes from the route discovery service
-    const routes = compileAndRunTSFile('./src/ssg/routeDiscovery.ts', 'RouteDiscovery.getAllStaticRoutes');
+    const routes = compileAndRunTSFile('./src/ssg/routeDiscovery', 'RouteDiscovery.getAllStaticRoutes');
     
     if (!routes || routes.length === 0) {
       console.error('No routes found for pre-rendering');
@@ -55,7 +58,7 @@ export function prerenderRoutes() {
         console.log(`Rendering: ${route.path}`);
         
         // Get the rendered HTML and SEO data for this route
-        const renderResult = compileAndRunTSFile('./src/ssg/ssrUtils.tsx', 'SSRUtils.renderRoute', route);
+        const renderResult = compileAndRunTSFile('./src/ssg/ssrUtils', 'SSRUtils.renderRoute', route);
         
         if (!renderResult) {
           console.warn(`Failed to render route: ${route.path}`);
@@ -66,7 +69,7 @@ export function prerenderRoutes() {
         const { html, seoData } = renderResult;
         
         // Generate the complete HTML document
-        const fullHTML = compileAndRunTSFile('./src/ssg/ssrUtils.tsx', 'SSRUtils.generateHTMLTemplate', html, seoData);
+        const fullHTML = compileAndRunTSFile('./src/ssg/ssrUtils', 'SSRUtils.generateHTMLTemplate', html, seoData);
         
         // Determine the output file path
         let outputPath;
@@ -92,7 +95,7 @@ export function prerenderRoutes() {
 
     // Generate sitemap
     console.log('Generating sitemap...');
-    const sitemap = compileAndRunTSFile('./src/ssg/routeDiscovery.ts', 'RouteDiscovery.generateSitemap');
+    const sitemap = compileAndRunTSFile('./src/ssg/routeDiscovery', 'RouteDiscovery.generateSitemap');
     
     if (sitemap) {
       fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap);

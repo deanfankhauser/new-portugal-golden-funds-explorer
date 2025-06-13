@@ -16,7 +16,8 @@
     "isolatedModules": false,
     "allowJs": true,
     "resolveJsonModule": true,
-    "forceConsistentCasingInFileNames": false
+    "forceConsistentCasingInFileNames": false,
+    "allowImportingTsExtensions": false
   },
   "include": [
     "src/ssg/**/*",
