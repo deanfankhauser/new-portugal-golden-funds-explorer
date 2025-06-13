@@ -11,63 +11,33 @@ import { StaticRoute } from './routeDiscovery';
 // Mock TooltipProvider for SSR
 const TooltipProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>;
 
-// Import all page components with error handling
-let Index: React.ComponentType<any>;
-let FundDetails: React.ComponentType<any>;
-let TagPage: React.ComponentType<any>;
-let CategoryPage: React.ComponentType<any>;
-let TagsHub: React.ComponentType<any>;
-let CategoriesHub: React.ComponentType<any>;
-let ManagersHub: React.ComponentType<any>;
-let About: React.ComponentType<any>;
-let Disclaimer: React.ComponentType<any>;
-let Privacy: React.ComponentType<any>;
-let ComparisonPage: React.ComponentType<any>;
-let FundManager: React.ComponentType<any>;
-let FAQs: React.ComponentType<any>;
-let ComparisonsHub: React.ComponentType<any>;
-let ROICalculator: React.ComponentType<any>;
-let FundQuiz: React.ComponentType<any>;
+// Import all page components with better error handling
+const loadComponent = (path: string, componentName: string = 'default') => {
+  try {
+    const module = require(path);
+    return module[componentName] || module.default;
+  } catch (error) {
+    console.warn(`Could not load component from ${path}:`, error.message);
+    return () => React.createElement('div', null, 'Loading...');
+  }
+};
 
-try {
-  Index = require('../pages/Index').default;
-  FundDetails = require('../pages/FundDetails').default;
-  TagPage = require('../pages/TagPage').default;
-  CategoryPage = require('../pages/CategoryPage').default;
-  TagsHub = require('../pages/TagsHub').default;
-  CategoriesHub = require('../pages/CategoriesHub').default;
-  ManagersHub = require('../pages/ManagersHub').default;
-  About = require('../pages/About').default;
-  Disclaimer = require('../pages/Disclaimer').default;
-  Privacy = require('../pages/Privacy').default;
-  ComparisonPage = require('../pages/ComparisonPage').default;
-  FundManager = require('../pages/FundManager').default;
-  FAQs = require('../pages/FAQs').default;
-  ComparisonsHub = require('../pages/ComparisonsHub').default;
-  ROICalculator = require('../pages/ROICalculator').default;
-  FundQuiz = require('../pages/FundQuiz').default;
-} catch (error) {
-  console.warn('Some page components could not be loaded for SSR:', error.message);
-  
-  // Fallback components
-  const FallbackComponent = () => React.createElement('div', null, 'Page loading...');
-  Index = Index || FallbackComponent;
-  FundDetails = FundDetails || FallbackComponent;
-  TagPage = TagPage || FallbackComponent;
-  CategoryPage = CategoryPage || FallbackComponent;
-  TagsHub = TagsHub || FallbackComponent;
-  CategoriesHub = CategoriesHub || FallbackComponent;
-  ManagersHub = ManagersHub || FallbackComponent;
-  About = About || FallbackComponent;
-  Disclaimer = Disclaimer || FallbackComponent;
-  Privacy = Privacy || FallbackComponent;
-  ComparisonPage = ComparisonPage || FallbackComponent;
-  FundManager = FundManager || FallbackComponent;
-  FAQs = FAQs || FallbackComponent;
-  ComparisonsHub = ComparisonsHub || FallbackComponent;
-  ROICalculator = ROICalculator || FallbackComponent;
-  FundQuiz = FundQuiz || FallbackComponent;
-}
+const Index = loadComponent('../pages/Index');
+const FundDetails = loadComponent('../pages/FundDetails');
+const TagPage = loadComponent('../pages/TagPage');
+const CategoryPage = loadComponent('../pages/CategoryPage');
+const TagsHub = loadComponent('../pages/TagsHub');
+const CategoriesHub = loadComponent('../pages/CategoriesHub');
+const ManagersHub = loadComponent('../pages/ManagersHub');
+const About = loadComponent('../pages/About');
+const Disclaimer = loadComponent('../pages/Disclaimer');
+const Privacy = loadComponent('../pages/Privacy');
+const ComparisonPage = loadComponent('../pages/ComparisonPage');
+const FundManager = loadComponent('../pages/FundManager');
+const FAQs = loadComponent('../pages/FAQs');
+const ComparisonsHub = loadComponent('../pages/ComparisonsHub');
+const ROICalculator = loadComponent('../pages/ROICalculator');
+const FundQuiz = loadComponent('../pages/FundQuiz');
 
 export class SSRUtils {
   static renderRoute(route: StaticRoute): { html: string; seoData: any } {

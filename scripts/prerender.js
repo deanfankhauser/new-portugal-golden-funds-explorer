@@ -6,24 +6,41 @@ import { execSync } from 'child_process';
 // Function to compile and run TypeScript files in Node.js
 function compileAndRunTSFile(tsFilePath, functionName, ...args) {
   try {
-    // Remove .ts extension for import - Node.js/ts-node will resolve it
-    const importPath = tsFilePath.replace(/\.ts$/, '');
+    // Create a temporary execution script
+    const tempScriptContent = `
+import { ${functionName} } from '${tsFilePath}';
+
+const result = ${functionName}(${args.map(arg => JSON.stringify(arg)).join(', ')});
+console.log(JSON.stringify(result, null, 2));
+`;
     
-    // Use ts-node to execute TypeScript directly with ES module syntax
-    const command = `npx ts-node -P tsconfig.ssg.json -e "
-      import('${importPath}').then(module => {
-        const result = module.${functionName}(${args.map(arg => JSON.stringify(arg)).join(', ')});
-        console.log(JSON.stringify(result, null, 2));
-      }).catch(err => {
-        console.error('Import error:', err.message);
-        process.exit(1);
-      });
-    "`;
+    const tempScriptPath = path.join(process.cwd(), 'temp-script.mjs');
+    fs.writeFileSync(tempScriptPath, tempScriptContent);
     
-    const result = execSync(command, { encoding: 'utf8', cwd: process.cwd() });
+    // Execute with node directly using ES modules
+    const command = `node --loader ts-node/esm --experimental-specifier-resolution=node ${tempScriptPath}`;
+    
+    const result = execSync(command, { 
+      encoding: 'utf8', 
+      cwd: process.cwd(),
+      env: { ...process.env, NODE_OPTIONS: '--loader ts-node/esm' }
+    });
+    
+    // Clean up temp file
+    if (fs.existsSync(tempScriptPath)) {
+      fs.unlinkSync(tempScriptPath);
+    }
+    
     return JSON.parse(result.trim());
   } catch (error) {
     console.error(`Error running ${tsFilePath}:`, error.message);
+    
+    // Clean up temp file on error
+    const tempScriptPath = path.join(process.cwd(), 'temp-script.mjs');
+    if (fs.existsSync(tempScriptPath)) {
+      fs.unlinkSync(tempScriptPath);
+    }
+    
     return null;
   }
 }
