@@ -1,7 +1,7 @@
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
 
 // Function to compile and run TypeScript files in Node.js
 function compileAndRunTSFile(tsFilePath, functionName, ...args) {
@@ -21,7 +21,7 @@ function compileAndRunTSFile(tsFilePath, functionName, ...args) {
   }
 }
 
-function prerenderRoutes() {
+export function prerenderRoutes() {
   const distDir = path.join(process.cwd(), 'dist');
   
   // Ensure dist directory exists
@@ -110,8 +110,7 @@ function prerenderRoutes() {
   }
 }
 
-if (require.main === module) {
+// Allow running this script directly
+if (import.meta.url === `file://${process.argv[1]}`) {
   prerenderRoutes();
 }
-
-module.exports = { prerenderRoutes };

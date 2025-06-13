@@ -1,10 +1,10 @@
 
-const { execSync } = require('child_process');
-const { prerenderRoutes } = require('./prerender');
-const fs = require('fs');
-const path = require('path');
+import { execSync } from 'child_process';
+import { prerenderRoutes } from './prerender.js';
+import fs from 'fs';
+import path from 'path';
 
-function buildSSG() {
+export function buildSSG() {
   console.log('🚀 Building static site with SSG...');
   
   try {
@@ -97,8 +97,7 @@ function buildSSG() {
   }
 }
 
-if (require.main === module) {
+// Allow running this script directly
+if (import.meta.url === `file://${process.argv[1]}`) {
   buildSSG();
 }
-
-module.exports = { buildSSG };
