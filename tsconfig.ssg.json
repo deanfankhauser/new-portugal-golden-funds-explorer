@@ -23,17 +23,15 @@
     "rootDir": "./src"
   },
   "include": [
-    "src/ssg/**/*",
-    "src/services/**/*",
-    "src/data/**/*",
-    "src/pages/**/*",
-    "src/types/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
     "dist",
     "dist-ssg",
-    "src/main.tsx",
-    "src/App.tsx"
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
   ]
 }

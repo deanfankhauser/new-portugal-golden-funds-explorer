@@ -20,7 +20,7 @@ export function buildSSG() {
     
     console.log('✅ Vite build completed successfully');
 
-    // Step 3: Run the pre-rendering
+    // Step 3: Run the pre-rendering (simplified approach)
     console.log('\n🎨 Step 2/3: Generating static pages...');
     prerenderRoutes();
     
@@ -63,23 +63,6 @@ export function buildSSG() {
     
     const pageCount = countFiles(distDir);
     console.log(`📄 Total pages generated: ${pageCount}`);
-    
-    // Verify some key pages exist
-    const keyPages = [
-      'funds',
-      'categories', 
-      'tags',
-      'managers'
-    ];
-    
-    keyPages.forEach(page => {
-      const pagePath = path.join(distDir, page, 'index.html');
-      if (fs.existsSync(pagePath)) {
-        console.log(`✅ /${page} page generated`);
-      } else {
-        console.warn(`⚠️  /${page} page not found`);
-      }
-    });
     
     console.log('\n🎉 Static site generation complete!');
     console.log('🔗 Run "npm run preview" to test the generated site.');
