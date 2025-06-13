@@ -17,6 +17,9 @@ const PageSEO: React.FC<PageSEOProps> = (props) => {
       fundName: props.fundName
     });
     
+    // Immediate title update
+    document.title = seoData.title;
+    
     // Force a small delay to ensure DOM is ready and verify title update
     const timer = setTimeout(() => {
       const actualTitle = document.title;
@@ -24,7 +27,7 @@ const PageSEO: React.FC<PageSEOProps> = (props) => {
       console.log('SEO: Expected title:', seoData.title);
       
       if (actualTitle !== seoData.title) {
-        console.warn('SEO: Title mismatch detected!');
+        console.warn('SEO: Title mismatch detected! Forcing update...');
         // Force update the title if there's a mismatch
         document.title = seoData.title;
       }

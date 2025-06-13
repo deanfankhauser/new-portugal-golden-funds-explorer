@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { SEOData } from '../../types/seo';
 
@@ -10,20 +10,33 @@ interface MetaTagsProps {
 const MetaTags: React.FC<MetaTagsProps> = ({ seoData }) => {
   const defaultImage = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
 
+  // Force document title update as a fallback
+  useEffect(() => {
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      if (document.title !== seoData.title) {
+        document.title = seoData.title;
+        console.log('MetaTags: Force updated document title to:', seoData.title);
+      }
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [seoData.title]);
+
   return (
     <Helmet>
-      {/* Basic Meta Tags - Force override */}
-      <title>{seoData.title}</title>
-      <meta name="description" content={seoData.description} />
+      {/* Basic Meta Tags - Force override with key prop */}
+      <title key="title">{seoData.title}</title>
+      <meta key="description" name="description" content={seoData.description} />
       <meta name="author" content="Dean Fankhauser, CEO" />
       <meta name="robots" content="index, follow, max-image-preview:large" />
       <link rel="canonical" href={seoData.url} />
 
-      {/* Open Graph Meta Tags - Force override */}
-      <meta property="og:type" content="website" />
-      <meta property="og:title" content={seoData.title} />
-      <meta property="og:description" content={seoData.description} />
-      <meta property="og:url" content={seoData.url} />
+      {/* Open Graph Meta Tags - Force override with key prop */}
+      <meta key="og:type" property="og:type" content="website" />
+      <meta key="og:title" property="og:title" content={seoData.title} />
+      <meta key="og:description" property="og:description" content={seoData.description} />
+      <meta key="og:url" property="og:url" content={seoData.url} />
       <meta property="og:site_name" content="Movingto" />
       <meta property="og:image" content={defaultImage} />
       <meta property="og:image:width" content="400" />
@@ -31,12 +44,12 @@ const MetaTags: React.FC<MetaTagsProps> = ({ seoData }) => {
       <meta property="og:image:alt" content="Movingto - Golden Visa Investment Funds" />
       <meta property="og:locale" content="en_US" />
 
-      {/* Twitter Card Meta Tags - Force override */}
-      <meta name="twitter:card" content="summary_large_image" />
+      {/* Twitter Card Meta Tags - Force override with key prop */}
+      <meta key="twitter:card" name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content="@movingtoio" />
       <meta name="twitter:creator" content="@movingtoio" />
-      <meta name="twitter:title" content={seoData.title} />
-      <meta name="twitter:description" content={seoData.description} />
+      <meta key="twitter:title" name="twitter:title" content={seoData.title} />
+      <meta key="twitter:description" name="twitter:description" content={seoData.description} />
       <meta name="twitter:image" content={defaultImage} />
       <meta name="twitter:image:alt" content="Movingto - Golden Visa Investment Funds" />
 
