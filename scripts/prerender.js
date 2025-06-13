@@ -1,8 +1,7 @@
-
 import fs from 'fs';
 import path from 'path';
-import { getAllStaticRoutes } from '../src/ssg/routeDiscovery.js';
-import { renderRoute, generateHTMLTemplate } from '../src/ssg/ssrUtils.js';
+import { getAllStaticRoutes } from '../src/ssg/routeDiscovery.ts';
+import { renderRoute, generateHTMLTemplate } from '../src/ssg/ssrUtils.tsx';
 
 export function prerenderRoutes() {
   const distDir = path.join(process.cwd(), 'dist');
