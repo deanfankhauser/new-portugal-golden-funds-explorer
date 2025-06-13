@@ -1,6 +1,8 @@
 
 import fs from 'fs';
 import path from 'path';
+import { getAllStaticRoutes } from '../src/ssg/routeDiscovery.js';
+import { renderRoute, generateHTMLTemplate } from '../src/ssg/ssrUtils.js';
 
 export function prerenderRoutes() {
   const distDir = path.join(process.cwd(), 'dist');
@@ -10,11 +12,11 @@ export function prerenderRoutes() {
     fs.mkdirSync(distDir, { recursive: true });
   }
 
-  console.log('Starting simplified static site generation...');
+  console.log('Starting enhanced static site generation...');
 
   try {
-    // Generate basic routes without complex compilation
-    const routes = generateStaticRoutes();
+    // Get all static routes
+    const routes = getAllStaticRoutes();
     
     if (!routes || routes.length === 0) {
       console.error('No routes found for pre-rendering');
@@ -23,7 +25,39 @@ export function prerenderRoutes() {
 
     console.log(`Found ${routes.length} routes to pre-render`);
 
-    // Generate basic sitemap
+    // Generate HTML for each route
+    let successCount = 0;
+    routes.forEach((route, index) => {
+      try {
+        console.log(`Rendering route ${index + 1}/${routes.length}: ${route.path}`);
+        
+        // Render the route
+        const { html, seoData } = renderRoute(route);
+        
+        // Generate full HTML template
+        const fullHTML = generateHTMLTemplate(html, seoData);
+        
+        // Determine output path
+        let outputPath;
+        if (route.path === '/') {
+          outputPath = path.join(distDir, 'index.html');
+        } else {
+          const routeDir = path.join(distDir, route.path);
+          fs.mkdirSync(routeDir, { recursive: true });
+          outputPath = path.join(routeDir, 'index.html');
+        }
+        
+        // Write the HTML file
+        fs.writeFileSync(outputPath, fullHTML);
+        successCount++;
+        
+        console.log(`✅ Generated: ${route.path}`);
+      } catch (error) {
+        console.warn(`⚠️  Failed to render ${route.path}:`, error.message);
+      }
+    });
+
+    // Generate sitemap
     console.log('Generating sitemap...');
     const sitemap = generateSitemap(routes);
     
@@ -34,41 +68,12 @@ export function prerenderRoutes() {
 
     console.log(`\nStatic site generation complete!`);
     console.log(`📁 Output directory: ${distDir}`);
+    console.log(`✅ Successfully rendered: ${successCount}/${routes.length} routes`);
     
   } catch (error) {
     console.warn('Pre-rendering encountered issues:', error.message);
     console.log('Continuing with basic build...');
   }
-}
-
-// Simplified route generation
-function generateStaticRoutes() {
-  // Static routes that don't require dynamic data
-  const staticRoutes = [
-    { path: '/', pageType: 'homepage' },
-    { path: '/about', pageType: 'about' },
-    { path: '/disclaimer', pageType: 'disclaimer' },
-    { path: '/privacy', pageType: 'privacy' },
-    { path: '/faqs', pageType: 'faqs' },
-    { path: '/compare', pageType: 'comparison' },
-    { path: '/comparisons', pageType: 'comparisons-hub' },
-    { path: '/roi-calculator', pageType: 'roi-calculator' },
-    { path: '/fund-quiz', pageType: 'fund-quiz' },
-    { path: '/managers', pageType: 'managers-hub' },
-    { path: '/categories', pageType: 'categories-hub' },
-    { path: '/tags', pageType: 'tags-hub' }
-  ];
-
-  // Add some sample fund routes
-  const fundRoutes = [
-    { path: '/funds/3cc-golden-income', pageType: 'fund' },
-    { path: '/funds/growth-blue-fund', pageType: 'fund' },
-    { path: '/funds/horizon-fund', pageType: 'fund' },
-    { path: '/funds/lince-growth-fund', pageType: 'fund' },
-    { path: '/funds/lince-yield-fund', pageType: 'fund' }
-  ];
-
-  return [...staticRoutes, ...fundRoutes];
 }
 
 // Generate sitemap

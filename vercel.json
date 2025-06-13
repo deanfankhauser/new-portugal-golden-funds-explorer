@@ -10,23 +10,23 @@
       "destination": "/sitemap.xml"
     },
     {
-      "source": "/funds/:id",
+      "source": "/funds/([^/]+)",
       "destination": "/index.html"
     },
     {
-      "source": "/categories/:category",
+      "source": "/categories/([^/]+)",
       "destination": "/index.html"
     },
     {
-      "source": "/tags/:tag",
+      "source": "/tags/([^/]+)",
       "destination": "/index.html"
     },
     {
-      "source": "/manager/:name",
+      "source": "/manager/([^/]+)",
       "destination": "/index.html"
     },
     {
-      "source": "/compare/:slug",
+      "source": "/compare/([^/]+)",
       "destination": "/index.html"
     },
     {

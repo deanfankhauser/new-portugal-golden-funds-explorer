@@ -59,6 +59,11 @@ export class SSRUtils {
       tagName: route.params?.tagName,
     });
 
+    console.log(`SSR: Rendering route ${route.path} with SEO data:`, {
+      title: seoData.title,
+      description: seoData.description
+    });
+
     const AppRouter = () => React.createElement(
       QueryClientProvider,
       { client: queryClient },
@@ -147,6 +152,9 @@ export class SSRUtils {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
+    <!-- SEO meta tags (server-side rendered) -->
+    ${metaTags}
+    
     <!-- Preconnect to external domains for performance -->
     <link rel="preconnect" href="https://www.googletagmanager.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -175,9 +183,6 @@ export class SSRUtils {
     <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
-    
-    <!-- SEO meta tags -->
-    ${metaTags}
     
     <!-- Default Open Graph tags -->
     <meta property="og:type" content="website" />
