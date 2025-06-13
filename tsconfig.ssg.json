@@ -2,7 +2,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "ESNext",
     "target": "es2020",
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -15,7 +15,8 @@
     "sourceMap": false,
     "isolatedModules": false,
     "allowJs": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": false
   },
   "include": [
     "src/ssg/**/*",
@@ -32,8 +33,9 @@
     "src/App.tsx"
   ],
   "ts-node": {
+    "esm": true,
     "compilerOptions": {
-      "module": "commonjs"
+      "module": "ESNext"
     }
   }
 }

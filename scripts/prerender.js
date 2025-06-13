@@ -6,11 +6,15 @@ import { execSync } from 'child_process';
 // Function to compile and run TypeScript files in Node.js
 function compileAndRunTSFile(tsFilePath, functionName, ...args) {
   try {
-    // Use ts-node to execute TypeScript directly
+    // Use ts-node to execute TypeScript directly with ES module syntax
     const command = `npx ts-node -P tsconfig.ssg.json -e "
-      const module = require('${tsFilePath}');
-      const result = module.${functionName}(${args.map(arg => JSON.stringify(arg)).join(', ')});
-      console.log(JSON.stringify(result, null, 2));
+      import('${tsFilePath}').then(module => {
+        const result = module.${functionName}(${args.map(arg => JSON.stringify(arg)).join(', ')});
+        console.log(JSON.stringify(result, null, 2));
+      }).catch(err => {
+        console.error('Import error:', err.message);
+        process.exit(1);
+      });
     "`;
     
     const result = execSync(command, { encoding: 'utf8', cwd: process.cwd() });
