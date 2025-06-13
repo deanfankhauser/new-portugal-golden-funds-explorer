@@ -10,6 +10,26 @@
       "destination": "/sitemap.xml"
     },
     {
+      "source": "/funds/:id",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/categories/:category",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/tags/:tag",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/manager/:name",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/compare/:slug",
+      "destination": "/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
