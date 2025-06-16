@@ -38,9 +38,9 @@ const FundQuiz = () => {
         
         <div className="max-w-4xl mx-auto space-y-8">
           {!showResults ? (
-            <QuizFormContainer onQuizSubmit={handleQuizSubmit} />
+            <QuizFormContainer onSubmit={handleQuizSubmit} />
           ) : (
-            <QuizResults results={results} onRetakeQuiz={handleRetakeQuiz} />
+            <QuizResults recommendations={results} onRetakeQuiz={handleRetakeQuiz} />
           )}
         </div>
       </main>

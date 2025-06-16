@@ -6,7 +6,7 @@ import PageSEO from '../components/common/PageSEO';
 import ManagersList from '../components/managers-hub/ManagersList';
 import ManagersHubHeader from '../components/managers-hub/ManagersHubHeader';
 import ManagersHubBreadcrumbs from '../components/managers-hub/ManagersHubBreadcrumbs';
-import { getAllManagers } from '../data/services/managers-service';
+import { getAllFundManagers } from '../data/services/managers-service';
 
 const ManagersHub = () => {
   useEffect(() => {
@@ -14,7 +14,7 @@ const ManagersHub = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const managers = getAllManagers();
+  const managers = getAllFundManagers();
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
