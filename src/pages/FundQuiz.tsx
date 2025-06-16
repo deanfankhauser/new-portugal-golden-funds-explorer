@@ -8,7 +8,7 @@ import QuizFormContainer from '../components/quiz/QuizFormContainer';
 import QuizResults from '../components/quiz/QuizResults';
 import { Fund } from '../data/types/funds';
 import { QuizFormData } from '../components/quiz/QuizFormContainer';
-import { generateRecommendations } from '../utils/quizRecommendationEngine';
+import { getRecommendations } from '../utils/quizRecommendationEngine';
 
 const FundQuiz = () => {
   const [results, setResults] = useState<(Fund & { score: number })[] | null>(null);
@@ -20,7 +20,7 @@ const FundQuiz = () => {
   }, []);
 
   const handleQuizSubmit = (data: QuizFormData) => {
-    const recommendations = generateRecommendations(data);
+    const recommendations = getRecommendations(data);
     setResults(recommendations);
     setShowResults(true);
   };
