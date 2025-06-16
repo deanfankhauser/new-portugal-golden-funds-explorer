@@ -11,6 +11,8 @@ import { components, TooltipProvider } from './componentLoader';
 
 export class SSRRenderer {
   static renderRoute(route: StaticRoute): { html: string; seoData: any } {
+    console.log(`SSR: Starting render for route ${route.path}`);
+    
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {
@@ -29,9 +31,10 @@ export class SSRRenderer {
       tagName: route.params?.tagName,
     });
 
-    console.log(`SSR: Rendering route ${route.path} with SEO data:`, {
+    console.log(`SSR: Generated SEO data for ${route.path}:`, {
       title: seoData.title,
-      description: seoData.description
+      description: seoData.description,
+      pageType: route.pageType
     });
 
     const AppRouter = () => React.createElement(
@@ -70,25 +73,44 @@ export class SSRRenderer {
     // Clear any previous helmet state
     Helmet.rewind();
     
-    // Render the component to extract helmet data
-    const html = renderToString(React.createElement(AppRouter));
-    
-    // Get helmet data after rendering
-    const helmet = Helmet.rewind();
+    try {
+      // Render the component to extract helmet data
+      const html = renderToString(React.createElement(AppRouter));
+      console.log(`SSR: Successfully rendered HTML for ${route.path}, length: ${html.length}`);
+      
+      // Get helmet data after rendering
+      const helmet = Helmet.rewind();
 
-    // Merge helmet data with our SEO data, prioritizing our SEO data
-    const finalSeoData = {
-      ...seoData,
-      title: seoData.title, // Always use our SEO service title
-      description: seoData.description, // Always use our SEO service description
-      helmetData: {
-        title: helmet.title.toString(),
-        meta: helmet.meta.toString(),
-        link: helmet.link.toString(),
-        script: helmet.script.toString()
-      }
-    };
+      // Merge helmet data with our SEO data, prioritizing our SEO data
+      const finalSeoData = {
+        ...seoData,
+        title: seoData.title, // Always use our SEO service title
+        description: seoData.description, // Always use our SEO service description
+        helmetData: {
+          title: helmet.title.toString(),
+          meta: helmet.meta.toString(),
+          link: helmet.link.toString(),
+          script: helmet.script.toString()
+        }
+      };
 
-    return { html, seoData: finalSeoData };
+      console.log(`SSR: Final SEO data for ${route.path}:`, {
+        title: finalSeoData.title,
+        description: finalSeoData.description
+      });
+
+      return { html, seoData: finalSeoData };
+    } catch (error) {
+      console.error(`SSR: Error rendering route ${route.path}:`, error);
+      return { 
+        html: '<div>Error rendering page</div>', 
+        seoData: {
+          title: 'Error - Portugal Golden Visa Investment Funds | Movingto',
+          description: 'An error occurred while loading this page.',
+          url: `https://movingto.com/funds${route.path}`,
+          structuredData: {}
+        }
+      };
+    }
   }
 }
