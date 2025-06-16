@@ -8,7 +8,7 @@ import QuizForm from '../components/quiz/QuizForm';
 import QuizResults from '../components/quiz/QuizResults';
 import FundQuizProcessing from '../components/quiz/FundQuizProcessing';
 import { QuizFormData } from '../components/quiz/QuizFormContainer';
-import { quizRecommendationEngine } from '../utils/quizRecommendationEngine';
+import { getRecommendations } from '../utils/quizRecommendationEngine';
 import { Fund } from '../data/types/funds';
 
 const FundQuiz = () => {
@@ -21,7 +21,7 @@ const FundQuiz = () => {
     
     // Simulate processing time
     setTimeout(() => {
-      const results = quizRecommendationEngine.getRecommendations(data);
+      const results = getRecommendations(data);
       setRecommendations(results);
       setCurrentStep('results');
     }, 3000);
