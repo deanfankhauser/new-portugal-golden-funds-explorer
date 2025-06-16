@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Link } from "react-router-dom";
 import { Facebook, Linkedin, ExternalLink } from "lucide-react";
 import RecentlyViewedFunds from "./RecentlyViewedFunds";
