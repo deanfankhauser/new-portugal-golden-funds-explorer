@@ -15,16 +15,6 @@ import MobileNavigation from "./MobileNavigation";
 import { ArrowLeft, Mail, Calculator, ClipboardCheck, Users, ExternalLink } from "lucide-react";
 
 const Header = () => {
-  const handleExternalLinkClick = (url: string) => {
-    // Scroll to top before opening external link
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-    // Small delay to allow scroll animation to start, then open link
-    setTimeout(() => {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    }, 100);
-  };
-
   return (
     <header className="bg-[#1A1F2C] text-white py-3 shadow-lg sticky top-0 z-50 w-full">
       <div className="container mx-auto px-4 w-full">
@@ -35,7 +25,7 @@ const Header = () => {
               variant="ghost"
               size="icon"
               className="text-white hover:bg-white/10 hover:text-white"
-              onClick={() => handleExternalLinkClick("https://movingto.com")}
+              onClick={() => window.open("https://movingto.com", "_blank")}
               aria-label="Go to MovingTo website"
             >
               <ArrowLeft className="h-5 w-5" />
@@ -127,14 +117,15 @@ const Header = () => {
             </NavigationMenu>
 
             {/* Direct Actions */}
-            <Button 
-              variant="outline" 
-              className="border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"
-              onClick={() => handleExternalLinkClick("https://www.movingto.com/contact/contact-movingto")}
-            >
-              <Mail className="h-4 w-4 mr-2" />
-              Get in Touch
-            </Button>
+            <a href="https://www.movingto.com/contact/contact-movingto" target="_blank" rel="noopener noreferrer">
+              <Button 
+                variant="outline" 
+                className="border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"
+              >
+                <Mail className="h-4 w-4 mr-2" />
+                Get in Touch
+              </Button>
+            </a>
 
             <ComparisonIndicator />
           </div>
