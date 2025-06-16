@@ -2,7 +2,9 @@
 import React from 'react';
 
 // Mock TooltipProvider for SSR
-export const TooltipProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+export const TooltipProvider = ({ children }: { children: React.ReactNode }) => {
+  return React.createElement(React.Fragment, null, children);
+};
 
 // Component loader with error handling
 export const loadComponent = (path: string, componentName: string = 'default') => {
