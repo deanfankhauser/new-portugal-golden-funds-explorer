@@ -34,10 +34,10 @@ export const useQuizFormLogic = ({ onSubmit }: QuizFormLogicProps) => {
     mode: 'onChange'
   });
 
-  // Save progress to localStorage
+  // Save progress to localStorage (only in browser)
   useEffect(() => {
     const subscription = form.watch((value) => {
-      if (Object.keys(value).length > 0) {
+      if (Object.keys(value).length > 0 && typeof window !== 'undefined') {
         localStorage.setItem('quiz-progress', JSON.stringify({
           data: value,
           currentStep,
@@ -49,8 +49,10 @@ export const useQuizFormLogic = ({ onSubmit }: QuizFormLogicProps) => {
     return () => subscription.unsubscribe();
   }, [form, currentStep]);
 
-  // Load saved progress on component mount
+  // Load saved progress on component mount (only in browser)
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     const saved = localStorage.getItem('quiz-progress');
     if (saved) {
       try {
@@ -89,7 +91,9 @@ export const useQuizFormLogic = ({ onSubmit }: QuizFormLogicProps) => {
   };
 
   const handleSubmit = (data: QuizFormData) => {
-    localStorage.removeItem('quiz-progress');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('quiz-progress');
+    }
     setHasUnsavedChanges(false);
     onSubmit(data);
   };
@@ -97,7 +101,9 @@ export const useQuizFormLogic = ({ onSubmit }: QuizFormLogicProps) => {
   const resetQuiz = () => {
     form.reset();
     setCurrentStep(0);
-    localStorage.removeItem('quiz-progress');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('quiz-progress');
+    }
     setHasUnsavedChanges(false);
   };
 

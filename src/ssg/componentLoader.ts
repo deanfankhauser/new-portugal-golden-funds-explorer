@@ -1,82 +1,73 @@
 
 import React from 'react';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
-// Mock TooltipProvider for SSR
-export const TooltipProvider = ({ children }: { children: React.ReactNode }) => {
-  return React.createElement(React.Fragment, null, children);
-};
+// Ensure React is available globally for SSR
+if (typeof global !== 'undefined' && !global.React) {
+  global.React = React;
+}
 
-// Component loader with error handling using dynamic imports
-export const loadComponent = async (path: string, componentName: string = 'default') => {
-  try {
-    const module = await import(path);
-    return module[componentName] || module.default;
-  } catch (error: any) {
-    console.warn(`Could not load component from ${path}:`, error.message);
-    return () => React.createElement('div', null, 'Loading...');
-  }
-};
+export { TooltipProvider };
 
-// Load all page components using dynamic imports
 export const loadComponents = async () => {
-  const components: any = {};
-  
   try {
+    // Use dynamic imports with error handling
     const [
       Index,
       FundDetails,
-      TagPage,
-      CategoryPage,
       TagsHub,
+      TagPage,
       CategoriesHub,
+      CategoryPage,
       ManagersHub,
+      FundManager,
       About,
       Disclaimer,
       Privacy,
       ComparisonPage,
-      FundManager,
-      FAQs,
       ComparisonsHub,
+      FAQs,
       ROICalculator,
-      FundQuiz,
+      FundQuiz
     ] = await Promise.all([
-      import('../pages/Index'),
-      import('../pages/FundDetails'),
-      import('../pages/TagPage'),
-      import('../pages/CategoryPage'),
-      import('../pages/TagsHub'),
-      import('../pages/CategoriesHub'),
-      import('../pages/ManagersHub'),
-      import('../pages/About'),
-      import('../pages/Disclaimer'),
-      import('../pages/Privacy'),
-      import('../pages/ComparisonPage'),
-      import('../pages/FundManager'),
-      import('../pages/FAQs'),
-      import('../pages/ComparisonsHub'),
-      import('../pages/ROICalculator'),
-      import('../pages/FundQuiz'),
+      import('../pages/Index').then(m => m.default).catch(() => null),
+      import('../pages/FundDetails').then(m => m.default).catch(() => null),
+      import('../pages/TagsHub').then(m => m.default).catch(() => null),
+      import('../pages/TagPage').then(m => m.default).catch(() => null),
+      import('../pages/CategoriesHub').then(m => m.default).catch(() => null),
+      import('../pages/CategoryPage').then(m => m.default).catch(() => null),
+      import('../pages/ManagersHub').then(m => m.default).catch(() => null),
+      import('../pages/FundManager').then(m => m.default).catch(() => null),
+      import('../pages/About').then(m => m.default).catch(() => null),
+      import('../pages/Disclaimer').then(m => m.default).catch(() => null),
+      import('../pages/Privacy').then(m => m.default).catch(() => null),
+      import('../pages/ComparisonPage').then(m => m.default).catch(() => null),
+      import('../pages/ComparisonsHub').then(m => m.default).catch(() => null),
+      import('../pages/FAQs').then(m => m.default).catch(() => null),
+      import('../pages/ROICalculator').then(m => m.default).catch(() => null),
+      import('../pages/FundQuiz').then(m => m.default).catch(() => null)
     ]);
 
-    components.Index = Index.default;
-    components.FundDetails = FundDetails.default;
-    components.TagPage = TagPage.default;
-    components.CategoryPage = CategoryPage.default;
-    components.TagsHub = TagsHub.default;
-    components.CategoriesHub = CategoriesHub.default;
-    components.ManagersHub = ManagersHub.default;
-    components.About = About.default;
-    components.Disclaimer = Disclaimer.default;
-    components.Privacy = Privacy.default;
-    components.ComparisonPage = ComparisonPage.default;
-    components.FundManager = FundManager.default;
-    components.FAQs = FAQs.default;
-    components.ComparisonsHub = ComparisonsHub.default;
-    components.ROICalculator = ROICalculator.default;
-    components.FundQuiz = FundQuiz.default;
+    return {
+      Index,
+      FundDetails,
+      TagsHub,
+      TagPage,
+      CategoriesHub,
+      CategoryPage,
+      ManagersHub,
+      FundManager,
+      About,
+      Disclaimer,
+      Privacy,
+      ComparisonPage,
+      ComparisonsHub,
+      FAQs,
+      ROICalculator,
+      FundQuiz
+    };
   } catch (error) {
     console.error('Error loading components:', error);
+    return {};
   }
-
-  return components;
 };
