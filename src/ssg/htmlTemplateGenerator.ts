@@ -2,7 +2,6 @@
 export class HTMLTemplateGenerator {
   static generateMetaTags(seoData: any): string {
     const metaTags = [
-      `<title>${seoData.title}</title>`,
       `<meta name="description" content="${seoData.description}" />`,
       `<link rel="canonical" href="${seoData.url}" />`,
       `<meta property="og:title" content="${seoData.title}" />`,
@@ -35,6 +34,9 @@ export class HTMLTemplateGenerator {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Dynamic title from SSR -->
+    <title>${seoData.title}</title>
     
     <!-- Dynamic SEO meta tags from server-side rendering -->
     ${metaTags}
