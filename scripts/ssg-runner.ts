@@ -39,18 +39,6 @@ function findBuiltAssets(distDir: string): { cssFiles: string[], jsFiles: string
   return { cssFiles, jsFiles };
 }
 
-function copySSGStyles(distDir: string) {
-  const sourceStylesPath = path.join(process.cwd(), 'src', 'ssg', 'ssg-styles.css');
-  const targetStylesPath = path.join(distDir, 'ssg-styles.css');
-  
-  if (fs.existsSync(sourceStylesPath)) {
-    fs.copyFileSync(sourceStylesPath, targetStylesPath);
-    console.log('✅ Copied SSG fallback styles to dist directory');
-  } else {
-    console.warn('⚠️  SSG styles file not found at:', sourceStylesPath);
-  }
-}
-
 export async function generateStaticFiles() {
   console.log('🎨 Generating static files with correct SEO...');
   
@@ -60,9 +48,6 @@ export async function generateStaticFiles() {
   if (!fs.existsSync(distDir)) {
     fs.mkdirSync(distDir, { recursive: true });
   }
-
-  // Copy SSG styles to dist directory
-  copySSGStyles(distDir);
 
   // Find built assets
   const { cssFiles, jsFiles } = findBuiltAssets(distDir);
