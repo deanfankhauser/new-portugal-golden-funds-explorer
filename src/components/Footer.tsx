@@ -1,11 +1,32 @@
 
 import React from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Facebook, Linkedin, ExternalLink } from "lucide-react";
 import RecentlyViewedFunds from "./RecentlyViewedFunds";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const navigate = useNavigate();
+
+  const handleInternalLinkClick = (to: string) => {
+    // Scroll to top before navigation
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Small delay to allow scroll animation to start, then navigate
+    setTimeout(() => {
+      navigate(to);
+    }, 100);
+  };
+
+  const handleExternalLinkClick = (url: string) => {
+    // Scroll to top before opening external link
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Small delay to allow scroll animation to start, then open link
+    setTimeout(() => {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }, 100);
+  };
 
   return (
     <footer className="bg-gray-100 py-10 mt-12 border-t border-gray-200">
@@ -15,13 +36,13 @@ const Footer = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
           <div className="col-span-1 md:col-span-1 lg:col-span-1">
-            <Link to="/" className="inline-block mb-4">
+            <button onClick={() => handleInternalLinkClick("/")} className="inline-block mb-4">
               <img 
                 src="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/65bf8dcb56803298881e81c7_movingto-logo-full.svg" 
                 alt="MovingTo Logo" 
                 className="h-8"
               />
-            </Link>
+            </button>
             <p className="text-sm text-gray-600 mb-4">
               Helping investors navigate the Portuguese Golden Visa investment funds
             </p>
@@ -32,24 +53,20 @@ const Footer = () => {
               <p className="text-sm text-gray-600">Singapore 068914</p>
             </div>
             <div className="flex items-center mt-4 space-x-3">
-              <a 
-                href="https://www.facebook.com/groups/zoark" 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <button 
+                onClick={() => handleExternalLinkClick("https://www.facebook.com/groups/zoark")}
                 className="text-gray-600 hover:text-primary transition-colors"
                 aria-label="Facebook"
               >
                 <Facebook size={20} />
-              </a>
-              <a 
-                href="https://www.linkedin.com/company/90556445" 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              </button>
+              <button 
+                onClick={() => handleExternalLinkClick("https://www.linkedin.com/company/90556445")}
                 className="text-gray-600 hover:text-primary transition-colors"
                 aria-label="LinkedIn"
               >
                 <Linkedin size={20} />
-              </a>
+              </button>
             </div>
           </div>
           
@@ -57,31 +74,31 @@ const Footer = () => {
             <h3 className="text-base font-semibold mb-4">Navigation</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-gray-600 hover:text-primary text-sm transition-colors">Home</Link>
+                <button onClick={() => handleInternalLinkClick("/")} className="text-gray-600 hover:text-primary text-sm transition-colors text-left">Home</button>
               </li>
               <li>
-                <Link to="/fund-quiz" className="text-gray-600 hover:text-primary text-sm transition-colors">Fund Quiz</Link>
+                <button onClick={() => handleInternalLinkClick("/fund-quiz")} className="text-gray-600 hover:text-primary text-sm transition-colors text-left">Fund Quiz</button>
               </li>
               <li>
-                <Link to="/about" className="text-gray-600 hover:text-primary text-sm transition-colors">About</Link>
+                <button onClick={() => handleInternalLinkClick("/about")} className="text-gray-600 hover:text-primary text-sm transition-colors text-left">About</button>
               </li>
               <li>
-                <Link to="/categories" className="text-gray-600 hover:text-primary text-sm transition-colors">Categories</Link>
+                <button onClick={() => handleInternalLinkClick("/categories")} className="text-gray-600 hover:text-primary text-sm transition-colors text-left">Categories</button>
               </li>
               <li>
-                <Link to="/tags" className="text-gray-600 hover:text-primary text-sm transition-colors">Tags</Link>
+                <button onClick={() => handleInternalLinkClick("/tags")} className="text-gray-600 hover:text-primary text-sm transition-colors text-left">Tags</button>
               </li>
               <li>
-                <Link to="/managers" className="text-gray-600 hover:text-primary text-sm transition-colors">Fund Managers</Link>
+                <button onClick={() => handleInternalLinkClick("/managers")} className="text-gray-600 hover:text-primary text-sm transition-colors text-left">Fund Managers</button>
               </li>
               <li>
-                <Link to="/comparisons" className="text-gray-600 hover:text-primary text-sm transition-colors">Fund Comparisons</Link>
+                <button onClick={() => handleInternalLinkClick("/comparisons")} className="text-gray-600 hover:text-primary text-sm transition-colors text-left">Fund Comparisons</button>
               </li>
               <li>
-                <Link to="/roi-calculator" className="text-gray-600 hover:text-primary text-sm transition-colors">ROI Calculator</Link>
+                <button onClick={() => handleInternalLinkClick("/roi-calculator")} className="text-gray-600 hover:text-primary text-sm transition-colors text-left">ROI Calculator</button>
               </li>
               <li>
-                <Link to="/faqs" className="text-gray-600 hover:text-primary text-sm transition-colors">FAQs</Link>
+                <button onClick={() => handleInternalLinkClick("/faqs")} className="text-gray-600 hover:text-primary text-sm transition-colors text-left">FAQs</button>
               </li>
             </ul>
           </div>
@@ -90,37 +107,31 @@ const Footer = () => {
             <h3 className="text-base font-semibold mb-4">Resources</h3>
             <ul className="space-y-2">
               <li>
-                <a 
-                  href="https://www.movingto.com/pt/portugal-golden-visa" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <button 
+                  onClick={() => handleExternalLinkClick("https://www.movingto.com/pt/portugal-golden-visa")}
                   className="text-gray-600 hover:text-primary text-sm transition-colors inline-flex items-center"
                 >
                   <span>Portugal Golden Visa</span>
                   <ExternalLink size={14} className="ml-1" />
-                </a>
+                </button>
               </li>
               <li>
-                <a 
-                  href="https://www.movingto.com/pt/best-portugal-golden-visa-law-firms" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <button 
+                  onClick={() => handleExternalLinkClick("https://www.movingto.com/pt/best-portugal-golden-visa-law-firms")}
                   className="text-gray-600 hover:text-primary text-sm transition-colors inline-flex items-center"
                 >
                   <span>Best Golden Visa Law Firms</span>
                   <ExternalLink size={14} className="ml-1" />
-                </a>
+                </button>
               </li>
               <li>
-                <a 
-                  href="https://www.movingto.com/statistics/portugal-golden-visa-statistics" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <button 
+                  onClick={() => handleExternalLinkClick("https://www.movingto.com/statistics/portugal-golden-visa-statistics")}
                   className="text-gray-600 hover:text-primary text-sm transition-colors inline-flex items-center"
                 >
                   <span>Golden Visa Statistics</span>
                   <ExternalLink size={14} className="ml-1" />
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -129,10 +140,10 @@ const Footer = () => {
             <h3 className="text-base font-semibold mb-4">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/disclaimer" className="text-gray-600 hover:text-primary text-sm transition-colors">Disclaimer</Link>
+                <button onClick={() => handleInternalLinkClick("/disclaimer")} className="text-gray-600 hover:text-primary text-sm transition-colors text-left">Disclaimer</button>
               </li>
               <li>
-                <Link to="/privacy" className="text-gray-600 hover:text-primary text-sm transition-colors">Privacy Policy</Link>
+                <button onClick={() => handleInternalLinkClick("/privacy")} className="text-gray-600 hover:text-primary text-sm transition-colors text-left">Privacy Policy</button>
               </li>
             </ul>
           </div>
