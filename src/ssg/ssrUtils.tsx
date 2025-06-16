@@ -184,12 +184,12 @@ export class SSRUtils {
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     
-    <!-- Default Open Graph tags -->
+    <!-- Open Graph tags (fallback values, will be overridden by dynamic ones above) -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Movingto" />
     <meta property="og:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
     
-    <!-- Default Twitter Card tags -->
+    <!-- Twitter Card tags (fallback values, will be overridden by dynamic ones above) -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@movingtoio" />
     <meta name="twitter:creator" content="@movingtoio" />
