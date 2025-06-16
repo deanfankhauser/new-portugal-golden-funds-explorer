@@ -1,0 +1,82 @@
+
+import React from 'react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+const FAQsContent = () => {
+  const faqs: FAQItem[] = [
+    {
+      question: "What is a Golden Visa investment fund?",
+      answer: "A Golden Visa investment fund is a regulated investment vehicle that allows foreign investors to obtain residency or citizenship in a country by making a qualifying investment. These funds typically invest in real estate, government bonds, or business ventures in the host country."
+    },
+    {
+      question: "What are the minimum investment amounts?",
+      answer: "Minimum investment amounts vary by country and fund type. Generally, they range from €250,000 to €2,000,000. Portugal funds typically require €500,000, while other jurisdictions may have different thresholds. Each fund has specific minimum investment requirements."
+    },
+    {
+      question: "How long does the Golden Visa process take?",
+      answer: "The processing time varies by country and fund. Typically, it takes 3-12 months from application submission to approval. This includes due diligence, document verification, and government processing. Some countries offer expedited processing for additional fees."
+    },
+    {
+      question: "What are the tax implications of Golden Visa investments?",
+      answer: "Tax implications depend on your country of residence, the fund's jurisdiction, and the type of investment. Generally, you may be subject to capital gains tax, income tax on distributions, and potentially wealth taxes. We recommend consulting with a tax advisor familiar with international tax law."
+    },
+    {
+      question: "Can family members be included in the Golden Visa application?",
+      answer: "Most Golden Visa programs allow inclusion of family members, typically including spouse, dependent children, and sometimes parents or grandparents. Each family member may require additional investment or fees. Check specific program requirements for eligibility criteria."
+    },
+    {
+      question: "What are the ongoing obligations after obtaining a Golden Visa?",
+      answer: "Ongoing obligations typically include maintaining the investment for a minimum period (usually 5 years), meeting minimum residency requirements, and complying with tax obligations. Some programs require periodic renewals and proof of continued investment."
+    },
+    {
+      question: "How do I compare different Golden Visa funds?",
+      answer: "When comparing funds, consider factors such as minimum investment amount, expected returns, risk level, management fees, fund track record, liquidity terms, and the specific Golden Visa program requirements. Our comparison tools help you evaluate these factors side by side."
+    },
+    {
+      question: "What happens if I want to exit my investment early?",
+      answer: "Early exit terms vary by fund. Some funds offer liquidity windows at specific intervals, while others may have lock-up periods. Early withdrawal may result in penalties or reduced returns. Review the fund's redemption terms carefully before investing."
+    }
+  ];
+
+  return (
+    <div className="bg-white p-8 rounded-lg shadow-sm">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-4 text-gray-900">
+          Frequently Asked Questions
+        </h1>
+        <p className="text-gray-600 text-lg">
+          Find answers to common questions about Golden Visa investment funds, eligibility requirements, and the application process.
+        </p>
+      </div>
+
+      <Accordion type="single" collapsible className="w-full space-y-4">
+        {faqs.map((faq, index) => (
+          <AccordionItem 
+            key={index} 
+            value={`item-${index}`}
+            className="border border-gray-200 rounded-lg"
+          >
+            <AccordionTrigger className="px-6 py-4 text-left hover:no-underline hover:bg-gray-50 rounded-t-lg">
+              <span className="font-semibold text-gray-900">{faq.question}</span>
+            </AccordionTrigger>
+            <AccordionContent className="px-6 pb-4 text-gray-700 leading-relaxed">
+              {faq.answer}
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </div>
+  );
+};
+
+export default FAQsContent;
