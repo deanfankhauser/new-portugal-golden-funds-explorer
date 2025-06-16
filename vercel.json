@@ -10,71 +10,7 @@
       "destination": "/sitemap.xml"
     },
     {
-      "source": "/funds/:id",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/categories/:category",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/tags/:tag",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/manager/:name",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/compare/:slug",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/comparisons",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/compare",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/about",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/disclaimer",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/privacy",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/faqs",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/roi-calculator",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/fund-quiz",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/managers",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/categories",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/tags",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/((?!api|_next|static|favicon.ico).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
