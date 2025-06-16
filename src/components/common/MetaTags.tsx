@@ -10,22 +10,23 @@ interface MetaTagsProps {
 const MetaTags: React.FC<MetaTagsProps> = ({ seoData }) => {
   const defaultImage = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
 
-  // Force document title update as a fallback
+  // Force document title update as a fallback with priority
   useEffect(() => {
-    // Small delay to ensure DOM is ready
-    const timer = setTimeout(() => {
-      if (document.title !== seoData.title) {
-        document.title = seoData.title;
-        console.log('MetaTags: Force updated document title to:', seoData.title);
-      }
-    }, 100);
+    // Immediate title update
+    document.title = seoData.title;
     
-    return () => clearTimeout(timer);
+    // Also update any existing title tags
+    const titleTags = document.querySelectorAll('title');
+    titleTags.forEach(tag => {
+      tag.textContent = seoData.title;
+    });
+    
+    console.log('MetaTags: Updated document title to:', seoData.title);
   }, [seoData.title]);
 
   return (
     <Helmet>
-      {/* Basic Meta Tags - Force override with key prop */}
+      {/* Basic Meta Tags - Force override with key prop and priority */}
       <title key="title">{seoData.title}</title>
       <meta key="description" name="description" content={seoData.description} />
       <meta name="author" content="Dean Fankhauser, CEO" />

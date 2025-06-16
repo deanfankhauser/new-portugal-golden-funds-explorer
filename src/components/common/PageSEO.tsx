@@ -17,8 +17,15 @@ const PageSEO: React.FC<PageSEOProps> = (props) => {
       fundName: props.fundName
     });
     
-    // Immediate title update
+    // Immediate and aggressive title update
     document.title = seoData.title;
+    
+    // Remove any conflicting title tags and set our own
+    const existingTitles = document.querySelectorAll('title');
+    existingTitles.forEach((title, index) => {
+      if (index > 0) title.remove(); // Remove duplicates, keep only first
+      else title.textContent = seoData.title; // Update the first one
+    });
     
     // Force a small delay to ensure DOM is ready and verify title update
     const timer = setTimeout(() => {
@@ -28,13 +35,20 @@ const PageSEO: React.FC<PageSEOProps> = (props) => {
       
       if (actualTitle !== seoData.title) {
         console.warn('SEO: Title mismatch detected! Forcing update...');
-        // Force update the title if there's a mismatch
         document.title = seoData.title;
+        
+        // Also check for any default title tags that might be interfering
+        const defaultTitles = document.querySelectorAll('title');
+        defaultTitles.forEach(title => {
+          if (title.textContent?.includes('Portugal Golden Visa Investment Funds | Movingto') && !title.textContent.includes(props.pageType)) {
+            title.textContent = seoData.title;
+          }
+        });
       }
-    }, 200);
+    }, 100);
     
     return () => clearTimeout(timer);
-  }, [props.pageType, props.fundName, seoData.title, seoData.description, seoData.url]);
+  }, [props.pageType, props.fundName, props.managerName, props.categoryName, props.tagName, seoData.title, seoData.description, seoData.url]);
 
   return <MetaTags seoData={seoData} />;
 };
