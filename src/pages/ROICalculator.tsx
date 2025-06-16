@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -18,6 +17,11 @@ const ROICalculator = () => {
   } | null>(null);
   const [showEmailGate, setShowEmailGate] = useState(false);
   const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
+
+  useEffect(() => {
+    // Scroll to top on page load
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleResultsCalculated = (calculatedResults: {
     totalValue: number;

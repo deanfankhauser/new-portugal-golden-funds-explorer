@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PremiumCTA from '../components/cta/PremiumCTA';
@@ -19,6 +18,11 @@ const IndexPage = () => {
     setSearchQuery,
     filteredFunds
   } = useFundFiltering();
+
+  useEffect(() => {
+    // Scroll to top on page load
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
