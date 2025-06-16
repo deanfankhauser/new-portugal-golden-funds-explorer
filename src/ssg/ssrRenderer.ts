@@ -81,7 +81,7 @@ export class SSRRenderer {
       // Get helmet data after rendering
       const helmet = Helmet.rewind();
 
-      // Merge helmet data with our SEO data, prioritizing our SEO data
+      // Use our SEO data as the primary source of truth
       const finalSeoData = {
         ...seoData,
         title: seoData.title, // Always use our SEO service title
@@ -96,7 +96,8 @@ export class SSRRenderer {
 
       console.log(`SSR: Final SEO data for ${route.path}:`, {
         title: finalSeoData.title,
-        description: finalSeoData.description
+        description: finalSeoData.description,
+        url: finalSeoData.url
       });
 
       return { html, seoData: finalSeoData };
