@@ -8,6 +8,12 @@ export class HTMLTemplateGenerator {
       `<meta property="og:title" content="${seoData.title}" />`,
       `<meta property="og:description" content="${seoData.description}" />`,
       `<meta property="og:url" content="${seoData.url}" />`,
+      `<meta property="og:type" content="website" />`,
+      `<meta property="og:site_name" content="Movingto" />`,
+      `<meta property="og:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />`,
+      `<meta name="twitter:card" content="summary_large_image" />`,
+      `<meta name="twitter:site" content="@movingtoio" />`,
+      `<meta name="twitter:creator" content="@movingtoio" />`,
       `<meta name="twitter:title" content="${seoData.title}" />`,
       `<meta name="twitter:description" content="${seoData.description}" />`,
     ];
@@ -61,14 +67,6 @@ export class HTMLTemplateGenerator {
     <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
-    
-    <!-- Static Open Graph and Twitter metadata -->
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Movingto" />
-    <meta property="og:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@movingtoio" />
-    <meta name="twitter:creator" content="@movingtoio" />
     
     <!-- Favicon and app icons -->
     <link rel="icon" href="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/66fbc14f0b738f09e77cadb8_fav.png" type="image/png">
