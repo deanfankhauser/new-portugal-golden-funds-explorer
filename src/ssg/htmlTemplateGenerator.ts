@@ -50,12 +50,8 @@ export class HTMLTemplateGenerator {
     <!-- Load fonts immediately -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
     
-    <!-- Inline critical CSS to avoid MIME type issues -->
+    <!-- Critical CSS inline styles -->
     <style>
-      @tailwind base;
-      @tailwind components;
-      @tailwind utilities;
-
       :root {
         --background: 0 0% 100%;
         --foreground: 0 0% 0%;
@@ -81,25 +77,29 @@ export class HTMLTemplateGenerator {
 
       * {
         border-color: hsl(var(--border));
+        box-sizing: border-box;
       }
 
       html, body, #root {
-        width: 100vw;
-        height: 100vh;
+        width: 100%;
+        height: 100%;
         margin: 0;
         padding: 0;
         overflow-x: hidden;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
       }
 
       body {
         background-color: hsl(var(--background));
         color: hsl(var(--foreground));
+        line-height: 1.5;
       }
 
       h1 {
         font-size: 1.875rem;
         font-weight: 700;
         margin-bottom: 1rem;
+        line-height: 1.2;
       }
 
       @media (min-width: 768px) {
@@ -112,12 +112,14 @@ export class HTMLTemplateGenerator {
         font-size: 1.5rem;
         font-weight: 600;
         margin-bottom: 0.75rem;
+        line-height: 1.3;
       }
 
       h3 {
         font-size: 1.25rem;
         font-weight: 500;
         margin-bottom: 0.5rem;
+        line-height: 1.4;
       }
 
       .tag {
@@ -130,11 +132,85 @@ export class HTMLTemplateGenerator {
         margin-bottom: 0.5rem;
         transition: all 0.2s;
         cursor: pointer;
+        border: 1px solid transparent;
       }
 
       .tag:hover {
         background-color: hsl(var(--primary));
         color: white;
+      }
+
+      /* Basic component styles */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: 0.375rem;
+        transition: all 0.2s;
+        cursor: pointer;
+        border: 1px solid transparent;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background-color: hsl(var(--primary));
+        color: hsl(var(--primary-foreground));
+      }
+
+      .btn-primary:hover {
+        opacity: 0.9;
+      }
+
+      .btn-secondary {
+        background-color: hsl(var(--secondary));
+        color: hsl(var(--secondary-foreground));
+      }
+
+      .btn-secondary:hover {
+        background-color: hsl(var(--muted));
+      }
+
+      .card {
+        background-color: hsl(var(--card));
+        color: hsl(var(--card-foreground));
+        border: 1px solid hsl(var(--border));
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+      }
+
+      .container {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      @media (min-width: 640px) {
+        .container {
+          max-width: 640px;
+        }
+      }
+
+      @media (min-width: 768px) {
+        .container {
+          max-width: 768px;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .container {
+          max-width: 1024px;
+        }
+      }
+
+      @media (min-width: 1280px) {
+        .container {
+          max-width: 1280px;
+        }
       }
     </style>
     
