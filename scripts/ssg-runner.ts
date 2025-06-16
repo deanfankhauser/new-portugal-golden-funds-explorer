@@ -4,6 +4,41 @@ import path from 'path';
 import { getAllStaticRoutes } from '../src/ssg/routeDiscovery';
 import { renderRoute, generateHTMLTemplate } from '../src/ssg/ssrUtils';
 
+function findBuiltAssets(distDir: string): { cssFiles: string[], jsFiles: string[] } {
+  const cssFiles: string[] = [];
+  const jsFiles: string[] = [];
+  
+  // Look for assets in the dist directory
+  const assetsDir = path.join(distDir, 'assets');
+  
+  if (fs.existsSync(assetsDir)) {
+    const files = fs.readdirSync(assetsDir);
+    
+    files.forEach(file => {
+      if (file.endsWith('.css')) {
+        cssFiles.push(`/assets/${file}`);
+      } else if (file.endsWith('.js')) {
+        jsFiles.push(`/assets/${file}`);
+      }
+    });
+  }
+  
+  // Also check for index files in root dist
+  const distFiles = fs.readdirSync(distDir);
+  distFiles.forEach(file => {
+    if (file.endsWith('.css') && file.startsWith('index')) {
+      cssFiles.push(`/${file}`);
+    } else if (file.endsWith('.js') && file.startsWith('index')) {
+      jsFiles.push(`/${file}`);
+    }
+  });
+  
+  console.log('Found CSS files:', cssFiles);
+  console.log('Found JS files:', jsFiles);
+  
+  return { cssFiles, jsFiles };
+}
+
 export async function generateStaticFiles() {
   console.log('🎨 Generating static files with correct SEO...');
   
@@ -13,6 +48,9 @@ export async function generateStaticFiles() {
   if (!fs.existsSync(distDir)) {
     fs.mkdirSync(distDir, { recursive: true });
   }
+
+  // Find built assets
+  const { cssFiles, jsFiles } = findBuiltAssets(distDir);
 
   const routes = getAllStaticRoutes();
   console.log(`📄 Found ${routes.length} routes to generate`);
@@ -25,8 +63,8 @@ export async function generateStaticFiles() {
       // Render the route with SSR to get proper SEO data (now async)
       const { html, seoData } = await renderRoute(route);
       
-      // Generate the complete HTML template with dynamic SEO
-      const fullHTML = generateHTMLTemplate(html, seoData);
+      // Generate the complete HTML template with dynamic SEO and built assets
+      const fullHTML = generateHTMLTemplate(html, seoData, cssFiles, jsFiles);
       
       // Determine the output path
       let outputPath: string;

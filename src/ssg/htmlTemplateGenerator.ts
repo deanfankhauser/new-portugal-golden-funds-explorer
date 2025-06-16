@@ -28,8 +28,14 @@ export class HTMLTemplateGenerator {
     return metaTags.join('\n    ');
   }
 
-  static generateHTMLTemplate(content: string, seoData: any): string {
+  static generateHTMLTemplate(content: string, seoData: any, cssFiles: string[] = [], jsFiles: string[] = []): string {
     const metaTags = this.generateMetaTags(seoData);
+    
+    // Generate CSS link tags for the built assets
+    const cssLinks = cssFiles.map(file => `    <link rel="stylesheet" href="${file}" />`).join('\n');
+    
+    // Generate JS script tags for the built assets
+    const jsScripts = jsFiles.map(file => `    <script type="module" src="${file}"></script>`).join('\n');
     
     return `<!DOCTYPE html>
 <html lang="en">
@@ -44,7 +50,10 @@ export class HTMLTemplateGenerator {
     <!-- Load fonts immediately -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
     
-    <!-- Load SSG specific styles -->
+    <!-- Load built CSS assets -->
+${cssLinks}
+    
+    <!-- Load SSG fallback styles -->
     <link rel="stylesheet" href="/src/ssg/ssg-styles.css" />
     
     <!-- Google tag (gtag.js) -->
@@ -73,7 +82,7 @@ export class HTMLTemplateGenerator {
     <div id="root">${content}</div>
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
+${jsScripts}
   </body>
 </html>`;
   }

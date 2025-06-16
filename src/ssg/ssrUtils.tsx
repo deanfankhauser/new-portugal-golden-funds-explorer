@@ -12,11 +12,11 @@ export class SSRUtils {
     return HTMLTemplateGenerator.generateMetaTags(seoData);
   }
 
-  static generateHTMLTemplate(content: string, seoData: any): string {
-    return HTMLTemplateGenerator.generateHTMLTemplate(content, seoData);
+  static generateHTMLTemplate(content: string, seoData: any, cssFiles?: string[], jsFiles?: string[]): string {
+    return HTMLTemplateGenerator.generateHTMLTemplate(content, seoData, cssFiles, jsFiles);
   }
 }
 
 // Export functions for direct access
 export const renderRoute = (route: StaticRoute) => SSRUtils.renderRoute(route);
-export const generateHTMLTemplate = (content: string, seoData: any) => SSRUtils.generateHTMLTemplate(content, seoData);
+export const generateHTMLTemplate = (content: string, seoData: any, cssFiles?: string[], jsFiles?: string[]) => SSRUtils.generateHTMLTemplate(content, seoData, cssFiles, jsFiles);
