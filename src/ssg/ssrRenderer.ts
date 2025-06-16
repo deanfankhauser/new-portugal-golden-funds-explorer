@@ -7,10 +7,10 @@ import { Routes, Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { SEODataService } from '../services/seoDataService';
 import { StaticRoute } from './routeDiscovery';
-import { components, TooltipProvider } from './componentLoader';
+import { loadComponents, TooltipProvider } from './componentLoader';
 
 export class SSRRenderer {
-  static renderRoute(route: StaticRoute): { html: string; seoData: any } {
+  static async renderRoute(route: StaticRoute): Promise<{ html: string; seoData: any }> {
     console.log(`SSR: Starting render for route ${route.path}`);
     
     const queryClient = new QueryClient({
@@ -37,6 +37,9 @@ export class SSRRenderer {
       pageType: route.pageType
     });
 
+    // Load all components
+    const components = await loadComponents();
+
     const AppRouter = () => React.createElement(
       QueryClientProvider,
       { client: queryClient },
@@ -49,22 +52,22 @@ export class SSRRenderer {
           React.createElement(
             Routes,
             null,
-            React.createElement(Route, { path: '/', element: React.createElement(components.Index) }),
-            React.createElement(Route, { path: '/funds/:id', element: React.createElement(components.FundDetails) }),
-            React.createElement(Route, { path: '/tags', element: React.createElement(components.TagsHub) }),
-            React.createElement(Route, { path: '/tags/:tag', element: React.createElement(components.TagPage) }),
-            React.createElement(Route, { path: '/categories', element: React.createElement(components.CategoriesHub) }),
-            React.createElement(Route, { path: '/categories/:category', element: React.createElement(components.CategoryPage) }),
-            React.createElement(Route, { path: '/managers', element: React.createElement(components.ManagersHub) }),
-            React.createElement(Route, { path: '/manager/:name', element: React.createElement(components.FundManager) }),
-            React.createElement(Route, { path: '/about', element: React.createElement(components.About) }),
-            React.createElement(Route, { path: '/disclaimer', element: React.createElement(components.Disclaimer) }),
-            React.createElement(Route, { path: '/privacy', element: React.createElement(components.Privacy) }),
-            React.createElement(Route, { path: '/compare', element: React.createElement(components.ComparisonPage) }),
-            React.createElement(Route, { path: '/comparisons', element: React.createElement(components.ComparisonsHub) }),
-            React.createElement(Route, { path: '/faqs', element: React.createElement(components.FAQs) }),
-            React.createElement(Route, { path: '/roi-calculator', element: React.createElement(components.ROICalculator) }),
-            React.createElement(Route, { path: '/fund-quiz', element: React.createElement(components.FundQuiz) })
+            React.createElement(Route, { path: '/', element: React.createElement(components.Index || (() => React.createElement('div', null, 'Loading...'))) }),
+            React.createElement(Route, { path: '/funds/:id', element: React.createElement(components.FundDetails || (() => React.createElement('div', null, 'Loading...'))) }),
+            React.createElement(Route, { path: '/tags', element: React.createElement(components.TagsHub || (() => React.createElement('div', null, 'Loading...'))) }),
+            React.createElement(Route, { path: '/tags/:tag', element: React.createElement(components.TagPage || (() => React.createElement('div', null, 'Loading...'))) }),
+            React.createElement(Route, { path: '/categories', element: React.createElement(components.CategoriesHub || (() => React.createElement('div', null, 'Loading...'))) }),
+            React.createElement(Route, { path: '/categories/:category', element: React.createElement(components.CategoryPage || (() => React.createElement('div', null, 'Loading...'))) }),
+            React.createElement(Route, { path: '/managers', element: React.createElement(components.ManagersHub || (() => React.createElement('div', null, 'Loading...'))) }),
+            React.createElement(Route, { path: '/manager/:name', element: React.createElement(components.FundManager || (() => React.createElement('div', null, 'Loading...'))) }),
+            React.createElement(Route, { path: '/about', element: React.createElement(components.About || (() => React.createElement('div', null, 'Loading...'))) }),
+            React.createElement(Route, { path: '/disclaimer', element: React.createElement(components.Disclaimer || (() => React.createElement('div', null, 'Loading...'))) }),
+            React.createElement(Route, { path: '/privacy', element: React.createElement(components.Privacy || (() => React.createElement('div', null, 'Loading...'))) }),
+            React.createElement(Route, { path: '/compare', element: React.createElement(components.ComparisonPage || (() => React.createElement('div', null, 'Loading...'))) }),
+            React.createElement(Route, { path: '/comparisons', element: React.createElement(components.ComparisonsHub || (() => React.createElement('div', null, 'Loading...'))) }),
+            React.createElement(Route, { path: '/faqs', element: React.createElement(components.FAQs || (() => React.createElement('div', null, 'Loading...'))) }),
+            React.createElement(Route, { path: '/roi-calculator', element: React.createElement(components.ROICalculator || (() => React.createElement('div', null, 'Loading...'))) }),
+            React.createElement(Route, { path: '/fund-quiz', element: React.createElement(components.FundQuiz || (() => React.createElement('div', null, 'Loading...'))) })
           )
         )
       )

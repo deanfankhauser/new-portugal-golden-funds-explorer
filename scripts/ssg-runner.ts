@@ -4,7 +4,7 @@ import path from 'path';
 import { getAllStaticRoutes } from '../src/ssg/routeDiscovery';
 import { renderRoute, generateHTMLTemplate } from '../src/ssg/ssrUtils';
 
-export function generateStaticFiles() {
+export async function generateStaticFiles() {
   console.log('🎨 Generating static files with correct SEO...');
   
   const distDir = path.join(process.cwd(), 'dist');
@@ -18,12 +18,12 @@ export function generateStaticFiles() {
   console.log(`📄 Found ${routes.length} routes to generate`);
 
   // Generate static files for each route
-  routes.forEach(route => {
+  for (const route of routes) {
     try {
       console.log(`🔨 Generating: ${route.path}`);
       
-      // Render the route with SSR to get proper SEO data
-      const { html, seoData } = renderRoute(route);
+      // Render the route with SSR to get proper SEO data (now async)
+      const { html, seoData } = await renderRoute(route);
       
       // Generate the complete HTML template with dynamic SEO
       const fullHTML = generateHTMLTemplate(html, seoData);
@@ -56,7 +56,7 @@ export function generateStaticFiles() {
     } catch (error) {
       console.error(`❌ Error generating ${route.path}:`, error);
     }
-  });
+  }
 
   // Generate sitemap
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -75,7 +75,7 @@ ${routes.map(route => `  <url>
   console.log('🎉 Static file generation complete!');
 }
 
-// Run if called directly
-if (require.main === module) {
-  generateStaticFiles();
+// Check if this is the main module (ES module way)
+if (import.meta.url === `file://${process.argv[1]}`) {
+  generateStaticFiles().catch(console.error);
 }

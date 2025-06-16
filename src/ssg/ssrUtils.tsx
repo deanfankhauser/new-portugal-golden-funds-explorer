@@ -4,7 +4,7 @@ import { HTMLTemplateGenerator } from './htmlTemplateGenerator';
 import { StaticRoute } from './routeDiscovery';
 
 export class SSRUtils {
-  static renderRoute(route: StaticRoute): { html: string; seoData: any } {
+  static async renderRoute(route: StaticRoute): Promise<{ html: string; seoData: any }> {
     return SSRRenderer.renderRoute(route);
   }
 
