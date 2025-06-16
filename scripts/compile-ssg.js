@@ -14,17 +14,43 @@ export function compileSSGFiles() {
     
     // Verify that static files were generated with proper SEO
     const distDir = path.join(process.cwd(), 'dist');
-    const indexPath = path.join(distDir, 'index.html');
     
+    // Check homepage
+    const indexPath = path.join(distDir, 'index.html');
     if (fs.existsSync(indexPath)) {
       const content = fs.readFileSync(indexPath, 'utf8');
-      console.log('🔍 Verifying static file generation...');
+      console.log('🔍 Verifying homepage static file...');
       
-      // Check if the file contains dynamic titles instead of default
       if (content.includes('Portugal Golden Visa Investment Funds | Eligible Investments 2025')) {
-        console.log('✅ Homepage static file generated with correct SEO');
+        console.log('✅ Homepage has correct SEO title');
       } else {
         console.warn('⚠️  Homepage may still have default meta tags');
+      }
+    }
+    
+    // Check a sample fund page
+    const fundPath = path.join(distDir, 'funds', 'horizon-fund', 'index.html');
+    if (fs.existsSync(fundPath)) {
+      const content = fs.readFileSync(fundPath, 'utf8');
+      console.log('🔍 Verifying fund page static file...');
+      
+      if (content.includes('Horizon Fund | Investment Fund Details')) {
+        console.log('✅ Fund page has correct SEO title');
+      } else {
+        console.warn('⚠️  Fund page may still have default meta tags');
+      }
+    }
+    
+    // Check a sample category page
+    const categoryPath = path.join(distDir, 'categories', 'growth', 'index.html');
+    if (fs.existsSync(categoryPath)) {
+      const content = fs.readFileSync(categoryPath, 'utf8');
+      console.log('🔍 Verifying category page static file...');
+      
+      if (content.includes('Top Growth Golden Visa Funds')) {
+        console.log('✅ Category page has correct SEO title');
+      } else {
+        console.warn('⚠️  Category page may still have default meta tags');
       }
     }
     

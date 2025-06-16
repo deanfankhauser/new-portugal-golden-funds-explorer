@@ -22,10 +22,10 @@ export function generateStaticFiles() {
     try {
       console.log(`🔨 Generating: ${route.path}`);
       
-      // Render the route with SSR
+      // Render the route with SSR to get proper SEO data
       const { html, seoData } = renderRoute(route);
       
-      // Generate the complete HTML template
+      // Generate the complete HTML template with dynamic SEO
       const fullHTML = generateHTMLTemplate(html, seoData);
       
       // Determine the output path
@@ -40,10 +40,18 @@ export function generateStaticFiles() {
         outputPath = path.join(routeDir, 'index.html');
       }
       
-      // Write the file
+      // Write the static HTML file with proper SEO
       fs.writeFileSync(outputPath, fullHTML);
       console.log(`✅ Generated: ${outputPath}`);
       console.log(`   Title: ${seoData.title}`);
+      
+      // Verify the content was written correctly
+      const writtenContent = fs.readFileSync(outputPath, 'utf8');
+      if (writtenContent.includes(seoData.title)) {
+        console.log(`   ✓ SEO data properly embedded`);
+      } else {
+        console.warn(`   ⚠️  SEO data may not be embedded correctly`);
+      }
       
     } catch (error) {
       console.error(`❌ Error generating ${route.path}:`, error);
