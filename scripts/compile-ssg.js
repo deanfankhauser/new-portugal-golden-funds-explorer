@@ -11,6 +11,23 @@ export function compileSSGFiles() {
     // Use tsx to compile and run the SSG process
     execSync('npx tsx scripts/ssg-runner.ts', { stdio: 'inherit' });
     console.log('✅ SSG compilation successful');
+    
+    // Verify that static files were generated with proper SEO
+    const distDir = path.join(process.cwd(), 'dist');
+    const indexPath = path.join(distDir, 'index.html');
+    
+    if (fs.existsSync(indexPath)) {
+      const content = fs.readFileSync(indexPath, 'utf8');
+      console.log('🔍 Verifying static file generation...');
+      
+      // Check if the file contains dynamic titles instead of default
+      if (content.includes('Portugal Golden Visa Investment Funds | Eligible Investments 2025')) {
+        console.log('✅ Homepage static file generated with correct SEO');
+      } else {
+        console.warn('⚠️  Homepage may still have default meta tags');
+      }
+    }
+    
   } catch (error) {
     console.warn('⚠️  SSG compilation failed, falling back to basic build');
     console.warn(error.message);
