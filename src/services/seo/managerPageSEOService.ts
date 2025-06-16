@@ -4,10 +4,13 @@ import { BaseSEOService } from './baseSEOService';
 
 export class ManagerPageSEOService extends BaseSEOService {
   static getManagerPageSEO(managerName: string): SEOData {
+    // Clean the manager name for URL generation
+    const cleanSlug = this.slugify(managerName);
+    
     return {
       title: `${managerName} Golden Visa Investment Funds | Fund Manager Profile`,
       description: `Discover ${managerName}'s Golden Visa investment funds. Compare funds and investment strategies from this experienced fund manager.`,
-      url: `${this.baseUrl}/manager/${this.slugify(managerName)}`,
+      url: `${this.baseUrl}/manager/${cleanSlug}`,
       structuredData: {
         ...this.createBaseStructuredData(),
         '@type': 'Organization',

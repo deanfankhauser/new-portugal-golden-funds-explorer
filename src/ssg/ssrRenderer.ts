@@ -40,6 +40,9 @@ export class SSRRenderer {
     // Load all components
     const components = await loadComponents();
 
+    // Create a simple fallback component that ensures React is available
+    const FallbackComponent = () => React.createElement('div', null, 'Loading...');
+
     const AppRouter = () => React.createElement(
       QueryClientProvider,
       { client: queryClient },
@@ -52,22 +55,22 @@ export class SSRRenderer {
           React.createElement(
             Routes,
             null,
-            React.createElement(Route, { path: '/', element: React.createElement(components.Index || (() => React.createElement('div', null, 'Loading...'))) }),
-            React.createElement(Route, { path: '/funds/:id', element: React.createElement(components.FundDetails || (() => React.createElement('div', null, 'Loading...'))) }),
-            React.createElement(Route, { path: '/tags', element: React.createElement(components.TagsHub || (() => React.createElement('div', null, 'Loading...'))) }),
-            React.createElement(Route, { path: '/tags/:tag', element: React.createElement(components.TagPage || (() => React.createElement('div', null, 'Loading...'))) }),
-            React.createElement(Route, { path: '/categories', element: React.createElement(components.CategoriesHub || (() => React.createElement('div', null, 'Loading...'))) }),
-            React.createElement(Route, { path: '/categories/:category', element: React.createElement(components.CategoryPage || (() => React.createElement('div', null, 'Loading...'))) }),
-            React.createElement(Route, { path: '/managers', element: React.createElement(components.ManagersHub || (() => React.createElement('div', null, 'Loading...'))) }),
-            React.createElement(Route, { path: '/manager/:name', element: React.createElement(components.FundManager || (() => React.createElement('div', null, 'Loading...'))) }),
-            React.createElement(Route, { path: '/about', element: React.createElement(components.About || (() => React.createElement('div', null, 'Loading...'))) }),
-            React.createElement(Route, { path: '/disclaimer', element: React.createElement(components.Disclaimer || (() => React.createElement('div', null, 'Loading...'))) }),
-            React.createElement(Route, { path: '/privacy', element: React.createElement(components.Privacy || (() => React.createElement('div', null, 'Loading...'))) }),
-            React.createElement(Route, { path: '/compare', element: React.createElement(components.ComparisonPage || (() => React.createElement('div', null, 'Loading...'))) }),
-            React.createElement(Route, { path: '/comparisons', element: React.createElement(components.ComparisonsHub || (() => React.createElement('div', null, 'Loading...'))) }),
-            React.createElement(Route, { path: '/faqs', element: React.createElement(components.FAQs || (() => React.createElement('div', null, 'Loading...'))) }),
-            React.createElement(Route, { path: '/roi-calculator', element: React.createElement(components.ROICalculator || (() => React.createElement('div', null, 'Loading...'))) }),
-            React.createElement(Route, { path: '/fund-quiz', element: React.createElement(components.FundQuiz || (() => React.createElement('div', null, 'Loading...'))) })
+            React.createElement(Route, { path: '/', element: React.createElement(components.Index || FallbackComponent) }),
+            React.createElement(Route, { path: '/funds/:id', element: React.createElement(components.FundDetails || FallbackComponent) }),
+            React.createElement(Route, { path: '/tags', element: React.createElement(components.TagsHub || FallbackComponent) }),
+            React.createElement(Route, { path: '/tags/:tag', element: React.createElement(components.TagPage || FallbackComponent) }),
+            React.createElement(Route, { path: '/categories', element: React.createElement(components.CategoriesHub || FallbackComponent) }),
+            React.createElement(Route, { path: '/categories/:category', element: React.createElement(components.CategoryPage || FallbackComponent) }),
+            React.createElement(Route, { path: '/managers', element: React.createElement(components.ManagersHub || FallbackComponent) }),
+            React.createElement(Route, { path: '/manager/:name', element: React.createElement(components.FundManager || FallbackComponent) }),
+            React.createElement(Route, { path: '/about', element: React.createElement(components.About || FallbackComponent) }),
+            React.createElement(Route, { path: '/disclaimer', element: React.createElement(components.Disclaimer || FallbackComponent) }),
+            React.createElement(Route, { path: '/privacy', element: React.createElement(components.Privacy || FallbackComponent) }),
+            React.createElement(Route, { path: '/compare', element: React.createElement(components.ComparisonPage || FallbackComponent) }),
+            React.createElement(Route, { path: '/comparisons', element: React.createElement(components.ComparisonsHub || FallbackComponent) }),
+            React.createElement(Route, { path: '/faqs', element: React.createElement(components.FAQs || FallbackComponent) }),
+            React.createElement(Route, { path: '/roi-calculator', element: React.createElement(components.ROICalculator || FallbackComponent) }),
+            React.createElement(Route, { path: '/fund-quiz', element: React.createElement(components.FundQuiz || FallbackComponent) })
           )
         )
       )
