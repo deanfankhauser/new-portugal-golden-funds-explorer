@@ -16,7 +16,6 @@ interface HomepageContentProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   isAuthenticated: boolean;
-  onInternalLinkClick?: () => void;
 }
 
 const HomepageContent: React.FC<HomepageContentProps> = ({
@@ -25,16 +24,9 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
   setSelectedTags,
   searchQuery,
   setSearchQuery,
-  isAuthenticated,
-  onInternalLinkClick
+  isAuthenticated
 }) => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
-
-  const handleLinkClick = (e: React.MouseEvent) => {
-    if (onInternalLinkClick) {
-      onInternalLinkClick();
-    }
-  };
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -92,7 +84,7 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
                   </p>
                 </div>
               </div>
-              <Link to="/fund-quiz" className="block" onClick={handleLinkClick}>
+              <Link to="/fund-quiz" className="block">
                 <Button className="w-full bg-blue-600 hover:bg-blue-700 text-sm sm:text-base h-11 sm:h-12 font-medium">
                   <ClipboardCheck className="mr-2 h-4 w-4" />
                   Take Fund Quiz
@@ -124,7 +116,7 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
                 <p className="text-gray-500 mb-6 text-sm sm:text-base leading-relaxed">
                   Try adjusting your filters or search query to find funds that match your criteria
                 </p>
-                <Link to="/fund-quiz" onClick={handleLinkClick}>
+                <Link to="/fund-quiz">
                   <Button variant="outline" className="text-sm sm:text-base h-11 sm:h-12 px-6">
                     <ClipboardCheck className="mr-2 h-4 w-4" />
                     Take Quiz for Recommendations
@@ -176,7 +168,7 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
               </p>
             </div>
           </div>
-          <Link to="/fund-quiz" className="block" onClick={handleLinkClick}>
+          <Link to="/fund-quiz" className="block">
             <Button className="w-full bg-blue-600 hover:bg-blue-700 text-sm sm:text-base h-11 sm:h-12 font-medium">
               <ClipboardCheck className="mr-2 h-4 w-4" />
               Take Fund Quiz

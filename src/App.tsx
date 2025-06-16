@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from './contexts/AuthContext';
 import { ComparisonProvider } from './contexts/ComparisonContext';
 import { RecentlyViewedProvider } from './contexts/RecentlyViewedContext';
+import { useEffect } from 'react';
 
 // Import all pages
 import Index from './pages/Index';
@@ -38,6 +39,25 @@ const queryClient = new QueryClient({
   },
 });
 
+// Component to handle scroll to top on route change
+const ScrollToTop = () => {
+  const location = useLocation();
+  
+  useEffect(() => {
+    // Set scroll restoration to manual
+    if (history.scrollRestoration) {
+      history.scrollRestoration = 'manual';
+    }
+    
+    // Scroll to top immediately when route changes
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [location.pathname]);
+  
+  return null;
+};
+
 // Debug component to log current route
 const RouteDebugger = () => {
   const location = useLocation();
@@ -59,6 +79,7 @@ function App() {
           <RecentlyViewedProvider>
             <TooltipProvider>
               <Router>
+                <ScrollToTop />
                 <RouteDebugger />
                 <div className="min-h-screen w-full bg-gray-50">
                   <Routes>

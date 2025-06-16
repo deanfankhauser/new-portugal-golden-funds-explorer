@@ -20,30 +20,6 @@ const IndexPage = () => {
     filteredFunds
   } = useFundFiltering();
 
-  useEffect(() => {
-    // Scroll to top on page load
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }, []);
-
-  // Add scroll to top handler for all internal links
-  const handleInternalLinkClick = () => {
-    // Set scroll restoration to manual and scroll immediately
-    if (history.scrollRestoration) {
-      history.scrollRestoration = 'manual';
-    }
-    // Use multiple methods to ensure scroll happens
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    
-    // Also set a timeout as backup
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }, 100);
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       <PageSEO pageType="homepage" />
@@ -78,10 +54,9 @@ const IndexPage = () => {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           isAuthenticated={isAuthenticated}
-          onInternalLinkClick={handleInternalLinkClick}
         />
 
-        <HomepageInfoSections onInternalLinkClick={handleInternalLinkClick} />
+        <HomepageInfoSections />
       </main>
       
       <Footer />

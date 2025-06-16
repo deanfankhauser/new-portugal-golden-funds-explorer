@@ -5,17 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Building2, Shield, TrendingUp, ClipboardCheck, Calculator, Users } from 'lucide-react';
 
-interface HomepageInfoSectionsProps {
-  onInternalLinkClick?: () => void;
-}
-
-const HomepageInfoSections: React.FC<HomepageInfoSectionsProps> = ({ onInternalLinkClick }) => {
-  const handleLinkClick = (e: React.MouseEvent) => {
-    if (onInternalLinkClick) {
-      onInternalLinkClick();
-    }
-  };
-
+const HomepageInfoSections: React.FC = () => {
   return (
     <div className="mt-16 space-y-12">
       {/* Quick Actions Section */}
@@ -35,7 +25,7 @@ const HomepageInfoSections: React.FC<HomepageInfoSectionsProps> = ({ onInternalL
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
-              <Link to="/fund-quiz" onClick={handleLinkClick}>
+              <Link to="/fund-quiz">
                 <Button className="w-full bg-blue-600 hover:bg-blue-700">
                   Start Quiz
                 </Button>
@@ -52,7 +42,7 @@ const HomepageInfoSections: React.FC<HomepageInfoSectionsProps> = ({ onInternalL
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
-              <Link to="/roi-calculator" onClick={handleLinkClick}>
+              <Link to="/roi-calculator">
                 <Button className="w-full bg-green-600 hover:bg-green-700">
                   Calculate ROI
                 </Button>
@@ -69,7 +59,7 @@ const HomepageInfoSections: React.FC<HomepageInfoSectionsProps> = ({ onInternalL
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
-              <Link to="/managers" onClick={handleLinkClick}>
+              <Link to="/managers">
                 <Button className="w-full bg-purple-600 hover:bg-purple-700">
                   View Managers
                 </Button>
