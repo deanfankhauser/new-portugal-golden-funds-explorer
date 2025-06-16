@@ -54,7 +54,7 @@ export class HTMLTemplateGenerator {
 ${cssLinks}
     
     <!-- Load SSG fallback styles -->
-    <link rel="stylesheet" href="/src/ssg/ssg-styles.css" />
+    <link rel="stylesheet" href="/ssg-styles.css" />
     
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3ML90T25MY"></script>
