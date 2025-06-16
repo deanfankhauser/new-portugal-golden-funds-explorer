@@ -152,7 +152,7 @@ export class SSRUtils {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- SEO meta tags (server-side rendered with dynamic titles) -->
+    <!-- Dynamic SEO meta tags -->
     ${metaTags}
     
     <!-- Preconnect to external domains for performance -->
