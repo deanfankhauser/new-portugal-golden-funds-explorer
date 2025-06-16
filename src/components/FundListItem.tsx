@@ -39,6 +39,12 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
     }
   };
 
+  const handleLinkClick = () => {
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+  };
+
   // Get the main geographic allocation (first one)
   const mainGeoAllocation = fund.geographicAllocation && fund.geographicAllocation.length > 0 
     ? fund.geographicAllocation[0] 
@@ -52,7 +58,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             <div className="flex-1">
               <div className="flex items-start justify-between mb-2">
                 <h3 className="text-xl font-semibold">
-                  <Link to={`/funds/${fund.id}`} className="hover:text-[#EF4444] transition-colors">
+                  <Link to={`/funds/${fund.id}`} className="hover:text-[#EF4444] transition-colors" onClick={handleLinkClick}>
                     {fund.name}
                   </Link>
                 </h3>
@@ -66,7 +72,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                   <div>
                     <p className="text-sm text-muted-foreground">Category</p>
                     <p className="font-medium">
-                      <Link to={`/categories/${categoryToSlug(fund.category)}`} className="hover:text-[#EF4444] transition-colors">
+                      <Link to={`/categories/${categoryToSlug(fund.category)}`} className="hover:text-[#EF4444] transition-colors" onClick={handleLinkClick}>
                         {fund.category}
                       </Link>
                     </p>
@@ -98,6 +104,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                     <Link 
                       to={`/manager/${managerToSlug(fund.managerName)}`} 
                       className="font-medium hover:text-[#EF4444] transition-colors"
+                      onClick={handleLinkClick}
                     >
                       {fund.managerName}
                     </Link>

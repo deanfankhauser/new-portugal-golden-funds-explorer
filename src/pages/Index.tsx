@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -23,6 +24,13 @@ const IndexPage = () => {
     // Scroll to top on page load
     window.scrollTo(0, 0);
   }, []);
+
+  // Add scroll to top handler for internal links
+  const handleInternalLinkClick = () => {
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
@@ -58,6 +66,7 @@ const IndexPage = () => {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           isAuthenticated={isAuthenticated}
+          onInternalLinkClick={handleInternalLinkClick}
         />
 
         <HomepageInfoSections />
