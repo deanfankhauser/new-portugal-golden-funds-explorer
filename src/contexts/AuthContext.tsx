@@ -13,14 +13,20 @@ const CORRECT_PASSWORD = "MovingtoGlobal2025";
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    // Check if user was previously authenticated (stored in localStorage)
-    return localStorage.getItem('movingto_authenticated') === 'true';
+    // Check if we're in a browser environment before accessing localStorage
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('movingto_authenticated') === 'true';
+    }
+    return false;
   });
 
   const authenticate = (password: string): boolean => {
     if (password === CORRECT_PASSWORD) {
       setIsAuthenticated(true);
-      localStorage.setItem('movingto_authenticated', 'true');
+      // Only access localStorage in browser environment
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('movingto_authenticated', 'true');
+      }
       return true;
     }
     return false;
@@ -28,7 +34,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const logout = () => {
     setIsAuthenticated(false);
-    localStorage.removeItem('movingto_authenticated');
+    // Only access localStorage in browser environment
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('movingto_authenticated');
+    }
   };
 
   return (
