@@ -1,16 +1,10 @@
-
 import React, { useEffect } from 'react';
-import Footer from '../components/Footer';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
-import { getAllFundManagers } from '../data/services/managers-service';
-import ManagersHubBreadcrumbs from '../components/managers-hub/ManagersHubBreadcrumbs';
-import ManagersHubHeader from '../components/managers-hub/ManagersHubHeader';
-import ManagersList from '../components/managers-hub/ManagersList';
+import FundManagerList from '../components/fund-manager/FundManagerList';
 
 const ManagersHub = () => {
-  const managers = getAllFundManagers();
-
   useEffect(() => {
     // Scroll to top on page load
     window.scrollTo(0, 0);
@@ -19,13 +13,20 @@ const ManagersHub = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <PageSEO pageType="managers-hub" />
-
+      
       <Header />
       
-      <main className="container mx-auto px-4 py-8 flex-1" itemScope itemType="https://schema.org/CollectionPage">
-        <ManagersHubBreadcrumbs />
-        <ManagersHubHeader />
-        <ManagersList managers={managers} />
+      <main className="container mx-auto px-4 py-8 flex-1">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-gray-800 mb-4">
+            Portugal Golden Visa Fund Managers
+          </h1>
+          <p className="text-lg text-gray-600">
+            Explore the fund managers offering Golden Visa investment opportunities.
+          </p>
+        </div>
+        
+        <FundManagerList />
       </main>
       
       <Footer />
