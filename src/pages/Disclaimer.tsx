@@ -1,103 +1,47 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { AlertTriangle } from 'lucide-react';
 import PageSEO from '../components/common/PageSEO';
 
-const DisclaimerPage = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
+const Disclaimer = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <PageSEO pageType="disclaimer" />
       
       <Header />
       
-      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
-        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-sm border p-4 sm:p-6">
-          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-            <AlertTriangle className="text-amber-600 h-6 w-6 sm:h-8 sm:w-8" />
-            <h1 className="text-2xl sm:text-3xl font-bold">Disclaimer</h1>
-          </div>
+      <main className="container mx-auto px-4 py-8 flex-1">
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h1 className="text-2xl font-semibold mb-4">Disclaimer</h1>
           
-          <div className="prose max-w-none space-y-4 sm:space-y-6 text-sm sm:text-base">
-            <div className="bg-amber-50 p-3 sm:p-4 rounded-lg border border-amber-200">
-              <p className="text-amber-800 font-medium">
-                The information contained on this website is for general information purposes only. While we strive
-                to keep the information up to date and correct, we make no representations or warranties of any kind,
-                express or implied, about the completeness, accuracy, reliability, suitability or availability of the
-                information contained on this website.
-              </p>
-            </div>
-            
-            <section className="border-b border-gray-200 pb-4 sm:pb-6">
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-3">Information Purpose</h2>
-              <p className="text-gray-600">
-                The information provided on MovingTo Portugal Golden Visa Funds is for general informational purposes only. 
-                All information on the site is provided in good faith, however, we make no representation or warranty 
-                of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, 
-                or completeness of any information on the site.
-              </p>
-            </section>
-            
-            <section className="border-b border-gray-200 pb-4 sm:pb-6 pt-4 sm:pt-6">
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-3">Not Financial Advice</h2>
-              <p className="text-gray-600">
-                The information contained on this website is not intended as, and shall not be understood or construed as, 
-                financial advice. We are not an attorney, accountant, or financial advisor, nor are we holding ourselves 
-                out to be. The information contained on this website is not a substitute for financial advice from a 
-                professional who is aware of the facts and circumstances of your individual situation.
-              </p>
-            </section>
-            
-            <section className="border-b border-gray-200 pb-4 sm:pb-6 pt-4 sm:pt-6">
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-3">Investment Risks</h2>
-              <p className="text-gray-600">
-                Investing in funds carries risks, including the loss of principal. Fund performance is not guaranteed, 
-                and past performance does not guarantee future results. Investment returns will fluctuate and are subject 
-                to market volatility, so that an investor's shares, when redeemed, or sold, may be worth more or less than 
-                their original cost.
-              </p>
-            </section>
-            
-            <section className="border-b border-gray-200 pb-4 sm:pb-6 pt-4 sm:pt-6">
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-3">Immigration and Visa Information</h2>
-              <p className="text-gray-600">
-                Information about the Portugal Golden Visa program is subject to change. Immigration laws, requirements, 
-                and procedures can change without notice. We do not guarantee that the information provided is current or 
-                accurate. For the most up-to-date information, please consult with a qualified immigration attorney or contact 
-                the Portuguese Immigration and Borders Service (SEF).
-              </p>
-            </section>
-            
-            <section className="border-b border-gray-200 pb-4 sm:pb-6 pt-4 sm:pt-6">
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-3">No Endorsement</h2>
-              <p className="text-gray-600">
-                The listing of any fund in our directory does not constitute an endorsement or recommendation by 
-                MovingTo. We do not personally evaluate the funds for their investment merit, 
-                suitability for any particular investor, or compliance with applicable laws and regulations.
-              </p>
-            </section>
-            
-            <section className="border-b border-gray-200 pb-4 sm:pb-6 pt-4 sm:pt-6">
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-3">External Links</h2>
-              <p className="text-gray-600">
-                Our website may contain links to external websites that are not provided or maintained by or in any way 
-                affiliated with us. Please note that we do not guarantee the accuracy, relevance, timeliness, or completeness 
-                of any information on these external websites.
-              </p>
-            </section>
-            
-            <section className="pt-4 sm:pt-6">
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-3">Contact Us</h2>
-              <p className="text-gray-600">
-                If you would like to contact us to understand more about this disclaimer or wish to contact us concerning 
-                any matter relating to it, please email us at info@movingto.com or visit our <a href="https://www.movingto.com/contact/contact-movingto" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">contact page</a>.
-              </p>
-            </section>
-          </div>
+          <p className="mb-4">
+            The information provided on this website is for general informational purposes only. 
+            While we strive to keep the information up to date and correct, we make no representations or warranties of any kind, 
+            express or implied, about the completeness, accuracy, reliability, suitability, or availability with respect to the website 
+            or the information, products, services, or related graphics contained on the website for any purpose. 
+            Any reliance you place on such information is therefore strictly at your own risk.
+          </p>
+
+          <p className="mb-4">
+            In no event will we be liable for any loss or damage including without limitation, indirect or consequential loss or damage, 
+            or any loss or damage whatsoever arising from loss of data or profits arising out of, or in connection with, the use of this website.
+          </p>
+
+          <p className="mb-4">
+            Through this website, you may be able to link to other websites which are not under our control. 
+            We have no control over the nature, content, and availability of those sites. 
+            The inclusion of any links does not necessarily imply a recommendation or endorse the views expressed within them.
+          </p>
+
+          <p className="mb-4">
+            Every effort is made to keep the website up and running smoothly. 
+            However, we take no responsibility for, and will not be liable for, the website being temporarily unavailable due to technical issues beyond our control.
+          </p>
+
+          <p className="mb-4">
+            Investment decisions should be based on your own due diligence and consultation with a qualified financial advisor. 
+            We do not provide financial advice and are not responsible for any investment decisions made based on the information on this website.
+          </p>
         </div>
       </main>
       
@@ -106,4 +50,4 @@ const DisclaimerPage = () => {
   );
 };
 
-export default DisclaimerPage;
+export default Disclaimer;

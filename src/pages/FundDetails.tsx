@@ -1,51 +1,47 @@
 
 import React, { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { getFundById } from '../data/funds';
+import { useParams } from 'react-router-dom';
+import { findFundById } from '../data/funds';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
-import { analytics } from '../utils/analytics';
 import PageSEO from '../components/common/PageSEO';
-
-// Import our components
-import BackToFundsButton from '../components/fund-details/BackToFundsButton';
 import FundDetailsContent from '../components/fund-details/FundDetailsContent';
+import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 
 const FundDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const fund = id ? getFundById(id) : undefined;
-  const { addToRecentlyViewed } = useRecentlyViewed();
+  const fund = id ? findFundById(id) : null;
+  const { addFund } = useRecentlyViewed();
 
-  // Add fund to recently viewed and track analytics when component mounts
   useEffect(() => {
     if (fund) {
-      addToRecentlyViewed(fund);
-      // Track fund view
-      analytics.trackFundView(fund.id, fund.name, fund.category);
+      addFund(fund);
     }
-  }, [fund, addToRecentlyViewed]);
+    window.scrollTo(0, 0);
+  }, [fund, addFund]);
 
-  // If fund not found, redirect to homepage
   if (!fund) {
-    navigate('/');
-    return null;
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Fund Not Found</h1>
+            <p className="text-gray-600">The fund you're looking for doesn't exist.</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
-      <Header />
-      
-      {/* SEO Component */}
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <PageSEO pageType="fund" fundName={fund.name} />
       
-      <main className="flex-1 py-6 md:py-10">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <BackToFundsButton />
-          <FundDetailsContent fund={fund} />
-        </div>
-      </main>
+      <Header />
+      
+      <FundDetailsContent fund={fund} />
       
       <Footer />
     </div>
