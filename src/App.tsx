@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from './contexts/AuthContext';
 import { ComparisonProvider } from './contexts/ComparisonContext';
 import { RecentlyViewedProvider } from './contexts/RecentlyViewedContext';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 
 // Import all pages
 import Index from './pages/Index';
@@ -43,17 +43,21 @@ const queryClient = new QueryClient({
 const ScrollToTop = () => {
   const location = useLocation();
   
-  useEffect(() => {
-    // Set scroll restoration to manual
-    if (history.scrollRestoration) {
-      history.scrollRestoration = 'manual';
-    }
-    
-    // Scroll to top immediately when route changes
-    window.scrollTo(0, 0);
+  useLayoutEffect(() => {
+    // Force scroll to top immediately and synchronously
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
-  }, [location.pathname]);
+    window.scrollTo(0, 0);
+    
+    // Also try with a tiny delay to ensure it works
+    const timeoutId = setTimeout(() => {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      window.scrollTo(0, 0);
+    }, 0);
+    
+    return () => clearTimeout(timeoutId);
+  }, [location.pathname, location.search]);
   
   return null;
 };
