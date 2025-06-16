@@ -60,7 +60,7 @@ function App() {
             <TooltipProvider>
               <Router>
                 <RouteDebugger />
-                <div className="min-h-screen bg-gray-50">
+                <div className="min-h-screen w-full bg-gray-50">
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/funds/:id" element={<FundDetails />} />

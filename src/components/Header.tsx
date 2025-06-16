@@ -15,9 +15,9 @@ import { ArrowLeft, Mail, Calculator, ClipboardCheck, Users, ExternalLink } from
 
 const Header = () => {
   return (
-    <header className="bg-[#1A1F2C] text-white py-3 shadow-lg sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center">
+    <header className="bg-[#1A1F2C] text-white py-3 shadow-lg sticky top-0 z-50 w-full">
+      <div className="container mx-auto px-4 w-full">
+        <div className="flex justify-between items-center w-full">
           {/* Left section - Logo and back button */}
           <div className="flex items-center gap-3">
             <Button
@@ -48,22 +48,22 @@ const Header = () => {
                     Tools
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="w-64 p-4">
+                    <div className="w-64 p-4 bg-white">
                       <div className="space-y-2">
                         <NavigationMenuLink asChild>
                           <Link to="/fund-quiz" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
-                            <ClipboardCheck className="h-5 w-5 text-[#EF4444]" />
+                            <ClipboardCheck className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
                             <div>
-                              <div className="font-medium">Fund Quiz</div>
+                              <div className="font-medium text-gray-900">Fund Quiz</div>
                               <div className="text-sm text-gray-500">Find your ideal fund</div>
                             </div>
                           </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
                           <Link to="/roi-calculator" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
-                            <Calculator className="h-5 w-5 text-[#EF4444]" />
+                            <Calculator className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
                             <div>
-                              <div className="font-medium">ROI Calculator</div>
+                              <div className="font-medium text-gray-900">ROI Calculator</div>
                               <div className="text-sm text-gray-500">Calculate returns</div>
                             </div>
                           </Link>
@@ -79,31 +79,31 @@ const Header = () => {
                     Browse
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="w-64 p-4">
+                    <div className="w-64 p-4 bg-white">
                       <div className="space-y-2">
                         <NavigationMenuLink asChild>
                           <Link to="/managers" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
-                            <Users className="h-5 w-5 text-[#EF4444]" />
+                            <Users className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
                             <div>
-                              <div className="font-medium">Fund Managers</div>
+                              <div className="font-medium text-gray-900">Fund Managers</div>
                               <div className="text-sm text-gray-500">Explore managers</div>
                             </div>
                           </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
                           <Link to="/categories" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
-                            <ExternalLink className="h-5 w-5 text-[#EF4444]" />
+                            <ExternalLink className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
                             <div>
-                              <div className="font-medium">Categories</div>
+                              <div className="font-medium text-gray-900">Categories</div>
                               <div className="text-sm text-gray-500">Browse by category</div>
                             </div>
                           </Link>
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
                           <Link to="/tags" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
-                            <ExternalLink className="h-5 w-5 text-[#EF4444]" />
+                            <ExternalLink className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
                             <div>
-                              <div className="font-medium">Tags</div>
+                              <div className="font-medium text-gray-900">Tags</div>
                               <div className="text-sm text-gray-500">Browse by tags</div>
                             </div>
                           </Link>
