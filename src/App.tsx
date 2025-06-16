@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from './contexts/AuthContext';
 import { ComparisonProvider } from './contexts/ComparisonContext';
 import { RecentlyViewedProvider } from './contexts/RecentlyViewedContext';
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useEffect } from 'react';
 
 // Import all pages
 import Index from './pages/Index';
@@ -44,44 +44,45 @@ const ScrollToTop = () => {
   const location = useLocation();
   
   useLayoutEffect(() => {
-    // Set scroll restoration to manual to prevent browser's automatic scroll restoration
+    console.log('ScrollToTop triggered for:', location.pathname);
+    
+    // Disable browser scroll restoration
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
     }
     
-    // Force scroll to top using multiple methods for maximum compatibility
-    const scrollToTop = () => {
-      // Method 1: Direct DOM manipulation
+    // Force immediate scroll to top
+    const forceScrollToTop = () => {
+      // Get current scroll position for debugging
+      const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+      console.log('Current scroll position before reset:', currentScroll);
+      
+      // Multiple methods to ensure scroll works
+      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
       
-      // Method 2: Window scroll
-      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      
-      // Method 3: Alternative window scroll
-      window.scrollTo(0, 0);
-      
-      // Method 4: Scroll all scrollable elements to top
-      const scrollableElements = document.querySelectorAll('*');
-      scrollableElements.forEach(element => {
-        if (element.scrollTop > 0) {
-          element.scrollTop = 0;
-        }
-      });
+      // Check if scroll worked
+      setTimeout(() => {
+        const newScroll = window.pageYOffset || document.documentElement.scrollTop;
+        console.log('Scroll position after reset:', newScroll);
+      }, 10);
     };
     
     // Execute immediately
-    scrollToTop();
+    forceScrollToTop();
     
-    // Execute with multiple timeouts to ensure it works
-    const timeouts = [0, 10, 50, 100].map(delay => 
-      setTimeout(scrollToTop, delay)
-    );
+    // Also execute after a brief delay to handle any async loading
+    const timeoutId = setTimeout(forceScrollToTop, 0);
     
-    return () => {
-      timeouts.forEach(clearTimeout);
-    };
-  }, [location.pathname, location.search, location.hash]);
+    return () => clearTimeout(timeoutId);
+  }, [location.pathname]);
+  
+  // Also use useEffect as a backup
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
   
   return null;
 };
