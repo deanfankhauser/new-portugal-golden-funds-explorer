@@ -50,6 +50,94 @@ export class HTMLTemplateGenerator {
     <!-- Load fonts immediately -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
     
+    <!-- Inline critical CSS to avoid MIME type issues -->
+    <style>
+      @tailwind base;
+      @tailwind components;
+      @tailwind utilities;
+
+      :root {
+        --background: 0 0% 100%;
+        --foreground: 0 0% 0%;
+        --card: 0 0% 100%;
+        --card-foreground: 0 0% 0%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 0 0% 0%;
+        --primary: 0 85% 60%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 210 40% 96.1%;
+        --secondary-foreground: 0 0% 0%;
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+        --accent: 0 85% 60%;
+        --accent-foreground: 0 0% 100%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+        --ring: 0 85% 60%;
+        --radius: 0.5rem;
+      }
+
+      * {
+        border-color: hsl(var(--border));
+      }
+
+      html, body, #root {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      body {
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
+      }
+
+      h1 {
+        font-size: 1.875rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      @media (min-width: 768px) {
+        h1 {
+          font-size: 2.25rem;
+        }
+      }
+
+      h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+      }
+
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+      }
+
+      .tag {
+        display: inline-block;
+        background-color: hsl(var(--secondary));
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.375rem;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s;
+        cursor: pointer;
+      }
+
+      .tag:hover {
+        background-color: hsl(var(--primary));
+        color: white;
+      }
+    </style>
+    
     <!-- DNS prefetch for better performance -->
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <link rel="dns-prefetch" href="https://cdn.gpteng.co" />
