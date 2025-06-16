@@ -26,6 +26,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
   
   const handleCompareClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation to fund details
+    e.stopPropagation(); // Stop event bubbling
     
     if (!isAuthenticated) {
       setShowPasswordDialog(true);
