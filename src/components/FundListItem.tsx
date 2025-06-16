@@ -39,11 +39,22 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
     }
   };
 
-  const handleLinkClick = () => {
-    // Use a small delay to ensure navigation happens first
+  const handleLinkClick = (e: React.MouseEvent) => {
+    // Set scroll restoration to manual and scroll immediately
+    if (history.scrollRestoration) {
+      history.scrollRestoration = 'manual';
+    }
+    // Use multiple methods to ensure scroll happens
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    
+    // Also set a timeout as backup
     setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }, 50);
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 100);
   };
 
   // Get the main geographic allocation (first one)

@@ -10,7 +10,7 @@ interface HomepageInfoSectionsProps {
 }
 
 const HomepageInfoSections: React.FC<HomepageInfoSectionsProps> = ({ onInternalLinkClick }) => {
-  const handleLinkClick = () => {
+  const handleLinkClick = (e: React.MouseEvent) => {
     if (onInternalLinkClick) {
       onInternalLinkClick();
     }

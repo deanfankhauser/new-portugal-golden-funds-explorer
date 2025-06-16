@@ -27,10 +27,21 @@ const IndexPage = () => {
 
   // Add scroll to top handler for all internal links
   const handleInternalLinkClick = () => {
-    // Use a longer delay to ensure navigation happens first
+    // Set scroll restoration to manual and scroll immediately
+    if (history.scrollRestoration) {
+      history.scrollRestoration = 'manual';
+    }
+    // Use multiple methods to ensure scroll happens
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    
+    // Also set a timeout as backup
     setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }, 50);
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 100);
   };
 
   return (
