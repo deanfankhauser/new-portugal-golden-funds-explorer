@@ -41,12 +41,6 @@ export class HTMLTemplateGenerator {
     <title>${seoData.title}</title>
     ${metaTags}
     
-    <!-- Preconnect to external domains for performance -->
-    <link rel="preconnect" href="https://www.googletagmanager.com" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://cdn.prod.website-files.com" />
-    
     <!-- Load fonts immediately -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
     
@@ -123,48 +117,20 @@ export class HTMLTemplateGenerator {
         line-height: 1.4;
       }
 
-      /* Utility classes */
-      .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
-      .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
-      .text-5xl { font-size: 3rem; line-height: 1; }
-      .text-6xl { font-size: 3.75rem; line-height: 1; }
-      .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
-      .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
-      .text-2xl { font-size: 1.5rem; line-height: 2rem; }
-      .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
-
-      .font-bold { font-weight: 700; }
-      .font-semibold { font-weight: 600; }
-      .font-medium { font-weight: 500; }
-
-      .mb-3 { margin-bottom: 0.75rem; }
-      .mb-4 { margin-bottom: 1rem; }
-      .mb-6 { margin-bottom: 1.5rem; }
-      .mb-8 { margin-bottom: 2rem; }
-      .mb-10 { margin-bottom: 2.5rem; }
-
-      .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
-      .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
-      .px-4 { padding-left: 1rem; padding-right: 1rem; }
-      .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
-      .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-      .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
-      .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
-
-      .bg-slate-50 { background-color: rgb(248 250 252); }
-      .bg-secondary { background-color: hsl(var(--secondary)); }
-      .bg-primary { background-color: hsl(var(--primary)); }
-      .bg-white { background-color: white; }
-
-      .text-gray-800 { color: rgb(31 41 55); }
-      .text-gray-600 { color: rgb(75 85 99); }
-      .text-white { color: white; }
-
-      /* Layout */
+      /* Essential Tailwind Utility Classes */
       .min-h-screen { min-height: 100vh; }
+      .w-full { width: 100%; }
+      .h-full { height: 100%; }
       .flex { display: flex; }
       .flex-col { flex-direction: column; }
       .flex-1 { flex: 1 1 0%; }
+      .items-center { align-items: center; }
+      .justify-center { justify-content: center; }
+      .justify-between { justify-content: space-between; }
+      .space-y-4 > * + * { margin-top: 1rem; }
+      .space-y-6 > * + * { margin-top: 1.5rem; }
+      .space-y-8 > * + * { margin-top: 2rem; }
+      
       .container {
         width: 100%;
         margin-left: auto;
@@ -175,7 +141,111 @@ export class HTMLTemplateGenerator {
 
       .mx-auto { margin-left: auto; margin-right: auto; }
       .text-center { text-align: center; }
+      .text-left { text-align: left; }
       .leading-tight { line-height: 1.25; }
+
+      /* Text sizes */
+      .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+      .text-base { font-size: 1rem; line-height: 1.5rem; }
+      .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+      .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+      .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+      .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+      .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+      .text-5xl { font-size: 3rem; line-height: 1; }
+      .text-6xl { font-size: 3.75rem; line-height: 1; }
+
+      /* Font weights */
+      .font-normal { font-weight: 400; }
+      .font-medium { font-weight: 500; }
+      .font-semibold { font-weight: 600; }
+      .font-bold { font-weight: 700; }
+
+      /* Margins */
+      .m-0 { margin: 0; }
+      .mb-2 { margin-bottom: 0.5rem; }
+      .mb-3 { margin-bottom: 0.75rem; }
+      .mb-4 { margin-bottom: 1rem; }
+      .mb-6 { margin-bottom: 1.5rem; }
+      .mb-8 { margin-bottom: 2rem; }
+      .mb-10 { margin-bottom: 2.5rem; }
+      .mt-4 { margin-top: 1rem; }
+      .mt-6 { margin-top: 1.5rem; }
+      .mt-8 { margin-top: 2rem; }
+      .mr-2 { margin-right: 0.5rem; }
+      .ml-2 { margin-left: 0.5rem; }
+
+      /* Padding */
+      .p-0 { padding: 0; }
+      .p-2 { padding: 0.5rem; }
+      .p-4 { padding: 1rem; }
+      .p-6 { padding: 1.5rem; }
+      .p-8 { padding: 2rem; }
+      .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+      .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+      .px-4 { padding-left: 1rem; padding-right: 1rem; }
+      .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+      .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+      .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+      .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+      .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+
+      /* Colors */
+      .bg-white { background-color: white; }
+      .bg-gray-50 { background-color: rgb(249 250 251); }
+      .bg-gray-100 { background-color: rgb(243 244 246); }
+      .bg-slate-50 { background-color: rgb(248 250 252); }
+      .bg-secondary { background-color: hsl(var(--secondary)); }
+      .bg-primary { background-color: hsl(var(--primary)); }
+      .text-gray-600 { color: rgb(75 85 99); }
+      .text-gray-700 { color: rgb(55 65 81); }
+      .text-gray-800 { color: rgb(31 41 55); }
+      .text-gray-900 { color: rgb(17 24 39); }
+      .text-white { color: white; }
+      .text-primary { color: hsl(var(--primary)); }
+
+      /* Borders */
+      .border { border-width: 1px; }
+      .border-gray-200 { border-color: rgb(229 231 235); }
+      .rounded { border-radius: 0.25rem; }
+      .rounded-md { border-radius: 0.375rem; }
+      .rounded-lg { border-radius: 0.5rem; }
+
+      /* Shadows */
+      .shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); }
+      .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+      .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+
+      /* Misc */
+      .cursor-pointer { cursor: pointer; }
+      .inline-block { display: inline-block; }
+      .block { display: block; }
+      .hidden { display: none; }
+      .transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+      .hover\\:bg-primary:hover { background-color: hsl(var(--primary)); }
+      .hover\\:text-white:hover { color: white; }
+      .hover\\:bg-gray-100:hover { background-color: rgb(243 244 246); }
+
+      /* Grid and layout */
+      .grid { display: grid; }
+      .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+      .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .gap-4 { gap: 1rem; }
+      .gap-6 { gap: 1.5rem; }
+      .gap-8 { gap: 2rem; }
+
+      /* Max widths */
+      .max-w-md { max-width: 28rem; }
+      .max-w-lg { max-width: 32rem; }
+      .max-w-xl { max-width: 36rem; }
+      .max-w-2xl { max-width: 42rem; }
+      .max-w-3xl { max-width: 48rem; }
+      .max-w-4xl { max-width: 56rem; }
+      .max-w-5xl { max-width: 64rem; }
+      .max-w-6xl { max-width: 72rem; }
+      .max-w-7xl { max-width: 80rem; }
 
       /* Responsive utilities */
       @media (min-width: 640px) {
@@ -189,6 +259,7 @@ export class HTMLTemplateGenerator {
         .sm\\:px-0 { padding-left: 0; padding-right: 0; }
         .sm\\:text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
         .sm\\:text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .sm\\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       }
 
       @media (min-width: 768px) {
@@ -197,15 +268,23 @@ export class HTMLTemplateGenerator {
         .md\\:mx-0 { margin-left: 0; margin-right: 0; }
         .md\\:text-5xl { font-size: 3rem; line-height: 1; }
         .md\\:justify-start { justify-content: flex-start; }
+        .md\\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .md\\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .md\\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .md\\:py-8 { padding-top: 2rem; padding-bottom: 2rem; }
       }
 
       @media (min-width: 1024px) {
         .container { max-width: 1024px; }
         .lg\\:text-6xl { font-size: 3.75rem; line-height: 1; }
+        .lg\\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .lg\\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .lg\\:px-8 { padding-left: 2rem; padding-right: 2rem; }
       }
 
       @media (min-width: 1280px) {
         .container { max-width: 1280px; }
+        .xl\\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
       }
 
       /* Components */
@@ -266,24 +345,7 @@ export class HTMLTemplateGenerator {
         border-radius: 0.5rem;
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
       }
-
-      .max-w-4xl { max-width: 56rem; }
-      .rounded-lg { border-radius: 0.5rem; }
-      .rounded-md { border-radius: 0.375rem; }
-      .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
-      .border { border-width: 1px; }
-      .transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
-      .hover\\:bg-primary:hover { background-color: hsl(var(--primary)); }
-      .hover\\:text-white:hover { color: white; }
-      .cursor-pointer { cursor: pointer; }
-      .inline-block { display: inline-block; }
-      .mr-2 { margin-right: 0.5rem; }
-      .mb-2 { margin-bottom: 0.5rem; }
     </style>
-    
-    <!-- DNS prefetch for better performance -->
-    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-    <link rel="dns-prefetch" href="https://cdn.gpteng.co" />
     
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3ML90T25MY"></script>
@@ -294,9 +356,8 @@ export class HTMLTemplateGenerator {
       gtag('config', 'G-3ML90T25MY');
     </script>
     
-    <!-- Security headers -->
+    <!-- Security headers that work in meta tags -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     
