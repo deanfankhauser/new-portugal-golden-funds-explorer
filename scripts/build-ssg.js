@@ -1,9 +1,8 @@
 import { execSync } from 'child_process';
-import { prerenderRoutes } from './prerender.js';
 import fs from 'fs';
 import path from 'path';
 
-export function buildSSG() {
+export async function buildSSG() {
   console.log('🚀 Building static site with SSG...');
   
   try {
@@ -19,13 +18,27 @@ export function buildSSG() {
     
     console.log('✅ Vite build completed successfully');
 
-    // Step 3: Run the pre-rendering with error handling
+    // Step 3: Try to run the pre-rendering with enhanced error handling
     console.log('\n🎨 Step 2/3: Generating static pages...');
     try {
-      prerenderRoutes();
+      // Dynamic import of the prerender module
+      const prerenderModule = await import('./prerender.js');
+      await prerenderModule.prerenderRoutes();
     } catch (prerenderError) {
       console.warn('⚠️  Pre-rendering encountered issues:', prerenderError.message);
       console.log('Continuing with basic build...');
+      
+      // Fallback: create basic sitemap
+      const basicSitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://movingto.com/funds</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>`;
+      fs.writeFileSync(path.join(distDir, 'sitemap.xml'), basicSitemap);
     }
     
     // Step 4: Create additional route files for better SEO (but keep SPA routing)
@@ -62,7 +75,7 @@ export function buildSSG() {
       console.warn('⚠️  Index file not found');
     }
     
-    // Generate basic sitemap if not exists
+    // Ensure sitemap exists
     const sitemapFile = path.join(distDir, 'sitemap.xml');
     if (!fs.existsSync(sitemapFile)) {
       console.log('📄 Generating basic sitemap...');

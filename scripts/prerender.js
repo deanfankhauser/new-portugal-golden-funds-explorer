@@ -1,9 +1,34 @@
+
 import fs from 'fs';
 import path from 'path';
-import { getAllStaticRoutes } from '../src/ssg/routeDiscovery.ts';
-import { renderRoute, generateHTMLTemplate } from '../src/ssg/ssrUtils.tsx';
+import { execSync } from 'child_process';
 
-export function prerenderRoutes() {
+// We'll use a different approach - compile the TypeScript files first or use require with ts-node
+async function importTSModule(modulePath) {
+  try {
+    // Try to use dynamic import with file:// protocol
+    const fullPath = path.resolve(process.cwd(), modulePath);
+    
+    // First, let's try to compile the TS file to JS temporarily
+    const tsFile = fullPath;
+    const jsFile = fullPath.replace('.ts', '.js').replace('.tsx', '.js');
+    
+    // Check if compiled JS exists, if not try to read the TS file content
+    if (fs.existsSync(jsFile)) {
+      const module = await import(jsFile);
+      return module;
+    }
+    
+    // Fallback: try to use the original approach but with better error handling
+    const module = await import(tsFile);
+    return module;
+  } catch (error) {
+    console.warn(`Could not import ${modulePath}:`, error.message);
+    return null;
+  }
+}
+
+export async function prerenderRoutes() {
   const distDir = path.join(process.cwd(), 'dist');
   
   // Ensure dist directory exists
@@ -14,11 +39,25 @@ export function prerenderRoutes() {
   console.log('Starting enhanced static site generation...');
 
   try {
+    // Try to import the route discovery module
+    const routeModule = await importTSModule('./src/ssg/routeDiscovery.ts');
+    const ssrModule = await importTSModule('./src/ssg/ssrUtils.tsx');
+    
+    if (!routeModule || !ssrModule) {
+      console.warn('Could not load SSG modules, falling back to basic sitemap generation');
+      generateBasicSitemap(distDir);
+      return;
+    }
+
+    const { getAllStaticRoutes } = routeModule;
+    const { renderRoute, generateHTMLTemplate } = ssrModule;
+    
     // Get all static routes
     const routes = getAllStaticRoutes();
     
     if (!routes || routes.length === 0) {
       console.error('No routes found for pre-rendering');
+      generateBasicSitemap(distDir);
       return;
     }
 
@@ -26,7 +65,7 @@ export function prerenderRoutes() {
 
     // Generate HTML for each route
     let successCount = 0;
-    routes.forEach((route, index) => {
+    for (const [index, route] of routes.entries()) {
       try {
         console.log(`Rendering route ${index + 1}/${routes.length}: ${route.path}`);
         
@@ -54,7 +93,7 @@ export function prerenderRoutes() {
       } catch (error) {
         console.warn(`⚠️  Failed to render ${route.path}:`, error.message);
       }
-    });
+    }
 
     // Generate sitemap
     console.log('Generating sitemap...');
@@ -72,7 +111,25 @@ export function prerenderRoutes() {
   } catch (error) {
     console.warn('Pre-rendering encountered issues:', error.message);
     console.log('Continuing with basic build...');
+    generateBasicSitemap(distDir);
   }
+}
+
+// Generate basic sitemap fallback
+function generateBasicSitemap(distDir) {
+  console.log('Generating basic sitemap...');
+  const basicSitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://movingto.com/funds</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>`;
+  
+  fs.writeFileSync(path.join(distDir, 'sitemap.xml'), basicSitemap);
+  console.log('✅ Basic sitemap generated');
 }
 
 // Generate sitemap
