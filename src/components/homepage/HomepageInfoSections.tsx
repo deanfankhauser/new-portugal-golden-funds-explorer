@@ -1,10 +1,21 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Building2, Shield, TrendingUp, ClipboardCheck, Calculator, Users } from 'lucide-react';
 
-const HomepageInfoSections = () => {
+interface HomepageInfoSectionsProps {
+  onInternalLinkClick?: () => void;
+}
+
+const HomepageInfoSections: React.FC<HomepageInfoSectionsProps> = ({ onInternalLinkClick }) => {
+  const handleLinkClick = () => {
+    if (onInternalLinkClick) {
+      onInternalLinkClick();
+    }
+  };
+
   return (
     <div className="mt-16 space-y-12">
       {/* Quick Actions Section */}
@@ -24,7 +35,7 @@ const HomepageInfoSections = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
-              <Link to="/fund-quiz">
+              <Link to="/fund-quiz" onClick={handleLinkClick}>
                 <Button className="w-full bg-blue-600 hover:bg-blue-700">
                   Start Quiz
                 </Button>
@@ -41,7 +52,7 @@ const HomepageInfoSections = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
-              <Link to="/roi-calculator">
+              <Link to="/roi-calculator" onClick={handleLinkClick}>
                 <Button className="w-full bg-green-600 hover:bg-green-700">
                   Calculate ROI
                 </Button>
@@ -58,7 +69,7 @@ const HomepageInfoSections = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
-              <Link to="/managers">
+              <Link to="/managers" onClick={handleLinkClick}>
                 <Button className="w-full bg-purple-600 hover:bg-purple-700">
                   View Managers
                 </Button>

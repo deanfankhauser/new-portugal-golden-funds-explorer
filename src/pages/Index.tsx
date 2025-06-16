@@ -25,12 +25,12 @@ const IndexPage = () => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
 
-  // Add scroll to top handler for internal links
+  // Add scroll to top handler for all internal links
   const handleInternalLinkClick = () => {
-    // Use requestAnimationFrame for better timing
-    requestAnimationFrame(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    // Use a longer delay to ensure navigation happens first
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }, 50);
   };
 
   return (
@@ -70,7 +70,7 @@ const IndexPage = () => {
           onInternalLinkClick={handleInternalLinkClick}
         />
 
-        <HomepageInfoSections />
+        <HomepageInfoSections onInternalLinkClick={handleInternalLinkClick} />
       </main>
       
       <Footer />
