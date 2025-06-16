@@ -1,13 +1,15 @@
+
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import { compileSSGFiles } from './compile-ssg.js';
 
 export async function buildSSG() {
   console.log('🚀 Building static site with SSG...');
   
   try {
     // Step 1: Run the regular Vite build first
-    console.log('\n📦 Step 1/3: Running Vite build...');
+    console.log('\n📦 Step 1/2: Running Vite build...');
     execSync('vite build', { stdio: 'inherit' });
     
     // Step 2: Verify build output
@@ -18,103 +20,9 @@ export async function buildSSG() {
     
     console.log('✅ Vite build completed successfully');
 
-    // Step 3: Try to run the pre-rendering with enhanced error handling
-    console.log('\n🎨 Step 2/3: Generating static pages...');
-    try {
-      // Dynamic import of the prerender module
-      const prerenderModule = await import('./prerender.js');
-      await prerenderModule.prerenderRoutes();
-    } catch (prerenderError) {
-      console.warn('⚠️  Pre-rendering encountered issues:', prerenderError.message);
-      console.log('Continuing with basic build...');
-      
-      // Fallback: create basic sitemap
-      const basicSitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://movingto.com/funds</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-</urlset>`;
-      fs.writeFileSync(path.join(distDir, 'sitemap.xml'), basicSitemap);
-    }
-    
-    // Step 4: Create additional route files for better SEO (but keep SPA routing)
-    console.log('\n📄 Step 3/3: Setting up SPA routing...');
-    
-    const indexFile = path.join(distDir, 'index.html');
-    
-    if (fs.existsSync(indexFile)) {
-      console.log('✅ Index file exists');
-      
-      // Read the main index.html content
-      const indexContent = fs.readFileSync(indexFile, 'utf8');
-      
-      // Create some key directory structures for better SEO
-      const keyRoutes = [
-        'funds',
-        'categories', 
-        'tags',
-        'managers',
-        'about',
-        'compare'
-      ];
-      
-      keyRoutes.forEach(route => {
-        const routeDir = path.join(distDir, route);
-        if (!fs.existsSync(routeDir)) {
-          fs.mkdirSync(routeDir, { recursive: true });
-          // Copy index.html to each route directory for better SPA routing
-          fs.writeFileSync(path.join(routeDir, 'index.html'), indexContent);
-        }
-      });
-      
-    } else {
-      console.warn('⚠️  Index file not found');
-    }
-    
-    // Ensure sitemap exists
-    const sitemapFile = path.join(distDir, 'sitemap.xml');
-    if (!fs.existsSync(sitemapFile)) {
-      console.log('📄 Generating basic sitemap...');
-      const basicSitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://movingto.com/funds</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-</urlset>`;
-      fs.writeFileSync(sitemapFile, basicSitemap);
-      console.log('✅ Basic sitemap generated');
-    } else {
-      console.log('✅ Sitemap already exists');
-    }
-    
-    // Count generated files
-    const countFiles = (dir) => {
-      let count = 0;
-      try {
-        const files = fs.readdirSync(dir);
-        for (const file of files) {
-          const filePath = path.join(dir, file);
-          if (fs.statSync(filePath).isDirectory()) {
-            count += countFiles(filePath);
-          } else if (file.endsWith('.html')) {
-            count++;
-          }
-        }
-      } catch (error) {
-        console.warn(`Could not read directory: ${dir}`);
-      }
-      return count;
-    };
-    
-    const pageCount = countFiles(distDir);
-    console.log(`📄 Total HTML files: ${pageCount}`);
+    // Step 3: Generate static files
+    console.log('\n🎨 Step 2/2: Generating static files...');
+    compileSSGFiles();
     
     console.log('\n🎉 Build complete!');
     console.log(`📁 Files are ready in: ${distDir}`);
