@@ -42,30 +42,32 @@ const FundQuiz = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen w-full flex flex-col bg-gray-50">
       <PageSEO pageType="fund-quiz" />
       
       <Header />
       
-      <main className="container mx-auto px-4 py-8 flex-1 max-w-6xl">
-        {currentStep === 'quiz' && (
-          <>
-            <FundQuizHeader />
-            <QuizForm onSubmit={handleQuizSubmit} />
-          </>
-        )}
-        
-        {currentStep === 'processing' && (
-          <FundQuizProcessing />
-        )}
-        
-        {currentStep === 'results' && (
-          <QuizResults 
-            recommendations={recommendations}
-            onResetQuiz={handleResetQuiz}
-            formatCurrency={formatCurrency}
-          />
-        )}
+      <main className="w-full px-4 py-8 flex-1">
+        <div className="w-full max-w-6xl mx-auto">
+          {currentStep === 'quiz' && (
+            <>
+              <FundQuizHeader />
+              <QuizForm onSubmit={handleQuizSubmit} />
+            </>
+          )}
+          
+          {currentStep === 'processing' && (
+            <FundQuizProcessing />
+          )}
+          
+          {currentStep === 'results' && (
+            <QuizResults 
+              recommendations={recommendations}
+              onResetQuiz={handleResetQuiz}
+              formatCurrency={formatCurrency}
+            />
+          )}
+        </div>
       </main>
       
       <Footer />
