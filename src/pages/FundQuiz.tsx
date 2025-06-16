@@ -7,9 +7,11 @@ import FundQuizHeader from '../components/quiz/FundQuizHeader';
 import QuizFormContainer from '../components/quiz/QuizFormContainer';
 import QuizResults from '../components/quiz/QuizResults';
 import { Fund } from '../data/types/funds';
+import { QuizFormData } from '../components/quiz/QuizFormContainer';
+import { generateRecommendations } from '../utils/quizRecommendationEngine';
 
 const FundQuiz = () => {
-  const [results, setResults] = useState<Fund[] | null>(null);
+  const [results, setResults] = useState<(Fund & { score: number })[] | null>(null);
   const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
@@ -17,14 +19,24 @@ const FundQuiz = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const handleQuizSubmit = (funds: Fund[]) => {
-    setResults(funds);
+  const handleQuizSubmit = (data: QuizFormData) => {
+    const recommendations = generateRecommendations(data);
+    setResults(recommendations);
     setShowResults(true);
   };
 
   const handleRetakeQuiz = () => {
     setShowResults(false);
     setResults(null);
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('pt-PT', {
+      style: 'currency',
+      currency: 'EUR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
   };
 
   return (
@@ -40,7 +52,11 @@ const FundQuiz = () => {
           {!showResults ? (
             <QuizFormContainer onSubmit={handleQuizSubmit} />
           ) : (
-            <QuizResults recommendations={results} onRetakeQuiz={handleRetakeQuiz} />
+            <QuizResults 
+              recommendations={results || []} 
+              onResetQuiz={handleRetakeQuiz}
+              formatCurrency={formatCurrency}
+            />
           )}
         </div>
       </main>
