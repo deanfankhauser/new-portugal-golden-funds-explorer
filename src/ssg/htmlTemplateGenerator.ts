@@ -47,9 +47,9 @@ export class HTMLTemplateGenerator {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdn.prod.website-files.com" />
     
-    <!-- Preload critical resources -->
-    <link rel="preload" href="/src/index.css" as="style" />
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" />
+    <!-- Load critical CSS immediately -->
+    <link rel="stylesheet" href="/src/index.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
     
     <!-- DNS prefetch for better performance -->
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
