@@ -26,4 +26,36 @@ export class BaseSEOService {
       }
     };
   }
+
+  protected static createCollectionPageSchema(name: string, description: string) {
+    return {
+      ...this.createBaseStructuredData(),
+      '@type': 'CollectionPage',
+      'name': name,
+      'description': description,
+      'mainEntity': {
+        '@type': 'ItemList',
+        'name': name,
+        'description': description
+      }
+    };
+  }
+
+  protected static createWebSiteSchema() {
+    return {
+      ...this.createBaseStructuredData(),
+      '@type': 'WebSite',
+      'name': 'Portugal Golden Visa Investment Funds | Movingto',
+      'description': 'Explore our Portugal Golden Visa Investment Funds List for 2025. Find eligible investment funds to secure residency with a €500,000 investment.',
+      'url': this.baseUrl,
+      'potentialAction': {
+        '@type': 'SearchAction',
+        'target': {
+          '@type': 'EntryPoint',
+          'urlTemplate': `${this.baseUrl}?search={search_term_string}`
+        },
+        'query-input': 'required name=search_term_string'
+      }
+    };
+  }
 }
