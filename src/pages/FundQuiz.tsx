@@ -1,10 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
-import FundQuizHeader from '../components/fund-quiz/FundQuizHeader';
-import FundQuizForm from '../components/fund-quiz/FundQuizForm';
-import FundQuizResults from '../components/fund-quiz/FundQuizResults';
+import FundQuizHeader from '../components/quiz/FundQuizHeader';
+import QuizFormContainer from '../components/quiz/QuizFormContainer';
+import QuizResults from '../components/quiz/QuizResults';
 import { Fund } from '../data/types/funds';
 
 const FundQuiz = () => {
@@ -37,9 +38,9 @@ const FundQuiz = () => {
         
         <div className="max-w-4xl mx-auto space-y-8">
           {!showResults ? (
-            <FundQuizForm onQuizSubmit={handleQuizSubmit} />
+            <QuizFormContainer onQuizSubmit={handleQuizSubmit} />
           ) : (
-            <FundQuizResults results={results} onRetakeQuiz={handleRetakeQuiz} />
+            <QuizResults results={results} onRetakeQuiz={handleRetakeQuiz} />
           )}
         </div>
       </main>
