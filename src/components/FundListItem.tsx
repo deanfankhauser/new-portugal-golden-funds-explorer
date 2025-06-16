@@ -39,10 +39,11 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
     }
   };
 
-  const handleLinkClick = () => {
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 100);
+  const handleLinkClick = (e: React.MouseEvent) => {
+    // Use requestAnimationFrame for better timing
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   };
 
   // Get the main geographic allocation (first one)

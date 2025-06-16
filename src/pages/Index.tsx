@@ -22,14 +22,15 @@ const IndexPage = () => {
 
   useEffect(() => {
     // Scroll to top on page load
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
 
   // Add scroll to top handler for internal links
   const handleInternalLinkClick = () => {
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 100);
+    // Use requestAnimationFrame for better timing
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   };
 
   return (

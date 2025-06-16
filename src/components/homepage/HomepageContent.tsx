@@ -30,7 +30,7 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
 }) => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
 
-  const handleLinkClick = () => {
+  const handleLinkClick = (e: React.MouseEvent) => {
     if (onInternalLinkClick) {
       onInternalLinkClick();
     }
