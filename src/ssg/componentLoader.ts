@@ -9,7 +9,7 @@ export const loadComponent = (path: string, componentName: string = 'default') =
   try {
     const module = require(path);
     return module[componentName] || module.default;
-  } catch (error) {
+  } catch (error: any) {
     console.warn(`Could not load component from ${path}:`, error.message);
     return () => React.createElement('div', null, 'Loading...');
   }
