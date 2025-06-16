@@ -1,7 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getFundsByTag } from '../data/funds';
+import { getFundsByTag, getAllTags } from '../data/funds';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -12,18 +12,32 @@ import TagPageFundList from '../components/tag/TagPageFundList';
 import TagPageEmptyState from '../components/tag/TagPageEmptyState';
 import TagPageFAQ from '../components/tag/TagPageFAQ';
 import RelatedTags from '../components/tag/RelatedTags';
+import { FundTag } from '../data/types/funds';
+import { slugToTag, tagToSlug } from '../lib/utils';
 
 const TagPage = () => {
-  const { tag } = useParams<{ tag: string }>();
-  const tagName = tag?.replace(/-/g, ' ') || '';
-  const funds = getFundsByTag(tagName);
+  const { tag: tagSlug } = useParams<{ tag: string }>();
+  const tagName = tagSlug ? slugToTag(tagSlug) : '';
+  const allTags = getAllTags();
+  
+  // Validate tag exists
+  const tagExists = allTags.includes(tagName as FundTag);
+  const funds = tagExists ? getFundsByTag(tagName as FundTag) : [];
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [tag]);
+  }, [tagSlug]);
 
-  if (!tag) {
-    return <TagPageEmptyState />;
+  if (!tagExists) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header />
+        <main className="flex-1 flex items-center justify-center">
+          <TagPageEmptyState tagName={tagName} />
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   return (
@@ -33,20 +47,20 @@ const TagPage = () => {
       <Header />
       
       <main className="container mx-auto px-4 py-8 flex-1" itemScope itemType="https://schema.org/CollectionPage">
-        <TagBreadcrumbs tagName={tagName} />
+        <TagBreadcrumbs tagName={tagName} tagSlug={tagSlug || ''} />
         <TagPageHeader tagName={tagName} />
         
         {funds.length > 0 ? (
           <>
-            <TagPageFundSummary tagName={tagName} fundCount={funds.length} />
+            <TagPageFundSummary count={funds.length} tagName={tagName} />
             <TagPageFundList funds={funds} />
           </>
         ) : (
-          <TagPageEmptyState />
+          <TagPageEmptyState tagName={tagName} />
         )}
         
-        <TagPageFAQ tagName={tagName} />
-        <RelatedTags currentTag={tagName} />
+        <TagPageFAQ tagName={tagName} tagSlug={tagSlug || ''} fundsCount={funds.length} />
+        <RelatedTags allTags={allTags} currentTag={tagName} />
       </main>
       
       <Footer />

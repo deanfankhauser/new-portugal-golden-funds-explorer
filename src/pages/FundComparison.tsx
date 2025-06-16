@@ -1,11 +1,11 @@
+
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
-import FundComparisonContent from '../components/fund-comparison/FundComparisonContent';
 import { useComparisonStructuredData } from '../hooks/useComparisonStructuredData';
-import { getFundsByIds } from '../data/funds';
+import { getFundById } from '../data/funds';
 
 const FundComparison = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -17,7 +17,7 @@ const FundComparison = () => {
     : [];
   
   // Get the funds being compared
-  const fundsToCompare = getFundsByIds(fundIds);
+  const fundsToCompare = fundIds.map(id => getFundById(id)).filter(Boolean);
   
   // Add structured data for the comparison
   useComparisonStructuredData(fundsToCompare, 'fund-vs-fund');
@@ -33,11 +33,10 @@ const FundComparison = () => {
       <Header />
       
       <main className="container mx-auto px-4 py-8 flex-1">
-        <FundComparisonContent 
-          slug={slug || ''} 
-          comparisonTitle={comparisonTitle}
-          fundsToCompare={fundsToCompare}
-        />
+        <div className="bg-white p-6 rounded-lg shadow-sm">
+          <h1 className="text-3xl font-bold mb-4">Fund Comparison: {comparisonTitle}</h1>
+          <p className="text-gray-600">Compare the selected funds side by side.</p>
+        </div>
       </main>
       
       <Footer />

@@ -1,7 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { findFundById } from '../data/funds';
+import { getFundById } from '../data/funds';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -10,15 +10,15 @@ import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 
 const FundDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const fund = id ? findFundById(id) : null;
-  const { addFund } = useRecentlyViewed();
+  const fund = id ? getFundById(id) : null;
+  const { addToRecentlyViewed } = useRecentlyViewed();
 
   useEffect(() => {
     if (fund) {
-      addFund(fund);
+      addToRecentlyViewed(fund);
     }
     window.scrollTo(0, 0);
-  }, [fund, addFund]);
+  }, [fund, addToRecentlyViewed]);
 
   if (!fund) {
     return (
