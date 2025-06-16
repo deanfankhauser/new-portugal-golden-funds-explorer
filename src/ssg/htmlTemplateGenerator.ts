@@ -50,7 +50,7 @@ export class HTMLTemplateGenerator {
     <!-- Load fonts immediately -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
     
-    <!-- Critical CSS inline styles -->
+    <!-- Complete embedded CSS styles -->
     <style>
       :root {
         --background: 0 0% 100%;
@@ -95,6 +95,7 @@ export class HTMLTemplateGenerator {
         line-height: 1.5;
       }
 
+      /* Typography */
       h1 {
         font-size: 1.875rem;
         font-weight: 700;
@@ -122,6 +123,92 @@ export class HTMLTemplateGenerator {
         line-height: 1.4;
       }
 
+      /* Utility classes */
+      .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+      .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+      .text-5xl { font-size: 3rem; line-height: 1; }
+      .text-6xl { font-size: 3.75rem; line-height: 1; }
+      .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+      .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+      .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+      .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+
+      .font-bold { font-weight: 700; }
+      .font-semibold { font-weight: 600; }
+      .font-medium { font-weight: 500; }
+
+      .mb-3 { margin-bottom: 0.75rem; }
+      .mb-4 { margin-bottom: 1rem; }
+      .mb-6 { margin-bottom: 1.5rem; }
+      .mb-8 { margin-bottom: 2rem; }
+      .mb-10 { margin-bottom: 2.5rem; }
+
+      .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+      .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+      .px-4 { padding-left: 1rem; padding-right: 1rem; }
+      .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+      .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+      .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+      .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+
+      .bg-slate-50 { background-color: rgb(248 250 252); }
+      .bg-secondary { background-color: hsl(var(--secondary)); }
+      .bg-primary { background-color: hsl(var(--primary)); }
+      .bg-white { background-color: white; }
+
+      .text-gray-800 { color: rgb(31 41 55); }
+      .text-gray-600 { color: rgb(75 85 99); }
+      .text-white { color: white; }
+
+      /* Layout */
+      .min-h-screen { min-height: 100vh; }
+      .flex { display: flex; }
+      .flex-col { flex-direction: column; }
+      .flex-1 { flex: 1 1 0%; }
+      .container {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .mx-auto { margin-left: auto; margin-right: auto; }
+      .text-center { text-align: center; }
+      .leading-tight { line-height: 1.25; }
+
+      /* Responsive utilities */
+      @media (min-width: 640px) {
+        .container { max-width: 640px; }
+        .sm\\:px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .sm\\:py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+        .sm\\:mb-4 { margin-bottom: 1rem; }
+        .sm\\:mb-6 { margin-bottom: 1.5rem; }
+        .sm\\:mb-8 { margin-bottom: 2rem; }
+        .sm\\:mb-10 { margin-bottom: 2.5rem; }
+        .sm\\:px-0 { padding-left: 0; padding-right: 0; }
+        .sm\\:text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+        .sm\\:text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+      }
+
+      @media (min-width: 768px) {
+        .container { max-width: 768px; }
+        .md\\:text-left { text-align: left; }
+        .md\\:mx-0 { margin-left: 0; margin-right: 0; }
+        .md\\:text-5xl { font-size: 3rem; line-height: 1; }
+        .md\\:justify-start { justify-content: flex-start; }
+      }
+
+      @media (min-width: 1024px) {
+        .container { max-width: 1024px; }
+        .lg\\:text-6xl { font-size: 3.75rem; line-height: 1; }
+      }
+
+      @media (min-width: 1280px) {
+        .container { max-width: 1280px; }
+      }
+
+      /* Components */
       .tag {
         display: inline-block;
         background-color: hsl(var(--secondary));
@@ -140,7 +227,6 @@ export class HTMLTemplateGenerator {
         color: white;
       }
 
-      /* Basic component styles */
       .btn {
         display: inline-flex;
         align-items: center;
@@ -181,37 +267,18 @@ export class HTMLTemplateGenerator {
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
       }
 
-      .container {
-        width: 100%;
-        margin-left: auto;
-        margin-right: auto;
-        padding-left: 1rem;
-        padding-right: 1rem;
-      }
-
-      @media (min-width: 640px) {
-        .container {
-          max-width: 640px;
-        }
-      }
-
-      @media (min-width: 768px) {
-        .container {
-          max-width: 768px;
-        }
-      }
-
-      @media (min-width: 1024px) {
-        .container {
-          max-width: 1024px;
-        }
-      }
-
-      @media (min-width: 1280px) {
-        .container {
-          max-width: 1280px;
-        }
-      }
+      .max-w-4xl { max-width: 56rem; }
+      .rounded-lg { border-radius: 0.5rem; }
+      .rounded-md { border-radius: 0.375rem; }
+      .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+      .border { border-width: 1px; }
+      .transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+      .hover\\:bg-primary:hover { background-color: hsl(var(--primary)); }
+      .hover\\:text-white:hover { color: white; }
+      .cursor-pointer { cursor: pointer; }
+      .inline-block { display: inline-block; }
+      .mr-2 { margin-right: 0.5rem; }
+      .mb-2 { margin-bottom: 0.5rem; }
     </style>
     
     <!-- DNS prefetch for better performance -->
