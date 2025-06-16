@@ -44,20 +44,44 @@ const ScrollToTop = () => {
   const location = useLocation();
   
   useLayoutEffect(() => {
-    // Force scroll to top immediately and synchronously
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    window.scrollTo(0, 0);
+    // Set scroll restoration to manual to prevent browser's automatic scroll restoration
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
     
-    // Also try with a tiny delay to ensure it works
-    const timeoutId = setTimeout(() => {
+    // Force scroll to top using multiple methods for maximum compatibility
+    const scrollToTop = () => {
+      // Method 1: Direct DOM manipulation
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
+      
+      // Method 2: Window scroll
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      
+      // Method 3: Alternative window scroll
       window.scrollTo(0, 0);
-    }, 0);
+      
+      // Method 4: Scroll all scrollable elements to top
+      const scrollableElements = document.querySelectorAll('*');
+      scrollableElements.forEach(element => {
+        if (element.scrollTop > 0) {
+          element.scrollTop = 0;
+        }
+      });
+    };
     
-    return () => clearTimeout(timeoutId);
-  }, [location.pathname, location.search]);
+    // Execute immediately
+    scrollToTop();
+    
+    // Execute with multiple timeouts to ensure it works
+    const timeouts = [0, 10, 50, 100].map(delay => 
+      setTimeout(scrollToTop, delay)
+    );
+    
+    return () => {
+      timeouts.forEach(clearTimeout);
+    };
+  }, [location.pathname, location.search, location.hash]);
   
   return null;
 };
