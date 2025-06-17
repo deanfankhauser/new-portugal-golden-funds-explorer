@@ -39,50 +39,75 @@ const queryClient = new QueryClient({
   },
 });
 
-// Component to handle scroll to top on route change
+// Component to handle scroll to top on route change - FIXED VERSION
 const ScrollToTop = () => {
   const location = useLocation();
   
   useLayoutEffect(() => {
     console.log('ScrollToTop triggered for:', location.pathname);
     
-    // Disable browser scroll restoration
+    // Disable browser scroll restoration completely
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
     }
     
-    // Force immediate scroll to top
-    const forceScrollToTop = () => {
-      // Get current scroll position for debugging
-      const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-      console.log('Current scroll position before reset:', currentScroll);
-      
-      // Multiple methods to ensure scroll works
+    // Multiple approaches to ensure scroll works on all browsers
+    const scrollToTop = () => {
+      // Method 1: Direct window scroll
       window.scrollTo(0, 0);
+      
+      // Method 2: Scroll with behavior instant
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      
+      // Method 3: Direct DOM manipulation
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
       
-      // Check if scroll worked
-      setTimeout(() => {
-        const newScroll = window.pageYOffset || document.documentElement.scrollTop;
-        console.log('Scroll position after reset:', newScroll);
-      }, 10);
+      // Method 4: Force scroll on root element
+      const root = document.getElementById('root');
+      if (root) {
+        root.scrollTop = 0;
+      }
+      
+      // Method 5: Force scroll on html and body
+      const html = document.querySelector('html');
+      const body = document.querySelector('body');
+      if (html) html.scrollTop = 0;
+      if (body) body.scrollTop = 0;
     };
     
     // Execute immediately
-    forceScrollToTop();
+    scrollToTop();
     
-    // Also execute after a brief delay to handle any async loading
-    const timeoutId = setTimeout(forceScrollToTop, 0);
+    // Execute after micro-task
+    Promise.resolve().then(scrollToTop);
     
-    return () => clearTimeout(timeoutId);
-  }, [location.pathname]);
+    // Execute after animation frame
+    requestAnimationFrame(scrollToTop);
+    
+    // Execute after short delay for slow devices
+    setTimeout(scrollToTop, 100);
+    
+    // Cleanup function
+    return () => {
+      // No cleanup needed
+    };
+  }, [location.pathname, location.search, location.hash]);
   
-  // Also use useEffect as a backup
+  // Additional useEffect as backup
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
+    const scrollToTop = () => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+    
+    scrollToTop();
+    
+    // Also scroll after component mount
+    const timer = setTimeout(scrollToTop, 0);
+    return () => clearTimeout(timer);
+  }, [location]);
   
   return null;
 };
@@ -100,6 +125,13 @@ const RouteDebugger = () => {
 
 function App() {
   console.log('App component mounting...');
+  
+  // Disable scroll restoration at app level
+  useEffect(() => {
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+  }, []);
   
   return (
     <QueryClientProvider client={queryClient}>

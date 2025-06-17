@@ -1,4 +1,3 @@
-
 export class SEOService {
   
   // Add canonical URL to prevent duplicate content
@@ -40,11 +39,10 @@ export class SEOService {
     });
   }
 
-  // Add security headers via meta tags
+  // Add security headers via meta tags (removed problematic X-Frame-Options)
   static addSecurityHeaders(): void {
     const securityMetas = [
       { 'http-equiv': 'X-Content-Type-Options', content: 'nosniff' },
-      { 'http-equiv': 'X-Frame-Options', content: 'DENY' },
       { 'http-equiv': 'X-XSS-Protection', content: '1; mode=block' },
       { name: 'referrer', content: 'strict-origin-when-cross-origin' }
     ];

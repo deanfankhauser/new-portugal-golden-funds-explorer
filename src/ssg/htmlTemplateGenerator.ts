@@ -65,7 +65,7 @@ ${cssLinks}
       gtag('config', 'G-3ML90T25MY');
     </script>
     
-    <!-- Security headers that work in meta tags -->
+    <!-- Security headers that work in meta tags (removed X-Frame-Options) -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
