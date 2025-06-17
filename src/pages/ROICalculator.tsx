@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -132,12 +131,11 @@ const ROICalculator = () => {
           />
           
           {showEmailGate && results && (
-            <div ref={emailGateRef}>
-              <ROICalculatorEmailGate 
-                onEmailSubmit={handleEmailSubmit}
-                isSubmittingEmail={isSubmittingEmail}
-              />
-            </div>
+            <ROICalculatorEmailGate 
+              onEmailSubmit={handleEmailSubmit}
+              isSubmittingEmail={isSubmittingEmail}
+              ref={emailGateRef}
+            />
           )}
           
           {results && emailSubmitted && (
