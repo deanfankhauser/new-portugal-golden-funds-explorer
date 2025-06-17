@@ -46,26 +46,26 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
 
   return (
     <>
-      <Card className="border rounded-lg hover:border-gray-300 transition-colors bg-white shadow-sm">
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="flex-1">
+      <Card className="border rounded-lg hover:border-gray-300 transition-colors bg-white shadow-sm w-full">
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+            <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between mb-2">
-                <h3 className="text-xl font-semibold">
-                  <Link to={`/funds/${fund.id}`} className="hover:text-[#EF4444] transition-colors">
+                <h3 className="text-lg sm:text-xl font-semibold leading-tight">
+                  <Link to={`/funds/${fund.id}`} className="hover:text-[#EF4444] transition-colors block">
                     {fund.name}
                   </Link>
                 </h3>
               </div>
               
-              <p className="text-gray-600 mb-4 line-clamp-2">{fund.description}</p>
+              <p className="text-gray-600 mb-4 line-clamp-2 text-sm sm:text-base">{fund.description}</p>
               
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
-                <div className="flex items-center">
-                  <Tag className="w-4 h-4 mr-2 text-[#EF4444]" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Category</p>
-                    <p className="font-medium">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
+                <div className="flex items-center min-w-0">
+                  <Tag className="w-4 h-4 mr-2 text-[#EF4444] flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm text-muted-foreground">Category</p>
+                    <p className="font-medium text-sm sm:text-base truncate">
                       <Link to={`/categories/${categoryToSlug(fund.category)}`} className="hover:text-[#EF4444] transition-colors">
                         {fund.category}
                       </Link>
@@ -74,30 +74,33 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 </div>
                 
                 {mainGeoAllocation && (
-                  <div className="flex items-center">
-                    <Globe className="w-4 h-4 mr-2 text-[#EF4444]" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Main Region</p>
-                      <p className="font-medium">{mainGeoAllocation.region} ({formatPercentage(mainGeoAllocation.percentage)})</p>
+                  <div className="flex items-center min-w-0">
+                    <Globe className="w-4 h-4 mr-2 text-[#EF4444] flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-xs sm:text-sm text-muted-foreground">Main Region</p>
+                      <p className="font-medium text-sm sm:text-base truncate">
+                        {mainGeoAllocation.region} ({formatPercentage(mainGeoAllocation.percentage)})
+                      </p>
                     </div>
                   </div>
                 )}
                 
-                <div className="flex items-center">
-                  <PieChart className="w-4 h-4 mr-2 text-[#EF4444]" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Target Return</p>
-                    <p className="font-medium">{fund.returnTarget}</p>
+                <div className="flex items-center min-w-0">
+                  <PieChart className="w-4 h-4 mr-2 text-[#EF4444] flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm text-muted-foreground">Target Return</p>
+                    <p className="font-medium text-sm sm:text-base truncate">{fund.returnTarget}</p>
                   </div>
                 </div>
                 
-                <div className="flex items-center">
-                  <User className="w-4 h-4 mr-2 text-[#EF4444]" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Fund Manager</p>
+                <div className="flex items-center min-w-0">
+                  <User className="w-4 h-4 mr-2 text-[#EF4444] flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm text-muted-foreground">Fund Manager</p>
                     <Link 
                       to={`/manager/${managerToSlug(fund.managerName)}`} 
-                      className="font-medium hover:text-[#EF4444] transition-colors"
+                      className="font-medium hover:text-[#EF4444] transition-colors text-sm sm:text-base block truncate"
+                      title={fund.managerName}
                     >
                       {fund.managerName}
                     </Link>
@@ -106,13 +109,13 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
               </div>
             </div>
             
-            <div className="flex flex-col gap-3 justify-center min-w-[160px]">
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-2 sm:gap-3 justify-center lg:min-w-[160px]">
               <IntroductionButton variant="compact" />
               
               <Button 
                 variant="outline" 
                 size="sm"
-                className={`${
+                className={`text-xs sm:text-sm ${
                   isSelected 
                     ? 'bg-[#EF4444] text-white' 
                     : 'border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white'

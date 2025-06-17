@@ -1,34 +1,44 @@
 
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getFundsByManager } from '../data/services/managers-service';
+import { getFundsByManager, getAllFundManagers } from '../data/services/managers-service';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import FundManagerContent from '../components/fund-manager/FundManagerContent';
 import FundManagerNotFound from '../components/fund-manager/FundManagerNotFound';
+import { slugToManager, managerToSlug } from '../lib/utils';
 
 const FundManager = () => {
   const { name } = useParams<{ name: string }>();
-  const managerName = name?.replace(/-/g, ' ') || '';
-  const managerFunds = getFundsByManager(managerName);
+  const slugName = name || '';
+  const managerName = slugToManager(slugName);
+  const allManagers = getAllFundManagers();
+  
+  // Find matching manager by checking if any manager matches when converted to slug
+  const matchingManager = allManagers.find(manager => 
+    managerToSlug(manager.name) === slugName
+  );
+  
+  const displayManagerName = matchingManager ? matchingManager.name : managerName;
+  const managerFunds = matchingManager ? getFundsByManager(matchingManager.name) : [];
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [name]);
 
-  if (managerFunds.length === 0) {
-    return <FundManagerNotFound managerName={managerName} />;
+  if (!matchingManager || managerFunds.length === 0) {
+    return <FundManagerNotFound managerName={displayManagerName} />;
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <PageSEO pageType="manager" managerName={managerName} />
+      <PageSEO pageType="manager" managerName={displayManagerName} />
       
       <Header />
       
-      <main className="container mx-auto px-4 py-8 flex-1">
-        <FundManagerContent managerFunds={managerFunds} managerName={managerName} />
+      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
+        <FundManagerContent managerFunds={managerFunds} managerName={displayManagerName} />
       </main>
       
       <Footer />
