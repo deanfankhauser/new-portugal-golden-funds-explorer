@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { FundTag, getAllTags } from '../data/funds';
 import { Input } from "@/components/ui/input";
@@ -43,6 +44,9 @@ const FundFilter: React.FC<FundFilterProps> = ({
     
     // Track filter usage
     analytics.trackFilterUsage(newTags, searchQuery);
+    
+    // Scroll to top when tag is selected
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSearchClick = () => {
@@ -73,6 +77,9 @@ const FundFilter: React.FC<FundFilterProps> = ({
     
     // Track filter clear
     analytics.trackEvent('filters_cleared');
+    
+    // Scroll to top when filters are cleared
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
