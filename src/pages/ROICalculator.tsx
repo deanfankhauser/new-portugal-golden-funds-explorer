@@ -8,6 +8,7 @@ import ROICalculatorForm from '../components/roi-calculator/ROICalculatorForm';
 import ROICalculatorResults from '../components/roi-calculator/ROICalculatorResults';
 import ROICalculatorEmailGate from '../components/roi-calculator/ROICalculatorEmailGate';
 import { Fund } from '../data/types/funds';
+import { useToast } from '@/hooks/use-toast';
 
 const ROICalculator = () => {
   const [selectedFund, setSelectedFund] = useState<Fund | null>(null);
@@ -18,7 +19,10 @@ const ROICalculator = () => {
   } | null>(null);
   const [showEmailGate, setShowEmailGate] = useState(false);
   const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
   const emailGateRef = useRef<HTMLDivElement>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Scroll to top on page load
@@ -37,6 +41,18 @@ const ROICalculator = () => {
     }
   }, [showEmailGate]);
 
+  // Scroll to results when email is submitted
+  useEffect(() => {
+    if (emailSubmitted && resultsRef.current) {
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
+    }
+  }, [emailSubmitted]);
+
   const handleResultsCalculated = (calculatedResults: {
     totalValue: number;
     totalReturn: number;
@@ -44,6 +60,7 @@ const ROICalculator = () => {
   }) => {
     setResults(calculatedResults);
     setShowEmailGate(true);
+    setEmailSubmitted(false);
   };
 
   const handleEmailSubmit = async (email: string) => {
@@ -52,9 +69,22 @@ const ROICalculator = () => {
       // Simulate email submission
       await new Promise(resolve => setTimeout(resolve, 1000));
       console.log('Email submitted:', email);
+      
+      // Show success message
+      toast({
+        title: "Email submitted successfully!",
+        description: "Thank you for your interest. Here are your ROI calculations.",
+      });
+      
       setShowEmailGate(false);
+      setEmailSubmitted(true);
     } catch (error) {
       console.error('Error submitting email:', error);
+      toast({
+        title: "Error",
+        description: "There was an error submitting your email. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmittingEmail(false);
     }
@@ -83,8 +113,8 @@ const ROICalculator = () => {
                 isSubmittingEmail={isSubmittingEmail}
               />
             </div>
-          ) : results && (
-            <div className="bg-white p-6 rounded-lg shadow-md">
+          ) : results && emailSubmitted && (
+            <div ref={resultsRef} className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4">Your Investment Projection</h2>
               <ROICalculatorResults results={results} />
             </div>
