@@ -29,6 +29,18 @@ const ROICalculator = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Scroll to email gate when it appears (after calculation)
+  useEffect(() => {
+    if (showEmailGate && emailGateRef.current && !emailSubmitted) {
+      setTimeout(() => {
+        emailGateRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
+    }
+  }, [showEmailGate, emailSubmitted]);
+
   // Scroll to results when email is submitted
   useEffect(() => {
     if (emailSubmitted && resultsRef.current) {
