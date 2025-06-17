@@ -29,27 +29,29 @@ const ROICalculator = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Scroll to email gate when it appears (after calculation)
+  // Scroll to email gate when it appears
   useEffect(() => {
-    if (showEmailGate && emailGateRef.current && !emailSubmitted) {
+    if (showEmailGate && emailGateRef.current) {
+      console.log('Scrolling to email gate');
       setTimeout(() => {
         emailGateRef.current?.scrollIntoView({ 
           behavior: 'smooth', 
           block: 'start' 
         });
-      }, 100);
+      }, 200);
     }
-  }, [showEmailGate, emailSubmitted]);
+  }, [showEmailGate]);
 
   // Scroll to results when email is submitted
   useEffect(() => {
     if (emailSubmitted && resultsRef.current) {
+      console.log('Scrolling to results');
       setTimeout(() => {
         resultsRef.current?.scrollIntoView({ 
           behavior: 'smooth', 
           block: 'start' 
         });
-      }, 100);
+      }, 200);
     }
   }, [emailSubmitted]);
 
@@ -58,6 +60,7 @@ const ROICalculator = () => {
     totalReturn: number;
     annualizedReturn: number;
   }) => {
+    console.log('Results calculated, showing email gate');
     setResults(calculatedResults);
     setShowEmailGate(true);
     setEmailSubmitted(false);
@@ -128,14 +131,16 @@ const ROICalculator = () => {
             setSelectedFund={setSelectedFund}
           />
           
-          {showEmailGate && results ? (
+          {showEmailGate && results && (
             <div ref={emailGateRef}>
               <ROICalculatorEmailGate 
                 onEmailSubmit={handleEmailSubmit}
                 isSubmittingEmail={isSubmittingEmail}
               />
             </div>
-          ) : results && emailSubmitted && (
+          )}
+          
+          {results && emailSubmitted && (
             <div ref={resultsRef} className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4">Your Investment Projection</h2>
               <ROICalculatorResults results={results} />
