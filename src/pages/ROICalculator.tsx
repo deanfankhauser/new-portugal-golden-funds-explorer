@@ -66,9 +66,31 @@ const ROICalculator = () => {
   const handleEmailSubmit = async (email: string) => {
     setIsSubmittingEmail(true);
     try {
-      // Simulate email submission
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Email submitted:', email);
+      // Create email data to send
+      const emailData = {
+        email: email,
+        results: results,
+        selectedFund: selectedFund,
+        timestamp: new Date().toISOString()
+      };
+
+      console.log('Sending email data:', emailData);
+
+      // Send email to a backend service (you'll need to implement this endpoint)
+      const response = await fetch('/api/send-roi-results', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      console.log('Email sent successfully:', responseData);
       
       // Show success message
       toast({
