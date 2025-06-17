@@ -7,6 +7,7 @@ import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import FundManagerContent from '../components/fund-manager/FundManagerContent';
 import FundManagerNotFound from '../components/fund-manager/FundManagerNotFound';
+import FundManagerBreadcrumbs from '../components/fund-manager/FundManagerBreadcrumbs';
 import { slugToManager, managerToSlug } from '../lib/utils';
 
 const FundManager = () => {
@@ -38,6 +39,7 @@ const FundManager = () => {
       <Header />
       
       <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
+        <FundManagerBreadcrumbs managerName={displayManagerName} />
         <FundManagerContent managerFunds={managerFunds} managerName={displayManagerName} />
       </main>
       

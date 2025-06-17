@@ -2,11 +2,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-interface CategoryBreadcrumbsProps {
-  categoryName: string;
+interface FundManagerBreadcrumbsProps {
+  managerName: string;
 }
 
-const CategoryBreadcrumbs: React.FC<CategoryBreadcrumbsProps> = ({ categoryName }) => {
+const FundManagerBreadcrumbs: React.FC<FundManagerBreadcrumbsProps> = ({ managerName }) => {
   return (
     <nav aria-label="breadcrumbs" className="mb-6">
       <ol className="flex items-center text-sm text-gray-500">
@@ -15,15 +15,15 @@ const CategoryBreadcrumbs: React.FC<CategoryBreadcrumbsProps> = ({ categoryName 
         </li>
         <li className="mx-2">/</li>
         <li>
-          <Link to="/categories" className="hover:text-[#EF4444]">Categories</Link>
+          <Link to="/managers" className="hover:text-[#EF4444]">Fund Managers</Link>
         </li>
         <li className="mx-2">/</li>
         <li>
-          <span className="font-medium text-[#EF4444]">{categoryName}</span>
+          <span className="font-medium text-[#EF4444]">{managerName}</span>
         </li>
       </ol>
     </nav>
   );
 };
 
-export default CategoryBreadcrumbs;
+export default FundManagerBreadcrumbs;
