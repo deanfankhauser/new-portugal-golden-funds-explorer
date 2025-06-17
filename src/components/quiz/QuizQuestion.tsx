@@ -97,13 +97,17 @@ const QuizQuestion = <T extends FieldValues>({
                   className="space-y-4"
                 >
                   {question.options?.map((option) => (
-                    <div key={option.value} className="flex items-start space-x-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                    <label 
+                      key={option.value} 
+                      htmlFor={option.value}
+                      className="flex items-start space-x-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                    >
                       <RadioGroupItem value={option.value} id={option.value} className="mt-1.5" />
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          <label htmlFor={option.value} className="font-medium cursor-pointer">
+                          <span className="font-medium">
                             {option.label}
-                          </label>
+                          </span>
                           {option.badge && (
                             <Badge className={`text-xs ${option.badgeColor}`}>
                               {option.badge}
@@ -112,7 +116,7 @@ const QuizQuestion = <T extends FieldValues>({
                         </div>
                         <p className="text-sm text-gray-600">{option.description}</p>
                       </div>
-                    </div>
+                    </label>
                   ))}
                 </RadioGroup>
               )}
