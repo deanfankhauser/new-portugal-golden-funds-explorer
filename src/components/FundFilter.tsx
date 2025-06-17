@@ -31,6 +31,9 @@ const FundFilter: React.FC<FundFilterProps> = ({
   const hasMoreTags = allTags.length > 6;
   
   const toggleTag = (tag: FundTag) => {
+    // Always scroll to top when tag is clicked, regardless of authentication
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     if (!isAuthenticated) {
       setShowPasswordDialog(true);
       return;
@@ -44,9 +47,6 @@ const FundFilter: React.FC<FundFilterProps> = ({
     
     // Track filter usage
     analytics.trackFilterUsage(newTags, searchQuery);
-    
-    // Scroll to top when tag is selected
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSearchClick = () => {
@@ -68,6 +68,9 @@ const FundFilter: React.FC<FundFilterProps> = ({
   };
 
   const clearFilters = () => {
+    // Always scroll to top when filters are cleared, regardless of authentication
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     if (!isAuthenticated) {
       setShowPasswordDialog(true);
       return;
@@ -77,9 +80,6 @@ const FundFilter: React.FC<FundFilterProps> = ({
     
     // Track filter clear
     analytics.trackEvent('filters_cleared');
-    
-    // Scroll to top when filters are cleared
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
