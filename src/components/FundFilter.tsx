@@ -30,10 +30,34 @@ const FundFilter: React.FC<FundFilterProps> = ({
   const visibleTags = showAllTags ? allTags : allTags.slice(0, 6);
   const hasMoreTags = allTags.length > 6;
   
-  const toggleTag = (tag: FundTag) => {
-    // Always scroll to top when tag is clicked, regardless of authentication
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const scrollToTop = () => {
+    // Multiple approaches to ensure reliable scrolling
+    const performScroll = () => {
+      // Method 1: Instant scroll to top
+      window.scrollTo(0, 0);
+      
+      // Method 2: Smooth scroll as backup
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      // Method 3: Direct DOM manipulation
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
     
+    // Execute immediately
+    performScroll();
+    
+    // Execute after React updates (using setTimeout to escape current execution context)
+    setTimeout(performScroll, 0);
+    
+    // Execute after animation frame
+    requestAnimationFrame(performScroll);
+    
+    // Execute after a short delay to ensure all React updates are complete
+    setTimeout(performScroll, 100);
+  };
+  
+  const toggleTag = (tag: FundTag) => {
     if (!isAuthenticated) {
       setShowPasswordDialog(true);
       return;
@@ -47,6 +71,9 @@ const FundFilter: React.FC<FundFilterProps> = ({
     
     // Track filter usage
     analytics.trackFilterUsage(newTags, searchQuery);
+    
+    // Scroll to top after state update
+    scrollToTop();
   };
 
   const handleSearchClick = () => {
@@ -68,9 +95,6 @@ const FundFilter: React.FC<FundFilterProps> = ({
   };
 
   const clearFilters = () => {
-    // Always scroll to top when filters are cleared, regardless of authentication
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    
     if (!isAuthenticated) {
       setShowPasswordDialog(true);
       return;
@@ -80,6 +104,9 @@ const FundFilter: React.FC<FundFilterProps> = ({
     
     // Track filter clear
     analytics.trackEvent('filters_cleared');
+    
+    // Scroll to top after clearing filters
+    scrollToTop();
   };
 
   return (
