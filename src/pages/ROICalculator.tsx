@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -17,11 +18,24 @@ const ROICalculator = () => {
   } | null>(null);
   const [showEmailGate, setShowEmailGate] = useState(false);
   const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
+  const emailGateRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Scroll to top on page load
     window.scrollTo(0, 0);
   }, []);
+
+  // Scroll to email gate when it appears
+  useEffect(() => {
+    if (showEmailGate && emailGateRef.current) {
+      setTimeout(() => {
+        emailGateRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100);
+    }
+  }, [showEmailGate]);
 
   const handleResultsCalculated = (calculatedResults: {
     totalValue: number;
@@ -63,10 +77,12 @@ const ROICalculator = () => {
           />
           
           {showEmailGate && results ? (
-            <ROICalculatorEmailGate 
-              onEmailSubmit={handleEmailSubmit}
-              isSubmittingEmail={isSubmittingEmail}
-            />
+            <div ref={emailGateRef}>
+              <ROICalculatorEmailGate 
+                onEmailSubmit={handleEmailSubmit}
+                isSubmittingEmail={isSubmittingEmail}
+              />
+            </div>
           ) : results && (
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4">Your Investment Projection</h2>
