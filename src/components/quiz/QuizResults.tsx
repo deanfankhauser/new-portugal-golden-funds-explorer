@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +8,7 @@ import EmailCapture from '../common/EmailCapture';
 import { Fund } from '@/data/types/funds';
 import { useAuth } from '@/contexts/AuthContext';
 import { Trophy, RotateCcw, Star, TrendingUp, Users, AlertCircle } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface QuizResultsProps {
   recommendations: (Fund & { score: number })[];
@@ -17,16 +18,49 @@ interface QuizResultsProps {
 
 const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz, formatCurrency }) => {
   const { isAuthenticated } = useAuth();
+  const { toast } = useToast();
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
 
   const handleEmailSubmit = async (email: string) => {
     setIsSubmittingEmail(true);
-    // Simulate API call - in real app, you'd send this to your backend
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('Email captured:', email);
-    setEmailSubmitted(true);
-    setIsSubmittingEmail(false);
+    try {
+      // Send thank you email using Postmark template
+      const response = await fetch('/api/send-quiz-thank-you', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          userName: email.split('@')[0] // Simple name extraction from email
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      console.log('Thank you email sent successfully:', responseData);
+      
+      // Show success toast
+      toast({
+        title: "Thank You for Your Interest!",
+        description: "Your golden visa journey starts here. Check your email for more information.",
+      });
+      
+      setEmailSubmitted(true);
+    } catch (error) {
+      console.error('Error sending thank you email:', error);
+      toast({
+        title: "Error",
+        description: "There was an error sending the email. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmittingEmail(false);
+    }
   };
 
   // Show email capture if user is not authenticated and hasn't submitted email
