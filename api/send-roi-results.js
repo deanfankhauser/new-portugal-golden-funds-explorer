@@ -1,6 +1,25 @@
 
 const postmark = require('postmark');
 
+// Utility function for safe error logging
+const logError = (error, context = '') => {
+  const timestamp = new Date().toISOString();
+  const errorId = Math.random().toString(36).substring(2, 15);
+  
+  // Log full error details server-side (visible in Vercel logs)
+  console.error(`[${timestamp}] Error ID: ${errorId} | Context: ${context}`);
+  console.error('Full error:', error);
+  
+  return errorId;
+};
+
+// Utility function to sanitize error responses
+const createSafeErrorResponse = (message, errorId) => ({
+  error: message,
+  errorId: errorId,
+  timestamp: new Date().toISOString()
+});
+
 export default async function handler(req, res) {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -13,7 +32,8 @@ export default async function handler(req, res) {
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    const errorId = logError(new Error('Method not allowed'), 'Invalid HTTP method');
+    return res.status(405).json(createSafeErrorResponse('Method not allowed', errorId));
   }
 
   try {
@@ -21,7 +41,21 @@ export default async function handler(req, res) {
 
     // Validate required data
     if (!email || !results) {
-      return res.status(400).json({ error: 'Missing required data' });
+      const errorId = logError(new Error('Missing required data'), 'Request validation');
+      return res.status(400).json(createSafeErrorResponse('Missing required data', errorId));
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      const errorId = logError(new Error('Invalid email format'), 'Email validation');
+      return res.status(400).json(createSafeErrorResponse('Invalid email format', errorId));
+    }
+
+    // Check for API token
+    if (!process.env.POSTMARK_API_TOKEN) {
+      const errorId = logError(new Error('POSTMARK_API_TOKEN not configured'), 'Environment configuration');
+      return res.status(500).json(createSafeErrorResponse('Email service configuration error', errorId));
     }
 
     // Initialize Postmark client
@@ -87,7 +121,8 @@ This email was generated on ${new Date(timestamp).toLocaleString()}
       MessageStream: 'outbound'
     });
 
-    console.log('Email sent successfully:', result);
+    // Log successful email send (without sensitive data)
+    console.log(`Email sent successfully to ${email.substring(0, 3)}***@${email.split('@')[1]} | MessageID: ${result.MessageID}`);
 
     return res.status(200).json({ 
       success: true, 
@@ -96,19 +131,13 @@ This email was generated on ${new Date(timestamp).toLocaleString()}
     });
 
   } catch (error) {
-    console.error('Error sending email:', error);
+    const errorId = logError(error, 'Email sending process');
     
     // Handle specific Postmark errors
     if (error.name === 'PostmarkError') {
-      return res.status(400).json({ 
-        error: 'Email service error', 
-        details: error.message 
-      });
+      return res.status(400).json(createSafeErrorResponse('Email service error', errorId));
     }
     
-    return res.status(500).json({ 
-      error: 'Internal server error', 
-      details: error.message 
-    });
+    return res.status(500).json(createSafeErrorResponse('Internal server error', errorId));
   }
 }
