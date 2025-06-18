@@ -24,7 +24,7 @@ const ROICalculator = () => {
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [userEmail, setUserEmail] = useState<string>('');
   const emailGateRef = useRef<HTMLDivElement>(null);
-  const resultsRef = useRef<HTMLDivElement>(null);
+  const emailConfirmationRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -45,16 +45,16 @@ const ROICalculator = () => {
     }
   }, [showEmailGate]);
 
-  // Scroll to results when email is submitted
+  // Scroll to email confirmation when email is submitted
   useEffect(() => {
-    if (emailSubmitted && resultsRef.current) {
-      console.log('Scrolling to results');
+    if (emailSubmitted && emailConfirmationRef.current) {
+      console.log('Scrolling to email confirmation');
       setTimeout(() => {
-        resultsRef.current?.scrollIntoView({ 
+        emailConfirmationRef.current?.scrollIntoView({ 
           behavior: 'smooth', 
-          block: 'start' 
+          block: 'center' 
         });
-      }, 200);
+      }, 300);
     }
   }, [emailSubmitted]);
 
@@ -146,7 +146,7 @@ const ROICalculator = () => {
           {results && emailSubmitted && (
             <div className="space-y-6">
               {/* Email Confirmation Card */}
-              <Card className="bg-green-50 border-green-200">
+              <Card ref={emailConfirmationRef} className="bg-green-50 border-green-200">
                 <CardContent className="p-6">
                   <div className="flex items-center space-x-3 mb-4">
                     <CheckCircle className="w-6 h-6 text-green-600" />
@@ -175,7 +175,7 @@ const ROICalculator = () => {
               </Card>
 
               {/* Results Display */}
-              <div ref={resultsRef} className="bg-white p-6 rounded-lg shadow-md">
+              <div className="bg-white p-6 rounded-lg shadow-md">
                 <h2 className="text-xl font-semibold mb-4">Your Investment Projection</h2>
                 <ROICalculatorResults results={results} />
               </div>
