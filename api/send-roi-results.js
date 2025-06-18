@@ -1,5 +1,5 @@
 
-const postmark = require('postmark');
+import postmark from 'postmark';
 
 // Utility function for safe error logging
 const logError = (error, context = '') => {
@@ -20,7 +20,7 @@ const createSafeErrorResponse = (message, errorId) => ({
   timestamp: new Date().toISOString()
 });
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -140,4 +140,4 @@ This email was generated on ${new Date(timestamp).toLocaleString()}
     
     return res.status(500).json(createSafeErrorResponse('Internal server error', errorId));
   }
-};
+}
