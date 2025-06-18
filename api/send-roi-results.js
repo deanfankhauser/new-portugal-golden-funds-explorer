@@ -79,7 +79,7 @@ This email was generated on ${new Date(timestamp).toLocaleString()}
 
     // Send email via Postmark
     const result = await client.sendEmail({
-      From: 'noreply@yourdomain.com', // Replace with your verified sender email
+      From: 'dean@movingto.com',
       To: email,
       Subject: 'Your Portugal Golden Visa ROI Calculation Results',
       HtmlBody: emailHtml,
