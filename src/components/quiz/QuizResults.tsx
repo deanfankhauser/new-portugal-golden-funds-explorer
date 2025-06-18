@@ -7,26 +7,70 @@ import RecommendationCard from './RecommendationCard';
 import EmailCapture from '../common/EmailCapture';
 import { Fund } from '@/data/types/funds';
 import { useAuth } from '@/contexts/AuthContext';
-import { Trophy, RotateCcw, Star, TrendingUp, Users, AlertCircle } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { Trophy, RotateCcw, Star, TrendingUp, Users, AlertCircle, CheckCircle, Mail, Clock, FileText } from 'lucide-react';
 
 interface QuizResultsProps {
   recommendations: (Fund & { score: number })[];
   onResetQuiz: () => void;
   formatCurrency: (amount: number) => string;
+  quizAnswers?: any; // Add quiz answers to pass to email
 }
 
-const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz, formatCurrency }) => {
+const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz, formatCurrency, quizAnswers }) => {
   const { isAuthenticated } = useAuth();
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
+  const [userEmail, setUserEmail] = useState<string>('');
+  const { toast } = useToast();
 
   const handleEmailSubmit = async (email: string) => {
     setIsSubmittingEmail(true);
-    // Simulate API call - in real app, you'd send this to your backend
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('Email captured:', email);
-    setEmailSubmitted(true);
-    setIsSubmittingEmail(false);
+    setUserEmail(email);
+    try {
+      // Create email data to send
+      const emailData = {
+        email: email,
+        recommendations: recommendations,
+        quizAnswers: quizAnswers,
+        timestamp: new Date().toISOString()
+      };
+
+      console.log('Sending quiz results email:', emailData);
+
+      // Send email to backend service
+      const response = await fetch('/api/send-quiz-results', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      console.log('Quiz results email sent successfully:', responseData);
+      
+      // Show success message
+      toast({
+        title: "Email sent successfully!",
+        description: "Your personalized fund recommendations have been sent to your inbox.",
+      });
+      
+      setEmailSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting email:', error);
+      toast({
+        title: "Error",
+        description: "There was an error sending your recommendations. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmittingEmail(false);
+    }
   };
 
   // Show email capture if user is not authenticated and hasn't submitted email
@@ -84,6 +128,32 @@ const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz,
   // Show results if authenticated or email submitted
   return (
     <div className="space-y-8">
+      {/* Email Confirmation Card - shown only if email was submitted */}
+      {emailSubmitted && (
+        <Card className="bg-green-50 border-green-200">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-3 mb-4">
+              <CheckCircle className="w-6 h-6 text-green-600" />
+              <h3 className="text-lg font-semibold text-green-800">Email Sent Successfully!</h3>
+            </div>
+            <div className="space-y-3 text-green-700">
+              <div className="flex items-center space-x-2">
+                <Mail className="w-4 h-4" />
+                <span>Your personalized fund recommendations have been sent to <strong>{userEmail}</strong></span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Clock className="w-4 h-4" />
+                <span>You should receive the email within the next few minutes</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <FileText className="w-4 h-4" />
+                <span>The email includes detailed analysis and fund manager contact information</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
         <CardHeader>
           <div className="flex justify-between items-start">

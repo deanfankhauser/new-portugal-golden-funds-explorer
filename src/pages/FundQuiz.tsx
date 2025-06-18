@@ -13,6 +13,7 @@ import { getRecommendations } from '../utils/quizRecommendationEngine';
 const FundQuiz = () => {
   const [results, setResults] = useState<(Fund & { score: number })[] | null>(null);
   const [showResults, setShowResults] = useState(false);
+  const [quizAnswers, setQuizAnswers] = useState<QuizFormData | null>(null);
 
   useEffect(() => {
     // Scroll to top on page load
@@ -22,12 +23,14 @@ const FundQuiz = () => {
   const handleQuizSubmit = (data: QuizFormData) => {
     const recommendations = getRecommendations(data);
     setResults(recommendations);
+    setQuizAnswers(data);
     setShowResults(true);
   };
 
   const handleRetakeQuiz = () => {
     setShowResults(false);
     setResults(null);
+    setQuizAnswers(null);
   };
 
   const formatCurrency = (amount: number) => {
@@ -56,6 +59,7 @@ const FundQuiz = () => {
               recommendations={results || []} 
               onResetQuiz={handleRetakeQuiz}
               formatCurrency={formatCurrency}
+              quizAnswers={quizAnswers}
             />
           )}
         </div>
