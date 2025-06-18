@@ -20,7 +20,7 @@ const createSafeErrorResponse = (message, errorId) => ({
   timestamp: new Date().toISOString()
 });
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -140,4 +140,4 @@ This email was generated on ${new Date(timestamp).toLocaleString()}
     
     return res.status(500).json(createSafeErrorResponse('Internal server error', errorId));
   }
-}
+};
