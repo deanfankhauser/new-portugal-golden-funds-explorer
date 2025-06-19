@@ -1,11 +1,12 @@
 
+
 import { SEOData } from '../../types/seo';
 import { BaseSEOService } from './baseSEOService';
 
 export class CategoryPageSEOService extends BaseSEOService {
   static getCategoryPageSEO(categoryName: string): SEOData {
     return {
-      title: `Top ${categoryName} Golden Visa Funds | Movingto`,
+      title: `Top ${categoryName} Golden Visa Funds | Fund Categories | Movingto`,
       description: `Discover ${categoryName} Golden Visa funds. Browse and compare funds to find the best Golden Visa investment for you.`,
       url: `${this.baseUrl}/categories/${this.slugify(categoryName)}`,
       structuredData: this.createCollectionPageSchema(
