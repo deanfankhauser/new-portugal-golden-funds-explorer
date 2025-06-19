@@ -10,22 +10,31 @@ interface MetaTagsProps {
 const MetaTags: React.FC<MetaTagsProps> = ({ seoData }) => {
   const defaultImage = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
 
-  // Force document title update as a fallback with priority
+  // Force document title update with higher priority
   useEffect(() => {
-    // Immediate title update
-    document.title = seoData.title;
+    // Immediate title update with multiple fallbacks
+    const updateTitle = () => {
+      document.title = seoData.title;
+      
+      // Also update any existing title tags
+      const titleTags = document.querySelectorAll('title');
+      titleTags.forEach(tag => {
+        tag.textContent = seoData.title;
+      });
+    };
     
-    // Also update any existing title tags
-    const titleTags = document.querySelectorAll('title');
-    titleTags.forEach(tag => {
-      tag.textContent = seoData.title;
-    });
+    updateTitle();
+    
+    // Additional fallback after a short delay
+    const timer = setTimeout(updateTitle, 50);
     
     console.log('MetaTags: Updated document title to:', seoData.title);
+    
+    return () => clearTimeout(timer);
   }, [seoData.title]);
 
   return (
-    <Helmet>
+    <Helmet prioritizeSeoTags>
       {/* Basic Meta Tags - Force override with key prop and priority */}
       <title key="title">{seoData.title}</title>
       <meta key="description" name="description" content={seoData.description} />

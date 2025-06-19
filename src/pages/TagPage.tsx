@@ -20,21 +20,14 @@ const TagPage = () => {
   const tagName = tagSlug ? slugToTag(tagSlug) : '';
   const allTags = getAllTags();
   
-  // Debug logging to help identify the issue
-  console.log('TagPage Debug Info:');
-  console.log('Tag slug from URL:', tagSlug);
-  console.log('Converted tag name:', tagName);
-  console.log('All available tags:', allTags);
-  console.log('Tag exists in allTags:', allTags.includes(tagName as FundTag));
+  // Find matching tag by checking if any tag matches when converted to slug
+  const matchingTag = allTags.find(tag => 
+    tagToSlug(tag) === tagSlug
+  );
   
-  // Validate tag exists
-  const tagExists = allTags.includes(tagName as FundTag);
-  const funds = tagExists ? getFundsByTag(tagName as FundTag) : [];
-  
-  console.log('Funds found for tag:', funds.length);
-  if (funds.length > 0) {
-    console.log('Sample fund tags:', funds[0].tags);
-  }
+  const tagExists = !!matchingTag;
+  const displayTagName = matchingTag || tagName;
+  const funds = tagExists ? getFundsByTag(matchingTag as FundTag) : [];
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -45,7 +38,7 @@ const TagPage = () => {
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <TagPageEmptyState tagName={tagName} />
+          <TagPageEmptyState tagName={displayTagName} />
         </main>
         <Footer />
       </div>
@@ -54,25 +47,25 @@ const TagPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <PageSEO pageType="tag" tagName={tagName} />
+      <PageSEO pageType="tag" tagName={displayTagName} />
       
       <Header />
       
       <main className="container mx-auto px-4 py-8 flex-1" itemScope itemType="https://schema.org/CollectionPage">
-        <TagBreadcrumbs tagName={tagName} tagSlug={tagSlug || ''} />
-        <TagPageHeader tagName={tagName} />
+        <TagBreadcrumbs tagName={displayTagName} tagSlug={tagSlug || ''} />
+        <TagPageHeader tagName={displayTagName} />
         
         {funds.length > 0 ? (
           <>
-            <TagPageFundSummary count={funds.length} tagName={tagName} />
+            <TagPageFundSummary count={funds.length} tagName={displayTagName} />
             <TagPageFundList funds={funds} />
           </>
         ) : (
-          <TagPageEmptyState tagName={tagName} />
+          <TagPageEmptyState tagName={displayTagName} />
         )}
         
-        <TagPageFAQ tagName={tagName} tagSlug={tagSlug || ''} fundsCount={funds.length} />
-        <RelatedTags allTags={allTags} currentTag={tagName} />
+        <TagPageFAQ tagName={displayTagName} tagSlug={tagSlug || ''} fundsCount={funds.length} />
+        <RelatedTags allTags={allTags} currentTag={displayTagName} />
       </main>
       
       <Footer />
