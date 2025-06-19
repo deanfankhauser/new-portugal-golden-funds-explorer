@@ -1,3 +1,4 @@
+
 import { SEOData } from '../../types/seo';
 import { BaseSEOService } from './baseSEOService';
 
@@ -24,7 +25,7 @@ export class CategoryPageSEOService extends BaseSEOService {
     }
     
     const cleanTagName = tagName.trim();
-    const title = `${cleanTagName} Golden Visa Funds | Movingto`;
+    const title = `${cleanTagName} Golden Visa Funds | Fund Tags | Movingto`;
     
     console.log('CategoryPageSEOService: Clean tag name:', cleanTagName);
     console.log('CategoryPageSEOService: Generated title:', title);
