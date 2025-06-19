@@ -10,7 +10,7 @@ export const getAllTags = (): FundTag[] => {
       tagsSet.add(tag);
     });
   });
-  return Array.from(tagsSet);
+  return Array.from(tagsSet).sort(); // Sort tags alphabetically for consistency
 };
 
 // Function to get funds by tag (now works with investment tags)
