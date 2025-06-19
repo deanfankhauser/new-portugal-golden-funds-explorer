@@ -1,4 +1,3 @@
-
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -59,7 +58,7 @@ export function slugToManager(slug: string): string {
   ).join(' ');
 }
 
-// Tag slug conversion functions - FIXED VERSION
+// Tag slug conversion functions - COMPREHENSIVE FIXED VERSION
 export function tagToSlug(tag: string): string {
   return tag.toLowerCase()
     .replace(/\s+/g, '-')
@@ -69,34 +68,74 @@ export function tagToSlug(tag: string): string {
 }
 
 export function slugToTag(slug: string): string {
-  // Handle special cases for tag names with specific formatting
+  // Comprehensive special cases mapping for all tag types
   const specialCases: Record<string, string> = {
+    // Audience tags
     'golden-visa-funds-for-us-citizens': 'Golden Visa funds for U.S. citizens',
     'golden-visa-funds-for-australian-citizens': 'Golden Visa funds for Australian citizens',
     'golden-visa-funds-for-uk-citizens': 'Golden Visa funds for UK citizens',
     'golden-visa-funds-for-canadian-citizens': 'Golden Visa funds for Canadian citizens',
     'golden-visa-funds-for-chinese-citizens': 'Golden Visa funds for Chinese citizens',
-    'funds-under-500000': 'Funds under €500,000',
-    'funds-500000-1000000': 'Funds €500,000 - €1,000,000',
-    'funds-1000000-2000000': 'Funds €1,000,000 - €2,000,000',
-    'funds-over-2000000': 'Funds over €2,000,000',
-    'low-risk-funds': 'Low risk funds',
-    'medium-risk-funds': 'Medium risk funds',
-    'high-risk-funds': 'High risk funds',
-    'low-apy-funds': 'Low APY funds (0-5%)',
-    'medium-apy-funds': 'Medium APY funds (5-10%)',
-    'high-apy-funds': 'High APY funds (10%+)',
-    'short-lockup-funds': 'Short lock-up funds (0-2 years)',
-    'medium-lockup-funds': 'Medium lock-up funds (2-5 years)',
-    'long-lockup-funds': 'Long lock-up funds (5+ years)',
-    'low-management-fee-funds': 'Low management fee funds (0-1%)',
-    'medium-management-fee-funds': 'Medium management fee funds (1-2%)',
-    'high-management-fee-funds': 'High management fee funds (2%+)',
-    'small-fund-size': 'Small fund size (under €50M)',
-    'medium-fund-size': 'Medium fund size (€50M-€200M)',
-    'large-fund-size': 'Large fund size (over €200M)'
+    
+    // Investment amount tags
+    'under-250k': 'Under €250k',
+    'under-300k': 'Under €300k',
+    'under-350k': 'Under €350k',
+    'under-400k': 'Under €400k',
+    'under-500k': 'Under €500k',
+    '250k-350k': '€250k-€350k',
+    '280k-350k': '€280k-€350k',
+    '300k-400k': '€300k-€400k',
+    '350k-500k': '€350k-€500k',
+    '400k-600k': '€400k-€600k',
+    '500k': '€500k+',
+    
+    // Fund size tags
+    'small-cap-50m': 'Small-cap < €50M',
+    'mid-cap-50-100m': 'Mid-cap €50-100M',
+    'large-cap-100m': 'Large-cap > €100M',
+    
+    // Management fee tags
+    '1-management-fee': '< 1% management fee',
+    '1-15-management-fee': '1-1.5% management fee',
+    '15-management-fee': '> 1.5% management fee',
+    
+    // APY tags
+    '3-annual-yield': '< 3% annual yield',
+    '3-5-annual-yield': '3-5% annual yield',
+    '5-annual-yield': '> 5% annual yield',
+    
+    // Lock-up period tags
+    '5-year-lock-up': '< 5-year lock-up',
+    '5-10-year-lock-up': '5-10 year lock-up',
+    '10-year-lock-up': '> 10-year lock-up',
+    
+    // Risk level tags
+    'low-risk': 'Low-risk',
+    'medium-risk': 'Medium-risk',
+    'high-risk': 'High-risk',
+    
+    // Special percentage/return tags
+    '12-return': '12% Return',
+    '5-yield': '5 % Yield',
+    '5-dividend': '5% Dividend',
+    
+    // Other special tags
+    'mid-cap': 'Mid-Cap',
+    'smes': 'SMEs',
+    'pfic-compliant': 'PFIC-Compliant',
+    'qef-eligible': 'QEF Eligible',
+    'ucits': 'UCITS',
+    'ai-driven': 'AI-Driven',
+    'energy-as-a-service': 'Energy-as-a-Service',
+    'no-lock-up': 'No Lock-Up',
+    'lock-up': 'Lock-Up',
+    'no-fees': 'No Fees',
+    'tax-free': 'Tax Free',
+    'daily-nav': 'Daily NAV'
   };
   
+  // Check for exact match first
   if (specialCases[slug]) {
     return specialCases[slug];
   }
