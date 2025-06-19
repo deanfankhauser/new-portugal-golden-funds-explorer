@@ -32,6 +32,34 @@ const PageSEO: React.FC<PageSEOProps> = (props) => {
         console.log(`PageSEO: ✅ Tag page title format correct`);
       }
     }
+
+    // For category pages, verify title format
+    if (props.pageType === 'category') {
+      console.log(`PageSEO: Processing category page for: "${props.categoryName}"`);
+      console.log(`PageSEO: Generated SEO title: "${seoData.title}"`);
+      
+      // Verify the title includes "Fund Categories"
+      if (props.categoryName && !seoData.title.includes('Fund Categories')) {
+        console.error(`PageSEO: Category page title missing "Fund Categories": "${seoData.title}"`);
+      } else {
+        console.log(`PageSEO: ✅ Category page title format correct`);
+      }
+    }
+
+    // For manager pages, verify title format
+    if (props.pageType === 'manager') {
+      console.log(`PageSEO: Processing manager page for: "${props.managerName}"`);
+      console.log(`PageSEO: Generated SEO title: "${seoData.title}"`);
+      
+      // Verify the title includes manager name and proper format
+      if (props.managerName && !seoData.title.includes(props.managerName)) {
+        console.error(`PageSEO: Manager page title missing manager name: "${seoData.title}"`);
+      } else if (props.managerName && !seoData.title.includes('Fund Manager Profile')) {
+        console.error(`PageSEO: Manager page title missing "Fund Manager Profile": "${seoData.title}"`);
+      } else {
+        console.log(`PageSEO: ✅ Manager page title format correct`);
+      }
+    }
     
     // Multiple aggressive title update attempts
     const updateTitle = () => {
