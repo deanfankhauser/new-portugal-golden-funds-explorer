@@ -10,32 +10,41 @@ interface MetaTagsProps {
 const MetaTags: React.FC<MetaTagsProps> = ({ seoData }) => {
   const defaultImage = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
 
-  // Force document title update with higher priority
+  // Enhanced title update with multiple fallbacks and better error handling
   useEffect(() => {
-    // Immediate title update with multiple fallbacks
     const updateTitle = () => {
-      document.title = seoData.title;
-      
-      // Also update any existing title tags
-      const titleTags = document.querySelectorAll('title');
-      titleTags.forEach(tag => {
-        tag.textContent = seoData.title;
-      });
+      try {
+        // Set document title immediately
+        document.title = seoData.title;
+        
+        // Update any existing title tags
+        const titleTags = document.querySelectorAll('title');
+        titleTags.forEach(tag => {
+          tag.textContent = seoData.title;
+        });
+        
+        console.log('MetaTags: Updated document title to:', seoData.title);
+      } catch (error) {
+        console.error('MetaTags: Error updating title:', error);
+      }
     };
     
+    // Immediate update
     updateTitle();
     
-    // Additional fallback after a short delay
-    const timer = setTimeout(updateTitle, 50);
+    // Additional fallbacks with staggered timing
+    const timers = [
+      setTimeout(updateTitle, 10),
+      setTimeout(updateTitle, 50),
+      setTimeout(updateTitle, 100)
+    ];
     
-    console.log('MetaTags: Updated document title to:', seoData.title);
-    
-    return () => clearTimeout(timer);
+    return () => timers.forEach(timer => clearTimeout(timer));
   }, [seoData.title]);
 
   return (
-    <Helmet prioritizeSeoTags>
-      {/* Basic Meta Tags - Force override with key prop and priority */}
+    <Helmet>
+      {/* Basic Meta Tags - Force override with key prop */}
       <title key="title">{seoData.title}</title>
       <meta key="description" name="description" content={seoData.description} />
       <meta name="author" content="Dean Fankhauser, CEO" />
