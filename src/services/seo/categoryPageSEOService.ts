@@ -1,4 +1,3 @@
-
 import { SEOData } from '../../types/seo';
 import { BaseSEOService } from './baseSEOService';
 
@@ -17,18 +16,31 @@ export class CategoryPageSEOService extends BaseSEOService {
 
   static getTagPageSEO(tagName: string): SEOData {
     console.log('CategoryPageSEOService: Generating SEO for tag:', tagName);
-    const title = `${tagName} Golden Visa Funds | Movingto`;
+    
+    // Ensure we have a valid tag name
+    if (!tagName || tagName.trim() === '') {
+      console.warn('CategoryPageSEOService: Empty tag name provided, using fallback');
+      tagName = 'Investment';
+    }
+    
+    const cleanTagName = tagName.trim();
+    const title = `${cleanTagName} Golden Visa Funds | Movingto`;
+    
+    console.log('CategoryPageSEOService: Clean tag name:', cleanTagName);
     console.log('CategoryPageSEOService: Generated title:', title);
     
-    return {
+    const seoData = {
       title: title,
-      description: `Discover ${tagName} Golden Visa funds. Browse and compare to find the best Golden Visa fund for you.`,
-      url: `${this.baseUrl}/tags/${this.slugify(tagName)}`,
+      description: `Discover ${cleanTagName} Golden Visa funds. Browse and compare to find the best Golden Visa fund for you.`,
+      url: `${this.baseUrl}/tags/${this.slugify(cleanTagName)}`,
       structuredData: this.createCollectionPageSchema(
-        `${tagName} Golden Visa Investment Funds`,
-        `Collection of ${tagName} Golden Visa investment funds`
+        `${cleanTagName} Golden Visa Investment Funds`,
+        `Collection of ${cleanTagName} Golden Visa investment funds`
       )
     };
+    
+    console.log('CategoryPageSEOService: Final SEO data:', seoData);
+    return seoData;
   }
 
   static getCategoriesHubSEO(): SEOData {

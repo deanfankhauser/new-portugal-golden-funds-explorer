@@ -31,10 +31,26 @@ const TagPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    console.log('TagPage: Rendering for tag:', displayTagName);
+    console.log('TagPage: Current URL slug:', tagSlug);
+    console.log('TagPage: Converted tag name:', tagName);
+    console.log('TagPage: Matching tag found:', matchingTag);
+    console.log('TagPage: Final display tag name:', displayTagName);
     console.log('TagPage: Tag exists:', tagExists);
-    console.log('TagPage: Tag slug:', tagSlug);
-  }, [tagSlug, displayTagName, tagExists]);
+    console.log('TagPage: All available tags:', allTags);
+    
+    // Force document title update as fallback
+    if (tagExists && displayTagName) {
+      const expectedTitle = `${displayTagName} Golden Visa Funds | Movingto`;
+      console.log('TagPage: Setting expected title:', expectedTitle);
+      
+      // Multiple attempts to set the title
+      document.title = expectedTitle;
+      setTimeout(() => {
+        document.title = expectedTitle;
+        console.log('TagPage: Title after timeout:', document.title);
+      }, 100);
+    }
+  }, [tagSlug, displayTagName, tagExists, matchingTag, tagName]);
 
   if (!tagExists) {
     return (
