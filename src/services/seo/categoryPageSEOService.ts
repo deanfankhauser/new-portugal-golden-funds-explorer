@@ -16,8 +16,12 @@ export class CategoryPageSEOService extends BaseSEOService {
   }
 
   static getTagPageSEO(tagName: string): SEOData {
+    console.log('CategoryPageSEOService: Generating SEO for tag:', tagName);
+    const title = `${tagName} Golden Visa Funds | Movingto`;
+    console.log('CategoryPageSEOService: Generated title:', title);
+    
     return {
-      title: `Top ${tagName} Golden Visa Funds | Movingto`,
+      title: title,
       description: `Discover ${tagName} Golden Visa funds. Browse and compare to find the best Golden Visa fund for you.`,
       url: `${this.baseUrl}/tags/${this.slugify(tagName)}`,
       structuredData: this.createCollectionPageSchema(

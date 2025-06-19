@@ -31,7 +31,10 @@ const TagPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [tagSlug]);
+    console.log('TagPage: Rendering for tag:', displayTagName);
+    console.log('TagPage: Tag exists:', tagExists);
+    console.log('TagPage: Tag slug:', tagSlug);
+  }, [tagSlug, displayTagName, tagExists]);
 
   if (!tagExists) {
     return (
