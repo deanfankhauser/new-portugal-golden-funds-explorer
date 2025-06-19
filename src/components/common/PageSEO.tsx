@@ -20,10 +20,17 @@ const PageSEO: React.FC<PageSEOProps> = (props) => {
       tagName: props.tagName
     });
     
-    // For tag pages, ensure we have the tag name
-    if (props.pageType === 'tag' && props.tagName) {
+    // For tag pages, ensure we have the tag name and verify title format
+    if (props.pageType === 'tag') {
       console.log(`PageSEO: Processing tag page for: "${props.tagName}"`);
       console.log(`PageSEO: Generated SEO title: "${seoData.title}"`);
+      
+      // Verify the title includes "Fund Tags"
+      if (props.tagName && !seoData.title.includes('Fund Tags')) {
+        console.error(`PageSEO: Tag page title missing "Fund Tags": "${seoData.title}"`);
+      } else {
+        console.log(`PageSEO: ✅ Tag page title format correct`);
+      }
     }
     
     // Multiple aggressive title update attempts
