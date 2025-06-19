@@ -20,9 +20,21 @@ const TagPage = () => {
   const tagName = tagSlug ? slugToTag(tagSlug) : '';
   const allTags = getAllTags();
   
+  // Debug logging to help identify the issue
+  console.log('TagPage Debug Info:');
+  console.log('Tag slug from URL:', tagSlug);
+  console.log('Converted tag name:', tagName);
+  console.log('All available tags:', allTags);
+  console.log('Tag exists in allTags:', allTags.includes(tagName as FundTag));
+  
   // Validate tag exists
   const tagExists = allTags.includes(tagName as FundTag);
   const funds = tagExists ? getFundsByTag(tagName as FundTag) : [];
+  
+  console.log('Funds found for tag:', funds.length);
+  if (funds.length > 0) {
+    console.log('Sample fund tags:', funds[0].tags);
+  }
 
   useEffect(() => {
     window.scrollTo(0, 0);

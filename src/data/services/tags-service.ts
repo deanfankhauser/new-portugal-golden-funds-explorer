@@ -10,10 +10,24 @@ export const getAllTags = (): FundTag[] => {
       tagsSet.add(tag);
     });
   });
-  return Array.from(tagsSet).sort(); // Sort tags alphabetically for consistency
+  const sortedTags = Array.from(tagsSet).sort(); // Sort tags alphabetically for consistency
+  
+  // Debug logging
+  console.log('Total unique tags found:', sortedTags.length);
+  console.log('All tags:', sortedTags);
+  
+  return sortedTags;
 };
 
 // Function to get funds by tag (now works with investment tags)
 export const getFundsByTag = (tag: FundTag): Fund[] => {
-  return funds.filter(fund => fund.tags.includes(tag));
+  console.log('Getting funds for tag:', tag);
+  const matchingFunds = funds.filter(fund => fund.tags.includes(tag));
+  console.log('Matching funds count:', matchingFunds.length);
+  
+  if (matchingFunds.length > 0) {
+    console.log('Sample matching fund:', matchingFunds[0].name, 'tags:', matchingFunds[0].tags);
+  }
+  
+  return matchingFunds;
 };
