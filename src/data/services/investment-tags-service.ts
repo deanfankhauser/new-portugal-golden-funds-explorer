@@ -5,44 +5,38 @@ import { Fund, FundTag } from '../types/funds';
 export const generateInvestmentTags = (minimumInvestment: number): FundTag[] => {
   const tags: FundTag[] = [];
   
-  // Under tags
+  // Under tags - only add the most specific one
   if (minimumInvestment < 250000) {
     tags.push('Under €250k');
-  }
-  if (minimumInvestment < 300000) {
+  } else if (minimumInvestment < 300000) {
     tags.push('Under €300k');
-  }
-  if (minimumInvestment < 350000) {
+  } else if (minimumInvestment < 350000) {
     tags.push('Under €350k');
-  }
-  if (minimumInvestment < 400000) {
+  } else if (minimumInvestment < 400000) {
     tags.push('Under €400k');
-  }
-  if (minimumInvestment < 500000) {
+  } else if (minimumInvestment < 500000) {
     tags.push('Under €500k');
   }
   
-  // Range tags
+  // Range tags - only add the most specific range
   if (minimumInvestment >= 250000 && minimumInvestment <= 350000) {
-    tags.push('€250k-€350k');
-  }
-  if (minimumInvestment >= 280000 && minimumInvestment <= 350000) {
-    tags.push('€280k-€350k');
-  }
-  if (minimumInvestment >= 300000 && minimumInvestment <= 400000) {
+    if (minimumInvestment >= 280000) {
+      tags.push('€280k-€350k');
+    } else {
+      tags.push('€250k-€350k');
+    }
+  } else if (minimumInvestment >= 300000 && minimumInvestment <= 400000) {
     tags.push('€300k-€400k');
-  }
-  if (minimumInvestment >= 350000 && minimumInvestment <= 500000) {
+  } else if (minimumInvestment >= 350000 && minimumInvestment <= 500000) {
     tags.push('€350k-€500k');
-  }
-  if (minimumInvestment >= 400000 && minimumInvestment <= 600000) {
+  } else if (minimumInvestment >= 400000 && minimumInvestment <= 600000) {
     tags.push('€400k-€600k');
-  }
-  if (minimumInvestment >= 500000) {
+  } else if (minimumInvestment >= 500000) {
     tags.push('€500k+');
   }
   
-  return tags;
+  // Remove duplicates using Set
+  return [...new Set(tags)];
 };
 
 // Function to get funds by investment amount (helper for investment-based filtering)

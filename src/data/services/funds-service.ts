@@ -19,9 +19,22 @@ const addTagsToFunds = (funds: Fund[]): Fund[] => {
     const managementFeeTags = generateManagementFeeTags(fund);
     const fundSizeTags = generateFundSizeTags(fund);
     const audienceTags = generateAudienceTags(fund);
+    
+    // Combine all tags and remove duplicates using Set
+    const allTags = [
+      ...fund.tags, 
+      ...investmentTags, 
+      ...riskTags, 
+      ...apyTags, 
+      ...lockupTags, 
+      ...managementFeeTags, 
+      ...fundSizeTags, 
+      ...audienceTags
+    ];
+    
     return {
       ...fund,
-      tags: [...fund.tags, ...investmentTags, ...riskTags, ...apyTags, ...lockupTags, ...managementFeeTags, ...fundSizeTags, ...audienceTags]
+      tags: [...new Set(allTags)] // Remove duplicates
     };
   });
 };
