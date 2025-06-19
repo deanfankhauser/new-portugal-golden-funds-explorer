@@ -4,27 +4,51 @@ import { useParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
+import ComparisonTable from '../components/comparison/ComparisonTable';
 import { useComparisonStructuredData } from '../hooks/useComparisonStructuredData';
-import { getFundById } from '../data/funds';
+import { getComparisonBySlug } from '../data/services/comparison-service';
+import { Card, CardContent } from '@/components/ui/card';
+import { AlertCircle } from 'lucide-react';
 
 const FundComparison = () => {
   const { slug } = useParams<{ slug: string }>();
+  
+  // Get the comparison data using the slug
+  const comparisonData = slug ? getComparisonBySlug(slug) : null;
+  
   const comparisonTitle = slug?.replace(/-/g, ' ') || '';
   
-  // Extract fund IDs from the slug if it contains them
-  const fundIds = slug?.includes('vs') 
-    ? slug.split('vs').map(id => id.trim())
-    : [];
-  
-  // Get the funds being compared
-  const fundsToCompare = fundIds.map(id => getFundById(id)).filter(Boolean);
-  
   // Add structured data for the comparison
-  useComparisonStructuredData(fundsToCompare, 'fund-vs-fund');
+  useComparisonStructuredData(comparisonData ? [comparisonData.fund1, comparisonData.fund2] : [], 'fund-vs-fund');
   
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
+
+  // If no comparison data found, show error
+  if (!comparisonData) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <PageSEO pageType="fund-comparison" comparisonTitle={comparisonTitle} />
+        
+        <Header />
+        
+        <main className="container mx-auto px-4 py-8 flex-1">
+          <Card className="bg-white p-6 rounded-lg shadow-sm">
+            <CardContent className="text-center py-12">
+              <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h1 className="text-2xl font-bold mb-4">Comparison Not Found</h1>
+              <p className="text-gray-600">
+                The fund comparison you're looking for could not be found.
+              </p>
+            </CardContent>
+          </Card>
+        </main>
+        
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -33,9 +57,15 @@ const FundComparison = () => {
       <Header />
       
       <main className="container mx-auto px-4 py-8 flex-1">
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h1 className="text-3xl font-bold mb-4">Fund Comparison: {comparisonTitle}</h1>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-4">
+            Fund Comparison: {comparisonData.fund1.name} vs {comparisonData.fund2.name}
+          </h1>
           <p className="text-gray-600">Compare the selected funds side by side.</p>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-sm border">
+          <ComparisonTable funds={[comparisonData.fund1, comparisonData.fund2]} />
         </div>
       </main>
       
