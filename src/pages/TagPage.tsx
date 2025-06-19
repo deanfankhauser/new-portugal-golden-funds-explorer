@@ -31,16 +31,30 @@ const TagPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    console.log('TagPage: Current URL slug:', tagSlug);
-    console.log('TagPage: Converted tag name:', tagName);
-    console.log('TagPage: Matching tag found:', matchingTag);
-    console.log('TagPage: Final display tag name:', displayTagName);
-    console.log('TagPage: Tag exists:', tagExists);
-    console.log('TagPage: All available tags:', allTags);
     
-    // Force document title update as fallback
+    // Enhanced debugging for tag processing
+    console.log('TagPage: Detailed debugging info:', {
+      tagSlug,
+      convertedTagName: tagName,
+      matchingTag,
+      displayTagName,
+      tagExists,
+      allAvailableTags: allTags,
+      fundsCount: funds.length
+    });
+    
+    // Additional debugging for the slug conversion
+    if (tagSlug) {
+      console.log('TagPage: Slug conversion test:', {
+        slug: tagSlug,
+        slugToTag: slugToTag(tagSlug),
+        backToSlug: tagToSlug(slugToTag(tagSlug))
+      });
+    }
+    
+    // Force document title update as fallback with proper tag name
     if (tagExists && displayTagName) {
-      const expectedTitle = `${displayTagName} Golden Visa Funds | Movingto`;
+      const expectedTitle = `${displayTagName} Golden Visa Funds | Fund Tags | Movingto`;
       console.log('TagPage: Setting expected title:', expectedTitle);
       
       // Multiple attempts to set the title
@@ -51,6 +65,16 @@ const TagPage = () => {
       }, 100);
     }
   }, [tagSlug, displayTagName, tagExists, matchingTag, tagName]);
+
+  // Add validation to ensure we pass a valid tag name to PageSEO
+  const validTagName = tagExists && displayTagName ? displayTagName : '';
+  
+  console.log('TagPage: Passing to PageSEO:', {
+    pageType: 'tag',
+    tagName: validTagName,
+    tagExists,
+    displayTagName
+  });
 
   if (!tagExists) {
     return (
@@ -66,7 +90,7 @@ const TagPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <PageSEO pageType="tag" tagName={displayTagName} />
+      <PageSEO pageType="tag" tagName={validTagName} />
       
       <Header />
       

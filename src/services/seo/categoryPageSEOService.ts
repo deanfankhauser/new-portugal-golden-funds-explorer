@@ -19,17 +19,29 @@ export class CategoryPageSEOService extends BaseSEOService {
   static getTagPageSEO(tagName: string): SEOData {
     console.log('CategoryPageSEOService: Generating SEO for tag:', tagName);
     
-    // Ensure we have a valid tag name
-    if (!tagName || tagName.trim() === '') {
-      console.warn('CategoryPageSEOService: Empty tag name provided, using fallback');
+    // Enhanced validation and debugging for tag name
+    if (!tagName || tagName.trim() === '' || tagName === 'undefined' || tagName === 'null') {
+      console.warn('CategoryPageSEOService: Invalid tag name provided:', tagName, 'using fallback');
       tagName = 'Investment';
     }
     
     const cleanTagName = tagName.trim();
+    
+    // Add more detailed logging
+    console.log('CategoryPageSEOService: Processing tag:', {
+      original: tagName,
+      cleaned: cleanTagName,
+      isEmpty: cleanTagName === '',
+      length: cleanTagName.length
+    });
+    
     const title = `${cleanTagName} Golden Visa Funds | Fund Tags | Movingto`;
     
-    console.log('CategoryPageSEOService: Clean tag name:', cleanTagName);
-    console.log('CategoryPageSEOService: Generated title:', title);
+    console.log('CategoryPageSEOService: Generated SEO data:', {
+      title,
+      tagName: cleanTagName,
+      url: `${this.baseUrl}/tags/${this.slugify(cleanTagName)}`
+    });
     
     const seoData = {
       title: title,
@@ -41,7 +53,7 @@ export class CategoryPageSEOService extends BaseSEOService {
       )
     };
     
-    console.log('CategoryPageSEOService: Final SEO data:', seoData);
+    console.log('CategoryPageSEOService: Final SEO data for tag page:', seoData);
     return seoData;
   }
 
