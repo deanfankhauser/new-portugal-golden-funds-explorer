@@ -11,26 +11,7 @@ import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 const FundDetails = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
-  
-  // Enhanced fund lookup to handle proxy routing
-  let fund = null;
-  let finalId = id;
-  
-  // If we're on a proxy route like /horizon-fund, look up the fund directly
-  if (id && !id.startsWith('funds/')) {
-    fund = getFundById(id);
-    console.log('🚨 FundDetails: Direct fund lookup for proxy route:', { id, found: !!fund });
-  }
-  
-  // If not found and we have a complex path, try extracting the fund ID
-  if (!fund && location.pathname.includes('/funds/')) {
-    const pathParts = location.pathname.split('/');
-    const fundIdFromPath = pathParts[pathParts.length - 1];
-    fund = getFundById(fundIdFromPath);
-    finalId = fundIdFromPath;
-    console.log('🚨 FundDetails: Path-based fund lookup:', { fundIdFromPath, found: !!fund });
-  }
-  
+  const fund = id ? getFundById(id) : null;
   const { addToRecentlyViewed } = useRecentlyViewed();
 
   useEffect(() => {
@@ -44,26 +25,20 @@ const FundDetails = () => {
       fullUrl: window.location.href
     });
     console.log('🚨 FundDetails: Fund lookup result:', {
-      originalId: id,
-      finalId,
       foundFund: !!fund,
       fundName: fund?.name,
       fundId: fund?.id
     });
     
-    // Check if URL matches expected patterns
-    const patterns = [
-      /^\/funds\/([^\/]+)$/, // Standard pattern
-      /^\/([^\/]+)$/ // Proxy pattern
-    ];
-    
-    patterns.forEach((pattern, index) => {
-      const match = location.pathname.match(pattern);
-      console.log(`🚨 FundDetails: Pattern ${index + 1} analysis:`, {
-        pattern: pattern.toString(),
-        matches: !!match,
-        extractedId: match ? match[1] : null
-      });
+    // Check if URL matches expected pattern
+    const expectedPattern = /^\/funds\/([^\/]+)$/;
+    const match = location.pathname.match(expectedPattern);
+    console.log('🚨 FundDetails: URL pattern analysis:', {
+      pathname: location.pathname,
+      expectedPattern: expectedPattern.toString(),
+      matches: !!match,
+      extractedId: match ? match[1] : null,
+      routeParamId: id
     });
 
     if (fund) {
@@ -78,10 +53,10 @@ const FundDetails = () => {
     }
 
     window.scrollTo(0, 0);
-  }, [fund, addToRecentlyViewed, location, id, finalId]);
+  }, [fund, addToRecentlyViewed, location, id]);
 
   if (!fund) {
-    console.error('🚨 FundDetails: Rendering 404 - Fund not found for ID:', finalId);
+    console.error('🚨 FundDetails: Rendering 404 - Fund not found for ID:', id);
     console.error('🚨 FundDetails: This is why you see default homepage SEO!');
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
@@ -91,7 +66,7 @@ const FundDetails = () => {
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Fund Not Found</h1>
             <p className="text-gray-600">The fund you're looking for doesn't exist.</p>
-            <p className="text-sm text-gray-500 mt-2">ID searched: {finalId}</p>
+            <p className="text-sm text-gray-500 mt-2">ID searched: {id}</p>
             <p className="text-sm text-gray-500">URL: {location.pathname}</p>
           </div>
         </main>

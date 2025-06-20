@@ -145,8 +145,6 @@ function App() {
                 <div className="min-h-screen w-full bg-gray-50">
                   <Routes>
                     <Route path="/" element={<Index />} />
-                    {/* Updated route patterns to work with proxy */}
-                    <Route path="/:id" element={<FundDetails />} />
                     <Route path="/funds/:id" element={<FundDetails />} />
                     <Route path="/tags" element={<TagsHub />} />
                     <Route path="/tags/:tag" element={<TagPage />} />
