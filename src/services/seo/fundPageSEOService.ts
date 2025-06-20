@@ -4,21 +4,36 @@ import { BaseSEOService } from './baseSEOService';
 
 export class FundPageSEOService extends BaseSEOService {
   static getFundPageSEO(fundName: string): SEOData {
-    return {
-      title: `${fundName} | Investment Fund Details | Movingto`,
-      description: `${fundName} - Detailed information about this Golden Visa investment fund. Min investment, fees, returns and more.`,
-      url: `${this.baseUrl}/funds/${this.slugify(fundName)}`,
+    console.log('FundPageSEOService: Generating SEO for fund:', fundName);
+    
+    if (!fundName || fundName.trim() === '') {
+      console.error('FundPageSEOService: Empty or invalid fund name provided:', fundName);
+      return this.getHomepageSEO(); // Fallback to homepage SEO
+    }
+
+    const cleanFundName = fundName.trim();
+    const title = `${cleanFundName} | Investment Fund Details | Movingto`;
+    
+    console.log('FundPageSEOService: Generated fund page title:', title);
+    
+    const seoData = {
+      title: title,
+      description: `${cleanFundName} - Detailed information about this Golden Visa investment fund. Min investment, fees, returns and more.`,
+      url: `${this.baseUrl}/funds/${this.slugify(cleanFundName)}`,
       structuredData: {
         ...this.createBaseStructuredData(),
         '@type': 'FinancialProduct',
-        'name': fundName,
-        'description': `Golden Visa investment fund: ${fundName}`,
+        'name': cleanFundName,
+        'description': `Golden Visa investment fund: ${cleanFundName}`,
         'provider': {
           '@type': 'Organization',
           'name': 'Fund Manager'
         }
       }
     };
+
+    console.log('FundPageSEOService: Final fund SEO data:', seoData);
+    return seoData;
   }
 
   static getHomepageSEO(): SEOData {

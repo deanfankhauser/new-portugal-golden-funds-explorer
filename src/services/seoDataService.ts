@@ -1,4 +1,3 @@
-
 import { SEOData, PageSEOProps } from '../types/seo';
 import { FundPageSEOService } from './seo/fundPageSEOService';
 import { ManagerPageSEOService } from './seo/managerPageSEOService';
@@ -15,21 +14,53 @@ export class SEODataService {
     tagName,
     comparisonTitle
   }: PageSEOProps): SEOData {
+    console.log('SEODataService: Processing SEO data request:', {
+      pageType,
+      fundName,
+      managerName,
+      categoryName,
+      tagName,
+      comparisonTitle
+    });
+
     switch (pageType) {
       case 'homepage':
+        console.log('SEODataService: Generating homepage SEO');
         return FundPageSEOService.getHomepageSEO();
       
       case 'fund':
-        return FundPageSEOService.getFundPageSEO(fundName!);
+        console.log('SEODataService: Generating fund SEO for:', fundName);
+        if (!fundName) {
+          console.error('SEODataService: Fund name is missing for fund page!');
+          return FundPageSEOService.getHomepageSEO(); // Fallback
+        }
+        const fundSEO = FundPageSEOService.getFundPageSEO(fundName);
+        console.log('SEODataService: Generated fund SEO:', fundSEO);
+        return fundSEO;
       
       case 'manager':
-        return ManagerPageSEOService.getManagerPageSEO(managerName!);
+        console.log('SEODataService: Generating manager SEO for:', managerName);
+        if (!managerName) {
+          console.error('SEODataService: Manager name is missing for manager page!');
+          return FundPageSEOService.getHomepageSEO(); // Fallback
+        }
+        return ManagerPageSEOService.getManagerPageSEO(managerName);
       
       case 'category':
-        return CategoryPageSEOService.getCategoryPageSEO(categoryName!);
+        console.log('SEODataService: Generating category SEO for:', categoryName);
+        if (!categoryName) {
+          console.error('SEODataService: Category name is missing for category page!');
+          return FundPageSEOService.getHomepageSEO(); // Fallback
+        }
+        return CategoryPageSEOService.getCategoryPageSEO(categoryName);
       
       case 'tag':
-        return CategoryPageSEOService.getTagPageSEO(tagName!);
+        console.log('SEODataService: Generating tag SEO for:', tagName);
+        if (!tagName) {
+          console.error('SEODataService: Tag name is missing for tag page!');
+          return CategoryPageSEOService.getTagPageSEO('Investment'); // Fallback
+        }
+        return CategoryPageSEOService.getTagPageSEO(tagName);
 
       case '404':
         return UtilityPageSEOService.getNotFoundPageSEO();
@@ -71,6 +102,7 @@ export class SEODataService {
         return CategoryPageSEOService.getTagsHubSEO();
       
       default:
+        console.log('SEODataService: Using default homepage SEO for unknown page type:', pageType);
         return FundPageSEOService.getHomepageSEO();
     }
   }

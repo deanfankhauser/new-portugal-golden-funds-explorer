@@ -20,6 +20,21 @@ const PageSEO: React.FC<PageSEOProps> = (props) => {
       tagName: props.tagName
     });
     
+    // For fund pages, verify title format and fund name inclusion
+    if (props.pageType === 'fund') {
+      console.log(`PageSEO: Processing fund page for: "${props.fundName}"`);
+      console.log(`PageSEO: Generated SEO title: "${seoData.title}"`);
+      
+      // Verify the title includes the fund name
+      if (props.fundName && !seoData.title.includes(props.fundName)) {
+        console.error(`PageSEO: Fund page title missing fund name: "${props.fundName}" in title: "${seoData.title}"`);
+      } else if (props.fundName && seoData.title === 'Portugal Golden Visa Investment Funds | Eligible Investments 2025') {
+        console.error(`PageSEO: Fund page using default homepage title instead of fund-specific title!`);
+      } else if (props.fundName) {
+        console.log(`PageSEO: ✅ Fund page title format correct for "${props.fundName}"`);
+      }
+    }
+    
     // For tag pages, ensure we have the tag name and verify title format
     if (props.pageType === 'tag') {
       console.log(`PageSEO: Processing tag page for: "${props.tagName}"`);
