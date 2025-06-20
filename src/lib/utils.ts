@@ -12,7 +12,8 @@ export function categoryToSlug(category: string): string {
     .trim()
     .replace(/\s+/g, '-')
     .replace(/[^\w\-]+/g, '')
-    .replace(/--+/g, '-'); // Replace multiple dashes with single dash
+    .replace(/--+/g, '-') // Replace multiple dashes with single dash
+    .replace(/^-+|-+$/g, ''); // Remove leading and trailing dashes
 }
 
 export function slugToCategory(slug: string): string {
@@ -20,6 +21,7 @@ export function slugToCategory(slug: string): string {
   
   // Handle special cases with double dashes that represent "&" or other separators
   let converted = slug
+    .replace(/^-+|-+$/g, '') // Remove leading and trailing dashes first
     .replace(/--/g, ' & ') // Convert double dashes to " & "
     .replace(/-/g, ' ') // Convert single dashes to spaces
     .replace(/\b\w/g, l => l.toUpperCase()); // Capitalize first letter of each word
@@ -33,13 +35,21 @@ export function tagToSlug(tag: string): string {
     .toLowerCase()
     .trim()
     .replace(/\s+/g, '-')
-    .replace(/[^\w\-]+/g, '');
+    .replace(/[^\w\-]+/g, '')
+    .replace(/--+/g, '-') // Replace multiple dashes with single dash
+    .replace(/^-+|-+$/g, ''); // Remove leading and trailing dashes
 }
 
 export function slugToTag(slug: string): string {
-  return slug
-    .replace(/-/g, ' ')
-    .replace(/\b\w/g, l => l.toUpperCase());
+  console.log('🔥 slugToTag: Converting slug:', slug);
+  
+  let converted = slug
+    .replace(/^-+|-+$/g, '') // Remove leading and trailing dashes first
+    .replace(/-/g, ' ') // Convert dashes to spaces
+    .replace(/\b\w/g, l => l.toUpperCase()); // Capitalize first letter of each word
+  
+  console.log('🔥 slugToTag: Converted to:', converted);
+  return converted;
 }
 
 export function managerToSlug(manager: string): string {
@@ -48,11 +58,13 @@ export function managerToSlug(manager: string): string {
     .trim()
     .replace(/\s+/g, '-')
     .replace(/[^\w\-]+/g, '')
-    .replace(/--+/g, '-');
+    .replace(/--+/g, '-')
+    .replace(/^-+|-+$/g, ''); // Remove leading and trailing dashes
 }
 
 export function slugToManager(slug: string): string {
   return slug
+    .replace(/^-+|-+$/g, '') // Remove leading and trailing dashes first
     .replace(/-/g, ' ')
     .replace(/\b\w/g, l => l.toUpperCase());
 }

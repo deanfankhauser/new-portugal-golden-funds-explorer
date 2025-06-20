@@ -17,17 +17,67 @@ import { slugToTag, tagToSlug } from '../lib/utils';
 
 const TagPage = () => {
   const { tag: tagSlug } = useParams<{ tag: string }>();
-  const tagName = tagSlug ? slugToTag(tagSlug) : '';
   const allTags = getAllTags();
   
-  // Find matching tag by checking if any tag matches when converted to slug
-  const matchingTag = allTags.find(tag => 
-    tagToSlug(tag) === tagSlug
-  );
+  console.log('TagPage: Processing tag slug:', tagSlug);
+  console.log('TagPage: Available tags:', allTags);
+  
+  // Enhanced tag matching logic with multiple fallback strategies
+  let matchingTag: string | undefined;
+  let displayTagName = '';
+  
+  if (tagSlug) {
+    // Strategy 1: Exact slug match
+    matchingTag = allTags.find(tag => tagToSlug(tag) === tagSlug);
+    
+    // Strategy 2: If no exact match, try converting slug back and finding partial matches
+    if (!matchingTag) {
+      const convertedTagName = slugToTag(tagSlug);
+      console.log('TagPage: No exact match, trying converted name:', convertedTagName);
+      
+      // Look for tags that contain the converted name or vice versa
+      matchingTag = allTags.find(tag => {
+        const tagLower = tag.toLowerCase();
+        const convertedLower = convertedTagName.toLowerCase();
+        return tagLower.includes(convertedLower) || convertedLower.includes(tagLower);
+      });
+      
+      if (matchingTag) {
+        console.log('TagPage: Found partial match:', matchingTag);
+      }
+    }
+    
+    // Strategy 3: Try handling special numeric prefixes (like "15 Management Fee")
+    if (!matchingTag && tagSlug.match(/^\d+/)) {
+      const withoutLeadingNumbers = tagSlug.replace(/^-*\d+\s*-*/, '');
+      const convertedWithoutNumbers = slugToTag(withoutLeadingNumbers);
+      console.log('TagPage: Trying without leading numbers:', convertedWithoutNumbers);
+      
+      matchingTag = allTags.find(tag => {
+        const tagLower = tag.toLowerCase();
+        const convertedLower = convertedWithoutNumbers.toLowerCase();
+        return tagLower.includes(convertedLower) || convertedLower.includes(tagLower);
+      });
+    }
+    
+    // Set display name
+    if (matchingTag) {
+      displayTagName = matchingTag;
+    } else {
+      displayTagName = slugToTag(tagSlug);
+    }
+  }
   
   const tagExists = !!matchingTag;
-  const displayTagName = matchingTag || tagName;
   const funds = tagExists ? getFundsByTag(matchingTag as FundTag) : [];
+
+  console.log('TagPage: Final results:', {
+    tagSlug,
+    matchingTag,
+    displayTagName,
+    tagExists,
+    fundsCount: funds.length
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -35,22 +85,12 @@ const TagPage = () => {
     // Enhanced debugging for tag processing
     console.log('TagPage: Detailed debugging info:', {
       tagSlug,
-      convertedTagName: tagName,
       matchingTag,
       displayTagName,
       tagExists,
       allAvailableTags: allTags,
       fundsCount: funds.length
     });
-    
-    // Additional debugging for the slug conversion
-    if (tagSlug) {
-      console.log('TagPage: Slug conversion test:', {
-        slug: tagSlug,
-        slugToTag: slugToTag(tagSlug),
-        backToSlug: tagToSlug(slugToTag(tagSlug))
-      });
-    }
     
     // Force document title update as fallback with proper tag name
     if (tagExists && displayTagName) {
@@ -64,7 +104,7 @@ const TagPage = () => {
         console.log('TagPage: Title after timeout:', document.title);
       }, 100);
     }
-  }, [tagSlug, displayTagName, tagExists, matchingTag, tagName]);
+  }, [tagSlug, displayTagName, tagExists, matchingTag]);
 
   // Add validation to ensure we pass a valid tag name to PageSEO
   const validTagName = tagExists && displayTagName ? displayTagName : '';

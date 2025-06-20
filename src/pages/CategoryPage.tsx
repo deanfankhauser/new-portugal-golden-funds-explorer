@@ -26,22 +26,60 @@ const CategoryPage = () => {
   const allCategories = getAllCategories();
   console.log('🔥 CategoryPage: All available categories:', allCategories);
   
-  // Enhanced category name conversion with debugging
-  const categoryName = categorySlug ? slugToCategory(categorySlug) : '';
-  console.log('🔥 CategoryPage: Converted category name:', categoryName);
+  // Enhanced category matching logic with multiple fallback strategies
+  let matchingCategory: string | undefined;
+  let displayCategoryName = '';
   
-  // Find matching category by checking if any category matches when converted to slug
-  const matchingCategory = allCategories.find(cat => {
-    const catSlug = categoryToSlug(cat);
-    console.log(`🔥 CategoryPage: Comparing "${catSlug}" with "${categorySlug}"`);
-    return catSlug === categorySlug;
-  });
+  if (categorySlug) {
+    // Strategy 1: Exact slug match
+    matchingCategory = allCategories.find(cat => {
+      const catSlug = categoryToSlug(cat);
+      console.log(`🔥 CategoryPage: Comparing "${catSlug}" with "${categorySlug}"`);
+      return catSlug === categorySlug;
+    });
+    
+    // Strategy 2: If no exact match, try converting slug back and finding partial matches
+    if (!matchingCategory) {
+      const convertedCategoryName = slugToCategory(categorySlug);
+      console.log('🔥 CategoryPage: No exact match, trying converted name:', convertedCategoryName);
+      
+      // Look for categories that contain the converted name or vice versa
+      matchingCategory = allCategories.find(cat => {
+        const catLower = cat.toLowerCase();
+        const convertedLower = convertedCategoryName.toLowerCase();
+        return catLower.includes(convertedLower) || convertedLower.includes(catLower);
+      });
+      
+      if (matchingCategory) {
+        console.log('🔥 CategoryPage: Found partial match:', matchingCategory);
+      }
+    }
+    
+    // Strategy 3: Try handling categories with special characters or complex names
+    if (!matchingCategory) {
+      const normalizedSlug = categorySlug.replace(/^-+|-+$/g, ''); // Remove leading/trailing dashes
+      const convertedNormalized = slugToCategory(normalizedSlug);
+      console.log('🔥 CategoryPage: Trying normalized conversion:', convertedNormalized);
+      
+      matchingCategory = allCategories.find(cat => {
+        const catNormalized = cat.toLowerCase().replace(/[^\w\s]/g, '').trim();
+        const convertedNormalized = convertedNormalized.toLowerCase().replace(/[^\w\s]/g, '').trim();
+        return catNormalized === convertedNormalized;
+      });
+    }
+    
+    // Set display name
+    if (matchingCategory) {
+      displayCategoryName = matchingCategory;
+    } else {
+      displayCategoryName = slugToCategory(categorySlug);
+    }
+  }
   
   console.log('🔥 CategoryPage: Matching category found:', matchingCategory);
   
   const categoryExists = !!matchingCategory;
   const funds = categoryExists ? getFundsByCategory(matchingCategory as FundCategory) : [];
-  const displayCategoryName = matchingCategory || categoryName;
   
   console.log('🔥 CategoryPage: Final results:', {
     categoryExists,
