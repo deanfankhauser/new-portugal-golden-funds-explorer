@@ -12,7 +12,8 @@ export function categoryToSlug(category: string): string {
     .trim()
     .replace(/\s+/g, '-')
     .replace(/[^\w\-]+/g, '')
-    .replace(/--+/g, '-'); // Replace multiple dashes with single dash
+    .replace(/--+/g, '-')
+    .replace(/^-+|-+$/g, ''); // Remove leading and trailing dashes
 }
 
 export function slugToCategory(slug: string): string {
@@ -33,13 +34,33 @@ export function tagToSlug(tag: string): string {
     .toLowerCase()
     .trim()
     .replace(/\s+/g, '-')
-    .replace(/[^\w\-]+/g, '');
+    .replace(/[^\w\-]+/g, '')
+    .replace(/--+/g, '-')
+    .replace(/^-+|-+$/g, ''); // Remove leading and trailing dashes
 }
 
 export function slugToTag(slug: string): string {
-  return slug
+  console.log('🔥 slugToTag: Converting slug:', slug);
+  
+  // Clean up the slug first
+  const cleanSlug = slug.replace(/^-+|-+$/g, ''); // Remove leading/trailing dashes
+  
+  // Handle special cases for tags that start with symbols or numbers
+  let converted = cleanSlug
     .replace(/-/g, ' ')
     .replace(/\b\w/g, l => l.toUpperCase());
+  
+  // Handle special cases for percentage and number prefixes
+  if (cleanSlug.startsWith('15-management') || cleanSlug.includes('15-management')) {
+    converted = '> 1.5% management fee';
+  } else if (cleanSlug.startsWith('1-management') || cleanSlug.includes('1-management')) {
+    converted = '< 1% management fee';
+  } else if (cleanSlug.startsWith('1-1-5-management') || cleanSlug.includes('1-1-5-management')) {
+    converted = '1-1.5% management fee';
+  }
+  
+  console.log('🔥 slugToTag: Converted to:', converted);
+  return converted;
 }
 
 export function managerToSlug(manager: string): string {
@@ -48,7 +69,8 @@ export function managerToSlug(manager: string): string {
     .trim()
     .replace(/\s+/g, '-')
     .replace(/[^\w\-]+/g, '')
-    .replace(/--+/g, '-');
+    .replace(/--+/g, '-')
+    .replace(/^-+|-+$/g, ''); // Remove leading and trailing dashes
 }
 
 export function slugToManager(slug: string): string {

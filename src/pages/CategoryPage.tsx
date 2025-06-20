@@ -18,41 +18,66 @@ import { slugToCategory, categoryToSlug } from '../lib/utils';
 const CategoryPage = () => {
   const { category: categorySlug } = useParams<{ category: string }>();
   
-  console.log('🔥 CategoryPage: ===== PROCESSING CATEGORY PAGE =====');
-  console.log('🔥 CategoryPage: URL slug received:', categorySlug);
-  console.log('🔥 CategoryPage: Current URL:', window.location.href);
-  console.log('🔥 CategoryPage: Pathname:', window.location.pathname);
-  
+  console.log('🔥 CategoryPage: Processing category slug:', categorySlug);
   const allCategories = getAllCategories();
   console.log('🔥 CategoryPage: All available categories:', allCategories);
   
-  // Enhanced category name conversion with debugging
-  const categoryName = categorySlug ? slugToCategory(categorySlug) : '';
-  console.log('🔥 CategoryPage: Converted category name:', categoryName);
+  // Enhanced matching logic with multiple strategies
+  let matchingCategory: string | null = null;
+  let displayCategoryName = '';
   
-  // Find matching category by checking if any category matches when converted to slug
-  const matchingCategory = allCategories.find(cat => {
-    const catSlug = categoryToSlug(cat);
-    console.log(`🔥 CategoryPage: Comparing "${catSlug}" with "${categorySlug}"`);
-    return catSlug === categorySlug;
-  });
-  
-  console.log('🔥 CategoryPage: Matching category found:', matchingCategory);
+  if (categorySlug) {
+    // Strategy 1: Exact slug match
+    matchingCategory = allCategories.find(cat => categoryToSlug(cat) === categorySlug) || null;
+    
+    // Strategy 2: Handle double-dash cases for "&" separators
+    if (!matchingCategory && categorySlug.includes('--')) {
+      // Try converting double dashes to & and see if it matches
+      const withAmpersand = categorySlug.replace(/--/g, '-&-');
+      matchingCategory = allCategories.find(cat => categoryToSlug(cat) === withAmpersand) || null;
+      
+      // If still not found, try direct conversion
+      if (!matchingCategory) {
+        const convertedCategory = slugToCategory(categorySlug);
+        matchingCategory = allCategories.find(cat => 
+          cat.toLowerCase() === convertedCategory.toLowerCase()
+        ) || null;
+      }
+    }
+    
+    // Strategy 3: Fuzzy matching for partial matches
+    if (!matchingCategory) {
+      const convertedCategory = slugToCategory(categorySlug);
+      matchingCategory = allCategories.find(cat => 
+        cat.toLowerCase().includes(convertedCategory.toLowerCase()) ||
+        convertedCategory.toLowerCase().includes(cat.toLowerCase())
+      ) || null;
+    }
+    
+    displayCategoryName = matchingCategory || slugToCategory(categorySlug);
+    
+    console.log('🔥 CategoryPage: Matching results:', {
+      categorySlug,
+      matchingCategory,
+      displayCategoryName,
+      categoryExists: !!matchingCategory
+    });
+  }
   
   const categoryExists = !!matchingCategory;
   const funds = categoryExists ? getFundsByCategory(matchingCategory as FundCategory) : [];
-  const displayCategoryName = matchingCategory || categoryName;
-  
-  console.log('🔥 CategoryPage: Final results:', {
-    categoryExists,
-    fundsCount: funds.length,
-    displayCategoryName,
-    willUseSEO: displayCategoryName
-  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [categorySlug]);
+    
+    console.log('🔥 CategoryPage: Final processing results:', {
+      categorySlug,
+      matchingCategory,
+      displayCategoryName,
+      categoryExists,
+      fundsCount: funds.length
+    });
+  }, [categorySlug, matchingCategory, displayCategoryName, categoryExists]);
 
   if (!categoryExists) {
     console.error('🔥 CategoryPage: ❌ Category not found - will show 404');

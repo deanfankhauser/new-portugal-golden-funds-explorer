@@ -17,64 +17,64 @@ import { slugToTag, tagToSlug } from '../lib/utils';
 
 const TagPage = () => {
   const { tag: tagSlug } = useParams<{ tag: string }>();
-  const tagName = tagSlug ? slugToTag(tagSlug) : '';
   const allTags = getAllTags();
   
-  // Find matching tag by checking if any tag matches when converted to slug
-  const matchingTag = allTags.find(tag => 
-    tagToSlug(tag) === tagSlug
-  );
+  console.log('🔥 TagPage: Processing tag slug:', tagSlug);
+  console.log('🔥 TagPage: All available tags:', allTags);
+  
+  // Enhanced matching logic with multiple strategies
+  let matchingTag: string | null = null;
+  let displayTagName = '';
+  
+  if (tagSlug) {
+    // Strategy 1: Exact slug match
+    matchingTag = allTags.find(tag => tagToSlug(tag) === tagSlug) || null;
+    
+    // Strategy 2: Partial match for special cases
+    if (!matchingTag) {
+      // Handle percentage and management fee tags specifically
+      if (tagSlug.includes('15-management') || tagSlug === '-15-management-fee') {
+        matchingTag = allTags.find(tag => tag.includes('> 1.5% management')) || null;
+      } else if (tagSlug.includes('1-management') && !tagSlug.includes('15')) {
+        matchingTag = allTags.find(tag => tag.includes('< 1% management')) || null;
+      } else if (tagSlug.includes('1-1-5-management')) {
+        matchingTag = allTags.find(tag => tag.includes('1-1.5% management')) || null;
+      }
+      
+      // Try fuzzy matching by converting slug back to tag and finding similar
+      if (!matchingTag) {
+        const convertedTag = slugToTag(tagSlug);
+        matchingTag = allTags.find(tag => 
+          tag.toLowerCase().includes(convertedTag.toLowerCase()) ||
+          convertedTag.toLowerCase().includes(tag.toLowerCase())
+        ) || null;
+      }
+    }
+    
+    displayTagName = matchingTag || slugToTag(tagSlug);
+    
+    console.log('🔥 TagPage: Matching results:', {
+      tagSlug,
+      matchingTag,
+      displayTagName,
+      tagExists: !!matchingTag
+    });
+  }
   
   const tagExists = !!matchingTag;
-  const displayTagName = matchingTag || tagName;
   const funds = tagExists ? getFundsByTag(matchingTag as FundTag) : [];
 
   useEffect(() => {
     window.scrollTo(0, 0);
     
-    // Enhanced debugging for tag processing
-    console.log('TagPage: Detailed debugging info:', {
+    console.log('🔥 TagPage: Final processing results:', {
       tagSlug,
-      convertedTagName: tagName,
       matchingTag,
       displayTagName,
       tagExists,
-      allAvailableTags: allTags,
       fundsCount: funds.length
     });
-    
-    // Additional debugging for the slug conversion
-    if (tagSlug) {
-      console.log('TagPage: Slug conversion test:', {
-        slug: tagSlug,
-        slugToTag: slugToTag(tagSlug),
-        backToSlug: tagToSlug(slugToTag(tagSlug))
-      });
-    }
-    
-    // Force document title update as fallback with proper tag name
-    if (tagExists && displayTagName) {
-      const expectedTitle = `${displayTagName} Golden Visa Funds | Fund Tags | Movingto`;
-      console.log('TagPage: Setting expected title:', expectedTitle);
-      
-      // Multiple attempts to set the title
-      document.title = expectedTitle;
-      setTimeout(() => {
-        document.title = expectedTitle;
-        console.log('TagPage: Title after timeout:', document.title);
-      }, 100);
-    }
-  }, [tagSlug, displayTagName, tagExists, matchingTag, tagName]);
-
-  // Add validation to ensure we pass a valid tag name to PageSEO
-  const validTagName = tagExists && displayTagName ? displayTagName : '';
-  
-  console.log('TagPage: Passing to PageSEO:', {
-    pageType: 'tag',
-    tagName: validTagName,
-    tagExists,
-    displayTagName
-  });
+  }, [tagSlug, matchingTag, displayTagName, tagExists]);
 
   if (!tagExists) {
     return (
@@ -90,7 +90,7 @@ const TagPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <PageSEO pageType="tag" tagName={validTagName} />
+      <PageSEO pageType="tag" tagName={displayTagName} />
       
       <Header />
       
