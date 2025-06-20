@@ -1,3 +1,4 @@
+
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -36,6 +37,21 @@ export function tagToSlug(tag: string): string {
 }
 
 export function slugToTag(slug: string): string {
+  return slug
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, l => l.toUpperCase());
+}
+
+export function managerToSlug(manager: string): string {
+  return manager
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/--+/g, '-');
+}
+
+export function slugToManager(slug: string): string {
   return slug
     .replace(/-/g, ' ')
     .replace(/\b\w/g, l => l.toUpperCase());
