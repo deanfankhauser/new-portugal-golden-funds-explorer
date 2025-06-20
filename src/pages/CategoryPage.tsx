@@ -17,23 +17,45 @@ import { slugToCategory, categoryToSlug } from '../lib/utils';
 
 const CategoryPage = () => {
   const { category: categorySlug } = useParams<{ category: string }>();
-  const categoryName = categorySlug ? slugToCategory(categorySlug) : '';
+  
+  console.log('🔥 CategoryPage: ===== PROCESSING CATEGORY PAGE =====');
+  console.log('🔥 CategoryPage: URL slug received:', categorySlug);
+  console.log('🔥 CategoryPage: Current URL:', window.location.href);
+  console.log('🔥 CategoryPage: Pathname:', window.location.pathname);
+  
   const allCategories = getAllCategories();
+  console.log('🔥 CategoryPage: All available categories:', allCategories);
+  
+  // Enhanced category name conversion with debugging
+  const categoryName = categorySlug ? slugToCategory(categorySlug) : '';
+  console.log('🔥 CategoryPage: Converted category name:', categoryName);
   
   // Find matching category by checking if any category matches when converted to slug
-  const matchingCategory = allCategories.find(cat => 
-    categoryToSlug(cat) === categorySlug
-  );
+  const matchingCategory = allCategories.find(cat => {
+    const catSlug = categoryToSlug(cat);
+    console.log(`🔥 CategoryPage: Comparing "${catSlug}" with "${categorySlug}"`);
+    return catSlug === categorySlug;
+  });
+  
+  console.log('🔥 CategoryPage: Matching category found:', matchingCategory);
   
   const categoryExists = !!matchingCategory;
   const funds = categoryExists ? getFundsByCategory(matchingCategory as FundCategory) : [];
   const displayCategoryName = matchingCategory || categoryName;
+  
+  console.log('🔥 CategoryPage: Final results:', {
+    categoryExists,
+    fundsCount: funds.length,
+    displayCategoryName,
+    willUseSEO: displayCategoryName
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [categorySlug]);
 
   if (!categoryExists) {
+    console.error('🔥 CategoryPage: ❌ Category not found - will show 404');
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
@@ -41,11 +63,12 @@ const CategoryPage = () => {
           <div className="text-center max-w-md">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Category Not Found</h1>
             <p className="text-gray-600 mb-4">The category you're looking for doesn't exist.</p>
+            <p className="text-sm text-gray-500 mb-4">URL slug: {categorySlug}</p>
             <p className="text-sm text-gray-500 mb-4">Available categories:</p>
             <div className="flex flex-wrap gap-2 justify-center mb-4">
               {allCategories.slice(0, 5).map(cat => (
                 <span key={cat} className="bg-gray-100 px-2 py-1 rounded text-xs">
-                  {cat}
+                  {cat} (slug: {categoryToSlug(cat)})
                 </span>
               ))}
             </div>
@@ -55,6 +78,8 @@ const CategoryPage = () => {
       </div>
     );
   }
+
+  console.log('🔥 CategoryPage: ✅ Rendering category page with SEO for:', displayCategoryName);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
