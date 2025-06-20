@@ -15,48 +15,59 @@ const FundDetails = () => {
   const { addToRecentlyViewed } = useRecentlyViewed();
 
   useEffect(() => {
-    if (fund) {
-      addToRecentlyViewed(fund);
-    }
-    window.scrollTo(0, 0);
-
-    // Enhanced debugging for proxy detection
-    console.log('FundDetails: Route and fund information:', {
-      id,
-      fundExists: !!fund,
-      fundName: fund?.name,
+    // CRITICAL DEBUGGING for proxy route matching
+    console.log('🚨 FundDetails: ROUTE DEBUGGING START 🚨');
+    console.log('🚨 FundDetails: URL params from useParams:', { id });
+    console.log('🚨 FundDetails: Current location:', {
       pathname: location.pathname,
       search: location.search,
-      currentUrl: window.location.href,
-      origin: window.location.origin
+      hash: location.hash,
+      fullUrl: window.location.href
     });
-
-    // Check if we're under a proxy
-    const isUnderProxy = window.location.pathname.startsWith('/funds/') || 
-                        window.location.href.includes('/funds/');
+    console.log('🚨 FundDetails: Fund lookup result:', {
+      foundFund: !!fund,
+      fundName: fund?.name,
+      fundId: fund?.id
+    });
     
-    console.log('FundDetails: Proxy detection:', {
-      isUnderProxy,
-      pathname: window.location.pathname,
-      shouldPassFundName: !!fund?.name
+    // Check if URL matches expected pattern
+    const expectedPattern = /^\/funds\/([^\/]+)$/;
+    const match = location.pathname.match(expectedPattern);
+    console.log('🚨 FundDetails: URL pattern analysis:', {
+      pathname: location.pathname,
+      expectedPattern: expectedPattern.toString(),
+      matches: !!match,
+      extractedId: match ? match[1] : null,
+      routeParamId: id
     });
 
     if (fund) {
-      console.log('FundDetails: Will pass fund name to PageSEO:', fund.name);
+      addToRecentlyViewed(fund);
+      console.log('🚨 FundDetails: ✅ Fund found, will render fund-specific content');
     } else {
-      console.warn('FundDetails: No fund found, PageSEO will receive undefined fund name');
+      console.error('🚨 FundDetails: ❌ No fund found! This explains the default SEO');
+      console.error('🚨 FundDetails: Available fund IDs in system:', 
+        // Get all available fund IDs for debugging
+        Object.keys(require('../data/funds').getAllFunds().reduce((acc, f) => ({...acc, [f.id]: f.name}), {}))
+      );
     }
+
+    window.scrollTo(0, 0);
   }, [fund, addToRecentlyViewed, location, id]);
 
   if (!fund) {
-    console.error('FundDetails: Fund not found for ID:', id);
+    console.error('🚨 FundDetails: Rendering 404 - Fund not found for ID:', id);
+    console.error('🚨 FundDetails: This is why you see default homepage SEO!');
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
+        <PageSEO pageType="404" />
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Fund Not Found</h1>
             <p className="text-gray-600">The fund you're looking for doesn't exist.</p>
+            <p className="text-sm text-gray-500 mt-2">ID searched: {id}</p>
+            <p className="text-sm text-gray-500">URL: {location.pathname}</p>
           </div>
         </main>
         <Footer />
@@ -64,11 +75,7 @@ const FundDetails = () => {
     );
   }
 
-  console.log('FundDetails: Rendering with fund:', {
-    id: fund.id,
-    name: fund.name,
-    willPassToPageSEO: true
-  });
+  console.log('🚨 FundDetails: ✅ Rendering fund page with correct SEO for:', fund.name);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
