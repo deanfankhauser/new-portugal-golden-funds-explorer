@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import path from 'path';
 import { getAllStaticRoutes } from '../src/ssg/routeDiscovery';
