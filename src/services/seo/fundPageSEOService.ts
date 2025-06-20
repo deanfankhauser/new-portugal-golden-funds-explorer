@@ -6,20 +6,34 @@ export class FundPageSEOService extends BaseSEOService {
   static getFundPageSEO(fundName: string): SEOData {
     console.log('FundPageSEOService: Generating SEO for fund:', fundName);
     
+    // Detect proxy context for better debugging
+    const proxyContext = this.detectProxyContext();
+    console.log('FundPageSEOService: Proxy context:', proxyContext);
+    
     if (!fundName || fundName.trim() === '') {
       console.error('FundPageSEOService: Empty or invalid fund name provided:', fundName);
+      console.log('FundPageSEOService: Falling back to homepage SEO');
       return this.getHomepageSEO(); // Fallback to homepage SEO
     }
 
     const cleanFundName = fundName.trim();
     const title = `${cleanFundName} | Investment Fund Details | Movingto`;
     
-    console.log('FundPageSEOService: Generated fund page title:', title);
+    // Use contextual base URL
+    const contextualBaseUrl = this.getContextualBaseUrl();
+    
+    console.log('FundPageSEOService: Generated fund page SEO details:', {
+      originalFundName: fundName,
+      cleanFundName,
+      title,
+      contextualBaseUrl,
+      proxyContext
+    });
     
     const seoData = {
       title: title,
       description: `${cleanFundName} - Detailed information about this Golden Visa investment fund. Min investment, fees, returns and more.`,
-      url: `${this.baseUrl}/funds/${this.slugify(cleanFundName)}`,
+      url: `${contextualBaseUrl}/funds/${this.slugify(cleanFundName)}`,
       structuredData: {
         ...this.createBaseStructuredData(),
         '@type': 'FinancialProduct',
@@ -37,10 +51,14 @@ export class FundPageSEOService extends BaseSEOService {
   }
 
   static getHomepageSEO(): SEOData {
+    const contextualBaseUrl = this.getContextualBaseUrl();
+    
+    console.log('FundPageSEOService: Generating homepage SEO with contextual URL:', contextualBaseUrl);
+    
     return {
       title: 'Portugal Golden Visa Investment Funds | Eligible Investments 2025',
       description: 'Explore our Portugal Golden Visa Investment Funds List for 2025. Find eligible investment funds to secure residency with a €500,000 investment.',
-      url: this.baseUrl,
+      url: contextualBaseUrl,
       structuredData: this.createWebSiteSchema()
     };
   }

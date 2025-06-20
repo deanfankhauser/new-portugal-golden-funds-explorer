@@ -2,60 +2,94 @@
 export class BaseSEOService {
   protected static baseUrl = 'https://movingto.com/funds';
 
-  protected static slugify(text: string): string {
-    return text
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '') // Remove special characters like commas, periods
-      .replace(/\s+/g, '-')     // Replace spaces with hyphens
-      .replace(/-+/g, '-')      // Replace multiple hyphens with single hyphen
-      .trim()
-      .replace(/^-|-$/g, '');   // Remove leading/trailing hyphens
-  }
-
   protected static createBaseStructuredData() {
     return {
       '@context': 'https://schema.org',
-      'publisher': {
-        '@type': 'Organization',
-        'name': 'Movingto',
-        'url': 'https://movingto.com',
-        'logo': {
-          '@type': 'ImageObject',
-          'url': 'https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/65bf8df2803e405540708b3c_movingto-logo-white.svg'
-        }
+      '@type': 'WebSite',
+      'name': 'Movingto - Portugal Golden Visa Investment Funds',
+      'url': this.baseUrl
+    };
+  }
+
+  protected static createWebSiteSchema() {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      'name': 'Movingto',
+      'url': this.baseUrl,
+      'description': 'Portugal Golden Visa Investment Funds Directory',
+      'potentialAction': {
+        '@type': 'SearchAction',
+        'target': `${this.baseUrl}/search?q={search_term_string}`,
+        'query-input': 'required name=search_term_string'
       }
     };
   }
 
   protected static createCollectionPageSchema(name: string, description: string) {
     return {
-      ...this.createBaseStructuredData(),
+      '@context': 'https://schema.org',
       '@type': 'CollectionPage',
       'name': name,
       'description': description,
-      'mainEntity': {
-        '@type': 'ItemList',
-        'name': name,
-        'description': description
-      }
+      'url': this.baseUrl
     };
   }
 
-  protected static createWebSiteSchema() {
-    return {
-      ...this.createBaseStructuredData(),
-      '@type': 'WebSite',
-      'name': 'Portugal Golden Visa Investment Funds | Movingto',
-      'description': 'Explore our Portugal Golden Visa Investment Funds List for 2025. Find eligible investment funds to secure residency with a €500,000 investment.',
-      'url': this.baseUrl,
-      'potentialAction': {
-        '@type': 'SearchAction',
-        'target': {
-          '@type': 'EntryPoint',
-          'urlTemplate': `${this.baseUrl}?search={search_term_string}`
-        },
-        'query-input': 'required name=search_term_string'
-      }
-    };
+  protected static slugify(text: string): string {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/[^\w\-]+/g, '');
+  }
+
+  // New method to detect if we're running under a proxy
+  protected static detectProxyContext(): { isProxied: boolean; actualPath: string; basePath: string } {
+    if (typeof window === 'undefined') {
+      console.log('BaseSEOService: Running in SSR context');
+      return { isProxied: false, actualPath: '/', basePath: '' };
+    }
+
+    const currentUrl = window.location.href;
+    const pathname = window.location.pathname;
+    
+    console.log('BaseSEOService: Detecting proxy context:', {
+      currentUrl,
+      pathname,
+      origin: window.location.origin,
+      hostname: window.location.hostname
+    });
+
+    // Check if we're running under a /funds proxy
+    const isProxied = pathname.startsWith('/funds/') || 
+                     currentUrl.includes('/funds/') ||
+                     window.location.hostname !== 'movingto.com';
+
+    const basePath = isProxied ? '/funds' : '';
+    const actualPath = isProxied ? pathname.replace('/funds', '') : pathname;
+
+    console.log('BaseSEOService: Proxy detection result:', {
+      isProxied,
+      basePath,
+      actualPath,
+      recommendedBaseUrl: isProxied ? `${window.location.origin}/funds` : this.baseUrl
+    });
+
+    return { isProxied, actualPath, basePath };
+  }
+
+  // New method to get the correct base URL based on context
+  protected static getContextualBaseUrl(): string {
+    const { isProxied } = this.detectProxyContext();
+    
+    if (typeof window !== 'undefined' && isProxied) {
+      const contextualUrl = `${window.location.origin}/funds`;
+      console.log('BaseSEOService: Using contextual base URL for proxy:', contextualUrl);
+      return contextualUrl;
+    }
+
+    console.log('BaseSEOService: Using default base URL:', this.baseUrl);
+    return this.baseUrl;
   }
 }

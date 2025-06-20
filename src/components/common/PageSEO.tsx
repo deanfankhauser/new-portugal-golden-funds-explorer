@@ -9,7 +9,7 @@ const PageSEO: React.FC<PageSEOProps> = (props) => {
 
   // Enhanced debug logging and aggressive title updates
   useEffect(() => {
-    console.log(`PageSEO: Setting meta tags for ${props.pageType}`, {
+    console.log(`PageSEO: Processing SEO for ${props.pageType}`, {
       title: seoData.title,
       description: seoData.description,
       url: seoData.url,
@@ -17,19 +17,44 @@ const PageSEO: React.FC<PageSEOProps> = (props) => {
       fundName: props.fundName,
       managerName: props.managerName,
       categoryName: props.categoryName,
-      tagName: props.tagName
+      tagName: props.tagName,
+      currentUrl: typeof window !== 'undefined' ? window.location.href : 'SSR',
+      pathname: typeof window !== 'undefined' ? window.location.pathname : 'SSR'
     });
     
-    // For fund pages, verify title format and fund name inclusion
+    // Proxy-specific debugging for fund pages
     if (props.pageType === 'fund') {
-      console.log(`PageSEO: Processing fund page for: "${props.fundName}"`);
+      console.log(`PageSEO: FUND PAGE ANALYSIS for: "${props.fundName}"`);
       console.log(`PageSEO: Generated SEO title: "${seoData.title}"`);
+      
+      // Check if we're under proxy
+      if (typeof window !== 'undefined') {
+        const isUnderProxy = window.location.pathname.startsWith('/funds/') || 
+                            window.location.href.includes('/funds/');
+        
+        console.log(`PageSEO: Proxy context analysis:`, {
+          isUnderProxy,
+          pathname: window.location.pathname,
+          href: window.location.href,
+          fundNameProvided: !!props.fundName,
+          fundName: props.fundName,
+          isDefaultTitle: seoData.title === 'Portugal Golden Visa Investment Funds | Eligible Investments 2025'
+        });
+
+        if (isUnderProxy && seoData.title === 'Portugal Golden Visa Investment Funds | Eligible Investments 2025') {
+          console.error(`PageSEO: 🚨 PROXY ISSUE DETECTED - Fund page under proxy showing default title!`);
+          console.error(`PageSEO: Expected fund-specific title but got homepage title`);
+          console.error(`PageSEO: Fund name: "${props.fundName}"`);
+          console.error(`PageSEO: This suggests SEO service is not receiving fund name properly under proxy`);
+        }
+      }
       
       // Verify the title includes the fund name
       if (props.fundName && !seoData.title.includes(props.fundName)) {
         console.error(`PageSEO: Fund page title missing fund name: "${props.fundName}" in title: "${seoData.title}"`);
       } else if (props.fundName && seoData.title === 'Portugal Golden Visa Investment Funds | Eligible Investments 2025') {
-        console.error(`PageSEO: Fund page using default homepage title instead of fund-specific title!`);
+        console.error(`PageSEO: 🚨 Fund page using default homepage title instead of fund-specific title!`);
+        console.error(`PageSEO: This is the core issue - fund name is provided but not used in title generation`);
       } else if (props.fundName) {
         console.log(`PageSEO: ✅ Fund page title format correct for "${props.fundName}"`);
       }
