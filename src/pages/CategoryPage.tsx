@@ -29,34 +29,52 @@ const CategoryPage = () => {
   if (categorySlug) {
     // Strategy 1: Exact slug match
     matchingCategory = allCategories.find(cat => categoryToSlug(cat) === categorySlug) || null;
+    console.log('🔥 CategoryPage: Exact slug match result:', matchingCategory);
     
     // Strategy 2: Handle double-dash cases for "&" separators
     if (!matchingCategory && categorySlug.includes('--')) {
-      // Try converting double dashes to & and see if it matches
-      const withAmpersand = categorySlug.replace(/--/g, '-&-');
-      matchingCategory = allCategories.find(cat => categoryToSlug(cat) === withAmpersand) || null;
+      // Convert slug back to category with proper & handling
+      const convertedCategory = slugToCategory(categorySlug);
+      matchingCategory = allCategories.find(cat => 
+        cat.toLowerCase() === convertedCategory.toLowerCase()
+      ) || null;
+      console.log('🔥 CategoryPage: Double-dash conversion match result:', matchingCategory);
+    }
+    
+    // Strategy 3: Try alternative conversions for double dashes
+    if (!matchingCategory && categorySlug.includes('--')) {
+      // Try different & separator patterns
+      const alternativeConversions = [
+        categorySlug.replace(/--/g, ' & '),
+        categorySlug.replace(/--/g, ' and '),
+        categorySlug.replace(/--/g, '-'),
+      ];
       
-      // If still not found, try direct conversion
-      if (!matchingCategory) {
-        const convertedCategory = slugToCategory(categorySlug);
+      for (const altSlug of alternativeConversions) {
+        const converted = altSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
         matchingCategory = allCategories.find(cat => 
-          cat.toLowerCase() === convertedCategory.toLowerCase()
+          cat.toLowerCase() === converted.toLowerCase()
         ) || null;
+        if (matchingCategory) {
+          console.log('🔥 CategoryPage: Alternative conversion match:', matchingCategory);
+          break;
+        }
       }
     }
     
-    // Strategy 3: Fuzzy matching for partial matches
+    // Strategy 4: Fuzzy matching for partial matches
     if (!matchingCategory) {
       const convertedCategory = slugToCategory(categorySlug);
       matchingCategory = allCategories.find(cat => 
         cat.toLowerCase().includes(convertedCategory.toLowerCase()) ||
         convertedCategory.toLowerCase().includes(cat.toLowerCase())
       ) || null;
+      console.log('🔥 CategoryPage: Fuzzy match result:', matchingCategory);
     }
     
     displayCategoryName = matchingCategory || slugToCategory(categorySlug);
     
-    console.log('🔥 CategoryPage: Matching results:', {
+    console.log('🔥 CategoryPage: Final matching results:', {
       categorySlug,
       matchingCategory,
       displayCategoryName,
