@@ -1,8 +1,8 @@
-
 import { fundsData } from '../data/mock/funds';
 import { getAllFundManagers } from '../data/services/managers-service';
 import { getAllCategories } from '../data/services/categories-service';
 import { getAllTags } from '../data/services/tags-service';
+import { categoryToSlug, tagToSlug, managerToSlug } from '../lib/utils';
 
 export interface StaticRoute {
   path: string;
@@ -53,7 +53,7 @@ export class RouteDiscovery {
     // Manager pages
     const managers = getAllFundManagers();
     managers.forEach(manager => {
-      const slug = manager.name.toLowerCase().replace(/\s+/g, '-');
+      const slug = managerToSlug(manager.name);
       routes.push({
         path: `/manager/${slug}`,
         pageType: 'manager',
@@ -61,10 +61,11 @@ export class RouteDiscovery {
       });
     });
 
-    // Category pages
+    // Category pages - use proper slug conversion
     const categories = getAllCategories();
     categories.forEach(category => {
-      const slug = category.toLowerCase().replace(/\s+/g, '-');
+      const slug = categoryToSlug(category);
+      console.log(`🔥 RouteDiscovery: Category "${category}" -> slug "${slug}"`);
       routes.push({
         path: `/categories/${slug}`,
         pageType: 'category',
@@ -72,10 +73,11 @@ export class RouteDiscovery {
       });
     });
 
-    // Tag pages
+    // Tag pages - use proper slug conversion
     const tags = getAllTags();
     tags.forEach(tag => {
-      const slug = tag.toLowerCase().replace(/\s+/g, '-');
+      const slug = tagToSlug(tag);
+      console.log(`🔥 RouteDiscovery: Tag "${tag}" -> slug "${slug}"`);
       routes.push({
         path: `/tags/${slug}`,
         pageType: 'tag',

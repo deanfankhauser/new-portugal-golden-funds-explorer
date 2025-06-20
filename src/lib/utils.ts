@@ -7,7 +7,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function categoryToSlug(category: string): string {
-  return category
+  console.log('🔥 categoryToSlug: Converting category:', category);
+  
+  const slug = category
     .toLowerCase()
     .trim()
     .replace(/\s*&\s*/g, '--') // Convert " & " to "--"
@@ -15,6 +17,9 @@ export function categoryToSlug(category: string): string {
     .replace(/[^\w\-]+/g, '') // Remove special characters except dashes
     .replace(/--+/g, '--') // Normalize multiple dashes to double dashes
     .replace(/^-+|-+$/g, ''); // Remove leading and trailing dashes
+  
+  console.log('🔥 categoryToSlug: Result:', slug);
+  return slug;
 }
 
 export function slugToCategory(slug: string): string {
@@ -34,6 +39,8 @@ export function slugToCategory(slug: string): string {
 }
 
 export function tagToSlug(tag: string): string {
+  console.log('🔥 tagToSlug: Converting tag:', tag);
+  
   // Handle special percentage cases first
   if (tag.includes('> 1.5% management')) {
     return '15-management-fee';
@@ -45,7 +52,7 @@ export function tagToSlug(tag: string): string {
     return '1-1-5-management-fee';
   }
   
-  return tag
+  const slug = tag
     .toLowerCase()
     .trim()
     .replace(/[><%]/g, '') // Remove special symbols
@@ -53,6 +60,9 @@ export function tagToSlug(tag: string): string {
     .replace(/[^\w\-\.]+/g, '') // Keep only word chars, dashes, and dots
     .replace(/--+/g, '-') // Normalize multiple dashes
     .replace(/^-+|-+$/g, ''); // Remove leading and trailing dashes
+  
+  console.log('🔥 tagToSlug: Result:', slug);
+  return slug;
 }
 
 export function slugToTag(slug: string): string {

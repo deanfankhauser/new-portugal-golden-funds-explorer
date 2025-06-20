@@ -31,38 +31,37 @@ const CategoryPage = () => {
     matchingCategory = allCategories.find(cat => categoryToSlug(cat) === categorySlug) || null;
     console.log('🔥 CategoryPage: Exact slug match result:', matchingCategory);
     
-    // Strategy 2: Handle double-dash cases for "&" separators
-    if (!matchingCategory && categorySlug.includes('--')) {
-      // Convert slug back to category with proper & handling
+    // Strategy 2: Try converting slug back to category and find exact match
+    if (!matchingCategory) {
       const convertedCategory = slugToCategory(categorySlug);
       matchingCategory = allCategories.find(cat => 
         cat.toLowerCase() === convertedCategory.toLowerCase()
       ) || null;
-      console.log('🔥 CategoryPage: Double-dash conversion match result:', matchingCategory);
+      console.log('🔥 CategoryPage: Converted slug match result:', matchingCategory, 'from:', convertedCategory);
     }
     
-    // Strategy 3: Try alternative conversions for double dashes
-    if (!matchingCategory && categorySlug.includes('--')) {
-      // Try different & separator patterns
-      const alternativeConversions = [
+    // Strategy 3: Handle cases where slug might have extra dashes
+    if (!matchingCategory && categorySlug.includes('-')) {
+      // Try different variations
+      const variations = [
         categorySlug.replace(/--/g, ' & '),
-        categorySlug.replace(/--/g, ' and '),
-        categorySlug.replace(/--/g, '-'),
+        categorySlug.replace(/-/g, ' '),
+        categorySlug.replace(/--/g, ' and ')
       ];
       
-      for (const altSlug of alternativeConversions) {
-        const converted = altSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      for (const variation of variations) {
+        const normalized = variation.replace(/\b\w/g, l => l.toUpperCase());
         matchingCategory = allCategories.find(cat => 
-          cat.toLowerCase() === converted.toLowerCase()
+          cat.toLowerCase() === normalized.toLowerCase()
         ) || null;
         if (matchingCategory) {
-          console.log('🔥 CategoryPage: Alternative conversion match:', matchingCategory);
+          console.log('🔥 CategoryPage: Variation match found:', matchingCategory, 'from variation:', normalized);
           break;
         }
       }
     }
     
-    // Strategy 4: Fuzzy matching for partial matches
+    // Strategy 4: Partial/fuzzy matching as last resort
     if (!matchingCategory) {
       const convertedCategory = slugToCategory(categorySlug);
       matchingCategory = allCategories.find(cat => 
