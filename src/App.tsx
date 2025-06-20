@@ -28,6 +28,9 @@ import FundQuiz from './pages/FundQuiz';
 import FundComparison from './pages/FundComparison';
 import NotFound from './pages/NotFound';
 
+// Import funds data to validate direct fund routes
+import { fundsData } from './data/mock/funds';
+
 import './App.css';
 
 const queryClient = new QueryClient({
@@ -39,7 +42,7 @@ const queryClient = new QueryClient({
   },
 });
 
-// Component to handle scroll to top on route change - FIXED VERSION
+// Component to handle scroll to top on route change
 const ScrollToTop = () => {
   const location = useLocation();
   
@@ -123,6 +126,28 @@ const RouteDebugger = () => {
   return null;
 };
 
+// Component to handle direct fund routes (e.g., /horizon-fund)
+const DirectFundRoute = () => {
+  const location = useLocation();
+  const pathname = location.pathname;
+  
+  // Extract potential fund ID from pathname (remove leading slash)
+  const potentialFundId = pathname.slice(1);
+  
+  console.log('DirectFundRoute: Checking if', potentialFundId, 'is a valid fund ID');
+  
+  // Check if this path matches a fund ID
+  const fund = fundsData.find(f => f.id === potentialFundId);
+  
+  if (fund) {
+    console.log('DirectFundRoute: Found fund', fund.name, 'for ID', potentialFundId);
+    return <FundDetails />;
+  }
+  
+  console.log('DirectFundRoute: No fund found for ID', potentialFundId, 'showing 404');
+  return <NotFound />;
+};
+
 function App() {
   console.log('App component mounting...');
   
@@ -161,6 +186,8 @@ function App() {
                     <Route path="/faqs" element={<FAQs />} />
                     <Route path="/roi-calculator" element={<ROICalculator />} />
                     <Route path="/fund-quiz" element={<FundQuiz />} />
+                    {/* Direct fund routes - catch single path segments that match fund IDs */}
+                    <Route path="/:potentialFundId" element={<DirectFundRoute />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </div>

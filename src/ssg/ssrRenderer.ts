@@ -82,7 +82,9 @@ export class SSRRenderer {
                   React.createElement(Route, { path: '/comparisons', element: React.createElement(components.ComparisonsHub || FallbackComponent) }),
                   React.createElement(Route, { path: '/faqs', element: React.createElement(components.FAQs || FallbackComponent) }),
                   React.createElement(Route, { path: '/roi-calculator', element: React.createElement(components.ROICalculator || FallbackComponent) }),
-                  React.createElement(Route, { path: '/fund-quiz', element: React.createElement(components.FundQuiz || FallbackComponent) })
+                  React.createElement(Route, { path: '/fund-quiz', element: React.createElement(components.FundQuiz || FallbackComponent) }),
+                  // Handle direct fund routes for SSG
+                  React.createElement(Route, { path: '/:potentialFundId', element: React.createElement(components.FundDetails || FallbackComponent) })
                 )
               )
             )

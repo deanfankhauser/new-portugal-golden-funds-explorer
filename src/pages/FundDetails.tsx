@@ -9,15 +9,18 @@ import FundDetailsContent from '../components/fund-details/FundDetailsContent';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 
 const FundDetails = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id, potentialFundId } = useParams<{ id?: string; potentialFundId?: string }>();
   const location = useLocation();
-  const fund = id ? getFundById(id) : null;
+  
+  // Support both route patterns: /funds/:id and /:potentialFundId
+  const fundId = id || potentialFundId;
+  const fund = fundId ? getFundById(fundId) : null;
   const { addToRecentlyViewed } = useRecentlyViewed();
 
   useEffect(() => {
-    // CRITICAL DEBUGGING for proxy route matching
+    // Enhanced debugging for both route patterns
     console.log('🚨 FundDetails: ROUTE DEBUGGING START 🚨');
-    console.log('🚨 FundDetails: URL params from useParams:', { id });
+    console.log('🚨 FundDetails: URL params from useParams:', { id, potentialFundId, finalFundId: fundId });
     console.log('🚨 FundDetails: Current location:', {
       pathname: location.pathname,
       search: location.search,
@@ -30,15 +33,16 @@ const FundDetails = () => {
       fundId: fund?.id
     });
     
-    // Check if URL matches expected pattern
-    const expectedPattern = /^\/funds\/([^\/]+)$/;
-    const match = location.pathname.match(expectedPattern);
-    console.log('🚨 FundDetails: URL pattern analysis:', {
+    // Check route pattern
+    const isDirectRoute = location.pathname.split('/').length === 2 && !location.pathname.startsWith('/funds/');
+    const isFundsRoute = location.pathname.startsWith('/funds/');
+    
+    console.log('🚨 FundDetails: Route pattern analysis:', {
       pathname: location.pathname,
-      expectedPattern: expectedPattern.toString(),
-      matches: !!match,
-      extractedId: match ? match[1] : null,
-      routeParamId: id
+      isDirectRoute,
+      isFundsRoute,
+      extractedId: fundId,
+      routeType: isDirectRoute ? 'direct' : 'funds'
     });
 
     if (fund) {
@@ -53,10 +57,10 @@ const FundDetails = () => {
     }
 
     window.scrollTo(0, 0);
-  }, [fund, addToRecentlyViewed, location, id]);
+  }, [fund, addToRecentlyViewed, location, id, potentialFundId, fundId]);
 
   if (!fund) {
-    console.error('🚨 FundDetails: Rendering 404 - Fund not found for ID:', id);
+    console.error('🚨 FundDetails: Rendering 404 - Fund not found for ID:', fundId);
     console.error('🚨 FundDetails: This is why you see default homepage SEO!');
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
@@ -66,7 +70,7 @@ const FundDetails = () => {
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Fund Not Found</h1>
             <p className="text-gray-600">The fund you're looking for doesn't exist.</p>
-            <p className="text-sm text-gray-500 mt-2">ID searched: {id}</p>
+            <p className="text-sm text-gray-500 mt-2">ID searched: {fundId}</p>
             <p className="text-sm text-gray-500">URL: {location.pathname}</p>
           </div>
         </main>
