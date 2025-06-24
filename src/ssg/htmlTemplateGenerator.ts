@@ -31,24 +31,53 @@ export class HTMLTemplateGenerator {
   static generateHTMLTemplate(content: string, seoData: any, cssFiles: string[] = [], jsFiles: string[] = []): string {
     const metaTags = this.generateMetaTags(seoData);
     
-    // Generate CSS link tags for the built assets - these should include the main Vite CSS
+    // Generate CSS link tags for the built assets
     const cssLinks = cssFiles.map(file => `    <link rel="stylesheet" href="${file}" />`).join('\n');
     
     // Generate JS script tags for the built assets
     const jsScripts = jsFiles.map(file => `    <script type="module" src="${file}"></script>`).join('\n');
     
-    // Minimal critical CSS - only what's absolutely needed before main CSS loads
-    const minimalCriticalCSS = `
+    // Create inline critical CSS as fallback for SSG pages
+    const inlineCriticalCSS = `
     <style>
-      /* Minimal critical CSS to prevent layout shift */
+      /* Critical inline CSS for SSG pages */
+      :root {
+        --background: 0 0% 100%;
+        --foreground: 0 0% 0%;
+        --primary: 0 85% 60%;
+        --border: 214.3 31.8% 91.4%;
+      }
       * { box-sizing: border-box; }
-      html, body { margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-      .container { width: 100%; margin: 0 auto; padding: 0 1rem; }
-      @media (min-width: 640px) { .container { max-width: 640px; } }
-      @media (min-width: 768px) { .container { max-width: 768px; } }
-      @media (min-width: 1024px) { .container { max-width: 1024px; } }
-      @media (min-width: 1280px) { .container { max-width: 1280px; } }
-      @media (min-width: 1536px) { .container { max-width: 1536px; } }
+      body { margin: 0; font-family: 'Inter', sans-serif; background-color: hsl(var(--background)); color: hsl(var(--foreground)); }
+      .container { width: 100%; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+      .mx-auto { margin-left: auto; margin-right: auto; }
+      .max-w-7xl { max-width: 80rem; }
+      .max-w-6xl { max-width: 72rem; }
+      .max-w-5xl { max-width: 64rem; }
+      .max-w-4xl { max-width: 56rem; }
+      .max-w-3xl { max-width: 48rem; }
+      .max-w-2xl { max-width: 42rem; }
+      .max-w-xl { max-width: 36rem; }
+      .max-w-lg { max-width: 32rem; }
+      .max-w-md { max-width: 28rem; }
+      .px-4 { padding-left: 1rem; padding-right: 1rem; }
+      .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+      .min-h-screen { min-height: 100vh; }
+      .flex { display: flex; }
+      .flex-col { flex-direction: column; }
+      .flex-1 { flex: 1 1 0%; }
+      @media (min-width: 640px) {
+        .container { max-width: 640px; }
+      }
+      @media (min-width: 768px) {
+        .container { max-width: 768px; }
+      }
+      @media (min-width: 1024px) {
+        .container { max-width: 1024px; }
+      }
+      @media (min-width: 1280px) {
+        .container { max-width: 1280px; }
+      }
     </style>`;
     
     return `<!DOCTYPE html>
@@ -64,10 +93,10 @@ export class HTMLTemplateGenerator {
     <!-- Load fonts immediately -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
     
-    <!-- Minimal critical CSS to prevent layout shift -->
-    ${minimalCriticalCSS}
+    <!-- Critical inline CSS for proper layout -->
+    ${inlineCriticalCSS}
     
-    <!-- Load built CSS assets (includes Tailwind and all component styles) -->
+    <!-- Load built CSS assets -->
 ${cssLinks}
     
     <!-- Google tag (gtag.js) -->

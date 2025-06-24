@@ -23,21 +23,14 @@ function findBuiltAssets(distDir: string): { cssFiles: string[], jsFiles: string
     });
   }
   
-  // Also check for index files in root dist (Vite sometimes puts them here)
+  // Also check for index files in root dist
   const distFiles = fs.readdirSync(distDir);
   distFiles.forEach(file => {
-    if (file.endsWith('.css') && (file.startsWith('index') || file.includes('main'))) {
+    if (file.endsWith('.css') && file.startsWith('index')) {
       cssFiles.push(`/${file}`);
-    } else if (file.endsWith('.js') && (file.startsWith('index') || file.includes('main'))) {
+    } else if (file.endsWith('.js') && file.startsWith('index')) {
       jsFiles.push(`/${file}`);
     }
-  });
-  
-  // Sort CSS files to prioritize main/index files
-  cssFiles.sort((a, b) => {
-    if (a.includes('index') || a.includes('main')) return -1;
-    if (b.includes('index') || b.includes('main')) return 1;
-    return 0;
   });
   
   console.log('Found CSS files:', cssFiles);
@@ -47,7 +40,7 @@ function findBuiltAssets(distDir: string): { cssFiles: string[], jsFiles: string
 }
 
 export async function generateStaticFiles() {
-  console.log('🎨 Generating static files with correct SEO and styling...');
+  console.log('🎨 Generating static files with correct SEO...');
   
   const distDir = path.join(process.cwd(), 'dist');
   
@@ -56,12 +49,8 @@ export async function generateStaticFiles() {
     fs.mkdirSync(distDir, { recursive: true });
   }
 
-  // Find built assets - this should include the main Vite CSS file
+  // Find built assets
   const { cssFiles, jsFiles } = findBuiltAssets(distDir);
-  
-  if (cssFiles.length === 0) {
-    console.warn('⚠️  No CSS files found in build output. This may cause styling issues.');
-  }
 
   const routes = getAllStaticRoutes();
   console.log(`📄 Found ${routes.length} routes to generate`);
@@ -93,7 +82,6 @@ export async function generateStaticFiles() {
       fs.writeFileSync(outputPath, fullHTML);
       console.log(`✅ Generated: ${outputPath}`);
       console.log(`   Title: ${seoData.title}`);
-      console.log(`   CSS files included: ${cssFiles.length}`);
       
       // Verify the content was written correctly
       const writtenContent = fs.readFileSync(outputPath, 'utf8');
