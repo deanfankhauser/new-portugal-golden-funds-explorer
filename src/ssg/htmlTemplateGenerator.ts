@@ -34,8 +34,24 @@ export class HTMLTemplateGenerator {
     // Generate CSS link tags for the built assets
     const cssLinks = cssFiles.map(file => `    <link rel="stylesheet" href="${file}" />`).join('\n');
     
-    // Generate JS script tags for the built assets
-    const jsScripts = jsFiles.map(file => `    <script type="module" src="${file}"></script>`).join('\n');
+    // Separate critical and non-critical JS files
+    const criticalJsFiles = jsFiles.filter(file => 
+      file.includes('vendor') || 
+      file.includes('index') || 
+      file.includes('main')
+    );
+    
+    const nonCriticalJsFiles = jsFiles.filter(file => !criticalJsFiles.includes(file));
+    
+    // Generate critical JS script tags (loaded immediately)
+    const criticalJsScripts = criticalJsFiles.map(file => 
+      `    <script type="module" src="${file}"></script>`
+    ).join('\n');
+    
+    // Generate non-critical JS script tags (deferred)
+    const deferredJsScripts = nonCriticalJsFiles.map(file => 
+      `    <script type="module" src="${file}" defer></script>`
+    ).join('\n');
     
     return `<!DOCTYPE html>
 <html lang="en">
@@ -50,8 +66,14 @@ export class HTMLTemplateGenerator {
     <!-- Load fonts immediately -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
     
+    <!-- Preload only critical CSS assets -->
+${cssFiles.map(file => `    <link rel="preload" href="${file}" as="style" onload="this.onload=null;this.rel='stylesheet'">`).join('\n')}
+    
     <!-- Load built CSS assets (primary) -->
 ${cssLinks}
+    
+    <!-- Preload only critical JS assets -->
+${criticalJsFiles.map(file => `    <link rel="preload" href="${file}" as="script">`).join('\n')}
     
     <!-- Load SSG fallback styles (critical CSS for immediate rendering) -->
     <style>
@@ -165,9 +187,15 @@ ${cssLinks}
 
   <body>
     <div id="root">${content}</div>
+    
+    <!-- Load critical JS immediately -->
+${criticalJsScripts}
+    
+    <!-- Load non-critical JS deferred -->
+${deferredJsScripts}
+    
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-${jsScripts}
   </body>
 </html>`;
   }
