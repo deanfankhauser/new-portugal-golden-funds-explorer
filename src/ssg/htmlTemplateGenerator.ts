@@ -55,6 +55,7 @@ ${cssLinks}
     
     <!-- Load SSG fallback styles (critical CSS for immediate rendering) -->
     <style>
+      /* Critical CSS inlined to match Vite build exactly */
       :root {
         --background: 0 0% 100%;
         --foreground: 0 0% 0%;
@@ -68,44 +69,53 @@ ${cssLinks}
         --ring: 0 85% 60%;
         --radius: 0.5rem;
       }
-      * { box-sizing: border-box; }
+      * { box-sizing: border-box; border-color: hsl(var(--border)); }
       html, body, #root { width: 100%; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
       body { background-color: hsl(var(--background)); color: hsl(var(--foreground)); line-height: 1.5; }
+      
+      /* Essential layout classes that MUST work immediately */
       .min-h-screen { min-height: 100vh; }
       .flex { display: flex; }
       .flex-col { flex-direction: column; }
       .flex-1 { flex: 1 1 0%; }
       .bg-gray-50 { background-color: rgb(249 250 251); }
       .bg-slate-50 { background-color: rgb(248 250 252); }
-      .container { width: 100%; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+      .bg-white { background-color: white; }
+      
+      /* Container system - CRITICAL for fund pages */
+      .container { 
+        width: 100%; 
+        margin-left: auto; 
+        margin-right: auto; 
+        padding-left: 1rem; 
+        padding-right: 1rem; 
+      }
       .mx-auto { margin-left: auto; margin-right: auto; }
       .max-w-7xl { max-width: 80rem; }
-      .max-w-6xl { max-width: 72rem; }
-      .max-w-5xl { max-width: 64rem; }
-      .max-w-4xl { max-width: 56rem; }
-      .max-w-3xl { max-width: 48rem; }
-      .max-w-2xl { max-width: 42rem; }
       .px-4 { padding-left: 1rem; padding-right: 1rem; }
-      .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
       .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
       .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
-      .space-y-6 > * + * { margin-top: 1.5rem; }
-      .space-y-8 > * + * { margin-top: 2rem; }
-      .bg-white { background-color: white; }
+      
+      /* Card styling - CRITICAL for fund details */
       .rounded-xl { border-radius: 0.75rem; }
       .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
       .border { border-width: 1px; }
       .border-gray-100 { border-color: rgb(243 244 246); }
+      .overflow-hidden { overflow: hidden; }
+      .transition-shadow { transition-property: box-shadow; transition-duration: 300ms; }
+      .duration-300 { transition-duration: 300ms; }
+      
+      /* Spacing system */
+      .space-y-6 > * + * { margin-top: 1.5rem; }
+      .space-y-8 > * + * { margin-top: 2rem; }
       .p-4 { padding: 1rem; }
       .p-6 { padding: 1.5rem; }
       .p-8 { padding: 2rem; }
       .p-10 { padding: 2.5rem; }
+      
+      /* Responsive breakpoints */
       @media (min-width: 640px) {
         .container { max-width: 640px; }
-        .sm\:flex-row { flex-direction: row; }
-        .sm\:items-center { align-items: center; }
-        .sm\:justify-between { justify-content: space-between; }
-        .sm\:w-auto { width: auto; }
       }
       @media (min-width: 768px) {
         .container { max-width: 768px; }
@@ -126,6 +136,9 @@ ${cssLinks}
       @media (min-width: 1536px) {
         .container { max-width: 1536px; }
       }
+      
+      /* Hover effects */
+      .hover\:shadow-lg:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
     </style>
     
     <!-- Google tag (gtag.js) -->
