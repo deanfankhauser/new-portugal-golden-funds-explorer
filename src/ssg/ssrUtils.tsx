@@ -1,6 +1,6 @@
 
 import { SSRRenderer } from './ssrRenderer';
-import { HTMLTemplateGenerator } from './htmlTemplateGenerator';
+import { generateHTMLTemplate } from './htmlTemplateGenerator';
 import { StaticRoute } from './routeDiscovery';
 
 export class SSRUtils {
@@ -9,11 +9,18 @@ export class SSRUtils {
   }
 
   static generateMetaTags(seoData: any): string {
-    return HTMLTemplateGenerator.generateMetaTags(seoData);
+    // Generate basic meta tags from SEO data
+    return `
+      <title>${seoData.title}</title>
+      <meta name="description" content="${seoData.description}" />
+      <meta property="og:title" content="${seoData.title}" />
+      <meta property="og:description" content="${seoData.description}" />
+      <meta property="og:url" content="${seoData.url}" />
+    `;
   }
 
   static generateHTMLTemplate(content: string, seoData: any, cssFiles?: string[], jsFiles?: string[]): string {
-    return HTMLTemplateGenerator.generateHTMLTemplate(content, seoData, cssFiles, jsFiles);
+    return generateHTMLTemplate(content, seoData, cssFiles, jsFiles);
   }
 }
 
