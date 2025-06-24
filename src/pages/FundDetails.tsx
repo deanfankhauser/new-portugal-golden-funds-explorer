@@ -87,7 +87,11 @@ const FundDetails = () => {
       
       <Header />
       
-      <FundDetailsContent fund={fund} />
+      <main className="flex-1 py-6 md:py-8">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <FundDetailsContent fund={fund} />
+        </div>
+      </main>
       
       <Footer />
     </div>
