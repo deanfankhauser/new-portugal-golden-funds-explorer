@@ -53,31 +53,79 @@ export class HTMLTemplateGenerator {
     <!-- Load built CSS assets (primary) -->
 ${cssLinks}
     
-    <!-- Load SSG fallback styles (only if built CSS fails) -->
+    <!-- Load SSG fallback styles (critical CSS for immediate rendering) -->
     <style>
-      /* Inline critical SSG styles for fallback */
-      .container{width:100%;margin-left:auto;margin-right:auto;padding-left:1rem;padding-right:1rem}
-      .mx-auto{margin-left:auto;margin-right:auto}
-      .max-w-7xl{max-width:80rem}
-      .max-w-6xl{max-width:72rem}
-      .max-w-5xl{max-width:64rem}
-      .max-w-4xl{max-width:56rem}
-      .max-w-3xl{max-width:48rem}
-      .max-w-2xl{max-width:42rem}
-      .px-4{padding-left:1rem;padding-right:1rem}
-      .px-6{padding-left:1.5rem;padding-right:1.5rem}
-      .py-6{padding-top:1.5rem;padding-bottom:1.5rem}
-      .py-8{padding-top:2rem;padding-bottom:2rem}
-      .min-h-screen{min-height:100vh}
-      .flex{display:flex}
-      .flex-col{flex-direction:column}
-      .flex-1{flex:1 1 0%}
-      .bg-slate-50{background-color:rgb(248 250 252)}
-      @media (min-width:640px){.container{max-width:640px}}
-      @media (min-width:768px){.container{max-width:768px}}
-      @media (min-width:1024px){.container{max-width:1024px}}
-      @media (min-width:1280px){.container{max-width:1280px}}
-      @media (min-width:1536px){.container{max-width:1536px}}
+      :root {
+        --background: 0 0% 100%;
+        --foreground: 0 0% 0%;
+        --card: 0 0% 100%;
+        --card-foreground: 0 0% 0%;
+        --primary: 0 85% 60%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 210 40% 96.1%;
+        --muted: 210 40% 96.1%;
+        --border: 214.3 31.8% 91.4%;
+        --ring: 0 85% 60%;
+        --radius: 0.5rem;
+      }
+      * { box-sizing: border-box; }
+      html, body, #root { width: 100%; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
+      body { background-color: hsl(var(--background)); color: hsl(var(--foreground)); line-height: 1.5; }
+      .min-h-screen { min-height: 100vh; }
+      .flex { display: flex; }
+      .flex-col { flex-direction: column; }
+      .flex-1 { flex: 1 1 0%; }
+      .bg-gray-50 { background-color: rgb(249 250 251); }
+      .bg-slate-50 { background-color: rgb(248 250 252); }
+      .container { width: 100%; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+      .mx-auto { margin-left: auto; margin-right: auto; }
+      .max-w-7xl { max-width: 80rem; }
+      .max-w-6xl { max-width: 72rem; }
+      .max-w-5xl { max-width: 64rem; }
+      .max-w-4xl { max-width: 56rem; }
+      .max-w-3xl { max-width: 48rem; }
+      .max-w-2xl { max-width: 42rem; }
+      .px-4 { padding-left: 1rem; padding-right: 1rem; }
+      .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+      .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+      .space-y-6 > * + * { margin-top: 1.5rem; }
+      .space-y-8 > * + * { margin-top: 2rem; }
+      .bg-white { background-color: white; }
+      .rounded-xl { border-radius: 0.75rem; }
+      .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+      .border { border-width: 1px; }
+      .border-gray-100 { border-color: rgb(243 244 246); }
+      .p-4 { padding: 1rem; }
+      .p-6 { padding: 1.5rem; }
+      .p-8 { padding: 2rem; }
+      .p-10 { padding: 2.5rem; }
+      @media (min-width: 640px) {
+        .container { max-width: 640px; }
+        .sm\:flex-row { flex-direction: row; }
+        .sm\:items-center { align-items: center; }
+        .sm\:justify-between { justify-content: space-between; }
+        .sm\:w-auto { width: auto; }
+      }
+      @media (min-width: 768px) {
+        .container { max-width: 768px; }
+        .md\:p-6 { padding: 1.5rem; }
+        .md\:p-8 { padding: 2rem; }
+        .md\:p-10 { padding: 2.5rem; }
+        .md\:space-y-8 > * + * { margin-top: 2rem; }
+        .md\:rounded-2xl { border-radius: 1rem; }
+      }
+      @media (min-width: 1024px) {
+        .container { max-width: 1024px; }
+        .lg\:p-10 { padding: 2.5rem; }
+        .lg\:space-y-10 > * + * { margin-top: 2.5rem; }
+      }
+      @media (min-width: 1280px) {
+        .container { max-width: 1280px; }
+      }
+      @media (min-width: 1536px) {
+        .container { max-width: 1536px; }
+      }
     </style>
     
     <!-- Google tag (gtag.js) -->
@@ -89,7 +137,7 @@ ${cssLinks}
       gtag('config', 'G-3ML90T25MY');
     </script>
     
-    <!-- Security headers that work in meta tags (removed X-Frame-Options) -->
+    <!-- Security headers that work in meta tags -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
