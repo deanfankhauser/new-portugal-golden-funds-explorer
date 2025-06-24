@@ -1,4 +1,3 @@
-
 export class HTMLTemplateGenerator {
   static generateMetaTags(seoData: any): string {
     const metaTags = [
@@ -66,14 +65,8 @@ export class HTMLTemplateGenerator {
     <!-- Load fonts immediately -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
     
-    <!-- Preload only critical CSS assets -->
-${cssFiles.map(file => `    <link rel="preload" href="${file}" as="style" onload="this.onload=null;this.rel='stylesheet'">`).join('\n')}
-    
     <!-- Load built CSS assets (primary) -->
 ${cssLinks}
-    
-    <!-- Preload only critical JS assets -->
-${criticalJsFiles.map(file => `    <link rel="preload" href="${file}" as="script">`).join('\n')}
     
     <!-- Load SSG fallback styles (critical CSS for immediate rendering) -->
     <style>
