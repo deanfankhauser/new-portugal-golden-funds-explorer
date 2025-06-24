@@ -17,6 +17,7 @@ import ROICalculator from './ROICalculator';
 import AlternativeFunds from './AlternativeFunds';
 import FundRiskScore from './FundRiskScore';
 import ProcessingTimeTracker from './ProcessingTimeTracker';
+import BackToFundsButton from './BackToFundsButton';
 import { Button } from '@/components/ui/button';
 import { ClipboardCheck } from 'lucide-react';
 
@@ -27,6 +28,9 @@ interface FundDetailsContentProps {
 const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
   return (
     <div className="space-y-6 md:space-y-8">
+      {/* Back to Funds Button */}
+      <BackToFundsButton />
+      
       <div className="bg-white rounded-xl md:rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-shadow duration-300 hover:shadow-lg">
         {/* Fund Header Section with built-in CTA */}
         <FundHeader fund={fund} />
