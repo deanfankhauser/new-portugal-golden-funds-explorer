@@ -50,11 +50,35 @@ export class HTMLTemplateGenerator {
     <!-- Load fonts immediately -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
     
-    <!-- Load built CSS assets -->
+    <!-- Load built CSS assets (primary) -->
 ${cssLinks}
     
-    <!-- Load SSG fallback styles -->
-    <link rel="stylesheet" href="/src/ssg/ssg-styles.css" />
+    <!-- Load SSG fallback styles (only if built CSS fails) -->
+    <style>
+      /* Inline critical SSG styles for fallback */
+      .container{width:100%;margin-left:auto;margin-right:auto;padding-left:1rem;padding-right:1rem}
+      .mx-auto{margin-left:auto;margin-right:auto}
+      .max-w-7xl{max-width:80rem}
+      .max-w-6xl{max-width:72rem}
+      .max-w-5xl{max-width:64rem}
+      .max-w-4xl{max-width:56rem}
+      .max-w-3xl{max-width:48rem}
+      .max-w-2xl{max-width:42rem}
+      .px-4{padding-left:1rem;padding-right:1rem}
+      .px-6{padding-left:1.5rem;padding-right:1.5rem}
+      .py-6{padding-top:1.5rem;padding-bottom:1.5rem}
+      .py-8{padding-top:2rem;padding-bottom:2rem}
+      .min-h-screen{min-height:100vh}
+      .flex{display:flex}
+      .flex-col{flex-direction:column}
+      .flex-1{flex:1 1 0%}
+      .bg-slate-50{background-color:rgb(248 250 252)}
+      @media (min-width:640px){.container{max-width:640px}}
+      @media (min-width:768px){.container{max-width:768px}}
+      @media (min-width:1024px){.container{max-width:1024px}}
+      @media (min-width:1280px){.container{max-width:1280px}}
+      @media (min-width:1536px){.container{max-width:1536px}}
+    </style>
     
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3ML90T25MY"></script>

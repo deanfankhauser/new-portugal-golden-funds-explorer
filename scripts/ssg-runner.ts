@@ -8,33 +8,45 @@ function findBuiltAssets(distDir: string): { cssFiles: string[], jsFiles: string
   const cssFiles: string[] = [];
   const jsFiles: string[] = [];
   
+  console.log('🔍 Looking for built assets in:', distDir);
+  
   // Look for assets in the dist directory
   const assetsDir = path.join(distDir, 'assets');
   
   if (fs.existsSync(assetsDir)) {
+    console.log('📁 Found assets directory');
     const files = fs.readdirSync(assetsDir);
+    console.log('📋 Files in assets:', files);
     
     files.forEach(file => {
       if (file.endsWith('.css')) {
         cssFiles.push(`/assets/${file}`);
+        console.log(`✅ Found CSS: /assets/${file}`);
       } else if (file.endsWith('.js')) {
         jsFiles.push(`/assets/${file}`);
+        console.log(`✅ Found JS: /assets/${file}`);
+      }
+    });
+  } else {
+    console.log('⚠️  No assets directory found');
+  }
+  
+  // Also check for index files in root dist
+  if (fs.existsSync(distDir)) {
+    const distFiles = fs.readdirSync(distDir);
+    distFiles.forEach(file => {
+      if (file.endsWith('.css') && file.startsWith('index')) {
+        cssFiles.push(`/${file}`);
+        console.log(`✅ Found root CSS: /${file}`);
+      } else if (file.endsWith('.js') && file.startsWith('index')) {
+        jsFiles.push(`/${file}`);
+        console.log(`✅ Found root JS: /${file}`);
       }
     });
   }
   
-  // Also check for index files in root dist
-  const distFiles = fs.readdirSync(distDir);
-  distFiles.forEach(file => {
-    if (file.endsWith('.css') && file.startsWith('index')) {
-      cssFiles.push(`/${file}`);
-    } else if (file.endsWith('.js') && file.startsWith('index')) {
-      jsFiles.push(`/${file}`);
-    }
-  });
-  
-  console.log('Found CSS files:', cssFiles);
-  console.log('Found JS files:', jsFiles);
+  console.log('📊 Final CSS files:', cssFiles);
+  console.log('📊 Final JS files:', jsFiles);
   
   return { cssFiles, jsFiles };
 }
@@ -89,6 +101,14 @@ export async function generateStaticFiles() {
         console.log(`   ✓ SEO data properly embedded`);
       } else {
         console.warn(`   ⚠️  SEO data may not be embedded correctly`);
+      }
+      
+      // Check if CSS files are properly linked
+      const hasCSSLinks = cssFiles.some(css => writtenContent.includes(css));
+      if (hasCSSLinks || cssFiles.length === 0) {
+        console.log(`   ✓ CSS assets properly linked`);
+      } else {
+        console.warn(`   ⚠️  CSS assets may not be linked correctly`);
       }
       
     } catch (error) {

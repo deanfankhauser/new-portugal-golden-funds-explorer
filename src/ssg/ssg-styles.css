@@ -84,13 +84,33 @@ h3 {
 .space-y-6 > * + * { margin-top: 1.5rem; }
 .space-y-8 > * + * { margin-top: 2rem; }
 
-/* CRITICAL: Container and max-width classes that were missing */
+/* CRITICAL: Container and max-width classes */
 .container {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container { max-width: 640px; }
+}
+
+@media (min-width: 768px) {
+  .container { max-width: 768px; }
+}
+
+@media (min-width: 1024px) {
+  .container { max-width: 1024px; }
+}
+
+@media (min-width: 1280px) {
+  .container { max-width: 1280px; }
+}
+
+@media (min-width: 1536px) {
+  .container { max-width: 1536px; }
 }
 
 .mx-auto { 
@@ -169,7 +189,7 @@ h3 {
 .mr-2 { margin-right: 0.5rem; }
 .ml-2 { margin-left: 0.5rem; }
 
-/* Padding - EXPANDED with missing classes */
+/* Padding */
 .p-0 { padding: 0; }
 .p-2 { padding: 0.5rem; }
 .p-4 { padding: 1rem; }
@@ -243,7 +263,6 @@ h3 {
 
 /* Responsive utilities */
 @media (min-width: 640px) {
-  .container { max-width: 640px; }
   .sm\:px-4 { padding-left: 1rem; padding-right: 1rem; }
   .sm\:py-8 { padding-top: 2rem; padding-bottom: 2rem; }
   .sm\:mb-4 { margin-bottom: 1rem; }
@@ -257,7 +276,6 @@ h3 {
 }
 
 @media (min-width: 768px) {
-  .container { max-width: 768px; }
   .md\:text-left { text-align: left; }
   .md\:mx-0 { margin-left: 0; margin-right: 0; }
   .md\:text-5xl { font-size: 3rem; line-height: 1; }
@@ -273,17 +291,16 @@ h3 {
 }
 
 @media (min-width: 1024px) {
-  .container { max-width: 1024px; }
   .lg\:text-6xl { font-size: 3.75rem; line-height: 1; }
   .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .lg\:px-8 { padding-left: 2rem; padding-right: 2rem; }
   .lg\:p-10 { padding: 2.5rem; }
   .lg\:space-y-10 > * + * { margin-top: 2.5rem; }
+  .lg\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
 }
 
 @media (min-width: 1280px) {
-  .container { max-width: 1280px; }
   .xl\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
