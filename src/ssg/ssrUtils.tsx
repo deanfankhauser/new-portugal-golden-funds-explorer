@@ -1,6 +1,6 @@
 
 import { SSRRenderer } from './ssrRenderer';
-import { generateHTMLTemplate } from './htmlTemplateGenerator';
+import { generateHTMLTemplate as createHTMLTemplate } from './htmlTemplateGenerator';
 import { StaticRoute } from './routeDiscovery';
 
 export class SSRUtils {
@@ -20,7 +20,7 @@ export class SSRUtils {
   }
 
   static generateHTMLTemplate(content: string, seoData: any, cssFiles?: string[], jsFiles?: string[]): string {
-    return generateHTMLTemplate(content, seoData, cssFiles, jsFiles);
+    return createHTMLTemplate(content, seoData, cssFiles, jsFiles);
   }
 }
 
