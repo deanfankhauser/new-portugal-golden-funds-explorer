@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import ComparisonIndicator from "./ComparisonIndicator";
 import MobileNavigation from "./MobileNavigation";
-import { ArrowLeft, Mail, Calculator, ClipboardCheck, Users, ExternalLink } from "lucide-react";
+import { ArrowLeft, Mail, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3 } from "lucide-react";
 
 const Header = () => {
   return (
@@ -43,6 +43,37 @@ const Header = () => {
           <div className="hidden md:flex items-center gap-6">
             <NavigationMenu>
               <NavigationMenuList>
+                {/* Analysis Dropdown */}
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent text-white hover:bg-white/10 data-[state=open]:bg-white/10">
+                    Analysis
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="w-64 p-4 bg-white">
+                      <div className="space-y-2">
+                        <NavigationMenuLink asChild>
+                          <Link to="/funds/index" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
+                            <TrendingUp className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
+                            <div>
+                              <div className="font-medium text-gray-900">Fund Index</div>
+                              <div className="text-sm text-gray-500">Ranked fund analysis</div>
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <Link to="/compare" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
+                            <BarChart3 className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
+                            <div>
+                              <div className="font-medium text-gray-900">Fund Comparison</div>
+                              <div className="text-sm text-gray-500">Compare funds side-by-side</div>
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
+                      </div>
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
                 {/* Tools Dropdown */}
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="bg-transparent text-white hover:bg-white/10 data-[state=open]:bg-white/10">

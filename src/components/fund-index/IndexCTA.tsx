@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, GitCompare, Download, ExternalLink } from 'lucide-react';
+import { Calendar, GitCompare, Download, ExternalLink, Home, ClipboardCheck } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 
@@ -35,6 +35,13 @@ const IndexCTA: React.FC = () => {
             </Button>
           </Link>
           
+          <Link to="/fund-quiz" className="block">
+            <Button variant="outline" className="w-full">
+              <ClipboardCheck className="h-4 w-4 mr-2" />
+              Find My Ideal Fund
+            </Button>
+          </Link>
+          
           <Button 
             variant="outline" 
             className="w-full"
@@ -49,8 +56,9 @@ const IndexCTA: React.FC = () => {
         <div className="pt-4 border-t border-blue-200">
           <h4 className="font-semibold text-gray-900 mb-2">Quick Links</h4>
           <div className="space-y-2 text-sm">
-            <Link to="/" className="block text-blue-600 hover:text-blue-800">
-              → Browse All Funds
+            <Link to="/" className="block text-blue-600 hover:text-blue-800 flex items-center gap-1">
+              <Home className="h-3 w-3" />
+              Browse All Funds
             </Link>
             <Link to="/categories" className="block text-blue-600 hover:text-blue-800">
               → Fund Categories Guide

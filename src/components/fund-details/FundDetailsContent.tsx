@@ -15,11 +15,12 @@ import FundFAQSection from './FundFAQSection';
 import PremiumCTA from '../cta/PremiumCTA';
 import ROICalculator from './ROICalculator';
 import AlternativeFunds from './AlternativeFunds';
+import RelatedFunds from './RelatedFunds';
 import FundRiskScore from './FundRiskScore';
 import ProcessingTimeTracker from './ProcessingTimeTracker';
 import BackToFundsButton from './BackToFundsButton';
 import { Button } from '@/components/ui/button';
-import { ClipboardCheck } from 'lucide-react';
+import { ClipboardCheck, TrendingUp } from 'lucide-react';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -60,12 +61,20 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
             <div className="text-center">
               <h3 className="font-semibold text-green-900 mb-2 text-sm md:text-base">Want to see how this fund compares to others?</h3>
               <p className="text-xs md:text-sm text-green-700 mb-4">Take our quiz to get personalized recommendations based on your investment profile</p>
-              <Link to="/fund-quiz">
-                <Button className="bg-green-600 hover:bg-green-700 w-full sm:w-auto">
-                  <ClipboardCheck className="mr-2 h-4 w-4" />
-                  Take Fund Quiz
-                </Button>
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                <Link to="/fund-quiz">
+                  <Button className="bg-green-600 hover:bg-green-700">
+                    <ClipboardCheck className="mr-2 h-4 w-4" />
+                    Take Fund Quiz
+                  </Button>
+                </Link>
+                <Link to="/funds/index">
+                  <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
+                    <TrendingUp className="mr-2 h-4 w-4" />
+                    View Fund Index
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
           
@@ -82,6 +91,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           <IntroductionButton variant="full" />
         </div>
       </div>
+      
+      {/* Related Funds Section */}
+      <RelatedFunds currentFund={fund} />
       
       {/* Alternative Funds Section */}
       <AlternativeFunds currentFund={fund} />

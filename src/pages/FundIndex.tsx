@@ -6,6 +6,8 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import FundIndexHeader from '../components/fund-index/FundIndexHeader';
+import FundIndexBreadcrumbs from '../components/fund-index/FundIndexBreadcrumbs';
+import FundIndexNavigation from '../components/fund-index/FundIndexNavigation';
 import TopFiveFunds from '../components/fund-index/TopFiveFunds';
 import IndexVisualization from '../components/fund-index/IndexVisualization';
 import FundPerformanceDashboard from '../components/fund-index/FundPerformanceDashboard';
@@ -27,7 +29,11 @@ const FundIndex: React.FC = () => {
         <Header />
         
         <main className="container mx-auto px-4 py-8 space-y-12">
+          <FundIndexBreadcrumbs />
+          
           <FundIndexHeader />
+          
+          <FundIndexNavigation />
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <TopFiveFunds scores={topFiveScores} />
