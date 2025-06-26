@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getFundsByCategory, getAllCategories } from '../data/funds';
-import { slugToCategory } from '@/lib/utils';
+import { slugToCategory, categoryToSlug } from '@/lib/utils';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -53,19 +53,23 @@ const CategoryPage = () => {
         <div className="container mx-auto px-4 max-w-7xl">
           <CategoryBreadcrumbs categoryName={category} />
           
-          <CategoryPageHeader categoryName={category} fundCount={funds.length} />
+          <CategoryPageHeader categoryName={category} />
           
           {funds.length === 0 ? (
             <CategoryPageEmptyState categoryName={category} />
           ) : (
             <div className="space-y-8">
-              <CategoryPageFundSummary funds={funds} categoryName={category} />
+              <CategoryPageFundSummary count={funds.length} categoryName={category} />
               
-              <CategoryPageFundList funds={funds} categoryName={category} />
+              <CategoryPageFundList funds={funds} />
               
               <CategoryCrossLinks categoryName={category} />
               
-              <CategoryPageFAQ categoryName={category} />
+              <CategoryPageFAQ 
+                categoryName={category} 
+                categorySlug={categorySlug || ''} 
+                fundsCount={funds.length} 
+              />
               
               <RelatedCategories allCategories={allCategories} currentCategory={category} />
             </div>

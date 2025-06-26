@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Fund, getFundsByCategory, funds } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
-import { ArrowLink2, TrendingUp, DollarSign } from 'lucide-react';
+import { ExternalLink, TrendingUp, DollarSign } from 'lucide-react';
 import { categoryToSlug } from '@/lib/utils';
 
 interface RelatedFundsProps {
@@ -52,7 +52,7 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
                   </div>
                   <Link to={`/${fund.id}`}>
                     <Button size="sm" variant="outline" className="w-full">
-                      <ArrowLink2 className="h-3 w-3 mr-1" />
+                      <ExternalLink className="h-3 w-3 mr-1" />
                       View Details
                     </Button>
                   </Link>
@@ -95,7 +95,7 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
                   </div>
                   <Link to={`/${fund.id}`}>
                     <Button size="sm" variant="outline" className="w-full">
-                      <ArrowLink2 className="h-3 w-3 mr-1" />
+                      <ExternalLink className="h-3 w-3 mr-1" />
                       View Details
                     </Button>
                   </Link>
