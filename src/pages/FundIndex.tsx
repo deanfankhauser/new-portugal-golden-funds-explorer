@@ -8,6 +8,8 @@ import PageSEO from '../components/common/PageSEO';
 import FundIndexHeader from '../components/fund-index/FundIndexHeader';
 import TopFiveFunds from '../components/fund-index/TopFiveFunds';
 import IndexVisualization from '../components/fund-index/IndexVisualization';
+import FundPerformanceDashboard from '../components/fund-index/FundPerformanceDashboard';
+import InteractiveFundComparison from '../components/fund-index/InteractiveFundComparison';
 import FullIndexTable from '../components/fund-index/FullIndexTable';
 import MethodologySection from '../components/fund-index/MethodologySection';
 import IndexCTA from '../components/fund-index/IndexCTA';
@@ -31,6 +33,12 @@ const FundIndex: React.FC = () => {
             <TopFiveFunds scores={topFiveScores} />
             <IndexVisualization scores={topFiveScores} />
           </div>
+          
+          {/* New Performance Dashboard */}
+          <FundPerformanceDashboard scores={allFundScores} />
+          
+          {/* New Interactive Comparison */}
+          <InteractiveFundComparison scores={allFundScores} />
           
           <FullIndexTable scores={allFundScores} />
           
