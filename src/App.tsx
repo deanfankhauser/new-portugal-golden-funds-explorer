@@ -148,7 +148,13 @@ const DirectFundRoute = () => {
   return <NotFound />;
 };
 
+// Import SEO and performance optimization hook
+import { useSEOOptimization } from './hooks/useSEOOptimization';
+
 function App() {
+  // Initialize SEO and performance optimizations
+  useSEOOptimization();
+
   console.log('App component mounting...');
   
   // Disable scroll restoration at app level
