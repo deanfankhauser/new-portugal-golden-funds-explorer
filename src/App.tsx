@@ -150,6 +150,7 @@ const DirectFundRoute = () => {
 
 // Import SEO and performance optimization hook
 import { useSEOOptimization } from './hooks/useSEOOptimization';
+import SEOProvider from './components/providers/SEOProvider';
 
 function App() {
   // Initialize SEO and performance optimizations
@@ -171,34 +172,36 @@ function App() {
           <RecentlyViewedProvider>
             <TooltipProvider>
               <Router>
-                <ScrollToTop />
-                <RouteDebugger />
-                <div className="min-h-screen w-full bg-gray-50">
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/funds/index" element={<FundIndex />} />
-                    <Route path="/funds/:id" element={<FundDetails />} />
-                    <Route path="/tags" element={<TagsHub />} />
-                    <Route path="/tags/:tag" element={<TagPage />} />
-                    <Route path="/categories" element={<CategoriesHub />} />
-                    <Route path="/categories/:category" element={<CategoryPage />} />
-                    <Route path="/managers" element={<ManagersHub />} />
-                    <Route path="/manager/:name" element={<FundManager />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/disclaimer" element={<Disclaimer />} />
-                    <Route path="/privacy" element={<Privacy />} />
-                    <Route path="/compare" element={<ComparisonPage />} />
-                    <Route path="/compare/:slug" element={<FundComparison />} />
-                    <Route path="/comparisons" element={<ComparisonsHub />} />
-                    <Route path="/faqs" element={<FAQs />} />
-                    <Route path="/roi-calculator" element={<ROICalculator />} />
-                    <Route path="/fund-quiz" element={<FundQuiz />} />
-                    {/* Direct fund routes - catch single path segments that match fund IDs */}
-                    <Route path="/:potentialFundId" element={<DirectFundRoute />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </div>
-                <Toaster />
+                <SEOProvider>
+                  <ScrollToTop />
+                  <RouteDebugger />
+                  <div className="min-h-screen w-full bg-gray-50">
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/funds/index" element={<FundIndex />} />
+                      <Route path="/funds/:id" element={<FundDetails />} />
+                      <Route path="/tags" element={<TagsHub />} />
+                      <Route path="/tags/:tag" element={<TagPage />} />
+                      <Route path="/categories" element={<CategoriesHub />} />
+                      <Route path="/categories/:category" element={<CategoryPage />} />
+                      <Route path="/managers" element={<ManagersHub />} />
+                      <Route path="/manager/:name" element={<FundManager />} />
+                      <Route path="/about" element={<About />} />
+                      <Route path="/disclaimer" element={<Disclaimer />} />
+                      <Route path="/privacy" element={<Privacy />} />
+                      <Route path="/compare" element={<ComparisonPage />} />
+                      <Route path="/compare/:slug" element={<FundComparison />} />
+                      <Route path="/comparisons" element={<ComparisonsHub />} />
+                      <Route path="/faqs" element={<FAQs />} />
+                      <Route path="/roi-calculator" element={<ROICalculator />} />
+                      <Route path="/fund-quiz" element={<FundQuiz />} />
+                      {/* Direct fund routes - catch single path segments that match fund IDs */}
+                      <Route path="/:potentialFundId" element={<DirectFundRoute />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </div>
+                  <Toaster />
+                </SEOProvider>
               </Router>
             </TooltipProvider>
           </RecentlyViewedProvider>
