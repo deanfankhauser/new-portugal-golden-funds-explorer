@@ -1,24 +1,15 @@
 
 import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { Search, ArrowUpDown, ExternalLink, Download } from 'lucide-react';
 import { FundScore } from '../../services/fundScoringService';
 import { getFundById } from '../../data/funds';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Badge } from '../ui/badge';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '../ui/table';
+import { Table, TableBody } from '../ui/table';
 import AdvancedFilters, { FilterOptions } from './AdvancedFilters';
 import TablePagination from './TablePagination';
 import FundIndexMobileCard from './FundIndexMobileCard';
+import FundIndexTableRow from './FundIndexTableRow';
+import FundIndexTableHeader from './FundIndexTableHeader';
+import FundIndexControls from './FundIndexControls';
 
 interface FullIndexTableProps {
   scores: FundScore[];
@@ -148,12 +139,12 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
       setSortField(field);
       setSortDirection('asc');
     }
-    setCurrentPage(1); // Reset to first page when sorting
+    setCurrentPage(1);
   };
 
   const handleFiltersChange = (newFilters: FilterOptions) => {
     setFilters(newFilters);
-    setCurrentPage(1); // Reset to first page when filtering
+    setCurrentPage(1);
   };
 
   const handleClearFilters = () => {
@@ -166,47 +157,10 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
     setCurrentPage(1);
   };
 
-  const handleExportCSV = () => {
-    const csvContent = [
-      ['Rank', 'Fund Name', 'Manager', 'Movingto Score', 'Performance Score', 'Management Fee', 'Min Investment', 'Category', 'Status'].join(','),
-      ...filteredAndSortedScores.map(score => {
-        const fund = getFundById(score.fundId);
-        if (!fund) return '';
-        return [
-          score.rank,
-          `"${fund.name}"`,
-          `"${fund.managerName}"`,
-          score.movingtoScore,
-          score.performanceScore,
-          fund.managementFee,
-          fund.minimumInvestment,
-          `"${fund.category}"`,
-          `"${fund.fundStatus}"`
-        ].join(',');
-      }).filter(row => row !== '')
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'fund-index-export.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
   };
-
-  const SortableHeader = ({ field, children }: { field: SortField; children: React.ReactNode }) => (
-    <TableHead>
-      <Button 
-        variant="ghost" 
-        onClick={() => handleSort(field)}
-        className="h-auto p-0 font-semibold hover:bg-transparent"
-      >
-        {children}
-        <ArrowUpDown className="ml-1 h-3 w-3" />
-      </Button>
-    </TableHead>
-  );
 
   return (
     <Card id="full-index">
@@ -215,24 +169,11 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
           Complete Fund Index
         </CardTitle>
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search funds, managers, or categories..."
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setCurrentPage(1); // Reset to first page when searching
-                }}
-                className="pl-10"
-              />
-            </div>
-            <Button onClick={handleExportCSV} variant="outline" className="flex items-center gap-2">
-              <Download className="h-4 w-4" />
-              Export CSV
-            </Button>
-          </div>
+          <FundIndexControls
+            searchTerm={searchTerm}
+            onSearchChange={handleSearchChange}
+            filteredScores={filteredAndSortedScores}
+          />
           
           <AdvancedFilters
             filters={filters}
@@ -252,88 +193,14 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
         {/* Desktop Table View */}
         <div className="hidden lg:block overflow-x-auto">
           <Table>
-            <TableHeader>
-              <TableRow>
-                <SortableHeader field="rank">Rank</SortableHeader>
-                <SortableHeader field="name">Fund Name</SortableHeader>
-                <TableHead>Manager</TableHead>
-                <SortableHeader field="score">Movingto Score</SortableHeader>
-                <SortableHeader field="performance">Performance</SortableHeader>
-                <SortableHeader field="fees">Mgmt Fee</SortableHeader>
-                <SortableHeader field="minInvestment">Min Investment</SortableHeader>
-                <TableHead>Status</TableHead>
-                <TableHead>Action</TableHead>
-              </TableRow>
-            </TableHeader>
+            <FundIndexTableHeader
+              sortField={sortField}
+              onSort={handleSort}
+            />
             <TableBody>
-              {paginatedScores.map((score) => {
-                const fund = getFundById(score.fundId);
-                if (!fund) return null;
-
-                return (
-                  <TableRow key={fund.id} className="hover:bg-gray-50">
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-lg">#{score.rank}</span>
-                        {score.rank <= 3 && (
-                          <Badge variant="secondary" className="text-xs">
-                            Top {score.rank}
-                          </Badge>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <div className="font-semibold">{fund.name}</div>
-                        <div className="text-sm text-gray-500">{fund.category}</div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-sm">{fund.managerName}</div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-center">
-                        <div className="text-xl font-bold text-blue-600">
-                          {score.movingtoScore}
-                        </div>
-                        <div className="text-xs text-gray-500">/ 100</div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-center">
-                        <div className="font-semibold">{score.performanceScore}</div>
-                        <div className="text-xs text-gray-500">{fund.returnTarget}</div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-center font-semibold">
-                        {fund.managementFee}%
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-center font-semibold">
-                        €{fund.minimumInvestment.toLocaleString()}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant={fund.fundStatus === 'Open' ? 'default' : 'secondary'}
-                        className="text-xs"
-                      >
-                        {fund.fundStatus}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Link to={`/funds/${fund.id}`}>
-                        <Button size="sm" variant="outline">
-                          View Details
-                          <ExternalLink className="h-3 w-3 ml-1" />
-                        </Button>
-                      </Link>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              {paginatedScores.map((score) => (
+                <FundIndexTableRow key={score.fundId} score={score} />
+              ))}
             </TableBody>
           </Table>
         </div>
