@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Calendar, TrendingUp, Shield, Award } from 'lucide-react';
+import { funds } from '../../data/funds';
 
 const FundIndexHeader: React.FC = () => {
   return (

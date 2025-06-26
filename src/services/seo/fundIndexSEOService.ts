@@ -56,24 +56,13 @@ export class FundIndexSEOService extends BaseSEOService {
         'url': 'https://movingto.com'
       },
       'datePublished': '2025-01-01',
-      'dateModified': new Date().toISOString().split('T')[0],
-      'keywords': 'Golden Visa, Portugal investment funds, fund ranking, investment index, Golden Visa funds 2025'
+      'dateModified': new Date().toISOString().split('T')[0]
     };
 
     return {
       title: '2025 Golden Visa Fund Index | Portugal Investment Rankings',
       description: 'The definitive, data-driven ranking of Golden Visa-eligible investment funds in Portugal. Compare performance, fees, and regulation scores with our comprehensive index.',
       url,
-      keywords: [
-        'Golden Visa Fund Index',
-        'Portugal investment ranking',
-        'Golden Visa funds 2025',
-        'investment fund comparison',
-        'Portugal fund performance',
-        'Golden Visa fund ratings',
-        'investment fund analysis',
-        'Portugal fund index'
-      ],
       structuredData
     };
   }
