@@ -1,10 +1,10 @@
-
 import { SEOData, PageSEOProps } from '../types/seo';
 import { FundPageSEOService } from './seo/fundPageSEOService';
 import { ManagerPageSEOService } from './seo/managerPageSEOService';
 import { CategoryPageSEOService } from './seo/categoryPageSEOService';
 import { UtilityPageSEOService } from './seo/utilityPageSEOService';
 import { ComparisonPageSEOService } from './seo/comparisonPageSEOService';
+import { FundIndexSEOService } from './seo/fundIndexSEOService';
 
 export class SEODataService {
   static getSEOData({ 
@@ -59,6 +59,10 @@ export class SEODataService {
         const homepageSEO = FundPageSEOService.getHomepageSEO();
         console.log('🔥 SEODataService: Homepage SEO generated:', homepageSEO);
         return homepageSEO;
+      
+      case 'fund-index':
+        console.log('🔥 SEODataService: Generating fund index SEO');
+        return FundIndexSEOService.getFundIndexSEO();
       
       case 'fund':
         console.log('🔥 SEODataService: ===== GENERATING FUND SEO =====');

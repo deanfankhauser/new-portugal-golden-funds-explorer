@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -10,6 +9,7 @@ import { useLayoutEffect, useEffect } from 'react';
 
 // Import all pages
 import Index from './pages/Index';
+import FundIndex from './pages/FundIndex';
 import FundDetails from './pages/FundDetails';
 import TagPage from './pages/TagPage';
 import CategoryPage from './pages/CategoryPage';
@@ -170,6 +170,7 @@ function App() {
                 <div className="min-h-screen w-full bg-gray-50">
                   <Routes>
                     <Route path="/" element={<Index />} />
+                    <Route path="/funds/index" element={<FundIndex />} />
                     <Route path="/funds/:id" element={<FundDetails />} />
                     <Route path="/tags" element={<TagsHub />} />
                     <Route path="/tags/:tag" element={<TagPage />} />
