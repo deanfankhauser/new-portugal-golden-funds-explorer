@@ -25,25 +25,30 @@ const IndexPage = () => {
       <PageSEO pageType="homepage" />
       <Header />
       
-      <main className="container mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-6 sm:py-8 lg:py-12 flex-1 max-w-7xl">
-        <div className="mb-8 sm:mb-10 lg:mb-12 text-center md:text-left max-w-5xl mx-auto md:mx-0">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 sm:mb-4 lg:mb-6 text-gray-800 leading-tight px-2 sm:px-0">
+      <main className="container mx-auto container-responsive-padding py-6 sm:py-8 lg:py-12 flex-1 max-w-7xl">
+        {/* Hero Section - Enhanced typography and accessibility */}
+        <header className="mb-8 sm:mb-10 lg:mb-12 text-center md:text-left max-w-5xl mx-auto md:mx-0">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold 
+                         mb-3 sm:mb-4 lg:mb-6 text-high-contrast leading-tight px-2 sm:px-0">
             Portugal Golden Visa Investment Funds
           </h1>
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 mb-4 sm:mb-6 lg:mb-8 px-2 sm:px-0 max-w-4xl leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-medium-contrast 
+                       mb-4 sm:mb-6 lg:mb-8 px-2 sm:px-0 max-w-4xl leading-relaxed">
             Explore our qualified Portugal Golden Visa Investment funds list with our comprehensive directory.
           </p>
           
-          {/* Last Updated Timestamp - Enhanced spacing */}
-          <div className="flex justify-center md:justify-start mb-4 sm:mb-6">
+          {/* Last Updated Timestamp - Enhanced accessibility */}
+          <div className="flex justify-center md:justify-start mb-4 sm:mb-6" role="complementary">
             <LastUpdated />
           </div>
-        </div>
+        </header>
 
-        {/* Premium CTA Banner - Enhanced mobile responsiveness */}
+        {/* Premium CTA Banner - Enhanced accessibility and interactions */}
         {!isAuthenticated && (
-          <div className="mb-6 sm:mb-8 lg:mb-12">
-            <PremiumCTA variant="banner" location="homepage" />
+          <div className="mb-6 sm:mb-8 lg:mb-12" role="complementary" aria-label="Premium features promotion">
+            <div className="card-hover-effect">
+              <PremiumCTA variant="banner" location="homepage" />
+            </div>
           </div>
         )}
 
@@ -56,9 +61,10 @@ const IndexPage = () => {
           isAuthenticated={isAuthenticated}
         />
 
-        <div className="mt-12 sm:mt-16 lg:mt-20">
+        {/* Info Sections - Enhanced spacing and accessibility */}
+        <section className="mt-12 sm:mt-16 lg:mt-20" aria-label="Additional information and resources">
           <HomepageInfoSections />
-        </div>
+        </section>
       </main>
       
       <Footer />
