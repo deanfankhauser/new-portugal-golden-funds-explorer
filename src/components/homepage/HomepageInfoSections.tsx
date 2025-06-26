@@ -1,131 +1,165 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Building2, Shield, TrendingUp, ClipboardCheck, Calculator, Users } from 'lucide-react';
+import { ArrowRight, TrendingUp, Shield, Users, Calculator } from 'lucide-react';
+import { getAllCategories } from '../../data/services/categories-service';
+import { getAllFundManagers } from '../../data/services/managers-service';
+import { categoryToSlug, managerToSlug } from '../../lib/utils';
 
-const HomepageInfoSections: React.FC = () => {
+const HomepageInfoSections = () => {
+  const categories = getAllCategories().slice(0, 6); // Top 6 categories
+  const managers = getAllFundManagers().slice(0, 4); // Top 4 managers
+
   return (
-    <div className="mt-16 space-y-12">
-      {/* Quick Actions Section */}
-      <section className="bg-white rounded-2xl shadow-md border border-gray-100 p-8">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">Get Started with Your Investment Journey</h2>
-          <p className="text-lg text-gray-600">Choose the path that's right for you</p>
+    <div className="space-y-12">
+      {/* Strategic Category Links */}
+      <section className="bg-white rounded-xl p-6 lg:p-8 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-3 mb-6">
+          <TrendingUp className="h-6 w-6 text-primary" />
+          <h2 className="text-2xl font-semibold text-high-contrast">
+            Explore Fund Categories
+          </h2>
         </div>
-        
+        <p className="text-medium-contrast mb-6 text-lg">
+          Discover specialized investment opportunities across different sectors and strategies.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          {categories.map((category) => (
+            <Link
+              key={category}
+              to={`/categories/${categoryToSlug(category)}`}
+              className="group p-4 rounded-lg border border-gray-200 hover:border-primary hover:shadow-md transition-all duration-200"
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-high-contrast group-hover:text-primary">
+                  {category}
+                </span>
+                <ArrowRight className="h-4 w-4 text-medium-contrast group-hover:text-primary transition-colors" />
+              </div>
+            </Link>
+          ))}
+        </div>
+        <Link
+          to="/categories"
+          className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium"
+        >
+          View All Categories
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </section>
+
+      {/* Strategic Manager Links */}
+      <section className="bg-white rounded-xl p-6 lg:p-8 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-3 mb-6">
+          <Users className="h-6 w-6 text-primary" />
+          <h2 className="text-2xl font-semibold text-high-contrast">
+            Top Fund Managers
+          </h2>
+        </div>
+        <p className="text-medium-contrast mb-6 text-lg">
+          Learn about the experienced professionals managing your Golden Visa investments.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          {managers.map((manager) => (
+            <Link
+              key={manager.name}
+              to={`/manager/${managerToSlug(manager.name)}`}
+              className="group p-4 rounded-lg border border-gray-200 hover:border-primary hover:shadow-md transition-all duration-200"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="font-medium text-high-contrast group-hover:text-primary block">
+                    {manager.name}
+                  </span>
+                  <span className="text-sm text-medium-contrast">
+                    {manager.fundsCount} fund{manager.fundsCount !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                <ArrowRight className="h-4 w-4 text-medium-contrast group-hover:text-primary transition-colors" />
+              </div>
+            </Link>
+          ))}
+        </div>
+        <Link
+          to="/managers"
+          className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium"
+        >
+          View All Managers
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </section>
+
+      {/* Tools and Resources */}
+      <section className="bg-white rounded-xl p-6 lg:p-8 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-3 mb-6">
+          <Calculator className="h-6 w-6 text-primary" />
+          <h2 className="text-2xl font-semibold text-high-contrast">
+            Investment Tools
+          </h2>
+        </div>
+        <p className="text-medium-contrast mb-6 text-lg">
+          Use our specialized tools to make informed Golden Visa investment decisions.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Link
+            to="/roi-calculator"
+            className="group p-4 rounded-lg border border-gray-200 hover:border-primary hover:shadow-md transition-all duration-200"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="font-medium text-high-contrast group-hover:text-primary block">
+                  ROI Calculator
+                </span>
+                <span className="text-sm text-medium-contrast">
+                  Calculate potential returns
+                </span>
+              </div>
+              <ArrowRight className="h-4 w-4 text-medium-contrast group-hover:text-primary transition-colors" />
+            </div>
+          </Link>
+          <Link
+            to="/fund-quiz"
+            className="group p-4 rounded-lg border border-gray-200 hover:border-primary hover:shadow-md transition-all duration-200"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="font-medium text-high-contrast group-hover:text-primary block">
+                  Fund Recommendation Quiz
+                </span>
+                <span className="text-sm text-medium-contrast">
+                  Find your ideal fund
+                </span>
+              </div>
+              <ArrowRight className="h-4 w-4 text-medium-contrast group-hover:text-primary transition-colors" />
+            </div>
+          </Link>
+        </div>
+      </section>
+
+      {/* Trust Signals */}
+      <section className="bg-white rounded-xl p-6 lg:p-8 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-3 mb-6">
+          <Shield className="h-6 w-6 text-primary" />
+          <h2 className="text-2xl font-semibold text-high-contrast">
+            Why Choose Our Platform
+          </h2>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="border-2 border-blue-200 bg-blue-50 hover:shadow-lg transition-shadow">
-            <CardHeader className="text-center">
-              <ClipboardCheck className="h-12 w-12 text-blue-600 mx-auto mb-2" />
-              <CardTitle className="text-blue-900">Take Our Quiz</CardTitle>
-              <CardDescription className="text-blue-700">
-                Get personalized fund recommendations in 2 minutes
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center">
-              <Link to="/fund-quiz">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                  Start Quiz
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card className="border-2 border-green-200 bg-green-50 hover:shadow-lg transition-shadow">
-            <CardHeader className="text-center">
-              <Calculator className="h-12 w-12 text-green-600 mx-auto mb-2" />
-              <CardTitle className="text-green-900">ROI Calculator</CardTitle>
-              <CardDescription className="text-green-700">
-                Calculate potential returns on your investment
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center">
-              <Link to="/roi-calculator">
-                <Button className="w-full bg-green-600 hover:bg-green-700">
-                  Calculate ROI
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card className="border-2 border-purple-200 bg-purple-50 hover:shadow-lg transition-shadow">
-            <CardHeader className="text-center">
-              <Users className="h-12 w-12 text-purple-600 mx-auto mb-2" />
-              <CardTitle className="text-purple-900">Fund Managers</CardTitle>
-              <CardDescription className="text-purple-700">
-                Explore funds by their management companies
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center">
-              <Link to="/managers">
-                <Button className="w-full bg-purple-600 hover:bg-purple-700">
-                  View Managers
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Why Choose Portugal Golden Visa Funds section */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <Card className="shadow-md hover:shadow-lg transition-shadow border border-gray-100">
-          <CardHeader>
-            <Building2 className="h-8 w-8 text-[#EF4444] mb-2" />
-            <CardTitle>Qualified Investment Funds</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="text-gray-600">
-              All funds listed are approved by CMVM (Portuguese Securities Market Commission) and qualify for the Portugal Golden Visa program.
-            </CardDescription>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-md hover:shadow-lg transition-shadow border border-gray-100">
-          <CardHeader>
-            <Shield className="h-8 w-8 text-[#EF4444] mb-2" />
-            <CardTitle>Regulated & Secure</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="text-gray-600">
-              Benefit from Portugal's robust regulatory framework ensuring transparency and investor protection in all Golden Visa investments.
-            </CardDescription>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-md hover:shadow-lg transition-shadow border border-gray-100">
-          <CardHeader>
-            <TrendingUp className="h-8 w-8 text-[#EF4444] mb-2" />
-            <CardTitle>Growth Potential</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="text-gray-600">
-              Access diverse investment opportunities across various sectors including technology, real estate, and renewable energy.
-            </CardDescription>
-          </CardContent>
-        </Card>
-      </section>
-
-      {/* About Portugal Golden Visa section */}
-      <section className="bg-gray-50 rounded-2xl p-8 border border-gray-200">
-        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">About Portugal Golden Visa Investment Funds</h2>
-        <div className="prose max-w-none text-gray-700">
-          <p className="text-lg leading-relaxed mb-4">
-            Portugal's Golden Visa program offers a pathway to European residency through qualifying investments. 
-            Investment funds represent one of the most popular and accessible routes, requiring a minimum investment 
-            of €500,000 in approved funds.
-          </p>
-          <p className="text-lg leading-relaxed mb-4">
-            These funds are carefully regulated by the Portuguese Securities Market Commission (CMVM) and must meet 
-            specific criteria to qualify for the Golden Visa program. They offer investors the opportunity to 
-            diversify their portfolio while obtaining European residency rights.
-          </p>
-          <p className="text-lg leading-relaxed">
-            Our comprehensive directory helps you navigate the available options, compare fund performance, 
-            and make informed investment decisions for your Golden Visa application.
-          </p>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-primary mb-2">11+</div>
+            <div className="text-high-contrast font-medium mb-1">Verified Funds</div>
+            <div className="text-sm text-medium-contrast">All funds vetted for Golden Visa eligibility</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-primary mb-2">€500M+</div>
+            <div className="text-high-contrast font-medium mb-1">Assets Under Management</div>
+            <div className="text-sm text-medium-contrast">Representing quality investment opportunities</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-primary mb-2">100%</div>
+            <div className="text-high-contrast font-medium mb-1">Transparency</div>
+            <div className="text-sm text-medium-contrast">Full fund information and fee disclosure</div>
+          </div>
         </div>
       </section>
     </div>
