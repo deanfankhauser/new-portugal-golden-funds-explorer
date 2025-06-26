@@ -19,11 +19,7 @@ const FundIndex: React.FC = () => {
 
   return (
     <>
-      <PageSEO 
-        pageType="fund-index"
-        title="2025 Golden Visa Fund Index | Portugal Investment Rankings"
-        description="The definitive, data-driven ranking of Golden Visa-eligible investment funds in Portugal. Compare performance, fees, and regulation scores."
-      />
+      <PageSEO pageType="fund-index" />
       
       <div className="min-h-screen bg-gray-50">
         <Header />
