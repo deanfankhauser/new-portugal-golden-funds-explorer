@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, ArrowUpDown, ExternalLink, Filter } from 'lucide-react';
+import { Search, ArrowUpDown, ExternalLink, Download } from 'lucide-react';
 import { FundScore } from '../../services/fundScoringService';
 import { getFundById } from '../../data/funds';
 import { Button } from '../ui/button';
@@ -16,6 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from '../ui/table';
+import AdvancedFilters, { FilterOptions } from './AdvancedFilters';
+import TablePagination from './TablePagination';
+import FundIndexMobileCard from './FundIndexMobileCard';
 
 interface FullIndexTableProps {
   scores: FundScore[];
@@ -24,24 +27,62 @@ interface FullIndexTableProps {
 type SortField = 'rank' | 'name' | 'score' | 'performance' | 'fees' | 'minInvestment';
 type SortDirection = 'asc' | 'desc';
 
+const ITEMS_PER_PAGE = 10;
+
 const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<SortField>('rank');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filters, setFilters] = useState<FilterOptions>({
+    category: 'all',
+    fundStatus: 'all',
+    minInvestmentRange: 'all',
+    managementFeeRange: 'all'
+  });
 
   const filteredAndSortedScores = useMemo(() => {
     let filtered = scores.filter(score => {
       const fund = getFundById(score.fundId);
       if (!fund) return false;
       
+      // Search filter
       const searchLower = searchTerm.toLowerCase();
-      return (
+      const matchesSearch = searchTerm === '' || (
         fund.name.toLowerCase().includes(searchLower) ||
         fund.managerName.toLowerCase().includes(searchLower) ||
         fund.category.toLowerCase().includes(searchLower)
       );
+
+      // Advanced filters
+      const matchesCategory = filters.category === 'all' || fund.category === filters.category;
+      const matchesStatus = filters.fundStatus === 'all' || fund.fundStatus === filters.fundStatus;
+      
+      const matchesInvestment = filters.minInvestmentRange === 'all' || (() => {
+        switch (filters.minInvestmentRange) {
+          case '0-250000': return fund.minimumInvestment <= 250000;
+          case '250000-350000': return fund.minimumInvestment > 250000 && fund.minimumInvestment <= 350000;
+          case '350000-500000': return fund.minimumInvestment > 350000 && fund.minimumInvestment <= 500000;
+          case '500000+': return fund.minimumInvestment > 500000;
+          default: return true;
+        }
+      })();
+
+      const matchesFee = filters.managementFeeRange === 'all' || (() => {
+        switch (filters.managementFeeRange) {
+          case '0-1': return fund.managementFee <= 1;
+          case '1-1.5': return fund.managementFee > 1 && fund.managementFee <= 1.5;
+          case '1.5-2': return fund.managementFee > 1.5 && fund.managementFee <= 2;
+          case '2+': return fund.managementFee > 2;
+          default: return true;
+        }
+      })();
+
+      return matchesSearch && matchesCategory && matchesStatus && matchesInvestment && matchesFee;
     });
 
+    // Sorting
     filtered.sort((a, b) => {
       const fundA = getFundById(a.fundId);
       const fundB = getFundById(b.fundId);
@@ -91,7 +132,14 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
     });
 
     return filtered;
-  }, [scores, searchTerm, sortField, sortDirection]);
+  }, [scores, searchTerm, sortField, sortDirection, filters]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredAndSortedScores.length / ITEMS_PER_PAGE);
+  const paginatedScores = filteredAndSortedScores.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -100,6 +148,51 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
       setSortField(field);
       setSortDirection('asc');
     }
+    setCurrentPage(1); // Reset to first page when sorting
+  };
+
+  const handleFiltersChange = (newFilters: FilterOptions) => {
+    setFilters(newFilters);
+    setCurrentPage(1); // Reset to first page when filtering
+  };
+
+  const handleClearFilters = () => {
+    setFilters({
+      category: 'all',
+      fundStatus: 'all',
+      minInvestmentRange: 'all',
+      managementFeeRange: 'all'
+    });
+    setCurrentPage(1);
+  };
+
+  const handleExportCSV = () => {
+    const csvContent = [
+      ['Rank', 'Fund Name', 'Manager', 'Movingto Score', 'Performance Score', 'Management Fee', 'Min Investment', 'Category', 'Status'].join(','),
+      ...filteredAndSortedScores.map(score => {
+        const fund = getFundById(score.fundId);
+        if (!fund) return '';
+        return [
+          score.rank,
+          `"${fund.name}"`,
+          `"${fund.managerName}"`,
+          score.movingtoScore,
+          score.performanceScore,
+          fund.managementFee,
+          fund.minimumInvestment,
+          `"${fund.category}"`,
+          `"${fund.fundStatus}"`
+        ].join(',');
+      }).filter(row => row !== '')
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'fund-index-export.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
   };
 
   const SortableHeader = ({ field, children }: { field: SortField; children: React.ReactNode }) => (
@@ -119,26 +212,45 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
     <Card id="full-index">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Filter className="h-5 w-5 text-green-500" />
           Complete Fund Index
         </CardTitle>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search funds, managers, or categories..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search funds, managers, or categories..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1); // Reset to first page when searching
+                }}
+                className="pl-10"
+              />
+            </div>
+            <Button onClick={handleExportCSV} variant="outline" className="flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              Export CSV
+            </Button>
           </div>
-          <div className="text-sm text-gray-500 self-center">
-            Showing {filteredAndSortedScores.length} of {scores.length} funds
+          
+          <AdvancedFilters
+            filters={filters}
+            onFiltersChange={handleFiltersChange}
+            onClearFilters={handleClearFilters}
+            isOpen={filtersOpen}
+            onToggle={() => setFiltersOpen(!filtersOpen)}
+          />
+          
+          <div className="text-sm text-gray-500">
+            Showing {paginatedScores.length} of {filteredAndSortedScores.length} funds 
+            ({scores.length} total)
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="hidden lg:block overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -154,7 +266,7 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredAndSortedScores.map((score) => {
+              {paginatedScores.map((score) => {
                 const fund = getFundById(score.fundId);
                 if (!fund) return null;
 
@@ -225,6 +337,22 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
             </TableBody>
           </Table>
         </div>
+
+        {/* Mobile Card View */}
+        <div className="lg:hidden space-y-4">
+          {paginatedScores.map((score) => (
+            <FundIndexMobileCard key={score.fundId} score={score} />
+          ))}
+        </div>
+
+        {/* Pagination */}
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+          totalItems={filteredAndSortedScores.length}
+          itemsPerPage={ITEMS_PER_PAGE}
+        />
       </CardContent>
     </Card>
   );
