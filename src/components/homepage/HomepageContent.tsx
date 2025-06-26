@@ -28,22 +28,19 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
   isAuthenticated
 }) => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
 
   return (
     <div className="spacing-responsive-md">
-      {/* Skip to main content link for accessibility */}
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
 
-      {/* Mobile Filter Toggle */}
       <MobileFilterToggle 
         showMobileFilter={showMobileFilter}
         setShowMobileFilter={setShowMobileFilter}
       />
 
-      {/* Mobile Filter Section */}
       {showMobileFilter && (
         <div className="lg:hidden mb-6" id="mobile-filter-section">
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm card-hover-effect">
@@ -58,7 +55,6 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
-        {/* Left Sidebar */}
         <HomepageSidebar
           selectedTags={selectedTags}
           setSelectedTags={setSelectedTags}
@@ -66,7 +62,6 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
           setSearchQuery={setSearchQuery}
         />
         
-        {/* Main Content */}
         <main className="lg:col-span-3 order-1 lg:order-2" id="main-content">
           {isLoading ? (
             <div role="status" aria-label="Loading funds">
@@ -95,7 +90,6 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
         </main>
       </div>
 
-      {/* Mobile Fund Quiz CTA */}
       <MobileFundQuizCTA />
     </div>
   );
