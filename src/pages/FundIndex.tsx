@@ -28,37 +28,39 @@ const FundIndex: React.FC = () => {
       <div className="min-h-screen bg-gray-50">
         <Header />
         
-        <main className="container mx-auto px-4 py-8 space-y-12">
+        <main className="space-y-0">
           <FundIndexBreadcrumbs />
           
           <FundIndexHeader />
           
           <FundIndexNavigation />
           
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-            <TopFiveFunds scores={topFiveScores} />
-            <IndexVisualization scores={topFiveScores} />
-          </div>
-          
-          {/* Enhanced Performance Dashboard */}
-          <div id="performance">
-            <FundPerformanceDashboard scores={allFundScores} />
-          </div>
-          
-          {/* Enhanced Interactive Comparison */}
-          <div id="comparison">
-            <InteractiveFundComparison scores={allFundScores} />
-          </div>
-          
-          <FullIndexTable scores={allFundScores} />
-          
-          <div id="methodology">
-            <MethodologySection />
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <IndexCTA />
-            <TrustSignals />
+          <div className="max-w-7xl mx-auto px-6 py-12 space-y-12">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+              <TopFiveFunds scores={topFiveScores} />
+              <IndexVisualization scores={topFiveScores} />
+            </div>
+            
+            {/* Enhanced Performance Dashboard */}
+            <div id="performance">
+              <FundPerformanceDashboard scores={allFundScores} />
+            </div>
+            
+            {/* Enhanced Interactive Comparison */}
+            <div id="comparison">
+              <InteractiveFundComparison scores={allFundScores} />
+            </div>
+            
+            <FullIndexTable scores={allFundScores} />
+            
+            <div id="methodology">
+              <MethodologySection />
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <IndexCTA />
+              <TrustSignals />
+            </div>
           </div>
         </main>
         

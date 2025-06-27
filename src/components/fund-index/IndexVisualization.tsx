@@ -4,7 +4,6 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { FundScore } from '../../services/fundScoringService';
 import { getFundById } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { BarChart3, TrendingUp } from 'lucide-react';
 
 interface IndexVisualizationProps {
   scores: FundScore[];
@@ -22,30 +21,18 @@ const IndexVisualization: React.FC<IndexVisualizationProps> = ({ scores }) => {
     };
   });
 
-  const getBarColor = (rank: number) => {
-    switch (rank) {
-      case 1: return '#f59e0b'; // amber-500
-      case 2: return '#9ca3af'; // gray-400
-      case 3: return '#d97706'; // amber-600
-      default: return '#6b7280'; // gray-500
-    }
-  };
-
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
         <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg">
-          <h4 className="font-semibold text-gray-900 mb-2">{data.fullName}</h4>
+          <h4 className="font-medium text-gray-900 mb-2">{data.fullName}</h4>
           <div className="space-y-1">
-            <p className="text-sm">
-              <span className="text-gray-700 font-medium">Movingto Score:</span> {data.score}
+            <p className="text-sm text-gray-600">
+              Score: <span className="font-medium text-gray-900">{data.score}</span>
             </p>
-            <p className="text-sm">
-              <span className="text-gray-700 font-medium">Performance:</span> {data.performance}
-            </p>
-            <p className="text-sm">
-              <span className="text-gray-700 font-medium">Rank:</span> #{data.rank}
+            <p className="text-sm text-gray-600">
+              Rank: <span className="font-medium text-gray-900">#{data.rank}</span>
             </p>
           </div>
         </div>
@@ -55,43 +42,17 @@ const IndexVisualization: React.FC<IndexVisualizationProps> = ({ scores }) => {
   };
 
   return (
-    <Card className="border border-gray-200 shadow-sm bg-white">
-      <CardHeader className="bg-gray-900 text-white rounded-t-lg">
-        <CardTitle className="flex items-center gap-3 text-xl">
-          <div className="p-2 bg-white/10 rounded-lg">
-            <BarChart3 className="h-5 w-5" />
-          </div>
-          <div>
-            <div>Fund Performance Overview</div>
-            <div className="text-gray-300 text-sm font-normal mt-1">
-              Interactive scoring visualization
-            </div>
-          </div>
+    <Card className="border border-gray-200 bg-white">
+      <CardHeader className="border-b border-gray-200 bg-white">
+        <CardTitle className="text-xl font-semibold text-gray-900">
+          Performance Overview
         </CardTitle>
+        <p className="text-sm text-gray-600 mt-1">
+          Comparative scoring visualization
+        </p>
       </CardHeader>
       <CardContent className="p-6">
-        <div className="mb-6">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-amber-500 rounded"></div>
-              <span className="text-sm text-gray-600">Top Performer</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-gray-400 rounded"></div>
-              <span className="text-sm text-gray-600">Runner-up</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-amber-600 rounded"></div>
-              <span className="text-sm text-gray-600">Third Place</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-gray-500 rounded"></div>
-              <span className="text-sm text-gray-600">Other Funds</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="h-80 w-full">
+        <div className="h-80 w-full mb-6">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -106,55 +67,38 @@ const IndexVisualization: React.FC<IndexVisualizationProps> = ({ scores }) => {
               <YAxis 
                 domain={[0, 100]}
                 tick={{ fontSize: 12, fill: '#64748b' }}
-                label={{ value: 'Movingto Score', angle: -90, position: 'insideLeft' }}
+                label={{ value: 'Score', angle: -90, position: 'insideLeft' }}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="score" radius={[4, 4, 0, 0]}>
+              <Bar dataKey="score" radius={[4, 4, 0, 0]} fill="#6b7280">
                 {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={getBarColor(entry.rank)} />
+                  <Cell key={`cell-${index}`} fill="#6b7280" />
                 ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div className="flex items-center gap-3">
-              <TrendingUp className="w-8 h-8 text-gray-700" />
-              <div>
-                <div className="text-2xl font-bold text-gray-900">
-                  {Math.max(...chartData.map(d => d.score))}
-                </div>
-                <div className="text-sm text-gray-600">Highest Score</div>
-              </div>
+            <div className="text-2xl font-bold text-gray-900">
+              {Math.max(...chartData.map(d => d.score))}
             </div>
+            <div className="text-sm text-gray-600">Highest Score</div>
           </div>
           
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div className="flex items-center gap-3">
-              <BarChart3 className="w-8 h-8 text-gray-700" />
-              <div>
-                <div className="text-2xl font-bold text-gray-900">
-                  {(chartData.reduce((sum, d) => sum + d.score, 0) / chartData.length).toFixed(1)}
-                </div>
-                <div className="text-sm text-gray-600">Average Score</div>
-              </div>
+            <div className="text-2xl font-bold text-gray-900">
+              {(chartData.reduce((sum, d) => sum + d.score, 0) / chartData.length).toFixed(1)}
             </div>
+            <div className="text-sm text-gray-600">Average Score</div>
           </div>
           
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gray-700 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">#</span>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-gray-900">
-                  {chartData.length}
-                </div>
-                <div className="text-sm text-gray-600">Total Funds</div>
-              </div>
+            <div className="text-2xl font-bold text-gray-900">
+              {chartData.length}
             </div>
+            <div className="text-sm text-gray-600">Total Funds</div>
           </div>
         </div>
       </CardContent>
