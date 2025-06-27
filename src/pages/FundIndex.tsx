@@ -10,7 +10,6 @@ import FundIndexBreadcrumbs from '../components/fund-index/FundIndexBreadcrumbs'
 import TopFiveFunds from '../components/fund-index/TopFiveFunds';
 import FullIndexTable from '../components/fund-index/FullIndexTable';
 import MethodologySection from '../components/fund-index/MethodologySection';
-import IndexCTA from '../components/fund-index/IndexCTA';
 import TrustSignals from '../components/fund-index/TrustSignals';
 import IndexSummaryWidgets from '../components/fund-index/IndexSummaryWidgets';
 
@@ -41,10 +40,7 @@ const FundIndex: React.FC = () => {
               <MethodologySection />
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <IndexCTA />
-              <TrustSignals />
-            </div>
+            <TrustSignals />
           </div>
         </main>
         
