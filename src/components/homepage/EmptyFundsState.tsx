@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ClipboardCheck, Search, Lightbulb, ArrowRight, Filter, Sparkles } from 'lucide-react';
+import { ClipboardCheck, Search, Lightbulb, ArrowRight, Filter, Sparkles, X } from 'lucide-react';
 import { FundTag } from '../../data/funds';
 
 interface EmptyFundsStateProps {
