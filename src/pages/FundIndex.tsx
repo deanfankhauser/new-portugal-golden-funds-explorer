@@ -25,30 +25,36 @@ const FundIndex: React.FC = () => {
     <>
       <PageSEO pageType="fund-index" />
       
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
         <Header />
         
-        <main className="container mx-auto px-4 py-8 space-y-12">
+        <main className="container mx-auto px-4 py-8 space-y-16">
           <FundIndexBreadcrumbs />
           
           <FundIndexHeader />
           
           <FundIndexNavigation />
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
             <TopFiveFunds scores={topFiveScores} />
             <IndexVisualization scores={topFiveScores} />
           </div>
           
-          {/* New Performance Dashboard */}
-          <FundPerformanceDashboard scores={allFundScores} />
+          {/* Enhanced Performance Dashboard */}
+          <div id="performance">
+            <FundPerformanceDashboard scores={allFundScores} />
+          </div>
           
-          {/* New Interactive Comparison */}
-          <InteractiveFundComparison scores={allFundScores} />
+          {/* Enhanced Interactive Comparison */}
+          <div id="comparison">
+            <InteractiveFundComparison scores={allFundScores} />
+          </div>
           
           <FullIndexTable scores={allFundScores} />
           
-          <MethodologySection />
+          <div id="methodology">
+            <MethodologySection />
+          </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <IndexCTA />
