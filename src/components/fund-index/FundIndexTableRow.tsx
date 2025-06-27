@@ -39,35 +39,77 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
     <TableRow 
       className="hover:bg-gray-50/50 transition-colors border-b border-gray-100 cursor-pointer"
       onClick={handleRowClick}
+      itemScope
+      itemType="https://schema.org/FinancialProduct"
+      itemProp="itemListElement"
     >
+      <meta itemProp="identifier" content={fund.id} />
+      <meta itemProp="category" content={fund.category} />
+      <meta itemProp="url" content={`https://movingto.com/funds/funds/${fund.id}`} />
+      
       <TableCell className="py-4 w-16">
         <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-blue-700 font-bold text-sm">
-          {score.rank}
+          <span itemProp="position">{score.rank}</span>
         </div>
       </TableCell>
+      
       <TableCell className="py-4 min-w-48">
         <div className="space-y-1">
-          <div className="font-semibold text-gray-900 text-sm leading-tight line-clamp-2">{fund.name}</div>
-          <div className="text-xs text-gray-500">{fund.category}</div>
+          <div 
+            className="font-semibold text-gray-900 text-sm leading-tight line-clamp-2"
+            itemProp="name"
+          >
+            {fund.name}
+          </div>
+          <div 
+            className="text-xs text-gray-500"
+            itemProp="category"
+          >
+            {fund.category}
+          </div>
+        </div>
+        <div itemScope itemType="https://schema.org/Organization" itemProp="provider">
+          <meta itemProp="name" content={fund.managerName} />
+          <meta itemProp="url" content={fund.websiteUrl} />
         </div>
       </TableCell>
+      
       <TableCell className="py-4 w-32">
-        <div className="text-xs text-gray-700 font-medium truncate" title={fund.managerName}>
-          {fund.managerName}
+        <div 
+          className="text-xs text-gray-700 font-medium truncate" 
+          title={fund.managerName}
+          itemProp="provider"
+          itemScope
+          itemType="https://schema.org/Organization"
+        >
+          <span itemProp="name">{fund.managerName}</span>
         </div>
       </TableCell>
+      
       <TableCell className="py-4 w-20 text-center">
-        <div className="text-lg font-bold text-blue-600">
-          {score.movingtoScore}
+        <div itemScope itemType="https://schema.org/AggregateRating">
+          <div 
+            className="text-lg font-bold text-blue-600"
+            itemProp="ratingValue"
+          >
+            {score.movingtoScore}
+          </div>
+          <meta itemProp="bestRating" content="100" />
+          <meta itemProp="worstRating" content="0" />
+          <meta itemProp="ratingCount" content="1" />
         </div>
       </TableCell>
+      
       <TableCell className="py-4 w-24 text-center">
         <div className="space-y-1">
           <div className="font-semibold text-gray-900 text-sm">{score.performanceScore}</div>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <div className="text-xs text-gray-600 cursor-help hover:text-gray-800 transition-colors">
+                <div 
+                  className="text-xs text-gray-600 cursor-help hover:text-gray-800 transition-colors"
+                  itemProp="expectedReturn"
+                >
                   {currentPerformance}
                 </div>
               </TooltipTrigger>
@@ -78,16 +120,32 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
           </TooltipProvider>
         </div>
       </TableCell>
+      
       <TableCell className="py-4 w-20 text-center">
-        <div className="font-semibold text-gray-900 text-sm">
-          {fund.managementFee}%
+        <div itemScope itemType="https://schema.org/PropertyValue">
+          <div 
+            className="font-semibold text-gray-900 text-sm"
+            itemProp="value"
+          >
+            {fund.managementFee}%
+          </div>
+          <meta itemProp="name" content="Management Fee" />
         </div>
       </TableCell>
+      
       <TableCell className="py-4 w-24 text-center">
-        <div className="font-semibold text-gray-900 text-xs">
-          €{(fund.minimumInvestment / 1000).toFixed(0)}k
+        <div itemScope itemType="https://schema.org/Offer">
+          <div 
+            className="font-semibold text-gray-900 text-xs"
+            itemProp="price"
+          >
+            €{(fund.minimumInvestment / 1000).toFixed(0)}k
+          </div>
+          <meta itemProp="priceCurrency" content="EUR" />
+          <meta itemProp="availability" content={fund.fundStatus === 'Open' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'} />
         </div>
       </TableCell>
+      
       <TableCell className="py-4 w-20 text-center">
         <Badge 
           variant={fund.fundStatus === 'Open' ? 'default' : 'secondary'}
@@ -96,10 +154,35 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
               ? 'bg-green-100 text-green-800' 
               : 'bg-gray-100 text-gray-600'
           }`}
+          itemProp="availability"
         >
           {fund.fundStatus}
         </Badge>
       </TableCell>
+      
+      {/* Additional structured data */}
+      <div style={{ display: 'none' }}>
+        <div itemScope itemType="https://schema.org/PropertyValue">
+          <meta itemProp="name" content="Performance Fee" />
+          <meta itemProp="value" content={`${fund.performanceFee}%`} />
+        </div>
+        <div itemScope itemType="https://schema.org/PropertyValue">
+          <meta itemProp="name" content="Fund Size" />
+          <meta itemProp="value" content={`${fund.fundSize} Million EUR`} />
+        </div>
+        <div itemScope itemType="https://schema.org/PropertyValue">
+          <meta itemProp="name" content="Regulatory Score" />
+          <meta itemProp="value" content={score.regulatoryScore.toString()} />
+        </div>
+        <div itemScope itemType="https://schema.org/PropertyValue">
+          <meta itemProp="name" content="Fee Score" />
+          <meta itemProp="value" content={score.feeScore.toString()} />
+        </div>
+        <div itemScope itemType="https://schema.org/PropertyValue">
+          <meta itemProp="name" content="Protection Score" />
+          <meta itemProp="value" content={score.protectionScore.toString()} />
+        </div>
+      </div>
     </TableRow>
   );
 };
