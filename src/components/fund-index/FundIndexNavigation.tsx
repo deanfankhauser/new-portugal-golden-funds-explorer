@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '../ui/button';
-import { TrendingUp, BarChart3, Table, Trophy, Target } from 'lucide-react';
+import { BarChart3, Table, Trophy, Target } from 'lucide-react';
 
 const FundIndexNavigation: React.FC = () => {
   const scrollToSection = (sectionId: string) => {
@@ -13,7 +13,6 @@ const FundIndexNavigation: React.FC = () => {
 
   const navItems = [
     { id: 'top-five', label: 'Top 5', icon: Trophy },
-    { id: 'performance', label: 'Performance', icon: TrendingUp },
     { id: 'comparison', label: 'Compare', icon: BarChart3 },
     { id: 'full-index', label: 'Full Index', icon: Table },
     { id: 'methodology', label: 'Methodology', icon: Target }
