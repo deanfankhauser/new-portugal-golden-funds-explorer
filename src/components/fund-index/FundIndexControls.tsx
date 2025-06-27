@@ -1,9 +1,7 @@
 
 import React from 'react';
-import { Search, Download } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { FundScore } from '../../services/fundScoringService';
-import { getFundById } from '../../data/funds';
-import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
 interface FundIndexControlsProps {
@@ -14,38 +12,8 @@ interface FundIndexControlsProps {
 
 const FundIndexControls: React.FC<FundIndexControlsProps> = ({
   searchTerm,
-  onSearchChange,
-  filteredScores
+  onSearchChange
 }) => {
-  const handleExportCSV = () => {
-    const csvContent = [
-      ['Rank', 'Fund Name', 'Manager', 'Movingto Score', 'Performance Score', 'Management Fee', 'Min Investment', 'Category', 'Status'].join(','),
-      ...filteredScores.map(score => {
-        const fund = getFundById(score.fundId);
-        if (!fund) return '';
-        return [
-          score.rank,
-          `"${fund.name}"`,
-          `"${fund.managerName}"`,
-          score.movingtoScore,
-          score.performanceScore,
-          fund.managementFee,
-          fund.minimumInvestment,
-          `"${fund.category}"`,
-          `"${fund.fundStatus}"`
-        ].join(',');
-      }).filter(row => row !== '')
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'fund-index-export.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
-
   return (
     <div className="flex flex-col sm:flex-row gap-4">
       <div className="relative flex-1">
@@ -57,10 +25,6 @@ const FundIndexControls: React.FC<FundIndexControlsProps> = ({
           className="pl-10"
         />
       </div>
-      <Button onClick={handleExportCSV} variant="outline" className="flex items-center gap-2">
-        <Download className="h-4 w-4" />
-        Export CSV
-      </Button>
     </div>
   );
 };
