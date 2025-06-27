@@ -33,24 +33,6 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
             Explore <span className="font-semibold text-primary">qualified investment funds</span> for your 
             Portugal Golden Visa application
           </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 sm:mb-10">
-            <div className="flex items-center gap-2 text-sm text-medium-contrast bg-white/60 
-                            backdrop-blur-sm px-4 py-2 rounded-full border border-gray-200">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span className="font-medium">11+ Verified Funds</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-medium-contrast bg-white/60 
-                            backdrop-blur-sm px-4 py-2 rounded-full border border-gray-200">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span className="font-medium">€500M+ AUM</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-medium-contrast bg-white/60 
-                            backdrop-blur-sm px-4 py-2 rounded-full border border-gray-200">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span className="font-medium">100% Transparent</span>
-            </div>
-          </div>
           
           <div className="flex justify-center mb-8 sm:mb-10" role="complementary">
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-gray-200 shadow-sm">
