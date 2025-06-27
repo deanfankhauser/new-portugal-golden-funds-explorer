@@ -14,6 +14,13 @@ interface FundMetricsProps {
   formatFundSize?: () => React.ReactNode;
 }
 
+interface MetricItem {
+  label: string;
+  value: string | number | React.ReactNode;
+  subtitle?: string;
+  isPublic: boolean;
+}
+
 const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatFundSize }) => {
   const { isAuthenticated } = useAuth();
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
@@ -23,7 +30,7 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
   };
 
   // Always show basic public metrics
-  const publicMetrics = [
+  const publicMetrics: MetricItem[] = [
     {
       label: "Minimum Investment",
       value: formatCurrency(fund.minimumInvestment),
@@ -48,7 +55,7 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
   ];
 
   // Additional metrics that may be gated
-  const additionalMetrics = [
+  const additionalMetrics: MetricItem[] = [
     {
       label: "Established",
       value: fund.id === '3cc-golden-income' ? 'April 2025' : fund.established,
