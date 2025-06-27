@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { funds } from '../data/funds';
 import { FundScoringService } from '../services/fundScoringService';
@@ -12,6 +11,7 @@ import FullIndexTable from '../components/fund-index/FullIndexTable';
 import MethodologySection from '../components/fund-index/MethodologySection';
 import TrustSignals from '../components/fund-index/TrustSignals';
 import IndexSummaryWidgets from '../components/fund-index/IndexSummaryWidgets';
+import FundIndexFAQ from '../components/fund-index/FundIndexFAQ';
 
 const FundIndex: React.FC = () => {
   const allFundScores = FundScoringService.getAllFundScores(funds);
@@ -41,6 +41,8 @@ const FundIndex: React.FC = () => {
             </div>
             
             <TrustSignals />
+            
+            <FundIndexFAQ />
           </div>
         </main>
         
