@@ -3,8 +3,7 @@ import React from 'react';
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '../ui/button';
 import { TableHead, TableHeader, TableRow } from '../ui/table';
-
-type SortField = 'rank' | 'name' | 'score' | 'performance' | 'fees' | 'minInvestment';
+import { SortField } from './FilterAndSortLogic';
 
 interface FundIndexTableHeaderProps {
   sortField: SortField;
