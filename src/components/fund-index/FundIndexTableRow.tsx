@@ -1,10 +1,8 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ExternalLink } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { FundScore } from '../../services/fundScoringService';
 import { getFundById } from '../../data/funds';
-import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { TableCell, TableRow } from '../ui/table';
 
@@ -14,11 +12,19 @@ interface FundIndexTableRowProps {
 
 const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
   const fund = getFundById(score.fundId);
+  const navigate = useNavigate();
   
   if (!fund) return null;
 
+  const handleRowClick = () => {
+    navigate(`/funds/${fund.id}`);
+  };
+
   return (
-    <TableRow className="hover:bg-gray-50/50 transition-colors border-b border-gray-100">
+    <TableRow 
+      className="hover:bg-gray-50/50 transition-colors border-b border-gray-100 cursor-pointer"
+      onClick={handleRowClick}
+    >
       <TableCell className="py-4 w-16">
         <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-blue-700 font-bold text-sm">
           {score.rank}
@@ -67,17 +73,6 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
         >
           {fund.fundStatus}
         </Badge>
-      </TableCell>
-      <TableCell className="py-4 w-20 text-center">
-        <Link to={`/funds/${fund.id}`}>
-          <Button 
-            size="sm" 
-            variant="outline" 
-            className="hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700 transition-colors text-xs px-2 py-1"
-          >
-            View
-          </Button>
-        </Link>
       </TableCell>
     </TableRow>
   );

@@ -54,9 +54,6 @@ const FundIndexTableHeader: React.FC<FundIndexTableHeaderProps> = ({
         <TableHead className="bg-gray-50 py-3 w-20 text-center">
           <span className="text-xs font-bold text-gray-700">Status</span>
         </TableHead>
-        <TableHead className="bg-gray-50 py-3 w-20 text-center">
-          <span className="text-xs font-bold text-gray-700">Action</span>
-        </TableHead>
       </TableRow>
     </TableHeader>
   );
