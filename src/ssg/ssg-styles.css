@@ -170,7 +170,7 @@ h3 {
 .inline-flex { display: inline-flex; }
 .hidden { display: none; }
 
-/* Text sizes */
+/* Text sizes - COMPLETE RESPONSIVE SYSTEM FOR HOMEPAGE */
 .text-xs { font-size: 0.75rem; line-height: 1rem; }
 .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
 .text-base { font-size: 1rem; line-height: 1.5rem; }
@@ -570,5 +570,98 @@ h3 {
   .container-responsive-padding {
     padding-left: 3rem;
     padding-right: 3rem;
+  }
+}
+
+/* CRITICAL: Homepage hero text sizing - EXACT MATCH TO VITE BUILD */
+/* Base text sizes for mobile */
+.homepage-hero-title {
+  font-size: 2.25rem; /* text-4xl */
+  line-height: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.homepage-hero-subtitle {
+  font-size: 1.25rem; /* text-xl */
+  line-height: 1.75rem;
+  font-weight: 300;
+  line-height: 1.625;
+}
+
+/* Responsive breakpoints for hero text */
+@media (min-width: 640px) {
+  .homepage-hero-title {
+    font-size: 3rem; /* sm:text-5xl */
+    line-height: 1;
+  }
+  .homepage-hero-subtitle {
+    font-size: 1.5rem; /* sm:text-2xl */
+    line-height: 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .homepage-hero-title {
+    font-size: 3.75rem; /* md:text-6xl */
+    line-height: 1;
+  }
+  .homepage-hero-subtitle {
+    font-size: 1.875rem; /* md:text-3xl */
+    line-height: 2.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .homepage-hero-title {
+    font-size: 4.5rem; /* lg:text-7xl */
+    line-height: 1;
+  }
+}
+
+/* Utility class variants for hero section */
+.text-4xl.sm\:text-5xl.md\:text-6xl.lg\:text-7xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .text-4xl.sm\:text-5xl.md\:text-6xl.lg\:text-7xl {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  .text-4xl.sm\:text-5xl.md\:text-6xl.lg\:text-7xl {
+    font-size: 3.75rem;
+    line-height: 1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .text-4xl.sm\:text-5xl.md\:text-6xl.lg\:text-7xl {
+    font-size: 4.5rem;
+    line-height: 1;
+  }
+}
+
+.text-xl.sm\:text-2xl.md\:text-3xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+@media (min-width: 640px) {
+  .text-xl.sm\:text-2xl.md\:text-3xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .text-xl.sm\:text-2xl.md\:text-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
   }
 }
