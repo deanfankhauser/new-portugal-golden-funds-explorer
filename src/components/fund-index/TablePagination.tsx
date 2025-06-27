@@ -39,6 +39,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
             <PaginationLink
               onClick={() => onPageChange(i)}
               isActive={currentPage === i}
+              className="cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition-colors"
             >
               {i}
             </PaginationLink>
@@ -52,6 +53,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
           <PaginationLink
             onClick={() => onPageChange(1)}
             isActive={currentPage === 1}
+            className="cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition-colors"
           >
             1
           </PaginationLink>
@@ -74,6 +76,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
               <PaginationLink
                 onClick={() => onPageChange(i)}
                 isActive={currentPage === i}
+                className="cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition-colors"
               >
                 {i}
               </PaginationLink>
@@ -94,6 +97,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
             <PaginationLink
               onClick={() => onPageChange(totalPages)}
               isActive={currentPage === totalPages}
+              className="cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition-colors"
             >
               {totalPages}
             </PaginationLink>
@@ -108,30 +112,42 @@ const TablePagination: React.FC<TablePaginationProps> = ({
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
-      <div className="text-sm text-gray-500">
-        Showing {startItem} to {endItem} of {totalItems} funds
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6 px-2">
+      <div className="text-sm text-gray-600 font-medium order-2 sm:order-1">
+        Showing <span className="text-gray-900 font-semibold">{startItem}</span> to{' '}
+        <span className="text-gray-900 font-semibold">{endItem}</span> of{' '}
+        <span className="text-gray-900 font-semibold">{totalItems}</span> funds
       </div>
       
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious 
-              onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
-              className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-            />
-          </PaginationItem>
-          
-          {renderPageNumbers()}
-          
-          <PaginationItem>
-            <PaginationNext 
-              onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
-              className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      <div className="order-1 sm:order-2">
+        <Pagination>
+          <PaginationContent className="gap-1">
+            <PaginationItem>
+              <PaginationPrevious 
+                onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
+                className={`cursor-pointer transition-all duration-200 ${
+                  currentPage === 1 
+                    ? 'pointer-events-none opacity-40 cursor-not-allowed' 
+                    : 'hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200'
+                }`}
+              />
+            </PaginationItem>
+            
+            {renderPageNumbers()}
+            
+            <PaginationItem>
+              <PaginationNext 
+                onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
+                className={`cursor-pointer transition-all duration-200 ${
+                  currentPage === totalPages 
+                    ? 'pointer-events-none opacity-40 cursor-not-allowed' 
+                    : 'hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200'
+                }`}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
     </div>
   );
 };
