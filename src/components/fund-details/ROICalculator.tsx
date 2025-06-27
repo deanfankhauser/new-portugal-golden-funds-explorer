@@ -5,13 +5,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Calculator, AlertTriangle } from 'lucide-react';
+import { Calculator, AlertTriangle, Lock, Eye } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import PasswordDialog from '../PasswordDialog';
 
 interface ROICalculatorProps {
   fund: Fund;
 }
 
 const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
+  const { isAuthenticated } = useAuth();
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [investmentAmount, setInvestmentAmount] = useState<number>(fund.minimumInvestment);
   const [holdingPeriod, setHoldingPeriod] = useState<number>(5);
   const [expectedReturn, setExpectedReturn] = useState<number>(0);
@@ -43,6 +47,10 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
     setExpectedReturn(returnRate);
   }, [fund.returnTarget]);
 
+  const handleUnlockClick = () => {
+    setShowPasswordDialog(true);
+  };
+
   const calculateROI = () => {
     if (investmentAmount <= 0 || holdingPeriod <= 0 || expectedReturn < 0) {
       return;
@@ -73,6 +81,81 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
     return `${percentage.toFixed(2)}%`;
   };
 
+  // Show gated content for non-authenticated users
+  if (!isAuthenticated) {
+    return (
+      <>
+        <Card className="bg-white border border-gray-100 shadow-sm relative overflow-hidden">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <Calculator className="w-5 h-5 text-[#EF4444]" />
+              ROI Calculator for {fund.name}
+              <Lock className="w-5 h-5 text-gray-400 ml-auto" />
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="relative">
+            {/* Blurred preview */}
+            <div className="filter blur-sm">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="space-y-2">
+                  <Label>Investment Amount (€)</Label>
+                  <Input value="€•••,•••" disabled />
+                </div>
+                <div className="space-y-2">
+                  <Label>Holding Period (years)</Label>
+                  <Input value="• years" disabled />
+                </div>
+                <div className="space-y-2">
+                  <Label>Expected Annual Return (%)</Label>
+                  <Input value="•.•%" disabled />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center p-4 bg-green-50 rounded-lg">
+                  <h4 className="font-medium text-gray-700 mb-1">Total Value</h4>
+                  <p className="text-2xl font-bold text-green-600">€•••,•••</p>
+                </div>
+                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                  <h4 className="font-medium text-gray-700 mb-1">Total Return</h4>
+                  <p className="text-2xl font-bold text-blue-600">€•••,•••</p>
+                </div>
+                <div className="text-center p-4 bg-purple-50 rounded-lg">
+                  <h4 className="font-medium text-gray-700 mb-1">Annualized Return</h4>
+                  <p className="text-2xl font-bold text-purple-600">••.••%</p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Overlay with unlock button */}
+            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
+              <div className="text-center">
+                <Calculator className="w-8 h-8 text-[#EF4444] mx-auto mb-3" />
+                <h3 className="font-semibold text-gray-900 mb-2">Advanced ROI Calculator</h3>
+                <p className="text-sm text-gray-600 mb-4 max-w-xs">
+                  Calculate personalized return projections with detailed scenarios and risk analysis
+                </p>
+                <Button 
+                  onClick={handleUnlockClick}
+                  className="bg-[#EF4444] hover:bg-[#EF4444]/90"
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  Access ROI Calculator
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <PasswordDialog 
+          open={showPasswordDialog}
+          onOpenChange={setShowPasswordDialog}
+        />
+      </>
+    );
+  }
+
+  // Show full content for authenticated users
   return (
     <Card className="bg-white border border-gray-100 shadow-sm">
       <CardHeader>

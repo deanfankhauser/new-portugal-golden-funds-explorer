@@ -1,19 +1,110 @@
 
-import React from 'react';
-import { FileText, ExternalLink } from 'lucide-react';
+import React, { useState } from 'react';
+import { FileText, ExternalLink, Lock, Eye } from 'lucide-react';
 import { PdfDocument } from '../../data/types/funds';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useAuth } from '../../contexts/AuthContext';
+import PasswordDialog from '../PasswordDialog';
 
 interface DocumentsSectionProps {
   documents?: PdfDocument[];
 }
 
 const DocumentsSection: React.FC<DocumentsSectionProps> = ({ documents }) => {
+  const { isAuthenticated } = useAuth();
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+
   if (!documents || documents.length === 0) {
     return null;
   }
 
+  const handleUnlockClick = () => {
+    setShowPasswordDialog(true);
+  };
+
+  // Show gated content for non-authenticated users
+  if (!isAuthenticated) {
+    return (
+      <>
+        <Card className="border border-gray-100 shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center">
+                <FileText className="w-5 h-5 mr-2 text-[#EF4444]" />
+                <h2 className="text-2xl font-bold">Due Diligence Documents</h2>
+              </div>
+              <Lock className="w-5 h-5 text-gray-400" />
+            </div>
+            
+            {/* Blurred preview */}
+            <div className="relative">
+              <div className="filter blur-sm">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <FileText className="w-5 h-5 text-gray-400" />
+                    <div>
+                      <h4 className="font-medium text-gray-700">Fund Prospectus</h4>
+                      <p className="text-sm text-gray-500">•• pages • PDF</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <FileText className="w-5 h-5 text-gray-400" />
+                    <div>
+                      <h4 className="font-medium text-gray-700">Annual Report</h4>
+                      <p className="text-sm text-gray-500">•• pages • PDF</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <FileText className="w-5 h-5 text-gray-400" />
+                    <div>
+                      <h4 className="font-medium text-gray-700">KID Document</h4>
+                      <p className="text-sm text-gray-500">• pages • PDF</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Overlay with unlock button */}
+              <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
+                <div className="text-center">
+                  <FileText className="w-8 h-8 text-[#EF4444] mx-auto mb-3" />
+                  <h3 className="font-semibold text-gray-900 mb-2">Due Diligence Documents</h3>
+                  <p className="text-sm text-gray-600 mb-4 max-w-xs">
+                    Access prospectus, annual reports, and legal documentation
+                  </p>
+                  <Button 
+                    onClick={handleUnlockClick}
+                    className="bg-[#EF4444] hover:bg-[#EF4444]/90"
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    Access Documents
+                  </Button>
+                </div>
+              </div>
+            </div>
+            
+            {/* Public teaser info */}
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <p className="text-sm text-gray-600">
+                📋 <strong>Available documents:</strong> Fund prospectus, annual reports, 
+                KID documents, and regulatory filings for comprehensive due diligence.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <PasswordDialog 
+          open={showPasswordDialog}
+          onOpenChange={setShowPasswordDialog}
+        />
+      </>
+    );
+  }
+
+  // Show full content for authenticated users
   return (
     <Card className="border border-gray-100 shadow-md hover:shadow-lg transition-all duration-300">
       <CardContent className="p-6">

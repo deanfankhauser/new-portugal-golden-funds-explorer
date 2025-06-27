@@ -1,7 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Fund } from '../../data/funds';
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useAuth } from '../../contexts/AuthContext';
+import { ContentGatingService } from '../../services/contentGatingService';
+import PasswordDialog from '../PasswordDialog';
+import { Lock, Eye } from 'lucide-react';
 
 interface FundMetricsProps {
   fund: Fund;
@@ -10,66 +15,103 @@ interface FundMetricsProps {
 }
 
 const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatFundSize }) => {
+  const { isAuthenticated } = useAuth();
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+
+  const handleUnlockClick = () => {
+    setShowPasswordDialog(true);
+  };
+
+  // Always show basic public metrics
+  const publicMetrics = [
+    {
+      label: "Minimum Investment",
+      value: formatCurrency(fund.minimumInvestment),
+      subtitle: fund.id === '3cc-golden-income' ? 'Class A (€300,000 for Class D)' : undefined,
+      isPublic: true
+    },
+    {
+      label: "Target Return", 
+      value: fund.returnTarget,
+      isPublic: true
+    },
+    {
+      label: "Fund Size",
+      value: formatFundSize ? formatFundSize() : `${fund.fundSize} Million EUR`,
+      isPublic: true
+    },
+    {
+      label: "Term",
+      value: fund.term === 0 ? "Perpetual (open-ended)" : `${fund.term} years`,
+      isPublic: true
+    }
+  ];
+
+  // Additional metrics that may be gated
+  const additionalMetrics = [
+    {
+      label: "Established",
+      value: fund.id === '3cc-golden-income' ? 'April 2025' : fund.established,
+      isPublic: true
+    },
+    {
+      label: "Regulated By",
+      value: fund.regulatedBy,
+      isPublic: true
+    },
+    {
+      label: "Location",
+      value: fund.location,
+      isPublic: true
+    }
+  ];
+
+  const allMetrics = [...publicMetrics, ...additionalMetrics];
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-      <Card className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
-        <CardContent className="p-4 md:p-6">
-          <h3 className="font-medium text-gray-500 mb-1 md:mb-2 text-xs md:text-sm uppercase tracking-wide">Minimum Investment</h3>
-          <p className="text-lg md:text-2xl font-bold text-[#EF4444] leading-tight">{formatCurrency(fund.minimumInvestment)}</p>
-          {fund.id === '3cc-golden-income' && (
-            <p className="text-xs md:text-sm text-gray-600 mt-1">Class A (€300,000 for Class D)</p>
-          )}
-        </CardContent>
-      </Card>
-      
-      <Card className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
-        <CardContent className="p-4 md:p-6">
-          <h3 className="font-medium text-gray-500 mb-1 md:mb-2 text-xs md:text-sm uppercase tracking-wide">Target Return</h3>
-          <p className="text-lg md:text-2xl font-bold text-[#EF4444] leading-tight">{fund.returnTarget}</p>
-        </CardContent>
-      </Card>
-      
-      <Card className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
-        <CardContent className="p-4 md:p-6">
-          <h3 className="font-medium text-gray-500 mb-1 md:mb-2 text-xs md:text-sm uppercase tracking-wide">Fund Size</h3>
-          <p className="text-lg md:text-2xl font-bold text-[#EF4444] leading-tight">
-            {formatFundSize ? formatFundSize() : `${fund.fundSize} Million EUR`}
-          </p>
-        </CardContent>
-      </Card>
-      
-      <Card className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
-        <CardContent className="p-4 md:p-6">
-          <h3 className="font-medium text-gray-500 mb-1 md:mb-2 text-xs md:text-sm uppercase tracking-wide">Term</h3>
-          <p className="text-lg md:text-2xl font-bold text-[#EF4444] leading-tight">
-            {fund.term === 0 ? "Perpetual (open-ended)" : `${fund.term} years`}
-          </p>
-        </CardContent>
-      </Card>
-      
-      <Card className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
-        <CardContent className="p-4 md:p-6">
-          <h3 className="font-medium text-gray-500 mb-1 md:mb-2 text-xs md:text-sm uppercase tracking-wide">Established</h3>
-          <p className="text-lg md:text-2xl font-bold text-[#EF4444] leading-tight">
-            {fund.id === '3cc-golden-income' ? 'April 2025' : fund.established}
-          </p>
-        </CardContent>
-      </Card>
-      
-      <Card className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
-        <CardContent className="p-4 md:p-6">
-          <h3 className="font-medium text-gray-500 mb-1 md:mb-2 text-xs md:text-sm uppercase tracking-wide">Regulated By</h3>
-          <p className="text-lg md:text-2xl font-bold text-[#EF4444] leading-tight">{fund.regulatedBy}</p>
-        </CardContent>
-      </Card>
-      
-      <Card className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
-        <CardContent className="p-4 md:p-6">
-          <h3 className="font-medium text-gray-500 mb-1 md:mb-2 text-xs md:text-sm uppercase tracking-wide">Location</h3>
-          <p className="text-lg md:text-2xl font-bold text-[#EF4444] leading-tight">{fund.location}</p>
-        </CardContent>
-      </Card>
-    </div>
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
+        {allMetrics.map((metric, index) => (
+          <Card key={index} className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+            <CardContent className="p-4 md:p-6">
+              <h3 className="font-medium text-gray-500 mb-1 md:mb-2 text-xs md:text-sm uppercase tracking-wide">
+                {metric.label}
+              </h3>
+              <p className="text-lg md:text-2xl font-bold text-[#EF4444] leading-tight">
+                {metric.value}
+              </p>
+              {metric.subtitle && (
+                <p className="text-xs md:text-sm text-gray-600 mt-1">{metric.subtitle}</p>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {!isAuthenticated && (
+        <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 md:p-6 rounded-lg border border-blue-200">
+          <div className="text-center">
+            <Lock className="w-6 h-6 text-blue-600 mx-auto mb-3" />
+            <h3 className="font-semibold text-blue-900 mb-2">Advanced Fund Analytics Available</h3>
+            <p className="text-sm text-blue-700 mb-4 max-w-md mx-auto">
+              Get access to detailed performance metrics, risk analysis, and portfolio allocation data
+            </p>
+            <Button 
+              onClick={handleUnlockClick}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              View Advanced Analytics
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <PasswordDialog 
+        open={showPasswordDialog}
+        onOpenChange={setShowPasswordDialog}
+      />
+    </>
   );
 };
 
