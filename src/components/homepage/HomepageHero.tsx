@@ -9,7 +9,7 @@ interface HomepageHeroProps {
 
 const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
   return (
-    <header className="mb-12 sm:mb-16 lg:mb-20 max-w-5xl mx-auto">
+    <header className="mb-12 sm:mb-16 lg:mb-20 max-w-7xl mx-auto container-responsive-padding">
       <div className="relative">
         {/* Background decoration */}
         <div className="absolute inset-0 -z-10">
