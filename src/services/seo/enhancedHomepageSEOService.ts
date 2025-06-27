@@ -1,4 +1,3 @@
-
 import { SEOData } from '../../types/seo';
 import { BaseSEOService } from './baseSEOService';
 import { getAllCategories } from '../../data/services/categories-service';
@@ -160,7 +159,7 @@ export class EnhancedHomepageSEOService extends BaseSEOService {
 
     return {
       title: 'Portugal Golden Visa Investment Funds 2025 | Compare 11+ Verified Funds',
-      description: `Compare the best Portugal Golden Visa investment funds. Expert analysis of ${totalFunds} verified funds, €${totalAUM}M+ AUM, comprehensive fee comparison, and personalized recommendations. Start your residency journey today.`,
+      description: `Compare the best Portugal Golden Visa investment funds. Expert analysis of ${totalFunds} verified funds, €${totalAUM}M+ AUM, comprehensive fee comparison, and personalized recommendations with exclusive data for MovingTo clients. Start your residency journey today.`,
       url: baseUrl,
       structuredData: enhancedStructuredData
     };

@@ -1,4 +1,3 @@
-
 import { SEOData } from '../../types/seo';
 import { BaseSEOService } from './baseSEOService';
 import { fundsData } from '../../data/mock/funds';
@@ -180,7 +179,7 @@ export class FundPageSEOService extends BaseSEOService {
     };
 
     const optimizedTitle = `${fund.name} | ${fund.category} Golden Visa Fund - €${fund.minimumInvestment.toLocaleString()} Min Investment`;
-    const optimizedDescription = `${fund.name} Golden Visa fund analysis: ${fund.category} investment managed by ${fund.managerName}. Min: €${fund.minimumInvestment.toLocaleString()}, Fees: ${fund.managementFee}%/${fund.performanceFee}%, Target return: ${fund.returnTarget}. Compare features & apply today.`;
+    const optimizedDescription = `${fund.name} Golden Visa fund analysis: ${fund.category} investment managed by ${fund.managerName}. Min: €${fund.minimumInvestment.toLocaleString()}, Fees: ${fund.managementFee}%/${fund.performanceFee}%, Target return: ${fund.returnTarget} with premium metrics for MovingTo clients. Compare features & apply today.`;
 
     console.log('🔥 FundPageSEOService: Generated fund SEO:', { title: optimizedTitle, url: fundUrl });
 

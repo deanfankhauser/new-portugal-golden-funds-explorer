@@ -1,4 +1,3 @@
-
 import { SEOData } from '../../types/seo';
 import { BaseSEOService } from './baseSEOService';
 
@@ -132,7 +131,7 @@ export class FundIndexSEOService extends BaseSEOService {
 
     return {
       title: '2025 Golden Visa Fund Index | Portugal Investment Rankings',
-      description: 'The definitive, data-driven ranking of Golden Visa-eligible investment funds in Portugal. Compare performance, fees, and regulation scores with our comprehensive index updated monthly.',
+      description: 'The definitive, data-driven ranking of Golden Visa-eligible investment funds in Portugal. Compare performance, fees, and regulation scores with our comprehensive index updated monthly and detailed analytics available to MovingTo clients.',
       url,
       structuredData
     };

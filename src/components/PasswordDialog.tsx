@@ -28,13 +28,26 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const { authenticate } = useAuth();
 
+  // Simple analytics tracking
+  const trackUnlockAttempt = (action: string, context?: string) => {
+    console.log('📊 Analytics: Unlock Premium Data', {
+      action,
+      context,
+      timestamp: new Date().toISOString(),
+      url: window.location.href
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    
+    trackUnlockAttempt('password_submit');
 
     const success = authenticate(password);
     
     if (success) {
+      trackUnlockAttempt('authentication_success');
       toast({
         title: "Access granted",
         description: "Welcome! You now have full access to premium features.",
@@ -43,6 +56,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
       setPassword('');
       onSuccess?.();
     } else {
+      trackUnlockAttempt('authentication_failed');
       toast({
         title: "Access denied",
         description: "Incorrect password. Please try again.",
@@ -53,6 +67,17 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
     setIsLoading(false);
   };
 
+  const handleConsultationClick = () => {
+    trackUnlockAttempt('consultation_cta_click');
+  };
+
+  const handleDialogOpen = (open: boolean) => {
+    if (open) {
+      trackUnlockAttempt('dialog_opened');
+    }
+    onOpenChange(open);
+  };
+
   const premiumFeatures = [
     { icon: FileText, title: "Detailed Fee Analysis", description: "Management, performance & hidden fees" },
     { icon: TrendingUp, title: "Advanced Fund Comparison", description: "Side-by-side analysis of all metrics" },
@@ -61,8 +86,11 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
   ];
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+    <Dialog open={open} onOpenChange={handleDialogOpen}>
+      <DialogContent 
+        className="sm:max-w-2xl max-h-[90vh] overflow-y-auto"
+        data-analytics="unlock-premium-dialog"
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Lock className="w-5 h-5 text-[#EF4444]" />
@@ -112,6 +140,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
               onChange={(e) => setPassword(e.target.value)}
               className="w-full"
               autoFocus
+              data-analytics="password-input"
             />
           </div>
           
@@ -121,6 +150,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
               variant="outline"
               onClick={() => onOpenChange(false)}
               className="flex-1"
+              data-analytics="cancel-button"
             >
               Cancel
             </Button>
@@ -128,6 +158,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
               type="submit"
               disabled={isLoading || !password.trim()}
               className="bg-[#EF4444] hover:bg-[#EF4444]/90 flex-1"
+              data-analytics="access-premium-button"
             >
               {isLoading ? "Verifying..." : "Access Premium Features"}
             </Button>
@@ -145,7 +176,9 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
               href="https://movingto.com/contact" 
               target="_blank" 
               rel="noopener noreferrer"
+              onClick={handleConsultationClick}
               className="inline-flex items-center justify-center bg-[#EF4444] hover:bg-[#EF4444]/90 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+              data-analytics="consultation-cta"
             >
               Book Free Consultation →
             </a>
