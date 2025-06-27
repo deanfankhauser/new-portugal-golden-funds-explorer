@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { FundScore } from '../../services/fundScoringService';
 import { getFundById } from '../../data/funds';
@@ -163,9 +162,9 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
   };
 
   return (
-    <Card id="full-index">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+    <Card id="full-index" className="shadow-sm border-gray-200">
+      <CardHeader className="bg-white border-b border-gray-100 rounded-t-lg">
+        <CardTitle className="flex items-center gap-2 text-xl text-gray-900">
           Complete Fund Index
         </CardTitle>
         <div className="space-y-4">
@@ -183,43 +182,47 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
             onToggle={() => setFiltersOpen(!filtersOpen)}
           />
           
-          <div className="text-sm text-gray-500">
-            Showing {paginatedScores.length} of {filteredAndSortedScores.length} funds 
-            ({scores.length} total)
+          <div className="text-sm text-gray-500 bg-gray-50 px-3 py-2 rounded-md">
+            Showing <span className="font-medium">{paginatedScores.length}</span> of <span className="font-medium">{filteredAndSortedScores.length}</span> funds 
+            (<span className="font-medium">{scores.length}</span> total)
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0">
         {/* Desktop Table View */}
-        <div className="hidden lg:block overflow-x-auto">
-          <Table>
-            <FundIndexTableHeader
-              sortField={sortField}
-              onSort={handleSort}
-            />
-            <TableBody>
-              {paginatedScores.map((score) => (
-                <FundIndexTableRow key={score.fundId} score={score} />
-              ))}
-            </TableBody>
-          </Table>
+        <div className="hidden lg:block">
+          <div className="bg-white rounded-b-lg overflow-hidden">
+            <Table>
+              <FundIndexTableHeader
+                sortField={sortField}
+                onSort={handleSort}
+              />
+              <TableBody className="bg-white">
+                {paginatedScores.map((score) => (
+                  <FundIndexTableRow key={score.fundId} score={score} />
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
 
         {/* Mobile Card View */}
-        <div className="lg:hidden space-y-4">
+        <div className="lg:hidden space-y-4 p-6">
           {paginatedScores.map((score) => (
             <FundIndexMobileCard key={score.fundId} score={score} />
           ))}
         </div>
 
         {/* Pagination */}
-        <TablePagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-          totalItems={filteredAndSortedScores.length}
-          itemsPerPage={ITEMS_PER_PAGE}
-        />
+        <div className="bg-gray-50 border-t border-gray-200 px-6">
+          <TablePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            totalItems={filteredAndSortedScores.length}
+            itemsPerPage={ITEMS_PER_PAGE}
+          />
+        </div>
       </CardContent>
     </Card>
   );
