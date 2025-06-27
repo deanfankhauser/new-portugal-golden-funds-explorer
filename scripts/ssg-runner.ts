@@ -21,7 +21,7 @@ function findBuiltAssets(distDir: string): { cssFiles: string[], jsFiles: string
       
       if (fs.statSync(fullPath).isDirectory()) {
         findFiles(fullPath, relativeFilePath);
-      } else if (file.endsWith('.css')) {
+      } else if (file.endsWith('.css') && !file.includes('.map')) {
         cssFiles.push(`/${relativeFilePath}`);
         console.log(`✅ Found CSS: /${relativeFilePath}`);
       } else if (file.endsWith('.js') && !file.includes('.map')) {
@@ -34,16 +34,21 @@ function findBuiltAssets(distDir: string): { cssFiles: string[], jsFiles: string
   // Look for assets in the dist directory
   findFiles(distDir);
   
-  // Sort files to ensure consistent order (main files first)
+  // Sort files to ensure consistent order (main files first, then chunks)
   cssFiles.sort((a, b) => {
-    if (a.includes('index') && !b.includes('index')) return -1;
-    if (!a.includes('index') && b.includes('index')) return 1;
+    // Main CSS files first
+    if (a.includes('/assets/index-') && !b.includes('/assets/index-')) return -1;
+    if (!a.includes('/assets/index-') && b.includes('/assets/index-')) return 1;
     return a.localeCompare(b);
   });
   
   jsFiles.sort((a, b) => {
-    if (a.includes('index') && !b.includes('index')) return -1;
-    if (!a.includes('index') && b.includes('index')) return 1;
+    // Main JS files first, then chunks
+    if (a.includes('/assets/index-') && !b.includes('/assets/index-')) return -1;
+    if (!a.includes('/assets/index-') && b.includes('/assets/index-')) return 1;
+    // Chunks after main files
+    if (a.includes('chunk-') && !b.includes('chunk-')) return 1;
+    if (!a.includes('chunk-') && b.includes('chunk-')) return -1;
     return a.localeCompare(b);
   });
   
@@ -109,18 +114,26 @@ export async function generateStaticFiles() {
       // Verify the content
       const writtenContent = fs.readFileSync(outputPath, 'utf8');
       
+      // Check if Google Fonts are properly linked
+      const hasGoogleFonts = writtenContent.includes('fonts.googleapis.com');
+      if (hasGoogleFonts) {
+        console.log(`   ✓ Google Fonts properly linked`);
+      } else {
+        console.warn(`   ⚠️  Google Fonts may not be linked`);
+      }
+      
       // Check if assets are properly linked
       const hasCSSLinks = cssFiles.every(css => writtenContent.includes(`href="${css}"`));
       const hasJSLinks = jsFiles.every(js => writtenContent.includes(`src="${js}"`));
       
       if (hasCSSLinks || cssFiles.length === 0) {
-        console.log(`   ✓ CSS assets properly linked`);
+        console.log(`   ✓ CSS assets properly linked (${cssFiles.length} files)`);
       } else {
         console.warn(`   ⚠️  Some CSS assets may not be linked correctly`);
       }
       
       if (hasJSLinks || jsFiles.length === 0) {
-        console.log(`   ✓ JS assets properly linked`);
+        console.log(`   ✓ JS assets properly linked (${jsFiles.length} files)`);
       } else {
         console.warn(`   ⚠️  Some JS assets may not be linked correctly`);
       }
