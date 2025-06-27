@@ -28,10 +28,16 @@ export function generateHTMLTemplate(
   <!-- Structured Data -->
   ${seoData.structuredData ? `<script type="application/ld+json">${JSON.stringify(seoData.structuredData)}</script>` : ''}
   
-  <!-- Fonts -->
+  <!-- Fonts - Must load before CSS to avoid FOUC -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- SSG Critical CSS - Inline for best performance -->
+  <style>
+    /* Critical CSS from Vite build - Inline for SSG */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  </style>
   
   <!-- Link to built CSS files -->
   ${cssFiles.map(css => `<link rel="stylesheet" href="${css}" />`).join('\n  ')}
