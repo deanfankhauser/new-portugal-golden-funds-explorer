@@ -104,31 +104,8 @@ export class FundIndexSEOService extends BaseSEOService {
           '@type': 'ImageObject',
           'url': 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg'
         }
-      }
-    };
-
-    return {
-      title: '2025 Golden Visa Fund Index | Portugal Investment Rankings',
-      description: 'The definitive, data-driven ranking of Golden Visa-eligible investment funds in Portugal. Compare performance, fees, and regulation scores with our comprehensive index updated monthly.',
-      url,
-      structuredData,
-      keywords: [
-        'Portugal Golden Visa',
-        'investment funds',
-        'fund rankings',
-        'Golden Visa funds 2025',
-        'fund comparison',
-        'investment migration',
-        'Portuguese residency',
-        'fund performance',
-        'management fees',
-        'regulatory compliance',
-        'fund index',
-        'investment analysis',
-        'Golden Visa eligible funds',
-        'Portugal investment opportunities'
-      ],
-      openGraph: {
+      },
+      'openGraph': {
         type: 'website',
         title: '2025 Golden Visa Fund Index | Portugal Investment Rankings',
         description: 'The definitive, data-driven ranking of Golden Visa-eligible investment funds in Portugal. Compare performance, fees, and regulation scores.',
@@ -143,7 +120,7 @@ export class FundIndexSEOService extends BaseSEOService {
           }
         ]
       },
-      twitter: {
+      'twitter': {
         card: 'summary_large_image',
         site: '@movingtoio',
         creator: '@movingtoio',
@@ -151,6 +128,13 @@ export class FundIndexSEOService extends BaseSEOService {
         description: 'The definitive, data-driven ranking of Golden Visa-eligible investment funds in Portugal. Compare performance, fees, and regulation scores.',
         image: 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg'
       }
+    };
+
+    return {
+      title: '2025 Golden Visa Fund Index | Portugal Investment Rankings',
+      description: 'The definitive, data-driven ranking of Golden Visa-eligible investment funds in Portugal. Compare performance, fees, and regulation scores with our comprehensive index updated monthly.',
+      url,
+      structuredData
     };
   }
 }
