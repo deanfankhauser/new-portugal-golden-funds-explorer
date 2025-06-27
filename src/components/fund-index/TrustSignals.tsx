@@ -1,62 +1,49 @@
 
 import React from 'react';
-import { Users, Shield, Award, Star } from 'lucide-react';
+import { Users, Briefcase } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Badge } from '../ui/badge';
 
 const TrustSignals: React.FC = () => {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Shield className="h-5 w-5 text-green-500" />
-          Why Trust Our Index
+          <Users className="h-5 w-5 text-blue-500" />
+          Index Created By
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-green-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">94%</div>
-            <div className="text-sm text-gray-600">Success Rate</div>
-          </div>
-          <div className="text-center p-3 bg-blue-50 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">500+</div>
-            <div className="text-sm text-gray-600">Clients Served</div>
-          </div>
-        </div>
-        
-        <div className="space-y-3">
-          <div className="flex items-start gap-3">
-            <Users className="h-5 w-5 text-blue-500 mt-0.5" />
+      <CardContent className="space-y-6">
+        <div className="space-y-4">
+          <div className="flex items-start gap-4 p-4 bg-blue-50 rounded-lg">
+            <div className="bg-blue-100 p-3 rounded-full flex-shrink-0">
+              <Users className="h-6 w-6 text-blue-600" />
+            </div>
             <div>
-              <h4 className="font-semibold text-gray-900">Client Testimonial</h4>
-              <p className="text-sm text-gray-600 italic">
-                "The Fund Index helped us identify the perfect investment for our Golden Visa application. 
-                Clear, comprehensive, and incredibly valuable."
+              <h4 className="font-semibold text-gray-900 mb-1">Dean Fankhauser</h4>
+              <p className="text-sm text-blue-700 font-medium mb-2">CEO of Movingto</p>
+              <p className="text-sm text-gray-600">
+                Created and designed this comprehensive fund index to help investors make informed decisions about Golden Visa investment opportunities.
               </p>
-              <div className="text-xs text-gray-500 mt-1">— Sarah M., UK Citizen</div>
             </div>
           </div>
           
-          <div className="flex flex-wrap gap-2 pt-2">
-            <Badge variant="outline" className="text-xs">
-              <Award className="h-3 w-3 mr-1" />
-              Regulatory Verified
-            </Badge>
-            <Badge variant="outline" className="text-xs">
-              <Star className="h-3 w-3 mr-1" />
-              Expert Analysis
-            </Badge>
-            <Badge variant="outline" className="text-xs">
-              <Shield className="h-3 w-3 mr-1" />
-              Data Security
-            </Badge>
+          <div className="flex items-start gap-4 p-4 bg-green-50 rounded-lg">
+            <div className="bg-green-100 p-3 rounded-full flex-shrink-0">
+              <Briefcase className="h-6 w-6 text-green-600" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-1">Anna Luisa Lacerda</h4>
+              <p className="text-sm text-green-700 font-medium mb-2">Licensed Portuguese Lawyer</p>
+              <p className="text-sm text-gray-600">
+                Conducted comprehensive due diligence on all funds included in this index, ensuring regulatory compliance and accuracy of information.
+              </p>
+            </div>
           </div>
-          
-          <div className="text-xs text-gray-500 pt-2 border-t">
-            All fund data is verified through official regulatory sources and updated monthly. 
-            Our methodology is transparent and available for review.
-          </div>
+        </div>
+        
+        <div className="text-xs text-gray-500 pt-4 border-t">
+          All fund data has been professionally reviewed and verified through official regulatory sources. 
+          The index is updated regularly to maintain accuracy and relevance.
         </div>
       </CardContent>
     </Card>
