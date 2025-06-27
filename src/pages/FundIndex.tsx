@@ -7,13 +7,12 @@ import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import FundIndexHeader from '../components/fund-index/FundIndexHeader';
 import FundIndexBreadcrumbs from '../components/fund-index/FundIndexBreadcrumbs';
-import FundIndexNavigation from '../components/fund-index/FundIndexNavigation';
 import TopFiveFunds from '../components/fund-index/TopFiveFunds';
-import IndexVisualization from '../components/fund-index/IndexVisualization';
 import FullIndexTable from '../components/fund-index/FullIndexTable';
 import MethodologySection from '../components/fund-index/MethodologySection';
 import IndexCTA from '../components/fund-index/IndexCTA';
 import TrustSignals from '../components/fund-index/TrustSignals';
+import IndexSummaryWidgets from '../components/fund-index/IndexSummaryWidgets';
 
 const FundIndex: React.FC = () => {
   const allFundScores = FundScoringService.getAllFundScores(funds);
@@ -31,13 +30,10 @@ const FundIndex: React.FC = () => {
           
           <FundIndexHeader />
           
-          <FundIndexNavigation />
-          
           <div className="max-w-7xl mx-auto px-6 py-12 space-y-12">
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-              <TopFiveFunds scores={topFiveScores} />
-              <IndexVisualization scores={topFiveScores} />
-            </div>
+            <TopFiveFunds scores={topFiveScores} />
+            
+            <IndexSummaryWidgets scores={allFundScores} />
             
             <FullIndexTable scores={allFundScores} />
             
