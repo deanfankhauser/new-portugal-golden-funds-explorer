@@ -1,142 +1,258 @@
 
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Calculator, Shield, TrendingUp, DollarSign } from 'lucide-react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Button } from '../ui/button';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
+import { BarChart3, Shield, DollarSign, Users } from 'lucide-react';
 
 const MethodologySection: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
+    // Create HowTo schema for fund selection methodology
+    const howToSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'HowTo',
+      'name': 'How to Evaluate Golden Visa Investment Funds',
+      'description': 'Our comprehensive methodology for ranking and evaluating Golden Visa investment funds',
+      'image': 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg',
+      'totalTime': 'P30D',
+      'estimatedCost': {
+        '@type': 'MonetaryAmount',
+        'currency': 'EUR',
+        'value': '0'
+      },
+      'supply': [
+        'Fund performance data',
+        'Regulatory compliance records',
+        'Fee structure analysis',
+        'Investor protection measures'
+      ],
+      'tool': [
+        'Financial analysis software',
+        'Regulatory databases',
+        'Legal compliance tools',
+        'Performance tracking systems'
+      ],
+      'step': [
+        {
+          '@type': 'HowToStep',
+          'position': 1,
+          'name': 'Performance Analysis (40%)',
+          'text': 'Evaluate fund performance metrics including returns, volatility, and consistency over time',
+          'image': 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg'
+        },
+        {
+          '@type': 'HowToStep',
+          'position': 2,
+          'name': 'Regulatory Quality Assessment (25%)',
+          'text': 'Review regulatory compliance, licensing, and oversight by Portuguese authorities',
+          'image': 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg'
+        },
+        {
+          '@type': 'HowToStep',
+          'position': 3,
+          'name': 'Fee Structure Analysis (20%)',
+          'text': 'Analyze management fees, performance fees, and other costs to determine value for investors',
+          'image': 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg'
+        },
+        {
+          '@type': 'HowToStep',
+          'position': 4,
+          'name': 'Investor Protection Review (15%)',
+          'text': 'Evaluate investor protection measures, transparency, and fund governance structures',
+          'image': 'https://pbs.twimg.com/profile_images/1763893053666768/DnlafcQV_400x400.jpg'
+        }
+      ],
+      'author': {
+        '@type': 'Organization',
+        'name': 'Movingto',
+        'url': 'https://movingto.com'
+      },
+      'datePublished': '2025-01-01',
+      'dateModified': new Date().toISOString()
+    };
+
+    // Create CreativeWork schema for the methodology
+    const methodologySchema = {
+      '@context': 'https://schema.org',
+      '@type': 'CreativeWork',
+      'name': 'Golden Visa Fund Ranking Methodology',
+      'description': 'Comprehensive methodology for evaluating and ranking Golden Visa investment funds',
+      'creator': {
+        '@type': 'Organization',
+        'name': 'Movingto'
+      },
+      'dateCreated': '2025-01-01',
+      'dateModified': new Date().toISOString(),
+      'license': 'https://creativecommons.org/licenses/by/4.0/',
+      'inLanguage': 'en-US',
+      'about': [
+        'Investment Fund Analysis',
+        'Golden Visa Compliance',
+        'Financial Performance Evaluation',
+        'Risk Assessment'
+      ],
+      'keywords': 'fund evaluation, investment analysis, Golden Visa, methodology, ranking criteria'
+    };
+
+    // Remove existing schemas
+    const existingHowTo = document.querySelector('script[data-schema="methodology-howto"]');
+    const existingMethodology = document.querySelector('script[data-schema="methodology-creative"]');
+    if (existingHowTo) existingHowTo.remove();
+    if (existingMethodology) existingMethodology.remove();
+
+    // Add new schemas
+    const howToScript = document.createElement('script');
+    howToScript.type = 'application/ld+json';
+    howToScript.setAttribute('data-schema', 'methodology-howto');
+    howToScript.textContent = JSON.stringify(howToSchema);
+    document.head.appendChild(howToScript);
+
+    const methodologyScript = document.createElement('script');
+    methodologyScript.type = 'application/ld+json';
+    methodologyScript.setAttribute('data-schema', 'methodology-creative');
+    methodologyScript.textContent = JSON.stringify(methodologySchema);
+    document.head.appendChild(methodologyScript);
+
+    // Cleanup
+    return () => {
+      const howToCleanup = document.querySelector('script[data-schema="methodology-howto"]');
+      const methodologyCleanup = document.querySelector('script[data-schema="methodology-creative"]');
+      if (howToCleanup) howToCleanup.remove();
+      if (methodologyCleanup) methodologyCleanup.remove();
+    };
+  }, []);
 
   return (
-    <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-gray-50">
+    <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-gray-50" itemScope itemType="https://schema.org/HowTo">
       <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-900">
-          <div className="bg-purple-100 p-2 rounded-xl">
-            <Calculator className="h-6 w-6 text-purple-600" />
-          </div>
-          Index Methodology
+        <CardTitle className="text-xl font-bold text-gray-900" itemProp="name">
+          Our Ranking Methodology
         </CardTitle>
+        <p className="text-gray-600 mt-2" itemProp="description">
+          Our comprehensive methodology for evaluating and ranking Golden Visa investment funds
+        </p>
+        <meta itemProp="totalTime" content="P30D" />
+        <meta itemProp="datePublished" content="2025-01-01" />
+        <meta itemProp="dateModified" content={new Date().toISOString()} />
       </CardHeader>
-      <CardContent className="pt-0">
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          <div className="space-y-6">
-            <p className="text-gray-700 leading-relaxed text-base">
-              The Movingto Score is a comprehensive evaluation system that ranks Golden Visa investment funds 
-              based on four key criteria. Our methodology provides investors with an objective, data-driven 
-              assessment to help identify the most suitable investment opportunities.
+      <CardContent className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div 
+            className="bg-blue-50 p-6 rounded-xl border border-blue-100"
+            itemScope 
+            itemType="https://schema.org/HowToStep"
+            itemProp="step"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="bg-blue-100 p-2 rounded-lg">
+                <BarChart3 className="h-6 w-6 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900" itemProp="name">Performance (40%)</h3>
+                <span className="text-sm text-blue-600 font-medium">Highest Weight</span>
+              </div>
+            </div>
+            <p className="text-sm text-gray-700 leading-relaxed" itemProp="text">
+              Evaluates fund performance metrics including returns, volatility, and consistency over time. 
+              We analyze historical performance, risk-adjusted returns, and benchmark comparisons.
             </p>
-            
-            <CollapsibleTrigger asChild>
-              <Button 
-                variant="outline" 
-                className="w-full justify-between h-12 text-base font-medium border-2 border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-200"
-              >
-                {isOpen ? 'Hide' : 'Show'} Detailed Methodology
-                <div className="bg-gray-100 p-1 rounded-lg">
-                  {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                </div>
-              </Button>
-            </CollapsibleTrigger>
-            
-            <CollapsibleContent className="space-y-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="space-y-6">
-                  <div className="bg-white p-6 rounded-xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    <div className="flex items-start gap-4">
-                      <div className="bg-blue-100 p-3 rounded-xl flex-shrink-0">
-                        <TrendingUp className="h-6 w-6 text-blue-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-lg text-gray-900 mb-2">Performance (40%)</h3>
-                        <p className="text-gray-600 leading-relaxed">
-                          Evaluates target returns, historical performance, fund status, and growth potential.
-                          Higher target returns and open fund status receive better scores.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-white p-6 rounded-xl border border-green-100 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    <div className="flex items-start gap-4">
-                      <div className="bg-green-100 p-3 rounded-xl flex-shrink-0">
-                        <Shield className="h-6 w-6 text-green-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-lg text-gray-900 mb-2">Regulatory Quality (25%)</h3>
-                        <p className="text-gray-600 leading-relaxed">
-                          Assesses regulatory oversight, compliance standards, and jurisdictional quality.
-                          CMVM regulation, EU compliance, and UCITS eligibility boost scores.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="space-y-6">
-                  <div className="bg-white p-6 rounded-xl border border-red-100 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    <div className="flex items-start gap-4">
-                      <div className="bg-red-100 p-3 rounded-xl flex-shrink-0">
-                        <DollarSign className="h-6 w-6 text-red-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-lg text-gray-900 mb-2">Fee Structure (20%)</h3>
-                        <p className="text-gray-600 leading-relaxed">
-                          Analyzes management fees, performance fees, and total cost of ownership.
-                          Lower fees result in higher scores, with bonuses for no-fee structures.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-white p-6 rounded-xl border border-purple-100 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    <div className="flex items-start gap-4">
-                      <div className="bg-purple-100 p-3 rounded-xl flex-shrink-0">
-                        <Shield className="h-6 w-6 text-purple-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-lg text-gray-900 mb-2">Investor Protection (15%)</h3>
-                        <p className="text-gray-600 leading-relaxed">
-                          Reviews liquidity, capital preservation measures, fund size stability, and manager experience.
-                          Daily NAV, no lock-up periods, and established managers receive higher ratings.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-8 rounded-2xl border border-gray-200">
-                <h4 className="font-bold text-xl text-gray-900 mb-6 text-center">Scoring Scale</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div className="text-center p-4 bg-white rounded-xl border border-green-200 shadow-sm">
-                    <div className="font-bold text-2xl text-green-600 mb-2">85-100</div>
-                    <div className="font-semibold text-green-800">Excellent</div>
-                  </div>
-                  <div className="text-center p-4 bg-white rounded-xl border border-blue-200 shadow-sm">
-                    <div className="font-bold text-2xl text-blue-600 mb-2">70-84</div>
-                    <div className="font-semibold text-blue-800">Very Good</div>
-                  </div>
-                  <div className="text-center p-4 bg-white rounded-xl border border-yellow-200 shadow-sm">
-                    <div className="font-bold text-2xl text-yellow-600 mb-2">55-69</div>
-                    <div className="font-semibold text-yellow-800">Good</div>
-                  </div>
-                  <div className="text-center p-4 bg-white rounded-xl border border-red-200 shadow-sm">
-                    <div className="font-bold text-2xl text-red-600 mb-2">Below 55</div>
-                    <div className="font-semibold text-red-800">Fair</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-amber-50 border border-amber-200 p-6 rounded-xl">
-                <p className="text-sm text-amber-800 italic leading-relaxed">
-                  <strong>Disclaimer:</strong> Methodology updated January 2025. Scores are calculated based on publicly available information 
-                  and should be used as a starting point for investment research. Past performance does not guarantee future results.
-                </p>
-              </div>
-            </CollapsibleContent>
+            <meta itemProp="position" content="1" />
           </div>
-        </Collapsible>
+
+          <div 
+            className="bg-green-50 p-6 rounded-xl border border-green-100"
+            itemScope 
+            itemType="https://schema.org/HowToStep"
+            itemProp="step"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="bg-green-100 p-2 rounded-lg">
+                <Shield className="h-6 w-6 text-green-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900" itemProp="name">Regulatory Quality (25%)</h3>
+                <span className="text-sm text-green-600 font-medium">Second Priority</span>
+              </div>
+            </div>
+            <p className="text-sm text-gray-700 leading-relaxed" itemProp="text">
+              Reviews regulatory compliance, licensing, and oversight by Portuguese authorities. 
+              Includes assessment of fund registration, compliance history, and regulatory standing.
+            </p>
+            <meta itemProp="position" content="2" />
+          </div>
+
+          <div 
+            className="bg-orange-50 p-6 rounded-xl border border-orange-100"
+            itemScope 
+            itemType="https://schema.org/HowToStep"
+            itemProp="step"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="bg-orange-100 p-2 rounded-lg">
+                <DollarSign className="h-6 w-6 text-orange-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900" itemProp="name">Fee Structure (20%)</h3>
+                <span className="text-sm text-orange-600 font-medium">Cost Efficiency</span>
+              </div>
+            </div>
+            <p className="text-sm text-gray-700 leading-relaxed" itemProp="text">
+              Analyzes management fees, performance fees, and other costs to determine value for investors. 
+              Compares fee structures across similar funds and assesses cost-effectiveness.
+            </p>
+            <meta itemProp="position" content="3" />
+          </div>
+
+          <div 
+            className="bg-purple-50 p-6 rounded-xl border border-purple-100"
+            itemScope 
+            itemType="https://schema.org/HowToStep"
+            itemProp="step"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="bg-purple-100 p-2 rounded-lg">
+                <Users className="h-6 w-6 text-purple-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900" itemProp="name">Investor Protection (15%)</h3>
+                <span className="text-sm text-purple-600 font-medium">Safety Focus</span>
+              </div>
+            </div>
+            <p className="text-sm text-gray-700 leading-relaxed" itemProp="text">
+              Evaluates investor protection measures, transparency, and fund governance structures. 
+              Reviews reporting standards, investor communication, and conflict of interest policies.
+            </p>
+            <meta itemProp="position" content="4" />
+          </div>
+        </div>
+
+        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200" itemScope itemType="https://schema.org/PropertyValue">
+          <h4 className="font-semibold text-gray-900 mb-3" itemProp="name">Scoring System</h4>
+          <div className="space-y-2 text-sm text-gray-700" itemProp="value">
+            <div className="flex justify-between">
+              <span>Excellent (85-100):</span>
+              <span className="font-medium text-green-600">Top-tier funds with outstanding metrics</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Very Good (70-84):</span>
+              <span className="font-medium text-blue-600">Strong funds with solid performance</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Good (55-69):</span>
+              <span className="font-medium text-yellow-600">Acceptable funds with room for improvement</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Fair (Below 55):</span>
+              <span className="font-medium text-red-600">Funds requiring careful consideration</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-xs text-gray-500 pt-4 border-t">
+          <p itemProp="disclaimer">
+            Methodology updated regularly to reflect market changes and regulatory updates. 
+            Scores are based on publicly available information and professional analysis.
+          </p>
+          <meta itemProp="license" content="https://creativecommons.org/licenses/by/4.0/" />
+        </div>
       </CardContent>
     </Card>
   );

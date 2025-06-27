@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { funds } from '../data/funds';
 import { FundScoringService } from '../services/fundScoringService';
@@ -19,128 +18,108 @@ const FundIndex: React.FC = () => {
   const topFiveScores = allFundScores.slice(0, 5);
 
   useEffect(() => {
-    // Comprehensive page-level schema for Fund Index
-    const pageSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'WebPage',
-      'name': '2025 Golden Visa Fund Index | Portugal Investment Rankings',
-      'description': 'The definitive, data-driven ranking of Golden Visa-eligible investment funds in Portugal. Compare performance, fees, and regulation scores.',
-      'url': 'https://movingto.com/funds/index',
-      'mainEntity': {
-        '@type': 'ItemList',
-        'name': '2025 Golden Visa Fund Index',
-        'description': 'Comprehensive ranking of Portugal Golden Visa investment funds',
-        'numberOfItems': allFundScores.length,
-        'itemListOrder': 'Descending'
-      },
-      'breadcrumb': {
-        '@type': 'BreadcrumbList',
-        'itemListElement': [
-          {
-            '@type': 'ListItem',
-            'position': 1,
-            'name': 'Home',
-            'item': 'https://movingto.com/funds'
-          },
-          {
-            '@type': 'ListItem',
-            'position': 2,
-            'name': 'Fund Index',
-            'item': 'https://movingto.com/funds/index'
-          }
-        ]
-      },
-      'author': {
-        '@type': 'Organization',
-        'name': 'Movingto',
-        'url': 'https://movingto.com'
-      },
-      'publisher': {
-        '@type': 'Organization',
-        'name': 'Movingto',
-        'url': 'https://movingto.com'
-      },
-      'datePublished': '2025-01-01',
-      'dateModified': new Date().toISOString().split('T')[0],
-      'inLanguage': 'en-US',
-      'about': [
-        'Portugal Golden Visa',
-        'Investment Funds',
-        'Fund Ranking',
-        'Investment Migration',
-        'Portuguese Residency'
-      ],
-      'keywords': 'Portugal Golden Visa, investment funds, fund comparison, Golden Visa funds 2025, fund rankings, investment migration, Portuguese residency, fund performance, management fees, regulatory compliance'
-    };
-
-    // LLM-optimized data structure
-    const llmDataSchema = {
+    // Enhanced Dataset schema for LLM consumption
+    const enhancedDatasetSchema = {
       '@context': 'https://schema.org',
       '@type': 'Dataset',
-      'name': 'Golden Visa Fund Comparison Data',
-      'description': 'Structured data for AI and LLM consumption about Portugal Golden Visa investment funds',
+      'name': 'Golden Visa Fund Comparison Data 2025',
+      'description': 'Comprehensive dataset of Portugal Golden Visa investment funds with performance metrics, fees, and regulatory compliance data',
       'creator': {
         '@type': 'Organization',
-        'name': 'Movingto'
+        'name': 'Movingto',
+        'url': 'https://movingto.com'
       },
       'version': '2025.1',
+      'dateCreated': '2025-01-01',
       'dateModified': new Date().toISOString(),
+      'temporalCoverage': '2024/2025',
+      'spatialCoverage': {
+        '@type': 'Place',
+        'name': 'Portugal'
+      },
       'includedInDataCatalog': {
         '@type': 'DataCatalog',
-        'name': 'Portugal Golden Visa Investment Data'
+        'name': 'Portugal Golden Visa Investment Data',
+        'description': 'Comprehensive data catalog for Golden Visa investment opportunities'
       },
       'distribution': {
         '@type': 'DataDownload',
         'encodingFormat': 'application/ld+json',
-        'name': 'Fund Performance and Ranking Data'
+        'name': 'Fund Performance and Ranking Data',
+        'contentUrl': 'https://movingto.com/funds/index'
       },
       'variableMeasured': [
-        'Fund Performance Score',
-        'Regulatory Compliance Score',
-        'Fee Structure Score',
-        'Investor Protection Score',
-        'Overall Movingto Score',
-        'Management Fees',
-        'Minimum Investment Amount',
-        'Fund Status',
-        'Target Returns'
-      ]
-    };
-
-    // Service schema for the ranking service
-    const serviceSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'Service',
-      'name': 'Golden Visa Fund Ranking Service',
-      'description': 'Professional fund analysis and ranking service for Portugal Golden Visa investment opportunities',
-      'provider': {
+        {
+          '@type': 'PropertyValue',
+          'name': 'Fund Performance Score',
+          'description': 'Weighted performance score based on returns and risk metrics'
+        },
+        {
+          '@type': 'PropertyValue',
+          'name': 'Regulatory Compliance Score',
+          'description': 'Assessment of regulatory compliance and oversight'
+        },
+        {
+          '@type': 'PropertyValue',
+          'name': 'Fee Structure Score',
+          'description': 'Evaluation of cost-effectiveness and fee transparency'
+        },
+        {
+          '@type': 'PropertyValue',
+          'name': 'Investor Protection Score',
+          'description': 'Assessment of investor protection measures and governance'
+        },
+        {
+          '@type': 'PropertyValue',
+          'name': 'Overall Movingto Score',
+          'description': 'Composite score combining all evaluation criteria'
+        }
+      ],
+      'keywords': 'Portugal Golden Visa, investment funds, fund performance, regulatory compliance, investment analysis, fund rankings, financial data',
+      'license': 'https://creativecommons.org/licenses/by/4.0/',
+      'citation': 'Movingto Golden Visa Fund Index 2025',
+      'fundingAgency': {
         '@type': 'Organization',
-        'name': 'Movingto',
-        'url': 'https://movingto.com'
-      },
-      'serviceType': 'Financial Analysis',
-      'areaServed': {
-        '@type': 'Country',
-        'name': 'Portugal'
-      },
-      'audience': {
-        '@type': 'Audience',
-        'audienceType': 'Investors seeking Portugal Golden Visa'
+        'name': 'Movingto'
       }
     };
 
+    // Temporal metadata for ranking updates
+    const temporalSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'PropertyValue',
+      'name': 'Last Updated',
+      'value': new Date().toISOString(),
+      'description': 'Last update timestamp for fund rankings and data',
+      'unitText': 'ISO 8601 DateTime'
+    };
+
+    // Statistical summary for LLM understanding
+    const statisticalSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'StatisticalSummary',
+      'name': 'Fund Index Statistics',
+      'description': 'Statistical overview of the Golden Visa Fund Index',
+      'numberOfFunds': allFundScores.length,
+      'averageScore': Math.round(allFundScores.reduce((sum, score) => sum + score.movingtoScore, 0) / allFundScores.length),
+      'highestScore': Math.max(...allFundScores.map(score => score.movingtoScore)),
+      'lowestScore': Math.min(...allFundScores.map(score => score.movingtoScore)),
+      'dateCompiled': new Date().toISOString(),
+      'methodology': 'Weighted scoring system: Performance (40%), Regulatory (25%), Fees (20%), Protection (15%)'
+    };
+
     // Remove existing page-level schemas
-    const existingSchemas = ['fund-index-page', 'fund-index-llm-data', 'fund-ranking-service'];
+    const existingSchemas = ['fund-index-page', 'fund-index-llm-data', 'fund-ranking-service', 'enhanced-dataset', 'temporal-data', 'statistical-summary'];
     existingSchemas.forEach(schemaId => {
       const existing = document.querySelector(`script[data-schema="${schemaId}"]`);
       if (existing) existing.remove();
     });
 
-    // Add new schemas
+    // Add enhanced schemas
     const schemas = [
-      { id: 'fund-index-page', data: pageSchema },
-      { id: 'fund-index-llm-data', data: llmDataSchema },
-      { id: 'fund-ranking-service', data: serviceSchema }
+      { id: 'enhanced-dataset', data: enhancedDatasetSchema },
+      { id: 'temporal-data', data: temporalSchema },
+      { id: 'statistical-summary', data: statisticalSchema }
     ];
 
     schemas.forEach(({ id, data }) => {
@@ -168,6 +147,9 @@ const FundIndex: React.FC = () => {
         <Header />
         
         <main className="space-y-0" itemScope itemType="https://schema.org/WebPage">
+          <meta itemProp="lastReviewed" content={new Date().toISOString()} />
+          <meta itemProp="reviewedBy" content="Dean Fankhauser, Anna Luisa Lacerda" />
+          
           <FundIndexBreadcrumbs />
           
           <FundIndexHeader />
