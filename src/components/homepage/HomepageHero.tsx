@@ -9,25 +9,76 @@ interface HomepageHeroProps {
 
 const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
   return (
-    <header className="mb-8 sm:mb-10 lg:mb-12 text-center max-w-4xl mx-auto">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold 
-                     mb-4 sm:mb-6 text-high-contrast leading-tight">
-        Portugal Golden Visa Investment Funds
-      </h1>
-      <p className="text-lg sm:text-xl md:text-2xl text-medium-contrast 
-                   mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed">
-        Explore qualified investment funds for your Portugal Golden Visa application
-      </p>
-      
-      <div className="flex justify-center mb-6 sm:mb-8" role="complementary">
-        <LastUpdated />
-      </div>
-
-      {!isAuthenticated && (
-        <div className="mb-8 sm:mb-10" role="complementary" aria-label="Get expert guidance">
-          <PremiumCTA variant="banner" location="homepage-hero" />
+    <header className="mb-12 sm:mb-16 lg:mb-20 text-center max-w-5xl mx-auto">
+      <div className="relative">
+        {/* Background decoration */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-gradient-to-br from-primary/10 to-primary/5 rounded-full blur-3xl opacity-50"></div>
+          <div className="absolute top-20 left-1/4 w-64 h-64 bg-gradient-to-br from-blue-500/10 to-blue-500/5 rounded-full blur-2xl opacity-40"></div>
+          <div className="absolute top-40 right-1/4 w-48 h-48 bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 rounded-full blur-2xl opacity-30"></div>
         </div>
-      )}
+
+        <div className="relative z-10">
+          <div className="mb-6 sm:mb-8">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-primary/5 
+                            text-primary px-4 py-2 rounded-full text-sm font-semibold mb-6 
+                            border border-primary/20 backdrop-blur-sm">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+              Updated for 2025
+            </div>
+          </div>
+
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold 
+                         mb-6 sm:mb-8 text-high-contrast leading-[1.1] tracking-tight">
+            <span className="block">Portugal Golden Visa</span>
+            <span className="bg-gradient-to-r from-primary via-primary to-primary/80 
+                           bg-clip-text text-transparent">
+              Investment Funds
+            </span>
+          </h1>
+          
+          <p className="text-xl sm:text-2xl md:text-3xl text-medium-contrast 
+                       mb-8 sm:mb-10 max-w-4xl mx-auto leading-relaxed font-light">
+            Explore <span className="font-semibold text-primary">qualified investment funds</span> for your 
+            Portugal Golden Visa application
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 sm:mb-10">
+            <div className="flex items-center gap-2 text-sm text-medium-contrast bg-white/60 
+                            backdrop-blur-sm px-4 py-2 rounded-full border border-gray-200">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span className="font-medium">11+ Verified Funds</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-medium-contrast bg-white/60 
+                            backdrop-blur-sm px-4 py-2 rounded-full border border-gray-200">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <span className="font-medium">€500M+ AUM</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-medium-contrast bg-white/60 
+                            backdrop-blur-sm px-4 py-2 rounded-full border border-gray-200">
+              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <span className="font-medium">100% Transparent</span>
+            </div>
+          </div>
+          
+          <div className="flex justify-center mb-8 sm:mb-10" role="complementary">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-gray-200 shadow-sm">
+              <LastUpdated />
+            </div>
+          </div>
+
+          {!isAuthenticated && (
+            <div className="mb-10 sm:mb-12" role="complementary" aria-label="Get expert guidance">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/10 rounded-3xl blur-xl"></div>
+                <div className="relative">
+                  <PremiumCTA variant="banner" location="homepage-hero" />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </header>
   );
 };
