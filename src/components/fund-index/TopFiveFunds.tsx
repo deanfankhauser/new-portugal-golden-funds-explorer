@@ -32,10 +32,6 @@ const TopFiveFunds: React.FC<TopFiveFundsProps> = ({ scores }) => {
               <div key={score.fundId} className="p-6 hover:bg-gray-50 transition-colors">
                 <div className="flex items-center justify-between gap-6">
                   <div className="flex items-center gap-4 flex-1 min-w-0">
-                    <div className="flex items-center justify-center w-8 h-8 bg-gray-100 text-gray-700 text-sm font-medium rounded-full flex-shrink-0">
-                      {score.rank}
-                    </div>
-                    
                     <div className="flex-1 min-w-0">
                       <h3 className="text-lg font-medium text-gray-900 truncate mb-1">
                         {fund.name}
