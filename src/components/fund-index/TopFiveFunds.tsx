@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { FundScore } from '../../services/fundScoringService';
 import { getFundById } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { ExternalLink } from 'lucide-react';
 
@@ -31,55 +30,31 @@ const TopFiveFunds: React.FC<TopFiveFundsProps> = ({ scores }) => {
 
             return (
               <div key={score.fundId} className="p-6 hover:bg-gray-50 transition-colors">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="flex items-center justify-center w-6 h-6 bg-gray-100 text-gray-700 text-sm font-medium rounded">
-                        {score.rank}
-                      </div>
-                      <h3 className="text-lg font-medium text-gray-900 truncate">
-                        {fund.name}
-                      </h3>
+                <div className="flex items-center justify-between gap-6">
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
+                    <div className="flex items-center justify-center w-8 h-8 bg-gray-100 text-gray-700 text-sm font-medium rounded-full flex-shrink-0">
+                      {score.rank}
                     </div>
                     
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                      <div>
-                        <div className="text-xl font-semibold text-gray-900">
-                          {score.movingtoScore}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-medium text-gray-900 truncate mb-1">
+                        {fund.name}
+                      </h3>
+                      
+                      <div className="flex items-center gap-6">
+                        <div>
+                          <div className="text-xl font-semibold text-gray-900">
+                            {score.movingtoScore}
+                          </div>
+                          <div className="text-xs text-gray-500">Score</div>
                         </div>
-                        <div className="text-xs text-gray-500">Score</div>
-                      </div>
-                      <div>
-                        <div className="text-lg font-medium text-gray-700">
-                          {fund.managementFee}%
+                        <div>
+                          <div className="text-lg font-medium text-gray-700">
+                            {fund.managementFee}%
+                          </div>
+                          <div className="text-xs text-gray-500">Mgmt Fee</div>
                         </div>
-                        <div className="text-xs text-gray-500">Mgmt Fee</div>
                       </div>
-                      <div>
-                        <div className="text-lg font-medium text-gray-700">
-                          €{(fund.minimumInvestment / 1000).toFixed(0)}k
-                        </div>
-                        <div className="text-xs text-gray-500">Min Investment</div>
-                      </div>
-                      <div>
-                        <div className="text-lg font-medium text-gray-700">
-                          {fund.returnTarget}
-                        </div>
-                        <div className="text-xs text-gray-500">Target Return</div>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <Badge variant="outline" className="text-xs border-gray-300 text-gray-700 bg-white">
-                        {fund.category}
-                      </Badge>
-                      <Badge variant="outline" className="text-xs border-gray-300 text-gray-700 bg-white">
-                        {fund.fundStatus}
-                      </Badge>
-                    </div>
-
-                    <div className="text-sm text-gray-600">
-                      Managed by {fund.managerName}
                     </div>
                   </div>
 
