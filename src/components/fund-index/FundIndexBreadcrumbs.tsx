@@ -5,21 +5,32 @@ import { ChevronRight, Home, TrendingUp } from 'lucide-react';
 
 const FundIndexBreadcrumbs: React.FC = () => {
   return (
-    <nav aria-label="breadcrumbs" className="mb-6">
-      <ol className="flex items-center text-sm text-gray-500 space-x-2">
-        <li className="flex items-center">
-          <Link to="/" className="hover:text-[#EF4444] flex items-center gap-1">
-            <Home className="h-3 w-3" />
-            Home
-          </Link>
-        </li>
-        <li className="flex items-center">
-          <ChevronRight className="h-3 w-3 mx-1" />
-          <TrendingUp className="h-3 w-3 mr-1" />
-          <span className="font-medium text-[#EF4444]">Fund Index</span>
-        </li>
-      </ol>
-    </nav>
+    <div className="bg-white border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <nav aria-label="breadcrumbs">
+          <ol className="flex items-center text-sm space-x-1">
+            <li className="flex items-center">
+              <Link 
+                to="/" 
+                className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors duration-200 px-2 py-1 rounded-md hover:bg-blue-50"
+              >
+                <Home className="h-4 w-4" />
+                <span className="font-medium">Home</span>
+              </Link>
+            </li>
+            <li className="flex items-center text-gray-400">
+              <ChevronRight className="h-4 w-4 mx-1" />
+            </li>
+            <li className="flex items-center">
+              <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-3 py-1.5 rounded-md">
+                <TrendingUp className="h-4 w-4" />
+                <span className="font-semibold">Fund Index</span>
+              </div>
+            </li>
+          </ol>
+        </nav>
+      </div>
+    </div>
   );
 };
 
