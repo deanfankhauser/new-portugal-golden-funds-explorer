@@ -27,7 +27,7 @@ const IndexVisualization: React.FC<IndexVisualizationProps> = ({ scores }) => {
       case 1: return '#f59e0b'; // amber-500
       case 2: return '#9ca3af'; // gray-400
       case 3: return '#d97706'; // amber-600
-      default: return '#3b82f6'; // blue-500
+      default: return '#6b7280'; // gray-500
     }
   };
 
@@ -35,17 +35,17 @@ const IndexVisualization: React.FC<IndexVisualizationProps> = ({ scores }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-white p-4 border border-gray-200 rounded-xl shadow-lg">
+        <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg">
           <h4 className="font-semibold text-gray-900 mb-2">{data.fullName}</h4>
           <div className="space-y-1">
             <p className="text-sm">
-              <span className="text-blue-600 font-medium">Movingto Score:</span> {data.score}
+              <span className="text-gray-700 font-medium">Movingto Score:</span> {data.score}
             </p>
             <p className="text-sm">
-              <span className="text-emerald-600 font-medium">Performance:</span> {data.performance}
+              <span className="text-gray-700 font-medium">Performance:</span> {data.performance}
             </p>
             <p className="text-sm">
-              <span className="text-gray-600 font-medium">Rank:</span> #{data.rank}
+              <span className="text-gray-700 font-medium">Rank:</span> #{data.rank}
             </p>
           </div>
         </div>
@@ -55,15 +55,15 @@ const IndexVisualization: React.FC<IndexVisualizationProps> = ({ scores }) => {
   };
 
   return (
-    <Card className="border-2 border-indigo-100 shadow-xl bg-white">
-      <CardHeader className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-t-lg">
-        <CardTitle className="flex items-center gap-3 text-2xl">
-          <div className="p-2 bg-white/20 rounded-lg">
-            <BarChart3 className="h-6 w-6" />
+    <Card className="border border-gray-200 shadow-sm bg-white">
+      <CardHeader className="bg-gray-900 text-white rounded-t-lg">
+        <CardTitle className="flex items-center gap-3 text-xl">
+          <div className="p-2 bg-white/10 rounded-lg">
+            <BarChart3 className="h-5 w-5" />
           </div>
           <div>
             <div>Fund Performance Overview</div>
-            <div className="text-indigo-100 text-sm font-normal mt-1">
+            <div className="text-gray-300 text-sm font-normal mt-1">
               Interactive scoring visualization
             </div>
           </div>
@@ -85,7 +85,7 @@ const IndexVisualization: React.FC<IndexVisualizationProps> = ({ scores }) => {
               <span className="text-sm text-gray-600">Third Place</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-blue-500 rounded"></div>
+              <div className="w-4 h-4 bg-gray-500 rounded"></div>
               <span className="text-sm text-gray-600">Other Funds</span>
             </div>
           </div>
@@ -119,40 +119,40 @@ const IndexVisualization: React.FC<IndexVisualizationProps> = ({ scores }) => {
         </div>
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200">
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <div className="flex items-center gap-3">
-              <TrendingUp className="w-8 h-8 text-blue-600" />
+              <TrendingUp className="w-8 h-8 text-gray-700" />
               <div>
-                <div className="text-2xl font-bold text-blue-900">
+                <div className="text-2xl font-bold text-gray-900">
                   {Math.max(...chartData.map(d => d.score))}
                 </div>
-                <div className="text-sm text-blue-600">Highest Score</div>
+                <div className="text-sm text-gray-600">Highest Score</div>
               </div>
             </div>
           </div>
           
-          <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-4 rounded-xl border border-emerald-200">
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <div className="flex items-center gap-3">
-              <BarChart3 className="w-8 h-8 text-emerald-600" />
+              <BarChart3 className="w-8 h-8 text-gray-700" />
               <div>
-                <div className="text-2xl font-bold text-emerald-900">
+                <div className="text-2xl font-bold text-gray-900">
                   {(chartData.reduce((sum, d) => sum + d.score, 0) / chartData.length).toFixed(1)}
                 </div>
-                <div className="text-sm text-emerald-600">Average Score</div>
+                <div className="text-sm text-gray-600">Average Score</div>
               </div>
             </div>
           </div>
           
-          <div className="bg-gradient-to-br from-purple-50 to-violet-50 p-4 rounded-xl border border-purple-200">
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gray-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">#</span>
               </div>
               <div>
-                <div className="text-2xl font-bold text-purple-900">
+                <div className="text-2xl font-bold text-gray-900">
                   {chartData.length}
                 </div>
-                <div className="text-sm text-purple-600">Total Funds</div>
+                <div className="text-sm text-gray-600">Total Funds</div>
               </div>
             </div>
           </div>
