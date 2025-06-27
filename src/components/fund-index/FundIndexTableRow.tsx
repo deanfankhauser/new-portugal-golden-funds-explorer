@@ -5,6 +5,7 @@ import { FundScore } from '../../services/fundScoringService';
 import { getFundById } from '../../data/funds';
 import { Badge } from '../ui/badge';
 import { TableCell, TableRow } from '../ui/table';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
 interface FundIndexTableRowProps {
   score: FundScore;
@@ -19,6 +20,20 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
   const handleRowClick = () => {
     navigate(`/funds/${fund.id}`);
   };
+
+  // Extract current year performance (assuming it's the last part of returnTarget)
+  const getCurrentYearPerformance = (returnTarget: string) => {
+    // Look for patterns like "8.4% YTD" or "6.3% (2024)" at the end
+    const currentYearMatch = returnTarget.match(/(\d+\.?\d*%\s*(?:YTD|\(\d{4}\)))$/);
+    if (currentYearMatch) {
+      return currentYearMatch[1];
+    }
+    // Fallback: take the last percentage mentioned
+    const percentages = returnTarget.match(/\d+\.?\d*%/g);
+    return percentages ? percentages[percentages.length - 1] : returnTarget;
+  };
+
+  const currentPerformance = getCurrentYearPerformance(fund.returnTarget);
 
   return (
     <TableRow 
@@ -49,7 +64,18 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
       <TableCell className="py-4 w-24 text-center">
         <div className="space-y-1">
           <div className="font-semibold text-gray-900 text-sm">{score.performanceScore}</div>
-          <div className="text-xs text-gray-500 truncate">{fund.returnTarget}</div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <div className="text-xs text-gray-600 cursor-help hover:text-gray-800 transition-colors">
+                  {currentPerformance}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <p className="text-sm">{fund.returnTarget}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </TableCell>
       <TableCell className="py-4 w-20 text-center">
