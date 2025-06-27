@@ -13,7 +13,11 @@ export class ContentGatingService {
       'totalExpenseRatio',
       'detailedPerformance',
       'riskMetrics',
-      'portfolioAllocation'
+      'portfolioAllocation',
+      'advancedFilters',
+      'detailedComparison',
+      'roiCalculator',
+      'documents'
     ];
 
     return gatedMetrics.includes(metricType);
@@ -27,6 +31,20 @@ export class ContentGatingService {
   // Determine if advanced filtering should be gated
   static shouldGateAdvancedFilters(isAuthenticated: boolean): boolean {
     return !isAuthenticated;
+  }
+
+  // Determine if specific sorting options should be gated
+  static shouldGateSorting(sortField: string, isAuthenticated: boolean): boolean {
+    if (isAuthenticated) return false;
+
+    const gatedSortFields = [
+      'score',
+      'performance', 
+      'fees',
+      'detailedMetrics'
+    ];
+
+    return gatedSortFields.includes(sortField);
   }
 
   // Get public metrics that are always visible for SEO
@@ -53,6 +71,15 @@ export class ContentGatingService {
     ];
   }
 
+  // Get public filter options (always available)
+  static getPublicFilterOptions() {
+    return [
+      'search', // Basic search is always public
+      'name', // Name-based sorting
+      'minInvestment' // Basic investment amount sorting
+    ];
+  }
+
   // Get gated content message
   static getGatedMessage(contentType: string): string {
     const messages = {
@@ -60,7 +87,9 @@ export class ContentGatingService {
       comparison: "Advanced comparison tools require client access",
       calculator: "ROI calculator available to MovingTo clients",
       documents: "Due diligence documents available to MovingTo clients",
-      analytics: "Detailed analytics available to MovingTo clients"
+      analytics: "Detailed analytics available to MovingTo clients",
+      filters: "Advanced filtering options available to MovingTo clients",
+      sorting: "Advanced sorting features available to MovingTo clients"
     };
 
     return messages[contentType] || "This feature requires MovingTo client access";
