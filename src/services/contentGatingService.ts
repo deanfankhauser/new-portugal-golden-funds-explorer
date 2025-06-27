@@ -1,4 +1,3 @@
-
 export class ContentGatingService {
   
   // Determine if specific fund metrics should be gated
@@ -132,5 +131,59 @@ export class ContentGatingService {
     if (category.includes('Renewable')) return 'Sustainable Energy';
     if (tags.some(tag => tag.includes('Diversified'))) return 'Diversified Portfolio';
     return 'Mixed Assets';
+  }
+
+  // Determine if table columns should be gated
+  static shouldGateTableColumn(columnType: string, isAuthenticated: boolean): boolean {
+    if (isAuthenticated) return false;
+
+    const gatedColumns = [
+      'score',
+      'performance',
+      'managementFee',
+      'performanceFee',
+      'detailedMetrics',
+      'riskScore'
+    ];
+
+    return gatedColumns.includes(columnType);
+  }
+
+  // Get table column gating message
+  static getTableColumnGatingMessage(columnType: string): string {
+    const messages = {
+      score: "Fund scores available to MovingTo clients",
+      performance: "Performance data available to MovingTo clients",
+      managementFee: "Fee information available to MovingTo clients",
+      performanceFee: "Detailed fee structure available to MovingTo clients",
+      detailedMetrics: "Advanced metrics available to MovingTo clients",
+      riskScore: "Risk analysis available to MovingTo clients"
+    };
+
+    return messages[columnType] || "This data requires MovingTo client access";
+  }
+
+  // Get public table data (what's always visible in fund tables)
+  static getPublicTableColumns() {
+    return [
+      'rank',
+      'name',
+      'manager',
+      'category',
+      'minimumInvestment',
+      'fundStatus'
+    ];
+  }
+
+  // Get gated table columns (require authentication)
+  static getGatedTableColumns() {
+    return [
+      'score',
+      'performance',
+      'managementFee',
+      'performanceFee',
+      'detailedMetrics',
+      'riskScore'
+    ];
   }
 }
