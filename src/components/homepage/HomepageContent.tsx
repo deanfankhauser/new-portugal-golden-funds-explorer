@@ -9,6 +9,7 @@ import ResultsHeader from './ResultsHeader';
 import EmptyFundsState from './EmptyFundsState';
 import FundsList from './FundsList';
 import MobileFundQuizCTA from './MobileFundQuizCTA';
+import HomepageTopSection from './HomepageTopSection';
 
 interface HomepageContentProps {
   filteredFunds: Fund[];
@@ -37,6 +38,9 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
+
+      {/* Top Section with Fund Quiz CTA and Platform Stats */}
+      <HomepageTopSection />
 
       <MobileFilterToggle 
         showMobileFilter={showMobileFilter}
