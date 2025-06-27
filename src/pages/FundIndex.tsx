@@ -10,7 +10,6 @@ import FundIndexBreadcrumbs from '../components/fund-index/FundIndexBreadcrumbs'
 import FundIndexNavigation from '../components/fund-index/FundIndexNavigation';
 import TopFiveFunds from '../components/fund-index/TopFiveFunds';
 import IndexVisualization from '../components/fund-index/IndexVisualization';
-import InteractiveFundComparison from '../components/fund-index/InteractiveFundComparison';
 import FullIndexTable from '../components/fund-index/FullIndexTable';
 import MethodologySection from '../components/fund-index/MethodologySection';
 import IndexCTA from '../components/fund-index/IndexCTA';
@@ -38,11 +37,6 @@ const FundIndex: React.FC = () => {
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
               <TopFiveFunds scores={topFiveScores} />
               <IndexVisualization scores={topFiveScores} />
-            </div>
-            
-            {/* Enhanced Interactive Comparison */}
-            <div id="comparison">
-              <InteractiveFundComparison scores={allFundScores} />
             </div>
             
             <FullIndexTable scores={allFundScores} />
