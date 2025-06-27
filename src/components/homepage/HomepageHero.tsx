@@ -9,7 +9,7 @@ interface HomepageHeroProps {
 
 const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
   return (
-    <header className="mb-12 sm:mb-16 lg:mb-20 text-center max-w-5xl mx-auto">
+    <header className="mb-12 sm:mb-16 lg:mb-20 max-w-5xl mx-auto">
       <div className="relative">
         {/* Background decoration */}
         <div className="absolute inset-0 -z-10">
@@ -19,8 +19,8 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
         </div>
 
         <div className="relative z-10">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold 
-                         mb-6 sm:mb-8 text-high-contrast leading-[1.1] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold 
+                         mb-4 sm:mb-6 text-high-contrast leading-[1.1] tracking-tight text-left">
             <span className="block">Portugal Golden Visa</span>
             <span className="bg-gradient-to-r from-primary via-primary to-primary/80 
                            bg-clip-text text-transparent">
@@ -28,13 +28,13 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
             </span>
           </h1>
           
-          <p className="text-xl sm:text-2xl md:text-3xl text-medium-contrast 
-                       mb-8 sm:mb-10 max-w-4xl mx-auto leading-relaxed font-light">
+          <p className="text-lg sm:text-xl md:text-2xl text-medium-contrast 
+                       mb-8 sm:mb-10 max-w-4xl leading-relaxed font-light text-left">
             Explore <span className="font-semibold text-primary">qualified investment funds</span> for your 
             Portugal Golden Visa application
           </p>
           
-          <div className="flex justify-center mb-8 sm:mb-10" role="complementary">
+          <div className="flex justify-start mb-8 sm:mb-10" role="complementary">
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-gray-200 shadow-sm">
               <LastUpdated />
             </div>
