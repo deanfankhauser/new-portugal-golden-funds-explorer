@@ -23,17 +23,19 @@ const FundIndexTableContainer: React.FC<FundIndexTableContainerProps> = ({
       {/* Desktop Table View */}
       <div className="hidden lg:block">
         <div className="bg-white rounded-b-lg overflow-hidden">
-          <Table>
-            <FundIndexTableHeader
-              sortField={sortField}
-              onSort={onSort}
-            />
-            <TableBody className="bg-white">
-              {paginatedScores.map((score) => (
-                <FundIndexTableRow key={score.fundId} score={score} />
-              ))}
-            </TableBody>
-          </Table>
+          <div className="overflow-x-auto">
+            <Table className="w-full min-w-fit">
+              <FundIndexTableHeader
+                sortField={sortField}
+                onSort={onSort}
+              />
+              <TableBody className="bg-white">
+                {paginatedScores.map((score) => (
+                  <FundIndexTableRow key={score.fundId} score={score} />
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
       </div>
 

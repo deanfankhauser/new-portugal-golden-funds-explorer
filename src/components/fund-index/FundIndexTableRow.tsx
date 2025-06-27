@@ -19,71 +19,63 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
 
   return (
     <TableRow className="hover:bg-gray-50/50 transition-colors border-b border-gray-100">
-      <TableCell className="py-6">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-700 font-bold text-lg">
-            #{score.rank}
-          </div>
+      <TableCell className="py-4 w-16">
+        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-blue-700 font-bold text-sm">
+          {score.rank}
         </div>
       </TableCell>
-      <TableCell className="py-6">
+      <TableCell className="py-4 min-w-48">
         <div className="space-y-1">
-          <div className="font-semibold text-gray-900 text-base leading-tight">{fund.name}</div>
-          <div className="text-sm text-gray-500">{fund.category}</div>
+          <div className="font-semibold text-gray-900 text-sm leading-tight line-clamp-2">{fund.name}</div>
+          <div className="text-xs text-gray-500">{fund.category}</div>
         </div>
       </TableCell>
-      <TableCell className="py-6">
-        <div className="text-sm text-gray-700 font-medium">{fund.managerName}</div>
-      </TableCell>
-      <TableCell className="py-6">
-        <div className="text-center">
-          <div className="text-2xl font-bold text-blue-600 leading-tight">
-            {score.movingtoScore}
-          </div>
-          <div className="text-xs text-gray-400 font-medium">/ 100</div>
+      <TableCell className="py-4 w-32">
+        <div className="text-xs text-gray-700 font-medium truncate" title={fund.managerName}>
+          {fund.managerName}
         </div>
       </TableCell>
-      <TableCell className="py-6">
-        <div className="text-center space-y-1">
-          <div className="font-semibold text-gray-900">{score.performanceScore}</div>
-          <div className="text-xs text-gray-500 leading-tight">{fund.returnTarget}</div>
+      <TableCell className="py-4 w-20 text-center">
+        <div className="text-lg font-bold text-blue-600">
+          {score.movingtoScore}
         </div>
       </TableCell>
-      <TableCell className="py-6">
-        <div className="text-center">
-          <div className="font-semibold text-gray-900 text-base">
-            {fund.managementFee}%
-          </div>
+      <TableCell className="py-4 w-24 text-center">
+        <div className="space-y-1">
+          <div className="font-semibold text-gray-900 text-sm">{score.performanceScore}</div>
+          <div className="text-xs text-gray-500 truncate">{fund.returnTarget}</div>
         </div>
       </TableCell>
-      <TableCell className="py-6">
-        <div className="text-center">
-          <div className="font-semibold text-gray-900">
-            €{fund.minimumInvestment.toLocaleString()}
-          </div>
+      <TableCell className="py-4 w-20 text-center">
+        <div className="font-semibold text-gray-900 text-sm">
+          {fund.managementFee}%
         </div>
       </TableCell>
-      <TableCell className="py-6">
+      <TableCell className="py-4 w-24 text-center">
+        <div className="font-semibold text-gray-900 text-xs">
+          €{(fund.minimumInvestment / 1000).toFixed(0)}k
+        </div>
+      </TableCell>
+      <TableCell className="py-4 w-20 text-center">
         <Badge 
           variant={fund.fundStatus === 'Open' ? 'default' : 'secondary'}
-          className={`text-xs font-medium px-3 py-1 ${
+          className={`text-xs px-2 py-1 ${
             fund.fundStatus === 'Open' 
-              ? 'bg-green-100 text-green-800 hover:bg-green-200' 
+              ? 'bg-green-100 text-green-800' 
               : 'bg-gray-100 text-gray-600'
           }`}
         >
           {fund.fundStatus}
         </Badge>
       </TableCell>
-      <TableCell className="py-6">
+      <TableCell className="py-4 w-20 text-center">
         <Link to={`/funds/${fund.id}`}>
           <Button 
             size="sm" 
             variant="outline" 
-            className="hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700 transition-colors"
+            className="hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700 transition-colors text-xs px-2 py-1"
           >
-            View Details
-            <ExternalLink className="h-3 w-3 ml-2" />
+            View
           </Button>
         </Link>
       </TableCell>

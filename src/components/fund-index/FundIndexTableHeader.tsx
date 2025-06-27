@@ -14,15 +14,15 @@ const FundIndexTableHeader: React.FC<FundIndexTableHeaderProps> = ({
   sortField,
   onSort
 }) => {
-  const SortableHeader = ({ field, children }: { field: SortField; children: React.ReactNode }) => (
-    <TableHead className="bg-gray-50 py-4">
+  const SortableHeader = ({ field, children, className = "" }: { field: SortField; children: React.ReactNode; className?: string }) => (
+    <TableHead className={`bg-gray-50 py-3 ${className}`}>
       <Button 
         variant="ghost" 
         onClick={() => onSort(field)}
-        className="h-auto p-2 font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+        className="h-auto p-1 font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors text-xs"
       >
         {children}
-        <ArrowUpDown className="ml-2 h-3 w-3 text-gray-500" />
+        <ArrowUpDown className="ml-1 h-3 w-3 text-gray-500" />
       </Button>
     </TableHead>
   );
@@ -30,32 +30,32 @@ const FundIndexTableHeader: React.FC<FundIndexTableHeaderProps> = ({
   return (
     <TableHeader>
       <TableRow className="border-b-2 border-gray-200">
-        <SortableHeader field="rank">
-          <span className="text-sm font-bold">Rank</span>
+        <SortableHeader field="rank" className="w-16">
+          <span className="text-xs font-bold">#</span>
         </SortableHeader>
-        <SortableHeader field="name">
-          <span className="text-sm font-bold">Fund Name</span>
+        <SortableHeader field="name" className="min-w-48">
+          <span className="text-xs font-bold">Fund</span>
         </SortableHeader>
-        <TableHead className="bg-gray-50 py-4">
-          <span className="text-sm font-bold text-gray-700 px-2">Manager</span>
+        <TableHead className="bg-gray-50 py-3 w-32">
+          <span className="text-xs font-bold text-gray-700 px-1">Manager</span>
         </TableHead>
-        <SortableHeader field="score">
-          <span className="text-sm font-bold">Movingto Score</span>
+        <SortableHeader field="score" className="w-20 text-center">
+          <span className="text-xs font-bold">Score</span>
         </SortableHeader>
-        <SortableHeader field="performance">
-          <span className="text-sm font-bold">Performance</span>
+        <SortableHeader field="performance" className="w-24 text-center">
+          <span className="text-xs font-bold">Perf</span>
         </SortableHeader>
-        <SortableHeader field="fees">
-          <span className="text-sm font-bold">Mgmt Fee</span>
+        <SortableHeader field="fees" className="w-20 text-center">
+          <span className="text-xs font-bold">Fee</span>
         </SortableHeader>
-        <SortableHeader field="minInvestment">
-          <span className="text-sm font-bold">Min Investment</span>
+        <SortableHeader field="minInvestment" className="w-24 text-center">
+          <span className="text-xs font-bold">Min €</span>
         </SortableHeader>
-        <TableHead className="bg-gray-50 py-4">
-          <span className="text-sm font-bold text-gray-700 px-2">Status</span>
+        <TableHead className="bg-gray-50 py-3 w-20 text-center">
+          <span className="text-xs font-bold text-gray-700">Status</span>
         </TableHead>
-        <TableHead className="bg-gray-50 py-4">
-          <span className="text-sm font-bold text-gray-700 px-2">Action</span>
+        <TableHead className="bg-gray-50 py-3 w-20 text-center">
+          <span className="text-xs font-bold text-gray-700">Action</span>
         </TableHead>
       </TableRow>
     </TableHeader>
