@@ -5,9 +5,10 @@ import { Fund } from '../data/funds';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { GitCompare, User } from 'lucide-react';
+import { GitCompare, User, Lock, Euro } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { useAuth } from '../contexts/AuthContext';
+import { ContentGatingService } from '../services/contentGatingService';
 import PasswordDialog from './PasswordDialog';
 import { managerToSlug } from '../lib/utils';
 
@@ -37,6 +38,10 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
     }
   };
 
+  const handleUnlockClick = () => {
+    setShowPasswordDialog(true);
+  };
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -63,6 +68,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             {fund.description}
           </div>
 
+          {/* Public Information - Always Visible */}
           <div className="grid grid-cols-2 gap-2 mb-4">
             <div>
               <p className="text-sm text-muted-foreground">Min Investment</p>
@@ -82,6 +88,46 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             </div>
           </div>
 
+          {/* Gated Fee Information */}
+          <div className="grid grid-cols-2 gap-2 mb-4 p-3 bg-gray-50 rounded-lg">
+            <div>
+              <div className="flex items-center gap-1 mb-1">
+                <Euro className="w-3 h-3 text-blue-500" />
+                <p className="text-sm text-muted-foreground">Mgmt Fee</p>
+              </div>
+              {isAuthenticated ? (
+                <p className="font-medium">{fund.managementFee}%</p>
+              ) : (
+                <div 
+                  className="flex items-center cursor-pointer hover:bg-gray-100 rounded px-2 py-1"
+                  onClick={handleUnlockClick}
+                  title={ContentGatingService.getGatedMessage('fees')}
+                >
+                  <Lock className="h-3 w-3 text-gray-400 mr-1" />
+                  <span className="text-xs text-gray-500">Gated</span>
+                </div>
+              )}
+            </div>
+            <div>
+              <div className="flex items-center gap-1 mb-1">
+                <Euro className="w-3 h-3 text-green-500" />
+                <p className="text-sm text-muted-foreground">Perf Fee</p>
+              </div>
+              {isAuthenticated ? (
+                <p className="font-medium">{fund.performanceFee}%</p>
+              ) : (
+                <div 
+                  className="flex items-center cursor-pointer hover:bg-gray-100 rounded px-2 py-1"
+                  onClick={handleUnlockClick}
+                  title={ContentGatingService.getGatedMessage('fees')}
+                >
+                  <Lock className="h-3 w-3 text-gray-400 mr-1" />
+                  <span className="text-xs text-gray-500">Gated</span>
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Fund Manager Section */}
           <div className="flex items-center gap-2 mb-4 bg-slate-50 p-2 rounded-md">
             <User className="w-4 h-4 text-[#EF4444]" />
@@ -95,6 +141,26 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
               </Link>
             </div>
           </div>
+
+          {/* Gated Content Notice for Non-Authenticated Users */}
+          {!isAuthenticated && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Lock className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-900">Premium Data Available</span>
+              </div>
+              <p className="text-xs text-blue-700 mb-2">
+                Access detailed fee analysis and comparison tools
+              </p>
+              <Button 
+                size="sm" 
+                onClick={handleUnlockClick}
+                className="bg-blue-600 hover:bg-blue-700 text-xs px-3 py-1"
+              >
+                Unlock Premium Data
+              </Button>
+            </div>
+          )}
 
           <div className="flex justify-end mt-4">
             <Button 

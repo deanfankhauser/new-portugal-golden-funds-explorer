@@ -5,9 +5,10 @@ import { Fund } from '../data/funds';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GitCompare, PieChart, Globe, Tag, User } from 'lucide-react';
+import { GitCompare, PieChart, Globe, Tag, User, Lock, Euro } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { useAuth } from '../contexts/AuthContext';
+import { ContentGatingService } from '../services/contentGatingService';
 import IntroductionButton from './fund-details/IntroductionButton';
 import PasswordDialog from './PasswordDialog';
 import { formatPercentage } from './fund-details/utils/formatters';
@@ -37,6 +38,10 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
     } else {
       addToComparison(fund);
     }
+  };
+
+  const handleUnlockClick = () => {
+    setShowPasswordDialog(true);
   };
 
   // Get the main geographic allocation (first one)
@@ -107,6 +112,67 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                   </div>
                 </div>
               </div>
+
+              {/* Gated Financial Information */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Euro className="w-4 h-4 mr-2 text-blue-500" />
+                    <span className="text-sm text-gray-600">Mgmt Fee:</span>
+                  </div>
+                  {isAuthenticated ? (
+                    <span className="font-medium text-sm">{fund.managementFee}%</span>
+                  ) : (
+                    <div 
+                      className="flex items-center cursor-pointer hover:bg-gray-100 rounded px-2 py-1"
+                      onClick={handleUnlockClick}
+                      title={ContentGatingService.getGatedMessage('fees')}
+                    >
+                      <Lock className="h-3 w-3 text-gray-400 mr-1" />
+                      <span className="text-xs text-gray-500">Gated</span>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Euro className="w-4 h-4 mr-2 text-green-500" />
+                    <span className="text-sm text-gray-600">Perf Fee:</span>
+                  </div>
+                  {isAuthenticated ? (
+                    <span className="font-medium text-sm">{fund.performanceFee}%</span>
+                  ) : (
+                    <div 
+                      className="flex items-center cursor-pointer hover:bg-gray-100 rounded px-2 py-1"
+                      onClick={handleUnlockClick}
+                      title={ContentGatingService.getGatedMessage('fees')}
+                    >
+                      <Lock className="h-3 w-3 text-gray-400 mr-1" />
+                      <span className="text-xs text-gray-500">Gated</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Non-authenticated users see gated content notice */}
+              {!isAuthenticated && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Lock className="h-4 w-4 text-blue-600" />
+                    <span className="text-sm font-medium text-blue-900">Premium Data Available</span>
+                  </div>
+                  <p className="text-xs text-blue-700 mb-2">
+                    Access detailed fee analysis, performance metrics, and comparison tools
+                  </p>
+                  <Button 
+                    size="sm" 
+                    onClick={handleUnlockClick}
+                    className="bg-blue-600 hover:bg-blue-700 text-xs px-3 py-1"
+                  >
+                    Unlock Premium Data
+                  </Button>
+                </div>
+              )}
             </div>
             
             <div className="flex flex-col sm:flex-row lg:flex-col gap-2 sm:gap-3 justify-center lg:min-w-[160px]">
