@@ -2,51 +2,164 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ClipboardCheck, Search } from 'lucide-react';
+import { ClipboardCheck, Search, Lightbulb, ArrowRight, Filter, Sparkles } from 'lucide-react';
 import { FundTag } from '../../data/funds';
 
 interface EmptyFundsStateProps {
   setSelectedTags: (tags: FundTag[]) => void;
   setSearchQuery: (query: string) => void;
+  hasActiveFilters?: boolean;
+  searchQuery?: string;
 }
 
 const EmptyFundsState: React.FC<EmptyFundsStateProps> = ({
   setSelectedTags,
-  setSearchQuery
+  setSearchQuery,
+  hasActiveFilters = false,
+  searchQuery = ''
 }) => {
+  const popularSuggestions = [
+    { label: 'Real Estate Funds', tag: 'Real Estate' as FundTag },
+    { label: 'Low Risk Options', tag: 'Low Risk' as FundTag },
+    { label: 'Under €300k', tag: 'Under €350k Investment' as FundTag },
+    { label: 'Currently Open', tag: 'Open' as FundTag },
+  ];
+
+  const handleSuggestionClick = (tag: FundTag) => {
+    setSelectedTags([]);
+    setSearchQuery('');
+    setTimeout(() => {
+      setSelectedTags([tag]);
+    }, 100);
+  };
+
+  const handleClearAll = () => {
+    setSelectedTags([]);
+    setSearchQuery('');
+  };
+
   return (
-    <div className="text-center py-16 bg-white rounded-xl shadow-sm border p-8 card-hover-effect">
-      <div className="max-w-md mx-auto space-y-6">
-        <div className="bg-gray-100 w-20 h-20 rounded-full flex items-center 
-                       justify-center mx-auto interactive-hover">
-          <Search className="h-10 w-10 text-gray-400" aria-hidden="true" />
+    <div className="text-center py-16 bg-gradient-to-br from-white to-gray-50 rounded-2xl 
+                   shadow-sm border border-gray-200 card-hover-effect">
+      <div className="max-w-lg mx-auto space-y-8 px-6">
+        {/* Icon and Main Message */}
+        <div className="space-y-4">
+          <div className="relative mx-auto">
+            <div className="bg-gradient-to-br from-gray-100 to-gray-200 w-24 h-24 rounded-full 
+                           flex items-center justify-center mx-auto interactive-hover-subtle">
+              <Search className="h-12 w-12 text-gray-400" aria-hidden="true" />
+            </div>
+            <div className="absolute -top-2 -right-2 bg-primary/10 p-2 rounded-full">
+              <Filter className="h-5 w-5 text-primary" />
+            </div>
+          </div>
+          
+          <div>
+            <h3 className="text-2xl font-bold mb-3 text-high-contrast">
+              {hasActiveFilters ? 'No funds match your criteria' : 'Ready to find your perfect fund?'}
+            </h3>
+            <p className="text-medium-contrast text-lg leading-relaxed">
+              {hasActiveFilters 
+                ? 'Try adjusting your filters or explore our recommendations below'
+                : 'Use our smart filters or get personalized recommendations'
+              }
+            </p>
+          </div>
         </div>
-        <div>
-          <h3 className="text-xl font-semibold mb-3 text-high-contrast">
-            No funds match your criteria
-          </h3>
-          <p className="text-medium-contrast mb-6 leading-relaxed">
-            Try adjusting your search or take our quiz for personalized recommendations
-          </p>
-        </div>
-        <div className="space-y-3">
+
+        {/* Action Buttons */}
+        <div className="space-y-4">
           <Link to="/fund-quiz">
-            <Button className="w-full btn-primary-enhanced text-base h-12 font-medium"
+            <Button className="w-full btn-primary-enhanced text-base h-14 font-semibold text-lg
+                             bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary
+                             shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                     aria-label="Take quiz for fund recommendations">
-              <ClipboardCheck className="mr-2 h-5 w-5" aria-hidden="true" />
-              Get Personalized Recommendations
+              <div className="flex items-center gap-3">
+                <div className="p-1 bg-white/20 rounded-lg">
+                  <ClipboardCheck className="h-6 w-6" aria-hidden="true" />
+                </div>
+                <div className="text-left">
+                  <div className="font-bold">Get Personalized Recommendations</div>
+                  <div className="text-sm opacity-90">3-minute smart quiz</div>
+                </div>
+              </div>
+              <ArrowRight className="h-5 w-5 ml-auto" />
             </Button>
           </Link>
-          <Button 
-            variant="outline" 
-            className="w-full text-base h-12 font-medium btn-secondary-enhanced"
-            onClick={() => {
-              setSelectedTags([]);
-              setSearchQuery('');
-            }}
-          >
-            Clear All Filters
-          </Button>
+          
+          {hasActiveFilters && (
+            <Button 
+              variant="outline" 
+              className="w-full text-base h-12 font-medium btn-secondary-enhanced border-2"
+              onClick={handleClearAll}
+            >
+              <X className="mr-2 h-5 w-5" />
+              Clear All Filters & Start Over
+            </Button>
+          )}
+        </div>
+
+        {/* Smart Suggestions */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 justify-center">
+            <div className="h-px bg-gray-200 flex-1"></div>
+            <div className="flex items-center gap-2 px-3">
+              <Lightbulb className="h-4 w-4 text-amber-500" />
+              <span className="text-sm font-medium text-gray-500">
+                {hasActiveFilters ? 'Try these instead' : 'Popular searches'}
+              </span>
+            </div>
+            <div className="h-px bg-gray-200 flex-1"></div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-3">
+            {popularSuggestions.map((suggestion, index) => (
+              <Button
+                key={suggestion.label}
+                variant="ghost"
+                onClick={() => handleSuggestionClick(suggestion.tag)}
+                className="h-auto p-4 text-left border-2 border-dashed border-gray-200 
+                         hover:border-primary hover:bg-primary/5 rounded-xl transition-all duration-300
+                         hover:scale-105 group"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors duration-300">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-900 group-hover:text-primary transition-colors duration-300">
+                      {suggestion.label}
+                    </div>
+                    <div className="text-xs text-gray-500 group-hover:text-primary/80 transition-colors duration-300">
+                      Tap to explore
+                    </div>
+                  </div>
+                </div>
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Additional Help */}
+        <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
+          <div className="flex items-start gap-3">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Lightbulb className="h-5 w-5 text-blue-600" />
+            </div>
+            <div className="text-left">
+              <h4 className="font-semibold text-blue-900 mb-2">Need help choosing?</h4>
+              <p className="text-sm text-blue-700 mb-3">
+                Our fund experts can guide you through the selection process based on your specific goals and requirements.
+              </p>
+              <Link to="/about">
+                <Button variant="outline" size="sm" className="text-blue-700 border-blue-300 hover:bg-blue-100">
+                  Learn more about our process
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>

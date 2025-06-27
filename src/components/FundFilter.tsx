@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { FundTag, getAllTags } from '../data/funds';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { X, ChevronDown, ChevronUp } from 'lucide-react';
+import { Badge } from "@/components/ui/badge";
+import { X, ChevronDown, ChevronUp, Search, Filter, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import PasswordDialog from './PasswordDialog';
 import { analytics } from '../utils/analytics';
@@ -25,35 +26,45 @@ const FundFilter: React.FC<FundFilterProps> = ({
   const { isAuthenticated } = useAuth();
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [showAllTags, setShowAllTags] = useState(false);
+  const [searchFocus, setSearchFocus] = useState(false);
+  
+  // Categorize tags for better organization
+  const categoryTags = allTags.filter(tag => 
+    ['Venture Capital', 'Private Equity', 'Real Estate', 'Mixed', 'Infrastructure', 'Debt'].includes(tag)
+  );
+  const investmentTags = allTags.filter(tag => 
+    tag.includes('€') || tag.includes('Investment')
+  );
+  const riskTags = allTags.filter(tag => 
+    ['Low Risk', 'Medium Risk', 'High Risk', 'Conservative', 'Aggressive'].includes(tag)
+  );
+  const otherTags = allTags.filter(tag => 
+    !categoryTags.includes(tag) && !investmentTags.includes(tag) && !riskTags.includes(tag)
+  );
   
   // Show first 6 tags initially, then show all when expanded
   const visibleTags = showAllTags ? allTags : allTags.slice(0, 6);
   const hasMoreTags = allTags.length > 6;
   
+  // Quick filter suggestions
+  const quickFilters = [
+    { label: 'Low Risk', tag: 'Low Risk' as FundTag },
+    { label: 'Real Estate', tag: 'Real Estate' as FundTag },
+    { label: 'Under €300k', tag: 'Under €350k Investment' as FundTag },
+    { label: 'Open Now', tag: 'Open' as FundTag },
+  ];
+  
   const scrollToTop = () => {
-    // Multiple approaches to ensure reliable scrolling
     const performScroll = () => {
-      // Method 1: Instant scroll to top
       window.scrollTo(0, 0);
-      
-      // Method 2: Smooth scroll as backup
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      
-      // Method 3: Direct DOM manipulation
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
     };
     
-    // Execute immediately
     performScroll();
-    
-    // Execute after React updates (using setTimeout to escape current execution context)
     setTimeout(performScroll, 0);
-    
-    // Execute after animation frame
     requestAnimationFrame(performScroll);
-    
-    // Execute after a short delay to ensure all React updates are complete
     setTimeout(performScroll, 100);
   };
   
@@ -68,11 +79,7 @@ const FundFilter: React.FC<FundFilterProps> = ({
       : [...selectedTags, tag];
     
     setSelectedTags(newTags);
-    
-    // Track filter usage
     analytics.trackFilterUsage(newTags, searchQuery);
-    
-    // Scroll to top after state update
     scrollToTop();
   };
 
@@ -87,9 +94,8 @@ const FundFilter: React.FC<FundFilterProps> = ({
     if (isAuthenticated) {
       setSearchQuery(value);
       
-      // Track search if there's a value
       if (value.trim()) {
-        analytics.trackSearch(value.trim(), 0); // Results count will be updated from parent component
+        analytics.trackSearch(value.trim(), 0);
       }
     }
   };
@@ -101,92 +107,218 @@ const FundFilter: React.FC<FundFilterProps> = ({
     }
     setSelectedTags([]);
     setSearchQuery('');
-    
-    // Track filter clear
     analytics.trackEvent('filters_cleared');
-    
-    // Scroll to top after clearing filters
     scrollToTop();
+  };
+
+  const renderTagGroup = (title: string, tags: FundTag[], icon: React.ReactNode) => {
+    if (tags.length === 0) return null;
+    
+    return (
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="p-1 bg-primary/10 rounded-lg">
+            {icon}
+          </div>
+          <h4 className="text-sm font-semibold text-gray-700">{title}</h4>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {tags.map(tag => (
+            <Button
+              key={tag}
+              variant={selectedTags.includes(tag) ? "default" : "outline"}
+              size="sm"
+              onClick={() => toggleTag(tag)}
+              className={`${selectedTags.includes(tag) ? 
+                "bg-primary hover:bg-primary/90 text-white shadow-md" : 
+                "border-gray-300 hover:bg-gray-50 text-gray-700 hover:text-gray-800 hover:border-gray-400"} 
+                text-xs px-3 py-2 h-auto min-h-[32px] rounded-full transition-all duration-200 
+                hover:scale-105 hover:shadow-sm`}
+            >
+              {tag}
+            </Button>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   return (
     <>
-      <div className="bg-white p-4 rounded-lg shadow-sm border mb-6 overflow-hidden">
-        <h2 className="text-lg font-semibold mb-4">Filter Funds</h2>
-        
-        <div className="mb-4">
-          <label htmlFor="search" className="block mb-1 text-sm font-medium">Search</label>
-          <Input
-            id="search"
-            type="text"
-            placeholder={isAuthenticated ? "Search funds..." : "Click to access client features"}
-            value={isAuthenticated ? searchQuery : ''}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            onClick={handleSearchClick}
-            className="w-full cursor-pointer"
-            readOnly={!isAuthenticated}
-          />
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        {/* Header */}
+        <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-primary/10 rounded-xl">
+              <Filter className="h-5 w-5 text-primary" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900">Search & Filter</h2>
+          </div>
+          <p className="text-sm text-gray-600">Find your perfect investment fund</p>
         </div>
-        
-        <div className="overflow-hidden">
-          <label className="block mb-2 text-sm font-medium">Filter by Tags</label>
-          <div className="flex flex-wrap gap-2 w-full">
-            {visibleTags.map(tag => (
+
+        <div className="p-6 space-y-6">
+          {/* Enhanced Search */}
+          <div className="space-y-3">
+            <label htmlFor="search" className="block text-sm font-semibold text-gray-700">
+              Search Funds
+            </label>
+            <div className="relative">
+              <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors duration-200 ${
+                searchFocus ? 'text-primary' : 'text-gray-400'
+              }`} />
+              <Input
+                id="search"
+                type="text"
+                placeholder={isAuthenticated ? "Search by name, manager, or description..." : "Click to access search"}
+                value={isAuthenticated ? searchQuery : ''}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                onClick={handleSearchClick}
+                onFocus={() => setSearchFocus(true)}
+                onBlur={() => setSearchFocus(false)}
+                className={`pl-10 h-12 rounded-xl border-2 transition-all duration-200 ${
+                  searchFocus 
+                    ? 'border-primary ring-2 ring-primary/20' 
+                    : 'border-gray-200 hover:border-gray-300'
+                } ${!isAuthenticated ? 'cursor-pointer' : ''}`}
+                readOnly={!isAuthenticated}
+              />
+            </div>
+          </div>
+
+          {/* Quick Filters */}
+          {isAuthenticated && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-amber-500" />
+                <label className="text-sm font-semibold text-gray-700">Popular Filters</label>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {quickFilters.map(filter => (
+                  <Badge
+                    key={filter.label}
+                    variant={selectedTags.includes(filter.tag) ? "default" : "outline"}
+                    className={`cursor-pointer transition-all duration-200 hover:scale-105 px-3 py-1.5 rounded-full ${
+                      selectedTags.includes(filter.tag)
+                        ? 'bg-primary text-white shadow-md'
+                        : 'hover:bg-primary/10 hover:text-primary hover:border-primary'
+                    }`}
+                    onClick={() => toggleTag(filter.tag)}
+                  >
+                    {filter.label}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Categorized Tag Groups */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="h-px bg-gray-200 flex-1"></div>
+              <span className="text-sm font-medium text-gray-500 px-3">All Filters</span>
+              <div className="h-px bg-gray-200 flex-1"></div>
+            </div>
+
+            {!showAllTags ? (
+              <div className="space-y-3">
+                <div className="flex flex-wrap gap-2">
+                  {visibleTags.map(tag => (
+                    <Button
+                      key={tag}
+                      variant={selectedTags.includes(tag) ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => toggleTag(tag)}
+                      className={`${selectedTags.includes(tag) ? 
+                        "bg-primary hover:bg-primary/90 text-white shadow-md" : 
+                        "border-gray-300 hover:bg-gray-50 text-gray-700 hover:text-gray-800 hover:border-gray-400"} 
+                        text-xs px-3 py-2 h-auto min-h-[32px] rounded-full transition-all duration-200 
+                        hover:scale-105 hover:shadow-sm`}
+                    >
+                      {tag}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {renderTagGroup('Investment Categories', categoryTags, <Filter className="h-4 w-4 text-primary" />)}
+                {renderTagGroup('Investment Amounts', investmentTags, <span className="text-primary font-bold text-sm">€</span>)}
+                {renderTagGroup('Risk Levels', riskTags, <span className="text-primary font-bold text-xs">⚡</span>)}
+                {renderTagGroup('Other Filters', otherTags, <span className="text-primary font-bold text-xs">•</span>)}
+              </div>
+            )}
+            
+            {hasMoreTags && (
               <Button
-                key={tag}
-                variant={selectedTags.includes(tag) ? "default" : "outline"}
-                size="sm"
-                onClick={() => toggleTag(tag)}
-                className={`${selectedTags.includes(tag) ? 
-                  "bg-[#EF4444] hover:bg-[#EF4444]/90 text-white" : 
-                  "border-gray-300 hover:bg-[#f0f0f0] text-gray-700 hover:text-gray-800"} 
-                  text-xs px-2 py-1 h-auto min-h-[28px] break-words hyphens-auto max-w-full`}
-                style={{ wordBreak: 'break-word' }}
+                variant="ghost"
+                onClick={() => setShowAllTags(!showAllTags)}
+                className="w-full mt-4 text-gray-600 hover:text-gray-800 hover:bg-gray-50 
+                         flex items-center justify-center gap-2 h-12 rounded-xl border-2 border-dashed 
+                         border-gray-200 hover:border-gray-300 transition-all duration-200"
               >
-                <span className="leading-tight">{tag}</span>
+                {showAllTags ? (
+                  <>
+                    <ChevronUp className="w-4 h-4" />
+                    Show Less Filters
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="w-4 h-4" />
+                    Show All Filters ({allTags.length - 6} more)
+                  </>
+                )}
               </Button>
-            ))}
+            )}
           </div>
           
-          {hasMoreTags && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowAllTags(!showAllTags)}
-              className="mt-3 text-gray-600 hover:text-gray-800 hover:bg-gray-50 flex items-center gap-1"
-            >
-              {showAllTags ? (
-                <>
-                  <ChevronUp className="w-4 h-4" />
-                  Show less
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="w-4 h-4" />
-                  Show more ({allTags.length - 6} more)
-                </>
-              )}
-            </Button>
+          {/* Active Filters Summary */}
+          {(selectedTags.length > 0 || searchQuery) && (
+            <div className="pt-6 border-t border-gray-100">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-medium text-gray-700">Active filters:</span>
+                  {selectedTags.map(tag => (
+                    <Badge key={tag} variant="secondary" className="flex items-center gap-1 rounded-full">
+                      {tag}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleTag(tag)}
+                        className="h-auto p-0 ml-1 hover:bg-transparent"
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </Badge>
+                  ))}
+                  {searchQuery && (
+                    <Badge variant="secondary" className="flex items-center gap-1 rounded-full">
+                      Search: "{searchQuery}"
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleSearchChange('')}
+                        className="h-auto p-0 ml-1 hover:bg-transparent"
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </Badge>
+                  )}
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={clearFilters}
+                  className="text-sm text-red-600 hover:text-red-700 hover:bg-red-50 
+                           flex items-center gap-2 rounded-full border-red-200 hover:border-red-300"
+                >
+                  <X className="w-4 h-4" />
+                  Clear All
+                </Button>
+              </div>
+            </div>
           )}
         </div>
-        
-        {(selectedTags.length > 0 || searchQuery) && (
-          <div className="mt-4 pt-4 border-t flex justify-between items-center">
-            <div className="text-sm">
-              <span className="font-medium">{selectedTags.length}</span> tag{selectedTags.length !== 1 ? 's' : ''} selected
-              {searchQuery && <span> with search query</span>}
-            </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={clearFilters}
-              className="text-sm text-[#EF4444] hover:text-[#EF4444] hover:bg-[#f0f0f0] flex items-center"
-            >
-              <X className="w-4 h-4 mr-1" />
-              Clear filters
-            </Button>
-          </div>
-        )}
       </div>
 
       <PasswordDialog 

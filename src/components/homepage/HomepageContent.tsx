@@ -30,6 +30,8 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const [isLoading] = useState(false);
 
+  const hasActiveFilters = selectedTags.length > 0 || searchQuery.trim() !== '';
+
   return (
     <div className="spacing-responsive-md">
       <a href="#main-content" className="skip-link">
@@ -39,18 +41,18 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
       <MobileFilterToggle 
         showMobileFilter={showMobileFilter}
         setShowMobileFilter={setShowMobileFilter}
+        activeFiltersCount={selectedTags.length}
+        hasSearch={searchQuery.trim() !== ''}
       />
 
       {showMobileFilter && (
         <div className="lg:hidden mb-6" id="mobile-filter-section">
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm card-hover-effect">
-            <FundFilter
-              selectedTags={selectedTags}
-              setSelectedTags={setSelectedTags}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-            />
-          </div>
+          <FundFilter
+            selectedTags={selectedTags}
+            setSelectedTags={setSelectedTags}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
         </div>
       )}
 
@@ -71,6 +73,8 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
             <EmptyFundsState
               setSelectedTags={setSelectedTags}
               setSearchQuery={setSearchQuery}
+              hasActiveFilters={hasActiveFilters}
+              searchQuery={searchQuery}
             />
           ) : (
             <>
