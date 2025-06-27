@@ -1,17 +1,22 @@
 
 import { fundsData } from '../mock/funds';
 
-// Function to get all unique fund managers
-export const getAllFundManagers = (): { name: string; logo?: string }[] => {
-  const managersMap = new Map<string, { name: string; logo?: string }>();
+// Function to get all unique fund managers with funds count
+export const getAllFundManagers = (): { name: string; logo?: string; fundsCount: number }[] => {
+  const managersMap = new Map<string, { name: string; logo?: string; fundsCount: number }>();
   
   fundsData.forEach(fund => {
-    if (!managersMap.has(fund.managerName.toLowerCase())) {
-      managersMap.set(fund.managerName.toLowerCase(), { 
+    const managerKey = fund.managerName.toLowerCase();
+    if (!managersMap.has(managerKey)) {
+      managersMap.set(managerKey, { 
         name: fund.managerName,
-        logo: fund.managerLogo
+        logo: fund.managerLogo,
+        fundsCount: 0
       });
     }
+    // Increment the funds count for this manager
+    const manager = managersMap.get(managerKey)!;
+    manager.fundsCount++;
   });
   
   return Array.from(managersMap.values()).sort((a, b) => 
