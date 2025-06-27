@@ -54,7 +54,7 @@ function findBuiltAssets(distDir: string): { cssFiles: string[], jsFiles: string
 }
 
 export async function generateStaticFiles() {
-  console.log('🎨 Generating static files with matching Vite build assets...');
+  console.log('🎨 Generating static files...');
   
   const distDir = path.join(process.cwd(), 'dist');
   
@@ -64,7 +64,7 @@ export async function generateStaticFiles() {
     return;
   }
 
-  // Find built assets - SAME AS VITE BUILD
+  // Find built assets
   const { cssFiles, jsFiles } = findBuiltAssets(distDir);
   
   if (cssFiles.length === 0) {
@@ -83,10 +83,10 @@ export async function generateStaticFiles() {
     try {
       console.log(`🔨 Generating: ${route.path}`);
       
-      // Render the route with SSR to get proper SEO data
+      // Render the route with SSR
       const { html, seoData } = await renderRoute(route);
       
-      // Generate the complete HTML template with SAME assets as Vite build
+      // Generate the complete HTML template
       const fullHTML = generateHTMLTemplate(html, seoData, cssFiles, jsFiles);
       
       // Determine the output path
@@ -106,32 +106,23 @@ export async function generateStaticFiles() {
       console.log(`✅ Generated: ${outputPath}`);
       console.log(`   Title: ${seoData.title}`);
       
-      // Verify the content matches Vite build expectations
+      // Verify the content
       const writtenContent = fs.readFileSync(outputPath, 'utf8');
       
-      // Check SEO data embedding
-      if (writtenContent.includes(seoData.title)) {
-        console.log(`   ✓ SEO data properly embedded`);
-      } else {
-        console.warn(`   ⚠️  SEO data may not be embedded correctly`);
-      }
+      // Check if assets are properly linked
+      const hasCSSLinks = cssFiles.every(css => writtenContent.includes(`href="${css}"`));
+      const hasJSLinks = jsFiles.every(js => writtenContent.includes(`src="${js}"`));
       
-      // Check CSS linking (same as Vite build)
-      const hasCSSLinks = cssFiles.every(css => writtenContent.includes(css));
       if (hasCSSLinks || cssFiles.length === 0) {
-        console.log(`   ✓ CSS assets properly linked (matches Vite build)`);
+        console.log(`   ✓ CSS assets properly linked`);
       } else {
-        console.warn(`   ⚠️  CSS assets may not match Vite build linking`);
-        console.warn(`   Expected: ${cssFiles.join(', ')}`);
+        console.warn(`   ⚠️  Some CSS assets may not be linked correctly`);
       }
       
-      // Check JS linking (same as Vite build)
-      const hasJSLinks = jsFiles.every(js => writtenContent.includes(js));
       if (hasJSLinks || jsFiles.length === 0) {
-        console.log(`   ✓ JS assets properly linked (matches Vite build)`);
+        console.log(`   ✓ JS assets properly linked`);
       } else {
-        console.warn(`   ⚠️  JS assets may not match Vite build linking`);
-        console.warn(`   Expected: ${jsFiles.join(', ')}`);
+        console.warn(`   ⚠️  Some JS assets may not be linked correctly`);
       }
       
     } catch (error) {
@@ -156,10 +147,8 @@ ${routes.map(route => `  <url>
   console.log('🎉 Static file generation complete!');
   console.log('📋 Summary:');
   console.log(`   - Generated ${routes.length} static pages`);
-  console.log(`   - Linked ${cssFiles.length} CSS files (same as Vite build)`);
-  console.log(`   - Linked ${jsFiles.length} JS files (same as Vite build)`);
-  console.log(`   - Removed conflicting critical CSS`);
-  console.log(`   - Ensured consistent asset loading`);
+  console.log(`   - Linked ${cssFiles.length} CSS files`);
+  console.log(`   - Linked ${jsFiles.length} JS files`);
 }
 
 // Check if this is the main module

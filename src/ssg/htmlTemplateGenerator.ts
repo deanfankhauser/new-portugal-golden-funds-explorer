@@ -33,43 +33,8 @@ export function generateHTMLTemplate(
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   
-  <!-- Link to built CSS files - SAME AS VITE BUILD -->
+  <!-- Link to built CSS files -->
   ${cssFiles.map(css => `<link rel="stylesheet" href="${css}" />`).join('\n  ')}
-  
-  <!-- Minimal critical CSS only for loading states -->
-  <style>
-    /* Only essential loading styles */
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
-    
-    html, body, #root {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-    }
-    
-    body {
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-    
-    /* Prevent flash of unstyled content */
-    .min-h-screen { min-height: 100vh; }
-    .flex { display: flex; }
-    .flex-col { flex-direction: column; }
-    .container { 
-      width: 100%;
-      margin-left: auto;
-      margin-right: auto;
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
-  </style>
 </head>
 <body>
   <div id="root">${appHtml}</div>
