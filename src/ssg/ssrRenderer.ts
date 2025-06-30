@@ -14,7 +14,7 @@ import { RecentlyViewedProvider } from '../contexts/RecentlyViewedContext';
 
 export class SSRRenderer {
   static async renderRoute(route: StaticRoute): Promise<{ html: string; seoData: any }> {
-    console.log(`SSR: Starting render for route ${route.path}`);
+    console.log(`🔥 SSR: Starting render for route ${route.path} (type: ${route.pageType})`);
     
     const queryClient = new QueryClient({
       defaultOptions: {
@@ -34,7 +34,7 @@ export class SSRRenderer {
       tagName: route.params?.tagName,
     });
 
-    console.log(`SSR: Generated SEO data for ${route.path}:`, {
+    console.log(`🔥 SSR: Generated SEO data for ${route.path}:`, {
       title: seoData.title,
       description: seoData.description,
       pageType: route.pageType
@@ -42,8 +42,6 @@ export class SSRRenderer {
 
     // Load all components
     const components = await loadComponents();
-
-    // Create a simple fallback component that ensures React is available
     const FallbackComponent = () => React.createElement('div', null, 'Loading...');
 
     const AppRouter = () => React.createElement(
@@ -68,6 +66,7 @@ export class SSRRenderer {
                   Routes,
                   null,
                   React.createElement(Route, { path: '/', element: React.createElement(components.Index || FallbackComponent) }),
+                  React.createElement(Route, { path: '/funds/index', element: React.createElement(components.FundIndex || FallbackComponent) }),
                   React.createElement(Route, { path: '/funds/:id', element: React.createElement(components.FundDetails || FallbackComponent) }),
                   React.createElement(Route, { path: '/tags', element: React.createElement(components.TagsHub || FallbackComponent) }),
                   React.createElement(Route, { path: '/tags/:tag', element: React.createElement(components.TagPage || FallbackComponent) }),
@@ -83,7 +82,6 @@ export class SSRRenderer {
                   React.createElement(Route, { path: '/faqs', element: React.createElement(components.FAQs || FallbackComponent) }),
                   React.createElement(Route, { path: '/roi-calculator', element: React.createElement(components.ROICalculator || FallbackComponent) }),
                   React.createElement(Route, { path: '/fund-quiz', element: React.createElement(components.FundQuiz || FallbackComponent) }),
-                  // Handle direct fund routes for SSG
                   React.createElement(Route, { path: '/:potentialFundId', element: React.createElement(components.FundDetails || FallbackComponent) })
                 )
               )
@@ -93,22 +91,18 @@ export class SSRRenderer {
       )
     );
 
-    // Clear any previous helmet state
     Helmet.rewind();
     
     try {
-      // Render the component to extract helmet data
       const html = renderToString(React.createElement(AppRouter));
-      console.log(`SSR: Successfully rendered HTML for ${route.path}, length: ${html.length}`);
+      console.log(`🔥 SSR: Successfully rendered HTML for ${route.path}, length: ${html.length}`);
       
-      // Get helmet data after rendering
       const helmet = Helmet.rewind();
 
-      // Use our SEO data as the primary source of truth
       const finalSeoData = {
         ...seoData,
-        title: seoData.title, // Always use our SEO service title
-        description: seoData.description, // Always use our SEO service description
+        title: seoData.title,
+        description: seoData.description,
         helmetData: {
           title: helmet.title.toString(),
           meta: helmet.meta.toString(),
@@ -117,7 +111,7 @@ export class SSRRenderer {
         }
       };
 
-      console.log(`SSR: Final SEO data for ${route.path}:`, {
+      console.log(`🔥 SSR: Final SEO data for ${route.path}:`, {
         title: finalSeoData.title,
         description: finalSeoData.description,
         url: finalSeoData.url
@@ -125,7 +119,7 @@ export class SSRRenderer {
 
       return { html, seoData: finalSeoData };
     } catch (error) {
-      console.error(`SSR: Error rendering route ${route.path}:`, error);
+      console.error(`🔥 SSR: Error rendering route ${route.path}:`, error);
       return { 
         html: '<div>Error rendering page</div>', 
         seoData: {

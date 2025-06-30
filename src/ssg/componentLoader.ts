@@ -2,7 +2,6 @@
 import React from 'react';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
-// Ensure React is available globally for SSR
 if (typeof global !== 'undefined' && !global.React) {
   global.React = React;
 }
@@ -11,9 +10,9 @@ export { TooltipProvider };
 
 export const loadComponents = async () => {
   try {
-    // Use dynamic imports with error handling
     const [
       Index,
+      FundIndex,
       FundDetails,
       TagsHub,
       TagPage,
@@ -31,6 +30,7 @@ export const loadComponents = async () => {
       FundQuiz
     ] = await Promise.all([
       import('../pages/Index').then(m => m.default).catch(() => null),
+      import('../pages/FundIndex').then(m => m.default).catch(() => null),
       import('../pages/FundDetails').then(m => m.default).catch(() => null),
       import('../pages/TagsHub').then(m => m.default).catch(() => null),
       import('../pages/TagPage').then(m => m.default).catch(() => null),
@@ -48,8 +48,29 @@ export const loadComponents = async () => {
       import('../pages/FundQuiz').then(m => m.default).catch(() => null)
     ]);
 
+    console.log('🔥 ComponentLoader: All components loaded successfully', {
+      Index: !!Index,
+      FundIndex: !!FundIndex,
+      FundDetails: !!FundDetails,
+      TagsHub: !!TagsHub,
+      TagPage: !!TagPage,
+      CategoriesHub: !!CategoriesHub,
+      CategoryPage: !!CategoryPage,
+      ManagersHub: !!ManagersHub,
+      FundManager: !!FundManager,
+      About: !!About,
+      Disclaimer: !!Disclaimer,
+      Privacy: !!Privacy,
+      ComparisonPage: !!ComparisonPage,
+      ComparisonsHub: !!ComparisonsHub,
+      FAQs: !!FAQs,
+      ROICalculator: !!ROICalculator,
+      FundQuiz: !!FundQuiz
+    });
+
     return {
       Index,
+      FundIndex,
       FundDetails,
       TagsHub,
       TagPage,
@@ -67,7 +88,7 @@ export const loadComponents = async () => {
       FundQuiz
     };
   } catch (error) {
-    console.error('Error loading components:', error);
+    console.error('🔥 ComponentLoader: Error loading components:', error);
     return {};
   }
 };

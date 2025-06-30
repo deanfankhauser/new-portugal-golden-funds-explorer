@@ -8,9 +8,8 @@ function findBuiltAssets(distDir: string): { cssFiles: string[], jsFiles: string
   const cssFiles: string[] = [];
   const jsFiles: string[] = [];
   
-  console.log('🔍 Looking for built assets in:', distDir);
+  console.log('🔍 SSG: Looking for built assets in:', distDir);
   
-  // Function to recursively find files
   function findFiles(dir: string, relativePath: string = '') {
     if (!fs.existsSync(dir)) return;
     
@@ -23,78 +22,70 @@ function findBuiltAssets(distDir: string): { cssFiles: string[], jsFiles: string
         findFiles(fullPath, relativeFilePath);
       } else if (file.endsWith('.css') && !file.includes('.map')) {
         cssFiles.push(`/${relativeFilePath}`);
-        console.log(`✅ Found CSS: /${relativeFilePath}`);
+        console.log(`✅ SSG: Found CSS: /${relativeFilePath}`);
       } else if (file.endsWith('.js') && !file.includes('.map')) {
         jsFiles.push(`/${relativeFilePath}`);
-        console.log(`✅ Found JS: /${relativeFilePath}`);
+        console.log(`✅ SSG: Found JS: /${relativeFilePath}`);
       }
     });
   }
   
-  // Look for assets in the dist directory
   findFiles(distDir);
   
-  // Sort files to ensure consistent order (main files first, then chunks)
+  // Sort files for consistent loading order
   cssFiles.sort((a, b) => {
-    // Main CSS files first
     if (a.includes('/assets/index-') && !b.includes('/assets/index-')) return -1;
     if (!a.includes('/assets/index-') && b.includes('/assets/index-')) return 1;
     return a.localeCompare(b);
   });
   
   jsFiles.sort((a, b) => {
-    // Main JS files first, then chunks
     if (a.includes('/assets/index-') && !b.includes('/assets/index-')) return -1;
     if (!a.includes('/assets/index-') && b.includes('/assets/index-')) return 1;
-    // Chunks after main files
     if (a.includes('chunk-') && !b.includes('chunk-')) return 1;
     if (!a.includes('chunk-') && b.includes('chunk-')) return -1;
     return a.localeCompare(b);
   });
   
-  console.log('📊 Final CSS files:', cssFiles);
-  console.log('📊 Final JS files:', jsFiles);
-  
+  console.log(`📊 SSG: Final assets - CSS: ${cssFiles.length}, JS: ${jsFiles.length}`);
   return { cssFiles, jsFiles };
 }
 
 export async function generateStaticFiles() {
-  console.log('🎨 Generating static files...');
+  console.log('🎨 SSG: Starting static file generation...');
   
   const distDir = path.join(process.cwd(), 'dist');
   
-  // Ensure dist directory exists
   if (!fs.existsSync(distDir)) {
-    console.error('❌ Dist directory not found. Run vite build first.');
+    console.error('❌ SSG: Dist directory not found. Run vite build first.');
     return;
   }
 
-  // Find built assets
   const { cssFiles, jsFiles } = findBuiltAssets(distDir);
   
   if (cssFiles.length === 0) {
-    console.warn('⚠️  No CSS files found. This might cause styling issues.');
+    console.warn('⚠️  SSG: No CSS files found. This might cause styling issues.');
   }
   
   if (jsFiles.length === 0) {
-    console.warn('⚠️  No JS files found. This might cause functionality issues.');
+    console.warn('⚠️  SSG: No JS files found. This might cause functionality issues.');
   }
 
   const routes = getAllStaticRoutes();
-  console.log(`📄 Found ${routes.length} routes to generate`);
+  console.log(`📄 SSG: Found ${routes.length} routes to generate`);
+
+  let successCount = 0;
+  const failedRoutes: string[] = [];
 
   // Generate static files for each route
   for (const route of routes) {
     try {
-      console.log(`🔨 Generating: ${route.path}`);
+      console.log(`🔨 SSG: Generating ${route.path} (${route.pageType})`);
       
-      // Render the route with SSR
       const { html, seoData } = await renderRoute(route);
-      
-      // Generate the complete HTML template
       const fullHTML = generateHTMLTemplate(html, seoData, cssFiles, jsFiles);
       
-      // Determine the output path
+      // Determine output path
       let outputPath: string;
       if (route.path === '/') {
         outputPath = path.join(distDir, 'index.html');
@@ -106,40 +97,35 @@ export async function generateStaticFiles() {
         outputPath = path.join(routeDir, 'index.html');
       }
       
-      // Write the static HTML file
       fs.writeFileSync(outputPath, fullHTML);
-      console.log(`✅ Generated: ${outputPath}`);
-      console.log(`   Title: ${seoData.title}`);
+      successCount++;
       
-      // Verify the content
-      const writtenContent = fs.readFileSync(outputPath, 'utf8');
+      console.log(`✅ SSG: Generated ${outputPath}`);
+      console.log(`   📝 Title: ${seoData.title}`);
+      console.log(`   📄 Description: ${seoData.description.substring(0, 100)}...`);
       
-      // Check if Google Fonts are properly linked
-      const hasGoogleFonts = writtenContent.includes('fonts.googleapis.com');
-      if (hasGoogleFonts) {
-        console.log(`   ✓ Google Fonts properly linked`);
-      } else {
-        console.warn(`   ⚠️  Google Fonts may not be linked`);
-      }
+      // Verify critical elements
+      const content = fs.readFileSync(outputPath, 'utf8');
       
-      // Check if assets are properly linked
-      const hasCSSLinks = cssFiles.every(css => writtenContent.includes(`href="${css}"`));
-      const hasJSLinks = jsFiles.every(js => writtenContent.includes(`src="${js}"`));
+      // Check for proper SEO elements
+      const hasTitle = content.includes(`<title>${seoData.title}</title>`);
+      const hasDescription = content.includes(`content="${seoData.description}"`);
+      const hasStructuredData = seoData.structuredData && Object.keys(seoData.structuredData).length > 0;
+      const hasGoogleFonts = content.includes('fonts.googleapis.com');
+      const hasCSSLinks = cssFiles.every(css => content.includes(`href="${css}"`));
+      const hasJSLinks = jsFiles.every(js => content.includes(`src="${js}"`));
       
-      if (hasCSSLinks || cssFiles.length === 0) {
-        console.log(`   ✓ CSS assets properly linked (${cssFiles.length} files)`);
-      } else {
-        console.warn(`   ⚠️  Some CSS assets may not be linked correctly`);
-      }
-      
-      if (hasJSLinks || jsFiles.length === 0) {
-        console.log(`   ✓ JS assets properly linked (${jsFiles.length} files)`);
-      } else {
-        console.warn(`   ⚠️  Some JS assets may not be linked correctly`);
-      }
+      console.log(`   🔍 Verification:`, {
+        seo: hasTitle && hasDescription ? '✅' : '❌',
+        structured: hasStructuredData ? '✅' : '⚠️',
+        fonts: hasGoogleFonts ? '✅' : '❌',
+        css: hasCSSLinks ? '✅' : '❌',
+        js: hasJSLinks ? '✅' : '❌'
+      });
       
     } catch (error) {
-      console.error(`❌ Error generating ${route.path}:`, error);
+      console.error(`❌ SSG: Error generating ${route.path}:`, error.message);
+      failedRoutes.push(route.path);
     }
   }
 
@@ -150,21 +136,37 @@ ${routes.map(route => `  <url>
     <loc>https://movingto.com/funds${route.path}</loc>
     <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>${route.path === '/' ? '1.0' : route.pageType === 'fund' ? '0.9' : '0.8'}</priority>
   </url>`).join('\n')}
 </urlset>`;
 
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap);
-  console.log('✅ Sitemap generated');
+  console.log('✅ SSG: Sitemap generated with proper priorities');
   
-  console.log('🎉 Static file generation complete!');
+  // Final summary
+  console.log('\n🎉 SSG: Static file generation complete!');
   console.log('📋 Summary:');
-  console.log(`   - Generated ${routes.length} static pages`);
-  console.log(`   - Linked ${cssFiles.length} CSS files`);
-  console.log(`   - Linked ${jsFiles.length} JS files`);
+  console.log(`   ✅ Successfully generated: ${successCount}/${routes.length} pages`);
+  console.log(`   📁 CSS files linked: ${cssFiles.length}`);
+  console.log(`   📁 JS files linked: ${jsFiles.length}`);
+  console.log(`   🗺️  Sitemap generated with ${routes.length} URLs`);
+  
+  if (failedRoutes.length > 0) {
+    console.log(`   ❌ Failed routes: ${failedRoutes.join(', ')}`);
+  }
+  
+  // Verify key pages exist
+  const keyPages = ['index.html', 'funds/index/index.html', 'about/index.html'];
+  keyPages.forEach(page => {
+    const pagePath = path.join(distDir, page);
+    if (fs.existsSync(pagePath)) {
+      console.log(`   ✅ Key page verified: ${page}`);
+    } else {
+      console.log(`   ❌ Key page missing: ${page}`);
+    }
+  });
 }
 
-// Check if this is the main module
 if (import.meta.url === `file://${process.argv[1]}`) {
   generateStaticFiles().catch(console.error);
 }

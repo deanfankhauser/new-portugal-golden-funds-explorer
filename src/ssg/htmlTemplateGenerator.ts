@@ -13,40 +13,108 @@ export function generateHTMLTemplate(
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <!-- SEO Meta Tags -->
+  <!-- Critical SEO Meta Tags -->
   <title>${seoData.title}</title>
   <meta name="description" content="${seoData.description}" />
   <meta property="og:title" content="${seoData.title}" />
   <meta property="og:description" content="${seoData.description}" />
   <meta property="og:url" content="${seoData.url}" />
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Movingto - Portugal Golden Visa Funds" />
+  <meta property="og:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@movingtoio" />
   <meta name="twitter:title" content="${seoData.title}" />
   <meta name="twitter:description" content="${seoData.description}" />
+  <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
   <link rel="canonical" href="${seoData.url}" />
+  
+  <!-- Enhanced Meta Tags -->
+  <meta name="keywords" content="Portugal Golden Visa, investment funds, Portuguese residency, Golden Visa funds 2025, fund comparison, investment migration" />
+  <meta name="author" content="Dean Fankhauser, CEO - Movingto" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#EF4444" />
   
   <!-- Structured Data -->
   ${seoData.structuredData ? `<script type="application/ld+json">${JSON.stringify(seoData.structuredData)}</script>` : ''}
   
-  <!-- Fonts - Must load before CSS to avoid FOUC -->
+  <!-- Critical Resource Preloads -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" as="style">
+  
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- SSG Critical CSS - Inline for best performance -->
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <!-- Critical CSS Inline for Performance -->
   <style>
-    /* Critical CSS from Vite build - Inline for SSG */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    /* Critical CSS to prevent FOUC */
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      color: #1f2937;
+      background-color: #ffffff;
+    }
+    
+    /* Ensure loading state is properly styled */
+    #root {
+      min-height: 100vh;
+    }
+    
+    /* Basic button styling to prevent layout shift */
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+    
+    /* Tailwind CSS reset essentials */
+    h1, h2, h3, h4, h5, h6 {
+      margin: 0;
+      font-weight: 600;
+    }
+    
+    p {
+      margin: 0;
+    }
+    
+    /* Loading skeleton styles */
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
   </style>
   
-  <!-- Link to built CSS files -->
+  <!-- Built CSS Files -->
   ${cssFiles.map(css => `<link rel="stylesheet" href="${css}" />`).join('\n  ')}
 </head>
 <body>
   <div id="root">${appHtml}</div>
   
-  <!-- Link to built JS files -->
+  <!-- Built JavaScript Files -->
   ${jsFiles.map(js => `<script type="module" src="${js}"></script>`).join('\n  ')}
+  
+  <!-- Analytics placeholder for future implementation -->
+  <script>
+    // Basic page load tracking
+    console.log('SSG Page loaded:', {
+      title: document.title,
+      url: window.location.href,
+      timestamp: new Date().toISOString()
+    });
+  </script>
 </body>
 </html>`;
 }

@@ -1,3 +1,4 @@
+
 import { fundsData } from '../data/mock/funds';
 import { getAllFundManagers } from '../data/services/managers-service';
 import { getAllCategories } from '../data/services/categories-service';
@@ -8,7 +9,7 @@ export interface StaticRoute {
   path: string;
   pageType: string;
   params?: Record<string, string>;
-  fundId?: string; // Add fundId for direct fund routes
+  fundId?: string;
 }
 
 export class RouteDiscovery {
@@ -17,6 +18,9 @@ export class RouteDiscovery {
 
     // Homepage
     routes.push({ path: '/', pageType: 'homepage' });
+
+    // Fund Index page - CRITICAL addition
+    routes.push({ path: '/funds/index', pageType: 'fund-index' });
 
     // Static pages
     routes.push({ path: '/about', pageType: 'about' });
@@ -61,11 +65,10 @@ export class RouteDiscovery {
       });
     });
 
-    // Category pages - use proper slug conversion
+    // Category pages
     const categories = getAllCategories();
     categories.forEach(category => {
       const slug = categoryToSlug(category);
-      console.log(`🔥 RouteDiscovery: Category "${category}" -> slug "${slug}"`);
       routes.push({
         path: `/categories/${slug}`,
         pageType: 'category',
@@ -73,11 +76,10 @@ export class RouteDiscovery {
       });
     });
 
-    // Tag pages - use proper slug conversion
+    // Tag pages
     const tags = getAllTags();
     tags.forEach(tag => {
       const slug = tagToSlug(tag);
-      console.log(`🔥 RouteDiscovery: Tag "${tag}" -> slug "${slug}"`);
       routes.push({
         path: `/tags/${slug}`,
         pageType: 'tag',
@@ -85,6 +87,7 @@ export class RouteDiscovery {
       });
     });
 
+    console.log(`🔍 RouteDiscovery: Generated ${routes.length} static routes`);
     return routes;
   }
 
@@ -108,6 +111,5 @@ ${urls}
   }
 }
 
-// Export functions for direct access
 export const getAllStaticRoutes = () => RouteDiscovery.getAllStaticRoutes();
 export const generateSitemap = () => RouteDiscovery.generateSitemap();
