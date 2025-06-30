@@ -7,19 +7,6 @@ export function generateHTMLTemplate(
   cssFiles: string[] = [], 
   jsFiles: string[] = []
 ): string {
-  // Ensure asset paths are relative and properly formatted
-  const cleanCssFiles = cssFiles.map(css => {
-    // Remove leading slash and ensure relative path
-    const cleanPath = css.startsWith('/') ? css.substring(1) : css;
-    return cleanPath.startsWith('assets/') ? cleanPath : `assets/${cleanPath}`;
-  });
-
-  const cleanJsFiles = jsFiles.map(js => {
-    // Remove leading slash and ensure relative path
-    const cleanPath = js.startsWith('/') ? js.substring(1) : js;
-    return cleanPath.startsWith('assets/') ? cleanPath : `assets/${cleanPath}`;
-  });
-
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,14 +96,14 @@ export function generateHTMLTemplate(
     }
   </style>
   
-  <!-- Built CSS Files with proper relative paths -->
-  ${cleanCssFiles.map(css => `<link rel="stylesheet" href="./${css}" />`).join('\n  ')}
+  <!-- Built CSS Files -->
+  ${cssFiles.map(css => `  <link rel="stylesheet" href="./assets/${css}" />`).join('\n')}
 </head>
 <body>
   <div id="root">${appHtml}</div>
   
-  <!-- Built JavaScript Files with proper relative paths and correct MIME type -->
-  ${cleanJsFiles.map(js => `<script type="module" src="./${js}"></script>`).join('\n  ')}
+  <!-- Built JavaScript Files -->
+  ${jsFiles.map(js => `  <script type="module" src="./assets/${js}"></script>`).join('\n')}
   
   <!-- Analytics placeholder for future implementation -->
   <script>

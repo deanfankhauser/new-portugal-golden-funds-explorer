@@ -19,16 +19,18 @@ function findBuiltAssets(distDir: string): { cssFiles: string[], jsFiles: string
   }
   
   const files = fs.readdirSync(assetsDir);
+  console.log('🔍 SSG: Found files in assets directory:', files);
+  
   files.forEach(file => {
     const fullPath = path.join(assetsDir, file);
     
     if (fs.statSync(fullPath).isFile()) {
       if (file.endsWith('.css') && !file.includes('.map')) {
-        cssFiles.push(`assets/${file}`);
-        console.log(`✅ SSG: Found CSS: assets/${file}`);
+        cssFiles.push(file);
+        console.log(`✅ SSG: Found CSS: ${file}`);
       } else if (file.endsWith('.js') && !file.includes('.map')) {
-        jsFiles.push(`assets/${file}`);
-        console.log(`✅ SSG: Found JS: assets/${file}`);
+        jsFiles.push(file);
+        console.log(`✅ SSG: Found JS: ${file}`);
       }
     }
   });
@@ -51,6 +53,9 @@ function findBuiltAssets(distDir: string): { cssFiles: string[], jsFiles: string
   });
   
   console.log(`📊 SSG: Asset summary - CSS: ${cssFiles.length}, JS: ${jsFiles.length}`);
+  console.log('📊 SSG: CSS files:', cssFiles);
+  console.log('📊 SSG: JS files:', jsFiles);
+  
   return { cssFiles, jsFiles };
 }
 
@@ -100,6 +105,26 @@ export async function generateStaticFiles() {
         outputPath = path.join(routeDir, 'index.html');
       }
       
+      // Verify assets exist before writing HTML
+      const missingAssets: string[] = [];
+      cssFiles.forEach(css => {
+        const assetPath = path.join(distDir, 'assets', css);
+        if (!fs.existsSync(assetPath)) {
+          missingAssets.push(`CSS: assets/${css}`);
+        }
+      });
+      
+      jsFiles.forEach(js => {
+        const assetPath = path.join(distDir, 'assets', js);
+        if (!fs.existsSync(assetPath)) {
+          missingAssets.push(`JS: assets/${js}`);
+        }
+      });
+      
+      if (missingAssets.length > 0) {
+        console.warn(`⚠️  SSG: Missing assets for ${route.path}:`, missingAssets);
+      }
+      
       fs.writeFileSync(outputPath, fullHTML);
       successCount++;
       
@@ -115,8 +140,8 @@ export async function generateStaticFiles() {
         hasDescription: generatedContent.includes(`content="${seoData.description}"`),
         hasStructuredData: seoData.structuredData && Object.keys(seoData.structuredData).length > 0,
         hasFonts: generatedContent.includes('fonts.googleapis.com'),
-        hasRelativeCSS: cssFiles.length === 0 || cssFiles.every(css => generatedContent.includes(`href="./${css}"`)),
-        hasRelativeJS: jsFiles.length === 0 || jsFiles.every(js => generatedContent.includes(`src="./${js}"`)),
+        hasRelativeCSS: cssFiles.length === 0 || cssFiles.every(css => generatedContent.includes(`href="./assets/${css}"`)),
+        hasRelativeJS: jsFiles.length === 0 || jsFiles.every(js => generatedContent.includes(`src="./assets/${js}"`)),
         noAbsolutePaths: !generatedContent.includes('https://www.movingto.com/funds/assets/')
       };
       
@@ -126,8 +151,10 @@ export async function generateStaticFiles() {
       
       console.log(`   🔍 Validation: ${validationResults}`);
       
-      if (!validationChecks.noAbsolutePaths) {
-        console.warn(`   ⚠️  Detected absolute paths in ${outputPath}`);
+      if (!validationChecks.hasRelativeCSS || !validationChecks.hasRelativeJS) {
+        console.warn(`   ⚠️  Asset path issues in ${outputPath}`);
+        console.warn(`   Expected CSS files: ${cssFiles.join(', ')}`);
+        console.warn(`   Expected JS files: ${jsFiles.join(', ')}`);
       }
       
     } catch (error) {
@@ -140,7 +167,6 @@ export async function generateStaticFiles() {
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${routes.map(route => {
-  // Set priority based on page type
   let priority = '0.8';
   if (route.path === '/') priority = '1.0';
   else if (route.pageType === 'fund') priority = '0.9';
@@ -169,10 +195,9 @@ ${routes.map(route => {
   
   if (failedRoutes.length > 0) {
     console.log(`   ❌ Failed routes: ${failedRoutes.join(', ')}`);
-    console.log('   📋 Consider checking component imports and route configurations');
   }
   
-  // Verify critical pages
+  // Verify critical pages and their asset references
   const criticalPages = [
     { file: 'index.html', name: 'Homepage' },
     { file: 'funds/index/index.html', name: 'Fund Index' },
@@ -186,7 +211,13 @@ ${routes.map(route => {
       const fileSize = fs.statSync(pagePath).size;
       const content = fs.readFileSync(pagePath, 'utf8');
       const hasRelativePaths = !content.includes('https://www.movingto.com/funds/assets/');
-      console.log(`   ${hasRelativePaths ? '✅' : '❌'} ${name}: ${file} (${Math.round(fileSize / 1024)}KB) - Relative paths: ${hasRelativePaths}`);
+      const hasCorrectAssets = cssFiles.every(css => content.includes(`href="./assets/${css}"`)) &&
+                               jsFiles.every(js => content.includes(`src="./assets/${js}"`));
+      console.log(`   ${hasRelativePaths && hasCorrectAssets ? '✅' : '❌'} ${name}: ${file} (${Math.round(fileSize / 1024)}KB)`);
+      
+      if (!hasCorrectAssets) {
+        console.log(`      Missing assets in ${name}`);
+      }
     } else {
       console.log(`   ❌ ${name}: ${file} MISSING`);
     }
