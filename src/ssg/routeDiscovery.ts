@@ -1,3 +1,4 @@
+
 import { fundsData } from '../data/mock/funds';
 import { getAllFundManagers } from '../data/services/managers-service';
 import { getAllCategories } from '../data/services/categories-service';
@@ -17,9 +18,6 @@ export class RouteDiscovery {
 
     // Homepage
     routes.push({ path: '/', pageType: 'homepage' });
-    
-    // Funds homepage (same as homepage but with /funds path)
-    routes.push({ path: '/funds', pageType: 'homepage' });
 
     // Fund Index page - CRITICAL addition
     routes.push({ path: '/funds/index', pageType: 'fund-index' });
