@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -5,6 +6,17 @@ import PremiumCTA from '../cta/PremiumCTA';
 
 const EmptyComparison = () => {
   const navigate = useNavigate();
+  
+  const handleBrowseFunds = () => {
+    // Check if we're in SSG environment (static HTML)
+    if (typeof window !== 'undefined' && !window.location.pathname.includes('localhost') && window.location.hostname !== 'localhost') {
+      // In SSG/production, redirect to /funds
+      window.location.href = '/funds';
+    } else {
+      // In development/Vite, navigate to root
+      navigate('/');
+    }
+  };
   
   return (
     <div className="space-y-8">
@@ -15,7 +27,7 @@ const EmptyComparison = () => {
           and click the "Compare" button to add them to your comparison list.
         </p>
         <Button
-          onClick={() => navigate('/')}
+          onClick={handleBrowseFunds}
           className="bg-[#EF4444] hover:bg-[#EF4444]/90 text-white"
         >
           Browse Funds

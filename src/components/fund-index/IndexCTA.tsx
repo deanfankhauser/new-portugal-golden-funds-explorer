@@ -13,6 +13,17 @@ const IndexCTA: React.FC = () => {
     alert('PDF download feature coming soon! Contact us for a detailed report.');
   };
 
+  const handleBrowseAllFunds = () => {
+    // Check if we're in SSG environment (static HTML)
+    if (typeof window !== 'undefined' && !window.location.pathname.includes('localhost') && window.location.hostname !== 'localhost') {
+      // In SSG/production, redirect to /funds
+      window.location.href = '/funds';
+    } else {
+      // In development/Vite, navigate to root
+      window.location.href = '/';
+    }
+  };
+
   return (
     <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
       <CardHeader>
@@ -56,10 +67,13 @@ const IndexCTA: React.FC = () => {
         <div className="pt-4 border-t border-blue-200">
           <h4 className="font-semibold text-gray-900 mb-2">Quick Links</h4>
           <div className="space-y-2 text-sm">
-            <Link to="/" className="block text-blue-600 hover:text-blue-800 flex items-center gap-1">
+            <button 
+              onClick={handleBrowseAllFunds}
+              className="block text-blue-600 hover:text-blue-800 flex items-center gap-1 bg-transparent border-none cursor-pointer"
+            >
               <Home className="h-3 w-3" />
               Browse All Funds
-            </Link>
+            </button>
             <Link to="/categories" className="block text-blue-600 hover:text-blue-800">
               → Fund Categories Guide
             </Link>
