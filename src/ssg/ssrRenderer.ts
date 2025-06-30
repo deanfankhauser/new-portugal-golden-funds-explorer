@@ -77,6 +77,7 @@ export class SSRRenderer {
                   null,
                   // Main routes
                   React.createElement(Route, { path: '/', element: React.createElement(getComponent('Index')) }),
+                  React.createElement(Route, { path: '/funds', element: React.createElement(getComponent('Index')) }),
                   React.createElement(Route, { path: '/funds/index', element: React.createElement(getComponent('FundIndex')) }),
                   React.createElement(Route, { path: '/funds/:id', element: React.createElement(getComponent('FundDetails')) }),
                   
