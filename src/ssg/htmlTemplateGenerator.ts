@@ -7,6 +7,19 @@ export function generateHTMLTemplate(
   cssFiles: string[] = [], 
   jsFiles: string[] = []
 ): string {
+  // Ensure asset paths are relative and properly formatted
+  const cleanCssFiles = cssFiles.map(css => {
+    // Remove leading slash and ensure relative path
+    const cleanPath = css.startsWith('/') ? css.substring(1) : css;
+    return cleanPath.startsWith('assets/') ? cleanPath : `assets/${cleanPath}`;
+  });
+
+  const cleanJsFiles = jsFiles.map(js => {
+    // Remove leading slash and ensure relative path
+    const cleanPath = js.startsWith('/') ? js.substring(1) : js;
+    return cleanPath.startsWith('assets/') ? cleanPath : `assets/${cleanPath}`;
+  });
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,16 +51,15 @@ export function generateHTMLTemplate(
   <!-- Structured Data -->
   ${seoData.structuredData ? `<script type="application/ld+json">${JSON.stringify(seoData.structuredData)}</script>` : ''}
   
-  <!-- Critical Resource Preloads -->
+  <!-- Critical Resource Preconnects -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" as="style">
   
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/66fbc14f0b738f09e77cadb8_fav.png">
   
   <!-- Critical CSS Inline for Performance -->
   <style>
@@ -97,14 +109,14 @@ export function generateHTMLTemplate(
     }
   </style>
   
-  <!-- Built CSS Files -->
-  ${cssFiles.map(css => `<link rel="stylesheet" href="${css}" />`).join('\n  ')}
+  <!-- Built CSS Files with proper relative paths -->
+  ${cleanCssFiles.map(css => `<link rel="stylesheet" href="./${css}" />`).join('\n  ')}
 </head>
 <body>
   <div id="root">${appHtml}</div>
   
-  <!-- Built JavaScript Files -->
-  ${jsFiles.map(js => `<script type="module" src="${js}"></script>`).join('\n  ')}
+  <!-- Built JavaScript Files with proper relative paths and correct MIME type -->
+  ${cleanJsFiles.map(js => `<script type="module" src="./${js}"></script>`).join('\n  ')}
   
   <!-- Analytics placeholder for future implementation -->
   <script>

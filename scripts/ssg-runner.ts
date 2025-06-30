@@ -11,43 +11,40 @@ function findBuiltAssets(distDir: string): { cssFiles: string[], jsFiles: string
   
   console.log('🔍 SSG: Scanning for built assets in:', distDir);
   
-  function scanDirectory(dir: string, relativePath: string = '') {
-    if (!fs.existsSync(dir)) {
-      console.warn(`🔍 SSG: Directory not found: ${dir}`);
-      return;
-    }
-    
-    const files = fs.readdirSync(dir);
-    files.forEach(file => {
-      const fullPath = path.join(dir, file);
-      const relativeFilePath = relativePath ? `${relativePath}/${file}` : file;
-      
-      if (fs.statSync(fullPath).isDirectory()) {
-        scanDirectory(fullPath, relativeFilePath);
-      } else if (file.endsWith('.css') && !file.includes('.map')) {
-        cssFiles.push(`/${relativeFilePath}`);
-        console.log(`✅ SSG: Found CSS: /${relativeFilePath}`);
-      } else if (file.endsWith('.js') && !file.includes('.map')) {
-        jsFiles.push(`/${relativeFilePath}`);
-        console.log(`✅ SSG: Found JS: /${relativeFilePath}`);
-      }
-    });
+  const assetsDir = path.join(distDir, 'assets');
+  
+  if (!fs.existsSync(assetsDir)) {
+    console.warn(`🔍 SSG: Assets directory not found: ${assetsDir}`);
+    return { cssFiles, jsFiles };
   }
   
-  scanDirectory(distDir);
+  const files = fs.readdirSync(assetsDir);
+  files.forEach(file => {
+    const fullPath = path.join(assetsDir, file);
+    
+    if (fs.statSync(fullPath).isFile()) {
+      if (file.endsWith('.css') && !file.includes('.map')) {
+        cssFiles.push(`assets/${file}`);
+        console.log(`✅ SSG: Found CSS: assets/${file}`);
+      } else if (file.endsWith('.js') && !file.includes('.map')) {
+        jsFiles.push(`assets/${file}`);
+        console.log(`✅ SSG: Found JS: assets/${file}`);
+      }
+    }
+  });
   
   // Sort files for predictable loading order
   cssFiles.sort((a, b) => {
     // Prioritize main index files
-    if (a.includes('/assets/index-') && !b.includes('/assets/index-')) return -1;
-    if (!a.includes('/assets/index-') && b.includes('/assets/index-')) return 1;
+    if (a.includes('index-') && !b.includes('index-')) return -1;
+    if (!a.includes('index-') && b.includes('index-')) return 1;
     return a.localeCompare(b);
   });
   
   jsFiles.sort((a, b) => {
     // Main files first, then chunks
-    if (a.includes('/assets/index-') && !b.includes('/assets/index-')) return -1;
-    if (!a.includes('/assets/index-') && b.includes('/assets/index-')) return 1;
+    if (a.includes('index-') && !b.includes('index-')) return -1;
+    if (!a.includes('index-') && b.includes('index-')) return 1;
     if (a.includes('chunk-') && !b.includes('chunk-')) return 1;
     if (!a.includes('chunk-') && b.includes('chunk-')) return -1;
     return a.localeCompare(b);
@@ -118,8 +115,9 @@ export async function generateStaticFiles() {
         hasDescription: generatedContent.includes(`content="${seoData.description}"`),
         hasStructuredData: seoData.structuredData && Object.keys(seoData.structuredData).length > 0,
         hasFonts: generatedContent.includes('fonts.googleapis.com'),
-        hasCSSAssets: cssFiles.length === 0 || cssFiles.every(css => generatedContent.includes(`href="${css}"`)),
-        hasJSAssets: jsFiles.length === 0 || jsFiles.every(js => generatedContent.includes(`src="${js}"`))
+        hasRelativeCSS: cssFiles.length === 0 || cssFiles.every(css => generatedContent.includes(`href="./${css}"`)),
+        hasRelativeJS: jsFiles.length === 0 || jsFiles.every(js => generatedContent.includes(`src="./${js}"`)),
+        noAbsolutePaths: !generatedContent.includes('https://www.movingto.com/funds/assets/')
       };
       
       const validationResults = Object.entries(validationChecks)
@@ -127,6 +125,10 @@ export async function generateStaticFiles() {
         .join(', ');
       
       console.log(`   🔍 Validation: ${validationResults}`);
+      
+      if (!validationChecks.noAbsolutePaths) {
+        console.warn(`   ⚠️  Detected absolute paths in ${outputPath}`);
+      }
       
     } catch (error) {
       console.error(`❌ SSG: Failed to generate ${route.path}:`, error.message);
@@ -182,7 +184,9 @@ ${routes.map(route => {
     const pagePath = path.join(distDir, file);
     if (fs.existsSync(pagePath)) {
       const fileSize = fs.statSync(pagePath).size;
-      console.log(`   ✅ ${name}: ${file} (${Math.round(fileSize / 1024)}KB)`);
+      const content = fs.readFileSync(pagePath, 'utf8');
+      const hasRelativePaths = !content.includes('https://www.movingto.com/funds/assets/');
+      console.log(`   ${hasRelativePaths ? '✅' : '❌'} ${name}: ${file} (${Math.round(fileSize / 1024)}KB) - Relative paths: ${hasRelativePaths}`);
     } else {
       console.log(`   ❌ ${name}: ${file} MISSING`);
     }
