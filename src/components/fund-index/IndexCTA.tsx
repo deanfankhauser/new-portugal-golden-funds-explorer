@@ -56,7 +56,7 @@ const IndexCTA: React.FC = () => {
         <div className="pt-4 border-t border-blue-200">
           <h4 className="font-semibold text-gray-900 mb-2">Quick Links</h4>
           <div className="space-y-2 text-sm">
-            <Link to="/funds" className="block text-blue-600 hover:text-blue-800 flex items-center gap-1">
+            <Link to="/" className="block text-blue-600 hover:text-blue-800 flex items-center gap-1">
               <Home className="h-3 w-3" />
               Browse All Funds
             </Link>

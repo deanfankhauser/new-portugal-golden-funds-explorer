@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -16,7 +15,7 @@ const EmptyComparison = () => {
           and click the "Compare" button to add them to your comparison list.
         </p>
         <Button
-          onClick={() => navigate('/funds')}
+          onClick={() => navigate('/')}
           className="bg-[#EF4444] hover:bg-[#EF4444]/90 text-white"
         >
           Browse Funds
