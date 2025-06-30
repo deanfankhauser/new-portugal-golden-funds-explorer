@@ -36,13 +36,23 @@ export class SSRRenderer {
 
     console.log(`🔥 SSR: Generated SEO data for ${route.path}:`, {
       title: seoData.title,
-      description: seoData.description,
+      description: seoData.description.substring(0, 100) + '...',
       pageType: route.pageType
     });
 
     // Load all components
     const components = await loadComponents();
-    const FallbackComponent = () => React.createElement('div', null, 'Loading...');
+    const FallbackComponent = () => React.createElement('div', { className: 'p-8 text-center' }, 'Page Loading...');
+
+    // Create a proper fallback for missing components
+    const getComponent = (componentName: string) => {
+      const component = components[componentName];
+      if (!component) {
+        console.warn(`🔥 SSR: Component ${componentName} not available, using fallback`);
+        return FallbackComponent;
+      }
+      return component;
+    };
 
     const AppRouter = () => React.createElement(
       QueryClientProvider,
@@ -65,24 +75,31 @@ export class SSRRenderer {
                 React.createElement(
                   Routes,
                   null,
-                  React.createElement(Route, { path: '/', element: React.createElement(components.Index || FallbackComponent) }),
-                  React.createElement(Route, { path: '/funds/index', element: React.createElement(components.FundIndex || FallbackComponent) }),
-                  React.createElement(Route, { path: '/funds/:id', element: React.createElement(components.FundDetails || FallbackComponent) }),
-                  React.createElement(Route, { path: '/tags', element: React.createElement(components.TagsHub || FallbackComponent) }),
-                  React.createElement(Route, { path: '/tags/:tag', element: React.createElement(components.TagPage || FallbackComponent) }),
-                  React.createElement(Route, { path: '/categories', element: React.createElement(components.CategoriesHub || FallbackComponent) }),
-                  React.createElement(Route, { path: '/categories/:category', element: React.createElement(components.CategoryPage || FallbackComponent) }),
-                  React.createElement(Route, { path: '/managers', element: React.createElement(components.ManagersHub || FallbackComponent) }),
-                  React.createElement(Route, { path: '/manager/:name', element: React.createElement(components.FundManager || FallbackComponent) }),
-                  React.createElement(Route, { path: '/about', element: React.createElement(components.About || FallbackComponent) }),
-                  React.createElement(Route, { path: '/disclaimer', element: React.createElement(components.Disclaimer || FallbackComponent) }),
-                  React.createElement(Route, { path: '/privacy', element: React.createElement(components.Privacy || FallbackComponent) }),
-                  React.createElement(Route, { path: '/compare', element: React.createElement(components.ComparisonPage || FallbackComponent) }),
-                  React.createElement(Route, { path: '/comparisons', element: React.createElement(components.ComparisonsHub || FallbackComponent) }),
-                  React.createElement(Route, { path: '/faqs', element: React.createElement(components.FAQs || FallbackComponent) }),
-                  React.createElement(Route, { path: '/roi-calculator', element: React.createElement(components.ROICalculator || FallbackComponent) }),
-                  React.createElement(Route, { path: '/fund-quiz', element: React.createElement(components.FundQuiz || FallbackComponent) }),
-                  React.createElement(Route, { path: '/:potentialFundId', element: React.createElement(components.FundDetails || FallbackComponent) })
+                  // Main routes
+                  React.createElement(Route, { path: '/', element: React.createElement(getComponent('Index')) }),
+                  React.createElement(Route, { path: '/funds/index', element: React.createElement(getComponent('FundIndex')) }),
+                  React.createElement(Route, { path: '/funds/:id', element: React.createElement(getComponent('FundDetails')) }),
+                  
+                  // Hub pages
+                  React.createElement(Route, { path: '/tags', element: React.createElement(getComponent('TagsHub')) }),
+                  React.createElement(Route, { path: '/tags/:tag', element: React.createElement(getComponent('TagPage')) }),
+                  React.createElement(Route, { path: '/categories', element: React.createElement(getComponent('CategoriesHub')) }),
+                  React.createElement(Route, { path: '/categories/:category', element: React.createElement(getComponent('CategoryPage')) }),
+                  React.createElement(Route, { path: '/managers', element: React.createElement(getComponent('ManagersHub')) }),
+                  React.createElement(Route, { path: '/manager/:name', element: React.createElement(getComponent('FundManager')) }),
+                  
+                  // Static pages
+                  React.createElement(Route, { path: '/about', element: React.createElement(getComponent('About')) }),
+                  React.createElement(Route, { path: '/disclaimer', element: React.createElement(getComponent('Disclaimer')) }),
+                  React.createElement(Route, { path: '/privacy', element: React.createElement(getComponent('Privacy')) }),
+                  React.createElement(Route, { path: '/compare', element: React.createElement(getComponent('ComparisonPage')) }),
+                  React.createElement(Route, { path: '/comparisons', element: React.createElement(getComponent('ComparisonsHub')) }),
+                  React.createElement(Route, { path: '/faqs', element: React.createElement(getComponent('FAQs')) }),
+                  React.createElement(Route, { path: '/roi-calculator', element: React.createElement(getComponent('ROICalculator')) }),
+                  React.createElement(Route, { path: '/fund-quiz', element: React.createElement(getComponent('FundQuiz')) }),
+                  
+                  // Direct fund routes (e.g., /horizon-fund)
+                  React.createElement(Route, { path: '/:potentialFundId', element: React.createElement(getComponent('FundDetails')) })
                 )
               )
             )
@@ -91,11 +108,12 @@ export class SSRRenderer {
       )
     );
 
+    // Clear any previous helmet data
     Helmet.rewind();
     
     try {
       const html = renderToString(React.createElement(AppRouter));
-      console.log(`🔥 SSR: Successfully rendered HTML for ${route.path}, length: ${html.length}`);
+      console.log(`🔥 SSR: Successfully rendered HTML for ${route.path}, length: ${html.length} chars`);
       
       const helmet = Helmet.rewind();
 
@@ -111,20 +129,16 @@ export class SSRRenderer {
         }
       };
 
-      console.log(`🔥 SSR: Final SEO data for ${route.path}:`, {
-        title: finalSeoData.title,
-        description: finalSeoData.description,
-        url: finalSeoData.url
-      });
+      console.log(`🔥 SSR: Final SEO data for ${route.path} - Title: "${finalSeoData.title}"`);
 
       return { html, seoData: finalSeoData };
     } catch (error) {
       console.error(`🔥 SSR: Error rendering route ${route.path}:`, error);
       return { 
-        html: '<div>Error rendering page</div>', 
+        html: '<div class="p-8 text-center text-red-600">Error rendering page. Please try again later.</div>', 
         seoData: {
           title: 'Error - Portugal Golden Visa Investment Funds | Movingto',
-          description: 'An error occurred while loading this page.',
+          description: 'An error occurred while loading this page. Please try again later.',
           url: `https://movingto.com/funds${route.path}`,
           structuredData: {}
         }

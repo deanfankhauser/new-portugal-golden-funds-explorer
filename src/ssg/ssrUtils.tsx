@@ -8,19 +8,8 @@ export class SSRUtils {
     return SSRRenderer.renderRoute(route);
   }
 
-  static generateMetaTags(seoData: any): string {
-    // Generate basic meta tags from SEO data
-    return `
-      <title>${seoData.title}</title>
-      <meta name="description" content="${seoData.description}" />
-      <meta property="og:title" content="${seoData.title}" />
-      <meta property="og:description" content="${seoData.description}" />
-      <meta property="og:url" content="${seoData.url}" />
-    `;
-  }
-
   static generateHTMLTemplate(content: string, seoData: any, cssFiles?: string[], jsFiles?: string[]): string {
-    return createHTMLTemplate(content, seoData, cssFiles, jsFiles);
+    return createHTMLTemplate(content, seoData, cssFiles || [], jsFiles || []);
   }
 }
 
