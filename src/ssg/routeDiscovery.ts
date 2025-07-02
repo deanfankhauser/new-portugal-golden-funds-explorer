@@ -96,8 +96,10 @@ export class RouteDiscovery {
     const baseUrl = 'https://movingto.com/funds';
     
     const urls = routes.map(route => {
+      // Build correct URL without duplication
+      const url = route.path === '/' ? baseUrl : `${baseUrl}${route.path}`;
       return `  <url>
-    <loc>${baseUrl}${route.path}</loc>
+    <loc>${url}</loc>
     <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
