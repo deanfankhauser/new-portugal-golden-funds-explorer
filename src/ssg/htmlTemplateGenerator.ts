@@ -13,6 +13,15 @@ export function generateHTMLTemplate(
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3ML90T25MY"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-3ML90T25MY');
+  </script>
+  
   <!-- Critical SEO Meta Tags -->
   <title>${seoData.title}</title>
   <meta name="description" content="${seoData.description}" />
@@ -41,6 +50,7 @@ export function generateHTMLTemplate(
   <!-- Critical Resource Preconnects -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://www.googletagmanager.com">
   
   <!-- Google Fonts - Load immediately -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
