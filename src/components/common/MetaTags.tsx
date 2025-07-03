@@ -95,10 +95,6 @@ const MetaTags: React.FC<MetaTagsProps> = ({ seoData }) => {
         </script>
       )}
       
-      {/* Preload Critical Resources */}
-      <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" />
-      <link rel="preload" href={defaultImage} as="image" />
-      
       {/* DNS Prefetch for External Resources */}
       <link rel="dns-prefetch" href="//fonts.googleapis.com" />
       <link rel="dns-prefetch" href="//pbs.twimg.com" />
