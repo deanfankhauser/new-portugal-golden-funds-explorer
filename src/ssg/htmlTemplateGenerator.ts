@@ -52,7 +52,7 @@ export function generateHTMLTemplate(
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://www.googletagmanager.com">
   
-  <!-- Google Fonts - Load immediately instead of preload -->
+  <!-- Google Fonts - Load immediately -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Favicon -->
@@ -112,12 +112,12 @@ export function generateHTMLTemplate(
 <body>
   <div id="root">${appHtml}</div>
   
-  <!-- Built JavaScript Files -->
+  <!-- Built JavaScript Files - Load without preload to avoid warnings -->
   ${jsFiles.map(js => `  <script type="module" src="./assets/${js}"></script>`).join('\n')}
   
   <!-- Analytics placeholder for future implementation -->
   <script>
-    // Basic page load tracking
+    // Basic page load tracking - avoid CORS issues by not making external requests
     console.log('SSG Page loaded:', {
       title: document.title,
       url: window.location.href,
