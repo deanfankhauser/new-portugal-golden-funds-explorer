@@ -9,6 +9,14 @@
     <priority>1.0</priority>
   </url>
 
+  <!-- Fund Index page - Fixed to avoid double /funds -->
+  <url>
+    <loc>https://movingto.com/funds/index</loc>
+    <lastmod>2025-06-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
   <!-- Hub Pages -->
   <url>
     <loc>https://movingto.com/funds/categories</loc>
@@ -81,65 +89,65 @@
     <priority>0.6</priority>
   </url>
 
-  <!-- Fund Detail Pages -->
+  <!-- Fund Detail Pages - Fixed to use direct fund ID URLs -->
   <url>
-    <loc>https://movingto.com/funds/funds/3cc-golden-income</loc>
+    <loc>https://movingto.com/funds/3cc-golden-income</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://movingto.com/funds/funds/growth-blue-fund</loc>
+    <loc>https://movingto.com/funds/growth-blue-fund</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://movingto.com/funds/funds/horizon-fund</loc>
+    <loc>https://movingto.com/funds/horizon-fund</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://movingto.com/funds/funds/lince-growth-fund</loc>
+    <loc>https://movingto.com/funds/lince-growth-fund</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://movingto.com/funds/funds/lince-yield-fund</loc>
+    <loc>https://movingto.com/funds/lince-yield-fund</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://movingto.com/funds/funds/optimize-golden-opportunities</loc>
+    <loc>https://movingto.com/funds/optimize-golden-opportunities</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://movingto.com/funds/funds/portugal-investment-1</loc>
+    <loc>https://movingto.com/funds/portugal-investment-1</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://movingto.com/funds/funds/solar-future-fund</loc>
+    <loc>https://movingto.com/funds/solar-future-fund</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://movingto.com/funds/funds/steady-growth-investment</loc>
+    <loc>https://movingto.com/funds/steady-growth-investment</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -331,56 +339,56 @@
 
   <!-- Manager Pages -->
   <url>
-    <loc>https://movingto.com/funds/manager/Optimize%20Investment%20Partners</loc>
+    <loc>https://movingto.com/funds/manager/optimize-investment-partners</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://movingto.com/funds/manager/Lince%20Capital%20Partners</loc>
+    <loc>https://movingto.com/funds/manager/lince-capital-partners</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://movingto.com/funds/manager/3C%20Capital%20Partners</loc>
+    <loc>https://movingto.com/funds/manager/3c-capital-partners</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://movingto.com/funds/manager/Horizon%20Capital%20Management</loc>
+    <loc>https://movingto.com/funds/manager/horizon-capital-management</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://movingto.com/funds/manager/Blue%20Eagle%20Management</loc>
+    <loc>https://movingto.com/funds/manager/blue-eagle-management</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://movingto.com/funds/manager/SolarTech%20Capital</loc>
+    <loc>https://movingto.com/funds/manager/solartech-capital</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://movingto.com/funds/manager/Steady%20Capital%20Management</loc>
+    <loc>https://movingto.com/funds/manager/steady-capital-management</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://movingto.com/funds/manager/Golden%20Vista%20Investments</loc>
+    <loc>https://movingto.com/funds/manager/golden-vista-investments</loc>
     <lastmod>2025-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
