@@ -35,7 +35,7 @@ export function generateHTMLTemplate(
   <meta name="twitter:site" content="@movingtoio" />
   <meta name="twitter:title" content="${seoData.title}" />
   <meta name="twitter:description" content="${seoData.description}" />
-  <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/1763893053666768/DnlafcQV_400x400.jpg" />
+  <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
   <link rel="canonical" href="${seoData.url}" />
   
   <!-- Enhanced Meta Tags -->
@@ -115,9 +115,9 @@ export function generateHTMLTemplate(
   <!-- Built JavaScript Files - Load without preload to avoid warnings -->
   ${jsFiles.map(js => `  <script type="module" src="./assets/${js}"></script>`).join('\n')}
   
-  <!-- Simple page load tracking -->
+  <!-- Analytics placeholder for future implementation -->
   <script>
-    // Basic page load tracking - no external requests to avoid CORS/blocking issues
+    // Basic page load tracking - avoid CORS issues by not making external requests
     console.log('SSG Page loaded:', {
       title: document.title,
       url: window.location.href,
