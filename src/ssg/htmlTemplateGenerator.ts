@@ -13,6 +13,15 @@ export function generateHTMLTemplate(
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3ML90T25MY"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-3ML90T25MY');
+  </script>
+  
   <!-- Critical SEO Meta Tags -->
   <title>${seoData.title}</title>
   <meta name="description" content="${seoData.description}" />
@@ -26,7 +35,7 @@ export function generateHTMLTemplate(
   <meta name="twitter:site" content="@movingtoio" />
   <meta name="twitter:title" content="${seoData.title}" />
   <meta name="twitter:description" content="${seoData.description}" />
-  <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
+  <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/1763893053666764864/DnlafcQV_400x400.jpg" />
   <link rel="canonical" href="${seoData.url}" />
   
   <!-- Enhanced Meta Tags -->
