@@ -112,12 +112,12 @@ export function generateHTMLTemplate(
 <body>
   <div id="root">${appHtml}</div>
   
-  <!-- Built JavaScript Files - Load without preload to avoid warnings -->
+  <!-- Built JavaScript Files -->
   ${jsFiles.map(js => `  <script type="module" src="./assets/${js}"></script>`).join('\n')}
   
   <!-- Analytics placeholder for future implementation -->
   <script>
-    // Basic page load tracking - avoid CORS issues by not making external requests
+    // Basic page load tracking
     console.log('SSG Page loaded:', {
       title: document.title,
       url: window.location.href,

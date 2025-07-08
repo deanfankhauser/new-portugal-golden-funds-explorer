@@ -163,7 +163,7 @@ export async function generateStaticFiles() {
     }
   }
 
-  // Generate enhanced sitemap
+  // Generate enhanced sitemap with correct www subdomain
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${routes.map(route => {
@@ -174,7 +174,7 @@ ${routes.map(route => {
   else if (['categories', 'tags', 'managers'].includes(route.pageType)) priority = '0.7';
   
   return `  <url>
-    <loc>https://movingto.com/funds${route.path}</loc>
+    <loc>https://www.movingto.com/funds${route.path}</loc>
     <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>${priority}</priority>
@@ -183,7 +183,7 @@ ${routes.map(route => {
 </urlset>`;
 
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap);
-  console.log('✅ SSG: Sitemap generated with priority optimization');
+  console.log('✅ SSG: Sitemap generated with correct www subdomain');
   
   // Final report
   console.log('\n🎉 SSG: Static site generation completed!');

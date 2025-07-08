@@ -29,7 +29,7 @@ export class ManagerPageSchemaGenerator {
       'publisher': {
         '@type': 'Organization',
         'name': 'Movingto',
-        'url': URL_CONFIG.BASE_URL
+        'url': 'https://www.movingto.com'
       },
       'dateModified': new Date().toISOString(),
       'mainEntity': {
@@ -75,7 +75,7 @@ export class ManagerPageSchemaGenerator {
             '@type': 'ListItem',
             'position': 1,
             'name': 'Home',
-            'item': URL_CONFIG.BASE_URL
+            'item': 'https://www.movingto.com/funds'
           },
           {
             '@type': 'ListItem',
@@ -113,7 +113,7 @@ export class ManagerPageSchemaGenerator {
             '@type': 'ListItem',
             'position': 1,
             'name': 'Home',
-            'item': URL_CONFIG.BASE_URL
+            'item': 'https://www.movingto.com/funds'
           },
           {
             '@type': 'ListItem',
