@@ -25,7 +25,15 @@ export class SSRRenderer {
       },
     });
 
-    // Get SEO data for this route
+    // Get SEO data for this route with detailed logging
+    console.log(`🔥 SSR: Requesting SEO data with params:`, {
+      pageType: route.pageType,
+      fundName: route.params?.fundName,
+      managerName: route.params?.managerName,
+      categoryName: route.params?.categoryName,
+      tagName: route.params?.tagName,
+    });
+
     const seoData = SEODataService.getSEOData({
       pageType: route.pageType as any,
       fundName: route.params?.fundName,
@@ -34,10 +42,23 @@ export class SSRRenderer {
       tagName: route.params?.tagName,
     });
 
-    console.log(`🔥 SSR: Generated SEO data for ${route.path}:`, {
+    // Validate SEO data completeness
+    const seoValidation = {
+      hasTitle: !!seoData.title,
+      hasDescription: !!seoData.description,
+      hasUrl: !!seoData.url,
+      hasStructuredData: !!seoData.structuredData && Object.keys(seoData.structuredData).length > 0,
+      titleLength: seoData.title?.length || 0,
+      descriptionLength: seoData.description?.length || 0
+    };
+
+    console.log(`🔥 SSR: SEO data validation for ${route.path}:`, seoValidation);
+    console.log(`🔥 SSR: Generated SEO data:`, {
       title: seoData.title,
       description: seoData.description.substring(0, 100) + '...',
-      pageType: route.pageType
+      url: seoData.url,
+      pageType: route.pageType,
+      structuredDataKeys: seoData.structuredData ? Object.keys(seoData.structuredData) : []
     });
 
     // Load all components
@@ -117,10 +138,12 @@ export class SSRRenderer {
       
       const helmet = Helmet.rewind();
 
+      // Ensure we have complete SEO data
       const finalSeoData = {
-        ...seoData,
-        title: seoData.title,
-        description: seoData.description,
+        title: seoData.title || 'Portugal Golden Visa Investment Funds | Eligible Investments 2025',
+        description: seoData.description || 'Compare and discover the best Golden Visa-eligible investment funds in Portugal.',
+        url: seoData.url || `https://www.movingto.com/funds${route.path}`,
+        structuredData: seoData.structuredData || {},
         helmetData: {
           title: helmet.title.toString(),
           meta: helmet.meta.toString(),
@@ -129,7 +152,12 @@ export class SSRRenderer {
         }
       };
 
-      console.log(`🔥 SSR: Final SEO data for ${route.path} - Title: "${finalSeoData.title}"`);
+      console.log(`🔥 SSR: Final SEO data for ${route.path}:`, {
+        title: finalSeoData.title,
+        url: finalSeoData.url,
+        hasStructuredData: Object.keys(finalSeoData.structuredData).length > 0,
+        structuredDataKeys: Object.keys(finalSeoData.structuredData)
+      });
 
       return { html, seoData: finalSeoData };
     } catch (error) {
@@ -139,7 +167,7 @@ export class SSRRenderer {
         seoData: {
           title: 'Error - Portugal Golden Visa Investment Funds | Movingto',
           description: 'An error occurred while loading this page. Please try again later.',
-          url: `https://movingto.com/funds${route.path}`,
+          url: `https://www.movingto.com/funds${route.path}`,
           structuredData: {}
         }
       };

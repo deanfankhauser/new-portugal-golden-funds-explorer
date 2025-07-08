@@ -7,6 +7,19 @@ export function generateHTMLTemplate(
   cssFiles: string[] = [], 
   jsFiles: string[] = []
 ): string {
+  // Ensure all SEO data has fallbacks
+  const title = seoData.title || 'Portugal Golden Visa Investment Funds | Eligible Investments 2025';
+  const description = seoData.description || 'Compare and discover the best Golden Visa-eligible investment funds in Portugal. Expert analysis, comprehensive data, and personalized recommendations.';
+  const url = seoData.url || 'https://www.movingto.com/funds';
+  const structuredData = seoData.structuredData || {};
+
+  console.log('🔥 HTMLTemplate: Generating with SEO data:', {
+    title: title.substring(0, 50) + '...',
+    description: description.substring(0, 50) + '...',
+    url,
+    hasStructuredData: Object.keys(structuredData).length > 0
+  });
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,20 +36,20 @@ export function generateHTMLTemplate(
   </script>
   
   <!-- Critical SEO Meta Tags -->
-  <title>${seoData.title}</title>
-  <meta name="description" content="${seoData.description}" />
-  <meta property="og:title" content="${seoData.title}" />
-  <meta property="og:description" content="${seoData.description}" />
-  <meta property="og:url" content="${seoData.url}" />
+  <title>${title}</title>
+  <meta name="description" content="${description}" />
+  <meta property="og:title" content="${title}" />
+  <meta property="og:description" content="${description}" />
+  <meta property="og:url" content="${url}" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Movingto - Portugal Golden Visa Funds" />
   <meta property="og:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@movingtoio" />
-  <meta name="twitter:title" content="${seoData.title}" />
-  <meta name="twitter:description" content="${seoData.description}" />
+  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:description" content="${description}" />
   <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
-  <link rel="canonical" href="${seoData.url}" />
+  <link rel="canonical" href="${url}" />
   
   <!-- Enhanced Meta Tags -->
   <meta name="keywords" content="Portugal Golden Visa, investment funds, Portuguese residency, Golden Visa funds 2025, fund comparison, investment migration" />
@@ -45,7 +58,7 @@ export function generateHTMLTemplate(
   <meta name="theme-color" content="#EF4444" />
   
   <!-- Structured Data -->
-  ${seoData.structuredData ? `<script type="application/ld+json">${JSON.stringify(seoData.structuredData)}</script>` : ''}
+  ${Object.keys(structuredData).length > 0 ? `<script type="application/ld+json">${JSON.stringify(structuredData, null, 2)}</script>` : ''}
   
   <!-- Critical Resource Preconnects -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
