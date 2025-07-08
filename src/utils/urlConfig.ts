@@ -1,39 +1,11 @@
 
-import { managerToSlug } from '../lib/utils';
-
-// Centralized URL configuration for the application
 export const URL_CONFIG = {
-  BASE_URL: 'https://movingto.com/funds',
-  DOMAIN: 'movingto.com',
+  BASE_URL: 'https://www.movingto.com/funds',
+  SITE_URL: 'https://www.movingto.com',
   
-  // Helper function to build full URLs
-  buildUrl: (path: string = '') => {
-    const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-    return `${URL_CONFIG.BASE_URL}${cleanPath ? `/${cleanPath}` : ''}`;
-  },
-  
-  // Helper function to build fund detail URLs
-  buildFundUrl: (fundId: string) => {
-    return `${URL_CONFIG.BASE_URL}/${fundId}`;
-  },
-  
-  // Helper function to build tag URLs
-  buildTagUrl: (tag: string) => {
-    return `${URL_CONFIG.BASE_URL}/tags/${tag}`;
-  },
-  
-  // Helper function to build category URLs
-  buildCategoryUrl: (category: string) => {
-    return `${URL_CONFIG.BASE_URL}/categories/${category}`;
-  },
-  
-  // Helper function to build manager URLs with SEO-friendly slugs
-  buildManagerUrl: (managerName: string) => {
-    return `${URL_CONFIG.BASE_URL}/manager/${managerToSlug(managerName)}`;
-  },
-  
-  // Helper function to build comparison URLs
-  buildComparisonUrl: (slug: string) => {
-    return `${URL_CONFIG.BASE_URL}/compare/${slug}`;
-  }
+  buildUrl: (path: string) => `https://www.movingto.com/funds${path.startsWith('/') ? path : `/${path}`}`,
+  buildFundUrl: (fundId: string) => `https://www.movingto.com/funds/${fundId}`,
+  buildManagerUrl: (managerName: string) => `https://www.movingto.com/funds/manager/${encodeURIComponent(managerName.toLowerCase().replace(/\s+/g, '-'))}`,
+  buildCategoryUrl: (categoryName: string) => `https://www.movingto.com/funds/categories/${encodeURIComponent(categoryName.toLowerCase())}`,
+  buildTagUrl: (tagName: string) => `https://www.movingto.com/funds/tags/${encodeURIComponent(tagName.toLowerCase().replace(/\s+/g, '-'))}`
 };
