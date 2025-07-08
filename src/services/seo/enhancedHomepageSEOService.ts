@@ -1,12 +1,14 @@
+
 import { SEOData } from '../../types/seo';
 import { BaseSEOService } from './baseSEOService';
 import { getAllCategories } from '../../data/services/categories-service';
 import { getAllFundManagers } from '../../data/services/managers-service';
 import { fundsData } from '../../data/mock/funds';
+import { URL_CONFIG } from '../../utils/urlConfig';
 
 export class EnhancedHomepageSEOService extends BaseSEOService {
   static getEnhancedHomepageSEO(): SEOData {
-    const baseUrl = this.getContextualBaseUrl();
+    const baseUrl = URL_CONFIG.BASE_URL; // This ensures we always use the correct URL with www
     const categories = getAllCategories();
     const managers = getAllFundManagers();
     const totalFunds = fundsData.length;
