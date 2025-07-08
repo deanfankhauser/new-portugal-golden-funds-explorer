@@ -20,6 +20,12 @@ export function generateHTMLTemplate(
     hasStructuredData: Object.keys(structuredData).length > 0
   });
 
+  // Escape quotes in meta content to prevent HTML parsing issues
+  const escapeHtml = (text: string) => text.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  
+  const escapedTitle = escapeHtml(title);
+  const escapedDescription = escapeHtml(description);
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,18 +42,18 @@ export function generateHTMLTemplate(
   </script>
   
   <!-- Critical SEO Meta Tags -->
-  <title>${title}</title>
-  <meta name="description" content="${description}" />
-  <meta property="og:title" content="${title}" />
-  <meta property="og:description" content="${description}" />
+  <title>${escapedTitle}</title>
+  <meta name="description" content="${escapedDescription}" />
+  <meta property="og:title" content="${escapedTitle}" />
+  <meta property="og:description" content="${escapedDescription}" />
   <meta property="og:url" content="${url}" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Movingto - Portugal Golden Visa Funds" />
   <meta property="og:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@movingtoio" />
-  <meta name="twitter:title" content="${title}" />
-  <meta name="twitter:description" content="${description}" />
+  <meta name="twitter:title" content="${escapedTitle}" />
+  <meta name="twitter:description" content="${escapedDescription}" />
   <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
   <link rel="canonical" href="${url}" />
   
