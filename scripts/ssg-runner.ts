@@ -142,7 +142,10 @@ export async function generateStaticFiles() {
         hasFonts: generatedContent.includes('fonts.googleapis.com'),
         hasRelativeCSS: cssFiles.length === 0 || cssFiles.every(css => generatedContent.includes(`href="./assets/${css}"`)),
         hasRelativeJS: jsFiles.length === 0 || jsFiles.every(js => generatedContent.includes(`src="./assets/${js}"`)),
-        noAbsolutePaths: !generatedContent.includes('https://www.movingto.com/funds/assets/')
+        noAbsolutePaths: !generatedContent.includes('https://www.movingto.com/funds/assets/'),
+        hasCorrectCanonical: generatedContent.includes(`href="${seoData.url}"`),
+        hasCorrectOgUrl: generatedContent.includes(`content="${seoData.url}"`),
+        hasWwwSubdomain: seoData.url.includes('https://www.movingto.com/funds')
       };
       
       const validationResults = Object.entries(validationChecks)
@@ -151,10 +154,13 @@ export async function generateStaticFiles() {
       
       console.log(`   🔍 Validation: ${validationResults}`);
       
-      if (!validationChecks.hasRelativeCSS || !validationChecks.hasRelativeJS) {
-        console.warn(`   ⚠️  Asset path issues in ${outputPath}`);
-        console.warn(`   Expected CSS files: ${cssFiles.join(', ')}`);
-        console.warn(`   Expected JS files: ${jsFiles.join(', ')}`);
+      if (!validationChecks.hasWwwSubdomain) {
+        console.error(`   ❌ URL missing www subdomain: ${seoData.url}`);
+      }
+      
+      if (!validationChecks.hasCorrectCanonical || !validationChecks.hasCorrectOgUrl) {
+        console.error(`   ❌ Canonical or OG URL issues in ${outputPath}`);
+        console.error(`   Expected URL: ${seoData.url}`);
       }
       
     } catch (error) {
@@ -200,7 +206,7 @@ ${routes.map(route => {
   // Verify critical pages and their asset references
   const criticalPages = [
     { file: 'index.html', name: 'Homepage' },
-    { file: 'funds/index/index.html', name: 'Fund Index' },
+    { file: 'index/index.html', name: 'Fund Index' },
     { file: 'about/index.html', name: 'About Page' }
   ];
   
@@ -210,13 +216,20 @@ ${routes.map(route => {
     if (fs.existsSync(pagePath)) {
       const fileSize = fs.statSync(pagePath).size;
       const content = fs.readFileSync(pagePath, 'utf8');
-      const hasRelativePaths = !content.includes('https://www.movingto.com/funds/assets/');
-      const hasCorrectAssets = cssFiles.every(css => content.includes(`href="./assets/${css}"`)) &&
-                               jsFiles.every(js => content.includes(`src="./assets/${js}"`));
-      console.log(`   ${hasRelativePaths && hasCorrectAssets ? '✅' : '❌'} ${name}: ${file} (${Math.round(fileSize / 1024)}KB)`);
+      const hasWwwSubdomain = content.includes('https://www.movingto.com/funds');
+      const hasCorrectCanonical = content.includes('rel="canonical" href="https://www.movingto.com/funds');
+      const hasCorrectOgUrl = content.includes('property="og:url" content="https://www.movingto.com/funds');
       
-      if (!hasCorrectAssets) {
-        console.log(`      Missing assets in ${name}`);
+      console.log(`   ${hasWwwSubdomain && hasCorrectCanonical && hasCorrectOgUrl ? '✅' : '❌'} ${name}: ${file} (${Math.round(fileSize / 1024)}KB)`);
+      
+      if (!hasWwwSubdomain) {
+        console.log(`      Missing www subdomain in ${name}`);
+      }
+      if (!hasCorrectCanonical) {
+        console.log(`      Incorrect canonical URL in ${name}`);
+      }
+      if (!hasCorrectOgUrl) {
+        console.log(`      Incorrect OG URL in ${name}`);
       }
     } else {
       console.log(`   ❌ ${name}: ${file} MISSING`);

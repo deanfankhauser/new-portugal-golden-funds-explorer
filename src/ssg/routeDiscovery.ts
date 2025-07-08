@@ -1,3 +1,4 @@
+
 import { fundsData } from '../data/mock/funds';
 import { getAllFundManagers } from '../data/services/managers-service';
 import { getAllCategories } from '../data/services/categories-service';
@@ -84,7 +85,7 @@ export class RouteDiscovery {
 
   static generateSitemap(): string {
     const routes = this.getAllStaticRoutes();
-    const baseUrl = 'https://movingto.com/funds';
+    const baseUrl = 'https://www.movingto.com/funds';
     
     const urls = routes.map(route => {
       // Build correct URL without duplication
