@@ -24,7 +24,7 @@ export function generateHTMLTemplate(
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3ML90T25MY"></script>
@@ -56,6 +56,9 @@ export function generateHTMLTemplate(
   <meta name="author" content="Dean Fankhauser, CEO - Movingto" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="theme-color" content="#EF4444" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="format-detection" content="telephone=no" />
   
   <!-- Structured Data -->
   ${Object.keys(structuredData).length > 0 ? `<script type="application/ld+json">${JSON.stringify(structuredData, null, 2)}</script>` : ''}
@@ -73,7 +76,7 @@ export function generateHTMLTemplate(
   
   <!-- Critical CSS Inline for Performance -->
   <style>
-    /* Critical CSS to prevent FOUC */
+    /* Critical CSS to prevent FOUC and ensure proper rendering */
     * {
       box-sizing: border-box;
     }
@@ -85,11 +88,15 @@ export function generateHTMLTemplate(
       line-height: 1.6;
       color: #1f2937;
       background-color: #ffffff;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: "rlig" 1, "calt" 1;
     }
     
     /* Ensure loading state is properly styled */
     #root {
       min-height: 100vh;
+      width: 100%;
     }
     
     /* Basic button styling to prevent layout shift */
@@ -102,6 +109,7 @@ export function generateHTMLTemplate(
     h1, h2, h3, h4, h5, h6 {
       margin: 0;
       font-weight: 600;
+      text-rendering: optimizeLegibility;
     }
     
     p {
@@ -117,6 +125,30 @@ export function generateHTMLTemplate(
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
     }
+    
+    /* Ensure proper mobile viewport handling */
+    @media (max-width: 768px) {
+      body {
+        font-size: 16px; /* Prevent zoom on iOS */
+      }
+    }
+    
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      body {
+        background-color: #ffffff;
+        color: #000000;
+      }
+    }
+    
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
   
   <!-- Built CSS Files -->
@@ -128,13 +160,31 @@ export function generateHTMLTemplate(
   <!-- Built JavaScript Files -->
   ${jsFiles.map(js => `  <script type="module" src="./assets/${js}"></script>`).join('\n')}
   
-  <!-- Analytics placeholder for future implementation -->
+  <!-- Analytics and performance tracking -->
   <script>
     // Basic page load tracking
     console.log('SSG Page loaded:', {
       title: document.title,
       url: window.location.href,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      viewport: {
+        width: window.innerWidth,
+        height: window.innerHeight
+      }
+    });
+    
+    // Performance monitoring
+    window.addEventListener('load', function() {
+      if ('performance' in window) {
+        const perfData = performance.getEntriesByType('navigation')[0];
+        console.log('Page performance:', {
+          loadTime: perfData.loadEventEnd - perfData.loadEventStart,
+          domContentLoaded: perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart,
+          firstPaint: performance.getEntriesByName('first-paint')[0]?.startTime || 'N/A',
+          firstContentfulPaint: performance.getEntriesByName('first-contentful-paint')[0]?.startTime || 'N/A'
+        });
+      }
     });
   </script>
 </body>
