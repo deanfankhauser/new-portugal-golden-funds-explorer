@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -44,15 +43,15 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
       <div className="bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white p-4 rounded-lg shadow-lg">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-3">
-            <Crown className="h-5 w-5" />
+            <Crown className="h-5 w-5 text-white" />
             <div>
-              <p className="font-semibold">Get Expert Fund Advisory</p>
-              <p className="text-sm opacity-90">Personal consultation with our Golden Visa specialists</p>
+              <p className="font-semibold text-white">Get Expert Fund Advisory</p>
+              <p className="text-sm text-white/90">Personal consultation with our Golden Visa specialists</p>
             </div>
           </div>
           <Button 
             variant="outline"
-            className="bg-white text-[#EF4444] border-white hover:bg-gray-100 hover:text-[#EF4444]"
+            className="bg-white text-[#EF4444] border-white hover:bg-gray-50 hover:text-[#EF4444] font-medium"
             onClick={handleCTAClick}
           >
             Start Now
