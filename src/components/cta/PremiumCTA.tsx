@@ -41,7 +41,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
   if (variant === 'banner') {
     return (
       <div className="bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white p-4 rounded-lg shadow-lg">
-        <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="flex items-center justify-between flex-wrap gap-4 text-left">
           <div className="flex items-center gap-3">
             <Crown className="h-5 w-5 text-white" />
             <div>
