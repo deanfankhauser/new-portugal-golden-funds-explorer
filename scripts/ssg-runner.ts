@@ -59,6 +59,36 @@ function findBuiltAssets(distDir: string): { cssFiles: string[], jsFiles: string
   return { cssFiles, jsFiles };
 }
 
+function validateAssetPaths(distDir: string, cssFiles: string[], jsFiles: string[]): { validCss: string[], validJs: string[] } {
+  const validCss: string[] = [];
+  const validJs: string[] = [];
+  
+  console.log('🔍 SSG: Validating asset paths...');
+  
+  cssFiles.forEach(css => {
+    const assetPath = path.join(distDir, 'assets', css);
+    if (fs.existsSync(assetPath)) {
+      validCss.push(css);
+      console.log(`✅ SSG: Valid CSS: ${css}`);
+    } else {
+      console.warn(`❌ SSG: Missing CSS: ${css}`);
+    }
+  });
+  
+  jsFiles.forEach(js => {
+    const assetPath = path.join(distDir, 'assets', js);
+    if (fs.existsSync(assetPath)) {
+      validJs.push(js);
+      console.log(`✅ SSG: Valid JS: ${js}`);
+    } else {
+      console.warn(`❌ SSG: Missing JS: ${js}`);
+    }
+  });
+  
+  console.log(`📊 SSG: Validation complete - Valid CSS: ${validCss.length}, Valid JS: ${validJs.length}`);
+  return { validCss, validJs };
+}
+
 export async function generateStaticFiles() {
   console.log('🎨 SSG: Starting static site generation...');
   
@@ -70,13 +100,14 @@ export async function generateStaticFiles() {
   }
 
   const { cssFiles, jsFiles } = findBuiltAssets(distDir);
+  const { validCss, validJs } = validateAssetPaths(distDir, cssFiles, jsFiles);
   
-  if (cssFiles.length === 0) {
-    console.warn('⚠️  SSG: No CSS files found. Styles may not load correctly.');
+  if (validCss.length === 0) {
+    console.warn('⚠️  SSG: No valid CSS files found. Styles may not load correctly.');
   }
   
-  if (jsFiles.length === 0) {
-    console.warn('⚠️  SSG: No JS files found. Interactivity may not work.');
+  if (validJs.length === 0) {
+    console.warn('⚠️  SSG: No valid JS files found. Interactivity may not work.');
   }
 
   const routes = getAllStaticRoutes();
@@ -91,7 +122,7 @@ export async function generateStaticFiles() {
       console.log(`🔨 SSG: Processing ${route.path} (${route.pageType})`);
       
       const { html, seoData } = await renderRoute(route);
-      const fullHTML = generateHTMLTemplate(html, seoData, cssFiles, jsFiles);
+      const fullHTML = generateHTMLTemplate(html, seoData, validCss, validJs);
       
       // Determine output path
       let outputPath: string;
@@ -103,26 +134,6 @@ export async function generateStaticFiles() {
           fs.mkdirSync(routeDir, { recursive: true });
         }
         outputPath = path.join(routeDir, 'index.html');
-      }
-      
-      // Verify assets exist before writing HTML
-      const missingAssets: string[] = [];
-      cssFiles.forEach(css => {
-        const assetPath = path.join(distDir, 'assets', css);
-        if (!fs.existsSync(assetPath)) {
-          missingAssets.push(`CSS: assets/${css}`);
-        }
-      });
-      
-      jsFiles.forEach(js => {
-        const assetPath = path.join(distDir, 'assets', js);
-        if (!fs.existsSync(assetPath)) {
-          missingAssets.push(`JS: assets/${js}`);
-        }
-      });
-      
-      if (missingAssets.length > 0) {
-        console.warn(`⚠️  SSG: Missing assets for ${route.path}:`, missingAssets);
       }
       
       fs.writeFileSync(outputPath, fullHTML);
@@ -140,8 +151,8 @@ export async function generateStaticFiles() {
         hasDescription: generatedContent.includes(`content="${seoData.description}"`),
         hasStructuredData: seoData.structuredData && Object.keys(seoData.structuredData).length > 0,
         hasFonts: generatedContent.includes('fonts.googleapis.com'),
-        hasRelativeCSS: cssFiles.length === 0 || cssFiles.every(css => generatedContent.includes(`href="./assets/${css}"`)),
-        hasRelativeJS: jsFiles.length === 0 || jsFiles.every(js => generatedContent.includes(`src="./assets/${js}"`)),
+        hasRelativeCSS: validCss.length === 0 || validCss.every(css => generatedContent.includes(`href="./assets/${css}"`)),
+        hasRelativeJS: validJs.length === 0 || validJs.every(js => generatedContent.includes(`src="./assets/${js}"`)),
         noAbsolutePaths: !generatedContent.includes('https://www.movingto.com/funds/assets/'),
         hasCorrectCanonical: generatedContent.includes(`href="${seoData.url}"`),
         hasCorrectOgUrl: generatedContent.includes(`content="${seoData.url}"`),
@@ -195,8 +206,8 @@ ${routes.map(route => {
   console.log('\n🎉 SSG: Static site generation completed!');
   console.log('📊 Generation Summary:');
   console.log(`   ✅ Successfully generated: ${successCount}/${routes.length} pages`);
-  console.log(`   📁 CSS assets linked: ${cssFiles.length}`);
-  console.log(`   📁 JS assets linked: ${jsFiles.length}`);
+  console.log(`   📁 CSS assets linked: ${validCss.length}`);
+  console.log(`   📁 JS assets linked: ${validJs.length}`);
   console.log(`   🗺️  Sitemap generated with ${routes.length} URLs`);
   
   if (failedRoutes.length > 0) {

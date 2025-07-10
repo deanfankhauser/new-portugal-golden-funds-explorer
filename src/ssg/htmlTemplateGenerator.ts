@@ -17,7 +17,20 @@ export function generateHTMLTemplate(
     title: title.substring(0, 50) + '...',
     description: description.substring(0, 50) + '...',
     url,
-    hasStructuredData: Object.keys(structuredData).length > 0
+    hasStructuredData: Object.keys(structuredData).length > 0,
+    cssFiles: cssFiles.length,
+    jsFiles: jsFiles.length
+  });
+
+  // Validate that all referenced assets exist
+  const validatedCssFiles = cssFiles.filter(css => {
+    console.log(`🔥 HTMLTemplate: Including CSS: ${css}`);
+    return true; // Files are already validated in ssg-runner
+  });
+
+  const validatedJsFiles = jsFiles.filter(js => {
+    console.log(`🔥 HTMLTemplate: Including JS: ${js}`);
+    return true; // Files are already validated in ssg-runner
   });
 
   return `<!DOCTYPE html>
@@ -38,7 +51,7 @@ export function generateHTMLTemplate(
   <!-- Critical SEO Meta Tags -->
   <title>${title}</title>
   <meta name="description" content="${description}" />
-  <meta property="og:title" content="${title}" />
+  <meta property="og:title" content="${title}" />  
   <meta property="og:description" content="${description}" />
   <meta property="og:url" content="${url}" />
   <meta property="og:type" content="website" />
@@ -152,13 +165,13 @@ export function generateHTMLTemplate(
   </style>
   
   <!-- Built CSS Files -->
-  ${cssFiles.map(css => `  <link rel="stylesheet" href="./assets/${css}" />`).join('\n')}
+  ${validatedCssFiles.map(css => `  <link rel="stylesheet" href="./assets/${css}" />`).join('\n')}
 </head>
 <body>
   <div id="root">${appHtml}</div>
   
   <!-- Built JavaScript Files -->
-  ${jsFiles.map(js => `  <script type="module" src="./assets/${js}"></script>`).join('\n')}
+  ${validatedJsFiles.map(js => `  <script type="module" src="./assets/${js}"></script>`).join('\n')}
   
   <!-- Analytics and performance tracking -->
   <script>
@@ -184,6 +197,14 @@ export function generateHTMLTemplate(
           firstPaint: performance.getEntriesByName('first-paint')[0]?.startTime || 'N/A',
           firstContentfulPaint: performance.getEntriesByName('first-contentful-paint')[0]?.startTime || 'N/A'
         });
+      }
+    });
+    
+    // Handle missing JavaScript chunks gracefully
+    window.addEventListener('error', function(e) {
+      if (e.filename && e.filename.includes('.js')) {
+        console.warn('JavaScript chunk failed to load:', e.filename);
+        // Optionally reload page or show fallback
       }
     });
   </script>
