@@ -46,7 +46,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
             <Crown className="h-5 w-5 text-white" />
             <div>
               <p className="font-semibold text-white">Get Expert Fund Advisory</p>
-              <p className="text-sm text-white/90">Personal consultation with our Golden Visa specialists</p>
+              <p className="text-sm text-white opacity-90">Personal consultation with our Golden Visa specialists</p>
             </div>
           </div>
           <Button 
