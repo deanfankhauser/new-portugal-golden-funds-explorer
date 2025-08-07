@@ -2,29 +2,15 @@
 User-agent: *
 Allow: /
 
-# Important paths for movingto.com/funds
-Allow: /funds/
-Allow: /funds/funds/
-Allow: /funds/tags/
-Allow: /funds/categories/
-Allow: /funds/managers/
+# Fund pages and listings
+Allow: /*
 
-# Explicitly specify important listing pages
-Allow: /funds/funds/*
-Allow: /funds/tags
-Allow: /funds/tags/*
-Allow: /funds/categories
-Allow: /funds/categories/*
-Allow: /funds/managers
-Allow: /funds/managers/*
-Allow: /funds/manager/*
-Allow: /funds/about
-Allow: /funds/disclaimer
-Allow: /funds/privacy
-Allow: /funds/compare
-Allow: /funds/comparisons
-Allow: /funds/faqs
-Allow: /funds/roi-calculator
-Allow: /funds/fund-quiz
-
+# Sitemap
 Sitemap: https://movingto.com/funds/sitemap.xml
+
+# Crawl-delay for specific bots
+User-agent: Googlebot
+Crawl-delay: 1
+
+User-agent: Bingbot
+Crawl-delay: 1

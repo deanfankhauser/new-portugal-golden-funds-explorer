@@ -6,17 +6,13 @@ import { EnhancedHomepageSEOService } from './enhancedHomepageSEOService';
 export class FundPageSEOService extends BaseSEOService {
   
   static getHomepageSEO(): SEOData {
-    console.log('🔥 FundPageSEOService: Generating enhanced homepage SEO');
     return EnhancedHomepageSEOService.getEnhancedHomepageSEO();
   }
 
   static getFundPageSEO(fundName: string): SEOData {
-    console.log('🔥 FundPageSEOService: Generating fund page SEO for:', fundName);
-    
     const fund = fundsData.find(f => f.name === fundName);
     
     if (!fund) {
-      console.error('🔥 FundPageSEOService: Fund not found:', fundName);
       return this.getHomepageSEO();
     }
 
@@ -179,13 +175,16 @@ export class FundPageSEOService extends BaseSEOService {
     };
 
     const optimizedTitle = `${fund.name} | ${fund.category} Golden Visa Fund - €${fund.minimumInvestment.toLocaleString()} Min Investment`;
-    const optimizedDescription = `${fund.name} Golden Visa fund analysis: ${fund.category} investment managed by ${fund.managerName}. Min: €${fund.minimumInvestment.toLocaleString()}, Fees: ${fund.managementFee}%/${fund.performanceFee}%, Target return: ${fund.returnTarget} with premium metrics for MovingTo clients. Compare features & apply today.`;
+    const optimizedDescription = `${fund.name} Golden Visa fund analysis: ${fund.category} investment managed by ${fund.managerName}. Min: €${fund.minimumInvestment.toLocaleString()}, Fees: ${fund.managementFee}%/${fund.performanceFee}%, Target return: ${fund.returnTarget}.`;
 
-    console.log('🔥 FundPageSEOService: Generated fund SEO:', { title: optimizedTitle, url: fundUrl });
+    // Ensure description length is optimal for SEO
+    const truncatedDescription = optimizedDescription.length > 155 
+      ? optimizedDescription.substring(0, 152) + '...' 
+      : optimizedDescription;
 
     return {
       title: optimizedTitle,
-      description: optimizedDescription,
+      description: truncatedDescription,
       url: fundUrl,
       structuredData
     };

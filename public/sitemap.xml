@@ -4,7 +4,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://movingto.com/funds</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -12,7 +12,7 @@
   <!-- Fund Index page - Fixed to avoid double /funds -->
   <url>
     <loc>https://movingto.com/funds/index</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -20,28 +20,28 @@
   <!-- Hub Pages -->
   <url>
     <loc>https://movingto.com/funds/categories</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/managers</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/comparisons</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -49,42 +49,42 @@
   <!-- Static Pages -->
   <url>
     <loc>https://movingto.com/funds/about</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/disclaimer</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/privacy</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/faqs</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/roi-calculator</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/fund-quiz</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -92,63 +92,63 @@
   <!-- Fund Detail Pages - Fixed to use direct fund ID URLs -->
   <url>
     <loc>https://movingto.com/funds/3cc-golden-income</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/growth-blue-fund</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/horizon-fund</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/lince-growth-fund</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/lince-yield-fund</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/optimize-golden-opportunities</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/portugal-investment-1</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/solar-future-fund</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/steady-growth-investment</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -156,28 +156,28 @@
   <!-- Category Pages -->
   <url>
     <loc>https://movingto.com/funds/categories/equity-funds</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/categories/real-estate-funds</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/categories/renewable-energy-funds</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/categories/infrastructure-funds</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -185,154 +185,154 @@
   <!-- Tag Pages -->
   <url>
     <loc>https://movingto.com/funds/tags/high-return</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/low-risk</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/medium-risk</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/high-risk</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/minimum-investment-500k</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/minimum-investment-1m</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/short-term-lockup</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/medium-term-lockup</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/long-term-lockup</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/low-fees</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/moderate-fees</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/high-fees</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/small-fund</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/medium-fund</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/large-fund</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/individual-investor</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/institutional-investor</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/high-net-worth</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/sustainable</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/diversified</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/technology-focused</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/tags/growth-oriented</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -340,56 +340,56 @@
   <!-- Manager Pages -->
   <url>
     <loc>https://movingto.com/funds/manager/optimize-investment-partners</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/manager/lince-capital-partners</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/manager/3c-capital-partners</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/manager/horizon-capital-management</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/manager/blue-eagle-management</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/manager/solartech-capital</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/manager/steady-capital-management</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://movingto.com/funds/manager/golden-vista-investments</loc>
-    <lastmod>2025-06-06</lastmod>
+    <lastmod>2025-08-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
