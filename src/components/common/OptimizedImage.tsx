@@ -44,12 +44,15 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
     return () => observer.disconnect();
   }, [priority]);
 
-  const optimizedSrc = ImageOptimizationService.generateResponsiveImageUrl(src, {
+  const optimizedProps = ImageOptimizationService.getOptimizedImageProps(src, alt, {
     width,
     height,
     quality: 85,
-    format: 'webp'
+    format: 'webp',
+    lazy: !priority
   });
+  
+  const optimizedSrc = priority ? src : (optimizedProps['data-src'] || src);
 
   const handleLoad = () => {
     setIsLoaded(true);

@@ -1,9 +1,10 @@
 
-import { SEOService } from './seoService';
-import { PerformanceService } from './performanceService';
+import { EnhancedSEOService } from './enhancedSEOService';
+import { PerformanceMonitoringService } from './performanceMonitoringService';
+import { ImageOptimizationService } from './imageOptimizationService';
 import { Fund } from '../data/funds';
 
-export class AdvancedSEOService extends SEOService {
+export class AdvancedSEOService extends EnhancedSEOService {
   
   // Generate comprehensive Open Graph meta tags
   static generateOpenGraphTags(data: {
@@ -199,8 +200,17 @@ export class AdvancedSEOService extends SEOService {
     // Generate structured data
     this.generateStructuredData(config.type, config.data);
 
-    // Initialize base SEO and performance optimizations
-    this.initializeSEO(config.url);
-    PerformanceService.initializePerformanceOptimizations();
+    // Initialize enhanced SEO and performance optimizations
+    this.initializeEnhancedSEO({
+      url: config.url,
+      title: config.title,
+      description: config.description,
+      type: config.type,
+      image: config.image
+    });
+    
+    // Initialize performance monitoring and image optimization
+    PerformanceMonitoringService.initializeMonitoring();
+    ImageOptimizationService.initializeGlobalOptimization();
   }
 }

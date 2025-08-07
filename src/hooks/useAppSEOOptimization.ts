@@ -10,17 +10,12 @@ export const useAppSEOOptimization = () => {
     PerformanceMonitoringService.initializeMonitoring();
     
     // Initialize image optimization
-    ImageOptimizationService.initializeLazyLoading();
-    
-    // Preload critical images
-    const criticalImages = [
-      'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg'
-    ];
-    ImageOptimizationService.preloadCriticalImages(criticalImages);
+    ImageOptimizationService.initializeGlobalOptimization();
 
     return () => {
       // Cleanup on unmount
       PerformanceMonitoringService.cleanup();
+      ImageOptimizationService.cleanup();
     };
   }, []);
 
