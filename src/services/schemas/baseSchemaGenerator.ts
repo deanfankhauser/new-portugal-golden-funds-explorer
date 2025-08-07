@@ -32,7 +32,7 @@ export class BaseSchemaGenerator {
       '@type': 'Organization',
       'name': 'Movingto',
       'url': URL_CONFIG.BASE_URL,
-      'logo': 'https://pbs.twimg.com/profile_images/1763893053666768848/DnlafcQV_400x400.jpg',
+      'logo': 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg',
       'description': 'Leading platform for Golden Visa investment fund comparison and research',
       'founder': {
         '@type': 'Person',
