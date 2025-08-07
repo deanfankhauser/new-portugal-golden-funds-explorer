@@ -80,6 +80,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
         onLoad={handleLoad}
         onError={handleError}
         loading={priority ? 'eager' : 'lazy'}
+        data-optimized="true"
       />
     </div>
   );

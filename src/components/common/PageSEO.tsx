@@ -2,6 +2,8 @@
 import React, { useEffect } from 'react';
 import { PageSEOProps } from '../../types/seo';
 import { ConsolidatedSEOService } from '../../services/consolidatedSEOService';
+import { EnhancedSEOValidationService } from '../../services/enhancedSEOValidationService';
+import { PerformanceOptimizationService } from '../../services/performanceOptimizationService';
 import { SEOErrorBoundary } from './SEOErrorBoundary';
 
 interface PageSEOComponentProps extends PageSEOProps {
@@ -19,6 +21,7 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
 }) => {
   useEffect(() => {
     try {
+      // Apply SEO meta tags
       const seoData = ConsolidatedSEOService.getSEOData(pageType, {
         fundName,
         managerName,
@@ -28,6 +31,13 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
       });
 
       ConsolidatedSEOService.applyMetaTags(seoData);
+      
+      // Initialize performance optimizations
+      PerformanceOptimizationService.initializePerformanceOptimizations();
+      
+      // Auto-fix common SEO issues
+      EnhancedSEOValidationService.autoFixSEOIssues();
+      
     } catch (error) {
       // Silent error handling - no console logging
     }
