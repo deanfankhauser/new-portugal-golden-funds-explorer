@@ -75,10 +75,10 @@ const FundManagerFAQs: React.FC<FundManagerFAQsProps> = ({ fund }) => {
         <Accordion type="single" collapsible className="w-full">
           {faqs.map((faq, index) => (
             <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger className="text-left hover:no-underline">
+              <AccordionTrigger className="text-left hover:no-underline py-3 text-sm">
                 <span className="font-medium text-gray-900">{faq.question}</span>
               </AccordionTrigger>
-              <AccordionContent className="text-gray-700 leading-relaxed">
+              <AccordionContent className="text-sm text-gray-700 leading-relaxed">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>

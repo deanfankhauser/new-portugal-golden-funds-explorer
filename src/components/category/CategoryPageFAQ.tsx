@@ -52,10 +52,10 @@ const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categor
             value={`item-${index}`}
             className="bg-gray-50 rounded-lg border border-gray-200"
           >
-            <AccordionTrigger className="px-6 py-4 text-left hover:no-underline hover:bg-gray-100 rounded-t-lg">
+            <AccordionTrigger className="px-6 py-3 text-left hover:no-underline hover:bg-gray-100 rounded-t-lg text-sm">
               <span className="font-medium text-gray-900">{faq.question}</span>
             </AccordionTrigger>
-            <AccordionContent className="px-6 pb-4 text-gray-700 leading-relaxed">
+            <AccordionContent className="px-6 pb-4 text-sm text-gray-700 leading-relaxed">
               {faq.answer}
             </AccordionContent>
           </AccordionItem>
