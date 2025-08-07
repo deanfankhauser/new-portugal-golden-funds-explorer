@@ -1,8 +1,8 @@
 
 import React, { useEffect } from 'react';
 import { PageSEOProps } from '../../types/seo';
-import { SEODataService } from '../../services/seoDataService';
-import { MetaTagManager } from '../../services/metaTagManager';
+import { ConsolidatedSEOService } from '../../services/consolidatedSEOService';
+import { SEOErrorBoundary } from './SEOErrorBoundary';
 
 interface PageSEOComponentProps extends PageSEOProps {
   children?: React.ReactNode;
@@ -19,9 +19,7 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
 }) => {
   useEffect(() => {
     try {
-      // Generate SEO data
-      const seoData = SEODataService.getSEOData({
-        pageType,
+      const seoData = ConsolidatedSEOService.getSEOData(pageType, {
         fundName,
         managerName,
         categoryName,
@@ -29,16 +27,17 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
         comparisonTitle
       });
 
-      // Apply SEO using consolidated manager
-      if (seoData) {
-        MetaTagManager.applySEO(seoData);
-      }
+      ConsolidatedSEOService.applyMetaTags(seoData);
     } catch (error) {
-      console.error('PageSEO: Error initializing SEO:', error);
+      // Silent error handling - no console logging
     }
   }, [pageType, fundName, managerName, categoryName, tagName, comparisonTitle]);
 
-  return <>{children}</>;
+  return (
+    <SEOErrorBoundary>
+      {children}
+    </SEOErrorBoundary>
+  );
 };
 
 export default PageSEO;
