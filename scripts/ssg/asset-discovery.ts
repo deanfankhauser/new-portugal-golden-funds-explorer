@@ -10,17 +10,13 @@ export function findBuiltAssets(distDir: string): AssetFiles {
   const cssFiles: string[] = [];
   const jsFiles: string[] = [];
   
-  console.log('🔍 SSG: Scanning for built assets in:', distDir);
-  
   const assetsDir = path.join(distDir, 'assets');
   
   if (!fs.existsSync(assetsDir)) {
-    console.warn(`🔍 SSG: Assets directory not found: ${assetsDir}`);
     return { cssFiles, jsFiles };
   }
   
   const files = fs.readdirSync(assetsDir);
-  console.log('🔍 SSG: Found files in assets directory:', files);
   
   files.forEach(file => {
     const fullPath = path.join(assetsDir, file);
@@ -28,10 +24,8 @@ export function findBuiltAssets(distDir: string): AssetFiles {
     if (fs.statSync(fullPath).isFile()) {
       if (file.endsWith('.css') && !file.includes('.map')) {
         cssFiles.push(file);
-        console.log(`✅ SSG: Found CSS: ${file}`);
       } else if (file.endsWith('.js') && !file.includes('.map')) {
         jsFiles.push(file);
-        console.log(`✅ SSG: Found JS: ${file}`);
       }
     }
   });
@@ -53,9 +47,7 @@ export function findBuiltAssets(distDir: string): AssetFiles {
     return a.localeCompare(b);
   });
   
-  console.log(`📊 SSG: Asset summary - CSS: ${cssFiles.length}, JS: ${jsFiles.length}`);
-  console.log('📊 SSG: CSS files:', cssFiles);
-  console.log('📊 SSG: JS files:', jsFiles);
+  // Asset summary: CSS: ${cssFiles.length}, JS: ${jsFiles.length}
   
   return { cssFiles, jsFiles };
 }
@@ -64,15 +56,10 @@ export function validateAssetPaths(distDir: string, cssFiles: string[], jsFiles:
   const validCss: string[] = [];
   const validJs: string[] = [];
   
-  console.log('🔍 SSG: Validating asset paths...');
-  
   cssFiles.forEach(css => {
     const assetPath = path.join(distDir, 'assets', css);
     if (fs.existsSync(assetPath)) {
       validCss.push(css);
-      console.log(`✅ SSG: Valid CSS: ${css}`);
-    } else {
-      console.warn(`❌ SSG: Missing CSS: ${css}`);
     }
   });
   
@@ -80,12 +67,7 @@ export function validateAssetPaths(distDir: string, cssFiles: string[], jsFiles:
     const assetPath = path.join(distDir, 'assets', js);
     if (fs.existsSync(assetPath)) {
       validJs.push(js);
-      console.log(`✅ SSG: Valid JS: ${js}`);
-    } else {
-      console.warn(`❌ SSG: Missing JS: ${js}`);
     }
   });
-  
-  console.log(`📊 SSG: Validation complete - Valid CSS: ${validCss.length}, Valid JS: ${validJs.length}`);
   return { validCss, validJs };
 }

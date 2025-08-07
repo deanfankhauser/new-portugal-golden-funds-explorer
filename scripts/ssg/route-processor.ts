@@ -17,8 +17,6 @@ export async function processRoute(
   validJs: string[]
 ): Promise<RouteProcessingResult> {
   try {
-    console.log(`🔨 SSG: Processing ${route.path} (${route.pageType})`);
-    
     const { html, seoData } = await renderRoute(route);
     const fullHTML = generateHTMLTemplate(html, seoData, validCss, validJs);
     
@@ -35,10 +33,6 @@ export async function processRoute(
     }
     
     fs.writeFileSync(outputPath, fullHTML);
-    
-    console.log(`✅ SSG: Generated ${outputPath}`);
-    console.log(`   📝 Title: ${seoData.title}`);
-    console.log(`   📄 Description: ${seoData.description.substring(0, 80)}...`);
     
     return { success: true, outputPath, seoData };
     

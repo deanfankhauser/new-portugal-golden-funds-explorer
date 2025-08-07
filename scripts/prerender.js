@@ -11,7 +11,7 @@ export async function prerenderRoutes() {
     fs.mkdirSync(distDir, { recursive: true });
   }
 
-  console.log('📄 Setting up basic static routing...');
+  // Setting up basic static routing
 
   try {
     // Create basic sitemap
@@ -26,7 +26,7 @@ export async function prerenderRoutes() {
 </urlset>`;
     
     fs.writeFileSync(path.join(distDir, 'sitemap.xml'), basicSitemap);
-    console.log('✅ Basic sitemap generated');
+    // Basic sitemap generated
 
     // Create route directories for better SEO
     const routes = ['funds', 'categories', 'tags', 'managers', 'about', 'compare'];
@@ -38,7 +38,7 @@ export async function prerenderRoutes() {
       }
     });
 
-    console.log('✅ Route directories created for SEO');
+    // Route directories created for SEO
     
   } catch (error) {
     console.warn('Pre-rendering encountered issues:', error.message);

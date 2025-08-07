@@ -144,11 +144,14 @@ export class PerformanceMonitoringService {
 
   // Report all collected metrics
   static reportMetrics(): void {
-    console.log('📊 Core Web Vitals Report:', this.metrics);
-    
-    // Evaluate performance
-    const evaluation = this.evaluatePerformance();
-    console.log('📈 Performance Evaluation:', evaluation);
+    // Only log in development environment
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📊 Core Web Vitals Report:', this.metrics);
+      
+      // Evaluate performance
+      const evaluation = this.evaluatePerformance();
+      console.log('📈 Performance Evaluation:', evaluation);
+    }
   }
 
   // Evaluate performance based on Core Web Vitals thresholds

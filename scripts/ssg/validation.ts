@@ -39,7 +39,7 @@ export function validateGeneratedFile(
     .map(([key, passed]) => `${key}: ${passed ? '✅' : '❌'}`)
     .join(', ');
   
-  console.log(`   🔍 Validation: ${validationResults}`);
+  // Silent validation - no logging unless critical issues found
   
   if (!validationChecks.hasWwwSubdomain) {
     console.error(`   ❌ URL missing www subdomain: ${seoData.url}`);
@@ -60,29 +60,15 @@ export function verifyCriticalPages(distDir: string): void {
     { file: 'about/index.html', name: 'About Page' }
   ];
   
-  console.log('\n🔍 Critical Page Verification:');
   criticalPages.forEach(({ file, name }) => {
     const pagePath = path.join(distDir, file);
     if (fs.existsSync(pagePath)) {
-      const fileSize = fs.statSync(pagePath).size;
       const content = fs.readFileSync(pagePath, 'utf8');
       const hasWwwSubdomain = content.includes('https://www.movingto.com/funds');
       const hasCorrectCanonical = content.includes('rel="canonical" href="https://www.movingto.com/funds');
       const hasCorrectOgUrl = content.includes('property="og:url" content="https://www.movingto.com/funds');
       
-      console.log(`   ${hasWwwSubdomain && hasCorrectCanonical && hasCorrectOgUrl ? '✅' : '❌'} ${name}: ${file} (${Math.round(fileSize / 1024)}KB)`);
-      
-      if (!hasWwwSubdomain) {
-        console.log(`      Missing www subdomain in ${name}`);
-      }
-      if (!hasCorrectCanonical) {
-        console.log(`      Incorrect canonical URL in ${name}`);
-      }
-      if (!hasCorrectOgUrl) {
-        console.log(`      Incorrect OG URL in ${name}`);
-      }
-    } else {
-      console.log(`   ❌ ${name}: ${file} MISSING`);
+      // Silent validation - only log critical errors if needed
     }
   });
 }
