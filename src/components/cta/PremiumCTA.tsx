@@ -21,7 +21,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
       `cta-${location}`
     );
     
-    console.log(`Premium CTA clicked from: ${location}`);
+    // Premium CTA clicked tracking
     window.open('https://www.movingto.com/contact/contact-movingto', '_blank');
   };
 

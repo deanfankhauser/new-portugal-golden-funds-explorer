@@ -8,7 +8,7 @@ import { Button } from '../ui/button';
 const IndexCTA: React.FC = () => {
   const handleDownloadReport = () => {
     // This would generate and download a PDF report
-    console.log('Downloading full index report...');
+    // Download report functionality
     // For now, just show an alert
     alert('PDF download feature coming soon! Contact us for a detailed report.');
   };

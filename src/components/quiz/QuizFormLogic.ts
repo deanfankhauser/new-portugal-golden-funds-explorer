@@ -68,7 +68,7 @@ export const useQuizFormLogic = ({ onSubmit }: QuizFormLogicProps) => {
           setHasUnsavedChanges(false);
         }
       } catch (error) {
-        console.log('Could not restore quiz progress');
+        // Could not restore quiz progress
       }
     }
   }, [form]);

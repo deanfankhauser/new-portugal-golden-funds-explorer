@@ -382,6 +382,6 @@ export class SEOValidationService {
 
   // Log SEO report to console
   static logSEOReport(): void {
-    console.log(this.generateSEOReport());
+    // SEO report generated and available
   }
 }

@@ -22,5 +22,5 @@ ${routes.map(route => {
 </urlset>`;
 
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap);
-  console.log('✅ SSG: Sitemap generated with correct www subdomain');
+  // Sitemap generated
 }

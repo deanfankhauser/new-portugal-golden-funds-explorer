@@ -79,7 +79,7 @@ export class PerformanceService {
       const lcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1];
-        console.log('LCP:', lastEntry.startTime);
+        // LCP measured: lastEntry.startTime
       });
       lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
 
@@ -87,7 +87,7 @@ export class PerformanceService {
       const fidObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         entries.forEach((entry: any) => {
-          console.log('FID:', entry.processingStart - entry.startTime);
+          // FID measured: entry.processingStart - entry.startTime
         });
       });
       fidObserver.observe({ entryTypes: ['first-input'] });
@@ -97,7 +97,7 @@ export class PerformanceService {
         const entries = list.getEntries();
         entries.forEach((entry: any) => {
           if (!entry.hadRecentInput) {
-            console.log('CLS:', entry.value);
+            // CLS measured: entry.value
           }
         });
       });

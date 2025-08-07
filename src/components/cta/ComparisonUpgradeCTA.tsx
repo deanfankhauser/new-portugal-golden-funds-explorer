@@ -6,7 +6,7 @@ import { BarChart3, ExternalLink, Star, TrendingUp } from 'lucide-react';
 
 const ComparisonUpgradeCTA: React.FC = () => {
   const handleUpgradeClick = () => {
-    console.log('Comparison upgrade CTA clicked');
+    // Comparison upgrade CTA clicked
     window.open('https://www.movingto.com/contact/contact-movingto', '_blank');
   };
 

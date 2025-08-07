@@ -14,7 +14,7 @@ export class PerformanceMonitoringService {
   // Initialize comprehensive performance monitoring
   static initializeMonitoring(): void {
     if (typeof window === 'undefined' || !('PerformanceObserver' in window)) {
-      console.log('Performance monitoring not available');
+      // Performance monitoring not available
       return;
     }
 
@@ -38,12 +38,12 @@ export class PerformanceMonitoringService {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1];
         this.metrics.LCP = lastEntry.startTime;
-        console.log('LCP (Largest Contentful Paint):', lastEntry.startTime + 'ms');
+        // LCP measured: lastEntry.startTime
       });
       observer.observe({ entryTypes: ['largest-contentful-paint'] });
       this.observers.push(observer);
     } catch (error) {
-      console.log('LCP monitoring not supported');
+      // LCP monitoring not supported
     }
   }
 
@@ -55,13 +55,13 @@ export class PerformanceMonitoringService {
         entries.forEach((entry: any) => {
           const fid = entry.processingStart - entry.startTime;
           this.metrics.FID = fid;
-          console.log('FID (First Input Delay):', fid + 'ms');
+          // FID measured: fid
         });
       });
       observer.observe({ entryTypes: ['first-input'] });
       this.observers.push(observer);
     } catch (error) {
-      console.log('FID monitoring not supported');
+      // FID monitoring not supported
     }
   }
 
@@ -77,12 +77,12 @@ export class PerformanceMonitoringService {
           }
         });
         this.metrics.CLS = clsValue;
-        console.log('CLS (Cumulative Layout Shift):', clsValue);
+        // CLS measured: clsValue
       });
       observer.observe({ entryTypes: ['layout-shift'] });
       this.observers.push(observer);
     } catch (error) {
-      console.log('CLS monitoring not supported');
+      // CLS monitoring not supported
     }
   }
 
@@ -94,14 +94,14 @@ export class PerformanceMonitoringService {
         entries.forEach((entry) => {
           if (entry.name === 'first-contentful-paint') {
             this.metrics.FCP = entry.startTime;
-            console.log('FCP (First Contentful Paint):', entry.startTime + 'ms');
+            // FCP measured: entry.startTime
           }
         });
       });
       observer.observe({ entryTypes: ['paint'] });
       this.observers.push(observer);
     } catch (error) {
-      console.log('FCP monitoring not supported');
+      // FCP monitoring not supported
     }
   }
 
@@ -113,14 +113,14 @@ export class PerformanceMonitoringService {
         entries.forEach((entry: any) => {
           if (entry.responseStart) {
             this.metrics.TTFB = entry.responseStart - entry.requestStart;
-            console.log('TTFB (Time to First Byte):', this.metrics.TTFB + 'ms');
+            // TTFB measured: this.metrics.TTFB
           }
         });
       });
       observer.observe({ entryTypes: ['navigation'] });
       this.observers.push(observer);
     } catch (error) {
-      console.log('TTFB monitoring not supported');
+      // TTFB monitoring not supported
     }
   }
 
@@ -138,7 +138,7 @@ export class PerformanceMonitoringService {
       observer.observe({ entryTypes: ['resource'] });
       this.observers.push(observer);
     } catch (error) {
-      console.log('Resource monitoring not supported');
+      // Resource monitoring not supported
     }
   }
 

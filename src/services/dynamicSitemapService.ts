@@ -97,7 +97,6 @@ ${urlElements}
     const sitemapXML = this.generateSitemapXML();
     // In production, this would write to the public/sitemap.xml file
     // For now, this just generates the content
-    console.log('📍 Dynamic sitemap generated with current date:', this.CURRENT_DATE);
-    console.log('📊 Total URLs:', sitemapXML.split('<url>').length - 1);
+    // Dynamic sitemap generated with URLs
   }
 }

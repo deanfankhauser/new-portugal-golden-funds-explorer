@@ -177,6 +177,6 @@ ${urlElements}
     const sitemapXML = this.generateSitemapXML();
     // In a real application, this would write to the public/sitemap.xml file
     // For now, we'll just return the XML content
-    console.log('Generated sitemap with', this.generateSitemapEntries().length, 'entries');
+    // Sitemap generated with entries
   }
 }

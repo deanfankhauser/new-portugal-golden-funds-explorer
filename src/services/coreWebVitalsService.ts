@@ -45,7 +45,7 @@ export class CoreWebVitalsService {
       this.reportMetrics();
     });
 
-    console.log('✅ Core Web Vitals monitoring initialized');
+    // Core Web Vitals monitoring initialized
   }
 
   // Measure Largest Contentful Paint
@@ -167,14 +167,7 @@ export class CoreWebVitalsService {
   private static reportMetrics(): void {
     const metrics = this.getMetrics();
     
-    console.group('📊 Core Web Vitals Report');
-    console.log('LCP (Largest Contentful Paint):', metrics.lcp ? `${metrics.lcp.toFixed(2)}ms` : 'Not measured');
-    console.log('FID (First Input Delay):', metrics.fid ? `${metrics.fid.toFixed(2)}ms` : 'Not measured');
-    console.log('CLS (Cumulative Layout Shift):', metrics.cls ? metrics.cls.toFixed(4) : 'Not measured');
-    console.log('INP (Interaction to Next Paint):', metrics.inp ? `${metrics.inp.toFixed(2)}ms` : 'Not measured');
-    console.log('FCP (First Contentful Paint):', metrics.fcp ? `${metrics.fcp.toFixed(2)}ms` : 'Not measured');
-    console.log('TTFB (Time to First Byte):', metrics.ttfb ? `${metrics.ttfb.toFixed(2)}ms` : 'Not measured');
-    console.groupEnd();
+    // Core Web Vitals metrics collected and available
 
     // Send to analytics (example implementation)
     this.sendToAnalytics(metrics);

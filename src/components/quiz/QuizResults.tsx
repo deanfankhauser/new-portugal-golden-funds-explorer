@@ -42,7 +42,7 @@ const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz,
       }
 
       const responseData = await response.json();
-      console.log('Thank you email sent successfully:', responseData);
+      // Thank you email sent successfully
       
       // Show success toast
       toast({
