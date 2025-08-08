@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function categoryToSlug(category: string): string {
-  console.log('🔥 categoryToSlug: Converting category:', category);
+  // Convert category to URL slug
   
   const slug = category
     .toLowerCase()
@@ -18,12 +18,12 @@ export function categoryToSlug(category: string): string {
     .replace(/--+/g, '--') // Normalize multiple dashes to double dashes
     .replace(/^-+|-+$/g, ''); // Remove leading and trailing dashes
   
-  console.log('🔥 categoryToSlug: Result:', slug);
+  // Return URL-safe slug
   return slug;
 }
 
 export function slugToCategory(slug: string): string {
-  console.log('🔥 slugToCategory: Converting slug:', slug);
+  // Convert URL slug back to category
   
   // Clean the slug first
   const cleanSlug = slug.replace(/^-+|-+$/g, '');
@@ -34,12 +34,12 @@ export function slugToCategory(slug: string): string {
     .replace(/-/g, ' ') // Convert single dashes to spaces
     .replace(/\b\w/g, l => l.toUpperCase()); // Capitalize first letter of each word
   
-  console.log('🔥 slugToCategory: Converted to:', converted);
+  // Return readable category name
   return converted;
 }
 
 export function tagToSlug(tag: string): string {
-  console.log('🔥 tagToSlug: Converting tag:', tag);
+  // Convert tag to URL slug
   
   // Handle special percentage cases first
   if (tag.includes('> 1.5% management')) {
@@ -61,24 +61,24 @@ export function tagToSlug(tag: string): string {
     .replace(/--+/g, '-') // Normalize multiple dashes
     .replace(/^-+|-+$/g, ''); // Remove leading and trailing dashes
   
-  console.log('🔥 tagToSlug: Result:', slug);
+  // Return URL-safe tag slug
   return slug;
 }
 
 export function slugToTag(slug: string): string {
-  console.log('🔥 slugToTag: Converting slug:', slug);
+  // Convert URL slug back to tag
   
   // Handle special management fee cases first
   if (slug === '15-management-fee' || slug === '-15-management-fee') {
-    console.log('🔥 slugToTag: Matched > 1.5% management fee pattern');
+    // Handle high management fee pattern
     return '> 1.5% management fee';
   }
   if (slug === '1-management-fee' || slug === '-1-management-fee') {
-    console.log('🔥 slugToTag: Matched < 1% management fee pattern');
+    // Handle low management fee pattern
     return '< 1% management fee';
   }
   if (slug === '1-1-5-management-fee' || slug === '-1-1-5-management-fee') {
-    console.log('🔥 slugToTag: Matched 1-1.5% management fee pattern');
+    // Handle medium management fee pattern
     return '1-1.5% management fee';
   }
   
@@ -90,7 +90,7 @@ export function slugToTag(slug: string): string {
     .replace(/-/g, ' ')
     .replace(/\b\w/g, l => l.toUpperCase());
   
-  console.log('🔥 slugToTag: Converted to:', converted);
+  // Return readable tag name
   return converted;
 }
 

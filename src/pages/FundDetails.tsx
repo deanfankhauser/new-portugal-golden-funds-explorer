@@ -18,50 +18,13 @@ const FundDetails = () => {
   const { addToRecentlyViewed } = useRecentlyViewed();
 
   useEffect(() => {
-    // Enhanced debugging for both route patterns
-    console.log('🚨 FundDetails: ROUTE DEBUGGING START 🚨');
-    console.log('🚨 FundDetails: URL params from useParams:', { id, potentialFundId, finalFundId: fundId });
-    console.log('🚨 FundDetails: Current location:', {
-      pathname: location.pathname,
-      search: location.search,
-      hash: location.hash,
-      fullUrl: window.location.href
-    });
-    console.log('🚨 FundDetails: Fund lookup result:', {
-      foundFund: !!fund,
-      fundName: fund?.name,
-      fundId: fund?.id
-    });
-    
-    // Check route pattern
-    const isDirectRoute = location.pathname.split('/').length === 2 && !location.pathname.startsWith('/funds/');
-    const isFundsRoute = location.pathname.startsWith('/funds/');
-    
-    console.log('🚨 FundDetails: Route pattern analysis:', {
-      pathname: location.pathname,
-      isDirectRoute,
-      isFundsRoute,
-      extractedId: fundId,
-      routeType: isDirectRoute ? 'direct' : 'funds'
-    });
-
     if (fund) {
       addToRecentlyViewed(fund);
-      console.log('🚨 FundDetails: ✅ Fund found, will render fund-specific content');
-    } else {
-      console.error('🚨 FundDetails: ❌ No fund found! This explains the default SEO');
-      console.error('🚨 FundDetails: Available fund IDs in system:', 
-        // Get all available fund IDs for debugging
-        Object.keys(require('../data/funds').getAllFunds().reduce((acc, f) => ({...acc, [f.id]: f.name}), {}))
-      );
     }
-
     window.scrollTo(0, 0);
-  }, [fund, addToRecentlyViewed, location, id, potentialFundId, fundId]);
+  }, [fund, addToRecentlyViewed]);
 
   if (!fund) {
-    console.error('🚨 FundDetails: Rendering 404 - Fund not found for ID:', fundId);
-    console.error('🚨 FundDetails: This is why you see default homepage SEO!');
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <PageSEO pageType="404" />
@@ -79,7 +42,7 @@ const FundDetails = () => {
     );
   }
 
-  console.log('🚨 FundDetails: ✅ Rendering fund page with correct SEO for:', fund.name);
+  // Render fund page
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">

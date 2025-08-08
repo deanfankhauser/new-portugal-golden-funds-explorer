@@ -108,13 +108,13 @@ const FundIndexFAQ: React.FC = () => {
               itemType="https://schema.org/Question"
             >
               <AccordionTrigger 
-                className="px-6 py-4 text-left hover:no-underline hover:bg-gray-50 rounded-t-lg font-medium"
+                className="px-6 py-3 text-left hover:no-underline hover:bg-gray-50 rounded-t-lg text-sm font-medium"
                 itemProp="name"
               >
                 <span className="text-gray-900">{faq.question}</span>
               </AccordionTrigger>
               <AccordionContent 
-                className="px-6 pb-4 text-gray-700 leading-relaxed"
+                className="px-6 pb-4 text-sm text-gray-700 leading-relaxed"
                 itemScope 
                 itemType="https://schema.org/Answer"
               >

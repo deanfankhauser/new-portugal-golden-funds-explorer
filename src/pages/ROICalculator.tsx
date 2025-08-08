@@ -35,7 +35,7 @@ const ROICalculator = () => {
   // Scroll to email gate when it appears
   useEffect(() => {
     if (showEmailGate && emailGateRef.current) {
-      console.log('Scrolling to email gate');
+      // Scrolling to email gate
       setTimeout(() => {
         emailGateRef.current?.scrollIntoView({ 
           behavior: 'smooth', 
@@ -48,7 +48,7 @@ const ROICalculator = () => {
   // Scroll to email confirmation when email is submitted
   useEffect(() => {
     if (emailSubmitted && emailConfirmationRef.current) {
-      console.log('Scrolling to email confirmation');
+      // Scrolling to email confirmation
       setTimeout(() => {
         emailConfirmationRef.current?.scrollIntoView({ 
           behavior: 'smooth', 
@@ -63,7 +63,7 @@ const ROICalculator = () => {
     totalReturn: number;
     annualizedReturn: number;
   }) => {
-    console.log('Results calculated, showing email gate');
+    // Results calculated, showing email gate
     setResults(calculatedResults);
     setShowEmailGate(true);
     setEmailSubmitted(false);
@@ -81,7 +81,7 @@ const ROICalculator = () => {
         timestamp: new Date().toISOString()
       };
 
-      console.log('Sending email data:', emailData);
+      // Sending email data
 
       // Send email to a backend service (you'll need to implement this endpoint)
       const response = await fetch('/api/send-roi-results', {
@@ -97,7 +97,7 @@ const ROICalculator = () => {
       }
 
       const responseData = await response.json();
-      console.log('Email sent successfully:', responseData);
+      // Email sent successfully
       
       // Show success message
       toast({

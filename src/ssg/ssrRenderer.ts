@@ -5,7 +5,7 @@ import { StaticRouter } from 'react-router-dom/server';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Routes, Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { SEODataService } from '../services/seoDataService';
+import { ConsolidatedSEOService } from '../services/consolidatedSEOService';
 import { StaticRoute } from './routeDiscovery';
 import { loadComponents, TooltipProvider } from './componentLoader';
 import { AuthProvider } from '../contexts/AuthContext';
@@ -34,8 +34,7 @@ export class SSRRenderer {
       tagName: route.params?.tagName,
     });
 
-    const seoData = SEODataService.getSEOData({
-      pageType: route.pageType as any,
+    const seoData = ConsolidatedSEOService.getSEOData(route.pageType as any, {
       fundName: route.params?.fundName,
       managerName: route.params?.managerName,
       categoryName: route.params?.categoryName,

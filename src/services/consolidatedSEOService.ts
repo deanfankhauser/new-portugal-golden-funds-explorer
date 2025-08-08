@@ -1,0 +1,520 @@
+import { SEOData } from '../types/seo';
+import { URL_CONFIG } from '../utils/urlConfig';
+import { funds } from '../data/funds';
+
+export class ConsolidatedSEOService {
+  private static readonly DEFAULT_IMAGE = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
+  private static readonly MAX_TITLE_LENGTH = 60;
+  private static readonly MAX_DESCRIPTION_LENGTH = 155;
+
+  // Clean up duplicate meta tags
+  static cleanup(): void {
+    // Remove duplicate viewports
+    const viewports = document.querySelectorAll('meta[name="viewport"]');
+    if (viewports.length > 1) {
+      for (let i = 1; i < viewports.length; i++) {
+        viewports[i].remove();
+      }
+    }
+
+    // Remove duplicate descriptions
+    const descriptions = document.querySelectorAll('meta[name="description"]');
+    if (descriptions.length > 1) {
+      for (let i = 1; i < descriptions.length; i++) {
+        descriptions[i].remove();
+      }
+    }
+
+    // Remove duplicate canonicals
+    const canonicals = document.querySelectorAll('link[rel="canonical"]');
+    if (canonicals.length > 1) {
+      for (let i = 1; i < canonicals.length; i++) {
+        canonicals[i].remove();
+      }
+    }
+
+    // Clean up overlapping structured data
+    const existingSchemas = document.querySelectorAll('script[type="application/ld+json"]');
+    existingSchemas.forEach(script => script.remove());
+  }
+
+  // Optimize title and description
+  static optimizeText(text: string, maxLength: number): string {
+    if (text.length <= maxLength) return text;
+    
+    const truncated = text.substring(0, maxLength - 3);
+    const lastSpace = truncated.lastIndexOf(' ');
+    return lastSpace > maxLength * 0.8 
+      ? truncated.substring(0, lastSpace) + '...'
+      : truncated + '...';
+  }
+
+  // Get SEO data for different page types
+  static getSEOData(pageType: string, params: any = {}): SEOData {
+    const baseUrl = URL_CONFIG.SITE_URL;
+    
+    switch (pageType) {
+      case 'homepage':
+        return {
+          title: 'Portugal Investment Funds | Compare & Analyze | Movingto',
+          description: this.optimizeText('Discover and compare Portugal investment funds. Comprehensive analysis, performance data, and expert insights to help you make informed investment decisions.', this.MAX_DESCRIPTION_LENGTH),
+          url: baseUrl,
+          structuredData: this.getHomepageStructuredData()
+        };
+
+      case 'fund':
+      case 'fund-details':
+        const fund = this.getFundByName(params.fundName);
+        if (!fund) return this.getSEOData('homepage');
+        
+        return {
+          title: this.optimizeText(`${fund.name} | Fund Analysis | Movingto`, this.MAX_TITLE_LENGTH),
+          description: this.optimizeText(`Comprehensive analysis of ${fund.name}. View performance, fees, risk profile, and investment strategy details.`, this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/funds/${fund.id}`,
+          structuredData: this.getFundStructuredData(fund)
+        };
+
+      case 'fund-index':
+        return {
+          title: this.optimizeText('Fund Index | All Portugal Investment Funds Database | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Complete database of Portugal investment funds. Filter by category, fees, minimum investment, and performance.', this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/funds/index`,
+          structuredData: this.getFundIndexStructuredData()
+        };
+
+      case 'category':
+        return {
+          title: this.optimizeText(`${params.categoryName} Funds | Portugal Investment Analysis | Movingto`, this.MAX_TITLE_LENGTH),
+          description: this.optimizeText(`Explore ${params.categoryName} investment funds in Portugal. Compare performance, fees, and risk profiles.`, this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/categories/${this.slugify(params.categoryName)}`,
+          structuredData: this.getCategoryStructuredData(params.categoryName)
+        };
+
+      case 'tag':
+        return {
+          title: this.optimizeText(`${params.tagName} Investment Funds | Portugal | Movingto`, this.MAX_TITLE_LENGTH),
+          description: this.optimizeText(`Find investment funds tagged with ${params.tagName}. Detailed analysis and comparison tools.`, this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/tags/${this.slugify(params.tagName)}`,
+          structuredData: this.getTagStructuredData(params.tagName)
+        };
+
+      case 'manager':
+        return {
+          title: this.optimizeText(`${params.managerName} | Fund Manager Profile | Movingto`, this.MAX_TITLE_LENGTH),
+          description: this.optimizeText(`Profile and funds managed by ${params.managerName}. Track record, investment philosophy, and fund performance.`, this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/managers/${this.slugify(params.managerName)}`,
+          structuredData: this.getManagerStructuredData(params.managerName)
+        };
+
+      case 'comparison':
+      case 'fund-comparison':
+        return {
+          title: this.optimizeText(`Fund Comparison | ${params.comparisonTitle || 'Investment Analysis'} | Movingto`, this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare investment funds side-by-side. Analyze performance, fees, risk profiles, and investment strategies.', this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/comparison`,
+          structuredData: this.getComparisonStructuredData()
+        };
+
+      case 'roi-calculator':
+        return {
+          title: this.optimizeText('ROI Calculator | Investment Returns Portugal | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Calculate potential returns on Portugal investments. Compare different funds and investment scenarios.', this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/roi-calculator`,
+          structuredData: this.getCalculatorStructuredData()
+        };
+
+      case 'fund-quiz':
+        return {
+          title: this.optimizeText('Fund Finder Quiz | Find Your Perfect Investment | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Take our quiz to find the perfect investment fund for your needs. Personalized recommendations.', this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/fund-quiz`,
+          structuredData: this.getQuizStructuredData()
+        };
+
+      case '404':
+        return {
+          title: this.optimizeText('Page Not Found | Portugal Investment Funds | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('The page you are looking for could not be found. Explore our investment funds.', this.MAX_DESCRIPTION_LENGTH),
+          url: baseUrl,
+          structuredData: this.getHomepageStructuredData()
+        };
+
+      case 'managers-hub':
+        return {
+          title: this.optimizeText('Fund Managers | Portugal Investment Professionals | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Directory of fund managers in Portugal. Find experienced investment professionals.', this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/managers`,
+          structuredData: this.getManagersHubStructuredData()
+        };
+
+      case 'categories-hub':
+        return {
+          title: this.optimizeText('Fund Categories | Investment Types Portugal | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Browse investment fund categories. Explore different investment types and strategies.', this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/categories`,
+          structuredData: this.getCategoriesHubStructuredData()
+        };
+
+      case 'tags-hub':
+        return {
+          title: this.optimizeText('Fund Tags | Investment Characteristics | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Explore investment funds by characteristics and tags. Find funds that match your criteria.', this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/tags`,
+          structuredData: this.getTagsHubStructuredData()
+        };
+
+      case 'comparisons-hub':
+        return {
+          title: this.optimizeText('Fund Comparisons | Investment Analysis Hub | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Hub for comparing investment funds. Access comparison tools and analysis.', this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/comparisons`,
+          structuredData: this.getComparisonsHubStructuredData()
+        };
+
+      case 'about':
+        return {
+          title: this.optimizeText('About | Portugal Investment Fund Analysis Platform | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Learn about our platform for analyzing Portugal investment funds. Expert analysis.', this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/about`,
+          structuredData: this.getAboutStructuredData()
+        };
+
+      case 'disclaimer':
+        return {
+          title: this.optimizeText('Disclaimer | Portugal Investment Information | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Important disclaimer regarding investment information. Please read our terms.', this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/disclaimer`,
+          structuredData: this.getDisclaimerStructuredData()
+        };
+
+      case 'faqs':
+        return {
+          title: this.optimizeText('FAQs | Portugal Investment Fund Questions | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Frequently asked questions about Portugal investment funds. Get answers.', this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/faqs`,
+          structuredData: this.getFAQStructuredData()
+        };
+
+      case 'privacy':
+        return {
+          title: this.optimizeText('Privacy Policy | Portugal Investment Fund Platform | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Privacy policy for our Portugal investment fund analysis platform.', this.MAX_DESCRIPTION_LENGTH),
+          url: `${baseUrl}/privacy`,
+          structuredData: this.getPrivacyStructuredData()
+        };
+
+      default:
+        return this.getSEOData('homepage');
+    }
+  }
+
+  // Set all meta tags and structured data
+  static applyMetaTags(seoData: SEOData): void {
+    try {
+      this.cleanup();
+      
+      // Basic meta tags
+      document.title = seoData.title;
+      this.setOrUpdateMeta('description', seoData.description);
+      this.setCanonical(seoData.url);
+      this.setRobots();
+      
+      // Social media tags
+      this.setOpenGraph(seoData);
+      this.setTwitterCard(seoData);
+      
+      // Structured data
+      if (seoData.structuredData) {
+        this.setStructuredData(seoData.structuredData);
+      }
+      
+      // Security headers
+      this.addSecurityHeaders();
+      
+    } catch (error) {
+      // Silent fallback - no console logging in production
+    }
+  }
+
+  // Helper methods
+  private static setOrUpdateMeta(name: string, content: string): void {
+    let meta = document.querySelector(`meta[name="${name}"]`);
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', name);
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute('content', content);
+  }
+
+  private static setCanonical(url: string): void {
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', url);
+  }
+
+  private static setRobots(): void {
+    this.setOrUpdateMeta('robots', 'index, follow, max-image-preview:large');
+  }
+
+  private static setOpenGraph(seoData: SEOData): void {
+    const ogTags = [
+      { property: 'og:title', content: seoData.title },
+      { property: 'og:description', content: seoData.description },
+      { property: 'og:url', content: seoData.url },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:image', content: this.DEFAULT_IMAGE },
+      { property: 'og:site_name', content: 'Movingto' },
+    ];
+
+    document.querySelectorAll('meta[property^="og:"]').forEach(tag => tag.remove());
+    
+    ogTags.forEach(tag => {
+      const meta = document.createElement('meta');
+      meta.setAttribute('property', tag.property);
+      meta.content = tag.content;
+      document.head.appendChild(meta);
+    });
+  }
+
+  private static setTwitterCard(seoData: SEOData): void {
+    const twitterTags = [
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:site', content: '@movingtoio' },
+      { name: 'twitter:title', content: seoData.title },
+      { name: 'twitter:description', content: seoData.description },
+      { name: 'twitter:image', content: this.DEFAULT_IMAGE },
+    ];
+
+    document.querySelectorAll('meta[name^="twitter:"]').forEach(tag => tag.remove());
+    
+    twitterTags.forEach(tag => {
+      const meta = document.createElement('meta');
+      meta.name = tag.name;
+      meta.content = tag.content;
+      document.head.appendChild(meta);
+    });
+  }
+
+  private static setStructuredData(structuredData: any): void {
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(structuredData, null, 2);
+    document.head.appendChild(script);
+  }
+
+  private static addSecurityHeaders(): void {
+    const securityMetas = [
+      { 'http-equiv': 'X-Content-Type-Options', content: 'nosniff' },
+      { 'http-equiv': 'X-XSS-Protection', content: '1; mode=block' },
+      { name: 'referrer', content: 'strict-origin-when-cross-origin' }
+    ];
+
+    securityMetas.forEach(meta => {
+      const identifier = meta['http-equiv'] || meta.name;
+      const existing = document.querySelector(`meta[${meta['http-equiv'] ? 'http-equiv' : 'name'}="${identifier}"]`);
+      if (!existing) {
+        const metaElement = document.createElement('meta');
+        if (meta['http-equiv']) {
+          metaElement.setAttribute('http-equiv', meta['http-equiv']);
+        } else {
+          metaElement.setAttribute('name', meta.name);
+        }
+        metaElement.content = meta.content;
+        document.head.appendChild(metaElement);
+      }
+    });
+  }
+
+  private static getFundByName(fundName: string): any {
+    return funds.find(fund => fund.name === fundName);
+  }
+
+  private static slugify(text: string): string {
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+  }
+
+  // Structured data generators
+  private static getHomepageStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      'name': 'Movingto - Portugal Investment Funds',
+      'url': URL_CONFIG.SITE_URL,
+      'description': 'Comprehensive analysis and comparison of Portugal investment funds',
+      'potentialAction': {
+        '@type': 'SearchAction',
+        'target': `${URL_CONFIG.SITE_URL}/search?q={search_term_string}`,
+        'query-input': 'required name=search_term_string'
+      }
+    };
+  }
+
+  private static getFundStructuredData(fund: any): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'FinancialProduct',
+      'name': fund.name,
+      'description': fund.description || `Investment fund managed by ${fund.manager}`,
+      'provider': {
+        '@type': 'Organization',
+        'name': fund.manager
+      },
+      'url': `${URL_CONFIG.SITE_URL}/funds/${fund.id}`
+    };
+  }
+
+  private static getCategoryStructuredData(categoryName: string): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'name': `${categoryName} Investment Funds`,
+      'description': `Collection of ${categoryName} investment funds in Portugal`,
+      'url': `${URL_CONFIG.SITE_URL}/categories/${this.slugify(categoryName)}`
+    };
+  }
+
+  private static getTagStructuredData(tagName: string): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'name': `${tagName} Investment Funds`,
+      'description': `Investment funds tagged with ${tagName}`,
+      'url': `${URL_CONFIG.SITE_URL}/tags/${this.slugify(tagName)}`
+    };
+  }
+
+  private static getManagerStructuredData(managerName: string): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      'name': managerName,
+      'jobTitle': 'Fund Manager',
+      'url': `${URL_CONFIG.SITE_URL}/managers/${this.slugify(managerName)}`
+    };
+  }
+
+  private static getComparisonStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'Investment Fund Comparison',
+      'description': 'Compare investment funds side-by-side',
+      'url': `${URL_CONFIG.SITE_URL}/comparison`
+    };
+  }
+
+  private static getFundIndexStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'name': 'Fund Index Database',
+      'description': 'Complete database of Portugal investment funds',
+      'url': `${URL_CONFIG.SITE_URL}/funds/index`
+    };
+  }
+
+  private static getCalculatorStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      'name': 'ROI Calculator',
+      'description': 'Calculate potential investment returns',
+      'url': `${URL_CONFIG.SITE_URL}/roi-calculator`
+    };
+  }
+
+  private static getQuizStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      'name': 'Fund Finder Quiz',
+      'description': 'Find the perfect investment fund',
+      'url': `${URL_CONFIG.SITE_URL}/fund-quiz`
+    };
+  }
+
+  private static getManagersHubStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'name': 'Fund Managers Directory',
+      'description': 'Directory of investment fund managers',
+      'url': `${URL_CONFIG.SITE_URL}/managers`
+    };
+  }
+
+  private static getCategoriesHubStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'name': 'Fund Categories',
+      'description': 'Browse investment fund categories',
+      'url': `${URL_CONFIG.SITE_URL}/categories`
+    };
+  }
+
+  private static getTagsHubStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'name': 'Fund Tags',
+      'description': 'Explore funds by characteristics',
+      'url': `${URL_CONFIG.SITE_URL}/tags`
+    };
+  }
+
+  private static getComparisonsHubStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'name': 'Fund Comparisons Hub',
+      'description': 'Hub for comparing investment funds',
+      'url': `${URL_CONFIG.SITE_URL}/comparisons`
+    };
+  }
+
+  private static getAboutStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'AboutPage',
+      'name': 'About Movingto',
+      'description': 'About our investment fund analysis platform',
+      'url': `${URL_CONFIG.SITE_URL}/about`
+    };
+  }
+
+  private static getDisclaimerStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'Disclaimer',
+      'description': 'Investment information disclaimer',
+      'url': `${URL_CONFIG.SITE_URL}/disclaimer`
+    };
+  }
+
+  private static getFAQStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'name': 'Frequently Asked Questions',
+      'description': 'Common questions about investment funds',
+      'url': `${URL_CONFIG.SITE_URL}/faqs`
+    };
+  }
+
+  private static getPrivacyStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'Privacy Policy',
+      'description': 'Privacy policy for our platform',
+      'url': `${URL_CONFIG.SITE_URL}/privacy`
+    };
+  }
+}

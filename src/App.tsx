@@ -47,7 +47,7 @@ const ScrollToTop = () => {
   const location = useLocation();
   
   useLayoutEffect(() => {
-    console.log('ScrollToTop triggered for:', location.pathname);
+    // Route changed, scroll to top
     
     // Disable browser scroll restoration completely
     if ('scrollRestoration' in history) {
@@ -119,9 +119,7 @@ const ScrollToTop = () => {
 const RouteDebugger = () => {
   const location = useLocation();
   
-  console.log('Current route:', location.pathname);
-  console.log('Current search:', location.search);
-  console.log('Current hash:', location.hash);
+  // App routing logic
   
   return null;
 };
@@ -134,29 +132,28 @@ const DirectFundRoute = () => {
   // Extract potential fund ID from pathname (remove leading slash)
   const potentialFundId = pathname.slice(1);
   
-  console.log('DirectFundRoute: Checking if', potentialFundId, 'is a valid fund ID');
+  // Check if this is a valid fund ID
   
   // Check if this path matches a fund ID
   const fund = fundsData.find(f => f.id === potentialFundId);
   
   if (fund) {
-    console.log('DirectFundRoute: Found fund', fund.name, 'for ID', potentialFundId);
+    // Valid fund found, redirect to fund details
     return <FundDetails />;
   }
   
-  console.log('DirectFundRoute: No fund found for ID', potentialFundId, 'showing 404');
+  // No fund found, show 404
   return <NotFound />;
 };
 
 // Import SEO and performance optimization hook
-import { useSEOOptimization } from './hooks/useSEOOptimization';
+// SEO optimization removed - using consolidated service
 import SEOProvider from './components/providers/SEOProvider';
 
 function App() {
-  // Initialize SEO and performance optimizations
-  useSEOOptimization();
+  // SEO optimization handled by consolidated service
 
-  console.log('App component mounting...');
+  // App initialization
   
   // Disable scroll restoration at app level
   useEffect(() => {

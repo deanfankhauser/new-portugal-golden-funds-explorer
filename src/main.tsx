@@ -1,5 +1,29 @@
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
 import './index.css'
+import App from './App.tsx'
+import { PerformanceMonitoringService } from './services/performanceMonitoringService'
+import { ImageOptimizationService } from './services/imageOptimizationService'
+import { SEOValidationService } from './services/seoValidationService'
 
-createRoot(document.getElementById("root")!).render(<App />);
+// Initialize performance monitoring and optimization services
+if (typeof window !== 'undefined') {
+  // Initialize performance monitoring
+  PerformanceMonitoringService.initializeMonitoring();
+  
+  // Initialize image optimization
+  ImageOptimizationService.initializeGlobalOptimization();
+  
+  // Log SEO validation report in development
+  if (import.meta.env.DEV) {
+    setTimeout(() => {
+      SEOValidationService.logSEOReport();
+    }, 2000);
+  }
+}
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);

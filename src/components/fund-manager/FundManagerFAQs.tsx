@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Fund } from '../../data/funds';
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -56,8 +56,45 @@ const FundManagerFAQs: React.FC<FundManagerFAQsProps> = ({ fund }) => {
 
   const faqs = generateFAQs(fund);
 
+  useEffect(() => {
+    // Create FAQ Page schema for SEO
+    const faqSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'mainEntity': faqs.map((faq: FAQItem) => ({
+        '@type': 'Question',
+        'name': faq.question,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': faq.answer
+        }
+      }))
+    };
+
+    // Remove existing FAQ schema
+    const existingFAQSchema = document.querySelector('script[data-schema="fund-manager-faq"]');
+    if (existingFAQSchema) {
+      existingFAQSchema.remove();
+    }
+
+    // Add new FAQ schema
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-schema', 'fund-manager-faq');
+    script.textContent = JSON.stringify(faqSchema);
+    document.head.appendChild(script);
+
+    // Cleanup function
+    return () => {
+      const schemaScript = document.querySelector('script[data-schema="fund-manager-faq"]');
+      if (schemaScript) {
+        schemaScript.remove();
+      }
+    };
+  }, [faqs]);
+
   return (
-    <Card className="border border-gray-100 shadow-sm">
+    <Card className="border border-gray-100 shadow-sm" itemScope itemType="https://schema.org/FAQPage">
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-bold text-gray-900">
@@ -74,12 +111,24 @@ const FundManagerFAQs: React.FC<FundManagerFAQsProps> = ({ fund }) => {
 
         <Accordion type="single" collapsible className="w-full">
           {faqs.map((faq, index) => (
-            <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger className="text-left hover:no-underline">
+            <AccordionItem 
+              key={index} 
+              value={`item-${index}`}
+              itemScope 
+              itemType="https://schema.org/Question"
+            >
+              <AccordionTrigger 
+                className="text-left hover:no-underline py-3 text-sm"
+                itemProp="name"
+              >
                 <span className="font-medium text-gray-900">{faq.question}</span>
               </AccordionTrigger>
-              <AccordionContent className="text-gray-700 leading-relaxed">
-                {faq.answer}
+              <AccordionContent 
+                className="text-sm text-gray-700 leading-relaxed"
+                itemScope 
+                itemType="https://schema.org/Answer"
+              >
+                <div itemProp="text">{faq.answer}</div>
               </AccordionContent>
             </AccordionItem>
           ))}

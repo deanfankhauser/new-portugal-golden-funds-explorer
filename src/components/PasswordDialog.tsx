@@ -30,12 +30,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
 
   // Simple analytics tracking
   const trackUnlockAttempt = (action: string, context?: string) => {
-    console.log('📊 Analytics: Unlock Premium Data', {
-      action,
-      context,
-      timestamp: new Date().toISOString(),
-      url: window.location.href
-    });
+    // Analytics tracking for unlock attempt
   };
 
   const handleSubmit = (e: React.FormEvent) => {
