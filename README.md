@@ -1,8 +1,37 @@
-# Welcome to your Lovable project
+# Fund Investment Platform
+
+A comprehensive fund discovery and comparison platform built with modern web technologies and enterprise-grade SEO optimization.
 
 ## Project info
 
 **URL**: https://lovable.dev/projects/27945117-83b1-4a92-a16b-334650bced15
+
+## Key Features
+
+### 🔍 Fund Discovery & Analysis
+- Advanced fund filtering and comparison tools
+- Interactive fund performance dashboards
+- ROI calculator with email gating
+- Fund manager profiles and detailed analytics
+
+### 🎯 User Experience
+- Responsive design with mobile-first approach
+- Fund recommendation quiz system
+- Recently viewed funds tracking
+- Comprehensive comparison tools
+
+### ⚡ Performance & SEO
+- **Enhanced SEO Validation Service** - Automatic duplicate meta tag detection and image optimization
+- **Performance Optimization Service** - Preload directives, lazy loading, and security headers
+- **Consolidated SEO Service** - Unified meta tag management across all page types
+- **Static Site Generation (SSG)** - Pre-rendered pages for optimal performance
+- **Real-time SEO Validation** - Development-time SEO scoring and auto-fixing
+
+### 🛡️ Technical Excellence
+- TypeScript for type safety
+- Supabase integration for backend functionality
+- Comprehensive error boundaries and validation
+- Automated image optimization and accessibility
 
 ## How can I edit this code?
 
@@ -54,11 +83,29 @@ npm run dev
 
 This project is built with:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Core Technologies
+- **Vite** - Fast build tool and development server
+- **TypeScript** - Type-safe JavaScript
+- **React 18** - Modern React with hooks and context
+- **Tailwind CSS** - Utility-first CSS framework with custom design system
+- **shadcn/ui** - High-quality, customizable UI components
+
+### Backend & Data
+- **Supabase** - Full-stack backend with authentication and database
+- **React Query** - Server state management and caching
+- **React Hook Form** - Form validation and state management
+
+### SEO & Performance
+- **Enhanced SEO Services** - Comprehensive meta tag and structured data management
+- **Static Site Generation** - Pre-rendered pages for optimal SEO
+- **Image Optimization** - Automatic lazy loading and responsive images
+- **Performance Monitoring** - Real-time optimization scoring
+
+### Development Tools
+- **React Router DOM** - Client-side routing
+- **Date-fns** - Date manipulation and formatting
+- **Zod** - Schema validation
+- **Lucide React** - Beautiful icon library
 
 ## How can I deploy this project?
 
