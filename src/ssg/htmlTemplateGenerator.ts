@@ -13,25 +13,20 @@ export function generateHTMLTemplate(
   const url = seoData.url || 'https://www.movingto.com/funds';
   const structuredData = seoData.structuredData || {};
 
-  console.log('🔥 HTMLTemplate: Generating with SEO data:', {
-    title: title.substring(0, 50) + '...',
-    description: description.substring(0, 50) + '...',
-    url,
-    hasStructuredData: Object.keys(structuredData).length > 0,
-    cssFiles: cssFiles.length,
-    jsFiles: jsFiles.length
-  });
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('🔥 HTMLTemplate: Generating with SEO data:', {
+      title: title.substring(0, 50) + '...',
+      description: description.substring(0, 50) + '...',
+      url,
+      hasStructuredData: Object.keys(structuredData).length > 0,
+      cssFiles: cssFiles.length,
+      jsFiles: jsFiles.length
+    });
+  }
 
-  // Validate that all referenced assets exist
-  const validatedCssFiles = cssFiles.filter(css => {
-    console.log(`🔥 HTMLTemplate: Including CSS: ${css}`);
-    return true; // Files are already validated in ssg-runner
-  });
+  const validatedCssFiles = cssFiles;
 
-  const validatedJsFiles = jsFiles.filter(js => {
-    console.log(`🔥 HTMLTemplate: Including JS: ${js}`);
-    return true; // Files are already validated in ssg-runner
-  });
+  const validatedJsFiles = jsFiles;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -173,41 +168,7 @@ export function generateHTMLTemplate(
   <!-- Built JavaScript Files -->
   ${validatedJsFiles.map(js => `  <script type="module" src="./assets/${js}"></script>`).join('\n')}
   
-  <!-- Analytics and performance tracking -->
-  <script>
-    // Basic page load tracking
-    console.log('SSG Page loaded:', {
-      title: document.title,
-      url: window.location.href,
-      timestamp: new Date().toISOString(),
-      userAgent: navigator.userAgent,
-      viewport: {
-        width: window.innerWidth,
-        height: window.innerHeight
-      }
-    });
-    
-    // Performance monitoring
-    window.addEventListener('load', function() {
-      if ('performance' in window) {
-        const perfData = performance.getEntriesByType('navigation')[0];
-        console.log('Page performance:', {
-          loadTime: perfData.loadEventEnd - perfData.loadEventStart,
-          domContentLoaded: perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart,
-          firstPaint: performance.getEntriesByName('first-paint')[0]?.startTime || 'N/A',
-          firstContentfulPaint: performance.getEntriesByName('first-contentful-paint')[0]?.startTime || 'N/A'
-        });
-      }
-    });
-    
-    // Handle missing JavaScript chunks gracefully
-    window.addEventListener('error', function(e) {
-      if (e.filename && e.filename.includes('.js')) {
-        console.warn('JavaScript chunk failed to load:', e.filename);
-        // Optionally reload page or show fallback
-      }
-    });
-  </script>
+  <!-- Analytics and performance tracking (disabled in production build) -->
 </body>
 </html>`;
 }

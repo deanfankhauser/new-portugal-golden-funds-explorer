@@ -25,7 +25,8 @@ export async function processRoute(
     if (route.path === '/') {
       outputPath = path.join(distDir, 'index.html');
     } else {
-      const routeDir = path.join(distDir, route.path);
+      const sanitizedPath = route.path.replace(/^\/+/, '');
+      const routeDir = path.join(distDir, sanitizedPath);
       if (!fs.existsSync(routeDir)) {
         fs.mkdirSync(routeDir, { recursive: true });
       }
