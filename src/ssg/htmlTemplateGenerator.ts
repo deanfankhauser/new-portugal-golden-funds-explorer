@@ -160,13 +160,13 @@ export function generateHTMLTemplate(
   </style>
   
   <!-- Built CSS Files -->
-  ${validatedCssFiles.map(css => `  <link rel="stylesheet" href="/assets/${css}" />`).join('\n')}
+  ${validatedCssFiles.map(css => `  <link rel="stylesheet" href="./assets/${css}" />`).join('\n')}
 </head>
 <body>
   <div id="root">${appHtml}</div>
   
   <!-- Built JavaScript Files -->
-  ${validatedJsFiles.map(js => `  <script type="module" src="/assets/${js}"></script>`).join('\n')}
+  ${validatedJsFiles.map(js => `  <script type="module" src="./assets/${js}"></script>`).join('\n')}
   
   <!-- Analytics and performance tracking (disabled in production build) -->
 </body>
