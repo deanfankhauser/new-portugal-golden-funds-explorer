@@ -168,7 +168,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
               Get personalized Golden Visa guidance plus full access to our premium fund analysis tools.
             </p>
             <a 
-              href="https://movingto.com/contact" 
+              href="https://www.movingto.com/contact" 
               target="_blank" 
               rel="noopener noreferrer"
               onClick={handleConsultationClick}

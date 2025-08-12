@@ -29,10 +29,10 @@ export function validateGeneratedFile(
     hasFonts: generatedContent.includes('fonts.googleapis.com'),
     hasRelativeCSS: validCss.length === 0 || validCss.every(css => generatedContent.includes(`href="./assets/${css}"`)),
     hasRelativeJS: validJs.length === 0 || validJs.every(js => generatedContent.includes(`src="./assets/${js}"`)),
-    noAbsolutePaths: !generatedContent.includes('https://movingto.com/funds/assets/'),
+    noAbsolutePaths: !generatedContent.includes('https://www.movingto.com/funds/assets/'),
     hasCorrectCanonical: generatedContent.includes(`href="${seoData.url}"`),
     hasCorrectOgUrl: generatedContent.includes(`content="${seoData.url}"`),
-    hasWwwSubdomain: seoData.url.includes('https://movingto.com/funds')
+    hasWwwSubdomain: seoData.url.includes('https://www.movingto.com/funds')
   };
   
   const validationResults = Object.entries(validationChecks)
@@ -64,9 +64,9 @@ export function verifyCriticalPages(distDir: string): void {
     const pagePath = path.join(distDir, file);
     if (fs.existsSync(pagePath)) {
       const content = fs.readFileSync(pagePath, 'utf8');
-      const hasWwwSubdomain = content.includes('https://movingto.com/funds');
-      const hasCorrectCanonical = content.includes('rel="canonical" href="https://movingto.com/funds');
-      const hasCorrectOgUrl = content.includes('property="og:url" content="https://movingto.com/funds');
+      const hasWwwSubdomain = content.includes('https://www.movingto.com/funds');
+      const hasCorrectCanonical = content.includes('rel="canonical" href="https://www.movingto.com/funds');
+      const hasCorrectOgUrl = content.includes('property="og:url" content="https://www.movingto.com/funds');
       
       // Silent validation - only log critical errors if needed
     }

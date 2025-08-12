@@ -5,7 +5,7 @@ import { getAllTags } from '../data/services/tags-service';
 import { categoryToSlug, tagToSlug, managerToSlug } from '../lib/utils';
 
 export class DynamicSitemapService {
-  private static readonly BASE_URL = 'https://movingto.com/funds';
+  private static readonly BASE_URL = 'https://www.movingto.com/funds';
   private static readonly CURRENT_DATE = new Date().toISOString().split('T')[0];
 
   // Generate complete sitemap XML

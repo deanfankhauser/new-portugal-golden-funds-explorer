@@ -13,7 +13,7 @@ ${routes.map(route => {
   else if (['categories', 'tags', 'managers'].includes(route.pageType)) priority = '0.7';
   
   return `  <url>
-    <loc>https://movingto.com/funds${route.path}</loc>
+    <loc>https://www.movingto.com/funds${route.path}</loc>
     <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>${priority}</priority>

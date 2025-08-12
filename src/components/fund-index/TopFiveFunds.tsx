@@ -25,7 +25,7 @@ const TopFiveFunds: React.FC<TopFiveFundsProps> = ({ scores }) => {
       'author': {
         '@type': 'Organization',
         'name': 'Movingto',
-        'url': 'https://movingto.com'
+        'url': 'https://www.movingto.com'
       },
       'itemListElement': scores.map((score, index) => {
         const fund = getFundById(score.fundId);
@@ -40,7 +40,7 @@ const TopFiveFunds: React.FC<TopFiveFundsProps> = ({ scores }) => {
             'description': fund.description,
             'category': fund.category,
             'identifier': fund.id,
-            'url': `https://movingto.com/funds/funds/${fund.id}`,
+            'url': `https://www.movingto.com/funds/${fund.id}`,
             'aggregateRating': {
               '@type': 'AggregateRating',
               'ratingValue': score.movingtoScore,
