@@ -1,3 +1,4 @@
+import { categoryToSlug, tagToSlug, managerToSlug } from '../lib/utils';
 
 export const URL_CONFIG = {
   BASE_URL: 'https://www.movingto.com/funds',
@@ -5,7 +6,7 @@ export const URL_CONFIG = {
   
   buildUrl: (path: string) => `https://www.movingto.com/funds${path.startsWith('/') ? path : `/${path}`}`,
   buildFundUrl: (fundId: string) => `https://www.movingto.com/funds/${fundId}`,
-  buildManagerUrl: (managerName: string) => `https://www.movingto.com/funds/manager/${encodeURIComponent(managerName.toLowerCase().replace(/\s+/g, '-'))}`,
-  buildCategoryUrl: (categoryName: string) => `https://www.movingto.com/funds/categories/${encodeURIComponent(categoryName.toLowerCase())}`,
-  buildTagUrl: (tagName: string) => `https://www.movingto.com/funds/tags/${encodeURIComponent(tagName.toLowerCase().replace(/\s+/g, '-'))}`
+  buildManagerUrl: (managerName: string) => `https://www.movingto.com/funds/manager/${managerToSlug(managerName)}`,
+  buildCategoryUrl: (categoryName: string) => `https://www.movingto.com/funds/categories/${categoryToSlug(categoryName)}`,
+  buildTagUrl: (tagName: string) => `https://www.movingto.com/funds/tags/${tagToSlug(tagName)}`
 };

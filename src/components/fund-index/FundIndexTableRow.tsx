@@ -24,7 +24,7 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
   if (!fund) return null;
 
   const handleRowClick = () => {
-    navigate(`/funds/${fund.id}`);
+    navigate(`/${fund.id}`);
   };
 
   const handleGatedCellClick = (e: React.MouseEvent) => {

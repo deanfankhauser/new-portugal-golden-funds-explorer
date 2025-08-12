@@ -86,7 +86,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText(`${params.categoryName} Funds | Portugal Investment Analysis | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(`Explore ${params.categoryName} investment funds in Portugal. Compare performance, fees, and risk profiles.`, this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildCategoryUrl(this.slugify(params.categoryName)),
+          url: URL_CONFIG.buildCategoryUrl(params.categoryName),
           structuredData: this.getCategoryStructuredData(params.categoryName)
         };
 
@@ -94,7 +94,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText(`${params.tagName} Investment Funds | Portugal | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(`Find investment funds tagged with ${params.tagName}. Detailed analysis and comparison tools.`, this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildTagUrl(this.slugify(params.tagName)),
+          url: URL_CONFIG.buildTagUrl(params.tagName),
           structuredData: this.getTagStructuredData(params.tagName)
         };
 
@@ -374,7 +374,7 @@ export class ConsolidatedSEOService {
       '@type': 'CollectionPage',
       'name': `${categoryName} Investment Funds`,
       'description': `Collection of ${categoryName} investment funds in Portugal`,
-      'url': URL_CONFIG.buildCategoryUrl(this.slugify(categoryName))
+      'url': URL_CONFIG.buildCategoryUrl(categoryName)
     };
   }
 
@@ -384,16 +384,15 @@ export class ConsolidatedSEOService {
       '@type': 'CollectionPage',
       'name': `${tagName} Investment Funds`,
       'description': `Investment funds tagged with ${tagName}`,
-      'url': URL_CONFIG.buildTagUrl(this.slugify(tagName))
+      'url': URL_CONFIG.buildTagUrl(tagName)
     };
   }
 
   private static getManagerStructuredData(managerName: string): any {
     return {
       '@context': 'https://schema.org',
-      '@type': 'Person',
+      '@type': 'Organization',
       'name': managerName,
-      'jobTitle': 'Fund Manager',
       'url': URL_CONFIG.buildManagerUrl(managerName)
     };
   }

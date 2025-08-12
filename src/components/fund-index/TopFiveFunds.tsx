@@ -210,7 +210,7 @@ const TopFiveFunds: React.FC<TopFiveFundsProps> = ({ scores }) => {
 
                     <div className="flex-shrink-0">
                       <Link 
-                        to={`/funds/${fund.id}`}
+                        to={`/${fund.id}`}
                         itemProp="url"
                       >
                         <Button className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2">

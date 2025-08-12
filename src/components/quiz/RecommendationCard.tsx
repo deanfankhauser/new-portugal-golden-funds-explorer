@@ -89,7 +89,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ fund, index, fo
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => window.open(`/funds/${fund.id}`, '_blank')}
+                onClick={() => window.open(`/${fund.id}`, '_blank')}
                 className="w-full"
               >
                 View Details

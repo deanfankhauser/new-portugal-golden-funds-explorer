@@ -52,7 +52,7 @@ const Header = () => {
                     <div className="w-64 p-4 bg-white">
                       <div className="space-y-2">
                         <NavigationMenuLink asChild>
-                          <Link to="/funds/index" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
+                          <Link to="/index" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
                             <TrendingUp className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
                             <div>
                               <div className="font-medium text-gray-900">Fund Index</div>

@@ -30,7 +30,7 @@ const RecentlyViewedFunds = () => {
         {recentlyViewed.map((fund) => (
           <Link
             key={fund.id}
-            to={`/funds/${fund.id}`}
+            to={`/${fund.id}`}
             className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow group"
           >
             <h4 className="font-medium text-sm mb-2 group-hover:text-primary transition-colors line-clamp-2">

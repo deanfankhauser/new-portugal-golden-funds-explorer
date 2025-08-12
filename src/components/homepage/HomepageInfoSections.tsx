@@ -23,7 +23,7 @@ const HomepageInfoSections = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
-              <Link to="/funds/index" className="flex items-center gap-2">
+              <Link to="/index" className="flex items-center gap-2">
                 <BarChart3 className="h-5 w-5" />
                 View Fund Index
               </Link>
