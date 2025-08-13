@@ -164,73 +164,8 @@ export function generateHTMLTemplate(
 <body>
   <div id="root">${appHtml}</div>
   
-  <!-- Load React via CDN FIRST to ensure it's available before any modules -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  
-  <!-- Ensure React is globally available before any modules load -->
-  <script>
-    if (typeof window !== 'undefined' && window.React && window.ReactDOM) {
-      // Make React hooks available globally for module evaluation
-      window.useState = window.React.useState;
-      window.useEffect = window.React.useEffect;
-      window.useLayoutEffect = window.React.useLayoutEffect;
-      window.useContext = window.React.useContext;
-      window.createContext = window.React.createContext;
-      window.useMemo = window.React.useMemo;
-      window.useCallback = window.React.useCallback;
-      window.useRef = window.React.useRef;
-      window.forwardRef = window.React.forwardRef;
-      window.createElement = window.React.createElement;
-      window.Fragment = window.React.Fragment;
-      
-      window.__REACT_HYDRATION_READY__ = true;
-      window.__SSG_MODE__ = true;
-      
-      console.log('✅ React loaded via CDN and available globally');
-    } else {
-      console.error('❌ Failed to load React via CDN');
-    }
-  </script>
-  
-  <!-- Built JavaScript Files in correct order -->
-  ${validatedJsFiles
-    .sort((a, b) => {
-      // Main bundle first, then chunks
-      if (a.includes('index-') && !b.includes('index-')) return -1;
-      if (!a.includes('index-') && b.includes('index-')) return 1;
-      // Vendor chunks before feature chunks
-      if (a.includes('vendor') && !b.includes('vendor')) return -1;
-      if (!a.includes('vendor') && b.includes('vendor')) return 1;
-      return a.localeCompare(b);
-    })
-    .map(js => `  <script type="module" src="/assets/${js}" crossorigin defer></script>`).join('\n')}
-  
-  <!-- SSG Hydration Force -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Force re-hydration for SSG mode
-      setTimeout(function() {
-        const buttons = document.querySelectorAll('button, [role="button"], a[href]');
-        buttons.forEach(function(button) {
-          if (!button.onclick && !button.getAttribute('data-hydrated')) {
-            button.setAttribute('data-hydrated', 'true');
-            // Force click event binding
-            button.addEventListener('click', function(e) {
-              if (window.React && window.__REACT_HYDRATION_READY__) {
-                return; // Let React handle it
-              }
-              // Basic navigation fallback
-              const href = button.getAttribute('href');
-              if (href && href !== '#') {
-                window.location.href = href;
-              }
-            });
-          }
-        });
-      }, 200);
-    });
-  </script>
+  <!-- Built JavaScript Files -->
+  ${validatedJsFiles.map(js => `  <script type="module" src="/assets/${js}"></script>`).join('\n')}
   
   <!-- Analytics and performance tracking (disabled in production build) -->
 </body>

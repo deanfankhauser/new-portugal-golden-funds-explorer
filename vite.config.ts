@@ -29,15 +29,17 @@ export default defineConfig(({ mode }) => ({
         manualChunks: (id) => {
           // Vendor chunks
           if (id.includes('node_modules')) {
-            // Keep ALL React-related packages in main bundle for SSR/hydration stability
-            if (id.includes('react') || 
-                id.includes('react-dom') || 
-                id.includes('react-router') ||
-                id.includes('@radix-ui')) {
-              return undefined; // Include in main bundle
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react-vendor';
+            }
+            if (id.includes('react-router')) {
+              return 'router';
+            }
+            if (id.includes('@radix-ui')) {
+              return 'ui-vendor';
             }
             if (id.includes('@tanstack/react-query')) {
-              return undefined; // Include in main bundle too
+              return 'query';
             }
             if (id.includes('recharts')) {
               return 'charts';
