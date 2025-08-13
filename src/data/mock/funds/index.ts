@@ -16,6 +16,7 @@ import { flexSpaceFund } from './flex-space-fund';
 import { portugalPrimeFund } from './portugal-prime-fund';
 import { pelaTerraIIRegenerateFund } from './pela-terra-ii-regenerate-fund';
 import { lakeviewFund } from './lakeview-fund';
+import { globalEuropeanCinemaFund } from './global-european-cinema-fund';
 import { Fund } from '../../types/funds';
 
 // Export all funds as an array
@@ -36,7 +37,8 @@ export const fundsData: Fund[] = [
   flexSpaceFund,
   portugalPrimeFund,
   pelaTerraIIRegenerateFund,
-  lakeviewFund
+  lakeviewFund,
+  globalEuropeanCinemaFund
 ];
 
 // Export individual funds
@@ -57,5 +59,6 @@ export {
   flexSpaceFund,
   portugalPrimeFund,
   pelaTerraIIRegenerateFund,
-  lakeviewFund
+  lakeviewFund,
+  globalEuropeanCinemaFund
 };
