@@ -14,6 +14,7 @@ import { heedTopFund } from './heed-top-fund';
 import { venturesEUFund } from './ventures-eu-fund';
 import { flexSpaceFund } from './flex-space-fund';
 import { portugalPrimeFund } from './portugal-prime-fund';
+import { pelaTerraIIRegenerateFund } from './pela-terra-ii-regenerate-fund';
 import { Fund } from '../../types/funds';
 
 // Export all funds as an array
@@ -32,7 +33,8 @@ export const fundsData: Fund[] = [
   heedTopFund,
   venturesEUFund,
   flexSpaceFund,
-  portugalPrimeFund
+  portugalPrimeFund,
+  pelaTerraIIRegenerateFund
 ];
 
 // Export individual funds
@@ -51,5 +53,6 @@ export {
   heedTopFund,
   venturesEUFund,
   flexSpaceFund,
-  portugalPrimeFund
+  portugalPrimeFund,
+  pelaTerraIIRegenerateFund
 };
