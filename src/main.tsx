@@ -1,7 +1,12 @@
-import { StrictMode } from 'react'
+import React, { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
+
+// Ensure React is available globally for SSR compatibility
+if (typeof window !== 'undefined' && !window.React) {
+  window.React = React;
+}
 import { PerformanceMonitoringService } from './services/performanceMonitoringService'
 import { ImageOptimizationService } from './services/imageOptimizationService'
 import { SEOValidationService } from './services/seoValidationService'
