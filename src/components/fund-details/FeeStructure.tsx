@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from '../../contexts/AuthContext';
 import { ContentGatingService } from '../../services/contentGatingService';
-import PasswordDialog from '../PasswordDialog';
+import LazyPasswordDialog from '../common/LazyPasswordDialog';
 
 interface FeeStructureProps {
   fund: Fund;
@@ -88,7 +88,7 @@ const FeeStructure: React.FC<FeeStructureProps> = ({ fund, formatPercentage }) =
           </CardContent>
         </Card>
 
-        <PasswordDialog 
+        <LazyPasswordDialog 
           open={showPasswordDialog}
           onOpenChange={setShowPasswordDialog}
         />

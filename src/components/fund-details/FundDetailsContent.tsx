@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import FundHeader from './FundHeader';
 import FundMetrics from './FundMetrics';
-import FundTabsSection from './FundTabsSection';
+import FundTabsLazySection from './FundTabsLazySection';
 import IntroductionButton from './IntroductionButton';
 import { formatCurrency } from './utils/formatters';
 import FundStructureInfo from './FundStructureInfo';
@@ -82,7 +82,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           <PremiumCTA variant="full" location={`fund-details-${fund.id}`} />
           
           {/* Main content with tabs */}
-          <FundTabsSection fund={fund} />
+          <FundTabsLazySection fund={fund} />
           
           {/* Investor Notice */}
           <InvestorNotice />

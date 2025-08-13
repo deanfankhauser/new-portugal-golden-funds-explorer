@@ -9,7 +9,7 @@ import TagsCell from './table/TagsCell';
 import RedemptionTermsRow from './table/RedemptionTermsRow';
 import { useAuth } from '../../contexts/AuthContext';
 import { ContentGatingService } from '../../services/contentGatingService';
-import PasswordDialog from '../PasswordDialog';
+import LazyPasswordDialog from '../common/LazyPasswordDialog';
 import { Button } from '@/components/ui/button';
 import { Lock, Eye } from 'lucide-react';
 
@@ -113,7 +113,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
           </div>
         </div>
 
-        <PasswordDialog 
+        <LazyPasswordDialog 
           open={showPasswordDialog}
           onOpenChange={setShowPasswordDialog}
         />

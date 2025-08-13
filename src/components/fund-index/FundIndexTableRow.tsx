@@ -9,7 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/
 import { Lock, Eye } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { ContentGatingService } from '../../services/contentGatingService';
-import PasswordDialog from '../PasswordDialog';
+import LazyPasswordDialog from '../common/LazyPasswordDialog';
 
 interface FundIndexTableRowProps {
   score: FundScore;
@@ -229,7 +229,7 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
         </div>
       </TableRow>
 
-      <PasswordDialog 
+      <LazyPasswordDialog 
         open={showPasswordDialog}
         onOpenChange={setShowPasswordDialog}
       />

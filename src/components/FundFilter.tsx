@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X, ChevronDown, ChevronUp, Search, Filter, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import PasswordDialog from './PasswordDialog';
+import LazyPasswordDialog from './common/LazyPasswordDialog';
 import { analytics } from '../utils/analytics';
 
 interface FundFilterProps {
@@ -321,7 +321,7 @@ const FundFilter: React.FC<FundFilterProps> = ({
         </div>
       </div>
 
-      <PasswordDialog 
+      <LazyPasswordDialog 
         open={showPasswordDialog}
         onOpenChange={setShowPasswordDialog}
       />

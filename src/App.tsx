@@ -5,28 +5,39 @@ import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from './contexts/AuthContext';
 import { ComparisonProvider } from './contexts/ComparisonContext';
 import { RecentlyViewedProvider } from './contexts/RecentlyViewedContext';
-import { useLayoutEffect, useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 
-// Import all pages
-import Index from './pages/Index';
-import FundIndex from './pages/FundIndex';
-import FundDetails from './pages/FundDetails';
-import TagPage from './pages/TagPage';
-import CategoryPage from './pages/CategoryPage';
-import TagsHub from './pages/TagsHub';
-import CategoriesHub from './pages/CategoriesHub';
-import ManagersHub from './pages/ManagersHub';
-import FundManager from './pages/FundManager';
-import About from './pages/About';
-import Disclaimer from './pages/Disclaimer';
-import Privacy from './pages/Privacy';
-import ComparisonPage from './pages/ComparisonPage';
-import ComparisonsHub from './pages/ComparisonsHub';
-import FAQs from './pages/FAQs';
-import ROICalculator from './pages/ROICalculator';
-import FundQuiz from './pages/FundQuiz';
-import FundComparison from './pages/FundComparison';
-import NotFound from './pages/NotFound';
+// Lazy load all pages for optimal performance
+import { lazy, Suspense } from 'react';
+import Index from './pages/Index'; // Keep homepage non-lazy for instant load
+import { 
+  PageLoader, 
+  FundDetailsLoader, 
+  FundIndexLoader, 
+  ComparisonLoader,
+  QuizLoader,
+  ROICalculatorLoader 
+} from './components/common/LoadingSkeleton';
+
+// Lazy load all secondary pages
+const FundIndex = lazy(() => import('./pages/FundIndex'));
+const FundDetails = lazy(() => import('./pages/FundDetails'));
+const TagPage = lazy(() => import('./pages/TagPage'));
+const CategoryPage = lazy(() => import('./pages/CategoryPage'));
+const TagsHub = lazy(() => import('./pages/TagsHub'));
+const CategoriesHub = lazy(() => import('./pages/CategoriesHub'));
+const ManagersHub = lazy(() => import('./pages/ManagersHub'));
+const FundManager = lazy(() => import('./pages/FundManager'));
+const About = lazy(() => import('./pages/About'));
+const Disclaimer = lazy(() => import('./pages/Disclaimer'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const ComparisonPage = lazy(() => import('./pages/ComparisonPage'));
+const ComparisonsHub = lazy(() => import('./pages/ComparisonsHub'));
+const FAQs = lazy(() => import('./pages/FAQs'));
+const ROICalculator = lazy(() => import('./pages/ROICalculator'));
+const FundQuiz = lazy(() => import('./pages/FundQuiz'));
+const FundComparison = lazy(() => import('./pages/FundComparison'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Import funds data to validate direct fund routes
 import { fundsData } from './data/mock/funds';
@@ -63,24 +74,30 @@ const DirectFundRoute = () => {
   // Extract potential fund ID from pathname (remove leading slash)
   const potentialFundId = pathname.slice(1);
   
-  // Check if this is a valid fund ID
-  
   // Check if this path matches a fund ID
   const fund = fundsData.find(f => f.id === potentialFundId);
   
   if (fund) {
-    // Valid fund found, redirect to fund details
-    return <FundDetails />;
+    // Valid fund found, render fund details with lazy loading
+    return (
+      <Suspense fallback={<FundDetailsLoader />}>
+        <FundDetails />
+      </Suspense>
+    );
   }
   
-  // No fund found, show 404
-  return <NotFound />;
+  // No fund found, show 404 with lazy loading
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <NotFound />
+    </Suspense>
+  );
 };
 
 // Import SEO and performance optimization hook
 // SEO optimization removed - using consolidated service
 import SEOProvider from './components/providers/SEOProvider';
-import ExitIntentPopup from './components/common/ExitIntentPopup';
+import LazyExitIntentPopup from './components/common/LazyExitIntentPopup';
 
 function App() {
   // SEO optimization handled by consolidated service
@@ -100,28 +117,96 @@ function App() {
                   <div className="min-h-screen w-full bg-gray-50">
                     <Routes>
                       <Route path="/" element={<Index />} />
-                      <Route path="/index" element={<FundIndex />} />
-                      <Route path="/tags" element={<TagsHub />} />
-                      <Route path="/tags/:tag" element={<TagPage />} />
-                      <Route path="/categories" element={<CategoriesHub />} />
-                      <Route path="/categories/:category" element={<CategoryPage />} />
-                      <Route path="/managers" element={<ManagersHub />} />
-                      <Route path="/manager/:name" element={<FundManager />} />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/disclaimer" element={<Disclaimer />} />
-                      <Route path="/privacy" element={<Privacy />} />
-                      <Route path="/compare" element={<ComparisonPage />} />
-                      <Route path="/compare/:slug" element={<FundComparison />} />
-                      <Route path="/comparisons" element={<ComparisonsHub />} />
-                      <Route path="/faqs" element={<FAQs />} />
-                      <Route path="/roi-calculator" element={<ROICalculator />} />
-                      <Route path="/fund-quiz" element={<FundQuiz />} />
+                      <Route path="/index" element={
+                        <Suspense fallback={<FundIndexLoader />}>
+                          <FundIndex />
+                        </Suspense>
+                      } />
+                      <Route path="/tags" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <TagsHub />
+                        </Suspense>
+                      } />
+                      <Route path="/tags/:tag" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <TagPage />
+                        </Suspense>
+                      } />
+                      <Route path="/categories" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <CategoriesHub />
+                        </Suspense>
+                      } />
+                      <Route path="/categories/:category" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <CategoryPage />
+                        </Suspense>
+                      } />
+                      <Route path="/managers" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <ManagersHub />
+                        </Suspense>
+                      } />
+                      <Route path="/manager/:name" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <FundManager />
+                        </Suspense>
+                      } />
+                      <Route path="/about" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <About />
+                        </Suspense>
+                      } />
+                      <Route path="/disclaimer" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <Disclaimer />
+                        </Suspense>
+                      } />
+                      <Route path="/privacy" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <Privacy />
+                        </Suspense>
+                      } />
+                      <Route path="/compare" element={
+                        <Suspense fallback={<ComparisonLoader />}>
+                          <ComparisonPage />
+                        </Suspense>
+                      } />
+                      <Route path="/compare/:slug" element={
+                        <Suspense fallback={<ComparisonLoader />}>
+                          <FundComparison />
+                        </Suspense>
+                      } />
+                      <Route path="/comparisons" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <ComparisonsHub />
+                        </Suspense>
+                      } />
+                      <Route path="/faqs" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <FAQs />
+                        </Suspense>
+                      } />
+                      <Route path="/roi-calculator" element={
+                        <Suspense fallback={<ROICalculatorLoader />}>
+                          <ROICalculator />
+                        </Suspense>
+                      } />
+                      <Route path="/fund-quiz" element={
+                        <Suspense fallback={<QuizLoader />}>
+                          <FundQuiz />
+                        </Suspense>
+                      } />
                       <Route path="/:id" element={<DirectFundRoute />} />
-                      <Route path="*" element={<NotFound />} />
+                      <Route path="*" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <NotFound />
+                        </Suspense>
+                      } />
                     </Routes>
                   </div>
                   <Toaster />
-                  <ExitIntentPopup />
+                  <LazyExitIntentPopup />
                 </SEOProvider>
               </Router>
             </TooltipProvider>

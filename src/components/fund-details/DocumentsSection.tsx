@@ -5,7 +5,7 @@ import { PdfDocument } from '../../data/types/funds';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from '../../contexts/AuthContext';
-import PasswordDialog from '../PasswordDialog';
+import LazyPasswordDialog from '../common/LazyPasswordDialog';
 
 interface DocumentsSectionProps {
   documents?: PdfDocument[];
@@ -96,7 +96,7 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({ documents }) => {
           </CardContent>
         </Card>
 
-        <PasswordDialog 
+        <LazyPasswordDialog 
           open={showPasswordDialog}
           onOpenChange={setShowPasswordDialog}
         />

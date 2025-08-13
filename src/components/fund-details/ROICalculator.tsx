@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Calculator, AlertTriangle, Lock, Eye } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import PasswordDialog from '../PasswordDialog';
+import LazyPasswordDialog from '../common/LazyPasswordDialog';
 
 interface ROICalculatorProps {
   fund: Fund;
@@ -147,7 +147,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
           </CardContent>
         </Card>
 
-        <PasswordDialog 
+        <LazyPasswordDialog 
           open={showPasswordDialog}
           onOpenChange={setShowPasswordDialog}
         />

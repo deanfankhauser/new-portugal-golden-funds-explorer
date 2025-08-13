@@ -8,7 +8,7 @@ import { useComparison } from '../../contexts/ComparisonContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { tagToSlug } from '@/lib/utils';
 import IntroductionButton from './IntroductionButton';
-import PasswordDialog from '../PasswordDialog';
+import LazyPasswordDialog from '../common/LazyPasswordDialog';
 
 interface FundHeaderProps {
   fund: Fund;
@@ -77,7 +77,7 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
         </div>
       </div>
 
-      <PasswordDialog 
+      <LazyPasswordDialog 
         open={showPasswordDialog}
         onOpenChange={setShowPasswordDialog}
       />
