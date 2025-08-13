@@ -1,48 +1,26 @@
-import React, { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-
-// Ensure React and all its features are available globally for SSR compatibility and Radix UI
+// Use external React from CDN
 declare global {
   interface Window {
-    React: typeof React;
+    React: any;
+    ReactDOM: any;
     __REACT_HYDRATION_READY__?: boolean;
+    __SSG_MODE__?: boolean;
   }
 }
 
-// Make React globally available with all hooks and features
-if (typeof window !== 'undefined') {
-  window.React = React;
-  // Ensure all React features are available
-  Object.assign(window, { 
-    React,
-    useState: React.useState,
-    useEffect: React.useEffect,
-    useLayoutEffect: React.useLayoutEffect,
-    useContext: React.useContext,
-    createContext: React.createContext,
-    useMemo: React.useMemo,
-    useCallback: React.useCallback,
-    useRef: React.useRef
-  });
+const React = window.React;
+const { createRoot } = window.ReactDOM;
+const { StrictMode } = React;
+
+import './index.css'
+import App from './App.tsx'
+
+// Verify React is available
+if (!React || !createRoot) {
+  throw new Error('React is not available. Make sure React CDN scripts are loaded first.');
 }
 
-if (typeof global !== 'undefined') {
-  (global as any).React = React;
-  // Ensure all React features are available in global scope too
-  Object.assign(global, { 
-    React,
-    useState: React.useState,
-    useEffect: React.useEffect,
-    useLayoutEffect: React.useLayoutEffect,
-    useContext: React.useContext,
-    createContext: React.createContext,
-    useMemo: React.useMemo,
-    useCallback: React.useCallback,
-    useRef: React.useRef
-  });
-}
+console.log('✅ React available in main.tsx');
 
 import { PerformanceMonitoringService } from './services/performanceMonitoringService'
 import { ImageOptimizationService } from './services/imageOptimizationService'
@@ -65,21 +43,5 @@ if (typeof window !== 'undefined') {
 }
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
+  React.createElement(StrictMode, null, React.createElement(App))
 );
-
-// Force hydration in SSG mode
-if (document.getElementById("root")?.innerHTML && document.getElementById("root")?.innerHTML.trim() !== '') {
-  console.log('🔄 Hydrating pre-rendered content...');
-  // Re-render to ensure proper event attachment
-  setTimeout(() => {
-    const root = createRoot(document.getElementById("root")!);
-    root.render(
-      <StrictMode>
-        <App />
-      </StrictMode>
-    );
-  }, 100);
-}
