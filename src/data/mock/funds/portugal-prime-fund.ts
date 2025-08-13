@@ -1,0 +1,99 @@
+import { Fund } from '../../types/funds';
+
+export const portugalPrimeFund: Fund = {
+  id: 'portugal-prime-fund',
+  name: 'Portugal Prime Fund',
+  managerName: 'BiG Capital SGOIC',
+  managerLogo: undefined, // No logo provided
+  category: 'Private Equity',
+  tags: ['Private Equity', 'Real Estate', 'Tourism', 'Golden Visa Eligible', 'Low Risk', 'Portugal', 'Closed Ended'],
+  description: 'A closed-end private equity fund regulated by CMVM, investing in Portugal\'s thriving hospitality sector. Designed to comply fully with the Portugal Golden Visa requirements.',
+  detailedDescription: `Portugal Prime Fund is a specialized hospitality investment fund targeting Portugal's strongest tourism hubs. The fund leverages Portugal's position as a leading European destination with tourism representing 19% of GDP and 31M+ visitors in 2023.
+
+Key Investment Highlights:
+• Golden Visa pathway with minimum €500,000 investment requirement
+• Hospitality sector focus - tripled revenue since 2010 while Portuguese stock market declined 27%
+• Development & operation model investing in hotel operators (rooms, F&B, events) rather than direct property
+• Ultra-low fee structure: 0.20% management fee vs industry average of 2%
+• Two investment strategies: Capital Preservation (5% capped IRR) or Upside Participation (10% target IRR)
+• Risk indicator 3/7 vs typical funds at 6/7
+• Exclusive investor perks including 7-day annual hotel stays
+
+Current Portfolio:
+• Vila Maria (Albufeira) - Operating modern hotel with rooftop pool & ocean views
+• Marina Apart-hotel - 310 units under construction, prime waterfront location
+• Beachfront Hotel - 182 rooms/suites with spa, gym, and events spaces under development
+
+The fund offers a streamlined 4-week process from start to Golden Visa application, managed via the Portugal Prime Investor Platform with real-time access to reports and documentation.`,
+  minimumInvestment: 100000,
+  fundSize: 100, // €100M target (in millions)
+  managementFee: 0.20,
+  performanceFee: 25,
+  subscriptionFee: 0, // 0% subscription fee
+  redemptionFee: 0,
+  term: 8, // 8 years
+  returnTarget: "5% capped (Capital Preservation) or 10% target (Upside Participation)",
+  fundStatus: 'Open',
+  websiteUrl: undefined,
+  established: 2024,
+  regulatedBy: 'CMVM',
+  location: 'Portugal',
+  redemptionTerms: {
+    frequency: 'End of Term',
+    redemptionOpen: false,
+    noticePeriod: undefined,
+    earlyRedemptionFee: undefined,
+    minimumHoldingPeriod: 60, // 5 years for Capital Preservation option
+    notes: 'Two exit options: Capital Preservation (5-6 years for citizenship) or Upside Participation (8 years at fund maturity)'
+  },
+  geographicAllocation: [
+    { region: 'Portugal', percentage: 100 }
+  ],
+  team: [
+    {
+      name: 'BiG Capital SGOIC Team',
+      position: 'Fund Management',
+      bio: '20+ years of institutional fund management experience specializing in hospitality and real estate investments'
+    }
+  ],
+  documents: [
+    {
+      title: 'Fund Prospectus',
+      url: '#'
+    },
+    {
+      title: 'Golden Visa Compliance Documentation',
+      url: '#'
+    },
+    {
+      title: 'Hospitality Portfolio Overview',
+      url: '#'
+    }
+  ],
+  faqs: [
+    {
+      question: 'What are the two investment options available?',
+      answer: 'Capital Preservation offers 5% capped IRR with exit upon citizenship (5-6 years), while Upside Participation targets 10% IRR with exit at fund maturity (8 years).'
+    },
+    {
+      question: 'How does the reduced capital option work?',
+      answer: 'Investors can participate from €300K using an exclusive loan facility where €200K is loaned to the investor\'s non-Portuguese account. The loan provider takes yields while the investor retains Golden Visa eligibility.'
+    },
+    {
+      question: 'What makes the fee structure attractive?',
+      answer: 'The fund charges only 0.20% management fee (1/10th of industry average), 0% subscription fee, and 25% performance fee only on profits above 5% hurdle.'
+    },
+    {
+      question: 'What exclusive perks do investors receive?',
+      answer: 'Investors enjoy 7-day annual hotel stays at portfolio properties, providing direct access to their investment.'
+    },
+    {
+      question: 'How quickly can I apply for Golden Visa after investing?',
+      answer: 'The streamlined process takes approximately 4 weeks from start to Golden Visa application, managed via the Portugal Prime Investor Platform.'
+    },
+    {
+      question: 'Why invest in Portugal\'s hospitality sector?',
+      answer: 'Tourism represents 19% of Portugal\'s GDP with 31M+ visitors in 2023 (up 21% YoY). The hospitality sector has tripled revenue since 2010 while the Portuguese stock market declined 27%.'
+    }
+  ]
+};
