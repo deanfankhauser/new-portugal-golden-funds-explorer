@@ -69,3 +69,17 @@ createRoot(document.getElementById("root")!).render(
     <App />
   </StrictMode>
 );
+
+// Force hydration in SSG mode
+if (document.getElementById("root")?.innerHTML && document.getElementById("root")?.innerHTML.trim() !== '') {
+  console.log('🔄 Hydrating pre-rendered content...');
+  // Re-render to ensure proper event attachment
+  setTimeout(() => {
+    const root = createRoot(document.getElementById("root")!);
+    root.render(
+      <StrictMode>
+        <App />
+      </StrictMode>
+    );
+  }, 100);
+}

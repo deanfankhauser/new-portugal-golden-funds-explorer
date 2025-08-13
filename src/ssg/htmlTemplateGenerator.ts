@@ -169,6 +169,7 @@ export function generateHTMLTemplate(
     // Ensure React is available globally before any modules load
     if (typeof window !== 'undefined') {
       window.__REACT_HYDRATION_READY__ = false;
+      window.__SSG_MODE__ = true;
     }
   </script>
   
@@ -183,23 +184,32 @@ export function generateHTMLTemplate(
       if (!a.includes('vendor') && b.includes('vendor')) return 1;
       return a.localeCompare(b);
     })
-    .map(js => `  <script type="module" src="/assets/${js}" crossorigin></script>`).join('\n')}
+    .map(js => `  <script type="module" src="/assets/${js}" crossorigin defer></script>`).join('\n')}
   
-  <!-- Hydration Safety Check -->
+  <!-- SSG Hydration Force -->
   <script>
-    // Verify React loaded properly
-    if (typeof window !== 'undefined') {
-      const checkReact = () => {
-        if (window.React) {
-          window.__REACT_HYDRATION_READY__ = true;
-        } else {
-          console.warn('React not available during hydration');
-        }
-      };
-      // Check immediately and after a brief delay
-      checkReact();
-      setTimeout(checkReact, 100);
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+      // Force re-hydration for SSG mode
+      setTimeout(function() {
+        const buttons = document.querySelectorAll('button, [role="button"], a[href]');
+        buttons.forEach(function(button) {
+          if (!button.onclick && !button.getAttribute('data-hydrated')) {
+            button.setAttribute('data-hydrated', 'true');
+            // Force click event binding
+            button.addEventListener('click', function(e) {
+              if (window.React && window.__REACT_HYDRATION_READY__) {
+                return; // Let React handle it
+              }
+              // Basic navigation fallback
+              const href = button.getAttribute('href');
+              if (href && href !== '#') {
+                window.location.href = href;
+              }
+            });
+          }
+        });
+      }, 200);
+    });
   </script>
   
   <!-- Analytics and performance tracking (disabled in production build) -->
