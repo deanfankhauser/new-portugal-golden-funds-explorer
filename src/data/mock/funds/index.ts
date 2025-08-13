@@ -10,6 +10,7 @@ import { linceYieldFund } from './lince-yield-fund';
 import { solarFutureFund } from './solar-future-fund';
 import { mercurioFundII } from './mercurio-fund-ii';
 import { portugalLiquidOpportunities } from './portugal-liquid-opportunities';
+import { heedTopFund } from './heed-top-fund';
 import { Fund } from '../../types/funds';
 
 // Export all funds as an array
@@ -24,7 +25,8 @@ export const fundsData: Fund[] = [
   linceYieldFund,
   solarFutureFund,
   mercurioFundII,
-  portugalLiquidOpportunities
+  portugalLiquidOpportunities,
+  heedTopFund
 ];
 
 // Export individual funds
@@ -39,5 +41,6 @@ export {
   linceYieldFund,
   solarFutureFund,
   mercurioFundII,
-  portugalLiquidOpportunities
+  portugalLiquidOpportunities,
+  heedTopFund
 };
