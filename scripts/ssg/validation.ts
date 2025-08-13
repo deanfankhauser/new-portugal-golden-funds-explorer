@@ -11,7 +11,7 @@ export interface ValidationChecks {
   noAbsolutePaths: boolean;
   hasCorrectCanonical: boolean;
   hasCorrectOgUrl: boolean;
-  hasWwwSubdomain: boolean;
+  hasCorrectDomain: boolean;
 }
 
 export function validateGeneratedFile(
@@ -29,10 +29,10 @@ export function validateGeneratedFile(
     hasFonts: generatedContent.includes('fonts.googleapis.com'),
     hasRelativeCSS: validCss.length === 0 || validCss.every(css => generatedContent.includes(`href="./assets/${css}"`)),
     hasRelativeJS: validJs.length === 0 || validJs.every(js => generatedContent.includes(`src="./assets/${js}"`)),
-    noAbsolutePaths: !generatedContent.includes('https://www.movingto.com/funds/assets/'),
+    noAbsolutePaths: !generatedContent.includes('https://funds.movingto.com/assets/'),
     hasCorrectCanonical: generatedContent.includes(`href="${seoData.url}"`),
     hasCorrectOgUrl: generatedContent.includes(`content="${seoData.url}"`),
-    hasWwwSubdomain: seoData.url.includes('https://www.movingto.com/funds')
+    hasCorrectDomain: seoData.url.includes('https://funds.movingto.com')
   };
   
   const validationResults = Object.entries(validationChecks)
@@ -41,7 +41,7 @@ export function validateGeneratedFile(
   
   // Silent validation - no logging unless critical issues found
   
-  if (!validationChecks.hasWwwSubdomain) {
+  if (!validationChecks.hasCorrectDomain) {
     console.error(`   ❌ URL domain mismatch: ${seoData.url}`);
   }
   
@@ -64,9 +64,9 @@ export function verifyCriticalPages(distDir: string): void {
     const pagePath = path.join(distDir, file);
     if (fs.existsSync(pagePath)) {
       const content = fs.readFileSync(pagePath, 'utf8');
-      const hasWwwSubdomain = content.includes('https://www.movingto.com/funds');
-      const hasCorrectCanonical = content.includes('rel="canonical" href="https://www.movingto.com/funds');
-      const hasCorrectOgUrl = content.includes('property="og:url" content="https://www.movingto.com/funds');
+      const hasCorrectDomain = content.includes('https://funds.movingto.com');
+      const hasCorrectCanonical = content.includes('rel="canonical" href="https://funds.movingto.com');
+      const hasCorrectOgUrl = content.includes('property="og:url" content="https://funds.movingto.com');
       
       // Silent validation - only log critical errors if needed
     }

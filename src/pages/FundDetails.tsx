@@ -12,7 +12,7 @@ const FundDetails = () => {
   const { id, potentialFundId } = useParams<{ id?: string; potentialFundId?: string }>();
   const location = useLocation();
   
-  // Support both route patterns: /funds/:id and /:potentialFundId
+  // Support direct fund routing: /:fundId
   const fundId = id || potentialFundId;
   const fund = fundId ? getFundById(fundId) : null;
   const { addToRecentlyViewed } = useRecentlyViewed();
