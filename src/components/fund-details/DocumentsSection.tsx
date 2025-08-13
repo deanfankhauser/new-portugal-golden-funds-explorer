@@ -118,7 +118,7 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({ documents }) => {
             To receive PDF copies, please click the button below.
           </p>
           <Button 
-            onClick={() => window.open('https://www.movingto.com/contact/contact-movingto', '_blank')}
+            onClick={() => window.open('https://contact.movingto.com', '_blank')}
             className="w-full sm:w-auto"
           >
             <FileText className="mr-2 h-4 w-4" />

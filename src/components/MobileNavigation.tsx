@@ -86,7 +86,7 @@ const MobileNavigation = () => {
               Support
             </h3>
             <a 
-              href="https://www.movingto.com/contact/contact-movingto" 
+              href="https://contact.movingto.com" 
               target="_blank" 
               rel="noopener noreferrer"
               onClick={closeMenu}
