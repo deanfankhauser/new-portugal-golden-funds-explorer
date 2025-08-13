@@ -12,6 +12,7 @@ import { mercurioFundII } from './mercurio-fund-ii';
 import { portugalLiquidOpportunities } from './portugal-liquid-opportunities';
 import { heedTopFund } from './heed-top-fund';
 import { venturesEUFund } from './ventures-eu-fund';
+import { flexSpaceFund } from './flex-space-fund';
 import { Fund } from '../../types/funds';
 
 // Export all funds as an array
@@ -28,7 +29,8 @@ export const fundsData: Fund[] = [
   mercurioFundII,
   portugalLiquidOpportunities,
   heedTopFund,
-  venturesEUFund
+  venturesEUFund,
+  flexSpaceFund
 ];
 
 // Export individual funds
@@ -45,5 +47,6 @@ export {
   mercurioFundII,
   portugalLiquidOpportunities,
   heedTopFund,
-  venturesEUFund
+  venturesEUFund,
+  flexSpaceFund
 };
