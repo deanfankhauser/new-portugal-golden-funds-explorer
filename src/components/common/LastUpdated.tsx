@@ -1,20 +1,72 @@
-
 import React from 'react';
-import { Calendar } from 'lucide-react';
+import { DateManagementService } from '../../services/dateManagementService';
+import { Fund } from '../../data/types/funds';
 
 interface LastUpdatedProps {
-  date?: string;
+  fund?: Fund;
+  dateModified?: string;
+  dataLastVerified?: string;
   className?: string;
+  showDataVerification?: boolean;
 }
 
-const LastUpdated: React.FC<LastUpdatedProps> = ({ 
-  date = "June 2025", 
-  className = "" 
+export const LastUpdated: React.FC<LastUpdatedProps> = ({
+  fund,
+  dateModified,
+  dataLastVerified,
+  className = '',
+  showDataVerification = true
 }) => {
+  const modifiedDate = fund?.dateModified || dateModified;
+  const verifiedDate = fund?.dataLastVerified || dataLastVerified;
+  
+  if (!modifiedDate) return null;
+
+  const contentAge = DateManagementService.getContentAge(modifiedDate);
+  const isStale = contentAge > 30;
+
   return (
-    <div className={`flex items-center gap-2 text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg border ${className}`}>
-      <Calendar className="h-4 w-4" />
-      <span>Last updated: {date}</span>
+    <div className={`text-sm text-muted-foreground ${className}`}>
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-2">
+          <span>Last updated:</span>
+          <time 
+            dateTime={modifiedDate}
+            className={`font-medium ${isStale ? 'text-yellow-600' : 'text-green-600'}`}
+          >
+            {DateManagementService.formatDisplayDate(modifiedDate)}
+          </time>
+          {contentAge <= 7 && (
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-800">
+              Recently updated
+            </span>
+          )}
+        </div>
+        
+        {showDataVerification && verifiedDate && (
+          <div className="flex items-center gap-2">
+            <span>Data verified:</span>
+            <time 
+              dateTime={verifiedDate}
+              className="font-medium text-blue-600"
+            >
+              {DateManagementService.formatDisplayDate(verifiedDate)}
+            </time>
+          </div>
+        )}
+        
+        {fund?.performanceDataDate && (
+          <div className="flex items-center gap-2">
+            <span>Performance data as of:</span>
+            <time 
+              dateTime={fund.performanceDataDate}
+              className="font-medium"
+            >
+              {DateManagementService.formatDisplayDate(fund.performanceDataDate)}
+            </time>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

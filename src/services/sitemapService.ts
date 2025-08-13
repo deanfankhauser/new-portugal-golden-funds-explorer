@@ -3,6 +3,7 @@ import { funds, getAllCategories, getAllTags } from '../data/funds';
 import { getAllFundManagers } from '../data/services/managers-service';
 import { categoryToSlug, tagToSlug, managerToSlug } from '../lib/utils';
 import { URL_CONFIG } from '../utils/urlConfig';
+import { DateManagementService } from './dateManagementService';
 
 export interface SitemapEntry {
   url: string;
@@ -93,55 +94,63 @@ export class SitemapService {
     ];
   }
 
-  // Generate fund detail pages
+  // Generate fund detail pages with actual modification dates
   private static getFundPages(): SitemapEntry[] {
-    const currentDate = this.getCurrentDate();
-    
-    return funds.map(fund => ({
-      url: URL_CONFIG.buildFundUrl(fund.id),
-      lastmod: currentDate,
-      changefreq: 'weekly' as const,
-      priority: 0.9
-    }));
+    return funds.map(fund => {
+      const contentDates = DateManagementService.getFundContentDates(fund);
+      return {
+        url: URL_CONFIG.buildFundUrl(fund.id),
+        lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
+        changefreq: contentDates.changeFrequency,
+        priority: fund.fundStatus === 'Open' ? 0.9 : 
+                  fund.fundStatus === 'Closing Soon' ? 0.95 : 0.8
+      };
+    });
   }
 
-  // Generate category pages
+  // Generate category pages with content-aware dates
   private static getCategoryPages(): SitemapEntry[] {
-    const currentDate = this.getCurrentDate();
     const categories = getAllCategories();
     
-    return categories.map(category => ({
-      url: URL_CONFIG.buildCategoryUrl(categoryToSlug(category)),
-      lastmod: currentDate,
-      changefreq: 'weekly' as const,
-      priority: 0.8
-    }));
+    return categories.map(category => {
+      const contentDates = DateManagementService.getContentDates('category', category);
+      return {
+        url: URL_CONFIG.buildCategoryUrl(categoryToSlug(category)),
+        lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
+        changefreq: contentDates.changeFrequency,
+        priority: 0.8
+      };
+    });
   }
 
-  // Generate tag pages
+  // Generate tag pages with content-aware dates
   private static getTagPages(): SitemapEntry[] {
-    const currentDate = this.getCurrentDate();
     const tags = getAllTags();
     
-    return tags.map(tag => ({
-      url: URL_CONFIG.buildTagUrl(tagToSlug(tag)),
-      lastmod: currentDate,
-      changefreq: 'weekly' as const,
-      priority: 0.7
-    }));
+    return tags.map(tag => {
+      const contentDates = DateManagementService.getContentDates('tag', tag);
+      return {
+        url: URL_CONFIG.buildTagUrl(tagToSlug(tag)),
+        lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
+        changefreq: contentDates.changeFrequency,
+        priority: 0.7
+      };
+    });
   }
 
-  // Generate manager pages with SEO-friendly URLs
+  // Generate manager pages with content-aware dates
   private static getManagerPages(): SitemapEntry[] {
-    const currentDate = this.getCurrentDate();
     const managers = getAllFundManagers();
     
-    return managers.map(manager => ({
-      url: URL_CONFIG.buildManagerUrl(manager.name),
-      lastmod: currentDate,
-      changefreq: 'weekly' as const,
-      priority: 0.8
-    }));
+    return managers.map(manager => {
+      const contentDates = DateManagementService.getContentDates('manager', manager.name);
+      return {
+        url: URL_CONFIG.buildManagerUrl(manager.name),
+        lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
+        changefreq: contentDates.changeFrequency,
+        priority: 0.8
+      };
+    });
   }
 
   // Generate complete sitemap entries

@@ -56,6 +56,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           {/* Processing Time Tracker */}
           <ProcessingTimeTracker fund={fund} />
           
+          {/* Fund Data Freshness */}
+          <FundDataFreshness fund={fund} />
+          
           {/* Fund Quiz CTA */}
           <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 md:p-6 rounded-lg border border-green-200">
             <div className="text-center">

@@ -1,4 +1,3 @@
-
 import { Fund } from '../types/funds';
 import { fundsData } from '../mock/funds';
 import { generateInvestmentTags } from './investment-tags-service';
@@ -8,9 +7,10 @@ import { generateLockupTags } from './lockup-tags-service';
 import { generateManagementFeeTags } from './management-fee-tags-service';
 import { generateFundSizeTags } from './fund-size-tags-service';
 import { generateAudienceTags } from './audience-tags-service';
+import { FundDataMigrationService } from '../../services/fundDataMigrationService';
 
 // Function to add investment, risk, APY, lock-up, management fee, fund size, and audience tags to funds
-const addTagsToFunds = (funds: Fund[]): Fund[] => {
+const addTagsToFunds = (funds: any[]): any[] => {
   return funds.map(fund => {
     const investmentTags = generateInvestmentTags(fund.minimumInvestment);
     const riskTags = generateRiskTags(fund);
@@ -39,8 +39,9 @@ const addTagsToFunds = (funds: Fund[]): Fund[] => {
   });
 };
 
-// Export funds with all generated tags added
-export const funds = addTagsToFunds(fundsData);
+// Enhanced funds with investment, risk, APY, lock-up, management fee, fund size, audience tags, and date fields
+const fundsWithTags = addTagsToFunds(fundsData);
+export const funds: Fund[] = FundDataMigrationService.migrateFundsArray(fundsWithTags);
 
 // Function to get a fund by ID
 export const getFundById = (id: string): Fund | undefined => {
