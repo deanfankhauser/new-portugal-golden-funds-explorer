@@ -166,25 +166,28 @@ export function generateHTMLTemplate(
   
   <!-- Critical React Setup - MUST be before any modules -->
   <script>
-    // Ensure React is available globally before any modules load
+    // Ensure React and ALL its features are available before ANY module loads
     if (typeof window !== 'undefined') {
       window.__REACT_HYDRATION_READY__ = false;
       window.__SSG_MODE__ = true;
       
-      // Pre-define React object to prevent module loading errors
-      window.React = window.React || {};
+      // Create React stub with all hooks to prevent ANY module evaluation errors
+      window.React = window.React || {
+        useState: function() { return [null, function(){}]; },
+        useEffect: function() {},
+        useLayoutEffect: function() {},
+        useContext: function() { return null; },
+        createContext: function() { return { Provider: function(props) { return props.children; }, Consumer: function() {} }; },
+        useMemo: function(fn) { return fn(); },
+        useCallback: function(fn) { return fn; },
+        useRef: function() { return { current: null }; },
+        forwardRef: function(fn) { return fn; },
+        createElement: function() { return {}; },
+        Fragment: function(props) { return props.children; }
+      };
       
-      // Ensure React hooks are available globally
-      if (window.React) {
-        window.useState = window.React.useState || function() { return [null, function(){}]; };
-        window.useEffect = window.React.useEffect || function() {};
-        window.useLayoutEffect = window.React.useLayoutEffect || function() {};
-        window.useContext = window.React.useContext || function() { return null; };
-        window.createContext = window.React.createContext || function() { return {}; };
-        window.useMemo = window.React.useMemo || function(fn) { return fn(); };
-        window.useCallback = window.React.useCallback || function(fn) { return fn; };
-        window.useRef = window.React.useRef || function() { return { current: null }; };
-      }
+      // Make hooks available globally
+      Object.assign(window, window.React);
     }
   </script>
   
