@@ -46,7 +46,7 @@ const FundIndex: React.FC = () => {
         '@type': 'DataDownload',
         'encodingFormat': 'application/ld+json',
         'name': 'Fund Performance and Ranking Data',
-        'contentUrl': 'https://www.movingto.com/funds/index'
+        'contentUrl': 'https://funds.movingto.com/index'
       },
       'variableMeasured': [
         {

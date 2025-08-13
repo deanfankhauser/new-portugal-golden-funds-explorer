@@ -75,7 +75,7 @@ export class ManagerPageSchemaGenerator {
             '@type': 'ListItem',
             'position': 1,
             'name': 'Home',
-            'item': 'https://www.movingto.com/funds'
+             'item': 'https://funds.movingto.com'
           },
           {
             '@type': 'ListItem',
@@ -113,7 +113,7 @@ export class ManagerPageSchemaGenerator {
             '@type': 'ListItem',
             'position': 1,
             'name': 'Home',
-            'item': 'https://www.movingto.com/funds'
+            'item': 'https://funds.movingto.com'
           },
           {
             '@type': 'ListItem',

@@ -85,7 +85,7 @@ export class RouteDiscovery {
 
   static generateSitemap(): string {
     const routes = this.getAllStaticRoutes();
-    const baseUrl = 'https://www.movingto.com/funds';
+    const baseUrl = 'https://funds.movingto.com';
     
     const urls = routes.map(route => {
       // Build correct URL without duplication
