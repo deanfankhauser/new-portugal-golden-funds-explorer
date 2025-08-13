@@ -24,12 +24,7 @@ export default defineConfig(({ mode }) => ({
     // Increase chunk size warning limit to 1000kb
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
-      external: ['react', 'react-dom'],
       output: {
-        globals: {
-          'react': 'React',
-          'react-dom': 'ReactDOM'
-        },
         // Enhanced manual chunk splitting for optimal code splitting
         manualChunks: (id) => {
           // Vendor chunks
