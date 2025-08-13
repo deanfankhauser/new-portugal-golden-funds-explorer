@@ -1,4 +1,24 @@
-import React, { useLayoutEffect, lazy, Suspense } from 'react';
+// Critical: Ensure React is available BEFORE any imports that use React hooks
+import React from 'react';
+
+// Make React globally available immediately
+if (typeof window !== 'undefined') {
+  window.React = React;
+  Object.assign(window, { 
+    React,
+    useState: React.useState,
+    useEffect: React.useEffect,
+    useLayoutEffect: React.useLayoutEffect,
+    useContext: React.useContext,
+    createContext: React.createContext,
+    useMemo: React.useMemo,
+    useCallback: React.useCallback,
+    useRef: React.useRef
+  });
+}
+
+// Now safely import other modules that might use React hooks
+import { lazy, Suspense, useLayoutEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -6,11 +26,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from './contexts/AuthContext';
 import { ComparisonProvider } from './contexts/ComparisonContext';
 import { RecentlyViewedProvider } from './contexts/RecentlyViewedContext';
-
-// Ensure React is available globally before any component definitions
-if (typeof window !== 'undefined' && !window.React) {
-  window.React = React;
-}
 
 // Lazy load all pages for optimal performance
 import Index from './pages/Index'; // Keep homepage non-lazy for instant load

@@ -164,12 +164,27 @@ export function generateHTMLTemplate(
 <body>
   <div id="root">${appHtml}</div>
   
-  <!-- Critical React Setup -->
+  <!-- Critical React Setup - MUST be before any modules -->
   <script>
     // Ensure React is available globally before any modules load
     if (typeof window !== 'undefined') {
       window.__REACT_HYDRATION_READY__ = false;
       window.__SSG_MODE__ = true;
+      
+      // Pre-define React object to prevent module loading errors
+      window.React = window.React || {};
+      
+      // Ensure React hooks are available globally
+      if (window.React) {
+        window.useState = window.React.useState || function() { return [null, function(){}]; };
+        window.useEffect = window.React.useEffect || function() {};
+        window.useLayoutEffect = window.React.useLayoutEffect || function() {};
+        window.useContext = window.React.useContext || function() { return null; };
+        window.createContext = window.React.createContext || function() { return {}; };
+        window.useMemo = window.React.useMemo || function(fn) { return fn(); };
+        window.useCallback = window.React.useCallback || function(fn) { return fn; };
+        window.useRef = window.React.useRef || function() { return { current: null }; };
+      }
     }
   </script>
   
