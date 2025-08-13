@@ -23,7 +23,7 @@ import { crownInvestmentsFund } from './crown-investments-fund';
 import { digitalInsightFund } from './digital-insight-fund';
 import { primeInsightFund } from './prime-insight-fund';
 import { blueWaterCapitalFund } from './bluewater-capital-fund';
-import { imgaPortugueseCorporateDebtFund, imgaSilverDomusFund } from './imga-funds';
+import { imgaPortugueseCorporateDebtFund, imgaSilverDomusFund, imgaAcoesPortugalFund, imgaFuturumTechFund } from './imga-funds';
 import { Fund } from '../../types/funds';
 
 // Export all funds as an array
@@ -53,7 +53,9 @@ export const fundsData: Fund[] = [
   primeInsightFund,
   blueWaterCapitalFund,
   imgaPortugueseCorporateDebtFund,
-  imgaSilverDomusFund
+  imgaSilverDomusFund,
+  imgaAcoesPortugalFund,
+  imgaFuturumTechFund
 ];
 
 // Export individual funds
@@ -83,5 +85,7 @@ export {
   primeInsightFund,
   blueWaterCapitalFund,
   imgaPortugueseCorporateDebtFund,
-  imgaSilverDomusFund
+  imgaSilverDomusFund,
+  imgaAcoesPortugalFund,
+  imgaFuturumTechFund
 };
