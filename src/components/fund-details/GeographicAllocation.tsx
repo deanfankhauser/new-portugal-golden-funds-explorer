@@ -22,8 +22,8 @@ const GeographicAllocation: React.FC<GeographicAllocationProps> = ({ allocations
           <h2 className="text-xl font-bold">Geographic Allocation</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {allocations.map((allocation, index) => (
-            <div key={index} className="bg-slate-50 p-4 rounded-lg border border-slate-100">
+          {allocations.map((allocation) => (
+            <div key={allocation.region} className="bg-slate-50 p-4 rounded-lg border border-slate-100">
               <h3 className="font-medium text-gray-700 text-sm uppercase tracking-wide">{allocation.region}</h3>
               <p className="text-2xl font-bold text-[#EF4444] mt-1">{formatPercentage(allocation.percentage)}</p>
             </div>

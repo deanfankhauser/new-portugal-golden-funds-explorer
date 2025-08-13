@@ -78,8 +78,8 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-        {allMetrics.map((metric, index) => (
-          <Card key={index} className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+        {allMetrics.map((metric) => (
+          <Card key={`${metric.label}-${metric.value}`} className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
             <CardContent className="p-4 md:p-6">
               <h3 className="font-medium text-gray-500 mb-1 md:mb-2 text-xs md:text-sm uppercase tracking-wide">
                 {metric.label}

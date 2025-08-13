@@ -45,84 +45,15 @@ const queryClient = new QueryClient({
 // Component to handle scroll to top on route change
 const ScrollToTop = () => {
   const location = useLocation();
-  
+
   useLayoutEffect(() => {
-    // Route changed, scroll to top
-    
-    // Disable browser scroll restoration completely
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
-    
-    // Multiple approaches to ensure scroll works on all browsers
-    const scrollToTop = () => {
-      // Method 1: Direct window scroll
-      window.scrollTo(0, 0);
-      
-      // Method 2: Scroll with behavior instant
-      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      
-      // Method 3: Direct DOM manipulation
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-      
-      // Method 4: Force scroll on root element
-      const root = document.getElementById('root');
-      if (root) {
-        root.scrollTop = 0;
-      }
-      
-      // Method 5: Force scroll on html and body
-      const html = document.querySelector('html');
-      const body = document.querySelector('body');
-      if (html) html.scrollTop = 0;
-      if (body) body.scrollTop = 0;
-    };
-    
-    // Execute immediately
-    scrollToTop();
-    
-    // Execute after micro-task
-    Promise.resolve().then(scrollToTop);
-    
-    // Execute after animation frame
-    requestAnimationFrame(scrollToTop);
-    
-    // Execute after short delay for slow devices
-    setTimeout(scrollToTop, 100);
-    
-    // Cleanup function
-    return () => {
-      // No cleanup needed
-    };
-  }, [location.pathname, location.search, location.hash]);
-  
-  // Additional useEffect as backup
-  useEffect(() => {
-    const scrollToTop = () => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    };
-    
-    scrollToTop();
-    
-    // Also scroll after component mount
-    const timer = setTimeout(scrollToTop, 0);
-    return () => clearTimeout(timer);
-  }, [location]);
-  
+    // Simple, reliable scroll to top
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return null;
 };
 
-// Debug component to log current route
-const RouteDebugger = () => {
-  const location = useLocation();
-  
-  // App routing logic
-  
-  return null;
-};
 
 // Component to handle direct fund routes (e.g., /horizon-fund)
 const DirectFundRoute = () => {
@@ -155,12 +86,6 @@ function App() {
 
   // App initialization
   
-  // Disable scroll restoration at app level
-  useEffect(() => {
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
-  }, []);
   
   return (
     <QueryClientProvider client={queryClient}>
@@ -171,12 +96,10 @@ function App() {
               <Router>
                 <SEOProvider>
                   <ScrollToTop />
-                  <RouteDebugger />
                   <div className="min-h-screen w-full bg-gray-50">
                     <Routes>
                       <Route path="/" element={<Index />} />
                       <Route path="/index" element={<FundIndex />} />
-                      <Route path="/:id" element={<FundDetails />} />
                       <Route path="/tags" element={<TagsHub />} />
                       <Route path="/tags/:tag" element={<TagPage />} />
                       <Route path="/categories" element={<CategoriesHub />} />
@@ -192,8 +115,7 @@ function App() {
                       <Route path="/faqs" element={<FAQs />} />
                       <Route path="/roi-calculator" element={<ROICalculator />} />
                       <Route path="/fund-quiz" element={<FundQuiz />} />
-                      {/* Direct fund routes - catch single path segments that match fund IDs */}
-                      <Route path="/:potentialFundId" element={<DirectFundRoute />} />
+                      <Route path="/:id" element={<DirectFundRoute />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </div>

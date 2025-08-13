@@ -17,7 +17,7 @@ export const analytics = {
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', 'page_view', {
         page_title: title || document.title,
-        page_location: window.location.href,
+        page_location: `${window.location.origin}${path}`,
         page_path: path
       });
     }
