@@ -21,6 +21,7 @@ import { inzFund } from './inz-fund';
 import { emeraldGreenFund } from './emerald-green-fund';
 import { crownInvestmentsFund } from './crown-investments-fund';
 import { digitalInsightFund } from './digital-insight-fund';
+import { primeInsightFund } from './prime-insight-fund';
 import { Fund } from '../../types/funds';
 
 // Export all funds as an array
@@ -46,7 +47,8 @@ export const fundsData: Fund[] = [
   inzFund,
   emeraldGreenFund,
   crownInvestmentsFund,
-  digitalInsightFund
+  digitalInsightFund,
+  primeInsightFund
 ];
 
 // Export individual funds
@@ -72,5 +74,6 @@ export {
   inzFund,
   emeraldGreenFund,
   crownInvestmentsFund,
-  digitalInsightFund
+  digitalInsightFund,
+  primeInsightFund
 };
