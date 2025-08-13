@@ -17,7 +17,7 @@ const CategoryCrossLinks: React.FC<CategoryCrossLinksProps> = ({ categoryName })
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Link to="/funds/index">
+          <Link to="/index">
             <Button variant="outline" className="w-full h-auto flex-col items-center gap-2 p-4 hover:border-[#EF4444] hover:text-[#EF4444]">
               <TrendingUp className="h-5 w-5" />
               <div className="text-center">

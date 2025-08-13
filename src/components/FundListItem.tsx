@@ -57,7 +57,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between mb-2">
                 <h3 className="text-lg sm:text-xl font-semibold leading-tight">
-                  <Link to={`/funds/${fund.id}`} className="hover:text-[#EF4444] transition-colors block">
+                  <Link to={`/${fund.id}`} className="hover:text-[#EF4444] transition-colors block">
                     {fund.name}
                   </Link>
                 </h3>

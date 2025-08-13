@@ -63,7 +63,7 @@ const MethodologySection: React.FC = () => {
       'author': {
         '@type': 'Organization',
         'name': 'Movingto',
-        'url': 'https://movingto.com'
+        'url': 'https://www.movingto.com'
       },
       'datePublished': '2025-01-01',
       'dateModified': new Date().toISOString()

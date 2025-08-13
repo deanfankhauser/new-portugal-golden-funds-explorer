@@ -42,7 +42,7 @@ export function validateGeneratedFile(
   // Silent validation - no logging unless critical issues found
   
   if (!validationChecks.hasWwwSubdomain) {
-    console.error(`   ❌ URL missing www subdomain: ${seoData.url}`);
+    console.error(`   ❌ URL domain mismatch: ${seoData.url}`);
   }
   
   if (!validationChecks.hasCorrectCanonical || !validationChecks.hasCorrectOgUrl) {

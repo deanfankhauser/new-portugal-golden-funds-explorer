@@ -71,7 +71,7 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
       'author': {
         '@type': 'Organization',
         'name': 'Movingto',
-        'url': 'https://movingto.com'
+        'url': 'https://www.movingto.com'
       },
       'about': [
         'Portugal Golden Visa',
@@ -92,7 +92,7 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
             'description': fund.description,
             'category': fund.category,
             'identifier': fund.id,
-            'url': `https://movingto.com/funds/funds/${fund.id}`,
+            'url': `https://www.movingto.com/funds/${fund.id}`,
             'aggregateRating': {
               '@type': 'AggregateRating',
               'ratingValue': score.movingtoScore,
@@ -202,13 +202,13 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
       'creator': {
         '@type': 'Organization',
         'name': 'Movingto',
-        'url': 'https://movingto.com'
+        'url': 'https://www.movingto.com'
       },
       'dateModified': new Date().toISOString(),
       'distribution': {
         '@type': 'DataDownload',
         'encodingFormat': 'application/ld+json',
-        'contentUrl': 'https://movingto.com/funds/index'
+        'contentUrl': 'https://www.movingto.com/funds/index'
       }
     };
 

@@ -56,7 +56,7 @@ const IndexCTA: React.FC = () => {
           <Button 
             variant="outline" 
             className="w-full"
-            onClick={() => window.open('https://movingto.com/contact', '_blank')}
+            onClick={() => window.open('https://www.movingto.com/contact', '_blank')}
           >
             <Calendar className="h-4 w-4 mr-2" />
             Book a Free Consultation

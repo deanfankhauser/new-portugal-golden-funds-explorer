@@ -68,7 +68,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                     Take Fund Quiz
                   </Button>
                 </Link>
-                <Link to="/funds/index">
+                <Link to="/index">
                   <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
                     <TrendingUp className="mr-2 h-4 w-4" />
                     View Fund Index

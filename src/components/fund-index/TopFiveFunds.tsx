@@ -25,7 +25,7 @@ const TopFiveFunds: React.FC<TopFiveFundsProps> = ({ scores }) => {
       'author': {
         '@type': 'Organization',
         'name': 'Movingto',
-        'url': 'https://movingto.com'
+        'url': 'https://www.movingto.com'
       },
       'itemListElement': scores.map((score, index) => {
         const fund = getFundById(score.fundId);
@@ -40,7 +40,7 @@ const TopFiveFunds: React.FC<TopFiveFundsProps> = ({ scores }) => {
             'description': fund.description,
             'category': fund.category,
             'identifier': fund.id,
-            'url': `https://movingto.com/funds/funds/${fund.id}`,
+            'url': `https://www.movingto.com/funds/${fund.id}`,
             'aggregateRating': {
               '@type': 'AggregateRating',
               'ratingValue': score.movingtoScore,
@@ -210,7 +210,7 @@ const TopFiveFunds: React.FC<TopFiveFundsProps> = ({ scores }) => {
 
                     <div className="flex-shrink-0">
                       <Link 
-                        to={`/funds/${fund.id}`}
+                        to={`/${fund.id}`}
                         itemProp="url"
                       >
                         <Button className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2">

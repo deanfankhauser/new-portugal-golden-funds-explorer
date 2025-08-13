@@ -101,7 +101,7 @@ const FundManagerFAQs: React.FC<FundManagerFAQsProps> = ({ fund }) => {
             FAQs about {fund.name}
           </h3>
           <Link 
-            to={`/funds/${fund.id}`}
+            to={`/${fund.id}`}
             className="text-[#EF4444] hover:text-[#EF4444]/80 transition-colors flex items-center gap-1 text-sm"
           >
             View full details

@@ -27,7 +27,7 @@ const FundIndex: React.FC = () => {
       'creator': {
         '@type': 'Organization',
         'name': 'Movingto',
-        'url': 'https://movingto.com'
+        'url': 'https://www.movingto.com'
       },
       'version': '2025.1',
       'dateCreated': '2025-01-01',
@@ -46,7 +46,7 @@ const FundIndex: React.FC = () => {
         '@type': 'DataDownload',
         'encodingFormat': 'application/ld+json',
         'name': 'Fund Performance and Ranking Data',
-        'contentUrl': 'https://movingto.com/funds/index'
+        'contentUrl': 'https://www.movingto.com/funds/index'
       },
       'variableMeasured': [
         {

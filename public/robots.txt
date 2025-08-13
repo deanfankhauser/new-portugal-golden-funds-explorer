@@ -6,7 +6,7 @@ Allow: /
 Allow: /*
 
 # Sitemap
-Sitemap: https://movingto.com/sitemap.xml
+Sitemap: https://www.movingto.com/funds/sitemap.xml
 
 # Crawl-delay for specific bots
 User-agent: Googlebot

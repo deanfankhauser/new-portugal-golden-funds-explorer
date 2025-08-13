@@ -32,6 +32,17 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
 
       ConsolidatedSEOService.applyMetaTags(seoData);
       
+      // Ensure 404 pages are not indexed
+      if (pageType === '404') {
+        let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+        if (!robots) {
+          robots = document.createElement('meta');
+          robots.setAttribute('name', 'robots');
+          document.head.appendChild(robots);
+        }
+        robots.setAttribute('content', 'noindex, follow, max-image-preview:large');
+      }
+      
       // Initialize performance optimizations
       PerformanceOptimizationService.initializePerformanceOptimizations();
       

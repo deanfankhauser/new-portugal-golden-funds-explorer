@@ -25,7 +25,7 @@ const TrustSignals: React.FC = () => {
             'worksFor': {
               '@type': 'Organization',
               'name': 'Movingto',
-              'url': 'https://movingto.com'
+              'url': 'https://www.movingto.com'
             },
             'sameAs': 'https://www.linkedin.com/in/deanfankhauser/',
             'image': 'https://media.licdn.com/dms/image/v2/D4D03AQGgefb70xI_jQ/profile-displayphoto-shrink_400_400/B4DZWiqmgTHIAk-/0/1742190832011?e=1756339200&v=beta&t=9RZf7wDSUtYygvqQSQVOnqz-pFLVr57Vrj0LHNMLSyI',
@@ -52,7 +52,7 @@ const TrustSignals: React.FC = () => {
             'worksFor': {
               '@type': 'Organization',
               'name': 'Movingto',
-              'url': 'https://movingto.com'
+              'url': 'https://www.movingto.com'
             },
             'sameAs': 'https://www.linkedin.com/in/annaluisalmb/',
             'image': 'https://media.licdn.com/dms/image/v2/D4D03AQF5SIWptiK7qA/profile-displayphoto-shrink_400_400/B4DZXbzj9pG4Ak-/0/1743149482206?e=1756339200&v=beta&t=g5d5b_pY2vd_ehQFqWmu8RPOK4IZDCP72ZY14wKYQ88',

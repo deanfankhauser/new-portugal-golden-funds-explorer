@@ -1,3 +1,4 @@
+
 import { SEOData } from '../types/seo';
 import { URL_CONFIG } from '../utils/urlConfig';
 import { funds } from '../data/funds';
@@ -51,7 +52,7 @@ export class ConsolidatedSEOService {
 
   // Get SEO data for different page types
   static getSEOData(pageType: string, params: any = {}): SEOData {
-    const baseUrl = URL_CONFIG.SITE_URL;
+    const baseUrl = URL_CONFIG.BASE_URL;
     
     switch (pageType) {
       case 'homepage':
@@ -70,7 +71,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText(`${fund.name} | Fund Analysis | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(`Comprehensive analysis of ${fund.name}. View performance, fees, risk profile, and investment strategy details.`, this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/funds/${fund.id}`,
+          url: URL_CONFIG.buildFundUrl(fund.id),
           structuredData: this.getFundStructuredData(fund)
         };
 
@@ -78,7 +79,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Fund Index | All Portugal Investment Funds Database | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Complete database of Portugal investment funds. Filter by category, fees, minimum investment, and performance.', this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/funds/index`,
+          url: URL_CONFIG.buildUrl('index'),
           structuredData: this.getFundIndexStructuredData()
         };
 
@@ -86,7 +87,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText(`${params.categoryName} Funds | Portugal Investment Analysis | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(`Explore ${params.categoryName} investment funds in Portugal. Compare performance, fees, and risk profiles.`, this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/categories/${this.slugify(params.categoryName)}`,
+          url: URL_CONFIG.buildCategoryUrl(params.categoryName),
           structuredData: this.getCategoryStructuredData(params.categoryName)
         };
 
@@ -94,7 +95,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText(`${params.tagName} Investment Funds | Portugal | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(`Find investment funds tagged with ${params.tagName}. Detailed analysis and comparison tools.`, this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/tags/${this.slugify(params.tagName)}`,
+          url: URL_CONFIG.buildTagUrl(params.tagName),
           structuredData: this.getTagStructuredData(params.tagName)
         };
 
@@ -102,7 +103,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText(`${params.managerName} | Fund Manager Profile | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(`Profile and funds managed by ${params.managerName}. Track record, investment philosophy, and fund performance.`, this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/managers/${this.slugify(params.managerName)}`,
+          url: URL_CONFIG.buildManagerUrl(params.managerName),
           structuredData: this.getManagerStructuredData(params.managerName)
         };
 
@@ -111,7 +112,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText(`Fund Comparison | ${params.comparisonTitle || 'Investment Analysis'} | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Compare investment funds side-by-side. Analyze performance, fees, risk profiles, and investment strategies.', this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/comparison`,
+          url: URL_CONFIG.buildUrl('compare'),
           structuredData: this.getComparisonStructuredData()
         };
 
@@ -119,7 +120,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('ROI Calculator | Investment Returns Portugal | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Calculate potential returns on Portugal investments. Compare different funds and investment scenarios.', this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/roi-calculator`,
+          url: URL_CONFIG.buildUrl('roi-calculator'),
           structuredData: this.getCalculatorStructuredData()
         };
 
@@ -127,7 +128,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Fund Finder Quiz | Find Your Perfect Investment | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Take our quiz to find the perfect investment fund for your needs. Personalized recommendations.', this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/fund-quiz`,
+          url: URL_CONFIG.buildUrl('fund-quiz'),
           structuredData: this.getQuizStructuredData()
         };
 
@@ -143,7 +144,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Fund Managers | Portugal Investment Professionals | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Directory of fund managers in Portugal. Find experienced investment professionals.', this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/managers`,
+          url: URL_CONFIG.buildUrl('managers'),
           structuredData: this.getManagersHubStructuredData()
         };
 
@@ -151,7 +152,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Fund Categories | Investment Types Portugal | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Browse investment fund categories. Explore different investment types and strategies.', this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/categories`,
+          url: URL_CONFIG.buildUrl('categories'),
           structuredData: this.getCategoriesHubStructuredData()
         };
 
@@ -159,7 +160,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Fund Tags | Investment Characteristics | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Explore investment funds by characteristics and tags. Find funds that match your criteria.', this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/tags`,
+          url: URL_CONFIG.buildUrl('tags'),
           structuredData: this.getTagsHubStructuredData()
         };
 
@@ -167,7 +168,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Fund Comparisons | Investment Analysis Hub | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Hub for comparing investment funds. Access comparison tools and analysis.', this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/comparisons`,
+          url: URL_CONFIG.buildUrl('comparisons'),
           structuredData: this.getComparisonsHubStructuredData()
         };
 
@@ -175,7 +176,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('About | Portugal Investment Fund Analysis Platform | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Learn about our platform for analyzing Portugal investment funds. Expert analysis.', this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/about`,
+          url: URL_CONFIG.buildUrl('about'),
           structuredData: this.getAboutStructuredData()
         };
 
@@ -183,7 +184,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Disclaimer | Portugal Investment Information | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Important disclaimer regarding investment information. Please read our terms.', this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/disclaimer`,
+          url: URL_CONFIG.buildUrl('disclaimer'),
           structuredData: this.getDisclaimerStructuredData()
         };
 
@@ -191,7 +192,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('FAQs | Portugal Investment Fund Questions | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Frequently asked questions about Portugal investment funds. Get answers.', this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/faqs`,
+          url: URL_CONFIG.buildUrl('faqs'),
           structuredData: this.getFAQStructuredData()
         };
 
@@ -199,7 +200,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Privacy Policy | Portugal Investment Fund Platform | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Privacy policy for our Portugal investment fund analysis platform.', this.MAX_DESCRIPTION_LENGTH),
-          url: `${baseUrl}/privacy`,
+          url: URL_CONFIG.buildUrl('privacy'),
           structuredData: this.getPrivacyStructuredData()
         };
 
@@ -344,11 +345,11 @@ export class ConsolidatedSEOService {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       'name': 'Movingto - Portugal Investment Funds',
-      'url': URL_CONFIG.SITE_URL,
+      'url': URL_CONFIG.BASE_URL,
       'description': 'Comprehensive analysis and comparison of Portugal investment funds',
       'potentialAction': {
         '@type': 'SearchAction',
-        'target': `${URL_CONFIG.SITE_URL}/search?q={search_term_string}`,
+        'target': `${URL_CONFIG.BASE_URL}/search?q={search_term_string}`,
         'query-input': 'required name=search_term_string'
       }
     };
@@ -364,7 +365,7 @@ export class ConsolidatedSEOService {
         '@type': 'Organization',
         'name': fund.manager
       },
-      'url': `${URL_CONFIG.SITE_URL}/funds/${fund.id}`
+      'url': URL_CONFIG.buildFundUrl(fund.id)
     };
   }
 
@@ -374,7 +375,7 @@ export class ConsolidatedSEOService {
       '@type': 'CollectionPage',
       'name': `${categoryName} Investment Funds`,
       'description': `Collection of ${categoryName} investment funds in Portugal`,
-      'url': `${URL_CONFIG.SITE_URL}/categories/${this.slugify(categoryName)}`
+      'url': URL_CONFIG.buildCategoryUrl(categoryName)
     };
   }
 
@@ -384,17 +385,16 @@ export class ConsolidatedSEOService {
       '@type': 'CollectionPage',
       'name': `${tagName} Investment Funds`,
       'description': `Investment funds tagged with ${tagName}`,
-      'url': `${URL_CONFIG.SITE_URL}/tags/${this.slugify(tagName)}`
+      'url': URL_CONFIG.buildTagUrl(tagName)
     };
   }
 
   private static getManagerStructuredData(managerName: string): any {
     return {
       '@context': 'https://schema.org',
-      '@type': 'Person',
+      '@type': 'Organization',
       'name': managerName,
-      'jobTitle': 'Fund Manager',
-      'url': `${URL_CONFIG.SITE_URL}/managers/${this.slugify(managerName)}`
+      'url': URL_CONFIG.buildManagerUrl(managerName)
     };
   }
 
@@ -404,7 +404,7 @@ export class ConsolidatedSEOService {
       '@type': 'WebPage',
       'name': 'Investment Fund Comparison',
       'description': 'Compare investment funds side-by-side',
-      'url': `${URL_CONFIG.SITE_URL}/comparison`
+      'url': URL_CONFIG.buildUrl('compare')
     };
   }
 
@@ -414,7 +414,7 @@ export class ConsolidatedSEOService {
       '@type': 'CollectionPage',
       'name': 'Fund Index Database',
       'description': 'Complete database of Portugal investment funds',
-      'url': `${URL_CONFIG.SITE_URL}/funds/index`
+      'url': URL_CONFIG.buildUrl('index')
     };
   }
 
@@ -424,7 +424,7 @@ export class ConsolidatedSEOService {
       '@type': 'WebApplication',
       'name': 'ROI Calculator',
       'description': 'Calculate potential investment returns',
-      'url': `${URL_CONFIG.SITE_URL}/roi-calculator`
+      'url': URL_CONFIG.buildUrl('roi-calculator')
     };
   }
 
@@ -434,7 +434,7 @@ export class ConsolidatedSEOService {
       '@type': 'WebApplication',
       'name': 'Fund Finder Quiz',
       'description': 'Find the perfect investment fund',
-      'url': `${URL_CONFIG.SITE_URL}/fund-quiz`
+      'url': URL_CONFIG.buildUrl('fund-quiz')
     };
   }
 
@@ -444,7 +444,7 @@ export class ConsolidatedSEOService {
       '@type': 'CollectionPage',
       'name': 'Fund Managers Directory',
       'description': 'Directory of investment fund managers',
-      'url': `${URL_CONFIG.SITE_URL}/managers`
+      'url': URL_CONFIG.buildUrl('managers')
     };
   }
 
@@ -454,7 +454,7 @@ export class ConsolidatedSEOService {
       '@type': 'CollectionPage',
       'name': 'Fund Categories',
       'description': 'Browse investment fund categories',
-      'url': `${URL_CONFIG.SITE_URL}/categories`
+      'url': URL_CONFIG.buildUrl('categories')
     };
   }
 
@@ -464,7 +464,7 @@ export class ConsolidatedSEOService {
       '@type': 'CollectionPage',
       'name': 'Fund Tags',
       'description': 'Explore funds by characteristics',
-      'url': `${URL_CONFIG.SITE_URL}/tags`
+      'url': URL_CONFIG.buildUrl('tags')
     };
   }
 
@@ -474,7 +474,7 @@ export class ConsolidatedSEOService {
       '@type': 'CollectionPage',
       'name': 'Fund Comparisons Hub',
       'description': 'Hub for comparing investment funds',
-      'url': `${URL_CONFIG.SITE_URL}/comparisons`
+      'url': URL_CONFIG.buildUrl('comparisons')
     };
   }
 
@@ -484,7 +484,7 @@ export class ConsolidatedSEOService {
       '@type': 'AboutPage',
       'name': 'About Movingto',
       'description': 'About our investment fund analysis platform',
-      'url': `${URL_CONFIG.SITE_URL}/about`
+      'url': URL_CONFIG.buildUrl('about')
     };
   }
 
@@ -494,7 +494,7 @@ export class ConsolidatedSEOService {
       '@type': 'WebPage',
       'name': 'Disclaimer',
       'description': 'Investment information disclaimer',
-      'url': `${URL_CONFIG.SITE_URL}/disclaimer`
+      'url': URL_CONFIG.buildUrl('disclaimer')
     };
   }
 
@@ -504,7 +504,7 @@ export class ConsolidatedSEOService {
       '@type': 'FAQPage',
       'name': 'Frequently Asked Questions',
       'description': 'Common questions about investment funds',
-      'url': `${URL_CONFIG.SITE_URL}/faqs`
+      'url': URL_CONFIG.buildUrl('faqs')
     };
   }
 
@@ -514,7 +514,7 @@ export class ConsolidatedSEOService {
       '@type': 'WebPage',
       'name': 'Privacy Policy',
       'description': 'Privacy policy for our platform',
-      'url': `${URL_CONFIG.SITE_URL}/privacy`
+      'url': URL_CONFIG.buildUrl('privacy')
     };
   }
 }

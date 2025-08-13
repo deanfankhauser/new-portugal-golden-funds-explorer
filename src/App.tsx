@@ -175,8 +175,8 @@ function App() {
                   <div className="min-h-screen w-full bg-gray-50">
                     <Routes>
                       <Route path="/" element={<Index />} />
-                      <Route path="/funds/index" element={<FundIndex />} />
-                      <Route path="/funds/:id" element={<FundDetails />} />
+                      <Route path="/index" element={<FundIndex />} />
+                      <Route path="/:id" element={<FundDetails />} />
                       <Route path="/tags" element={<TagsHub />} />
                       <Route path="/tags/:tag" element={<TagPage />} />
                       <Route path="/categories" element={<CategoriesHub />} />
