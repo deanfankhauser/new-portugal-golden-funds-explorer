@@ -1,3 +1,4 @@
+
 import { SEOData } from '../types/seo';
 import { URL_CONFIG } from '../utils/urlConfig';
 import { funds } from '../data/funds';
@@ -78,7 +79,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Fund Index | All Portugal Investment Funds Database | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Complete database of Portugal investment funds. Filter by category, fees, minimum investment, and performance.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('index'),
+          url: URL_CONFIG.buildUrl('/index'),
           structuredData: this.getFundIndexStructuredData()
         };
 
@@ -111,7 +112,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText(`Fund Comparison | ${params.comparisonTitle || 'Investment Analysis'} | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Compare investment funds side-by-side. Analyze performance, fees, risk profiles, and investment strategies.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('compare'),
+          url: URL_CONFIG.buildUrl('/compare'),
           structuredData: this.getComparisonStructuredData()
         };
 
@@ -119,7 +120,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('ROI Calculator | Investment Returns Portugal | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Calculate potential returns on Portugal investments. Compare different funds and investment scenarios.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('roi-calculator'),
+          url: URL_CONFIG.buildUrl('/roi-calculator'),
           structuredData: this.getCalculatorStructuredData()
         };
 
@@ -127,7 +128,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Fund Finder Quiz | Find Your Perfect Investment | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Take our quiz to find the perfect investment fund for your needs. Personalized recommendations.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('fund-quiz'),
+          url: URL_CONFIG.buildUrl('/fund-quiz'),
           structuredData: this.getQuizStructuredData()
         };
 
@@ -143,7 +144,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Fund Managers | Portugal Investment Professionals | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Directory of fund managers in Portugal. Find experienced investment professionals.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('managers'),
+          url: URL_CONFIG.buildUrl('/managers'),
           structuredData: this.getManagersHubStructuredData()
         };
 
@@ -151,7 +152,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Fund Categories | Investment Types Portugal | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Browse investment fund categories. Explore different investment types and strategies.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('categories'),
+          url: URL_CONFIG.buildUrl('/categories'),
           structuredData: this.getCategoriesHubStructuredData()
         };
 
@@ -159,7 +160,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Fund Tags | Investment Characteristics | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Explore investment funds by characteristics and tags. Find funds that match your criteria.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('tags'),
+          url: URL_CONFIG.buildUrl('/tags'),
           structuredData: this.getTagsHubStructuredData()
         };
 
@@ -167,7 +168,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Fund Comparisons | Investment Analysis Hub | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Hub for comparing investment funds. Access comparison tools and analysis.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('comparisons'),
+          url: URL_CONFIG.buildUrl('/comparisons'),
           structuredData: this.getComparisonsHubStructuredData()
         };
 
@@ -175,7 +176,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('About | Portugal Investment Fund Analysis Platform | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Learn about our platform for analyzing Portugal investment funds. Expert analysis.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('about'),
+          url: URL_CONFIG.buildUrl('/about'),
           structuredData: this.getAboutStructuredData()
         };
 
@@ -183,7 +184,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Disclaimer | Portugal Investment Information | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Important disclaimer regarding investment information. Please read our terms.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('disclaimer'),
+          url: URL_CONFIG.buildUrl('/disclaimer'),
           structuredData: this.getDisclaimerStructuredData()
         };
 
@@ -191,7 +192,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('FAQs | Portugal Investment Fund Questions | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Frequently asked questions about Portugal investment funds. Get answers.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('faqs'),
+          url: URL_CONFIG.buildUrl('/faqs'),
           structuredData: this.getFAQStructuredData()
         };
 
@@ -199,7 +200,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Privacy Policy | Portugal Investment Fund Platform | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Privacy policy for our Portugal investment fund analysis platform.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('privacy'),
+          url: URL_CONFIG.buildUrl('/privacy'),
           structuredData: this.getPrivacyStructuredData()
         };
 

@@ -1,4 +1,3 @@
-
 import { SEOData } from '../types/seo';
 
 export function generateHTMLTemplate(
@@ -10,7 +9,7 @@ export function generateHTMLTemplate(
   // Ensure all SEO data has fallbacks
   const title = seoData.title || 'Portugal Golden Visa Investment Funds | Eligible Investments 2025';
   const description = seoData.description || 'Compare and discover the best Golden Visa-eligible investment funds in Portugal. Expert analysis, comprehensive data, and personalized recommendations.';
-  const url = seoData.url || 'https://www.movingto.com/funds';
+  const url = seoData.url || 'https://funds.movingto.com';
   const structuredData = seoData.structuredData || {};
 
   if (process.env.NODE_ENV !== 'production') {
