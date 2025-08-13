@@ -2,6 +2,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Fund } from '../data/types/funds';
 
+// Ensure React is available before creating context
+if (typeof window !== 'undefined' && !window.React) {
+  window.React = React;
+}
+
 interface RecentlyViewedContextType {
   recentlyViewed: Fund[];
   addToRecentlyViewed: (fund: Fund) => void;

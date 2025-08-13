@@ -164,14 +164,41 @@ export function generateHTMLTemplate(
 <body>
   <div id="root">${appHtml}</div>
   
-  <!-- Built JavaScript Files -->
-  ${validatedJsFiles.map(js => `  <script type="module" src="/assets/${js}" crossorigin></script>`).join('\n')}
-  
-  <!-- React Runtime Safety Check -->
+  <!-- Critical React Setup -->
   <script>
-    // Ensure React is available globally for proper hydration
-    if (typeof window !== 'undefined' && !window.React) {
-      console.warn('React not found in global scope during hydration');
+    // Ensure React is available globally before any modules load
+    if (typeof window !== 'undefined') {
+      window.__REACT_HYDRATION_READY__ = false;
+    }
+  </script>
+  
+  <!-- Built JavaScript Files in correct order -->
+  ${validatedJsFiles
+    .sort((a, b) => {
+      // Main bundle first, then chunks
+      if (a.includes('index-') && !b.includes('index-')) return -1;
+      if (!a.includes('index-') && b.includes('index-')) return 1;
+      // Vendor chunks before feature chunks
+      if (a.includes('vendor') && !b.includes('vendor')) return -1;
+      if (!a.includes('vendor') && b.includes('vendor')) return 1;
+      return a.localeCompare(b);
+    })
+    .map(js => `  <script type="module" src="/assets/${js}" crossorigin></script>`).join('\n')}
+  
+  <!-- Hydration Safety Check -->
+  <script>
+    // Verify React loaded properly
+    if (typeof window !== 'undefined') {
+      const checkReact = () => {
+        if (window.React) {
+          window.__REACT_HYDRATION_READY__ = true;
+        } else {
+          console.warn('React not available during hydration');
+        }
+      };
+      // Check immediately and after a brief delay
+      checkReact();
+      setTimeout(checkReact, 100);
     }
   </script>
   

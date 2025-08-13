@@ -39,9 +39,13 @@ export function findBuiltAssets(distDir: string): AssetFiles {
   });
   
   jsFiles.sort((a, b) => {
-    // Main files first, then chunks
+    // Main index files first (these contain React)
     if (a.includes('index-') && !b.includes('index-')) return -1;
     if (!a.includes('index-') && b.includes('index-')) return 1;
+    // Vendor files next
+    if (a.includes('vendor') && !b.includes('vendor')) return -1;
+    if (!a.includes('vendor') && b.includes('vendor')) return 1;
+    // Chunks last
     if (a.includes('chunk-') && !b.includes('chunk-')) return 1;
     if (!a.includes('chunk-') && b.includes('chunk-')) return -1;
     return a.localeCompare(b);

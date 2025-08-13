@@ -3,6 +3,11 @@ import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { Fund } from '../data/funds';
 import { toast } from "@/components/ui/use-toast";
 
+// Ensure React is available before creating context
+if (typeof window !== 'undefined' && !window.React) {
+  window.React = React;
+}
+
 interface ComparisonContextType {
   compareFunds: Fund[];
   addToComparison: (fund: Fund) => void;

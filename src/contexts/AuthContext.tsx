@@ -1,6 +1,11 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+// Ensure React is available before creating context
+if (typeof window !== 'undefined' && !window.React) {
+  window.React = React;
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
   authenticate: (password: string) => boolean;
