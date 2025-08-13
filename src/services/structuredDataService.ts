@@ -1,6 +1,8 @@
 
 import { Fund } from '../data/funds';
 import { URL_CONFIG } from '../utils/urlConfig';
+import { DateManagementService } from './dateManagementService';
+import { EnhancedSEODateService } from './enhancedSEODateService';
 
 export interface StructuredDataSchema {
   '@context': string;
@@ -10,18 +12,26 @@ export interface StructuredDataSchema {
 
 export class StructuredDataService {
   
-  // Generate Product schema for a fund
+  // Generate Product schema for a fund with proper dating
   static generateFundProductSchema(fund: Fund): StructuredDataSchema {
+    const contentDates = DateManagementService.getFundContentDates(fund);
+    const temporalCoverage = EnhancedSEODateService.generateTemporalCoverage(fund);
+    
     return {
       '@context': 'https://schema.org',
       '@type': 'FinancialProduct',
       'name': fund.name,
       'description': fund.description,
       'category': fund.category,
+      'datePublished': contentDates.datePublished,
+      'dateModified': contentDates.dateModified,
+      'contentReferenceTime': EnhancedSEODateService.generateContentReferenceTime(fund),
+      ...(temporalCoverage && { 'temporalCoverage': temporalCoverage }),
       'provider': {
         '@type': 'Organization',
         'name': fund.managerName,
-        'url': fund.websiteUrl
+        'url': fund.websiteUrl,
+        'foundingDate': fund.established.toString()
       },
       'offers': {
         '@type': 'Offer',
@@ -113,14 +123,19 @@ export class StructuredDataService {
     };
   }
 
-  // Generate WebPage schema for fund detail page
+  // Generate WebPage schema for fund detail page with comprehensive dating
   static generateFundPageSchema(fund: Fund): StructuredDataSchema {
+    const contentDates = DateManagementService.getFundContentDates(fund);
+    
     return {
       '@context': 'https://schema.org',
       '@type': 'WebPage',
       'name': `${fund.name} | Fund Details`,
       'description': fund.description,
       'url': URL_CONFIG.buildFundUrl(fund.id),
+      'datePublished': contentDates.datePublished,
+      'dateModified': contentDates.dateModified,
+      'lastReviewed': contentDates.dataLastVerified,
       'mainEntity': {
         '@type': 'FinancialProduct',
         'name': fund.name,

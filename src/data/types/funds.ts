@@ -174,4 +174,11 @@ export interface Fund {
   documents?: PdfDocument[];
   redemptionTerms?: RedemptionTerms;
   faqs?: FAQItem[];
+  // Date tracking for content freshness (optional during migration)
+  datePublished?: string; // ISO 8601 date when fund was first added
+  dateModified?: string; // ISO 8601 date when fund data was last updated
+  dataLastVerified?: string; // ISO 8601 date when fund data was last verified against official sources
+  performanceDataDate?: string; // ISO 8601 date for performance metrics
+  feeLastUpdated?: string; // ISO 8601 date when fees were last changed
+  statusLastUpdated?: string; // ISO 8601 date when fund status was last changed
 }

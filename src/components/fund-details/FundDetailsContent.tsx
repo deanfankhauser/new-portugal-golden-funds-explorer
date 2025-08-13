@@ -18,6 +18,7 @@ import AlternativeFunds from './AlternativeFunds';
 import RelatedFunds from './RelatedFunds';
 import FundRiskScore from './FundRiskScore';
 import ProcessingTimeTracker from './ProcessingTimeTracker';
+import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
 import { Button } from '@/components/ui/button';
 import { ClipboardCheck, TrendingUp } from 'lucide-react';
@@ -55,6 +56,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           
           {/* Processing Time Tracker */}
           <ProcessingTimeTracker fund={fund} />
+          
+          {/* Fund Data Freshness */}
+          <FundDataFreshness fund={fund} />
           
           {/* Fund Quiz CTA */}
           <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 md:p-6 rounded-lg border border-green-200">
