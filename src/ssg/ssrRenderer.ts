@@ -12,6 +12,14 @@ import { AuthProvider } from '../contexts/AuthContext';
 import { ComparisonProvider } from '../contexts/ComparisonContext';
 import { RecentlyViewedProvider } from '../contexts/RecentlyViewedContext';
 
+// Ensure React is available globally for SSR
+if (typeof global !== 'undefined' && !global.React) {
+  global.React = React;
+}
+if (typeof window !== 'undefined' && !window.React) {
+  window.React = React;
+}
+
 export class SSRRenderer {
   static async renderRoute(route: StaticRoute): Promise<{ html: string; seoData: any }> {
     console.log(`🔥 SSR: Starting render for route ${route.path} (type: ${route.pageType})`);

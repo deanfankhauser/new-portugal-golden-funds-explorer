@@ -165,7 +165,15 @@ export function generateHTMLTemplate(
   <div id="root">${appHtml}</div>
   
   <!-- Built JavaScript Files -->
-  ${validatedJsFiles.map(js => `  <script type="module" src="/assets/${js}"></script>`).join('\n')}
+  ${validatedJsFiles.map(js => `  <script type="module" src="/assets/${js}" crossorigin></script>`).join('\n')}
+  
+  <!-- React Runtime Safety Check -->
+  <script>
+    // Ensure React is available globally for proper hydration
+    if (typeof window !== 'undefined' && !window.React) {
+      console.warn('React not found in global scope during hydration');
+    }
+  </script>
   
   <!-- Analytics and performance tracking (disabled in production build) -->
 </body>
