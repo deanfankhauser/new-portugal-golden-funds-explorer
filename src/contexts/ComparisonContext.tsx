@@ -1,12 +1,7 @@
 
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React from 'react';
 import { Fund } from '../data/funds';
 import { toast } from "@/components/ui/use-toast";
-
-// Ensure React is available before creating context
-if (typeof window !== 'undefined' && !window.React) {
-  window.React = React;
-}
 
 interface ComparisonContextType {
   compareFunds: Fund[];
@@ -16,10 +11,10 @@ interface ComparisonContextType {
   clearComparison: () => void;
 }
 
-const ComparisonContext = createContext<ComparisonContextType | undefined>(undefined);
+const ComparisonContext = React.createContext<ComparisonContextType | undefined>(undefined);
 
-export const ComparisonProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [compareFunds, setCompareFunds] = useState<Fund[]>([]);
+export const ComparisonProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [compareFunds, setCompareFunds] = React.useState<Fund[]>([]);
 
   const addToComparison = (fund: Fund) => {
     // Check if we already have this fund
@@ -70,7 +65,7 @@ export const ComparisonProvider: React.FC<{ children: ReactNode }> = ({ children
 };
 
 export const useComparison = (): ComparisonContextType => {
-  const context = useContext(ComparisonContext);
+  const context = React.useContext(ComparisonContext);
   if (context === undefined) {
     throw new Error("useComparison must be used within a ComparisonProvider");
   }

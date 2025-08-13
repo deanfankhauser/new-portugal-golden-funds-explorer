@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, lazy, Suspense } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -58,7 +58,7 @@ const queryClient = new QueryClient({
 const ScrollToTop = () => {
   const location = useLocation();
 
-  useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     // Simple, reliable scroll to top
     window.scrollTo(0, 0);
   }, [location.pathname]);
