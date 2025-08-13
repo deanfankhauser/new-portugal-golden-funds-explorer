@@ -20,6 +20,7 @@ import { globalEuropeanCinemaFund } from './global-european-cinema-fund';
 import { inzFund } from './inz-fund';
 import { emeraldGreenFund } from './emerald-green-fund';
 import { crownInvestmentsFund } from './crown-investments-fund';
+import { digitalInsightFund } from './digital-insight-fund';
 import { Fund } from '../../types/funds';
 
 // Export all funds as an array
@@ -44,7 +45,8 @@ export const fundsData: Fund[] = [
   globalEuropeanCinemaFund,
   inzFund,
   emeraldGreenFund,
-  crownInvestmentsFund
+  crownInvestmentsFund,
+  digitalInsightFund
 ];
 
 // Export individual funds
@@ -69,5 +71,6 @@ export {
   globalEuropeanCinemaFund,
   inzFund,
   emeraldGreenFund,
-  crownInvestmentsFund
+  crownInvestmentsFund,
+  digitalInsightFund
 };
