@@ -33,12 +33,13 @@ export default defineConfig(({ mode }) => ({
         manualChunks: (id) => {
           // Vendor chunks
           if (id.includes('node_modules')) {
-            // Keep React and ReactDOM together in main bundle for SSR/hydration stability
+            // Keep React and ReactDOM in main bundle for SSR/hydration stability
             if (id.includes('react') || id.includes('react-dom')) {
               return undefined; // Include in main bundle
             }
+            // Keep react-router in main bundle too to prevent hook issues
             if (id.includes('react-router')) {
-              return 'router';
+              return undefined; // Include in main bundle
             }
             if (id.includes('@radix-ui')) {
               return 'ui-vendor';

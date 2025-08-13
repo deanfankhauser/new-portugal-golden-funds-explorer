@@ -18,7 +18,7 @@ if (typeof window !== 'undefined') {
 }
 
 // Now safely import other modules that might use React hooks
-import { lazy, Suspense, useLayoutEffect } from 'react';
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -76,7 +76,7 @@ const queryClient = new QueryClient({
 const ScrollToTop = () => {
   const location = useLocation();
 
-  useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     // Simple, reliable scroll to top
     window.scrollTo(0, 0);
   }, [location.pathname]);
