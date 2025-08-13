@@ -13,7 +13,7 @@ import {
 } from '../ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 import { useAuth } from '../../contexts/AuthContext';
-import PasswordDialog from '../PasswordDialog';
+import LazyPasswordDialog from '../common/LazyPasswordDialog';
 
 export interface FilterOptions {
   category: string;
@@ -134,7 +134,7 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
           </CollapsibleContent>
         </Collapsible>
 
-        <PasswordDialog 
+        <LazyPasswordDialog 
           open={showPasswordDialog}
           onOpenChange={setShowPasswordDialog}
         />

@@ -1,11 +1,13 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Calendar, GitCompare, Download, ExternalLink, Home, ClipboardCheck } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 
 const IndexCTA: React.FC = () => {
+  const navigate = useNavigate();
+  
   const handleDownloadReport = () => {
     // This would generate and download a PDF report
     // Download report functionality
@@ -14,14 +16,7 @@ const IndexCTA: React.FC = () => {
   };
 
   const handleBrowseAllFunds = () => {
-    // Check if we're in SSG environment (static HTML)
-    if (typeof window !== 'undefined' && !window.location.pathname.includes('localhost') && window.location.hostname !== 'localhost') {
-      // In SSG/production, redirect to /funds
-      window.location.href = '/funds';
-    } else {
-      // In development/Vite, navigate to root
-      window.location.href = '/';
-    }
+    navigate('/');
   };
 
   return (
@@ -56,7 +51,7 @@ const IndexCTA: React.FC = () => {
           <Button 
             variant="outline" 
             className="w-full"
-            onClick={() => window.open('https://www.movingto.com/contact', '_blank')}
+            onClick={() => window.open('https://contact.movingto.com', '_blank')}
           >
             <Calendar className="h-4 w-4 mr-2" />
             Book a Free Consultation

@@ -10,7 +10,7 @@ import { useComparison } from '../contexts/ComparisonContext';
 import { useAuth } from '../contexts/AuthContext';
 import { ContentGatingService } from '../services/contentGatingService';
 import IntroductionButton from './fund-details/IntroductionButton';
-import PasswordDialog from './PasswordDialog';
+import LazyPasswordDialog from './common/LazyPasswordDialog';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 
@@ -196,7 +196,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
         </CardContent>
       </Card>
 
-      <PasswordDialog 
+      <LazyPasswordDialog 
         open={showPasswordDialog}
         onOpenChange={setShowPasswordDialog}
       />

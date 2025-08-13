@@ -141,7 +141,7 @@ export class SSRRenderer {
       const finalSeoData = {
         title: seoData.title || 'Portugal Golden Visa Investment Funds | Eligible Investments 2025',
         description: seoData.description || 'Compare and discover the best Golden Visa-eligible investment funds in Portugal.',
-        url: seoData.url || `https://www.movingto.com/funds${route.path}`,
+        url: seoData.url || `https://funds.movingto.com${route.path}`,
         structuredData: seoData.structuredData || {},
         helmetData: {
           title: helmet.title.toString(),
@@ -166,7 +166,7 @@ export class SSRRenderer {
         seoData: {
           title: 'Error - Portugal Golden Visa Investment Funds | Movingto',
           description: 'An error occurred while loading this page. Please try again later.',
-          url: `https://www.movingto.com/funds${route.path}`,
+          url: `https://funds.movingto.com${route.path}`,
           structuredData: {}
         }
       };

@@ -66,8 +66,8 @@ const IndexSummaryWidgets: React.FC<IndexSummaryWidgetsProps> = ({ scores }) => 
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-      {widgets.map((widget, index) => (
-        <div key={index} className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
+      {widgets.map((widget) => (
+        <div key={widget.title} className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3">
             <div className={`p-2 rounded-lg ${widget.bgColor}`}>
               <widget.icon className={`w-4 h-4 ${widget.color}`} />

@@ -8,7 +8,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { useAuth } from '../../contexts/AuthContext';
-import PasswordDialog from '../PasswordDialog';
+import LazyPasswordDialog from '../common/LazyPasswordDialog';
 
 interface FundIndexMobileCardProps {
   score: FundScore;
@@ -155,7 +155,7 @@ const FundIndexMobileCard: React.FC<FundIndexMobileCardProps> = ({ score }) => {
         </CardContent>
       </Card>
 
-      <PasswordDialog 
+      <LazyPasswordDialog 
         open={showPasswordDialog}
         onOpenChange={setShowPasswordDialog}
       />

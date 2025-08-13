@@ -57,8 +57,8 @@ export class ConsolidatedSEOService {
     switch (pageType) {
       case 'homepage':
         return {
-          title: 'Portugal Investment Funds | Compare & Analyze | Movingto',
-          description: this.optimizeText('Discover and compare Portugal investment funds. Comprehensive analysis, performance data, and expert insights to help you make informed investment decisions.', this.MAX_DESCRIPTION_LENGTH),
+          title: 'Portugal Golden Visa Investment Funds | Compare & Analyze | Movingto',
+          description: this.optimizeText('Discover and compare Portugal Golden Visa Investment Funds. Comprehensive analysis, performance data, and expert insights for qualified Golden Visa investment decisions.', this.MAX_DESCRIPTION_LENGTH),
           url: baseUrl,
           structuredData: this.getHomepageStructuredData()
         };
@@ -77,8 +77,8 @@ export class ConsolidatedSEOService {
 
       case 'fund-index':
         return {
-          title: this.optimizeText('Fund Index | All Portugal Investment Funds Database | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Complete database of Portugal investment funds. Filter by category, fees, minimum investment, and performance.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Portugal Golden Visa Investment Funds Database | Fund Index | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Complete database of Portugal Golden Visa Investment Funds. Filter qualified funds by category, fees, minimum investment, and performance.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('index'),
           structuredData: this.getFundIndexStructuredData()
         };
@@ -344,9 +344,9 @@ export class ConsolidatedSEOService {
     return {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
-      'name': 'Movingto - Portugal Investment Funds',
+      'name': 'Movingto - Portugal Golden Visa Investment Funds',
       'url': URL_CONFIG.BASE_URL,
-      'description': 'Comprehensive analysis and comparison of Portugal investment funds',
+      'description': 'Comprehensive analysis and comparison of Portugal Golden Visa Investment Funds',
       'potentialAction': {
         '@type': 'SearchAction',
         'target': `${URL_CONFIG.BASE_URL}/search?q={search_term_string}`,
@@ -412,8 +412,8 @@ export class ConsolidatedSEOService {
     return {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
-      'name': 'Fund Index Database',
-      'description': 'Complete database of Portugal investment funds',
+      'name': 'Portugal Golden Visa Investment Funds Database',
+      'description': 'Complete database of Portugal Golden Visa Investment Funds',
       'url': URL_CONFIG.buildUrl('index')
     };
   }

@@ -19,7 +19,7 @@ export class ComparisonStructuredDataService {
       'description': pageType === 'fund-vs-fund'
         ? `Detailed comparison of ${fundNames} - side-by-side analysis of fees, returns, minimum investment, and more for Portugal Golden Visa funds.`
         : 'Compare Portugal Golden Visa investment funds side-by-side. Analyze fees, returns, minimum investments, and more to find the best fund for your needs.',
-      'url': window.location.href,
+      'url': `https://funds.movingto.com${window.location.pathname}`,
       'mainEntity': {
         '@type': 'ItemList',
         'name': 'Fund Comparison',
@@ -78,7 +78,7 @@ export class ComparisonStructuredDataService {
           }
         }
       })),
-      'mainEntityOfPage': window.location.href
+      'mainEntityOfPage': `https://funds.movingto.com${window.location.pathname}`
     };
   }
 
@@ -102,7 +102,7 @@ export class ComparisonStructuredDataService {
       'result': {
         '@type': 'WebPage',
         'name': 'Fund Comparison Results',
-        'url': window.location.href
+        'url': `https://funds.movingto.com${window.location.pathname}`
       }
     };
   }
@@ -129,7 +129,7 @@ export class ComparisonStructuredDataService {
         '@type': 'ListItem',
         'position': 3,
         'name': 'Fund Comparison',
-        'item': window.location.href
+        'item': `https://funds.movingto.com${window.location.pathname}`
       });
     }
 

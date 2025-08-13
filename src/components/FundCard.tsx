@@ -9,7 +9,7 @@ import { GitCompare, User, Lock, Euro } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { useAuth } from '../contexts/AuthContext';
 import { ContentGatingService } from '../services/contentGatingService';
-import PasswordDialog from './PasswordDialog';
+import LazyPasswordDialog from './common/LazyPasswordDialog';
 import { managerToSlug } from '../lib/utils';
 
 interface FundCardProps {
@@ -180,7 +180,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
         </CardContent>
       </Card>
 
-      <PasswordDialog 
+      <LazyPasswordDialog 
         open={showPasswordDialog}
         onOpenChange={setShowPasswordDialog}
       />

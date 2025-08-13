@@ -5,28 +5,39 @@ import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from './contexts/AuthContext';
 import { ComparisonProvider } from './contexts/ComparisonContext';
 import { RecentlyViewedProvider } from './contexts/RecentlyViewedContext';
-import { useLayoutEffect, useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 
-// Import all pages
-import Index from './pages/Index';
-import FundIndex from './pages/FundIndex';
-import FundDetails from './pages/FundDetails';
-import TagPage from './pages/TagPage';
-import CategoryPage from './pages/CategoryPage';
-import TagsHub from './pages/TagsHub';
-import CategoriesHub from './pages/CategoriesHub';
-import ManagersHub from './pages/ManagersHub';
-import FundManager from './pages/FundManager';
-import About from './pages/About';
-import Disclaimer from './pages/Disclaimer';
-import Privacy from './pages/Privacy';
-import ComparisonPage from './pages/ComparisonPage';
-import ComparisonsHub from './pages/ComparisonsHub';
-import FAQs from './pages/FAQs';
-import ROICalculator from './pages/ROICalculator';
-import FundQuiz from './pages/FundQuiz';
-import FundComparison from './pages/FundComparison';
-import NotFound from './pages/NotFound';
+// Lazy load all pages for optimal performance
+import { lazy, Suspense } from 'react';
+import Index from './pages/Index'; // Keep homepage non-lazy for instant load
+import { 
+  PageLoader, 
+  FundDetailsLoader, 
+  FundIndexLoader, 
+  ComparisonLoader,
+  QuizLoader,
+  ROICalculatorLoader 
+} from './components/common/LoadingSkeleton';
+
+// Lazy load all secondary pages
+const FundIndex = lazy(() => import('./pages/FundIndex'));
+const FundDetails = lazy(() => import('./pages/FundDetails'));
+const TagPage = lazy(() => import('./pages/TagPage'));
+const CategoryPage = lazy(() => import('./pages/CategoryPage'));
+const TagsHub = lazy(() => import('./pages/TagsHub'));
+const CategoriesHub = lazy(() => import('./pages/CategoriesHub'));
+const ManagersHub = lazy(() => import('./pages/ManagersHub'));
+const FundManager = lazy(() => import('./pages/FundManager'));
+const About = lazy(() => import('./pages/About'));
+const Disclaimer = lazy(() => import('./pages/Disclaimer'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const ComparisonPage = lazy(() => import('./pages/ComparisonPage'));
+const ComparisonsHub = lazy(() => import('./pages/ComparisonsHub'));
+const FAQs = lazy(() => import('./pages/FAQs'));
+const ROICalculator = lazy(() => import('./pages/ROICalculator'));
+const FundQuiz = lazy(() => import('./pages/FundQuiz'));
+const FundComparison = lazy(() => import('./pages/FundComparison'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Import funds data to validate direct fund routes
 import { fundsData } from './data/mock/funds';
@@ -45,84 +56,15 @@ const queryClient = new QueryClient({
 // Component to handle scroll to top on route change
 const ScrollToTop = () => {
   const location = useLocation();
-  
+
   useLayoutEffect(() => {
-    // Route changed, scroll to top
-    
-    // Disable browser scroll restoration completely
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
-    
-    // Multiple approaches to ensure scroll works on all browsers
-    const scrollToTop = () => {
-      // Method 1: Direct window scroll
-      window.scrollTo(0, 0);
-      
-      // Method 2: Scroll with behavior instant
-      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      
-      // Method 3: Direct DOM manipulation
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-      
-      // Method 4: Force scroll on root element
-      const root = document.getElementById('root');
-      if (root) {
-        root.scrollTop = 0;
-      }
-      
-      // Method 5: Force scroll on html and body
-      const html = document.querySelector('html');
-      const body = document.querySelector('body');
-      if (html) html.scrollTop = 0;
-      if (body) body.scrollTop = 0;
-    };
-    
-    // Execute immediately
-    scrollToTop();
-    
-    // Execute after micro-task
-    Promise.resolve().then(scrollToTop);
-    
-    // Execute after animation frame
-    requestAnimationFrame(scrollToTop);
-    
-    // Execute after short delay for slow devices
-    setTimeout(scrollToTop, 100);
-    
-    // Cleanup function
-    return () => {
-      // No cleanup needed
-    };
-  }, [location.pathname, location.search, location.hash]);
-  
-  // Additional useEffect as backup
-  useEffect(() => {
-    const scrollToTop = () => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    };
-    
-    scrollToTop();
-    
-    // Also scroll after component mount
-    const timer = setTimeout(scrollToTop, 0);
-    return () => clearTimeout(timer);
-  }, [location]);
-  
+    // Simple, reliable scroll to top
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return null;
 };
 
-// Debug component to log current route
-const RouteDebugger = () => {
-  const location = useLocation();
-  
-  // App routing logic
-  
-  return null;
-};
 
 // Component to handle direct fund routes (e.g., /horizon-fund)
 const DirectFundRoute = () => {
@@ -132,35 +74,36 @@ const DirectFundRoute = () => {
   // Extract potential fund ID from pathname (remove leading slash)
   const potentialFundId = pathname.slice(1);
   
-  // Check if this is a valid fund ID
-  
   // Check if this path matches a fund ID
   const fund = fundsData.find(f => f.id === potentialFundId);
   
   if (fund) {
-    // Valid fund found, redirect to fund details
-    return <FundDetails />;
+    // Valid fund found, render fund details with lazy loading
+    return (
+      <Suspense fallback={<FundDetailsLoader />}>
+        <FundDetails />
+      </Suspense>
+    );
   }
   
-  // No fund found, show 404
-  return <NotFound />;
+  // No fund found, show 404 with lazy loading
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <NotFound />
+    </Suspense>
+  );
 };
 
 // Import SEO and performance optimization hook
 // SEO optimization removed - using consolidated service
 import SEOProvider from './components/providers/SEOProvider';
+import LazyExitIntentPopup from './components/common/LazyExitIntentPopup';
 
 function App() {
   // SEO optimization handled by consolidated service
 
   // App initialization
   
-  // Disable scroll restoration at app level
-  useEffect(() => {
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
-  }, []);
   
   return (
     <QueryClientProvider client={queryClient}>
@@ -171,33 +114,99 @@ function App() {
               <Router>
                 <SEOProvider>
                   <ScrollToTop />
-                  <RouteDebugger />
                   <div className="min-h-screen w-full bg-gray-50">
                     <Routes>
                       <Route path="/" element={<Index />} />
-                      <Route path="/index" element={<FundIndex />} />
-                      <Route path="/:id" element={<FundDetails />} />
-                      <Route path="/tags" element={<TagsHub />} />
-                      <Route path="/tags/:tag" element={<TagPage />} />
-                      <Route path="/categories" element={<CategoriesHub />} />
-                      <Route path="/categories/:category" element={<CategoryPage />} />
-                      <Route path="/managers" element={<ManagersHub />} />
-                      <Route path="/manager/:name" element={<FundManager />} />
-                      <Route path="/about" element={<About />} />
-                      <Route path="/disclaimer" element={<Disclaimer />} />
-                      <Route path="/privacy" element={<Privacy />} />
-                      <Route path="/compare" element={<ComparisonPage />} />
-                      <Route path="/compare/:slug" element={<FundComparison />} />
-                      <Route path="/comparisons" element={<ComparisonsHub />} />
-                      <Route path="/faqs" element={<FAQs />} />
-                      <Route path="/roi-calculator" element={<ROICalculator />} />
-                      <Route path="/fund-quiz" element={<FundQuiz />} />
-                      {/* Direct fund routes - catch single path segments that match fund IDs */}
-                      <Route path="/:potentialFundId" element={<DirectFundRoute />} />
-                      <Route path="*" element={<NotFound />} />
+                      <Route path="/index" element={
+                        <Suspense fallback={<FundIndexLoader />}>
+                          <FundIndex />
+                        </Suspense>
+                      } />
+                      <Route path="/tags" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <TagsHub />
+                        </Suspense>
+                      } />
+                      <Route path="/tags/:tag" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <TagPage />
+                        </Suspense>
+                      } />
+                      <Route path="/categories" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <CategoriesHub />
+                        </Suspense>
+                      } />
+                      <Route path="/categories/:category" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <CategoryPage />
+                        </Suspense>
+                      } />
+                      <Route path="/managers" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <ManagersHub />
+                        </Suspense>
+                      } />
+                      <Route path="/manager/:name" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <FundManager />
+                        </Suspense>
+                      } />
+                      <Route path="/about" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <About />
+                        </Suspense>
+                      } />
+                      <Route path="/disclaimer" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <Disclaimer />
+                        </Suspense>
+                      } />
+                      <Route path="/privacy" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <Privacy />
+                        </Suspense>
+                      } />
+                      <Route path="/compare" element={
+                        <Suspense fallback={<ComparisonLoader />}>
+                          <ComparisonPage />
+                        </Suspense>
+                      } />
+                      <Route path="/compare/:slug" element={
+                        <Suspense fallback={<ComparisonLoader />}>
+                          <FundComparison />
+                        </Suspense>
+                      } />
+                      <Route path="/comparisons" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <ComparisonsHub />
+                        </Suspense>
+                      } />
+                      <Route path="/faqs" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <FAQs />
+                        </Suspense>
+                      } />
+                      <Route path="/roi-calculator" element={
+                        <Suspense fallback={<ROICalculatorLoader />}>
+                          <ROICalculator />
+                        </Suspense>
+                      } />
+                      <Route path="/fund-quiz" element={
+                        <Suspense fallback={<QuizLoader />}>
+                          <FundQuiz />
+                        </Suspense>
+                      } />
+                      <Route path="/:id" element={<DirectFundRoute />} />
+                      <Route path="*" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <NotFound />
+                        </Suspense>
+                      } />
                     </Routes>
                   </div>
                   <Toaster />
+                  <LazyExitIntentPopup />
                 </SEOProvider>
               </Router>
             </TooltipProvider>

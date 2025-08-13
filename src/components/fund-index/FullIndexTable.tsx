@@ -92,7 +92,7 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
             'description': fund.description,
             'category': fund.category,
             'identifier': fund.id,
-            'url': `https://www.movingto.com/funds/${fund.id}`,
+            'url': `https://funds.movingto.com/${fund.id}`,
             'aggregateRating': {
               '@type': 'AggregateRating',
               'ratingValue': score.movingtoScore,
@@ -208,7 +208,7 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
       'distribution': {
         '@type': 'DataDownload',
         'encodingFormat': 'application/ld+json',
-        'contentUrl': 'https://www.movingto.com/funds/index'
+        'contentUrl': 'https://funds.movingto.com/index'
       }
     };
 

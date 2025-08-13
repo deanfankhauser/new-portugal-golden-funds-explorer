@@ -62,8 +62,8 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ fund, index, fo
                 <span className="font-medium">Fund Manager:</span> {fund.managerName}
               </p>
               <div className="flex flex-wrap gap-1">
-                {fund.tags.slice(0, 6).map((tag, tagIndex) => (
-                  <Badge key={tagIndex} variant="secondary" className="text-xs">
+                {fund.tags.slice(0, 6).map((tag) => (
+                  <Badge key={tag} variant="secondary" className="text-xs">
                     {tag}
                   </Badge>
                 ))}

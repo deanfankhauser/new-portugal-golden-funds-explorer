@@ -5,7 +5,7 @@ import { useComparison } from '../contexts/ComparisonContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { GitCompare } from 'lucide-react';
-import PasswordDialog from './PasswordDialog';
+import LazyPasswordDialog from './common/LazyPasswordDialog';
 
 const ComparisonIndicator = () => {
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ const ComparisonIndicator = () => {
         <span>Compare ({count})</span>
       </Button>
 
-      <PasswordDialog 
+      <LazyPasswordDialog 
         open={showPasswordDialog}
         onOpenChange={setShowPasswordDialog}
         onSuccess={handleAuthSuccess}

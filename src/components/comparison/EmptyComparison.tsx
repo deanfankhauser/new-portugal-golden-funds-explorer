@@ -8,14 +8,7 @@ const EmptyComparison = () => {
   const navigate = useNavigate();
   
   const handleBrowseFunds = () => {
-    // Check if we're in SSG environment (static HTML)
-    if (typeof window !== 'undefined' && !window.location.pathname.includes('localhost') && window.location.hostname !== 'localhost') {
-      // In SSG/production, redirect to /funds
-      window.location.href = '/funds';
-    } else {
-      // In development/Vite, navigate to root
-      navigate('/');
-    }
+    navigate('/');
   };
   
   return (

@@ -10,6 +10,18 @@ import { linceYieldFund } from './lince-yield-fund';
 import { solarFutureFund } from './solar-future-fund';
 import { mercurioFundII } from './mercurio-fund-ii';
 import { portugalLiquidOpportunities } from './portugal-liquid-opportunities';
+import { heedTopFund } from './heed-top-fund';
+import { venturesEUFund } from './ventures-eu-fund';
+import { flexSpaceFund } from './flex-space-fund';
+import { portugalPrimeFund } from './portugal-prime-fund';
+import { pelaTerraIIRegenerateFund } from './pela-terra-ii-regenerate-fund';
+import { lakeviewFund } from './lakeview-fund';
+import { globalEuropeanCinemaFund } from './global-european-cinema-fund';
+import { inzFund } from './inz-fund';
+import { emeraldGreenFund } from './emerald-green-fund';
+import { crownInvestmentsFund } from './crown-investments-fund';
+import { digitalInsightFund } from './digital-insight-fund';
+import { primeInsightFund } from './prime-insight-fund';
 import { Fund } from '../../types/funds';
 
 // Export all funds as an array
@@ -24,7 +36,19 @@ export const fundsData: Fund[] = [
   linceYieldFund,
   solarFutureFund,
   mercurioFundII,
-  portugalLiquidOpportunities
+  portugalLiquidOpportunities,
+  heedTopFund,
+  venturesEUFund,
+  flexSpaceFund,
+  portugalPrimeFund,
+  pelaTerraIIRegenerateFund,
+  lakeviewFund,
+  globalEuropeanCinemaFund,
+  inzFund,
+  emeraldGreenFund,
+  crownInvestmentsFund,
+  digitalInsightFund,
+  primeInsightFund
 ];
 
 // Export individual funds
@@ -39,5 +63,17 @@ export {
   linceYieldFund,
   solarFutureFund,
   mercurioFundII,
-  portugalLiquidOpportunities
+  portugalLiquidOpportunities,
+  heedTopFund,
+  venturesEUFund,
+  flexSpaceFund,
+  portugalPrimeFund,
+  pelaTerraIIRegenerateFund,
+  lakeviewFund,
+  globalEuropeanCinemaFund,
+  inzFund,
+  emeraldGreenFund,
+  crownInvestmentsFund,
+  digitalInsightFund,
+  primeInsightFund
 };
