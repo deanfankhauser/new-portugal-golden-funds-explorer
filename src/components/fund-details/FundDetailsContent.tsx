@@ -18,6 +18,7 @@ import AlternativeFunds from './AlternativeFunds';
 import RelatedFunds from './RelatedFunds';
 import FundRiskScore from './FundRiskScore';
 import ProcessingTimeTracker from './ProcessingTimeTracker';
+import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
 import { Button } from '@/components/ui/button';
 import { ClipboardCheck, TrendingUp } from 'lucide-react';
