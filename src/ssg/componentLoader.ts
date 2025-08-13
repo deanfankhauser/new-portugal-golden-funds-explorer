@@ -2,9 +2,12 @@
 import React from 'react';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
-// Ensure React is available globally for SSR
+// Ensure React is available globally for SSR and client-side
 if (typeof global !== 'undefined' && !global.React) {
   global.React = React;
+}
+if (typeof window !== 'undefined' && !window.React) {
+  window.React = React;
 }
 
 export { TooltipProvider };

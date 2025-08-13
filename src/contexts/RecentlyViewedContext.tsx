@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React from 'react';
 import { Fund } from '../data/types/funds';
 
 interface RecentlyViewedContextType {
@@ -7,13 +7,13 @@ interface RecentlyViewedContextType {
   addToRecentlyViewed: (fund: Fund) => void;
 }
 
-const RecentlyViewedContext = createContext<RecentlyViewedContextType | undefined>(undefined);
+const RecentlyViewedContext = React.createContext<RecentlyViewedContextType | undefined>(undefined);
 
 export const RecentlyViewedProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [recentlyViewed, setRecentlyViewed] = useState<Fund[]>([]);
+  const [recentlyViewed, setRecentlyViewed] = React.useState<Fund[]>([]);
 
   // Load from localStorage on mount
-  useEffect(() => {
+  React.useEffect(() => {
     const stored = localStorage.getItem('recentlyViewedFunds');
     if (stored) {
       try {
@@ -25,7 +25,7 @@ export const RecentlyViewedProvider: React.FC<{ children: React.ReactNode }> = (
   }, []);
 
   // Save to localStorage whenever recentlyViewed changes
-  useEffect(() => {
+  React.useEffect(() => {
     localStorage.setItem('recentlyViewedFunds', JSON.stringify(recentlyViewed));
   }, [recentlyViewed]);
 
@@ -46,7 +46,7 @@ export const RecentlyViewedProvider: React.FC<{ children: React.ReactNode }> = (
 };
 
 export const useRecentlyViewed = () => {
-  const context = useContext(RecentlyViewedContext);
+  const context = React.useContext(RecentlyViewedContext);
   if (context === undefined) {
     throw new Error('useRecentlyViewed must be used within a RecentlyViewedProvider');
   }

@@ -1,3 +1,4 @@
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -5,10 +6,10 @@ import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from './contexts/AuthContext';
 import { ComparisonProvider } from './contexts/ComparisonContext';
 import { RecentlyViewedProvider } from './contexts/RecentlyViewedContext';
-import { useLayoutEffect } from 'react';
 
 // Lazy load all pages for optimal performance
-import { lazy, Suspense } from 'react';
+
+// Lazy load all pages for optimal performance
 import Index from './pages/Index'; // Keep homepage non-lazy for instant load
 import { 
   PageLoader, 
@@ -57,7 +58,7 @@ const queryClient = new QueryClient({
 const ScrollToTop = () => {
   const location = useLocation();
 
-  useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     // Simple, reliable scroll to top
     window.scrollTo(0, 0);
   }, [location.pathname]);
