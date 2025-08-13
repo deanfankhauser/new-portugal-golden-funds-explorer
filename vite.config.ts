@@ -24,13 +24,18 @@ export default defineConfig(({ mode }) => ({
     // Increase chunk size warning limit to 1000kb
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
+      external: (id) => {
+        // Never externalize React to ensure it's available
+        return false;
+      },
       output: {
         // Enhanced manual chunk splitting for optimal code splitting
         manualChunks: (id) => {
           // Vendor chunks
           if (id.includes('node_modules')) {
+            // Keep React and ReactDOM together in main bundle for SSR/hydration stability
             if (id.includes('react') || id.includes('react-dom')) {
-              return 'react-vendor';
+              return undefined; // Include in main bundle
             }
             if (id.includes('react-router')) {
               return 'router';

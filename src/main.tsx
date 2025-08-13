@@ -3,9 +3,19 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 
-// Ensure React is available globally for SSR compatibility
-if (typeof window !== 'undefined' && !window.React) {
+// Ensure React is available globally for SSR compatibility and Radix UI
+declare global {
+  interface Window {
+    React: typeof React;
+  }
+}
+
+if (typeof window !== 'undefined') {
   window.React = React;
+}
+
+if (typeof global !== 'undefined') {
+  (global as any).React = React;
 }
 import { PerformanceMonitoringService } from './services/performanceMonitoringService'
 import { ImageOptimizationService } from './services/imageOptimizationService'
