@@ -59,7 +59,7 @@ export const portugalInvestment1: Fund = {
     },
     {
       question: 'Who manages the fund?',
-      answer: 'Saratoga Capital Partners, founded in 2008 as an M&A advisory and capital-raising boutique, acts as both GP and operator, leveraging multidisciplinary deal-execution experience.'
+      answer: 'Saratoga Capital Partners, founded in 2008 as an M&A guidance and capital-raising boutique, acts as both GP and operator, leveraging multidisciplinary deal-execution experience.'
     },
     {
       question: 'What is the fund\'s target size?',

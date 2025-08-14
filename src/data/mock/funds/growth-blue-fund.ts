@@ -127,7 +127,7 @@ export const growthBlueFund: Fund = {
     },
     {
       question: 'What diversification and governance measures are in place?',
-      answer: 'Single-company exposure is capped at 15 % and sector exposure at 30 %. ESG adoption, biannual investor reporting, a formal Advisory Committee, and thorough legal/financial/ESG due diligence underpin the governance framework.'
+      answer: 'Single-company exposure is capped at 15 % and sector exposure at 30 %. ESG adoption, biannual investor reporting, a formal Guidance Committee, and thorough legal/financial/ESG due diligence underpin the governance framework.'
     },
     {
       question: 'How many transactions does the fund plan, and what does its current pipeline look like?',

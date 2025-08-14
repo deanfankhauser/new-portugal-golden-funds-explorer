@@ -116,7 +116,7 @@ export const horizonFund: Fund = {
     },
     {
       question: 'Who provides custody and operational support?',
-      answer: 'Custodian Bank: Millennium BCP, S.A.\nDigital-asset custody/brokerage: Interactive Brokers & Gemini Trust Company\nLegal & Tax Advisor: Pares Advogados | Antas da Cunha ECIJA'
+      answer: 'Custodian Bank: Millennium BCP, S.A.\nDigital-asset custody/brokerage: Interactive Brokers & Gemini Trust Company\nLegal & Tax Guidance: Pares Advogados | Antas da Cunha ECIJA'
     },
     {
       question: 'What risk-management processes are in place?',

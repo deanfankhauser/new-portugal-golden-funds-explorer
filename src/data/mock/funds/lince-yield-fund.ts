@@ -49,15 +49,15 @@ export const linceYieldFund: Fund = {
     },
     {
       name: 'Afonso Pinheiro',
-      position: 'Managing Partner (Omnium Advisory)'
+      position: 'Managing Partner (Omnium Guidance)'
     },
     {
       name: 'António Caleia',
-      position: 'Founding Partner (Omnium Advisory)'
+      position: 'Founding Partner (Omnium Guidance)'
     },
     {
       name: 'Francisco Formigal Pinto',
-      position: 'Managing Partner (Omnium Advisory)'
+      position: 'Managing Partner (Omnium Guidance)'
     },
     {
       name: 'Tomás Lavin Peixe',

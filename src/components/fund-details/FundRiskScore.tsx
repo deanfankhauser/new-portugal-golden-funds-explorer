@@ -161,7 +161,7 @@ const FundRiskScore: React.FC<FundRiskScoreProps> = ({ fund }) => {
         {/* Disclaimer */}
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 md:p-4">
           <p className="text-xs text-amber-800">
-            <strong>Disclaimer:</strong> This proprietary risk assessment is for informational purposes only and should not be considered as investment advice. Risk scores are based on our internal methodology and may not reflect all relevant factors. Past performance does not guarantee future results. Please consult with a qualified financial advisor before making investment decisions.
+            <strong>Disclaimer:</strong> This proprietary risk assessment is for informational purposes only and should not be considered as investment guidance. Risk scores are based on our internal methodology and may not reflect all relevant factors. Past performance does not guarantee future results. Please consult with a qualified financial guidance professional before making investment decisions.
           </p>
         </div>
       </CardContent>

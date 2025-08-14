@@ -110,7 +110,7 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
               rel="noopener noreferrer"
             >
               <Button className="bg-[#EF4444] hover:bg-[#DC2626] text-white">
-                Get Professional Advice
+                Get Professional Guidance
               </Button>
             </a>
           </div>

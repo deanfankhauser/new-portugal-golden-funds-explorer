@@ -207,10 +207,10 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
           <div className="text-sm text-amber-800">
             <h4 className="font-medium mb-2">Important Legal Disclaimer</h4>
             <p className="leading-relaxed">
-              This calculator is for illustrative purposes only and does not constitute investment advice. 
+              This calculator is for illustrative purposes only and does not constitute investment guidance. 
               Actual returns may vary significantly and are not guaranteed. Past performance does not 
               predict future results. Investment in funds involves risk, including the possible loss of 
-              principal. Please consult with qualified financial advisors before making investment decisions.
+              principal. Please consult with qualified financial guidance professionals before making investment decisions.
               The expected returns shown are targets only and may not be achieved. This tool is designed 
               to help you understand potential scenarios but should not be the sole basis for investment 
               decisions related to the Portuguese Golden Visa program.

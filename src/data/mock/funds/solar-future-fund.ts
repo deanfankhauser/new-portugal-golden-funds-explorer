@@ -49,7 +49,7 @@ export const solarFutureFund: Fund = {
     },
     {
       name: "Manuel Azevedo",
-      position: "Strategy Advisor, Energy"
+      position: "Strategy Guide, Energy"
     },
     {
       name: "Pedro Oliveira Cardoso",
@@ -95,7 +95,7 @@ export const solarFutureFund: Fund = {
     },
     {
       question: "What fees does the fund charge?",
-      answer: "It applies a 2% per annum management fee, a one-time 1.5% subscription fee, and carried interest split of 20% to the adviser and 80% to investors."
+      answer: "It applies a 2% per annum management fee, a one-time 1.5% subscription fee, and carried interest split of 20% to the fund manager and 80% to investors."
     },
     {
       question: "What is the preferred return?",
