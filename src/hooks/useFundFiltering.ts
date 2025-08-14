@@ -34,6 +34,7 @@ export const useFundFiltering = () => {
     setSelectedTags,
     searchQuery,
     setSearchQuery,
-    filteredFunds
+    filteredFunds,
+    allFunds: funds
   };
 };
