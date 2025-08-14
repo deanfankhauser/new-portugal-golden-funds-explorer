@@ -12,17 +12,17 @@ interface PremiumCTAProps {
 const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'general' }) => {
   const handleCTAClick = () => {
     // Track the CTA click with location for analytics
-    analytics.trackCTAClick(location, `premium-${variant}`, 'https://contact.movingto.com');
+    analytics.trackCTAClick(location, `premium-${variant}`, 'https://movingto.com/contact/contact-movingto');
     
     // Track external link click
     analytics.trackExternalLink(
-      'https://contact.movingto.com',
+      'https://movingto.com/contact/contact-movingto',
       'Get Premium Access',
       `cta-${location}`
     );
     
     // Premium CTA clicked tracking
-    window.open('https://contact.movingto.com', '_blank');
+    window.open('https://movingto.com/contact/contact-movingto', '_blank');
   };
 
   if (variant === 'compact') {
