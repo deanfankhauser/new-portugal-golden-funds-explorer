@@ -89,8 +89,8 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
                 setSearchQuery={setSearchQuery}
               />
               
-              {/* Data Freshness Dashboard - temporarily disabled to debug circle issue */}
-              {false && !hasActiveFilters && allFunds.length > 0 && (
+              {/* Data Freshness Dashboard - only show when no filters applied */}
+              {!hasActiveFilters && allFunds.length > 0 && (
                 <div className="mb-8">
                   <DataFreshnessDashboard funds={allFunds} />
                 </div>

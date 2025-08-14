@@ -18,8 +18,7 @@ const IndexPage = () => {
     setSelectedTags,
     searchQuery,
     setSearchQuery,
-    filteredFunds,
-    allFunds
+    filteredFunds
   } = useFundFiltering();
 
   return (
@@ -35,7 +34,6 @@ const IndexPage = () => {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         isAuthenticated={isAuthenticated}
-        allFunds={allFunds}
       />
 
       <section className="mt-12 sm:mt-16 lg:mt-20" aria-label="Additional resources">
