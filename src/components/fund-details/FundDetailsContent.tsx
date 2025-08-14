@@ -22,6 +22,7 @@ import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
 import { Button } from '@/components/ui/button';
 import { ClipboardCheck, TrendingUp } from 'lucide-react';
+import DataFreshnessWarning from '../common/DataFreshnessWarning';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -59,6 +60,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           
           {/* Fund Data Freshness */}
           <FundDataFreshness fund={fund} />
+          
+          {/* Data Freshness Warning */}
+          <DataFreshnessWarning fund={fund} />
           
           {/* Fund Quiz CTA */}
           <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 md:p-6 rounded-lg border border-green-200">
