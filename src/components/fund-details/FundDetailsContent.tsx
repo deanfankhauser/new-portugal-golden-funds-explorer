@@ -22,6 +22,7 @@ import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
 import { Button } from '@/components/ui/button';
 import { ClipboardCheck, TrendingUp } from 'lucide-react';
+import DataFreshnessWarning from '../common/DataFreshnessWarning';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -60,6 +61,30 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           {/* Fund Data Freshness */}
           <FundDataFreshness fund={fund} />
           
+          {/* Data Freshness Warning */}
+          <DataFreshnessWarning fund={fund} />
+          
+          {/* Golden Visa Information */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 md:p-6 rounded-lg border border-blue-200">
+            <div className="text-center">
+              <h3 className="font-semibold text-blue-900 mb-2 text-sm md:text-base">Portugal Golden Visa Qualified Fund</h3>
+              <p className="text-xs md:text-sm text-blue-700 mb-4">
+                This fund meets the requirements for Portugal Golden Visa investment with a minimum investment of €280,000
+              </p>
+              <a 
+                href="https://movingto.com/pt/portugal-golden-visa" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors duration-200"
+              >
+                Learn about Golden Visa requirements
+                <svg className="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
+          </div>
+
           {/* Fund Quiz CTA */}
           <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 md:p-6 rounded-lg border border-green-200">
             <div className="text-center">

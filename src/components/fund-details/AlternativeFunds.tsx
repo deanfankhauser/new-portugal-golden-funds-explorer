@@ -105,12 +105,12 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
               Need help choosing the right fund for your Golden Visa investment?
             </p>
             <a 
-              href="https://contact.movingto.com" 
+              href="https://movingto.com/contact/contact-movingto" 
               target="_blank" 
               rel="noopener noreferrer"
             >
               <Button className="bg-[#EF4444] hover:bg-[#DC2626] text-white">
-                Get Professional Advice
+                Get Professional Guidance
               </Button>
             </a>
           </div>

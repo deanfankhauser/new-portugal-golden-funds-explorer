@@ -12,17 +12,17 @@ interface PremiumCTAProps {
 const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'general' }) => {
   const handleCTAClick = () => {
     // Track the CTA click with location for analytics
-    analytics.trackCTAClick(location, `premium-${variant}`, 'https://contact.movingto.com');
+    analytics.trackCTAClick(location, `premium-${variant}`, 'https://movingto.com/contact/contact-movingto');
     
     // Track external link click
     analytics.trackExternalLink(
-      'https://contact.movingto.com',
+      'https://movingto.com/contact/contact-movingto',
       'Get Premium Access',
       `cta-${location}`
     );
     
     // Premium CTA clicked tracking
-    window.open('https://contact.movingto.com', '_blank');
+    window.open('https://movingto.com/contact/contact-movingto', '_blank');
   };
 
   if (variant === 'compact') {
@@ -45,7 +45,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
           <div className="flex items-center gap-3">
             <Crown className="h-5 w-5 text-white" />
             <div>
-              <p className="font-semibold text-white">Get Expert Fund Advisory</p>
+              <p className="font-semibold text-white">Get Expert Fund Guidance</p>
               <p className="text-sm text-white opacity-90">Personal consultation with our Golden Visa specialists</p>
             </div>
           </div>
@@ -74,7 +74,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
           
           <div>
             <h3 className="text-2xl font-bold text-gray-800 mb-2">
-              Unlock Premium Fund Advisory
+              Unlock Premium Fund Guidance
             </h3>
             <p className="text-gray-600 text-lg">
               Get personalized guidance from our Golden Visa experts to maximize your investment success

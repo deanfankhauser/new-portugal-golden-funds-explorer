@@ -179,7 +179,7 @@ const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz,
                   <ul className="text-blue-800 text-sm space-y-1">
                     <li>• Review each fund's detailed information</li>
                     <li>• Contact fund managers for personalized consultations</li>
-                    <li>• Consult with qualified financial and legal advisors</li>
+                    <li>• Consult with qualified financial and legal guidance professionals</li>
                     <li>• Consider diversifying across multiple funds if budget allows</li>
                   </ul>
                 </div>
@@ -216,10 +216,10 @@ const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz,
             <div className="text-sm text-amber-800">
               <h4 className="font-medium mb-2">Important Legal Disclaimer</h4>
               <p className="leading-relaxed">
-                These recommendations are for informational purposes only and do not constitute investment advice. 
+                These recommendations are for informational purposes only and do not constitute investment guidance. 
                 Actual returns may vary significantly and are not guaranteed. Past performance does not 
                 predict future results. Investment in funds involves risk, including the possible loss of 
-                principal. Please consult with qualified financial and legal advisors before making investment decisions.
+                principal. Please consult with qualified financial and legal guidance professionals before making investment decisions.
               </p>
             </div>
           </div>

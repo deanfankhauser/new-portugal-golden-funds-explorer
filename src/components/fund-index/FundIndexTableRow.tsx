@@ -10,6 +10,7 @@ import { Lock, Eye } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { ContentGatingService } from '../../services/contentGatingService';
 import LazyPasswordDialog from '../common/LazyPasswordDialog';
+import DataFreshnessIndicator from '../common/DataFreshnessIndicator';
 
 interface FundIndexTableRowProps {
   score: FundScore;
@@ -191,17 +192,20 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
         </TableCell>
         
         <TableCell className="py-4 w-20 text-center">
-          <Badge 
-            variant={fund.fundStatus === 'Open' ? 'default' : 'secondary'}
-            className={`text-xs px-2 py-1 ${
-              fund.fundStatus === 'Open' 
-                ? 'bg-green-100 text-green-800' 
-                : 'bg-gray-100 text-gray-600'
-            }`}
-            itemProp="availability"
-          >
-            {fund.fundStatus}
-          </Badge>
+          <div className="space-y-1">
+            <Badge 
+              variant={fund.fundStatus === 'Open' ? 'default' : 'secondary'}
+              className={`text-xs px-2 py-1 ${
+                fund.fundStatus === 'Open' 
+                  ? 'bg-green-100 text-green-800' 
+                  : 'bg-gray-100 text-gray-600'
+              }`}
+              itemProp="availability"
+            >
+              {fund.fundStatus}
+            </Badge>
+            <DataFreshnessIndicator fund={fund} variant="dot" className="mx-auto" />
+          </div>
         </TableCell>
         
         {/* Additional structured data */}

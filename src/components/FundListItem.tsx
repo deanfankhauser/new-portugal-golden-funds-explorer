@@ -13,6 +13,7 @@ import IntroductionButton from './fund-details/IntroductionButton';
 import LazyPasswordDialog from './common/LazyPasswordDialog';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
+import DataFreshnessIndicator from './common/DataFreshnessIndicator';
 
 interface FundListItemProps {
   fund: Fund;
@@ -61,6 +62,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                     {fund.name}
                   </Link>
                 </h3>
+                <DataFreshnessIndicator fund={fund} variant="compact" />
               </div>
               
               <p className="text-gray-600 mb-4 line-clamp-2 text-sm sm:text-base">{fund.description}</p>

@@ -148,7 +148,7 @@ const Header = () => {
             </NavigationMenu>
 
             {/* Direct Actions */}
-            <a href="https://contact.movingto.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://movingto.com/contact/contact-movingto" target="_blank" rel="noopener noreferrer">
               <Button 
                 variant="outline" 
                 className="border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"

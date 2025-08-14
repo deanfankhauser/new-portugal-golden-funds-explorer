@@ -9,6 +9,7 @@ import ResultsHeader from './ResultsHeader';
 import EmptyFundsState from './EmptyFundsState';
 import FundsList from './FundsList';
 import MobileFundQuizCTA from './MobileFundQuizCTA';
+import DataFreshnessDashboard from '../common/DataFreshnessDashboard';
 
 interface HomepageContentProps {
   filteredFunds: Fund[];
@@ -17,6 +18,7 @@ interface HomepageContentProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   isAuthenticated: boolean;
+  allFunds?: Fund[];
 }
 
 const HomepageContent: React.FC<HomepageContentProps> = ({
@@ -25,7 +27,8 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
   setSelectedTags,
   searchQuery,
   setSearchQuery,
-  isAuthenticated
+  isAuthenticated,
+  allFunds = []
 }) => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const [isLoading] = useState(false);
@@ -85,6 +88,14 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
                 setSelectedTags={setSelectedTags}
                 setSearchQuery={setSearchQuery}
               />
+              
+              {/* Data Freshness Dashboard - only show when no filters applied */}
+              {!hasActiveFilters && allFunds.length > 0 && (
+                <div className="mb-8">
+                  <DataFreshnessDashboard funds={allFunds} />
+                </div>
+              )}
+              
               <FundsList
                 filteredFunds={filteredFunds}
                 isAuthenticated={isAuthenticated}

@@ -143,13 +143,13 @@ const Footer = () => {
         
         <div className="border-t border-gray-200 mt-8 pt-6 text-center md:text-left flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-600 text-sm">© {currentYear} Moving To Global Pte Ltd. All rights reserved.</p>
-          <p className="text-gray-600 text-sm mt-2 md:mt-0">This website is for informational purposes only and does not constitute investment advice.</p>
+          <p className="text-gray-600 text-sm mt-2 md:mt-0">This website is for informational purposes only and does not constitute investment guidance.</p>
         </div>
 
         <div className="mt-8 pt-6 border-t border-gray-200">
           <div className="bg-gray-50 p-4 rounded-lg">
             <p className="text-gray-600 text-sm text-center">
-              The information provided on this website is for general informational purposes only. It should not be considered as legal, tax, or investment advice. Before making any investment decisions, we strongly recommend consulting with qualified financial advisors, immigration consultants, and legal professionals specialized in the Portugal Golden Visa program.
+              The information provided on this website is for general informational purposes only. It should not be considered as legal, tax, or investment guidance. Before making any investment decisions, we strongly recommend consulting with qualified financial guidance professionals, immigration consultants, and legal professionals specialized in the Portugal Golden Visa program.
             </p>
           </div>
         </div>

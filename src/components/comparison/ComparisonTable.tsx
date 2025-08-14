@@ -12,6 +12,7 @@ import { ContentGatingService } from '../../services/contentGatingService';
 import LazyPasswordDialog from '../common/LazyPasswordDialog';
 import { Button } from '@/components/ui/button';
 import { Lock, Eye } from 'lucide-react';
+import DataFreshnessIndicator from '../common/DataFreshnessIndicator';
 
 interface ComparisonTableProps {
   funds: Fund[];
@@ -256,6 +257,16 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             <td className="py-3 px-4 font-medium">Tags</td>
             {funds.map(fund => (
               <TagsCell key={fund.id} tags={fund.tags} />
+            ))}
+          </tr>
+
+          {/* Data Freshness */}
+          <tr className="border-b bg-blue-50/50">
+            <td className="py-3 px-4 font-medium text-blue-900">Data Last Verified</td>
+            {funds.map(fund => (
+              <td key={fund.id} className="py-3 px-4">
+                <DataFreshnessIndicator fund={fund} variant="full" className="justify-start" />
+              </td>
             ))}
           </tr>
         </tbody>

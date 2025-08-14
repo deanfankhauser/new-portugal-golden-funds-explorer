@@ -39,8 +39,8 @@ const Disclaimer = () => {
           </p>
 
           <p className="mb-4">
-            Investment decisions should be based on your own due diligence and consultation with a qualified financial advisor. 
-            We do not provide financial advice and are not responsible for any investment decisions made based on the information on this website.
+            Investment decisions should be based on your own due diligence and consultation with a qualified financial guidance professional. 
+            We do not provide financial guidance and are not responsible for any investment decisions made based on the information on this website.
           </p>
         </div>
       </main>

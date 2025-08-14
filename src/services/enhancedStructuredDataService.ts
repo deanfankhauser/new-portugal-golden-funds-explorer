@@ -307,8 +307,8 @@ export class EnhancedStructuredDataService {
       '@type': 'ProfessionalService',
       'name': 'Movingto Portugal Golden Visa Services',
       'url': URL_CONFIG.BASE_URL,
-      'description': 'Professional investment advisory services for Portugal Golden Visa eligible funds',
-      'serviceType': 'Investment Advisory',
+      'description': 'Professional investment guidance services for Portugal Golden Visa eligible funds',
+      'serviceType': 'Investment Guidance',
       'areaServed': {
         '@type': 'Country',
         'name': 'Portugal'
@@ -316,7 +316,7 @@ export class EnhancedStructuredDataService {
       'offers': {
         '@type': 'Service',
         'name': 'Portugal Golden Visa Investment Fund Directory',
-        'description': 'Comprehensive directory and advisory services for qualified investment funds'
+        'description': 'Comprehensive directory and guidance services for qualified investment funds'
       }
     };
   }

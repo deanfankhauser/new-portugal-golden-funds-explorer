@@ -92,7 +92,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
             Exclusive Client Access Required
           </DialogTitle>
           <DialogDescription className="text-base">
-            These premium features are exclusively available to MovingTo clients who receive our comprehensive Golden Visa advisory services.
+            These premium features are exclusively available to MovingTo clients who receive our comprehensive Golden Visa guidance services.
           </DialogDescription>
         </DialogHeader>
         
@@ -119,7 +119,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
             <div>
               <h4 className="font-semibold text-amber-900 text-sm">Limited Access</h4>
               <p className="text-sm text-amber-800 mt-1">
-                Only active MovingTo clients have access to these detailed fund analytics and comparison tools used by our advisory team.
+                Only active MovingTo clients have access to these detailed fund analytics and comparison tools used by our guidance team.
               </p>
             </div>
           </div>
@@ -168,7 +168,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
               Get personalized Golden Visa guidance plus full access to our premium fund analysis tools.
             </p>
             <a 
-              href="https://contact.movingto.com" 
+              href="https://movingto.com/contact/contact-movingto" 
               target="_blank" 
               rel="noopener noreferrer"
               onClick={handleConsultationClick}
