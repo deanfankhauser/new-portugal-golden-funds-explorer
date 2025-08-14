@@ -13,9 +13,9 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
       <div className="relative">
         {/* Background decoration */}
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-gradient-to-br from-primary/10 to-primary/5 rounded-full blur-3xl opacity-50"></div>
-          <div className="absolute top-20 left-1/4 w-64 h-64 bg-gradient-to-br from-blue-500/10 to-blue-500/5 rounded-full blur-2xl opacity-40"></div>
-          <div className="absolute top-40 right-1/4 w-48 h-48 bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 rounded-full blur-2xl opacity-30"></div>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-gradient-to-br from-primary/5 to-primary/2 rounded-full blur-[120px] opacity-30"></div>
+          <div className="absolute top-20 left-1/4 w-64 h-64 bg-gradient-to-br from-blue-500/5 to-blue-500/2 rounded-full blur-[80px] opacity-20"></div>
+          <div className="absolute top-40 right-1/4 w-48 h-48 bg-gradient-to-br from-emerald-500/5 to-emerald-500/2 rounded-full blur-[60px] opacity-15"></div>
         </div>
 
         <div className="relative z-10 text-center">
