@@ -59,6 +59,10 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
               <p className="text-sm text-gray-600">
                 The minimum investment for qualified investment funds is €280,000 for the Portugal Golden Visa program, 
                 significantly lower than the €500,000 required for real estate investments.
+                <a href="https://movingto.com/pt/portugal-golden-visa" target="_blank" rel="noopener noreferrer" 
+                   className="text-primary hover:text-primary/80 ml-2 underline">
+                  Learn more about Golden Visa requirements →
+                </a>
               </p>
             </div>
             

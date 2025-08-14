@@ -29,10 +29,24 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
           </h1>
           
           <p className="text-lg sm:text-xl md:text-2xl text-medium-contrast 
-                       mb-8 sm:mb-10 max-w-4xl leading-relaxed font-light mx-auto">
+                       mb-6 sm:mb-8 max-w-4xl leading-relaxed font-light mx-auto">
             Explore <span className="font-semibold text-primary">Portugal Golden Visa Investment Funds</span> with 
             comprehensive analysis and compare qualified funds for your Golden Visa application
           </p>
+          
+          <div className="mb-8 sm:mb-10">
+            <a 
+              href="https://movingto.com/pt/portugal-golden-visa" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-primary hover:text-primary/80 font-medium text-base sm:text-lg transition-colors duration-200 group"
+            >
+              Learn about Portugal Golden Visa requirements
+              <svg className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+          </div>
           
           <div className="flex justify-center mb-8 sm:mb-10" role="complementary">
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-gray-200 shadow-sm">
