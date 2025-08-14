@@ -34,12 +34,12 @@ export function generateHTMLTemplate(
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3ML90T25MY"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BE3HZBVG9D"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-3ML90T25MY');
+    gtag('config', 'G-BE3HZBVG9D');
   </script>
   
   <!-- Critical SEO Meta Tags -->
