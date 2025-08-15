@@ -31,7 +31,7 @@ export class RouteDiscovery {
     routes.push({ path: '/comparisons', pageType: 'comparisons-hub' });
     routes.push({ path: '/roi-calculator', pageType: 'roi-calculator' });
     routes.push({ path: '/fund-quiz', pageType: 'fund-quiz' });
-    routes.push({ path: '/list-your-fund', pageType: 'list-your-fund' });
+    
     routes.push({ path: '/managers', pageType: 'managers-hub' });
     routes.push({ path: '/categories', pageType: 'categories-hub' });
     routes.push({ path: '/tags', pageType: 'tags-hub' });

@@ -110,9 +110,6 @@ const HomepageInfoSections = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button asChild variant="outline" className="w-full">
-                <Link to="/list-your-fund">Submit Fund</Link>
-              </Button>
             </CardContent>
           </Card>
         </div>
