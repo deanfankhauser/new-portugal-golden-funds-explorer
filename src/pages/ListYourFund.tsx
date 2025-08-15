@@ -6,16 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, FileText, Clock, Shield } from 'lucide-react';
 
 const FilloutForm = () => {
-  useEffect(() => {
-    // Load Fillout script only once
-    if (!document.querySelector('script[src="https://server.fillout.com/embed/v1/"]')) {
-      const script = document.createElement('script');
-      script.src = 'https://server.fillout.com/embed/v1/';
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }, []);
-
   return (
     <>
       <div 
