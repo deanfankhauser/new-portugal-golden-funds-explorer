@@ -157,6 +157,16 @@ const Header = () => {
             </NavigationMenu>
 
             {/* Direct Actions */}
+            <Link to="/list-your-fund">
+              <Button 
+                variant="default" 
+                className="bg-[#EF4444] hover:bg-[#DC2626] text-white transition-all duration-300"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                List Your Fund
+              </Button>
+            </Link>
+
             <a href="https://movingto.com/contact/contact-movingto" target="_blank" rel="noopener noreferrer">
               <Button 
                 variant="outline" 
