@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import ComparisonIndicator from "./ComparisonIndicator";
 import MobileNavigation from "./MobileNavigation";
-import { ArrowLeft, Mail, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3 } from "lucide-react";
+import { ArrowLeft, Mail, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3, FileText } from "lucide-react";
 
 const Header = () => {
   return (
@@ -95,15 +95,24 @@ const Header = () => {
                           <Link to="/roi-calculator" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
                             <Calculator className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
                             <div>
-                              <div className="font-medium text-gray-900">ROI Calculator</div>
-                              <div className="text-sm text-gray-500">Calculate returns</div>
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                      </div>
+                            <div className="font-medium text-gray-900">ROI Calculator</div>
+                            <div className="text-sm text-gray-500">Calculate returns</div>
+                          </div>
+                        </Link>
+                      </NavigationMenuLink>
+                      <NavigationMenuLink asChild>
+                        <Link to="/list-your-fund" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
+                          <FileText className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
+                          <div>
+                            <div className="font-medium text-gray-900">List Your Fund</div>
+                            <div className="text-sm text-gray-500">Submit for listing</div>
+                          </div>
+                        </Link>
+                      </NavigationMenuLink>
                     </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
 
                 {/* Browse Dropdown */}
                 <NavigationMenuItem>

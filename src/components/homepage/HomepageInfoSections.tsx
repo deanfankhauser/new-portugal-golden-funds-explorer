@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, Calculator, ClipboardCheck, Users, BarChart3, ExternalLink } from 'lucide-react';
+import { TrendingUp, Calculator, ClipboardCheck, Users, BarChart3, ExternalLink, FileText } from 'lucide-react';
 
 const HomepageInfoSections = () => {
   return (
@@ -95,6 +95,23 @@ const HomepageInfoSections = () => {
             <CardContent>
               <Button asChild variant="outline" className="w-full">
                 <Link to="/managers">Browse Managers</Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-lg transition-shadow md:col-span-2 lg:col-span-1">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-orange-600" />
+                List Your Fund
+              </CardTitle>
+              <CardDescription>
+                Fund managers: Submit your fund for inclusion in our platform
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild variant="outline" className="w-full">
+                <Link to="/list-your-fund">Submit Fund</Link>
               </Button>
             </CardContent>
           </Card>
