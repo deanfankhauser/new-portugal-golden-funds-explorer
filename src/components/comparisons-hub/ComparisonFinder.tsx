@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { funds } from '../../data/services/funds-service';
+import { createComparisonSlug } from '../../utils/comparisonUtils';
 import { ArrowRight } from 'lucide-react';
 
 const ComparisonFinder = () => {
@@ -13,7 +14,8 @@ const ComparisonFinder = () => {
 
   const handleCompare = () => {
     if (fund1 && fund2 && fund1 !== fund2) {
-      navigate(`/compare/${fund1}-vs-${fund2}`);
+      const normalizedSlug = createComparisonSlug(fund1, fund2);
+      navigate(`/compare/${normalizedSlug}`);
     }
   };
 

@@ -107,7 +107,6 @@ export class SSRRenderer {
                   // Main routes
                   React.createElement(Route, { path: '/', element: React.createElement(getComponent('Index')) }),
                   React.createElement(Route, { path: '/index', element: React.createElement(getComponent('FundIndex')) }),
-                  React.createElement(Route, { path: '/:id', element: React.createElement(getComponent('FundDetails')) }),
                   
                   // Hub pages
                   React.createElement(Route, { path: '/tags', element: React.createElement(getComponent('TagsHub')) }),
@@ -128,8 +127,8 @@ export class SSRRenderer {
                   React.createElement(Route, { path: '/fund-quiz', element: React.createElement(getComponent('FundQuiz')) }),
                   React.createElement(Route, { path: '/compare/:slug', element: React.createElement(getComponent('FundComparison')) }),
                   
-                  // Direct fund routes (e.g., /horizon-fund)
-                  React.createElement(Route, { path: '/:potentialFundId', element: React.createElement(getComponent('FundDetails')) })
+                  // Fund details routes (must be last due to catch-all nature)
+                  React.createElement(Route, { path: '/:id', element: React.createElement(getComponent('FundDetails')) })
                 )
               )
             )

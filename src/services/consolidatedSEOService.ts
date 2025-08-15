@@ -2,6 +2,8 @@
 import { SEOData } from '../types/seo';
 import { URL_CONFIG } from '../utils/urlConfig';
 import { funds } from '../data/funds';
+import { normalizeComparisonSlug } from '../utils/comparisonUtils';
+import { getComparisonBySlug } from '../data/services/comparison-service';
 
 export class ConsolidatedSEOService {
   private static readonly DEFAULT_IMAGE = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
@@ -116,18 +118,19 @@ export class ConsolidatedSEOService {
         };
 
       case 'fund-comparison':
-        if (params?.comparisonSlug) {
-          const comparisonData = this.getComparisonDataBySlug(params.comparisonSlug);
-          if (comparisonData) {
-            const { fund1, fund2 } = comparisonData;
-            return {
-              title: this.optimizeText(`${fund1.name} vs ${fund2.name} | Fund Comparison | Movingto`, this.MAX_TITLE_LENGTH),
-              description: this.optimizeText(`Compare ${fund1.name} and ${fund2.name} side-by-side. Detailed analysis of fees, returns, minimum investment, and more for Portugal Golden Visa funds.`, this.MAX_DESCRIPTION_LENGTH),
-              url: URL_CONFIG.buildComparisonUrl(params.comparisonSlug),
-              structuredData: this.getFundComparisonStructuredData(fund1, fund2)
-            };
-          }
+        const normalizedSlug = normalizeComparisonSlug(params.comparisonSlug || '');
+        const comparisonData = getComparisonBySlug(normalizedSlug);
+        
+        if (comparisonData) {
+          const { fund1, fund2 } = comparisonData;
+          return {
+            title: this.optimizeText(`${fund1.name} vs ${fund2.name} | Fund Comparison 2025`, this.MAX_TITLE_LENGTH),
+            description: this.optimizeText(`Compare ${fund1.name} and ${fund2.name} investment funds. Detailed analysis of fees, performance, minimum investment, and key metrics.`, this.MAX_DESCRIPTION_LENGTH),
+            url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
+            structuredData: this.getFundComparisonStructuredData(fund1, fund2)
+          };
         }
+        
         return {
           title: this.optimizeText('Fund Comparison | Portugal Golden Visa Investment Analysis | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Compare Portugal Golden Visa investment funds side-by-side. Detailed analysis and comparison tools.', this.MAX_DESCRIPTION_LENGTH),
@@ -537,45 +540,44 @@ export class ConsolidatedSEOService {
     };
   }
 
-  // Get comparison data by slug helper
-  private static getComparisonDataBySlug(slug: string): { fund1: any; fund2: any } | null {
-    try {
-      const { getComparisonBySlug } = require('../data/services/comparison-service');
-      return getComparisonBySlug(slug);
-    } catch (error) {
-      console.warn('Failed to load comparison data:', error);
-      return null;
-    }
-  }
 
   // Generate fund comparison structured data
   private static getFundComparisonStructuredData(fund1: any, fund2: any) {
+    if (!fund1 || !fund2) return this.getGenericComparisonStructuredData();
+
+    const normalizedSlug = `${[fund1.id, fund2.id].sort().join('-vs-')}`;
+
     return {
-      '@context': 'https://schema.org',
-      '@type': 'WebPage',
-      'name': `${fund1.name} vs ${fund2.name} Comparison`,
-      'description': `Compare ${fund1.name} and ${fund2.name} investment funds`,
-      'mainEntity': {
-        '@type': 'ItemList',
-        'name': 'Fund Comparison',
-        'numberOfItems': 2,
-        'itemListElement': [
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": `${fund1.name} vs ${fund2.name} Comparison`,
+      "description": `Compare ${fund1.name} and ${fund2.name} investment funds`,
+      "url": URL_CONFIG.buildComparisonUrl(normalizedSlug),
+      "mainEntity": {
+        "@type": "ItemList",
+        "name": "Fund Comparison",
+        "numberOfItems": 2,
+        "itemListElement": [
           {
-            '@type': 'ListItem',
-            'position': 1,
-            'item': {
-              '@type': 'FinancialProduct',
-              'name': fund1.name,
-              'identifier': fund1.id
+            "@type": "InvestmentFund",
+            "name": fund1.name,
+            "description": fund1.description || `Investment fund: ${fund1.name}`,
+            "url": URL_CONFIG.buildFundUrl(fund1.id),
+            "minimumInvestment": {
+              "@type": "MonetaryAmount",
+              "currency": "EUR",
+              "value": fund1.minimumInvestment || 0
             }
           },
           {
-            '@type': 'ListItem',
-            'position': 2,
-            'item': {
-              '@type': 'FinancialProduct',
-              'name': fund2.name,
-              'identifier': fund2.id
+            "@type": "InvestmentFund", 
+            "name": fund2.name,
+            "description": fund2.description || `Investment fund: ${fund2.name}`,
+            "url": URL_CONFIG.buildFundUrl(fund2.id),
+            "minimumInvestment": {
+              "@type": "MonetaryAmount",
+              "currency": "EUR", 
+              "value": fund2.minimumInvestment || 0
             }
           }
         ]

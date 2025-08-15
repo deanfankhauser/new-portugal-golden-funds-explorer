@@ -1,17 +1,24 @@
 
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import ComparisonTable from '../components/comparison/ComparisonTable';
 import { useComparisonStructuredData } from '../hooks/useComparisonStructuredData';
 import { getComparisonBySlug } from '../data/services/comparison-service';
+import { normalizeComparisonSlug, isCanonicalComparisonSlug } from '../utils/comparisonUtils';
 import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle } from 'lucide-react';
 
 const FundComparison = () => {
   const { slug } = useParams<{ slug: string }>();
+  
+  // Check if slug needs canonicalization (redirect to normalized version)
+  if (slug && !isCanonicalComparisonSlug(slug)) {
+    const normalizedSlug = normalizeComparisonSlug(slug);
+    return <Navigate to={`/compare/${normalizedSlug}`} replace />;
+  }
   
   // Get the comparison data using the slug
   const comparisonData = slug ? getComparisonBySlug(slug) : null;
