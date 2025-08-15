@@ -8,12 +8,12 @@ import { CheckCircle, FileText, Clock, Shield } from 'lucide-react';
 const FilloutForm = () => {
   return (
     <>
-      <div 
-        style={{ width: '100%', height: '500px' }} 
-        data-fillout-id="2ZfNTTDczqus" 
-        data-fillout-embed-type="standard" 
-        data-fillout-inherit-parameters 
-        data-fillout-dynamic-resize
+      <iframe
+        src="https://form.fillout.com/2ZfNTTDczqus"
+        width="100%"
+        style={{ minHeight: '900px', border: 0 }}
+        loading="lazy"
+        title="List Your Fund Form"
       />
       <noscript>
         <p className="text-center py-4">
