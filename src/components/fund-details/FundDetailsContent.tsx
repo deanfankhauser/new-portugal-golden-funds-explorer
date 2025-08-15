@@ -16,13 +16,13 @@ import PremiumCTA from '../cta/PremiumCTA';
 import ROICalculator from './ROICalculator';
 import AlternativeFunds from './AlternativeFunds';
 import RelatedFunds from './RelatedFunds';
-import FundRiskScore from './FundRiskScore';
 import ProcessingTimeTracker from './ProcessingTimeTracker';
 import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
 import { Button } from '@/components/ui/button';
 import { ClipboardCheck, TrendingUp } from 'lucide-react';
 import DataFreshnessWarning from '../common/DataFreshnessWarning';
+import { tagToSlug } from '@/lib/utils';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -39,15 +39,15 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
         <FundHeader fund={fund} />
 
         <div className="p-4 md:p-6 lg:p-10 space-y-6 md:space-y-8 lg:space-y-10">
+          {/* Main content with tabs - Detailed Information */}
+          <FundTabsLazySection fund={fund} />
+          
           {/* Key Financial Metrics - Most Important */}
           <FundMetrics 
             fund={fund} 
             formatCurrency={formatCurrency} 
             formatFundSize={() => <FundSizeFormatter fund={fund} />} 
           />
-          
-          {/* Fund Risk Score - Critical for Decision Making */}
-          <FundRiskScore fund={fund} />
           
           {/* Data Quality Indicators - Trust Signals */}
           <FundDataFreshness fund={fund} />
@@ -61,9 +61,6 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
             <FundStructureInfo fund={fund} />
             <ReportButton fundName={fund.name} />
           </div>
-          
-          {/* Main content with tabs - Detailed Information */}
-          <FundTabsLazySection fund={fund} />
           
           {/* Marketing CTAs - Lower Priority */}
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 md:p-6 rounded-lg border border-blue-200">
@@ -112,6 +109,22 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           {/* Legal and Administrative - Bottom */}
           <InvestorNotice />
           <IntroductionButton variant="full" />
+          
+          {/* Tags Section - Bottom */}
+          <div className="border-t border-gray-100 pt-6">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">Fund Tags</h3>
+            <div className="flex flex-wrap gap-2">
+              {fund.tags.map(tag => (
+                <Link 
+                  key={tag} 
+                  to={`/tags/${tagToSlug(tag)}`}
+                  className="bg-white/80 hover:bg-[#EF4444] hover:text-white text-[#EF4444] border border-[#EF4444] px-2 py-1 md:px-3 md:py-1 rounded-full transition-all duration-300 shadow-sm text-xs md:text-sm font-medium"
+                >
+                  {tag}
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
       

@@ -63,18 +63,6 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
         </div>
 
         <p className="text-lg md:text-xl text-gray-700 mb-6 md:mb-8 max-w-3xl leading-relaxed">{fund.description}</p>
-
-        <div className="flex flex-wrap gap-2">
-          {fund.tags.map(tag => (
-            <Link 
-              key={tag} 
-              to={`/tags/${tagToSlug(tag)}`}
-              className="bg-white/80 hover:bg-[#EF4444] hover:text-white text-[#EF4444] border border-[#EF4444] px-2 py-1 md:px-3 md:py-1 rounded-full transition-all duration-300 shadow-sm text-xs md:text-sm font-medium"
-            >
-              {tag}
-            </Link>
-          ))}
-        </div>
       </div>
 
       <LazyPasswordDialog 
