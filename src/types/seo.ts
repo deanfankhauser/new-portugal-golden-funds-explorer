@@ -6,6 +6,7 @@ export interface PageSEOProps {
   categoryName?: string;
   tagName?: string;
   comparisonTitle?: string;
+  comparisonSlug?: string;
 }
 
 export interface SEOData {

@@ -29,7 +29,7 @@ const FundComparison = () => {
   if (!comparisonData) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
-        <PageSEO pageType="fund-comparison" comparisonTitle={comparisonTitle} />
+        <PageSEO pageType="404" />
         
         <Header />
         
@@ -52,7 +52,7 @@ const FundComparison = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <PageSEO pageType="fund-comparison" comparisonTitle={comparisonTitle} />
+      <PageSEO pageType="fund-comparison" comparisonTitle={comparisonTitle} comparisonSlug={slug} />
       
       <Header />
       

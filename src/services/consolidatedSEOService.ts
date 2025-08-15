@@ -108,12 +108,31 @@ export class ConsolidatedSEOService {
         };
 
       case 'comparison':
-      case 'fund-comparison':
         return {
-          title: this.optimizeText(`Fund Comparison | ${params.comparisonTitle || 'Investment Analysis'} | Movingto`, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Compare investment funds side-by-side. Analyze performance, fees, risk profiles, and investment strategies.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Fund Comparison Tool - Compare Investment Funds | Portuguese Funds', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare investment funds side by side. Analyze performance, fees, risk profiles and make informed investment decisions.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('/compare'),
+          structuredData: this.getComparisonsHubStructuredData()
+        };
+
+      case 'fund-comparison':
+        if (params?.comparisonSlug) {
+          const comparisonData = this.getComparisonDataBySlug(params.comparisonSlug);
+          if (comparisonData) {
+            const { fund1, fund2 } = comparisonData;
+            return {
+              title: this.optimizeText(`${fund1.name} vs ${fund2.name} | Fund Comparison | Movingto`, this.MAX_TITLE_LENGTH),
+              description: this.optimizeText(`Compare ${fund1.name} and ${fund2.name} side-by-side. Detailed analysis of fees, returns, minimum investment, and more for Portugal Golden Visa funds.`, this.MAX_DESCRIPTION_LENGTH),
+              url: URL_CONFIG.buildComparisonUrl(params.comparisonSlug),
+              structuredData: this.getFundComparisonStructuredData(fund1, fund2)
+            };
+          }
+        }
+        return {
+          title: this.optimizeText('Fund Comparison | Portugal Golden Visa Investment Analysis | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare Portugal Golden Visa investment funds side-by-side. Detailed analysis and comparison tools.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('compare'),
-          structuredData: this.getComparisonStructuredData()
+          structuredData: this.getGenericComparisonStructuredData()
         };
 
       case 'roi-calculator':
@@ -202,26 +221,6 @@ export class ConsolidatedSEOService {
           description: this.optimizeText('Privacy policy for our Portugal investment fund analysis platform.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('privacy'),
           structuredData: this.getPrivacyStructuredData()
-        };
-
-      case 'fund-comparison':
-        if (params?.comparisonSlug) {
-          const comparisonData = this.getComparisonDataBySlug(params.comparisonSlug);
-          if (comparisonData) {
-            const { fund1, fund2 } = comparisonData;
-            return {
-              title: this.optimizeText(`${fund1.name} vs ${fund2.name} | Fund Comparison | Movingto`, this.MAX_TITLE_LENGTH),
-              description: this.optimizeText(`Compare ${fund1.name} and ${fund2.name} side-by-side. Detailed analysis of fees, returns, minimum investment, and more for Portugal Golden Visa funds.`, this.MAX_DESCRIPTION_LENGTH),
-              url: URL_CONFIG.buildComparisonUrl(params.comparisonSlug),
-              structuredData: this.getFundComparisonStructuredData(fund1, fund2)
-            };
-          }
-        }
-        return {
-          title: this.optimizeText('Fund Comparison | Portugal Golden Visa Investment Analysis | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Compare Portugal Golden Visa investment funds side-by-side. Detailed analysis and comparison tools.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('compare'),
-          structuredData: this.getGenericComparisonStructuredData()
         };
 
       default:
