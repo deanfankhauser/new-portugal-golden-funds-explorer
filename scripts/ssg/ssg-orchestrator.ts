@@ -29,7 +29,7 @@ export async function generateStaticFiles() {
     console.warn('⚠️  SSG: No valid JS files found. Interactivity may not work.');
   }
 
-  const routes = getAllStaticRoutes();
+  const routes = await getAllStaticRoutes();
   if (process.env.NODE_ENV !== 'production') {
     console.log(`📄 SSG: Processing ${routes.length} routes for static generation`);
   }

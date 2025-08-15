@@ -543,7 +543,7 @@ export class ConsolidatedSEOService {
 
   // Generate fund comparison structured data
   private static getFundComparisonStructuredData(fund1: any, fund2: any) {
-    if (!fund1 || !fund2) return this.getGenericComparisonStructuredData();
+    if (!fund1 || !fund2 || !fund1.name || !fund2.name || !fund1.id || !fund2.id) return this.getGenericComparisonStructuredData();
 
     const normalizedSlug = `${[fund1.id, fund2.id].sort().join('-vs-')}`;
     const comparisonUrl = URL_CONFIG.buildComparisonUrl(normalizedSlug);
