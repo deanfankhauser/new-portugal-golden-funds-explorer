@@ -585,25 +585,25 @@ export class ConsolidatedSEOService {
           "numberOfItems": 2,
           "itemListElement": [
             {
-              "@type": "InvestmentFund",
+              "@type": "FinancialProduct",
               "name": fund1.name,
               "description": fund1.description || `Investment fund: ${fund1.name}`,
               "url": URL_CONFIG.buildFundUrl(fund1.id),
-              "minimumInvestment": {
-                "@type": "MonetaryAmount",
-                "currency": "EUR",
-                "value": fund1.minimumInvestment || 0
+              "offers": {
+                "@type": "Offer",
+                "price": fund1.minimumInvestment || 0,
+                "priceCurrency": "EUR"
               }
             },
             {
-              "@type": "InvestmentFund", 
+              "@type": "FinancialProduct", 
               "name": fund2.name,
               "description": fund2.description || `Investment fund: ${fund2.name}`,
               "url": URL_CONFIG.buildFundUrl(fund2.id),
-              "minimumInvestment": {
-                "@type": "MonetaryAmount",
-                "currency": "EUR", 
-                "value": fund2.minimumInvestment || 0
+              "offers": {
+                "@type": "Offer",
+                "price": fund2.minimumInvestment || 0,
+                "priceCurrency": "EUR"
               }
             }
           ]
@@ -620,12 +620,12 @@ export class ConsolidatedSEOService {
         },
         "object": [
           {
-            "@type": "InvestmentFund",
+            "@type": "FinancialProduct",
             "name": fund1.name,
             "url": URL_CONFIG.buildFundUrl(fund1.id)
           },
           {
-            "@type": "InvestmentFund",
+            "@type": "FinancialProduct",
             "name": fund2.name,
             "url": URL_CONFIG.buildFundUrl(fund2.id)
           }

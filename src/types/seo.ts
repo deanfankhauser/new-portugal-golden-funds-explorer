@@ -13,5 +13,5 @@ export interface SEOData {
   title: string;
   description: string;
   url: string;
-  structuredData: Record<string, any>;
+  structuredData: any;
 }
