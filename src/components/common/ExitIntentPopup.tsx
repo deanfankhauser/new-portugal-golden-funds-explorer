@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { X, ExternalLink, Users, Shield, Zap } from 'lucide-react';
 import { analytics } from '@/utils/analytics';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface ExitIntentPopupProps {
   isEnabled?: boolean;
@@ -11,9 +12,11 @@ interface ExitIntentPopupProps {
 const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [hasShown, setHasShown] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (!isEnabled || hasShown) return;
+    // Don't show popup if user is already authenticated or popup is disabled
+    if (!isEnabled || hasShown || isAuthenticated) return;
 
     let mouseLeaveTimer: NodeJS.Timeout;
     
@@ -61,7 +64,7 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) =
         clearTimeout(mouseLeaveTimer);
       }
     };
-  }, [isEnabled, hasShown]);
+  }, [isEnabled, hasShown, isAuthenticated]);
 
   const handleContactClick = () => {
     analytics.trackCTAClick('exit_intent_popup', 'contact_expert', 'https://movingto.com/contact/contact-movingto');
