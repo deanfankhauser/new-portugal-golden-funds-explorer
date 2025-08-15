@@ -9,5 +9,6 @@ export const URL_CONFIG = {
   buildFundUrl: (fundId: string) => `https://funds.movingto.com/${fundId}`,
   buildManagerUrl: (managerName: string) => `https://funds.movingto.com/manager/${managerToSlug(managerName)}`,
   buildCategoryUrl: (categoryName: string) => `https://funds.movingto.com/categories/${categoryToSlug(categoryName)}`,
-  buildTagUrl: (tagName: string) => `https://funds.movingto.com/tags/${tagToSlug(tagName)}`
+  buildTagUrl: (tagName: string) => `https://funds.movingto.com/tags/${tagToSlug(tagName)}`,
+  buildComparisonUrl: (slug: string) => `https://funds.movingto.com/compare/${slug}`
 };

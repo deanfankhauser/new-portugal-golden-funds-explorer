@@ -47,6 +47,7 @@ export class SSRRenderer {
       managerName: route.params?.managerName,
       categoryName: route.params?.categoryName,
       tagName: route.params?.tagName,
+      comparisonSlug: route.params?.slug,
     });
 
     // Validate SEO data completeness
@@ -125,6 +126,7 @@ export class SSRRenderer {
                   React.createElement(Route, { path: '/faqs', element: React.createElement(getComponent('FAQs')) }),
                   React.createElement(Route, { path: '/roi-calculator', element: React.createElement(getComponent('ROICalculator')) }),
                   React.createElement(Route, { path: '/fund-quiz', element: React.createElement(getComponent('FundQuiz')) }),
+                  React.createElement(Route, { path: '/compare/:slug', element: React.createElement(getComponent('FundComparison')) }),
                   
                   // Direct fund routes (e.g., /horizon-fund)
                   React.createElement(Route, { path: '/:potentialFundId', element: React.createElement(getComponent('FundDetails')) })

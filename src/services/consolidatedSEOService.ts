@@ -204,6 +204,25 @@ export class ConsolidatedSEOService {
           structuredData: this.getPrivacyStructuredData()
         };
 
+      case 'fund-comparison':
+        if (params?.comparisonSlug) {
+          const comparisonData = this.getComparisonDataBySlug(params.comparisonSlug);
+          if (comparisonData) {
+            const { fund1, fund2 } = comparisonData;
+            return {
+              title: this.optimizeText(`${fund1.name} vs ${fund2.name} | Fund Comparison | Movingto`, this.MAX_TITLE_LENGTH),
+              description: this.optimizeText(`Compare ${fund1.name} and ${fund2.name} side-by-side. Detailed analysis of fees, returns, minimum investment, and more for Portugal Golden Visa funds.`, this.MAX_DESCRIPTION_LENGTH),
+              url: URL_CONFIG.buildComparisonUrl(params.comparisonSlug),
+              structuredData: this.getFundComparisonStructuredData(fund1, fund2)
+            };
+          }
+        }
+        return {
+          title: this.optimizeText('Fund Comparison | Portugal Golden Visa Investment Analysis | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare Portugal Golden Visa investment funds side-by-side. Detailed analysis and comparison tools.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('compare'),
+          structuredData: this.getGenericComparisonStructuredData()
+        };
 
       default:
         return this.getSEOData('homepage');
@@ -516,6 +535,62 @@ export class ConsolidatedSEOService {
       'name': 'Privacy Policy',
       'description': 'Privacy policy for our platform',
       'url': URL_CONFIG.buildUrl('privacy')
+    };
+  }
+
+  // Get comparison data by slug helper
+  private static getComparisonDataBySlug(slug: string): { fund1: any; fund2: any } | null {
+    try {
+      const { getComparisonBySlug } = require('../data/services/comparison-service');
+      return getComparisonBySlug(slug);
+    } catch (error) {
+      console.warn('Failed to load comparison data:', error);
+      return null;
+    }
+  }
+
+  // Generate fund comparison structured data
+  private static getFundComparisonStructuredData(fund1: any, fund2: any) {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': `${fund1.name} vs ${fund2.name} Comparison`,
+      'description': `Compare ${fund1.name} and ${fund2.name} investment funds`,
+      'mainEntity': {
+        '@type': 'ItemList',
+        'name': 'Fund Comparison',
+        'numberOfItems': 2,
+        'itemListElement': [
+          {
+            '@type': 'ListItem',
+            'position': 1,
+            'item': {
+              '@type': 'FinancialProduct',
+              'name': fund1.name,
+              'identifier': fund1.id
+            }
+          },
+          {
+            '@type': 'ListItem',
+            'position': 2,
+            'item': {
+              '@type': 'FinancialProduct',
+              'name': fund2.name,
+              'identifier': fund2.id
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  // Generate generic comparison structured data
+  private static getGenericComparisonStructuredData() {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'Fund Comparison Tool',
+      'description': 'Compare Portugal Golden Visa investment funds'
     };
   }
 
