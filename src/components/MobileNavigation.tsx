@@ -46,12 +46,6 @@ const MobileNavigation = () => {
                   <span>ROI Calculator</span>
                 </Button>
               </Link>
-              <Link to="/list-your-fund" onClick={closeMenu}>
-                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
-                  <FileText className="h-5 w-5" />
-                  <span>List Your Fund</span>
-                </Button>
-              </Link>
             </div>
           </div>
 

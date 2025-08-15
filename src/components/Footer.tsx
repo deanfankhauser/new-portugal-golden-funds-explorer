@@ -1,11 +1,21 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { Facebook, Linkedin, ExternalLink } from "lucide-react";
 import RecentlyViewedFunds from "./RecentlyViewedFunds";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    // Load Fillout script if not already loaded
+    if (!document.querySelector('script[src="https://server.fillout.com/embed/v1/"]')) {
+      const script = document.createElement('script');
+      script.src = 'https://server.fillout.com/embed/v1/';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
 
   return (
     <footer className="bg-gray-100 py-10 mt-12 border-t border-gray-200">
@@ -86,9 +96,6 @@ const Footer = () => {
               <li>
                 <Link to="/faqs" className="text-gray-600 hover:text-primary text-sm transition-colors">FAQs</Link>
               </li>
-              <li>
-                <Link to="/list-your-fund" className="text-gray-600 hover:text-primary text-sm transition-colors">List Your Fund</Link>
-              </li>
             </ul>
           </div>
           
@@ -129,6 +136,23 @@ const Footer = () => {
                 </a>
               </li>
             </ul>
+          </div>
+          
+          <div className="col-span-1">
+            <h3 className="text-base font-semibold mb-4">Fund Managers</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Are you a fund manager? Submit your fund to our platform.
+            </p>
+            <div 
+              data-fillout-id="2ZfNTTDczqus" 
+              data-fillout-embed-type="popup" 
+              data-fillout-button-text="Add your fund" 
+              data-fillout-dynamic-resize 
+              data-fillout-button-color="#EB144C" 
+              data-fillout-button-size="small" 
+              data-fillout-inherit-parameters 
+              data-fillout-popup-size="medium"
+            />
           </div>
           
           <div className="col-span-1">

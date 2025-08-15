@@ -204,13 +204,6 @@ export class ConsolidatedSEOService {
           structuredData: this.getPrivacyStructuredData()
         };
 
-      case 'list-your-fund':
-        return {
-          title: this.optimizeText('List Your Fund | Submit to Portugal Golden Visa Funds | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Submit your fund to be included in our Portugal Golden Visa investment fund index and comparison tools. Reach engaged investors evaluating fund opportunities.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('list-your-fund'),
-          structuredData: this.getListYourFundStructuredData()
-        };
 
       default:
         return this.getSEOData('homepage');
@@ -526,13 +519,4 @@ export class ConsolidatedSEOService {
     };
   }
 
-  private static getListYourFundStructuredData(): any {
-    return {
-      '@context': 'https://schema.org',
-      '@type': 'WebPage',
-      'name': 'List Your Fund',
-      'description': 'Submit your fund to be included in our platform',
-      'url': URL_CONFIG.buildUrl('list-your-fund')
-    };
-  }
 }

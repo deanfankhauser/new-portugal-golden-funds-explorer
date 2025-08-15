@@ -100,15 +100,6 @@ const Header = () => {
                           </div>
                         </Link>
                       </NavigationMenuLink>
-                      <NavigationMenuLink asChild>
-                        <Link to="/list-your-fund" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
-                          <FileText className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
-                          <div>
-                            <div className="font-medium text-gray-900">List Your Fund</div>
-                            <div className="text-sm text-gray-500">Submit for listing</div>
-                          </div>
-                        </Link>
-                      </NavigationMenuLink>
                     </div>
                   </div>
                 </NavigationMenuContent>
@@ -157,15 +148,6 @@ const Header = () => {
             </NavigationMenu>
 
             {/* Direct Actions */}
-            <Link to="/list-your-fund">
-              <Button 
-                variant="default" 
-                className="bg-[#EF4444] hover:bg-[#DC2626] text-white transition-all duration-300"
-              >
-                <FileText className="h-4 w-4 mr-2" />
-                List Your Fund
-              </Button>
-            </Link>
 
             <a href="https://movingto.com/contact/contact-movingto" target="_blank" rel="noopener noreferrer">
               <Button 
