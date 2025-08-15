@@ -546,43 +546,97 @@ export class ConsolidatedSEOService {
     if (!fund1 || !fund2) return this.getGenericComparisonStructuredData();
 
     const normalizedSlug = `${[fund1.id, fund2.id].sort().join('-vs-')}`;
+    const comparisonUrl = URL_CONFIG.buildComparisonUrl(normalizedSlug);
 
-    return {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": `${fund1.name} vs ${fund2.name} Comparison`,
-      "description": `Compare ${fund1.name} and ${fund2.name} investment funds`,
-      "url": URL_CONFIG.buildComparisonUrl(normalizedSlug),
-      "mainEntity": {
-        "@type": "ItemList",
-        "name": "Fund Comparison",
-        "numberOfItems": 2,
-        "itemListElement": [
+    return [
+      // Main WebPage schema
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": `${fund1.name} vs ${fund2.name} Comparison`,
+        "description": `Compare ${fund1.name} and ${fund2.name} investment funds side-by-side to make informed investment decisions`,
+        "url": comparisonUrl,
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": URL_CONFIG.BASE_URL
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Fund Comparisons",
+              "item": URL_CONFIG.buildUrl('comparisons')
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": `${fund1.name} vs ${fund2.name}`,
+              "item": comparisonUrl
+            }
+          ]
+        },
+        "mainEntity": {
+          "@type": "ItemList",
+          "name": "Fund Comparison",
+          "numberOfItems": 2,
+          "itemListElement": [
+            {
+              "@type": "InvestmentFund",
+              "name": fund1.name,
+              "description": fund1.description || `Investment fund: ${fund1.name}`,
+              "url": URL_CONFIG.buildFundUrl(fund1.id),
+              "minimumInvestment": {
+                "@type": "MonetaryAmount",
+                "currency": "EUR",
+                "value": fund1.minimumInvestment || 0
+              }
+            },
+            {
+              "@type": "InvestmentFund", 
+              "name": fund2.name,
+              "description": fund2.description || `Investment fund: ${fund2.name}`,
+              "url": URL_CONFIG.buildFundUrl(fund2.id),
+              "minimumInvestment": {
+                "@type": "MonetaryAmount",
+                "currency": "EUR", 
+                "value": fund2.minimumInvestment || 0
+              }
+            }
+          ]
+        }
+      },
+      // CompareAction schema
+      {
+        "@context": "https://schema.org",
+        "@type": "CompareAction",
+        "agent": {
+          "@type": "Organization",
+          "name": "Movingto",
+          "url": URL_CONFIG.BASE_URL
+        },
+        "object": [
           {
             "@type": "InvestmentFund",
             "name": fund1.name,
-            "description": fund1.description || `Investment fund: ${fund1.name}`,
-            "url": URL_CONFIG.buildFundUrl(fund1.id),
-            "minimumInvestment": {
-              "@type": "MonetaryAmount",
-              "currency": "EUR",
-              "value": fund1.minimumInvestment || 0
-            }
+            "url": URL_CONFIG.buildFundUrl(fund1.id)
           },
           {
-            "@type": "InvestmentFund", 
+            "@type": "InvestmentFund",
             "name": fund2.name,
-            "description": fund2.description || `Investment fund: ${fund2.name}`,
-            "url": URL_CONFIG.buildFundUrl(fund2.id),
-            "minimumInvestment": {
-              "@type": "MonetaryAmount",
-              "currency": "EUR", 
-              "value": fund2.minimumInvestment || 0
-            }
+            "url": URL_CONFIG.buildFundUrl(fund2.id)
           }
-        ]
+        ],
+        "result": {
+          "@type": "WebPage",
+          "name": `${fund1.name} vs ${fund2.name} Comparison`,
+          "url": comparisonUrl
+        }
       }
-    };
+    ];
   }
 
   // Generate generic comparison structured data

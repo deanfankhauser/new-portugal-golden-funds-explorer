@@ -5,7 +5,6 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import ComparisonTable from '../components/comparison/ComparisonTable';
-import { useComparisonStructuredData } from '../hooks/useComparisonStructuredData';
 import { getComparisonBySlug } from '../data/services/comparison-service';
 import { normalizeComparisonSlug, isCanonicalComparisonSlug } from '../utils/comparisonUtils';
 import { Card, CardContent } from '@/components/ui/card';
@@ -24,9 +23,6 @@ const FundComparison = () => {
   const comparisonData = slug ? getComparisonBySlug(slug) : null;
   
   const comparisonTitle = slug?.replace(/-/g, ' ') || '';
-  
-  // Add structured data for the comparison
-  useComparisonStructuredData(comparisonData ? [comparisonData.fund1, comparisonData.fund2] : [], 'fund-vs-fund');
   
   useEffect(() => {
     window.scrollTo(0, 0);
