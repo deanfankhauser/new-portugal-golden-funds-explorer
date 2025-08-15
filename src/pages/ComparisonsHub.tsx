@@ -6,6 +6,7 @@ import PageSEO from '../components/common/PageSEO';
 import ComparisonsHubBreadcrumbs from '../components/comparisons-hub/ComparisonsHubBreadcrumbs';
 import ComparisonsHubHeader from '../components/comparisons-hub/ComparisonsHubHeader';
 import ComparisonsList from '../components/comparisons-hub/ComparisonsList';
+import ComparisonFinder from '../components/comparisons-hub/ComparisonFinder';
 
 const ComparisonsHub = () => {
   return (
@@ -17,6 +18,7 @@ const ComparisonsHub = () => {
       <main className="container mx-auto px-4 py-8 flex-1">
         <ComparisonsHubBreadcrumbs />
         <ComparisonsHubHeader />
+        <ComparisonFinder />
         <ComparisonsList />
       </main>
       

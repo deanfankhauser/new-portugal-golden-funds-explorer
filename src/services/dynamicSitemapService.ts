@@ -15,7 +15,8 @@ export class DynamicSitemapService {
       ...this.getFundUrls(),
       ...this.getCategoryUrls(),
       ...this.getTagUrls(),
-      ...this.getManagerUrls()
+      ...this.getManagerUrls(),
+      ...this.getComparisonUrls()
     ];
 
     const urlElements = urls.map(url => `  <url>
@@ -86,6 +87,18 @@ ${urlElements}
     const managers = getAllFundManagers();
     return managers.map(manager => ({
       loc: `${this.BASE_URL}/manager/${managerToSlug(manager.name)}`,
+      lastmod: this.CURRENT_DATE,
+      changefreq: 'weekly',
+      priority: '0.8'
+    }));
+  }
+
+  // Comparison pages
+  private static getComparisonUrls() {
+    const { getAllComparisonSlugs } = require('../data/services/comparison-service');
+    const comparisonSlugs = getAllComparisonSlugs();
+    return comparisonSlugs.map(slug => ({
+      loc: `${this.BASE_URL}/compare/${slug}`,
       lastmod: this.CURRENT_DATE,
       changefreq: 'weekly',
       priority: '0.8'

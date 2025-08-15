@@ -13,7 +13,7 @@ export interface StaticRoute {
 }
 
 export class RouteDiscovery {
-  static getAllStaticRoutes(): StaticRoute[] {
+  static async getAllStaticRoutes(): Promise<StaticRoute[]> {
     const routes: StaticRoute[] = [];
 
     // Homepage
@@ -80,12 +80,23 @@ export class RouteDiscovery {
       });
     });
 
-    console.log(`🔍 RouteDiscovery: Generated ${routes.length} static routes`);
+    // Fund comparison pages
+    const { getAllComparisonSlugs } = await import('../data/services/comparison-service');
+    const comparisonSlugs = getAllComparisonSlugs();
+    comparisonSlugs.forEach(slug => {
+      routes.push({
+        path: `/compare/${slug}`,
+        pageType: 'fund-comparison',
+        params: { slug }
+      });
+    });
+
+    console.log(`🔍 RouteDiscovery: Generated ${routes.length} static routes (including ${comparisonSlugs.length} comparisons)`);
     return routes;
   }
 
-  static generateSitemap(): string {
-    const routes = this.getAllStaticRoutes();
+  static async generateSitemap(): Promise<string> {
+    const routes = await this.getAllStaticRoutes();
     const baseUrl = 'https://funds.movingto.com';
     
     const urls = routes.map(route => {
