@@ -19,9 +19,67 @@ const createSafeErrorResponse = (message, errorId) => ({
   timestamp: new Date().toISOString()
 });
 
+// Simple rate limiting store (in-memory)
+const requestCounts = new Map();
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 5;
+
+// Input validation function
+const validateInput = (email, userName) => {
+  // Email validation (enhanced)
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || email.length > 254 || !emailRegex.test(email)) {
+    return 'Invalid email format';
+  }
+  
+  // Name validation (if provided)
+  if (userName && (typeof userName !== 'string' || userName.length > 100)) {
+    return 'Invalid name format';
+  }
+  
+  return null;
+};
+
+// Rate limiting function
+const checkRateLimit = (ip) => {
+  const now = Date.now();
+  const windowStart = now - RATE_LIMIT_WINDOW;
+  
+  // Clean old entries
+  for (const [key, data] of requestCounts.entries()) {
+    if (data.timestamp < windowStart) {
+      requestCounts.delete(key);
+    }
+  }
+  
+  const current = requestCounts.get(ip) || { count: 0, timestamp: now };
+  if (current.timestamp < windowStart) {
+    current.count = 1;
+    current.timestamp = now;
+  } else {
+    current.count++;
+  }
+  
+  requestCounts.set(ip, current);
+  return current.count <= MAX_REQUESTS_PER_WINDOW;
+};
+
 export default async function handler(req, res) {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  // Get client IP for rate limiting
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
+  
+  // Set restrictive CORS headers
+  const allowedOrigins = [
+    'https://funds.movingto.com',
+    'https://fundsportugal.com',
+    'https://vercel.app' // For Vercel preview deployments
+  ];
+  
+  const origin = req.headers.origin;
+  if (allowedOrigins.some(allowed => origin && origin.includes(allowed.replace('https://', '')))) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -35,20 +93,20 @@ export default async function handler(req, res) {
     return res.status(405).json(createSafeErrorResponse('Method not allowed', errorId));
   }
 
+  // Rate limiting check
+  if (!checkRateLimit(ip)) {
+    const errorId = logError(new Error('Rate limit exceeded'), 'Rate limiting');
+    return res.status(429).json(createSafeErrorResponse('Too many requests. Please try again later.', errorId));
+  }
+
   try {
     const { email, userName } = req.body;
 
-    // Validate required data
-    if (!email) {
-      const errorId = logError(new Error('Missing email'), 'Request validation');
-      return res.status(400).json(createSafeErrorResponse('Email is required', errorId));
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      const errorId = logError(new Error('Invalid email format'), 'Email validation');
-      return res.status(400).json(createSafeErrorResponse('Invalid email format', errorId));
+    // Validate input
+    const validationError = validateInput(email, userName);
+    if (validationError) {
+      const errorId = logError(new Error(validationError), 'Input validation');
+      return res.status(400).json(createSafeErrorResponse(validationError, errorId));
     }
 
     // Check for API token
