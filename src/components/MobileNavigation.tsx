@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
-import { Menu, Calculator, ClipboardCheck, Mail, ExternalLink, Users } from 'lucide-react';
+import { Menu, Calculator, ClipboardCheck, Mail, ExternalLink, Users, FileText } from 'lucide-react';
 
 const MobileNavigation = () => {
   const [open, setOpen] = React.useState(false);
@@ -44,6 +44,12 @@ const MobileNavigation = () => {
                 <Button variant="ghost" className="w-full justify-start gap-3 h-12">
                   <Calculator className="h-5 w-5" />
                   <span>ROI Calculator</span>
+                </Button>
+              </Link>
+              <Link to="/list-your-fund" onClick={closeMenu}>
+                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
+                  <FileText className="h-5 w-5" />
+                  <span>List Your Fund</span>
                 </Button>
               </Link>
             </div>

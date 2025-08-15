@@ -84,6 +84,10 @@ export const loadComponents = async () => {
       FundQuiz: import('../pages/FundQuiz').then(m => m.default).catch(err => {
         console.warn('ComponentLoader: Failed to load FundQuiz:', err.message);
         return null;
+      }),
+      ListYourFund: import('../pages/ListYourFund').then(m => m.default).catch(err => {
+        console.warn('ComponentLoader: Failed to load ListYourFund:', err.message);
+        return null;
       })
     };
 
