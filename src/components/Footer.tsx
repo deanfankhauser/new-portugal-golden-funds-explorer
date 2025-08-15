@@ -149,7 +149,7 @@ const Footer = () => {
               data-fillout-button-text="Add your fund" 
               data-fillout-dynamic-resize 
               data-fillout-button-color="#EB144C" 
-              data-fillout-button-size="medium" 
+              data-fillout-button-size="small" 
               data-fillout-inherit-parameters 
               data-fillout-popup-size="medium"
             />
