@@ -22,13 +22,20 @@ export function validateGeneratedFile(
 ): ValidationChecks {
   const generatedContent = fs.readFileSync(filePath, 'utf8');
   
+  // Helper function to check structured data presence for both objects and arrays
+  const hasStructuredData = Array.isArray(seoData.structuredData) 
+    ? seoData.structuredData.length > 0 
+    : !!seoData.structuredData && Object.keys(seoData.structuredData).length > 0;
+
   const validationChecks: ValidationChecks = {
     hasTitle: generatedContent.includes(`<title>${seoData.title}</title>`),
     hasDescription: generatedContent.includes(`content="${seoData.description}"`),
-    hasStructuredData: seoData.structuredData && Object.keys(seoData.structuredData).length > 0,
+    hasStructuredData,
     hasFonts: generatedContent.includes('fonts.googleapis.com'),
-    hasRelativeCSS: validCss.length === 0 || validCss.every(css => generatedContent.includes(`href="./assets/${css}"`)),
-    hasRelativeJS: validJs.length === 0 || validJs.every(js => generatedContent.includes(`src="./assets/${js}"`)),
+    hasRelativeCSS: validCss.length === 0 || validCss.every(css => 
+      generatedContent.includes(`href="/assets/${css}"`) || generatedContent.includes(`href="./assets/${css}"`)),
+    hasRelativeJS: validJs.length === 0 || validJs.every(js => 
+      generatedContent.includes(`src="/assets/${js}"`) || generatedContent.includes(`src="./assets/${js}"`)),
     noAbsolutePaths: !generatedContent.includes('https://funds.movingto.com/assets/'),
     hasCorrectCanonical: generatedContent.includes(`href="${seoData.url}"`),
     hasCorrectOgUrl: generatedContent.includes(`content="${seoData.url}"`),

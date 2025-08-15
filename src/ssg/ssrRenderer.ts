@@ -22,7 +22,9 @@ if (typeof window !== 'undefined' && !window.React) {
 
 export class SSRRenderer {
   static async renderRoute(route: StaticRoute): Promise<{ html: string; seoData: any }> {
-    console.log(`🔥 SSR: Starting render for route ${route.path} (type: ${route.pageType})`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`🔥 SSR: Starting render for route ${route.path} (type: ${route.pageType})`);
+    }
     
     const queryClient = new QueryClient({
       defaultOptions: {
@@ -34,13 +36,15 @@ export class SSRRenderer {
     });
 
     // Get SEO data for this route with detailed logging
-    console.log(`🔥 SSR: Requesting SEO data with params:`, {
-      pageType: route.pageType,
-      fundName: route.params?.fundName,
-      managerName: route.params?.managerName,
-      categoryName: route.params?.categoryName,
-      tagName: route.params?.tagName,
-    });
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`🔥 SSR: Requesting SEO data with params:`, {
+        pageType: route.pageType,
+        fundName: route.params?.fundName,
+        managerName: route.params?.managerName,
+        categoryName: route.params?.categoryName,
+        tagName: route.params?.tagName,
+      });
+    }
 
     const seoData = ConsolidatedSEOService.getSEOData(route.pageType as any, {
       fundName: route.params?.fundName,
@@ -51,23 +55,31 @@ export class SSRRenderer {
     });
 
     // Validate SEO data completeness
-    const seoValidation = {
-      hasTitle: !!seoData.title,
-      hasDescription: !!seoData.description,
-      hasUrl: !!seoData.url,
-      hasStructuredData: !!seoData.structuredData && Object.keys(seoData.structuredData).length > 0,
-      titleLength: seoData.title?.length || 0,
-      descriptionLength: seoData.description?.length || 0
-    };
+    const hasStructuredData = Array.isArray(seoData.structuredData) 
+      ? seoData.structuredData.length > 0 
+      : !!seoData.structuredData && Object.keys(seoData.structuredData).length > 0;
 
-    console.log(`🔥 SSR: SEO data validation for ${route.path}:`, seoValidation);
-    console.log(`🔥 SSR: Generated SEO data:`, {
-      title: seoData.title,
-      description: seoData.description.substring(0, 100) + '...',
-      url: seoData.url,
-      pageType: route.pageType,
-      structuredDataKeys: seoData.structuredData ? Object.keys(seoData.structuredData) : []
-    });
+    if (process.env.NODE_ENV !== 'production') {
+      const seoValidation = {
+        hasTitle: !!seoData.title,
+        hasDescription: !!seoData.description,
+        hasUrl: !!seoData.url,
+        hasStructuredData,
+        titleLength: seoData.title?.length || 0,
+        descriptionLength: seoData.description?.length || 0
+      };
+
+      console.log(`🔥 SSR: SEO data validation for ${route.path}:`, seoValidation);
+      console.log(`🔥 SSR: Generated SEO data:`, {
+        title: seoData.title,
+        description: seoData.description.substring(0, 100) + '...',
+        url: seoData.url,
+        pageType: route.pageType,
+        structuredDataInfo: Array.isArray(seoData.structuredData) 
+          ? `array with ${seoData.structuredData.length} items` 
+          : `object with ${seoData.structuredData ? Object.keys(seoData.structuredData).length : 0} keys`
+      });
+    }
 
     // Load all components
     const components = await loadComponents();
@@ -77,7 +89,9 @@ export class SSRRenderer {
     const getComponent = (componentName: string) => {
       const component = components[componentName];
       if (!component) {
-        console.warn(`🔥 SSR: Component ${componentName} not available, using fallback`);
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(`🔥 SSR: Component ${componentName} not available, using fallback`);
+        }
         return FallbackComponent;
       }
       return component;
@@ -142,7 +156,9 @@ export class SSRRenderer {
     
     try {
       const html = renderToString(React.createElement(AppRouter));
-      console.log(`🔥 SSR: Successfully rendered HTML for ${route.path}, length: ${html.length} chars`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`🔥 SSR: Successfully rendered HTML for ${route.path}, length: ${html.length} chars`);
+      }
       
       const helmet = Helmet.rewind();
 
@@ -160,16 +176,26 @@ export class SSRRenderer {
         }
       };
 
-      console.log(`🔥 SSR: Final SEO data for ${route.path}:`, {
-        title: finalSeoData.title,
-        url: finalSeoData.url,
-        hasStructuredData: Object.keys(finalSeoData.structuredData).length > 0,
-        structuredDataKeys: Object.keys(finalSeoData.structuredData)
-      });
+      if (process.env.NODE_ENV !== 'production') {
+        const finalHasStructuredData = Array.isArray(finalSeoData.structuredData) 
+          ? finalSeoData.structuredData.length > 0 
+          : !!finalSeoData.structuredData && Object.keys(finalSeoData.structuredData).length > 0;
+
+        console.log(`🔥 SSR: Final SEO data for ${route.path}:`, {
+          title: finalSeoData.title,
+          url: finalSeoData.url,
+          hasStructuredData: finalHasStructuredData,
+          structuredDataInfo: Array.isArray(finalSeoData.structuredData) 
+            ? `array with ${finalSeoData.structuredData.length} items` 
+            : `object with ${Object.keys(finalSeoData.structuredData).length} keys`
+        });
+      }
 
       return { html, seoData: finalSeoData };
     } catch (error) {
-      console.error(`🔥 SSR: Error rendering route ${route.path}:`, error);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error(`🔥 SSR: Error rendering route ${route.path}:`, error);
+      }
       return { 
         html: '<div class="p-8 text-center text-red-600">Error rendering page. Please try again later.</div>', 
         seoData: {
