@@ -48,7 +48,7 @@ const Header = () => {
                             <TrendingUp className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
                             <div>
                               <div className="font-medium text-gray-900">Fund Index</div>
-                              <div className="text-sm text-gray-500">Ranked fund analysis</div>
+                              <div className="text-sm text-gray-500">Complete Portugal Golden Visa fund rankings</div>
                             </div>
                           </Link>
                         </NavigationMenuLink>

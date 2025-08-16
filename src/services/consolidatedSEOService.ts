@@ -59,7 +59,7 @@ export class ConsolidatedSEOService {
     switch (pageType) {
       case 'homepage':
         return {
-          title: 'Portugal Golden Visa Investment Funds | Compare & Analyze | Movingto',
+          title: this.optimizeText('Portugal Golden Visa Investment Funds | Compare & Analyze | Movingto', 60),
           description: this.optimizeText('Discover and compare Portugal Golden Visa Investment Funds. Comprehensive analysis, performance data, and expert insights for qualified Golden Visa investment decisions.', this.MAX_DESCRIPTION_LENGTH),
           url: baseUrl,
           structuredData: this.getHomepageStructuredData()
@@ -491,7 +491,24 @@ export class ConsolidatedSEOService {
       '@type': 'CollectionPage',
       'name': 'Portugal Golden Visa Investment Funds Database',
       'description': 'Complete database of Portugal Golden Visa Investment Funds',
-      'url': URL_CONFIG.buildUrl('index')
+      'url': URL_CONFIG.buildUrl('index'),
+      'breadcrumb': {
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          {
+            '@type': 'ListItem',
+            'position': 1,
+            'name': 'Home',
+            'item': URL_CONFIG.buildUrl('/')
+          },
+          {
+            '@type': 'ListItem',
+            'position': 2,
+            'name': 'Fund Index',
+            'item': URL_CONFIG.buildUrl('index')
+          }
+        ]
+      }
     };
   }
 

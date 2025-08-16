@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { GitCompare } from 'lucide-react';
 
 const ComparisonsHubHeader = () => {
@@ -12,7 +13,7 @@ const ComparisonsHubHeader = () => {
       <p className="text-xl text-gray-600 max-w-3xl mx-auto">
         Compare different Portugal Golden Visa investment funds side by side. 
         Analyze fees, returns, minimum investments, and more to make informed decisions.
-        View our comprehensive <a href="/index" className="text-[#EF4444] hover:underline">Portugal Golden Visa Investment Fund Index</a> for complete rankings.
+        View our comprehensive <Link to="/index" className="text-[#EF4444] hover:underline">Portugal Golden Visa Investment Fund Index</Link> for complete rankings.
       </p>
     </div>
   );
