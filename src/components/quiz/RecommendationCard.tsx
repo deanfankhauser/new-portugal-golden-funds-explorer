@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -87,13 +88,15 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ fund, index, fo
             
             <div className="text-center">
               <Button 
+                asChild
                 variant="outline" 
                 size="sm"
-                onClick={() => window.open(`/${fund.id}`, '_blank')}
                 className="w-full"
               >
-                View Details
-                <ExternalLink className="ml-2 h-3 w-3" />
+                <Link to={`/${fund.id}`}>
+                  View Details
+                  <ExternalLink className="ml-2 h-3 w-3" />
+                </Link>
               </Button>
             </div>
           </div>

@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Info, ExternalLink } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
+import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
 
 interface IntroductionButtonProps {
   variant?: 'full' | 'compact';
@@ -10,7 +11,7 @@ interface IntroductionButtonProps {
 
 const IntroductionButton: React.FC<IntroductionButtonProps> = ({ variant = 'full' }) => {
   const handleIntroductionClick = () => {
-    window.open('https://movingto.com/contact/contact-movingto', '_blank');
+    openExternalLink(buildContactUrl('introduction-button'));
   };
   
   if (variant === 'compact') {

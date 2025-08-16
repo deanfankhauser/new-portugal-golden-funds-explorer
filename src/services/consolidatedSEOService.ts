@@ -114,7 +114,7 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('Fund Comparison Tool - Compare Investment Funds | Portuguese Funds', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Compare investment funds side by side. Analyze performance, fees, risk profiles and make informed investment decisions.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/compare'),
-          structuredData: this.getComparisonsHubStructuredData()
+          structuredData: this.getComparisonStructuredData()
         };
 
       case 'fund-comparison':
@@ -187,6 +187,14 @@ export class ConsolidatedSEOService {
           structuredData: this.getTagsHubStructuredData()
         };
 
+      case 'alternatives-hub':
+        return {
+          title: this.optimizeText('Fund Alternatives Hub - Compare Investment Fund Options | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Explore alternative investment funds for every fund in our database. Find similar options based on category, risk level, and investment requirements.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('/alternatives'),
+          structuredData: this.getAlternativesHubStructuredData()
+        };
+
       case 'comparisons-hub':
         return {
           title: this.optimizeText('Fund Comparisons | Investment Analysis Hub | Movingto', this.MAX_TITLE_LENGTH),
@@ -225,6 +233,17 @@ export class ConsolidatedSEOService {
           description: this.optimizeText('Privacy policy for our Portugal investment fund analysis platform.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('privacy'),
           structuredData: this.getPrivacyStructuredData()
+        };
+
+      case 'fund-alternatives':
+        const altFund = this.getFundByName(params.fundName);
+        if (!altFund) return this.getSEOData('homepage');
+        
+        return {
+          title: this.optimizeText(`${altFund.name} Alternatives | Similar Portugal Golden Visa Funds | Movingto`, this.MAX_TITLE_LENGTH),
+          description: this.optimizeText(`Discover investment alternatives to ${altFund.name}. Compare similar Portugal Golden Visa eligible funds with matching investment profiles and characteristics.`, this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildFundUrl(altFund.id) + '/alternatives',
+          structuredData: this.getFundAlternativesStructuredData(altFund)
         };
 
       default:
@@ -286,11 +305,17 @@ export class ConsolidatedSEOService {
   }
 
   private static setOpenGraph(seoData: SEOData): void {
+    // Determine og:type based on URL pattern
+    let ogType = 'website';
+    if (seoData.url.includes('/compare/') && seoData.url.includes('-vs-')) {
+      ogType = 'article';
+    }
+    
     const ogTags = [
       { property: 'og:title', content: seoData.title },
       { property: 'og:description', content: seoData.description },
       { property: 'og:url', content: seoData.url },
-      { property: 'og:type', content: 'website' },
+      { property: 'og:type', content: ogType },
       { property: 'og:image', content: this.DEFAULT_IMAGE },
       { property: 'og:site_name', content: 'Movingto' },
     ];
@@ -424,10 +449,39 @@ export class ConsolidatedSEOService {
   private static getComparisonStructuredData(): any {
     return {
       '@context': 'https://schema.org',
-      '@type': 'WebPage',
-      'name': 'Investment Fund Comparison',
-      'description': 'Compare investment funds side-by-side',
-      'url': URL_CONFIG.buildUrl('compare')
+      '@graph': [
+        {
+          '@type': 'WebPage',
+          '@id': URL_CONFIG.buildUrl('compare'),
+          'name': 'Investment Fund Comparison Tool',
+          'description': 'Compare investment funds side-by-side to analyze performance, fees, and risk profiles',
+          'url': URL_CONFIG.buildUrl('compare'),
+          'breadcrumb': {
+            '@type': 'BreadcrumbList',
+            'itemListElement': [
+              {
+                '@type': 'ListItem',
+                'position': 1,
+                'name': 'Home',
+                'item': URL_CONFIG.buildUrl('/')
+              },
+              {
+                '@type': 'ListItem',
+                'position': 2,
+                'name': 'Compare Funds',
+                'item': URL_CONFIG.buildUrl('compare')
+              }
+            ]
+          }
+        },
+        {
+          '@type': 'WebApplication',
+          'name': 'Fund Comparison Tool',
+          'description': 'Interactive tool to compare investment funds',
+          'url': URL_CONFIG.buildUrl('compare'),
+          'applicationCategory': 'FinanceApplication'
+        }
+      ]
     };
   }
 
@@ -492,12 +546,50 @@ export class ConsolidatedSEOService {
   }
 
   private static getComparisonsHubStructuredData(): any {
+    // Get top 10 fund pairs for featured comparisons
+    const topComparisons = funds.slice(0, 10).flatMap((fund, i) => 
+      funds.slice(i + 1, i + 3).map((otherFund, j) => ({
+        '@type': 'ListItem',
+        'position': i * 2 + j + 1,
+        'name': `${fund.name} vs ${otherFund.name}`,
+        'item': URL_CONFIG.buildUrl(`compare/${normalizeComparisonSlug(`${fund.id}-vs-${otherFund.id}`)}`)
+      }))
+    ).slice(0, 10);
+
     return {
       '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      'name': 'Fund Comparisons Hub',
-      'description': 'Hub for comparing investment funds',
-      'url': URL_CONFIG.buildUrl('comparisons')
+      '@graph': [
+        {
+          '@type': 'CollectionPage',
+          '@id': URL_CONFIG.buildUrl('comparisons'),
+          'name': 'Fund Comparisons Hub',
+          'description': 'Comprehensive hub for comparing investment funds with tools and featured comparisons',
+          'url': URL_CONFIG.buildUrl('comparisons'),
+          'breadcrumb': {
+            '@type': 'BreadcrumbList',
+            'itemListElement': [
+              {
+                '@type': 'ListItem',
+                'position': 1,
+                'name': 'Home',
+                'item': URL_CONFIG.buildUrl('/')
+              },
+              {
+                '@type': 'ListItem',
+                'position': 2,
+                'name': 'Fund Comparisons',
+                'item': URL_CONFIG.buildUrl('comparisons')
+              }
+            ]
+          },
+          'mainEntity': {
+            '@type': 'ItemList',
+            'name': 'Featured Fund Comparisons',
+            'numberOfItems': topComparisons.length,
+            'itemListElement': topComparisons
+          }
+        }
+      ]
     };
   }
 
@@ -539,6 +631,72 @@ export class ConsolidatedSEOService {
       'description': 'Privacy policy for our platform',
       'url': URL_CONFIG.buildUrl('privacy')
     };
+  }
+
+  private static getFundAlternativesStructuredData(fund: any): any {
+    // Import the service to get alternatives
+    const { findAlternativeFunds } = require('../data/services/alternative-funds-service');
+    const alternatives = findAlternativeFunds(fund, 6);
+    
+    const baseStructuredData = [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        'name': `${fund.name} Alternatives`,
+        'description': `Alternative investment funds similar to ${fund.name}`,
+        'url': URL_CONFIG.buildFundUrl(fund.id) + '/alternatives',
+        'breadcrumb': {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': URL_CONFIG.buildUrl('')
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': fund.name,
+              'item': URL_CONFIG.buildFundUrl(fund.id)
+            },
+            {
+              '@type': 'ListItem',
+              'position': 3,
+              'name': 'Alternatives',
+              'item': URL_CONFIG.buildFundUrl(fund.id) + '/alternatives'
+            }
+          ]
+        }
+      }
+    ];
+
+    // Add ItemList if alternatives exist
+    if (alternatives.length > 0) {
+      baseStructuredData[0]['mainEntity'] = {
+        '@type': 'ItemList',
+        'name': `Alternatives to ${fund.name}`,
+        'description': `Investment funds with similar characteristics to ${fund.name}`,
+        'numberOfItems': alternatives.length,
+        'itemListElement': alternatives.map((alt: any, index: number) => ({
+          '@type': 'ListItem',
+          'position': index + 1,
+          'item': {
+            '@type': 'FinancialProduct',
+            'name': alt.name,
+            'description': alt.description,
+            'url': URL_CONFIG.buildFundUrl(alt.id),
+            'category': alt.category,
+            'provider': {
+              '@type': 'Organization',
+              'name': alt.managerName
+            }
+          }
+        }))
+      };
+    }
+
+    return baseStructuredData;
   }
 
 
@@ -647,6 +805,46 @@ export class ConsolidatedSEOService {
       '@type': 'WebPage',
       'name': 'Fund Comparison Tool',
       'description': 'Compare Portugal Golden Visa investment funds'
+    };
+  }
+
+  private static getAlternativesHubStructuredData() {
+    const { fundsData } = require('../data/mock/funds');
+    const { findAlternativeFunds } = require('../data/services/alternative-funds-service');
+    
+    const fundsWithAlternatives = fundsData
+      .map((fund: any) => ({
+        fund,
+        alternatives: findAlternativeFunds(fund, 3)
+      }))
+      .filter((item: any) => item.alternatives.length > 0);
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Fund Alternatives Hub",
+      "description": "Comprehensive directory of investment fund alternatives and similar options",
+      "url": URL_CONFIG.buildUrl('/alternatives'),
+      "mainEntity": {
+        "@type": "ItemList",
+        "name": "Funds with Alternatives",
+        "numberOfItems": fundsWithAlternatives.length,
+        "itemListElement": fundsWithAlternatives.slice(0, 20).map((item: any, index: number) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "item": {
+            "@type": "FinancialProduct",
+            "name": item.fund.name,
+            "category": item.fund.category,
+            "url": URL_CONFIG.buildFundUrl(item.fund.id),
+            "additionalProperty": {
+              "@type": "PropertyValue",
+              "name": "alternativesCount",
+              "value": item.alternatives.length
+            }
+          }
+        }))
+      }
     };
   }
 

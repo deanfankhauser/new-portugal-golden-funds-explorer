@@ -35,6 +35,7 @@ export class RouteDiscovery {
     routes.push({ path: '/managers', pageType: 'managers-hub' });
     routes.push({ path: '/categories', pageType: 'categories-hub' });
     routes.push({ path: '/tags', pageType: 'tags-hub' });
+    routes.push({ path: '/alternatives', pageType: 'alternatives-hub' });
 
     // Fund detail pages - ONLY the direct route pattern
     fundsData.forEach(fund => {
@@ -91,7 +92,21 @@ export class RouteDiscovery {
       });
     });
 
-    console.log(`🔍 RouteDiscovery: Generated ${routes.length} static routes (including ${comparisonSlugs.length} comparisons)`);
+    // Fund alternatives pages (only for funds that have alternatives)
+    const { findAlternativeFunds } = await import('../data/services/alternative-funds-service');
+    fundsData.forEach(fund => {
+      const alternatives = findAlternativeFunds(fund, 1);
+      if (alternatives.length > 0) {
+        routes.push({
+          path: `/${fund.id}/alternatives`,
+          pageType: 'fund-alternatives',
+          params: { fundName: fund.name },
+          fundId: fund.id
+        });
+      }
+    });
+
+    console.log(`🔍 RouteDiscovery: Generated ${routes.length} static routes (including ${comparisonSlugs.length} comparisons and ${fundsData.filter(fund => findAlternativeFunds(fund, 1).length > 0).length} alternatives pages)`);
     return routes;
   }
 

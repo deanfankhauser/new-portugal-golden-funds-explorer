@@ -16,7 +16,8 @@ import PremiumCTA from '../cta/PremiumCTA';
 import ROICalculator from './ROICalculator';
 import AlternativeFunds from './AlternativeFunds';
 import RelatedFunds from './RelatedFunds';
-import ProcessingTimeTracker from './ProcessingTimeTracker';
+import FundComparisonSuggestions from './FundComparisonSuggestions';
+
 import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
 import { Button } from '@/components/ui/button';
@@ -53,8 +54,6 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           <FundDataFreshness fund={fund} />
           <DataFreshnessWarning fund={fund} />
           
-          {/* Processing Time - Operational Info */}
-          <ProcessingTimeTracker fund={fund} />
           
           {/* Structure description and Report Button */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -88,18 +87,18 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
               <h3 className="font-semibold text-green-900 mb-2 text-sm md:text-base">Want to see how this fund compares to others?</h3>
               <p className="text-xs md:text-sm text-green-700 mb-4">Take our quiz to get personalized recommendations based on your investment profile</p>
               <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                <Link to="/fund-quiz">
-                  <Button className="bg-green-600 hover:bg-green-700">
+                <Button asChild className="bg-green-600 hover:bg-green-700">
+                  <Link to="/fund-quiz">
                     <ClipboardCheck className="mr-2 h-4 w-4" />
                     Take Fund Quiz
-                  </Button>
-                </Link>
-                <Link to="/index">
-                  <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
+                  <Link to="/index">
                     <TrendingUp className="mr-2 h-4 w-4" />
                     View Fund Index
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>
@@ -133,6 +132,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       
       {/* Alternative Funds Section */}
       <AlternativeFunds currentFund={fund} />
+      
+      {/* Fund Comparison Suggestions */}
+      <FundComparisonSuggestions currentFund={fund} />
       
       {/* ROI Calculator */}
       <ROICalculator fund={fund} />

@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from '../../contexts/AuthContext';
 import LazyPasswordDialog from '../common/LazyPasswordDialog';
+import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
 
 interface DocumentsSectionProps {
   documents?: PdfDocument[];
@@ -118,7 +119,7 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({ documents }) => {
             To receive PDF copies, please click the button below.
           </p>
           <Button 
-            onClick={() => window.open('https://movingto.com/contact/contact-movingto', '_blank')}
+            onClick={() => openExternalLink(buildContactUrl('documents-section'))}
             className="w-full sm:w-auto"
           >
             <FileText className="mr-2 h-4 w-4" />

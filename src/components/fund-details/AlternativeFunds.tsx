@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, TrendingUp, Clock, Users } from 'lucide-react';
+import { buildContactUrl } from '../../utils/urlHelpers';
 
 interface AlternativeFundsProps {
   currentFund: Fund;
@@ -99,22 +100,28 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
           ))}
         </div>
         
-        <div className="mt-6 pt-4 border-t border-gray-200">
-          <div className="text-center">
-            <p className="text-sm text-gray-600 mb-3">
-              Need help choosing the right fund for your Golden Visa investment?
-            </p>
-            <a 
-              href="https://movingto.com/contact/contact-movingto" 
-              target="_blank" 
-              rel="noopener noreferrer"
-            >
-              <Button className="bg-[#EF4444] hover:bg-[#DC2626] text-white">
-                Get Professional Guidance
-              </Button>
-            </a>
-          </div>
-        </div>
+         <div className="mt-6 pt-4 border-t border-gray-200">
+           <div className="flex justify-between items-center">
+              <Link 
+                to={`/${currentFund.id}/alternatives`}
+                className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
+                aria-label={`View all alternative funds similar to ${currentFund.name}`}
+              >
+                View all {currentFund.name} alternatives
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+             
+             <Button asChild size="sm" className="bg-[#EF4444] hover:bg-[#DC2626] text-white">
+               <a 
+                 href={buildContactUrl('alternatives')}
+                 target="_blank" 
+                 rel="noopener noreferrer"
+               >
+                 Get Expert Guidance
+               </a>
+             </Button>
+           </div>
+         </div>
       </CardContent>
     </Card>
   );

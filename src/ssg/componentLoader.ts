@@ -91,6 +91,14 @@ export const loadComponents = async () => {
         console.warn('ComponentLoader: Failed to load FundComparison:', err.message);
         return null;
       }),
+      FundAlternatives: import('../pages/FundAlternatives').then(m => m.default).catch(err => {
+        console.warn('ComponentLoader: Failed to load FundAlternatives:', err.message);
+        return null;
+      }),
+      AlternativesHub: import('../pages/AlternativesHub').then(m => m.default).catch(err => {
+        console.warn('ComponentLoader: Failed to load AlternativesHub:', err.message);
+        return null;
+      }),
     };
 
     const components = await Promise.all(Object.values(componentPromises));

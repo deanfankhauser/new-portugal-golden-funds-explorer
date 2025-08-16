@@ -3,11 +3,12 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { BarChart3, ExternalLink, Star, TrendingUp } from 'lucide-react';
+import { buildContactUrl, openExternalLink } from "../../utils/urlHelpers";
 
 const ComparisonUpgradeCTA: React.FC = () => {
   const handleUpgradeClick = () => {
     // Comparison upgrade CTA clicked
-    window.open('https://movingto.com/contact/contact-movingto', '_blank');
+    openExternalLink(buildContactUrl('comparison-upgrade-cta'));
   };
 
   return (

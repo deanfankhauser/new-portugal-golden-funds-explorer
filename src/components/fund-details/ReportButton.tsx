@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Flag } from 'lucide-react';
+import { buildMailtoUrl } from '../../utils/urlHelpers';
 
 interface ReportButtonProps {
   fundName: string;
@@ -9,7 +10,9 @@ interface ReportButtonProps {
 
 const ReportButton: React.FC<ReportButtonProps> = ({ fundName }) => {
   const handleReport = () => {
-    window.location.href = `mailto:info@movingto.com?subject=Incorrect Information Report - ${fundName}&body=I'd like to report incorrect information for fund: ${fundName}`;
+    const subject = `Incorrect Information Report - ${fundName}`;
+    const body = `I'd like to report incorrect information for fund: ${fundName}`;
+    window.location.href = buildMailtoUrl('info@movingto.com', subject, body);
   };
 
   return (

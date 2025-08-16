@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { buildContactUrl } from "../utils/urlHelpers";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -12,29 +13,20 @@ import {
 } from "@/components/ui/navigation-menu";
 import ComparisonIndicator from "./ComparisonIndicator";
 import MobileNavigation from "./MobileNavigation";
-import { ArrowLeft, Mail, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3, FileText } from "lucide-react";
+import { ArrowLeft, Mail, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3, FileText, GitCompareArrows } from "lucide-react";
 
 const Header = () => {
   return (
     <header className="bg-[#1A1F2C] text-white py-3 shadow-lg sticky top-0 z-50 w-full">
       <div className="container mx-auto px-4 w-full">
         <div className="flex justify-between items-center w-full">
-          {/* Left section - Logo and back button */}
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/10 hover:text-white"
-              onClick={() => window.open("https://www.movingto.com", "_blank")}
-              aria-label="Go to MovingTo website"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
+          {/* Left section - Logo */}
+          <div className="flex items-center">
             <Link to="/" className="flex items-center">
               <img 
                 src="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/65bf8df2803e405540708b3c_movingto-logo-white.svg" 
                 alt="MovingTo Logo" 
-                className="h-8"
+                className="h-6"
               />
             </Link>
           </div>
@@ -69,6 +61,15 @@ const Header = () => {
                             </div>
                           </Link>
                         </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <Link to="/alternatives" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
+                            <GitCompareArrows className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
+                            <div>
+                              <div className="font-medium text-gray-900">Fund Alternatives</div>
+                              <div className="text-sm text-gray-500">Find alternative funds</div>
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
                       </div>
                     </div>
                   </NavigationMenuContent>
@@ -95,11 +96,21 @@ const Header = () => {
                           <Link to="/roi-calculator" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
                             <Calculator className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
                             <div>
-                            <div className="font-medium text-gray-900">ROI Calculator</div>
-                            <div className="text-sm text-gray-500">Calculate returns</div>
-                          </div>
-                        </Link>
-                      </NavigationMenuLink>
+                              <div className="font-medium text-gray-900">ROI Calculator</div>
+                              <div className="text-sm text-gray-500">Calculate returns</div>
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <a href="https://www.movingto.com/tools/golden-visa-cost-calculator" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
+                            <Calculator className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
+                            <div>
+                              <div className="font-medium text-gray-900">Golden Visa Cost Calculator</div>
+                              <div className="text-sm text-gray-500">Calculate total investment costs</div>
+                            </div>
+                            <ExternalLink className="h-4 w-4 text-gray-400 ml-auto" />
+                          </a>
+                        </NavigationMenuLink>
                     </div>
                   </div>
                 </NavigationMenuContent>
@@ -148,25 +159,27 @@ const Header = () => {
             </NavigationMenu>
 
             {/* Direct Actions */}
-            <a href="https://www.movingto.com/contact/submit-fund" target="_blank" rel="noopener noreferrer">
-              <Button 
-                variant="ghost" 
-                className="text-white hover:bg-white/10 hover:text-white transition-all duration-300"
-              >
+            <Button 
+              asChild
+              variant="ghost" 
+              className="text-white hover:bg-white/10 hover:text-white transition-all duration-300"
+            >
+              <a href="https://www.movingto.com/contact/submit-fund" target="_blank" rel="noopener noreferrer">
                 <FileText className="h-4 w-4 mr-2" />
                 Submit Fund
-              </Button>
-            </a>
+              </a>
+            </Button>
 
-            <a href="https://movingto.com/contact/contact-movingto" target="_blank" rel="noopener noreferrer">
-              <Button 
-                variant="outline" 
-                className="border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"
-              >
+            <Button 
+              asChild
+              variant="outline" 
+              className="border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"
+            >
+              <a href={buildContactUrl('header')} target="_blank" rel="noopener noreferrer">
                 <Mail className="h-4 w-4 mr-2" />
                 Get in Touch
-              </Button>
-            </a>
+              </a>
+            </Button>
 
             <ComparisonIndicator />
           </div>
