@@ -62,9 +62,16 @@ const FundComparison = () => {
       <main className="container mx-auto px-4 py-8 flex-1">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">
-            Fund Comparison: {comparisonData.fund1.name} vs {comparisonData.fund2.name}
+            {comparisonData.fund1.name} vs {comparisonData.fund2.name}: Portugal Golden Visa Fund Comparison
           </h1>
-          <p className="text-gray-600">Compare the selected funds side by side.</p>
+          <h2 className="text-xl text-gray-700 mb-4 font-medium">
+            Compare Investment Fees, Minimum Investment, and Performance Metrics
+          </h2>
+          <p className="text-gray-600">
+            Detailed side-by-side analysis of {comparisonData.fund1.name} (managed by {comparisonData.fund1.managerName}) 
+            and {comparisonData.fund2.name} (managed by {comparisonData.fund2.managerName}) 
+            Portugal Golden Visa investment funds.
+          </p>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border">

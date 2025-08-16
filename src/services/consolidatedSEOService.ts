@@ -123,17 +123,18 @@ export class ConsolidatedSEOService {
         
         if (comparisonData) {
           const { fund1, fund2 } = comparisonData;
+          
           return {
-            title: this.optimizeText(`${fund1.name} vs ${fund2.name} | Fund Comparison 2025`, this.MAX_TITLE_LENGTH),
-            description: this.optimizeText(`Compare ${fund1.name} and ${fund2.name} investment funds. Detailed analysis of fees, performance, minimum investment, and key metrics.`, this.MAX_DESCRIPTION_LENGTH),
+            title: this.optimizeText(`${fund1.name} vs ${fund2.name} Comparison | Portugal Golden Visa Funds 2025`, this.MAX_TITLE_LENGTH),
+            description: this.optimizeText(`Compare ${fund1.name} (${fund1.managerName}) vs ${fund2.name} (${fund2.managerName}) Portugal Golden Visa funds. Side-by-side analysis of fees, minimum investment, returns, and performance metrics.`, this.MAX_DESCRIPTION_LENGTH),
             url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
             structuredData: this.getFundComparisonStructuredData(fund1, fund2)
           };
         }
         
         return {
-          title: this.optimizeText('Fund Comparison | Portugal Golden Visa Investment Analysis | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Compare Portugal Golden Visa investment funds side-by-side. Detailed analysis and comparison tools.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Portugal Golden Visa Fund Comparison | Investment Analysis 2025', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare Portugal Golden Visa investment funds side-by-side. Detailed analysis of fees, returns, minimum investment, and fund performance metrics.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('compare'),
           structuredData: this.getGenericComparisonStructuredData()
         };
