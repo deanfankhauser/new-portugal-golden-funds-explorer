@@ -43,7 +43,15 @@ export function compileSSGFiles() {
       path.join(distDir, 'tags', 'index.html')
     ];
     
-    console.log(`✅ SSG: Generated ${fundPagesGenerated} fund pages successfully`);
+    // Verify sitemap includes comparison pages
+    const sitemapPath = path.join(distDir, 'sitemap.xml');
+    if (fs.existsSync(sitemapPath)) {
+      const sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
+      const comparisonUrls = (sitemapContent.match(/\/compare\//g) || []).length;
+      console.log(`✅ SSG: Generated ${fundPagesGenerated} fund pages and ${comparisonUrls} comparison URLs successfully`);
+    } else {
+      console.log(`✅ SSG: Generated ${fundPagesGenerated} fund pages successfully`);
+    }
     
   } catch (error) {
     console.warn('⚠️  SSG compilation failed, falling back to basic build');
