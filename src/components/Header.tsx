@@ -95,11 +95,21 @@ const Header = () => {
                           <Link to="/roi-calculator" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
                             <Calculator className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
                             <div>
-                            <div className="font-medium text-gray-900">ROI Calculator</div>
-                            <div className="text-sm text-gray-500">Calculate returns</div>
-                          </div>
-                        </Link>
-                      </NavigationMenuLink>
+                              <div className="font-medium text-gray-900">ROI Calculator</div>
+                              <div className="text-sm text-gray-500">Calculate returns</div>
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <a href="https://www.movingto.com/tools/golden-visa-cost-calculator" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
+                            <Calculator className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
+                            <div>
+                              <div className="font-medium text-gray-900">Golden Visa Cost Calculator</div>
+                              <div className="text-sm text-gray-500">Calculate total investment costs</div>
+                            </div>
+                            <ExternalLink className="h-4 w-4 text-gray-400 ml-auto" />
+                          </a>
+                        </NavigationMenuLink>
                     </div>
                   </div>
                 </NavigationMenuContent>

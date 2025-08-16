@@ -94,6 +94,17 @@ const Footer = () => {
                 <Link to="/roi-calculator" className="text-gray-600 hover:text-primary text-sm transition-colors">ROI Calculator</Link>
               </li>
               <li>
+                <a 
+                  href="https://www.movingto.com/tools/golden-visa-cost-calculator" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-gray-600 hover:text-primary text-sm transition-colors inline-flex items-center"
+                >
+                  <span>Golden Visa Cost Calculator</span>
+                  <ExternalLink size={14} className="ml-1" />
+                </a>
+              </li>
+              <li>
                 <Link to="/faqs" className="text-gray-600 hover:text-primary text-sm transition-colors">FAQs</Link>
               </li>
             </ul>
