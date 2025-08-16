@@ -10,22 +10,9 @@ export class PerformanceOptimizationService {
 
   // Add preload directives for critical resources
   private static addCriticalResourcePreloads(): void {
-    const criticalResources = [
-      { href: '/fonts/inter.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
-      { href: '/assets/main.css', as: 'style' }
-    ];
-
-    criticalResources.forEach(resource => {
-      if (!document.querySelector(`link[rel="preload"][href="${resource.href}"]`)) {
-        const preload = document.createElement('link');
-        preload.rel = 'preload';
-        preload.href = resource.href;
-        preload.as = resource.as;
-        if (resource.type) preload.type = resource.type;
-        if (resource.crossorigin) preload.crossOrigin = resource.crossorigin;
-        document.head.appendChild(preload);
-      }
-    });
+    // Skip hard-coded preloads in favor of SSG-injected CSS/JS
+    // The build process will inject appropriate preloads based on actual assets
+    return;
   }
 
   // Add preconnect directives for external domains

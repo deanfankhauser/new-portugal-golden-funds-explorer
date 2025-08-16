@@ -77,20 +77,35 @@ export default async function handler(req, res) {
   // Get client IP for rate limiting
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
   
-  // Set restrictive CORS headers
+  // Set restrictive CORS headers with strict hostname validation
   const allowedOrigins = [
     'https://funds.movingto.com',
-    'https://fundsportugal.com',
-    'https://vercel.app' // For Vercel preview deployments
+    'https://fundsportugal.com'
   ];
   
+  // Add Vercel preview URLs only in development
+  if (process.env.NODE_ENV !== 'production') {
+    allowedOrigins.push('https://vercel.app');
+  }
+  
   const origin = req.headers.origin;
-  if (allowedOrigins.some(allowed => origin && origin.includes(allowed.replace('https://', '')))) {
+  const isValidOrigin = allowedOrigins.some(allowed => origin === allowed);
+  
+  if (isValidOrigin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
   
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Api-Key');
+
+  // Require API key in production
+  if (process.env.NODE_ENV === 'production' && req.method === 'POST') {
+    const apiKey = req.headers['x-api-key'];
+    if (!apiKey || apiKey !== process.env.API_SECRET_KEY) {
+      const errorId = logError(new Error('Invalid API key'), 'Authentication');
+      return res.status(401).json(createSafeErrorResponse('Unauthorized', errorId));
+    }
+  }
 
   // Handle preflight request
   if (req.method === 'OPTIONS') {

@@ -17,7 +17,7 @@ export function generateHTMLTemplate(
     ? structuredData.length > 0 
     : !!structuredData && Object.keys(structuredData).length > 0;
 
-  if (process.env.NODE_ENV !== 'production') {
+  if (import.meta.env.DEV) {
     console.log('🔥 HTMLTemplate: Generating with SEO data:', {
       title: title.substring(0, 50) + '...',
       description: description.substring(0, 50) + '...',

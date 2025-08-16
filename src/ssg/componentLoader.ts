@@ -14,7 +14,7 @@ export { TooltipProvider };
 
 export const loadComponents = async () => {
   try {
-    if (process.env.NODE_ENV !== 'production') {
+    if (import.meta.env.DEV) {
       console.log('🔥 ComponentLoader: Starting component loading...');
     }
     
@@ -109,7 +109,7 @@ export const loadComponents = async () => {
       loadedComponents[key] = components[index];
     });
 
-    if (process.env.NODE_ENV !== 'production') {
+    if (import.meta.env.DEV) {
       console.log('🔥 ComponentLoader: Component loading summary:', 
         Object.fromEntries(
           Object.entries(loadedComponents).map(([key, component]) => [key, !!component])

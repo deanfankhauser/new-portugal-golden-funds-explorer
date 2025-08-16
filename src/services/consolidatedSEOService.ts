@@ -37,9 +37,9 @@ export class ConsolidatedSEOService {
       }
     }
 
-    // Clean up overlapping structured data
-    const existingSchemas = document.querySelectorAll('script[type="application/ld+json"]');
-    existingSchemas.forEach(script => script.remove());
+    // Clean up only managed structured data
+    const managedSchemas = document.querySelectorAll('script[type="application/ld+json"][data-managed="consolidated-seo"]');
+    managedSchemas.forEach(script => script.remove());
   }
 
   // Optimize title and description
@@ -355,6 +355,7 @@ export class ConsolidatedSEOService {
   private static setStructuredData(structuredData: any): void {
     const script = document.createElement('script');
     script.type = 'application/ld+json';
+    script.setAttribute('data-managed', 'consolidated-seo');
     script.textContent = JSON.stringify(structuredData, null, 2);
     document.head.appendChild(script);
   }
