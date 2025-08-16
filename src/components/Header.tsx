@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { buildContactUrl } from "../utils/urlHelpers";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -158,25 +159,27 @@ const Header = () => {
             </NavigationMenu>
 
             {/* Direct Actions */}
-            <a href="https://www.movingto.com/contact/submit-fund" target="_blank" rel="noopener noreferrer">
-              <Button 
-                variant="ghost" 
-                className="text-white hover:bg-white/10 hover:text-white transition-all duration-300"
-              >
+            <Button 
+              asChild
+              variant="ghost" 
+              className="text-white hover:bg-white/10 hover:text-white transition-all duration-300"
+            >
+              <a href="https://www.movingto.com/contact/submit-fund" target="_blank" rel="noopener noreferrer">
                 <FileText className="h-4 w-4 mr-2" />
                 Submit Fund
-              </Button>
-            </a>
+              </a>
+            </Button>
 
-            <a href="https://movingto.com/contact/contact-movingto" target="_blank" rel="noopener noreferrer">
-              <Button 
-                variant="outline" 
-                className="border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"
-              >
+            <Button 
+              asChild
+              variant="outline" 
+              className="border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"
+            >
+              <a href={buildContactUrl('header')} target="_blank" rel="noopener noreferrer">
                 <Mail className="h-4 w-4 mr-2" />
                 Get in Touch
-              </Button>
-            </a>
+              </a>
+            </Button>
 
             <ComparisonIndicator />
           </div>

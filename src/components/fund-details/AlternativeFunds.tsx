@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, TrendingUp, Clock, Users } from 'lucide-react';
+import { buildContactUrl } from '../../utils/urlHelpers';
 
 interface AlternativeFundsProps {
   currentFund: Fund;
@@ -110,15 +111,15 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
                 <ArrowRight className="w-4 h-4" />
               </Link>
              
-             <a 
-               href="https://movingto.com/contact/contact-movingto" 
-               target="_blank" 
-               rel="noopener noreferrer"
-             >
-               <Button size="sm" className="bg-[#EF4444] hover:bg-[#DC2626] text-white">
+             <Button asChild size="sm" className="bg-[#EF4444] hover:bg-[#DC2626] text-white">
+               <a 
+                 href={buildContactUrl('alternatives')}
+                 target="_blank" 
+                 rel="noopener noreferrer"
+               >
                  Get Expert Guidance
-               </Button>
-             </a>
+               </a>
+             </Button>
            </div>
          </div>
       </CardContent>

@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from "@/hooks/use-toast";
 import { Lock, Star, TrendingUp, FileText, Calculator } from 'lucide-react';
+import { buildContactUrl } from '../utils/urlHelpers';
 
 interface PasswordDialogProps {
   open: boolean;
@@ -168,7 +169,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
               Get personalized Golden Visa guidance plus full access to our premium fund analysis tools.
             </p>
             <a 
-              href="https://movingto.com/contact/contact-movingto" 
+              href={buildContactUrl('password-dialog')}
               target="_blank" 
               rel="noopener noreferrer"
               onClick={handleConsultationClick}

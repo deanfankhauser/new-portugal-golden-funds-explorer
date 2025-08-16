@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
+import { buildContactUrl } from "../utils/urlHelpers";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { Menu, Calculator, ClipboardCheck, Mail, ExternalLink, Users, FileText } from 'lucide-react';
@@ -85,17 +86,21 @@ const MobileNavigation = () => {
             <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
               Support
             </h3>
-            <a 
-              href="https://movingto.com/contact/contact-movingto" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              onClick={closeMenu}
+            <Button 
+              asChild
+              variant="ghost" 
+              className="w-full justify-start gap-3 h-12"
             >
-              <Button variant="ghost" className="w-full justify-start gap-3 h-12">
+              <a 
+                href={buildContactUrl('mobile-nav')}
+                target="_blank" 
+                rel="noopener noreferrer"
+                onClick={closeMenu}
+              >
                 <Mail className="h-5 w-5" />
                 <span>Get in Touch</span>
-              </Button>
-            </a>
+              </a>
+            </Button>
           </div>
         </div>
       </SheetContent>
