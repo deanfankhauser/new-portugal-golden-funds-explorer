@@ -16,7 +16,7 @@ import PremiumCTA from '../cta/PremiumCTA';
 import ROICalculator from './ROICalculator';
 import AlternativeFunds from './AlternativeFunds';
 import RelatedFunds from './RelatedFunds';
-import ProcessingTimeTracker from './ProcessingTimeTracker';
+
 import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
 import { Button } from '@/components/ui/button';
@@ -53,8 +53,6 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           <FundDataFreshness fund={fund} />
           <DataFreshnessWarning fund={fund} />
           
-          {/* Processing Time - Operational Info */}
-          <ProcessingTimeTracker fund={fund} />
           
           {/* Structure description and Report Button */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
