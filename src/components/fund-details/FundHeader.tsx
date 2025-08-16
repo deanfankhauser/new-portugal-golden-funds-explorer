@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import { Button } from "@/components/ui/button";
-import { GitCompare } from 'lucide-react';
+import { GitCompare, Calculator } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { tagToSlug } from '@/lib/utils';
@@ -35,6 +35,16 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
     }
   };
 
+  const scrollToROICalculator = () => {
+    const calculatorElement = document.getElementById('roi-calculator');
+    if (calculatorElement) {
+      calculatorElement.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
+    }
+  };
+
   return (
     <>
       <div className="bg-gradient-to-r from-slate-50 to-slate-100 p-4 md:p-8 lg:p-10 border-b border-gray-100">
@@ -63,6 +73,27 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
         </div>
 
         <p className="text-lg md:text-xl text-gray-700 mb-6 md:mb-8 max-w-3xl leading-relaxed">{fund.description}</p>
+        
+        {/* Subtle ROI Calculator CTA */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-medium text-blue-900 text-sm mb-1">Calculate Your Potential Returns</h3>
+              <p className="text-xs text-blue-700">
+                See projected ROI based on your investment amount and timeline
+              </p>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={scrollToROICalculator}
+              className="border-blue-300 text-blue-600 hover:bg-blue-50 ml-4"
+            >
+              <Calculator className="w-4 h-4 mr-1" />
+              Calculate ROI
+            </Button>
+          </div>
+        </div>
       </div>
 
       <LazyPasswordDialog 

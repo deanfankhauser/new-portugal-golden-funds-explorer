@@ -157,7 +157,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
 
   // Show full content for authenticated users
   return (
-    <Card className="bg-white border border-gray-100 shadow-sm">
+    <Card id="roi-calculator" className="bg-white border border-gray-100 shadow-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl">
           <Calculator className="w-5 h-5 text-[#EF4444]" />
