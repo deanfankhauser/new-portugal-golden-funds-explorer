@@ -42,6 +42,13 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
         behavior: 'smooth', 
         block: 'start' 
       });
+      
+      // If not authenticated, open password dialog after scroll
+      if (!isAuthenticated) {
+        setTimeout(() => {
+          setShowPasswordDialog(true);
+        }, 800);
+      }
     }
   };
 

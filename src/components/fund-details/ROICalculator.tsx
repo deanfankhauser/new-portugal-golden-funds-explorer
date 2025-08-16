@@ -52,10 +52,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
   };
 
   const calculateROI = () => {
-    console.log('Calculate ROI clicked', { investmentAmount, holdingPeriod, expectedReturn });
-    
     if (investmentAmount <= 0 || holdingPeriod <= 0 || expectedReturn < 0) {
-      console.log('Early return due to invalid inputs');
       return;
     }
 
@@ -63,8 +60,6 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
     const totalValue = investmentAmount * Math.pow(1 + annualReturnRate, holdingPeriod);
     const totalReturn = totalValue - investmentAmount;
     const annualizedReturn = ((totalValue / investmentAmount) ** (1 / holdingPeriod) - 1) * 100;
-
-    console.log('Calculated results:', { totalValue, totalReturn, annualizedReturn });
 
     setResults({
       totalValue,
@@ -90,7 +85,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
   if (!isAuthenticated) {
     return (
       <>
-        <Card className="bg-white border border-gray-100 shadow-sm relative overflow-hidden">
+        <Card id="roi-calculator" className="bg-white border border-gray-100 shadow-sm relative overflow-hidden">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-xl">
               <Calculator className="w-5 h-5 text-[#EF4444]" />
