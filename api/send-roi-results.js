@@ -77,33 +77,36 @@ export default async function handler(req, res) {
   // Get client IP for rate limiting
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
   
-  // Set restrictive CORS headers with strict hostname validation
+  // Enhanced CORS with multiple domains for flexibility
   const allowedOrigins = [
     'https://funds.movingto.com',
-    'https://fundsportugal.com'
+    'https://movingto.com',
+    'http://localhost:5173',
+    'https://preview.lovable.dev'
   ];
   
-  // Add Vercel preview URLs only in development
-  if (process.env.NODE_ENV !== 'production') {
-    allowedOrigins.push('https://vercel.app');
-  }
-  
+  // Allow Vercel preview deployments
   const origin = req.headers.origin;
-  const isValidOrigin = allowedOrigins.some(allowed => origin === allowed);
+  const isVercelPreview = origin && origin.includes('.vercel.app');
   
-  if (isValidOrigin) {
+  if (allowedOrigins.includes(origin) || isVercelPreview) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
   
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Api-Key');
 
-  // Require API key in production
-  if (process.env.NODE_ENV === 'production' && req.method === 'POST') {
-    const apiKey = req.headers['x-api-key'];
-    if (!apiKey || apiKey !== process.env.API_SECRET_KEY) {
-      const errorId = logError(new Error('Invalid API key'), 'Authentication');
-      return res.status(401).json(createSafeErrorResponse('Unauthorized', errorId));
+  // Production API key requirement - soften for same-origin requests
+  if (process.env.NODE_ENV === 'production') {
+    const isSameOrigin = !req.headers.origin || 
+      req.headers.origin === 'https://funds.movingto.com' || 
+      req.headers.origin === 'https://movingto.com';
+    
+    if (!isSameOrigin) {
+      const apiKey = req.headers['x-api-key'];
+      if (!apiKey || apiKey !== process.env.API_SECRET_KEY) {
+        return res.status(401).json(createSafeErrorResponse('Unauthorized access', 'AUTH_001'));
+      }
     }
   }
 

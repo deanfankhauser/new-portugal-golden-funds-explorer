@@ -22,7 +22,10 @@ if (typeof window !== 'undefined' && !window.React) {
 
 export class SSRRenderer {
   static async renderRoute(route: StaticRoute): Promise<{ html: string; seoData: any }> {
-    if (import.meta.env.DEV) {
+    // Check if we're in development mode safely for SSG environments
+    const isDev = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false;
+    
+    if (isDev) {
       console.log(`🔥 SSR: Starting render for route ${route.path} (type: ${route.pageType})`);
     }
     
@@ -36,7 +39,7 @@ export class SSRRenderer {
     });
 
     // Get SEO data for this route with detailed logging
-    if (import.meta.env.DEV) {
+    if (isDev) {
       console.log(`🔥 SSR: Requesting SEO data with params:`, {
         pageType: route.pageType,
         fundName: route.params?.fundName,
@@ -59,7 +62,7 @@ export class SSRRenderer {
       ? seoData.structuredData.length > 0 
       : !!seoData.structuredData && Object.keys(seoData.structuredData).length > 0;
 
-    if (import.meta.env.DEV) {
+    if (isDev) {
       const seoValidation = {
         hasTitle: !!seoData.title,
         hasDescription: !!seoData.description,
@@ -89,7 +92,7 @@ export class SSRRenderer {
     const getComponent = (componentName: string) => {
       const component = components[componentName];
       if (!component) {
-        if (import.meta.env.DEV) {
+        if (isDev) {
           console.warn(`🔥 SSR: Component ${componentName} not available, using fallback`);
         }
         return FallbackComponent;
@@ -162,7 +165,7 @@ export class SSRRenderer {
     
     try {
       const html = renderToString(React.createElement(AppRouter));
-      if (import.meta.env.DEV) {
+      if (isDev) {
         console.log(`🔥 SSR: Successfully rendered HTML for ${route.path}, length: ${html.length} chars`);
       }
       
@@ -182,7 +185,7 @@ export class SSRRenderer {
         }
       };
 
-      if (import.meta.env.DEV) {
+      if (isDev) {
         const finalHasStructuredData = Array.isArray(finalSeoData.structuredData) 
           ? finalSeoData.structuredData.length > 0 
           : !!finalSeoData.structuredData && Object.keys(finalSeoData.structuredData).length > 0;
@@ -199,7 +202,7 @@ export class SSRRenderer {
 
       return { html, seoData: finalSeoData };
     } catch (error) {
-      if (import.meta.env.DEV) {
+      if (isDev) {
         console.error(`🔥 SSR: Error rendering route ${route.path}:`, error);
       }
       return { 

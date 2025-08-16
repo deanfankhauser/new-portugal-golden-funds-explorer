@@ -17,7 +17,10 @@ export function generateHTMLTemplate(
     ? structuredData.length > 0 
     : !!structuredData && Object.keys(structuredData).length > 0;
 
-  if (import.meta.env.DEV) {
+  // Check if we're in development mode safely for SSG environments
+  const isDev = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false;
+  
+  if (isDev) {
     console.log('🔥 HTMLTemplate: Generating with SEO data:', {
       title: title.substring(0, 50) + '...',
       description: description.substring(0, 50) + '...',
@@ -76,7 +79,7 @@ export function generateHTMLTemplate(
   <meta name="format-detection" content="telephone=no" />
   
   <!-- Structured Data -->
-  ${hasStructuredData ? `<script type="application/ld+json">${JSON.stringify(structuredData, null, 2)}</script>` : ''}
+  ${hasStructuredData ? `<script type="application/ld+json" data-managed="consolidated-seo">${JSON.stringify(structuredData, null, 2)}</script>` : ''}
   
   <!-- Critical Resource Preconnects -->
   <link rel="preconnect" href="https://fonts.googleapis.com">

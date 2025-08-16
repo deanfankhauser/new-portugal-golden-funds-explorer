@@ -37,9 +37,16 @@ export class ConsolidatedSEOService {
       }
     }
 
-    // Clean up only managed structured data
+    // Clean up only managed structured data, preserve others (like FAQ schemas)
     const managedSchemas = document.querySelectorAll('script[type="application/ld+json"][data-managed="consolidated-seo"]');
     managedSchemas.forEach(script => script.remove());
+    
+    // If we're about to inject new JSON-LD and there are existing ones, replace or skip to prevent duplication
+    const existingJsonLd = document.querySelectorAll('script[type="application/ld+json"]:not([data-managed])');
+    if (existingJsonLd.length > 0) {
+      // Mark existing as managed to prevent duplication
+      existingJsonLd.forEach(script => script.setAttribute('data-managed', 'legacy'));
+    }
   }
 
   // Optimize title and description
