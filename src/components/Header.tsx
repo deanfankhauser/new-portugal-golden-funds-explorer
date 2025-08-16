@@ -19,17 +19,8 @@ const Header = () => {
     <header className="bg-[#1A1F2C] text-white py-3 shadow-lg sticky top-0 z-50 w-full">
       <div className="container mx-auto px-4 w-full">
         <div className="flex justify-between items-center w-full">
-          {/* Left section - Logo and back button */}
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/10 hover:text-white"
-              onClick={() => window.open("https://www.movingto.com", "_blank", "noopener,noreferrer")}
-              aria-label="Go to MovingTo website"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
+          {/* Left section - Logo */}
+          <div className="flex items-center">
             <Link to="/" className="flex items-center">
               <img 
                 src="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/65bf8df2803e405540708b3c_movingto-logo-white.svg" 
