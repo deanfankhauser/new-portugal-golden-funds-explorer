@@ -35,6 +35,7 @@ export class RouteDiscovery {
     routes.push({ path: '/managers', pageType: 'managers-hub' });
     routes.push({ path: '/categories', pageType: 'categories-hub' });
     routes.push({ path: '/tags', pageType: 'tags-hub' });
+    routes.push({ path: '/alternatives', pageType: 'alternatives-hub' });
 
     // Fund detail pages - ONLY the direct route pattern
     fundsData.forEach(fund => {

@@ -44,7 +44,7 @@ ${routes.map(route => {
       const contentDates = DateManagementService.getFundContentDates(fund);
       lastmod = DateManagementService.formatSitemapDate(contentDates.dateModified);
     }
-  } else if (['categories', 'tags', 'managers', 'comparisons-hub'].includes(route.pageType)) {
+  } else if (['categories', 'tags', 'managers', 'comparisons-hub', 'alternatives-hub'].includes(route.pageType)) {
     priority = '0.7';
     changefreq = 'weekly';
     const contentDates = DateManagementService.getContentDates(route.pageType);

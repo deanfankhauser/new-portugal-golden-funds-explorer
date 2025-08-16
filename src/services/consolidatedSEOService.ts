@@ -187,6 +187,14 @@ export class ConsolidatedSEOService {
           structuredData: this.getTagsHubStructuredData()
         };
 
+      case 'alternatives-hub':
+        return {
+          title: this.optimizeText('Fund Alternatives Hub - Compare Investment Fund Options | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Explore alternative investment funds for every fund in our database. Find similar options based on category, risk level, and investment requirements.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('/alternatives'),
+          structuredData: this.getAlternativesHubStructuredData()
+        };
+
       case 'comparisons-hub':
         return {
           title: this.optimizeText('Fund Comparisons | Investment Analysis Hub | Movingto', this.MAX_TITLE_LENGTH),
@@ -673,6 +681,46 @@ export class ConsolidatedSEOService {
       '@type': 'WebPage',
       'name': 'Fund Comparison Tool',
       'description': 'Compare Portugal Golden Visa investment funds'
+    };
+  }
+
+  private static getAlternativesHubStructuredData() {
+    const { fundsData } = require('../data/mock/funds');
+    const { findAlternativeFunds } = require('../data/services/alternative-funds-service');
+    
+    const fundsWithAlternatives = fundsData
+      .map((fund: any) => ({
+        fund,
+        alternatives: findAlternativeFunds(fund, 3)
+      }))
+      .filter((item: any) => item.alternatives.length > 0);
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Fund Alternatives Hub",
+      "description": "Comprehensive directory of investment fund alternatives and similar options",
+      "url": URL_CONFIG.buildUrl('/alternatives'),
+      "mainEntity": {
+        "@type": "ItemList",
+        "name": "Funds with Alternatives",
+        "numberOfItems": fundsWithAlternatives.length,
+        "itemListElement": fundsWithAlternatives.slice(0, 20).map((item: any, index: number) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "item": {
+            "@type": "FinancialProduct",
+            "name": item.fund.name,
+            "category": item.fund.category,
+            "url": URL_CONFIG.buildFundUrl(item.fund.id),
+            "additionalProperty": {
+              "@type": "PropertyValue",
+              "name": "alternativesCount",
+              "value": item.alternatives.length
+            }
+          }
+        }))
+      }
     };
   }
 

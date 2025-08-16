@@ -39,6 +39,7 @@ const ROICalculator = lazy(() => import('./pages/ROICalculator'));
 const FundQuiz = lazy(() => import('./pages/FundQuiz'));
 const FundComparison = lazy(() => import('./pages/FundComparison'));
 const FundAlternatives = lazy(() => import('./pages/FundAlternatives'));
+const AlternativesHub = lazy(() => import('./pages/AlternativesHub'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -200,6 +201,14 @@ function App() {
                           <FundQuiz />
                         </Suspense>
                       } />
+                      
+                      {/* Alternatives hub */}
+                      <Route path="/alternatives" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <AlternativesHub />
+                        </Suspense>
+                      } />
+                      
                       <Route path="/:id/alternatives" element={
                         <Suspense fallback={<PageLoader />}>
                           <FundAlternatives />
