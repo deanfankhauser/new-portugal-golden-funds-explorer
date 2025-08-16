@@ -409,10 +409,10 @@ export class ConsolidatedSEOService {
       '@context': 'https://schema.org',
       '@type': 'FinancialProduct',
       'name': fund.name,
-      'description': fund.description || `Investment fund managed by ${fund.manager}`,
+      'description': fund.description || `Investment fund managed by ${fund.managerName}`,
       'provider': {
         '@type': 'Organization',
-        'name': fund.manager
+        'name': fund.managerName
       },
       'url': URL_CONFIG.buildFundUrl(fund.id)
     };

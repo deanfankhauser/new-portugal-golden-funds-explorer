@@ -56,7 +56,7 @@ export function generateHTMLTemplate(
   <meta property="og:title" content="${title}" />  
   <meta property="og:description" content="${description}" />
   <meta property="og:url" content="${url}" />
-  <meta property="og:type" content="${seoData.structuredData?.['@type'] === 'Person' ? 'profile' : seoData.structuredData?.['@type'] === 'Article' ? 'article' : 'website'}" />
+  <meta property="og:type" content="${seoData.structuredData?.['@type'] === 'Person' ? 'profile' : seoData.structuredData?.['@type'] === 'Article' ? 'article' : seoData.structuredData?.['@type'] === 'FinancialProduct' ? 'product' : 'website'}" />
   <meta property="og:site_name" content="Movingto - Portugal Golden Visa Funds" />
   <meta property="og:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
   <meta name="twitter:card" content="summary_large_image" />

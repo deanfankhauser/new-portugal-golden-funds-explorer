@@ -29,24 +29,24 @@ export const StarRating: React.FC<StarRatingProps> = ({
   };
 
   return (
-    <div className={`flex items-center gap-1 ${className}`}>
+    <div className={`flex items-center gap-1 ${className}`} title={`${rating.toFixed(1)} out of ${maxRating} stars`}>
       <div className="flex items-center">
         {Array.from({ length: maxRating }, (_, index) => {
           const starValue = index + 1;
-          const isFilled = starValue <= rating;
-          const isPartial = starValue > rating && starValue - 1 < rating;
+          const fillPercentage = Math.max(0, Math.min(100, (rating - index) * 100));
           
           return (
-            <Star
-              key={index}
-              className={`${sizeClasses[size]} ${
-                isFilled 
-                  ? 'fill-yellow-400 text-yellow-400' 
-                  : isPartial 
-                    ? 'fill-yellow-200 text-yellow-400'
-                    : 'fill-none text-gray-300'
-              }`}
-            />
+            <div key={index} className={`relative ${sizeClasses[size]}`}>
+              {/* Background star (empty) */}
+              <Star className={`absolute inset-0 ${sizeClasses[size]} fill-none text-gray-300`} />
+              {/* Foreground star (filled) with clipping */}
+              <div 
+                className="overflow-hidden"
+                style={{ width: `${fillPercentage}%` }}
+              >
+                <Star className={`${sizeClasses[size]} fill-yellow-400 text-yellow-400`} />
+              </div>
+            </div>
           );
         })}
       </div>

@@ -10,11 +10,19 @@ interface ReviewItemProps {
 
 export const ReviewItem: React.FC<ReviewItemProps> = ({ review }) => {
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return dateString; // Return original string if invalid date
+      }
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch (error) {
+      return dateString; // Fallback to original string on error
+    }
   };
 
   return (

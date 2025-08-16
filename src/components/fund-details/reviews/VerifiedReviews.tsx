@@ -6,7 +6,7 @@ import { ReviewItem } from './ReviewItem';
 import { StarRating } from '../../common/StarRating';
 import { Card } from '../../ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
-import { ChevronDown, Star, Users } from 'lucide-react';
+import { Star, Users } from 'lucide-react';
 
 interface VerifiedReviewsProps {
   fund: Fund;
@@ -22,11 +22,13 @@ export const VerifiedReviews: React.FC<VerifiedReviewsProps> = ({ fund }) => {
   const aggregateRating = ReviewsService.getAggregateRatingByFundId(fund.id);
 
   const filteredReviews = useMemo(() => {
-    return allReviews.filter(review => {
-      const ratingMatch = filters.minRating === null || review.rating >= filters.minRating;
-      const countryMatch = filters.country === null || filters.country === 'all' || review.reviewerCountry === filters.country;
-      return ratingMatch && countryMatch;
-    });
+    return allReviews
+      .filter(review => {
+        const ratingMatch = filters.minRating === null || review.rating >= filters.minRating;
+        const countryMatch = filters.country === null || filters.country === 'all' || review.reviewerCountry === filters.country;
+        return ratingMatch && countryMatch;
+      })
+      .sort((a, b) => new Date(b.dateReviewed).getTime() - new Date(a.dateReviewed).getTime());
   }, [allReviews, filters]);
 
   const uniqueCountries = useMemo(() => {
@@ -112,7 +114,7 @@ export const VerifiedReviews: React.FC<VerifiedReviewsProps> = ({ fund }) => {
             minRating: value === 'all' ? null : parseInt(value) 
           }))}
         >
-          <SelectTrigger className="w-48 bg-white z-50">
+          <SelectTrigger className="w-48 bg-white z-50" aria-label="Filter by minimum rating">
             <SelectValue placeholder="Filter by rating" />
           </SelectTrigger>
           <SelectContent className="bg-white z-50">
@@ -132,7 +134,7 @@ export const VerifiedReviews: React.FC<VerifiedReviewsProps> = ({ fund }) => {
             country: value === 'all' ? null : value 
           }))}
         >
-          <SelectTrigger className="w-48 bg-white z-50">
+          <SelectTrigger className="w-48 bg-white z-50" aria-label="Filter by country">
             <SelectValue placeholder="Filter by country" />
           </SelectTrigger>
           <SelectContent className="bg-white z-50">
