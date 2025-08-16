@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { X, ExternalLink, Users, Shield, Zap } from 'lucide-react';
 import { analytics } from '@/utils/analytics';
 import { useAuth } from '@/contexts/AuthContext';
+import { buildContactUrl, openExternalLink } from '@/utils/urlHelpers';
 
 interface ExitIntentPopupProps {
   isEnabled?: boolean;
@@ -79,9 +80,10 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) =
   }, [isEnabled, hasShown, isAuthenticated]);
 
   const handleContactClick = () => {
-    analytics.trackCTAClick('exit_intent_popup', 'contact_expert', 'https://movingto.com/contact/contact-movingto');
-    analytics.trackExternalLink('https://movingto.com/contact/contact-movingto', 'Speak with Expert', 'exit_intent');
-    window.open('https://movingto.com/contact/contact-movingto', '_blank');
+    const contactUrl = buildContactUrl('exit-intent-popup');
+    analytics.trackCTAClick('exit_intent_popup', 'contact_expert', contactUrl);
+    analytics.trackExternalLink(contactUrl, 'Speak with Expert', 'exit_intent');
+    openExternalLink(contactUrl);
     setIsOpen(false);
   };
 

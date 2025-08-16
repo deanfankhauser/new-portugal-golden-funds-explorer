@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Calendar, GitCompare, Download, ExternalLink, Home, ClipboardCheck } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
+import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
 
 const IndexCTA: React.FC = () => {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ const IndexCTA: React.FC = () => {
           <Button 
             variant="outline" 
             className="w-full"
-            onClick={() => window.open('https://movingto.com/contact/contact-movingto', '_blank')}
+            onClick={() => openExternalLink(buildContactUrl('index-cta'))}
           >
             <Calendar className="h-4 w-4 mr-2" />
             Book a Free Consultation

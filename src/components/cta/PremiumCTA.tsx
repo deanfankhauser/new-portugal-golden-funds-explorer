@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Crown, Users, Shield, Zap, ExternalLink } from 'lucide-react';
 import { analytics } from '../../utils/analytics';
+import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
 
 interface PremiumCTAProps {
   variant?: 'compact' | 'full' | 'banner';
@@ -11,18 +12,16 @@ interface PremiumCTAProps {
 
 const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'general' }) => {
   const handleCTAClick = () => {
+    const contactUrl = buildContactUrl(`premium-${variant}-${location}`);
+    
     // Track the CTA click with location for analytics
-    analytics.trackCTAClick(location, `premium-${variant}`, 'https://movingto.com/contact/contact-movingto');
+    analytics.trackCTAClick(location, `premium-${variant}`, contactUrl);
     
     // Track external link click
-    analytics.trackExternalLink(
-      'https://movingto.com/contact/contact-movingto',
-      'Get Premium Access',
-      `cta-${location}`
-    );
+    analytics.trackExternalLink(contactUrl, 'Get Premium Access', `cta-${location}`);
     
     // Premium CTA clicked tracking
-    window.open('https://movingto.com/contact/contact-movingto', '_blank');
+    openExternalLink(contactUrl);
   };
 
   if (variant === 'compact') {
