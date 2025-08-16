@@ -14,7 +14,9 @@ export { TooltipProvider };
 
 export const loadComponents = async () => {
   try {
-    console.log('🔥 ComponentLoader: Starting component loading...');
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('🔥 ComponentLoader: Starting component loading...');
+    }
     
     const componentPromises = {
       Index: import('../pages/Index').then(m => m.default).catch(err => {
@@ -99,16 +101,18 @@ export const loadComponents = async () => {
       loadedComponents[key] = components[index];
     });
 
-    console.log('🔥 ComponentLoader: Component loading summary:', 
-      Object.fromEntries(
-        Object.entries(loadedComponents).map(([key, component]) => [key, !!component])
-      )
-    );
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('🔥 ComponentLoader: Component loading summary:', 
+        Object.fromEntries(
+          Object.entries(loadedComponents).map(([key, component]) => [key, !!component])
+        )
+      );
 
-    const successCount = Object.values(loadedComponents).filter(Boolean).length;
-    const totalCount = Object.keys(loadedComponents).length;
-    
-    console.log(`🔥 ComponentLoader: Successfully loaded ${successCount}/${totalCount} components`);
+      const successCount = Object.values(loadedComponents).filter(Boolean).length;
+      const totalCount = Object.keys(loadedComponents).length;
+      
+      console.log(`🔥 ComponentLoader: Successfully loaded ${successCount}/${totalCount} components`);
+    }
 
     return loadedComponents;
   } catch (error) {
