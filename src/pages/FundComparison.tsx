@@ -7,6 +7,7 @@ import PageSEO from '../components/common/PageSEO';
 import ComparisonTable from '../components/comparison/ComparisonTable';
 import FundComparisonBreadcrumbs from '../components/comparison/FundComparisonBreadcrumbs';
 import RelatedComparisons from '../components/comparison/RelatedComparisons';
+import FundComparisonFAQ from '../components/comparison/FundComparisonFAQ';
 import { getComparisonBySlug } from '../data/services/comparison-service';
 import { normalizeComparisonSlug, isCanonicalComparisonSlug } from '../utils/comparisonUtils';
 import { Card, CardContent } from '@/components/ui/card';
@@ -84,6 +85,11 @@ const FundComparison = () => {
         <RelatedComparisons 
           currentFund1={comparisonData.fund1} 
           currentFund2={comparisonData.fund2} 
+        />
+
+        <FundComparisonFAQ 
+          fund1={comparisonData.fund1} 
+          fund2={comparisonData.fund2} 
         />
       </main>
       
