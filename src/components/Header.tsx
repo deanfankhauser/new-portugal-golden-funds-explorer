@@ -26,7 +26,7 @@ const Header = () => {
               <img 
                 src="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/65bf8df2803e405540708b3c_movingto-logo-white.svg" 
                 alt="MovingTo Logo" 
-                className="h-8"
+                className="h-6"
               />
             </Link>
           </div>
