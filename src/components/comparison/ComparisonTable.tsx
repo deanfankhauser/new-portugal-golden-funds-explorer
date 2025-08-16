@@ -33,10 +33,13 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
 
   // Component for gated row placeholder
   const GatedRow: React.FC<{ label: string; placeholder: string }> = ({ label, placeholder }) => (
-    <tr className="border-b bg-gray-50/50">
-      <td className="py-3 px-4 font-medium text-gray-600">{label}</td>
+    <tr className="border-b bg-amber-50/30">
+      <td className="py-3 px-4 font-medium text-gray-600 relative">
+        {label}
+        <span className="ml-2 text-xs text-amber-600 font-medium">CLIENT ONLY</span>
+      </td>
       {funds.map(fund => (
-        <td key={fund.id} className="py-3 px-4 text-gray-400 italic">{placeholder}</td>
+        <td key={fund.id} className="py-3 px-4 text-amber-600 font-medium">{placeholder}</td>
       ))}
     </tr>
   );
@@ -200,21 +203,49 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
         </table>
       </div>
 
-      {/* Unlock CTA - Only show if content is gated */}
+      {/* Client Access CTA - Only show if content is gated */}
       {ContentGatingService.shouldGateMetric('managementFee', isAuthenticated) && (
-        <div className="mt-6 text-center bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border">
-          <Lock className="w-8 h-8 text-[#EF4444] mx-auto mb-3" />
-          <h3 className="font-semibold text-gray-900 mb-2">Unlock Advanced Fund Comparison</h3>
-          <p className="text-sm text-gray-600 mb-4">
-            Access detailed fee structures, geographic allocations, and redemption terms to make informed investment decisions.
-          </p>
-          <Button 
-            onClick={handleUnlockClick}
-            className="bg-[#EF4444] hover:bg-[#EF4444]/90"
-          >
-            <Eye className="w-4 h-4 mr-2" />
-            View Premium Details
-          </Button>
+        <div className="mt-6 bg-gradient-to-r from-amber-50 to-orange-50 p-8 rounded-xl border-2 border-amber-200">
+          <div className="text-center">
+            <div className="flex justify-center items-center gap-2 mb-4">
+              <Lock className="w-6 h-6 text-amber-600" />
+              <span className="text-sm font-bold text-amber-800 uppercase tracking-wide">For Movingto Clients Only</span>
+            </div>
+            
+            <h3 className="text-xl font-bold text-gray-900 mb-3">
+              Access Detailed Fund Analysis & Due Diligence
+            </h3>
+            
+            <p className="text-gray-700 mb-4 max-w-2xl mx-auto leading-relaxed">
+              Our clients receive comprehensive fund analysis including detailed fee breakdowns, geographic allocations, 
+              redemption terms, and verified due diligence data to make informed Golden Visa investment decisions.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+              <Button 
+                onClick={handleUnlockClick}
+                className="bg-[#EF4444] hover:bg-[#EF4444]/90 px-6 py-3 text-white font-semibold"
+              >
+                <Eye className="w-5 h-5 mr-2" />
+                Existing Client Login
+              </Button>
+              
+              <div className="text-sm text-gray-500 sm:mx-3">or</div>
+              
+              <a 
+                href="https://cal.com/movingto/30min" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-[#EF4444] border-2 border-[#EF4444] px-6 py-3 rounded-md font-semibold transition-colors"
+              >
+                📞 Book Free Consultation
+              </a>
+            </div>
+            
+            <p className="text-xs text-gray-500 mt-3">
+              Free 30-minute consultation • No obligation • Speak with Portugal investment specialist
+            </p>
+          </div>
         </div>
       )}
 
