@@ -141,6 +141,9 @@ export class SSRRenderer {
                   React.createElement(Route, { path: '/fund-quiz', element: React.createElement(getComponent('FundQuiz')) }),
                   React.createElement(Route, { path: '/compare/:slug', element: React.createElement(getComponent('FundComparison')) }),
                   
+                  // Fund alternatives routes
+                  React.createElement(Route, { path: '/:id/alternatives', element: React.createElement(getComponent('FundAlternatives')) }),
+                  
                   // Fund details routes (must be last due to catch-all nature)
                   React.createElement(Route, { path: '/:id', element: React.createElement(getComponent('FundDetails')) })
                 )

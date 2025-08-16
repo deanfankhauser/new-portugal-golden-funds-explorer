@@ -35,6 +35,15 @@ ${routes.map(route => {
     // Use content-specific dates for comparison pages
     const contentDates = DateManagementService.getContentDates('comparison');
     lastmod = DateManagementService.formatSitemapDate(contentDates.dateModified);
+  } else if (route.pageType === 'fund-alternatives') {
+    priority = '0.8'; // High priority for alternatives pages
+    changefreq = 'weekly';
+    // Get fund-specific dates if available
+    const fund = route.fundId ? funds.find(f => f.id === route.fundId) : null;
+    if (fund) {
+      const contentDates = DateManagementService.getFundContentDates(fund);
+      lastmod = DateManagementService.formatSitemapDate(contentDates.dateModified);
+    }
   } else if (['categories', 'tags', 'managers', 'comparisons-hub'].includes(route.pageType)) {
     priority = '0.7';
     changefreq = 'weekly';
@@ -53,11 +62,12 @@ ${routes.map(route => {
 
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap);
   
-  // Verify comparison URLs are included
+  // Verify comparison and alternatives URLs are included
   const comparisonSlugs = getAllComparisonSlugs();
   const comparisonRoutesInSitemap = routes.filter(r => r.pageType === 'fund-comparison').length;
+  const alternativesRoutesInSitemap = routes.filter(r => r.pageType === 'fund-alternatives').length;
   
-  console.log(`✅ Sitemap: Generated ${routes.length} URLs including ${comparisonRoutesInSitemap} comparison pages`);
+  console.log(`✅ Sitemap: Generated ${routes.length} URLs including ${comparisonRoutesInSitemap} comparison pages and ${alternativesRoutesInSitemap} alternatives pages`);
   
   if (comparisonRoutesInSitemap < comparisonSlugs.length) {
     console.warn(`⚠️  Sitemap: Missing ${comparisonSlugs.length - comparisonRoutesInSitemap} comparison URLs`);

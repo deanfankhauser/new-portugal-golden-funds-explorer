@@ -99,22 +99,27 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
           ))}
         </div>
         
-        <div className="mt-6 pt-4 border-t border-gray-200">
-          <div className="text-center">
-            <p className="text-sm text-gray-600 mb-3">
-              Need help choosing the right fund for your Golden Visa investment?
-            </p>
-            <a 
-              href="https://movingto.com/contact/contact-movingto" 
-              target="_blank" 
-              rel="noopener noreferrer"
-            >
-              <Button className="bg-[#EF4444] hover:bg-[#DC2626] text-white">
-                Get Professional Guidance
-              </Button>
-            </a>
-          </div>
-        </div>
+         <div className="mt-6 pt-4 border-t border-gray-200">
+           <div className="flex justify-between items-center">
+             <Link 
+               to={`/${currentFund.id}/alternatives`}
+               className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
+             >
+               See all alternatives
+               <ArrowRight className="w-4 h-4" />
+             </Link>
+             
+             <a 
+               href="https://movingto.com/contact/contact-movingto" 
+               target="_blank" 
+               rel="noopener noreferrer"
+             >
+               <Button size="sm" className="bg-[#EF4444] hover:bg-[#DC2626] text-white">
+                 Get Expert Guidance
+               </Button>
+             </a>
+           </div>
+         </div>
       </CardContent>
     </Card>
   );

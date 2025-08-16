@@ -227,6 +227,17 @@ export class ConsolidatedSEOService {
           structuredData: this.getPrivacyStructuredData()
         };
 
+      case 'fund-alternatives':
+        const altFund = this.getFundByName(params.fundName);
+        if (!altFund) return this.getSEOData('homepage');
+        
+        return {
+          title: this.optimizeText(`${altFund.name} Alternatives | Similar Portugal Golden Visa Funds | Movingto`, this.MAX_TITLE_LENGTH),
+          description: this.optimizeText(`Discover investment alternatives to ${altFund.name}. Compare similar Portugal Golden Visa eligible funds with matching investment profiles and characteristics.`, this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildFundUrl(altFund.id) + '/alternatives',
+          structuredData: this.getFundAlternativesStructuredData(altFund)
+        };
+
       default:
         return this.getSEOData('homepage');
     }
@@ -538,6 +549,21 @@ export class ConsolidatedSEOService {
       'name': 'Privacy Policy',
       'description': 'Privacy policy for our platform',
       'url': URL_CONFIG.buildUrl('privacy')
+    };
+  }
+
+  private static getFundAlternativesStructuredData(fund: any): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'name': `${fund.name} Alternatives`,
+      'description': `Alternative investment funds similar to ${fund.name}`,
+      'url': URL_CONFIG.buildFundUrl(fund.id) + '/alternatives',
+      'mainEntity': {
+        '@type': 'ItemList',
+        'name': `Alternatives to ${fund.name}`,
+        'description': `Investment funds with similar characteristics to ${fund.name}`
+      }
     };
   }
 
