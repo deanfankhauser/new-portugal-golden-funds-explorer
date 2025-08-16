@@ -10,7 +10,8 @@ ${routes.map(route => {
   if (route.path === '/') priority = '1.0';
   else if (route.pageType === 'fund') priority = '0.9';
   else if (route.pageType === 'fund-index') priority = '0.9';
-  else if (['categories', 'tags', 'managers'].includes(route.pageType)) priority = '0.7';
+  else if (route.pageType === 'fund-comparison') priority = '0.8';
+  else if (['categories', 'tags', 'managers', 'comparisons-hub'].includes(route.pageType)) priority = '0.7';
   
   return `  <url>
     <loc>https://funds.movingto.com${route.path}</loc>

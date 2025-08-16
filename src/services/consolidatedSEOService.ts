@@ -2,6 +2,8 @@
 import { SEOData } from '../types/seo';
 import { URL_CONFIG } from '../utils/urlConfig';
 import { funds } from '../data/funds';
+import { normalizeComparisonSlug } from '../utils/comparisonUtils';
+import { getComparisonBySlug } from '../data/services/comparison-service';
 
 export class ConsolidatedSEOService {
   private static readonly DEFAULT_IMAGE = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
@@ -108,12 +110,33 @@ export class ConsolidatedSEOService {
         };
 
       case 'comparison':
-      case 'fund-comparison':
         return {
-          title: this.optimizeText(`Fund Comparison | ${params.comparisonTitle || 'Investment Analysis'} | Movingto`, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Compare investment funds side-by-side. Analyze performance, fees, risk profiles, and investment strategies.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Fund Comparison Tool - Compare Investment Funds | Portuguese Funds', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare investment funds side by side. Analyze performance, fees, risk profiles and make informed investment decisions.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('/compare'),
+          structuredData: this.getComparisonsHubStructuredData()
+        };
+
+      case 'fund-comparison':
+        const normalizedSlug = normalizeComparisonSlug(params.comparisonSlug || '');
+        const comparisonData = getComparisonBySlug(normalizedSlug);
+        
+        if (comparisonData) {
+          const { fund1, fund2 } = comparisonData;
+          
+          return {
+            title: this.optimizeText(`${fund1.name} vs ${fund2.name} Comparison | Portugal Golden Visa Funds 2025`, this.MAX_TITLE_LENGTH),
+            description: this.optimizeText(`Compare ${fund1.name} (${fund1.managerName}) vs ${fund2.name} (${fund2.managerName}) Portugal Golden Visa funds. Side-by-side analysis of fees, minimum investment, returns, and performance metrics.`, this.MAX_DESCRIPTION_LENGTH),
+            url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
+            structuredData: this.getFundComparisonStructuredData(fund1, fund2)
+          };
+        }
+        
+        return {
+          title: this.optimizeText('Portugal Golden Visa Fund Comparison | Investment Analysis 2025', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare Portugal Golden Visa investment funds side-by-side. Detailed analysis of fees, returns, minimum investment, and fund performance metrics.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('compare'),
-          structuredData: this.getComparisonStructuredData()
+          structuredData: this.getGenericComparisonStructuredData()
         };
 
       case 'roi-calculator':
@@ -203,7 +226,6 @@ export class ConsolidatedSEOService {
           url: URL_CONFIG.buildUrl('privacy'),
           structuredData: this.getPrivacyStructuredData()
         };
-
 
       default:
         return this.getSEOData('homepage');
@@ -516,6 +538,115 @@ export class ConsolidatedSEOService {
       'name': 'Privacy Policy',
       'description': 'Privacy policy for our platform',
       'url': URL_CONFIG.buildUrl('privacy')
+    };
+  }
+
+
+  // Generate fund comparison structured data
+  private static getFundComparisonStructuredData(fund1: any, fund2: any) {
+    if (!fund1 || !fund2 || !fund1.name || !fund2.name || !fund1.id || !fund2.id) return this.getGenericComparisonStructuredData();
+
+    const normalizedSlug = `${[fund1.id, fund2.id].sort().join('-vs-')}`;
+    const comparisonUrl = URL_CONFIG.buildComparisonUrl(normalizedSlug);
+
+    return [
+      // Main WebPage schema
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": `${fund1.name} vs ${fund2.name} Comparison`,
+        "description": `Compare ${fund1.name} and ${fund2.name} investment funds side-by-side to make informed investment decisions`,
+        "url": comparisonUrl,
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": URL_CONFIG.BASE_URL
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Fund Comparisons",
+              "item": URL_CONFIG.buildUrl('comparisons')
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": `${fund1.name} vs ${fund2.name}`,
+              "item": comparisonUrl
+            }
+          ]
+        },
+        "mainEntity": {
+          "@type": "ItemList",
+          "name": "Fund Comparison",
+          "numberOfItems": 2,
+          "itemListElement": [
+            {
+              "@type": "FinancialProduct",
+              "name": fund1.name,
+              "description": fund1.description || `Investment fund: ${fund1.name}`,
+              "url": URL_CONFIG.buildFundUrl(fund1.id),
+              "offers": {
+                "@type": "Offer",
+                "price": fund1.minimumInvestment || 0,
+                "priceCurrency": "EUR"
+              }
+            },
+            {
+              "@type": "FinancialProduct", 
+              "name": fund2.name,
+              "description": fund2.description || `Investment fund: ${fund2.name}`,
+              "url": URL_CONFIG.buildFundUrl(fund2.id),
+              "offers": {
+                "@type": "Offer",
+                "price": fund2.minimumInvestment || 0,
+                "priceCurrency": "EUR"
+              }
+            }
+          ]
+        }
+      },
+      // CompareAction schema
+      {
+        "@context": "https://schema.org",
+        "@type": "CompareAction",
+        "agent": {
+          "@type": "Organization",
+          "name": "Movingto",
+          "url": URL_CONFIG.BASE_URL
+        },
+        "object": [
+          {
+            "@type": "FinancialProduct",
+            "name": fund1.name,
+            "url": URL_CONFIG.buildFundUrl(fund1.id)
+          },
+          {
+            "@type": "FinancialProduct",
+            "name": fund2.name,
+            "url": URL_CONFIG.buildFundUrl(fund2.id)
+          }
+        ],
+        "result": {
+          "@type": "WebPage",
+          "name": `${fund1.name} vs ${fund2.name} Comparison`,
+          "url": comparisonUrl
+        }
+      }
+    ];
+  }
+
+  // Generate generic comparison structured data
+  private static getGenericComparisonStructuredData() {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'Fund Comparison Tool',
+      'description': 'Compare Portugal Golden Visa investment funds'
     };
   }
 

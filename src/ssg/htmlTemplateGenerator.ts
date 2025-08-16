@@ -12,12 +12,20 @@ export function generateHTMLTemplate(
   const url = seoData.url || 'https://funds.movingto.com';
   const structuredData = seoData.structuredData || {};
 
+  // Helper function to check structured data presence for both objects and arrays
+  const hasStructuredData = Array.isArray(structuredData) 
+    ? structuredData.length > 0 
+    : !!structuredData && Object.keys(structuredData).length > 0;
+
   if (process.env.NODE_ENV !== 'production') {
     console.log('🔥 HTMLTemplate: Generating with SEO data:', {
       title: title.substring(0, 50) + '...',
       description: description.substring(0, 50) + '...',
       url,
-      hasStructuredData: Object.keys(structuredData).length > 0,
+      hasStructuredData,
+      structuredDataInfo: Array.isArray(structuredData) 
+        ? `array with ${structuredData.length} items` 
+        : `object with ${Object.keys(structuredData).length} keys`,
       cssFiles: cssFiles.length,
       jsFiles: jsFiles.length
     });
@@ -68,7 +76,7 @@ export function generateHTMLTemplate(
   <meta name="format-detection" content="telephone=no" />
   
   <!-- Structured Data -->
-  ${Object.keys(structuredData).length > 0 ? `<script type="application/ld+json">${JSON.stringify(structuredData, null, 2)}</script>` : ''}
+  ${hasStructuredData ? `<script type="application/ld+json">${JSON.stringify(structuredData, null, 2)}</script>` : ''}
   
   <!-- Critical Resource Preconnects -->
   <link rel="preconnect" href="https://fonts.googleapis.com">

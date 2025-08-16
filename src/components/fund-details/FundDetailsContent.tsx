@@ -16,13 +16,13 @@ import PremiumCTA from '../cta/PremiumCTA';
 import ROICalculator from './ROICalculator';
 import AlternativeFunds from './AlternativeFunds';
 import RelatedFunds from './RelatedFunds';
-import FundRiskScore from './FundRiskScore';
 import ProcessingTimeTracker from './ProcessingTimeTracker';
 import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
 import { Button } from '@/components/ui/button';
 import { ClipboardCheck, TrendingUp } from 'lucide-react';
 import DataFreshnessWarning from '../common/DataFreshnessWarning';
+import { tagToSlug } from '@/lib/utils';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -39,32 +39,30 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
         <FundHeader fund={fund} />
 
         <div className="p-4 md:p-6 lg:p-10 space-y-6 md:space-y-8 lg:space-y-10">
-          {/* Structure description and Report Button */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <FundStructureInfo fund={fund} />
-            <ReportButton fundName={fund.name} />
-          </div>
+          {/* Main content with tabs - Detailed Information */}
+          <FundTabsLazySection fund={fund} />
           
-          {/* Grid layout for key metrics */}
+          {/* Key Financial Metrics - Most Important */}
           <FundMetrics 
             fund={fund} 
             formatCurrency={formatCurrency} 
             formatFundSize={() => <FundSizeFormatter fund={fund} />} 
           />
           
-          {/* Fund Risk Score */}
-          <FundRiskScore fund={fund} />
-          
-          {/* Processing Time Tracker */}
-          <ProcessingTimeTracker fund={fund} />
-          
-          {/* Fund Data Freshness */}
+          {/* Data Quality Indicators - Trust Signals */}
           <FundDataFreshness fund={fund} />
-          
-          {/* Data Freshness Warning */}
           <DataFreshnessWarning fund={fund} />
           
-          {/* Golden Visa Information */}
+          {/* Processing Time - Operational Info */}
+          <ProcessingTimeTracker fund={fund} />
+          
+          {/* Structure description and Report Button */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <FundStructureInfo fund={fund} />
+            <ReportButton fundName={fund.name} />
+          </div>
+          
+          {/* Marketing CTAs - Lower Priority */}
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 md:p-6 rounded-lg border border-blue-200">
             <div className="text-center">
               <h3 className="font-semibold text-blue-900 mb-2 text-sm md:text-base">Portugal Golden Visa Qualified Fund</h3>
@@ -79,13 +77,12 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
               >
                 Learn about Golden Visa requirements
                 <svg className="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </a>
             </div>
           </div>
 
-          {/* Fund Quiz CTA */}
           <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 md:p-6 rounded-lg border border-green-200">
             <div className="text-center">
               <h3 className="font-semibold text-green-900 mb-2 text-sm md:text-base">Want to see how this fund compares to others?</h3>
@@ -107,17 +104,27 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
             </div>
           </div>
           
-          {/* Premium CTA after metrics */}
           <PremiumCTA variant="full" location={`fund-details-${fund.id}`} />
           
-          {/* Main content with tabs */}
-          <FundTabsLazySection fund={fund} />
-          
-          {/* Investor Notice */}
+          {/* Legal and Administrative - Bottom */}
           <InvestorNotice />
-          
-          {/* Introduction Button (full version at bottom) */}
           <IntroductionButton variant="full" />
+          
+          {/* Tags Section - Bottom */}
+          <div className="border-t border-gray-100 pt-6">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">Fund Tags</h3>
+            <div className="flex flex-wrap gap-2">
+              {fund.tags.map(tag => (
+                <Link 
+                  key={tag} 
+                  to={`/tags/${tagToSlug(tag)}`}
+                  className="bg-white/80 hover:bg-[#EF4444] hover:text-white text-[#EF4444] border border-[#EF4444] px-2 py-1 md:px-3 md:py-1 rounded-full transition-all duration-300 shadow-sm text-xs md:text-sm font-medium"
+                >
+                  {tag}
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
       

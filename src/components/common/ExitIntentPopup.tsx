@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { X, ExternalLink, Users, Shield, Zap } from 'lucide-react';
 import { analytics } from '@/utils/analytics';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface ExitIntentPopupProps {
   isEnabled?: boolean;
@@ -11,9 +12,23 @@ interface ExitIntentPopupProps {
 const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [hasShown, setHasShown] = useState(false);
+  const { isAuthenticated } = useAuth();
+
+  // Check if popup was dismissed within the last 14 days
+  const wasRecentlyDismissed = () => {
+    const dismissedAt = localStorage.getItem('exitIntentDismissedAt');
+    if (!dismissedAt) return false;
+    
+    const dismissedTime = new Date(dismissedAt).getTime();
+    const now = new Date().getTime();
+    const fourteenDays = 14 * 24 * 60 * 60 * 1000; // 14 days in milliseconds
+    
+    return (now - dismissedTime) < fourteenDays;
+  };
 
   useEffect(() => {
-    if (!isEnabled || hasShown) return;
+    // Don't show popup if user is already authenticated, popup is disabled, or was recently dismissed
+    if (!isEnabled || hasShown || isAuthenticated || wasRecentlyDismissed()) return;
 
     let mouseLeaveTimer: NodeJS.Timeout;
     
@@ -61,7 +76,7 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) =
         clearTimeout(mouseLeaveTimer);
       }
     };
-  }, [isEnabled, hasShown]);
+  }, [isEnabled, hasShown, isAuthenticated]);
 
   const handleContactClick = () => {
     analytics.trackCTAClick('exit_intent_popup', 'contact_expert', 'https://movingto.com/contact/contact-movingto');
@@ -75,6 +90,7 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) =
       action: 'close_button',
       page_path: window.location.pathname
     });
+    localStorage.setItem('exitIntentDismissedAt', new Date().toISOString());
     setIsOpen(false);
   };
 
@@ -83,6 +99,7 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) =
       action: 'continue_browsing',
       page_path: window.location.pathname
     });
+    localStorage.setItem('exitIntentDismissedAt', new Date().toISOString());
     setIsOpen(false);
   };
 

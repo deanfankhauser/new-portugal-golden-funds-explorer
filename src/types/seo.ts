@@ -6,11 +6,12 @@ export interface PageSEOProps {
   categoryName?: string;
   tagName?: string;
   comparisonTitle?: string;
+  comparisonSlug?: string;
 }
 
 export interface SEOData {
   title: string;
   description: string;
   url: string;
-  structuredData: Record<string, any>;
+  structuredData: any;
 }

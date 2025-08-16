@@ -14,7 +14,9 @@ export { TooltipProvider };
 
 export const loadComponents = async () => {
   try {
-    console.log('🔥 ComponentLoader: Starting component loading...');
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('🔥 ComponentLoader: Starting component loading...');
+    }
     
     const componentPromises = {
       Index: import('../pages/Index').then(m => m.default).catch(err => {
@@ -85,6 +87,10 @@ export const loadComponents = async () => {
         console.warn('ComponentLoader: Failed to load FundQuiz:', err.message);
         return null;
       }),
+      FundComparison: import('../pages/FundComparison').then(m => m.default).catch(err => {
+        console.warn('ComponentLoader: Failed to load FundComparison:', err.message);
+        return null;
+      }),
     };
 
     const components = await Promise.all(Object.values(componentPromises));
@@ -95,16 +101,18 @@ export const loadComponents = async () => {
       loadedComponents[key] = components[index];
     });
 
-    console.log('🔥 ComponentLoader: Component loading summary:', 
-      Object.fromEntries(
-        Object.entries(loadedComponents).map(([key, component]) => [key, !!component])
-      )
-    );
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('🔥 ComponentLoader: Component loading summary:', 
+        Object.fromEntries(
+          Object.entries(loadedComponents).map(([key, component]) => [key, !!component])
+        )
+      );
 
-    const successCount = Object.values(loadedComponents).filter(Boolean).length;
-    const totalCount = Object.keys(loadedComponents).length;
-    
-    console.log(`🔥 ComponentLoader: Successfully loaded ${successCount}/${totalCount} components`);
+      const successCount = Object.values(loadedComponents).filter(Boolean).length;
+      const totalCount = Object.keys(loadedComponents).length;
+      
+      console.log(`🔥 ComponentLoader: Successfully loaded ${successCount}/${totalCount} components`);
+    }
 
     return loadedComponents;
   } catch (error) {
