@@ -11,7 +11,7 @@ const ManagersHubHeader = () => {
       </div>
       
       <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-center" itemProp="name">
-        All Fund Managers
+        Portugal Golden Visa Fund Managers
       </h1>
       
       <p className="text-xl text-gray-600 max-w-3xl mx-auto text-center" itemProp="description">

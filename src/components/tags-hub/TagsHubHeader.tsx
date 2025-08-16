@@ -11,7 +11,7 @@ const TagsHubHeader = () => {
       </div>
       
       <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 text-center" itemProp="name">
-        All Golden Visa Fund Tags
+        Portugal Golden Visa Investment Fund Tags
       </h1>
       
       <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto text-center px-2 sm:px-0" itemProp="description">
