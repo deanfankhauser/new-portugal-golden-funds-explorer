@@ -148,6 +148,15 @@ const Header = () => {
             </NavigationMenu>
 
             {/* Direct Actions */}
+            <a href="https://www.movingto.com/contact/submit-fund" target="_blank" rel="noopener noreferrer">
+              <Button 
+                variant="ghost" 
+                className="text-white hover:bg-white/10 hover:text-white transition-all duration-300"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Submit Fund
+              </Button>
+            </a>
 
             <a href="https://movingto.com/contact/contact-movingto" target="_blank" rel="noopener noreferrer">
               <Button 

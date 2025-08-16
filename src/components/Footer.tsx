@@ -143,16 +143,15 @@ const Footer = () => {
             <p className="text-sm text-gray-600 mb-4">
               Are you a fund manager? Submit your fund to our platform.
             </p>
-            <div 
-              data-fillout-id="2ZfNTTDczqus" 
-              data-fillout-embed-type="popup" 
-              data-fillout-button-text="Add your fund" 
-              data-fillout-dynamic-resize 
-              data-fillout-button-color="#EB144C" 
-              data-fillout-button-size="small" 
-              data-fillout-inherit-parameters 
-              data-fillout-popup-size="medium"
-            />
+            <a 
+              href="https://www.movingto.com/contact/submit-fund" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:bg-primary/90 transition-colors"
+            >
+              Submit Your Fund
+              <ExternalLink size={14} className="ml-2" />
+            </a>
           </div>
           
           <div className="col-span-1">
