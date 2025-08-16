@@ -1,6 +1,8 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FundTag } from '../../../data/funds';
+import { tagToSlug } from '../../../lib/utils';
 import ComparisonCell from './ComparisonCell';
 
 interface TagsCellProps {
@@ -12,9 +14,14 @@ const TagsCell: React.FC<TagsCellProps> = ({ tags, highlight = false }) => {
   const content = (
     <div className="flex flex-wrap gap-1">
       {tags.map(tag => (
-        <span key={tag} className="text-xs bg-secondary px-2 py-1 rounded-full">
+        <Link
+          key={tag}
+          to={`/tags/${tagToSlug(tag)}`}
+          className="text-xs bg-secondary hover:bg-primary hover:text-white px-2 py-1 rounded-full transition-colors duration-200"
+          title={`View all funds tagged with ${tag}`}
+        >
           {tag}
-        </span>
+        </Link>
       ))}
     </div>
   );
