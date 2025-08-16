@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button';
 import { ClipboardCheck, TrendingUp } from 'lucide-react';
 import DataFreshnessWarning from '../common/DataFreshnessWarning';
 import { tagToSlug } from '@/lib/utils';
+import { VerifiedReviews } from './reviews/VerifiedReviews';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -138,6 +139,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       
       {/* ROI Calculator */}
       <ROICalculator fund={fund} />
+      
+      {/* Verified Reviews Section */}
+      <VerifiedReviews fund={fund} />
       
       {/* FAQ Section */}
       <FundFAQSection fund={fund} />
