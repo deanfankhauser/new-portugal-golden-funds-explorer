@@ -18,7 +18,7 @@ const ComparisonsList = () => {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold mb-4">All Fund Comparisons</h2>
+        <h2 className="text-2xl font-bold mb-4">Portugal Golden Visa Investment Fund Comparisons</h2>
         <p className="text-gray-600">
           Compare Portugal Golden Visa investment funds side by side to make informed decisions.
           Browse all {comparisons.length} possible fund comparisons.

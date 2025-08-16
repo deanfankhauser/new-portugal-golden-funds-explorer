@@ -14,7 +14,7 @@ interface ManagersListProps {
 const ManagersList: React.FC<ManagersListProps> = ({ managers }) => {
   return (
     <section className="bg-white p-6 rounded-lg shadow-sm" aria-labelledby="managers-heading">
-      <h2 id="managers-heading" className="text-2xl font-bold mb-6">All Fund Managers ({managers.length})</h2>
+      <h2 id="managers-heading" className="text-2xl font-bold mb-6">Portugal Golden Visa Investment Fund Managers ({managers.length})</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {managers.map((manager) => {

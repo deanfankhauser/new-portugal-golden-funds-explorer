@@ -12,7 +12,7 @@ const CategoriesList: React.FC<CategoriesListProps> = ({ categories }) => {
   return (
     <section className="bg-white p-4 sm:p-6 rounded-lg shadow-sm" aria-labelledby="categories-heading">
       <h2 id="categories-heading" className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-        All Categories ({categories.length})
+        Portugal Golden Visa Investment Fund Categories ({categories.length})
       </h2>
       
       <ul className="grid grid-cols-1 gap-3 sm:gap-4" itemProp="itemListElement" itemScope itemType="https://schema.org/ItemList">
