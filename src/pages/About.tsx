@@ -118,6 +118,12 @@ const About = () => {
                 </svg>
               </a>
               <a 
+                href="/index" 
+                className="inline-flex items-center px-6 py-3 text-blue-600 font-semibold rounded-lg border border-blue-600 hover:bg-blue-50 transition-colors duration-200"
+              >
+                Browse Portugal Golden Visa Investment Fund Index
+              </a>
+              <a 
                 href="https://movingto.com/pt/portugal-golden-visa" 
                 target="_blank" 
                 rel="noopener noreferrer"

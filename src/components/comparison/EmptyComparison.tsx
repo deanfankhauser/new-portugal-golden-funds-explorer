@@ -8,7 +8,7 @@ const EmptyComparison = () => {
   const navigate = useNavigate();
   
   const handleBrowseFunds = () => {
-    navigate('/');
+    navigate('/index');
   };
   
   return (
@@ -23,7 +23,7 @@ const EmptyComparison = () => {
           onClick={handleBrowseFunds}
           className="bg-[#EF4444] hover:bg-[#EF4444]/90 text-white"
         >
-          Browse Funds
+          Browse Portugal Golden Visa Investment Fund Index
         </Button>
       </div>
       

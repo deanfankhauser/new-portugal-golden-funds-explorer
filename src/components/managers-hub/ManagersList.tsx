@@ -60,10 +60,10 @@ const ManagersList: React.FC<ManagersListProps> = ({ managers }) => {
           Each fund manager brings unique expertise and investment strategies to the Portuguese market. Click on a manager to see all their funds and learn more about their approach.
         </p>
         <Link 
-          to="/" 
+          to="/index" 
           className="text-[#EF4444] hover:underline flex items-center"
         >
-          View all funds
+          Browse Portugal Golden Visa Investment Fund Index
         </Link>
       </div>
     </section>

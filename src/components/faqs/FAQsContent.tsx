@@ -56,6 +56,7 @@ const FAQsContent = () => {
         </h1>
         <p className="text-gray-600 text-lg">
           Find answers to common questions about Portugal Golden Visa investment funds, eligibility requirements, and the application process.
+          Browse our comprehensive <a href="/index" className="text-[#EF4444] hover:underline">Portugal Golden Visa Investment Fund Index</a> for detailed fund rankings and comparisons.
         </p>
         <h2 className="text-xl font-semibold mt-6 mb-2 text-gray-800">
           Portugal Golden Visa Investment Fund Questions and Answers
