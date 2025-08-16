@@ -12,7 +12,7 @@ const Disclaimer = () => {
       
       <main className="container mx-auto px-4 py-8 flex-1">
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h1 className="text-2xl font-semibold mb-4">Disclaimer</h1>
+          <h1 className="text-2xl font-semibold mb-4">Disclaimer - Portugal Golden Visa Investment Fund Information</h1>
           
           <p className="mb-4">
             The information provided on this website is for general informational purposes only. 
@@ -38,8 +38,9 @@ const Disclaimer = () => {
             However, we take no responsibility for, and will not be liable for, the website being temporarily unavailable due to technical issues beyond our control.
           </p>
 
+          <h2 className="text-lg font-medium text-gray-900 mb-2">Portugal Golden Visa Investment Fund Disclaimer</h2>
           <p className="mb-4">
-            Investment decisions should be based on your own due diligence and consultation with a qualified financial guidance professional. 
+            Portugal Golden Visa investment fund decisions should be based on your own due diligence and consultation with a qualified financial guidance professional. 
             We do not provide financial guidance and are not responsible for any investment decisions made based on the information on this website.
           </p>
         </div>
