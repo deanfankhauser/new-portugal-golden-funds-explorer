@@ -15,7 +15,7 @@ const FundIndexHeader: React.FC = () => {
 
           {/* Improved title with better typography */}
           <h1 className="text-5xl md:text-6xl font-bold mb-8 text-gray-900 leading-tight tracking-tight">
-            Portugal Golden Visa
+            Portugal Golden Visa Investment
             <span className="block text-blue-600 mt-2">Fund Index</span>
           </h1>
           

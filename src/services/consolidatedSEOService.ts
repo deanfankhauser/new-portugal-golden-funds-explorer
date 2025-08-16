@@ -79,8 +79,8 @@ export class ConsolidatedSEOService {
 
       case 'fund-index':
         return {
-          title: this.optimizeText('Portugal Golden Visa Investment Funds Database | Fund Index | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Complete database of Portugal Golden Visa Investment Funds. Filter qualified funds by category, fees, minimum investment, and performance.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Portugal Golden Visa Investment Fund Index 2025 | Fund Database | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Complete Portugal Golden Visa investment fund database. Compare qualified Golden Visa funds by category, fees, minimum investment, and performance metrics.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('index'),
           structuredData: this.getFundIndexStructuredData()
         };
@@ -111,8 +111,8 @@ export class ConsolidatedSEOService {
 
       case 'comparison':
         return {
-          title: this.optimizeText('Fund Comparison Tool - Compare Investment Funds | Portuguese Funds', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Compare investment funds side by side. Analyze performance, fees, risk profiles and make informed investment decisions.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Portugal Golden Visa Fund Comparison Tool | Compare Investment Funds | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare Portugal Golden Visa investment funds side by side. Analyze performance, fees, risk profiles and make informed Golden Visa investment decisions.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/compare'),
           structuredData: this.getComparisonStructuredData()
         };
@@ -149,8 +149,8 @@ export class ConsolidatedSEOService {
 
       case 'fund-quiz':
         return {
-          title: this.optimizeText('Fund Finder Quiz | Find Your Perfect Investment | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Take our quiz to find the perfect investment fund for your needs. Personalized recommendations.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Portugal Golden Visa Fund Finder Quiz | Find Your Perfect Investment | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Take our quiz to find the perfect Portugal Golden Visa investment fund for your needs. Personalized Golden Visa fund recommendations.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('fund-quiz'),
           structuredData: this.getQuizStructuredData()
         };
