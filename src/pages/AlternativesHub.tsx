@@ -52,7 +52,10 @@ const AlternativesHub: React.FC = () => {
             <Card>
               <CardContent className="p-6 text-center">
                 <div className="text-2xl font-bold text-foreground">
-                  {Math.round(fundsWithAlternatives.reduce((sum, item) => sum + item.alternatives.length, 0) / fundsWithAlternatives.length)}
+                  {fundsWithAlternatives.length > 0 
+                    ? Math.round(fundsWithAlternatives.reduce((sum, item) => sum + item.alternatives.length, 0) / fundsWithAlternatives.length)
+                    : 0
+                  }
                 </div>
                 <div className="text-muted-foreground">Avg. Alternatives per Fund</div>
               </CardContent>

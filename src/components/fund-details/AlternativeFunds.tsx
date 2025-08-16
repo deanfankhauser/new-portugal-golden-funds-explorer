@@ -101,13 +101,14 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
         
          <div className="mt-6 pt-4 border-t border-gray-200">
            <div className="flex justify-between items-center">
-             <Link 
-               to={`/${currentFund.id}/alternatives`}
-               className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
-             >
-               See all alternatives
-               <ArrowRight className="w-4 h-4" />
-             </Link>
+              <Link 
+                to={`/${currentFund.id}/alternatives`}
+                className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
+                aria-label={`View all alternative funds similar to ${currentFund.name}`}
+              >
+                View all {currentFund.name} alternatives
+                <ArrowRight className="w-4 h-4" />
+              </Link>
              
              <a 
                href="https://movingto.com/contact/contact-movingto" 

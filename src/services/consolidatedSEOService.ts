@@ -561,18 +561,69 @@ export class ConsolidatedSEOService {
   }
 
   private static getFundAlternativesStructuredData(fund: any): any {
-    return {
-      '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      'name': `${fund.name} Alternatives`,
-      'description': `Alternative investment funds similar to ${fund.name}`,
-      'url': URL_CONFIG.buildFundUrl(fund.id) + '/alternatives',
-      'mainEntity': {
+    // Import the service to get alternatives
+    const { findAlternativeFunds } = require('../data/services/alternative-funds-service');
+    const alternatives = findAlternativeFunds(fund, 6);
+    
+    const baseStructuredData = [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        'name': `${fund.name} Alternatives`,
+        'description': `Alternative investment funds similar to ${fund.name}`,
+        'url': URL_CONFIG.buildFundUrl(fund.id) + '/alternatives',
+        'breadcrumb': {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': URL_CONFIG.buildUrl('')
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': fund.name,
+              'item': URL_CONFIG.buildFundUrl(fund.id)
+            },
+            {
+              '@type': 'ListItem',
+              'position': 3,
+              'name': 'Alternatives',
+              'item': URL_CONFIG.buildFundUrl(fund.id) + '/alternatives'
+            }
+          ]
+        }
+      }
+    ];
+
+    // Add ItemList if alternatives exist
+    if (alternatives.length > 0) {
+      baseStructuredData[0]['mainEntity'] = {
         '@type': 'ItemList',
         'name': `Alternatives to ${fund.name}`,
-        'description': `Investment funds with similar characteristics to ${fund.name}`
-      }
-    };
+        'description': `Investment funds with similar characteristics to ${fund.name}`,
+        'numberOfItems': alternatives.length,
+        'itemListElement': alternatives.map((alt: any, index: number) => ({
+          '@type': 'ListItem',
+          'position': index + 1,
+          'item': {
+            '@type': 'FinancialProduct',
+            'name': alt.name,
+            'description': alt.description,
+            'url': URL_CONFIG.buildFundUrl(alt.id),
+            'category': alt.category,
+            'provider': {
+              '@type': 'Organization',
+              'name': alt.managerName
+            }
+          }
+        }))
+      };
+    }
+
+    return baseStructuredData;
   }
 
 
