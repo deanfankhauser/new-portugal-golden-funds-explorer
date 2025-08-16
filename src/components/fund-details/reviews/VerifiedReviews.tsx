@@ -25,7 +25,8 @@ export const VerifiedReviews: React.FC<VerifiedReviewsProps> = ({ fund }) => {
     return allReviews
       .filter(review => {
         const ratingMatch = filters.minRating === null || review.rating >= filters.minRating;
-        const countryMatch = filters.country === null || filters.country === 'all' || review.reviewerCountry === filters.country;
+        const countryMatch = filters.country === null || filters.country === 'all' || 
+          review.reviewerCountry.toLowerCase() === filters.country.toLowerCase();
         return ratingMatch && countryMatch;
       })
       .sort((a, b) => new Date(b.dateReviewed).getTime() - new Date(a.dateReviewed).getTime());
@@ -39,7 +40,8 @@ export const VerifiedReviews: React.FC<VerifiedReviewsProps> = ({ fund }) => {
   const ratingDistribution = useMemo(() => {
     const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
     allReviews.forEach(review => {
-      distribution[review.rating as keyof typeof distribution]++;
+      const clampedRating = Math.max(1, Math.min(5, review.rating));
+      distribution[clampedRating as keyof typeof distribution]++;
     });
     return distribution;
   }, [allReviews]);
@@ -50,7 +52,7 @@ export const VerifiedReviews: React.FC<VerifiedReviewsProps> = ({ fund }) => {
         <Star className="w-12 h-12 text-gray-300 mx-auto mb-4" />
         <h3 className="text-lg font-semibold mb-2">No Reviews Yet</h3>
         <p className="text-muted-foreground">
-          Be the first to share your experience with this fund.
+          This fund hasn't received any verified investor reviews yet. Reviews help other investors make informed decisions.
         </p>
       </Card>
     );
@@ -71,7 +73,7 @@ export const VerifiedReviews: React.FC<VerifiedReviewsProps> = ({ fund }) => {
           {/* Average Rating */}
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="text-center">
+              <div className="text-center" role="img" aria-label={`Average rating ${aggregateRating?.ratingValue} out of 5 stars from ${aggregateRating?.reviewCount} reviews`}>
                 <div className="text-3xl font-bold">{aggregateRating?.ratingValue}</div>
                 <StarRating rating={aggregateRating?.ratingValue || 0} size="lg" />
                 <div className="text-sm text-muted-foreground mt-1">
@@ -148,7 +150,7 @@ export const VerifiedReviews: React.FC<VerifiedReviewsProps> = ({ fund }) => {
 
       {/* Reviews List */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground" aria-live="polite">
           <Users className="w-4 h-4" />
           Showing {filteredReviews.length} of {allReviews.length} reviews
         </div>

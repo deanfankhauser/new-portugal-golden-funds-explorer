@@ -306,10 +306,12 @@ export class ConsolidatedSEOService {
   }
 
   private static setOpenGraph(seoData: SEOData): void {
-    // Determine og:type based on URL pattern
+    // Determine og:type based on URL pattern and structured data
     let ogType = 'website';
     if (seoData.url.includes('/compare/') && seoData.url.includes('-vs-')) {
       ogType = 'article';
+    } else if (seoData.structuredData && seoData.structuredData['@type'] === 'FinancialProduct') {
+      ogType = 'product';
     }
     
     const ogTags = [
