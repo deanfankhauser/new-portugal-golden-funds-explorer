@@ -5,6 +5,8 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import ComparisonTable from '../components/comparison/ComparisonTable';
+import FundComparisonBreadcrumbs from '../components/comparison/FundComparisonBreadcrumbs';
+import RelatedComparisons from '../components/comparison/RelatedComparisons';
 import { getComparisonBySlug } from '../data/services/comparison-service';
 import { normalizeComparisonSlug, isCanonicalComparisonSlug } from '../utils/comparisonUtils';
 import { Card, CardContent } from '@/components/ui/card';
@@ -60,6 +62,7 @@ const FundComparison = () => {
       <Header />
       
       <main className="container mx-auto px-4 py-8 flex-1">
+        <FundComparisonBreadcrumbs fund1={comparisonData.fund1} fund2={comparisonData.fund2} />
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">
             {comparisonData.fund1.name} vs {comparisonData.fund2.name}: Portugal Golden Visa Fund Comparison
@@ -77,6 +80,11 @@ const FundComparison = () => {
         <div className="bg-white rounded-lg shadow-sm border">
           <ComparisonTable funds={[comparisonData.fund1, comparisonData.fund2]} />
         </div>
+
+        <RelatedComparisons 
+          currentFund1={comparisonData.fund1} 
+          currentFund2={comparisonData.fund2} 
+        />
       </main>
       
       <Footer />
