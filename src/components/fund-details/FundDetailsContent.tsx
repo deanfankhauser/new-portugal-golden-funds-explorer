@@ -16,6 +16,7 @@ import PremiumCTA from '../cta/PremiumCTA';
 import ROICalculator from './ROICalculator';
 import AlternativeFunds from './AlternativeFunds';
 import RelatedFunds from './RelatedFunds';
+import FundComparisonSuggestions from './FundComparisonSuggestions';
 
 import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
@@ -131,6 +132,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       
       {/* Alternative Funds Section */}
       <AlternativeFunds currentFund={fund} />
+      
+      {/* Fund Comparison Suggestions */}
+      <FundComparisonSuggestions currentFund={fund} />
       
       {/* ROI Calculator */}
       <ROICalculator fund={fund} />

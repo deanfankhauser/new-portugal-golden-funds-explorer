@@ -114,7 +114,7 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('Fund Comparison Tool - Compare Investment Funds | Portuguese Funds', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Compare investment funds side by side. Analyze performance, fees, risk profiles and make informed investment decisions.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/compare'),
-          structuredData: this.getComparisonsHubStructuredData()
+          structuredData: this.getComparisonStructuredData()
         };
 
       case 'fund-comparison':
@@ -305,11 +305,17 @@ export class ConsolidatedSEOService {
   }
 
   private static setOpenGraph(seoData: SEOData): void {
+    // Determine og:type based on URL pattern
+    let ogType = 'website';
+    if (seoData.url.includes('/compare/') && seoData.url.includes('-vs-')) {
+      ogType = 'article';
+    }
+    
     const ogTags = [
       { property: 'og:title', content: seoData.title },
       { property: 'og:description', content: seoData.description },
       { property: 'og:url', content: seoData.url },
-      { property: 'og:type', content: 'website' },
+      { property: 'og:type', content: ogType },
       { property: 'og:image', content: this.DEFAULT_IMAGE },
       { property: 'og:site_name', content: 'Movingto' },
     ];
@@ -443,10 +449,39 @@ export class ConsolidatedSEOService {
   private static getComparisonStructuredData(): any {
     return {
       '@context': 'https://schema.org',
-      '@type': 'WebPage',
-      'name': 'Investment Fund Comparison',
-      'description': 'Compare investment funds side-by-side',
-      'url': URL_CONFIG.buildUrl('compare')
+      '@graph': [
+        {
+          '@type': 'WebPage',
+          '@id': URL_CONFIG.buildUrl('compare'),
+          'name': 'Investment Fund Comparison Tool',
+          'description': 'Compare investment funds side-by-side to analyze performance, fees, and risk profiles',
+          'url': URL_CONFIG.buildUrl('compare'),
+          'breadcrumb': {
+            '@type': 'BreadcrumbList',
+            'itemListElement': [
+              {
+                '@type': 'ListItem',
+                'position': 1,
+                'name': 'Home',
+                'item': URL_CONFIG.buildUrl('/')
+              },
+              {
+                '@type': 'ListItem',
+                'position': 2,
+                'name': 'Compare Funds',
+                'item': URL_CONFIG.buildUrl('compare')
+              }
+            ]
+          }
+        },
+        {
+          '@type': 'WebApplication',
+          'name': 'Fund Comparison Tool',
+          'description': 'Interactive tool to compare investment funds',
+          'url': URL_CONFIG.buildUrl('compare'),
+          'applicationCategory': 'FinanceApplication'
+        }
+      ]
     };
   }
 
@@ -511,12 +546,50 @@ export class ConsolidatedSEOService {
   }
 
   private static getComparisonsHubStructuredData(): any {
+    // Get top 10 fund pairs for featured comparisons
+    const topComparisons = funds.slice(0, 10).flatMap((fund, i) => 
+      funds.slice(i + 1, i + 3).map((otherFund, j) => ({
+        '@type': 'ListItem',
+        'position': i * 2 + j + 1,
+        'name': `${fund.name} vs ${otherFund.name}`,
+        'item': URL_CONFIG.buildUrl(`compare/${normalizeComparisonSlug(`${fund.id}-vs-${otherFund.id}`)}`)
+      }))
+    ).slice(0, 10);
+
     return {
       '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      'name': 'Fund Comparisons Hub',
-      'description': 'Hub for comparing investment funds',
-      'url': URL_CONFIG.buildUrl('comparisons')
+      '@graph': [
+        {
+          '@type': 'CollectionPage',
+          '@id': URL_CONFIG.buildUrl('comparisons'),
+          'name': 'Fund Comparisons Hub',
+          'description': 'Comprehensive hub for comparing investment funds with tools and featured comparisons',
+          'url': URL_CONFIG.buildUrl('comparisons'),
+          'breadcrumb': {
+            '@type': 'BreadcrumbList',
+            'itemListElement': [
+              {
+                '@type': 'ListItem',
+                'position': 1,
+                'name': 'Home',
+                'item': URL_CONFIG.buildUrl('/')
+              },
+              {
+                '@type': 'ListItem',
+                'position': 2,
+                'name': 'Fund Comparisons',
+                'item': URL_CONFIG.buildUrl('comparisons')
+              }
+            ]
+          },
+          'mainEntity': {
+            '@type': 'ItemList',
+            'name': 'Featured Fund Comparisons',
+            'numberOfItems': topComparisons.length,
+            'itemListElement': topComparisons
+          }
+        }
+      ]
     };
   }
 
