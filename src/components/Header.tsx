@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import ComparisonIndicator from "./ComparisonIndicator";
 import MobileNavigation from "./MobileNavigation";
-import { ArrowLeft, Mail, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3, FileText } from "lucide-react";
+import { ArrowLeft, Mail, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3, FileText, GitCompareArrows } from "lucide-react";
 
 const Header = () => {
   return (
@@ -66,6 +66,15 @@ const Header = () => {
                             <div>
                               <div className="font-medium text-gray-900">Fund Comparison</div>
                               <div className="text-sm text-gray-500">Compare funds side-by-side</div>
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <Link to="/alternatives" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
+                            <GitCompareArrows className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
+                            <div>
+                              <div className="font-medium text-gray-900">Fund Alternatives</div>
+                              <div className="text-sm text-gray-500">Find alternative funds</div>
                             </div>
                           </Link>
                         </NavigationMenuLink>
