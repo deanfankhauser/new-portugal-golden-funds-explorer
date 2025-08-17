@@ -182,6 +182,7 @@ export class SSRRenderer {
         description: seoData.description || 'Compare and discover the best Golden Visa-eligible investment funds in Portugal.',
         url: seoData.url || `https://funds.movingto.com${route.path}`,
         structuredData: seoData.structuredData || {},
+        robots: seoData.robots,
         helmetData: {
           title: helmet.title.toString(),
           meta: helmet.meta.toString(),
