@@ -167,7 +167,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Page Not Found | Portugal Investment Funds | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('The page you are looking for could not be found. Explore our investment funds.', this.MAX_DESCRIPTION_LENGTH),
-          url: baseUrl,
+          url: `${baseUrl}/404`,
           structuredData: this.getHomepageStructuredData()
         };
 

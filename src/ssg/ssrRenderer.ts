@@ -59,7 +59,7 @@ export class SSRRenderer {
 
     // Handle 404 pages with noindex
     if (route.pageType === '404') {
-      seoData.robots = 'noindex, nofollow';
+      seoData.robots = 'noindex, follow';
     }
 
     // Validate SEO data completeness
