@@ -319,6 +319,13 @@ export class ConsolidatedSEOService {
       ogType = 'article';
     } else if (seoData.structuredData && seoData.structuredData['@type'] === 'FinancialProduct') {
       ogType = 'product';
+    } else if (seoData.structuredData && seoData.structuredData['@type'] === 'Person') {
+      ogType = 'profile';
+    }
+    
+    // DEV-only verification log
+    if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
+      console.log('🔍 SEO og:type set to:', ogType, 'for URL:', seoData.url);
     }
     
     const ogTags = [
