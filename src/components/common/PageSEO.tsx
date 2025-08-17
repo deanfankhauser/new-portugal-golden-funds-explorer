@@ -42,7 +42,7 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
           robots.setAttribute('name', 'robots');
           document.head.appendChild(robots);
         }
-        robots.setAttribute('content', 'noindex, follow, max-image-preview:large');
+        robots.setAttribute('content', 'noindex, follow');
       }
       
       // Initialize performance optimizations

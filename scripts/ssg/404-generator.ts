@@ -8,8 +8,8 @@ export async function generate404Page(distDir: string): Promise<void> {
     const seoData = {
       title: '404 - Page Not Found | Movingto - Portugal Golden Visa Funds',
       description: 'The page you are looking for could not be found. Browse our Portugal Golden Visa investment fund index.',
-      url: 'https://movingto.com/404',
-      robots: 'noindex, nofollow',
+      url: 'https://funds.movingto.com/404',
+      robots: 'noindex, follow',
       keywords: []
     };
 
