@@ -57,6 +57,11 @@ export class SSRRenderer {
       comparisonSlug: route.params?.slug,
     });
 
+    // Handle 404 pages with noindex
+    if (route.pageType === '404') {
+      seoData.robots = 'noindex, nofollow';
+    }
+
     // Validate SEO data completeness
     const hasStructuredData = Array.isArray(seoData.structuredData) 
       ? seoData.structuredData.length > 0 

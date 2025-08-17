@@ -76,9 +76,9 @@ export function generateHTMLTemplate(
   <link rel="canonical" href="${url}" />
   
   <!-- Enhanced Meta Tags -->
-  <meta name="keywords" content="Portugal Golden Visa, investment funds, Portuguese residency, Golden Visa funds 2025, fund comparison, investment migration" />
+  <meta name="keywords" content="${seoData.keywords?.join(', ') || 'Portugal Golden Visa, investment funds, Portuguese residency, Golden Visa funds 2025, fund comparison, investment migration'}" />
   <meta name="author" content="Dean Fankhauser, CEO - Movingto" />
-  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="robots" content="${seoData.robots || 'index, follow, max-image-preview:large'}" />
   <meta name="theme-color" content="#EF4444" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
