@@ -17,7 +17,10 @@ export function generateHTMLTemplate(
     ? structuredData.length > 0 
     : !!structuredData && Object.keys(structuredData).length > 0;
 
-  if (process.env.NODE_ENV !== 'production') {
+  // Check if we're in development mode safely for SSG environments
+  const isDev = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false;
+  
+  if (isDev) {
     console.log('🔥 HTMLTemplate: Generating with SEO data:', {
       title: title.substring(0, 50) + '...',
       description: description.substring(0, 50) + '...',
@@ -56,7 +59,13 @@ export function generateHTMLTemplate(
   <meta property="og:title" content="${title}" />  
   <meta property="og:description" content="${description}" />
   <meta property="og:url" content="${url}" />
-  <meta property="og:type" content="website" />
+  <meta property="og:type" content="${(() => {
+    // Align og:type logic with ConsolidatedSEOService
+    if (url.includes('/compare/') && url.includes('-vs-')) return 'article';
+    if (seoData.structuredData?.['@type'] === 'FinancialProduct') return 'product';
+    if (seoData.structuredData?.['@type'] === 'Person') return 'profile';
+    return 'website';
+  })()}" />
   <meta property="og:site_name" content="Movingto - Portugal Golden Visa Funds" />
   <meta property="og:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -67,16 +76,16 @@ export function generateHTMLTemplate(
   <link rel="canonical" href="${url}" />
   
   <!-- Enhanced Meta Tags -->
-  <meta name="keywords" content="Portugal Golden Visa, investment funds, Portuguese residency, Golden Visa funds 2025, fund comparison, investment migration" />
+  <meta name="keywords" content="${seoData.keywords?.join(', ') || 'Portugal Golden Visa, investment funds, Portuguese residency, Golden Visa funds 2025, fund comparison, investment migration'}" />
   <meta name="author" content="Dean Fankhauser, CEO - Movingto" />
-  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="robots" content="${seoData.robots || 'index, follow, max-image-preview:large'}" />
   <meta name="theme-color" content="#EF4444" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="format-detection" content="telephone=no" />
   
   <!-- Structured Data -->
-  ${hasStructuredData ? `<script type="application/ld+json">${JSON.stringify(structuredData, null, 2)}</script>` : ''}
+  ${hasStructuredData ? `<script type="application/ld+json" data-managed="consolidated-seo">${JSON.stringify(structuredData, null, 2)}</script>` : ''}
   
   <!-- Critical Resource Preconnects -->
   <link rel="preconnect" href="https://fonts.googleapis.com">

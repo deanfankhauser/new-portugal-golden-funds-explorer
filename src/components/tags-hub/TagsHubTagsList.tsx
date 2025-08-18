@@ -10,7 +10,7 @@ interface TagsHubTagsListProps {
 const TagsHubTagsList = ({ allTags }: TagsHubTagsListProps) => {
   return (
     <section className="bg-white p-4 sm:p-6 rounded-lg shadow-sm" aria-labelledby="tags-heading">
-      <h2 id="tags-heading" className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">All Tags ({allTags.length})</h2>
+      <h2 id="tags-heading" className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Portugal Golden Visa Investment Fund Tags ({allTags.length})</h2>
       
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4" itemProp="itemListElement" itemScope itemType="https://schema.org/ItemList">
         {allTags.map((tag, index) => (

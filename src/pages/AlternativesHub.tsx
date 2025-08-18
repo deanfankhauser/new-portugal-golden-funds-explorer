@@ -26,7 +26,7 @@ const AlternativesHub: React.FC = () => {
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-foreground mb-4">
-              Fund Alternatives Hub
+              Portugal Golden Visa Fund Alternatives Hub
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Discover alternative investment options for every fund in our database. 
@@ -65,7 +65,7 @@ const AlternativesHub: React.FC = () => {
           {/* Funds List */}
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold text-foreground mb-6">
-              Browse Fund Alternatives
+              Browse Portugal Golden Visa Investment Fund Alternatives
             </h2>
             
             <div className="grid gap-6">

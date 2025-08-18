@@ -129,6 +129,27 @@ This project is built with:
 
 Simply open [Lovable](https://lovable.dev/projects/27945117-83b1-4a92-a16b-334650bced15) and click on Share -> Publish.
 
+## Backend Features & Secrets Management
+
+This project uses Lovable's native Supabase integration for backend functionality including:
+
+- **Authentication** - Email/password authentication, OAuth, and user management
+- **Database** - PostgreSQL with Row Level Security (RLS) policies
+- **File Storage** - Secure file uploads and storage
+- **Edge Functions** - Custom API endpoints and serverless functions
+- **Secrets Management** - Secure storage of API keys and sensitive configuration
+
+### Working with API Keys and Secrets
+
+For production applications requiring external API keys (Stripe, SendGrid, etc.), use Lovable's secrets management:
+
+1. Click the **Supabase** button in the top-right corner
+2. Navigate to **Secrets** in your Supabase dashboard
+3. Add your API keys securely through the interface
+4. Access them in Edge Functions via `process.env.YOUR_SECRET_NAME`
+
+**Security Note:** Never store API keys directly in your codebase. Use the Supabase secrets feature for all sensitive configuration.
+
 ## Can I connect a custom domain to my Lovable project?
 
 Yes, you can!

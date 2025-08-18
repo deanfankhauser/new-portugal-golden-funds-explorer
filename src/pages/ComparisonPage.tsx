@@ -21,7 +21,7 @@ const ComparisonPage = () => {
         <div className="mb-8">
           <ComparisonBreadcrumbs />
           
-          <h1 className="text-3xl font-bold mb-4">Compare Funds</h1>
+          <h1 className="text-3xl font-bold mb-4">Compare Portugal Golden Visa Investment Funds</h1>
           <p className="text-gray-600 mb-4">
             {compareFunds.length > 0 
               ? `Comparing ${compareFunds.length} selected funds side by side.`
@@ -31,7 +31,7 @@ const ComparisonPage = () => {
           
           {compareFunds.length === 0 && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
-              <h2 className="text-xl font-semibold mb-3 text-blue-900">How to Compare Investment Funds</h2>
+              <h2 className="text-xl font-semibold mb-3 text-blue-900">How to Compare Portugal Golden Visa Investment Funds</h2>
               <p className="text-blue-800 mb-4">
                 Our comprehensive fund comparison tool helps you analyze Portugal Golden Visa investment funds side-by-side. 
                 Compare key metrics including minimum investment requirements, management fees, target returns, risk profiles, 

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PremiumCTA from '../cta/PremiumCTA';
 import LastUpdated from '../common/LastUpdated';
 
@@ -31,7 +32,8 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
           <p className="text-lg sm:text-xl md:text-2xl text-medium-contrast 
                        mb-6 sm:mb-8 max-w-4xl leading-relaxed font-light mx-auto">
             Explore <span className="font-semibold text-primary">Portugal Golden Visa Investment Funds</span> with 
-            comprehensive analysis and compare qualified funds for your Golden Visa application
+            comprehensive analysis and compare qualified funds for your Golden Visa application. View our complete 
+            <Link to="/index" className="text-primary hover:text-primary/80 font-medium underline">Portugal Golden Visa Investment Fund Index</Link> for rankings and detailed comparisons.
           </p>
           
           <div className="mb-8 sm:mb-10">

@@ -125,7 +125,7 @@ const FundAlternatives = () => {
           
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              {fund.name} Alternatives
+              {fund.name} Alternatives | Portugal Golden Visa Investment Funds
             </h1>
             <p className="text-gray-600 text-lg">
               Discover similar investment opportunities to <strong>{fund.name}</strong>. 
@@ -190,7 +190,7 @@ const FundAlternatives = () => {
 
           <div className="mt-12 text-center p-8 bg-white rounded-lg border">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">
-              Need Professional Guidance?
+              Need Portugal Golden Visa Investment Fund Guidance?
             </h2>
             <p className="text-gray-600 mb-4">
               Our fund experts can help you evaluate these alternatives and find the perfect investment match for your goals.

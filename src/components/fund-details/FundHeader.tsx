@@ -58,7 +58,7 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
         <div className="flex flex-col gap-4 mb-4 md:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div className="flex-1">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 text-gray-800 tracking-tight leading-tight">{fund.name}</h1>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 text-gray-800 tracking-tight leading-tight">{fund.name} | Portugal Golden Visa Investment Fund</h1>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
               <Button 
@@ -85,7 +85,7 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-medium text-blue-900 text-sm mb-1">Calculate Your Potential Returns</h3>
+              <h2 className="font-medium text-blue-900 text-sm mb-1">Calculate Your Portugal Golden Visa Investment Returns</h2>
               <p className="text-xs text-blue-700">
                 See projected ROI based on your investment amount and timeline
               </p>

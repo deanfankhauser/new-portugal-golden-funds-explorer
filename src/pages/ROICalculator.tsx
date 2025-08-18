@@ -176,7 +176,7 @@ const ROICalculator = () => {
 
               {/* Results Display */}
               <div className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-xl font-semibold mb-4">Your Investment Projection</h2>
+                <h2 className="text-xl font-semibold mb-4">Your Portugal Golden Visa Investment Fund Projection</h2>
                 <ROICalculatorResults results={results} />
               </div>
             </div>

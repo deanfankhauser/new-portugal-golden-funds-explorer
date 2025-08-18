@@ -68,20 +68,38 @@ export default async function handler(req, res) {
   // Get client IP for rate limiting
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
   
-  // Set restrictive CORS headers
+  // Enhanced CORS with multiple domains for flexibility
   const allowedOrigins = [
     'https://funds.movingto.com',
-    'https://fundsportugal.com',
-    'https://vercel.app' // For Vercel preview deployments
+    'https://movingto.com',
+    'http://localhost:5173',
+    'https://preview.lovable.dev'
   ];
   
+  // Allow Vercel preview deployments
   const origin = req.headers.origin;
-  if (allowedOrigins.some(allowed => origin && origin.includes(allowed.replace('https://', '')))) {
+  const isVercelPreview = origin && origin.includes('.vercel.app');
+  
+  if (allowedOrigins.includes(origin) || isVercelPreview) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
   
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Api-Key');
+
+  // Production API key requirement - soften for same-origin requests
+  if (process.env.NODE_ENV === 'production') {
+    const isSameOrigin = !req.headers.origin || 
+      req.headers.origin === 'https://funds.movingto.com' || 
+      req.headers.origin === 'https://movingto.com';
+    
+    if (!isSameOrigin) {
+      const apiKey = req.headers['x-api-key'];
+      if (!apiKey || apiKey !== process.env.API_SECRET_KEY) {
+        return res.status(401).json(createSafeErrorResponse('Unauthorized access', 'AUTH_001'));
+      }
+    }
+  }
 
   // Handle preflight request
   if (req.method === 'OPTIONS') {

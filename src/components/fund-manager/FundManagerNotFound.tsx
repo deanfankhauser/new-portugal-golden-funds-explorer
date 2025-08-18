@@ -18,8 +18,8 @@ const FundManagerNotFound: React.FC<FundManagerNotFoundProps> = ({ managerName }
           <p className="text-gray-600">
             We couldn't find a fund manager with the name "{managerName}".
           </p>
-          <Link to="/" className="text-[#EF4444] hover:underline mt-4 inline-block">
-            Return to homepage
+          <Link to="/index" className="text-[#EF4444] hover:underline mt-4 inline-block">
+            Browse Portugal Golden Visa Investment Fund Index
           </Link>
         </div>
       </main>

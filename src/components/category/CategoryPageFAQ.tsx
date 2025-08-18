@@ -79,7 +79,7 @@ const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categor
   return (
     <section className="bg-white rounded-lg p-6 shadow-sm border mt-8" itemScope itemType="https://schema.org/FAQPage">
       <h2 className="text-2xl font-bold mb-6 text-gray-900">
-        Frequently Asked Questions about {categoryName} Golden Visa Funds
+        Frequently Asked Questions about {categoryName} Portugal Golden Visa Investment Funds
       </h2>
       
       <Accordion type="single" collapsible className="w-full space-y-4">

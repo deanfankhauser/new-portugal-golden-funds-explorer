@@ -13,12 +13,12 @@ const FundQuizHeader = () => {
           </div>
         </div>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 text-gray-800 px-2 sm:px-0">
-          Fund Recommendation Quiz
+          Portugal Golden Visa Fund Recommendation Quiz
         </h1>
-        <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-2 sm:px-0">
-          Get personalized Portugal Golden Visa fund recommendations tailored to your investment profile, 
+        <h2 className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-2 sm:px-0">
+          Get personalized Portugal Golden Visa investment fund recommendations tailored to your investment profile, 
           risk tolerance, and financial goals in just a few minutes.
-        </p>
+        </h2>
       </div>
 
       {/* Benefits Cards */}

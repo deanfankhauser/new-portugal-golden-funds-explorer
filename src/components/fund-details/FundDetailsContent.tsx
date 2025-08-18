@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button';
 import { ClipboardCheck, TrendingUp } from 'lucide-react';
 import DataFreshnessWarning from '../common/DataFreshnessWarning';
 import { tagToSlug } from '@/lib/utils';
+import { VerifiedReviews } from './reviews/VerifiedReviews';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -66,7 +67,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
             <div className="text-center">
               <h3 className="font-semibold text-blue-900 mb-2 text-sm md:text-base">Portugal Golden Visa Qualified Fund</h3>
               <p className="text-xs md:text-sm text-blue-700 mb-4">
-                This fund meets the requirements for Portugal Golden Visa investment with a minimum investment of €280,000
+                Lawyers at Movingto have done due diligence on this firm and can confirm it meets the requirements for the Portugal Golden Visa
               </p>
               <a 
                 href="https://movingto.com/pt/portugal-golden-visa" 
@@ -138,6 +139,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       
       {/* ROI Calculator */}
       <ROICalculator fund={fund} />
+      
+      {/* Verified Reviews Section */}
+      <VerifiedReviews fund={fund} />
       
       {/* FAQ Section */}
       <FundFAQSection fund={fund} />

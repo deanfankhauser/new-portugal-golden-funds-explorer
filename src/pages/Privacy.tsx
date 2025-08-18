@@ -12,10 +12,10 @@ const Privacy = () => {
       
       <main className="container mx-auto px-4 py-8 flex-1">
         <div className="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-8">Privacy Policy</h1>
+          <h1 className="text-3xl font-extrabold text-gray-900 mb-8">Privacy Policy - Portugal Golden Visa Investment Fund Platform</h1>
 
           <section className="mb-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">1. Introduction</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-3">1. Portugal Golden Visa Investment Fund Platform Privacy</h2>
             <p className="text-gray-700">
               Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your information when you use our website.
             </p>

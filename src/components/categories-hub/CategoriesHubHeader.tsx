@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Folder } from 'lucide-react';
 
 const CategoriesHubHeader = () => {
@@ -11,11 +12,12 @@ const CategoriesHubHeader = () => {
       </div>
       
       <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-center" itemProp="name">
-        All Golden Visa Fund Categories
+        Portugal Golden Visa Fund Categories
       </h1>
       
       <p className="text-xl text-gray-600 max-w-3xl mx-auto text-center" itemProp="description">
-        Browse all investment categories for Portugal Golden Visa Funds
+        Browse all investment categories for Portugal Golden Visa Funds. 
+        Visit our <Link to="/index" className="text-[#EF4444] hover:underline">Portugal Golden Visa Investment Fund Index</Link> to see complete rankings and comparisons.
       </p>
     </div>
   );

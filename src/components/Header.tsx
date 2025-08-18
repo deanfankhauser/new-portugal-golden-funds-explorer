@@ -14,6 +14,7 @@ import {
 import ComparisonIndicator from "./ComparisonIndicator";
 import MobileNavigation from "./MobileNavigation";
 import { ArrowLeft, Mail, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3, FileText, GitCompareArrows } from "lucide-react";
+import { FundIndexWidget, ComparisonWidget } from "./navigation/IndexWidgets";
 
 const Header = () => {
   return (
@@ -41,26 +42,10 @@ const Header = () => {
                     Analysis
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="w-64 p-4 bg-white">
-                      <div className="space-y-2">
-                        <NavigationMenuLink asChild>
-                          <Link to="/index" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
-                            <TrendingUp className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
-                            <div>
-                              <div className="font-medium text-gray-900">Fund Index</div>
-                              <div className="text-sm text-gray-500">Ranked fund analysis</div>
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                          <Link to="/compare" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
-                            <BarChart3 className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
-                            <div>
-                              <div className="font-medium text-gray-900">Fund Comparison</div>
-                              <div className="text-sm text-gray-500">Compare funds side-by-side</div>
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
+                    <div className="w-80 p-4 bg-white">
+                      <div className="space-y-3">
+                        <FundIndexWidget />
+                        <ComparisonWidget />
                         <NavigationMenuLink asChild>
                           <Link to="/alternatives" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
                             <GitCompareArrows className="h-5 w-5 text-[#EF4444] flex-shrink-0" />

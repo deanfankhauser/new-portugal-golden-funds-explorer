@@ -5,6 +5,7 @@ import { findBuiltAssets, validateAssetPaths } from './asset-discovery';
 import { processRoute } from './route-processor';
 import { validateGeneratedFile, verifyCriticalPages } from './validation';
 import { generateSitemap } from './sitemap-generator';
+import { generate404Page } from './404-generator';
 
 export async function generateStaticFiles() {
   if (process.env.NODE_ENV !== 'production') {
@@ -49,6 +50,9 @@ export async function generateStaticFiles() {
     }
   }
 
+  // Generate 404 page
+  await generate404Page(distDir);
+  
   // Generate sitemap
   generateSitemap(routes, distDir);
   

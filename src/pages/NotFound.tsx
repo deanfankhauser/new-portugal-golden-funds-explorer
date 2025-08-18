@@ -29,8 +29,8 @@ const NotFound = () => {
             The page you are looking for might have been removed, had its name changed, 
             or is temporarily unavailable.
           </p>
-          <Link to="/" className="inline-block bg-portugal-blue hover:bg-portugal-darkblue text-white px-6 py-3 rounded-md font-medium transition-colors">
-            Return to Homepage
+          <Link to="/index" className="inline-block bg-portugal-blue hover:bg-portugal-darkblue text-white px-6 py-3 rounded-md font-medium transition-colors">
+            Browse Portugal Golden Visa Investment Fund Index
           </Link>
         </div>
       </main>

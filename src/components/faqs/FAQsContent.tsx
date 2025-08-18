@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Accordion,
   AccordionContent,
@@ -52,11 +53,15 @@ const FAQsContent = () => {
     <div className="bg-white p-8 rounded-lg shadow-sm">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-4 text-gray-900">
-          Frequently Asked Questions
+          Portugal Golden Visa Investment Funds - Frequently Asked Questions
         </h1>
         <p className="text-gray-600 text-lg">
-          Find answers to common questions about Golden Visa investment funds, eligibility requirements, and the application process.
+          Find answers to common questions about Portugal Golden Visa investment funds, eligibility requirements, and the application process.
+          Browse our comprehensive <Link to="/index" className="text-[#EF4444] hover:underline">Portugal Golden Visa Investment Fund Index</Link> for detailed fund rankings and comparisons.
         </p>
+        <h2 className="text-xl font-semibold mt-6 mb-2 text-gray-800">
+          Portugal Golden Visa Investment Fund Questions and Answers
+        </h2>
       </div>
 
       <Accordion type="single" collapsible className="w-full space-y-4">

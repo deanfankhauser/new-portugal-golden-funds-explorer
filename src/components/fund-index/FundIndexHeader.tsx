@@ -15,13 +15,13 @@ const FundIndexHeader: React.FC = () => {
 
           {/* Improved title with better typography */}
           <h1 className="text-5xl md:text-6xl font-bold mb-8 text-gray-900 leading-tight tracking-tight">
-            Portugal Golden Visa
+            Portugal Golden Visa Investment
             <span className="block text-blue-600 mt-2">Fund Index</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-600 mb-16 leading-relaxed max-w-3xl mx-auto font-light">
-            Data-driven rankings of Golden Visa-eligible investment funds in Portugal
-          </p>
+          <h2 className="text-xl md:text-2xl text-gray-600 mb-16 leading-relaxed max-w-3xl mx-auto font-light">
+            Comprehensive Analysis of Portugal Golden Visa Investment Funds
+          </h2>
 
           {/* Enhanced metrics with better visual design */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">

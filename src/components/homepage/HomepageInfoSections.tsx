@@ -15,7 +15,7 @@ const HomepageInfoSections = () => {
             <TrendingUp className="h-12 w-12 text-blue-600" />
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            2025 Golden Visa Fund Index
+            2025 Portugal Golden Visa Investment Fund Index
           </h2>
           <p className="text-lg text-gray-600 mb-6">
             Discover our comprehensive, data-driven ranking of all Golden Visa-eligible investment funds. 
@@ -41,7 +41,7 @@ const HomepageInfoSections = () => {
       {/* Tools and Resources Grid */}
       <section>
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Tools & Resources</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Golden Visa Investment Tools & Resources</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Use our specialized tools to find the perfect Golden Visa investment fund for your needs
           </p>

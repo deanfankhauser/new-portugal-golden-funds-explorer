@@ -14,4 +14,7 @@ export interface SEOData {
   description: string;
   url: string;
   structuredData: any;
+  robots?: string;
+  keywords?: string[];
+  canonical?: string;
 }
