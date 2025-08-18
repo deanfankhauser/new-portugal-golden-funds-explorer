@@ -268,7 +268,7 @@ export class ConsolidatedSEOService {
       document.title = seoData.title;
       this.setOrUpdateMeta('description', seoData.description);
       this.setCanonical(seoData.url);
-      this.setRobots();
+      this.setRobots(seoData.robots);
       
       // Social media tags
       this.setOpenGraph(seoData);
@@ -308,8 +308,14 @@ export class ConsolidatedSEOService {
     canonical.setAttribute('href', url);
   }
 
-  private static setRobots(): void {
-    this.setOrUpdateMeta('robots', 'index, follow, max-image-preview:large');
+  private static setRobots(robotsDirective?: string): void {
+    // Only set default if no existing robots meta and no directive provided
+    const existingRobots = document.querySelector('meta[name="robots"]');
+    if (!existingRobots && !robotsDirective) {
+      this.setOrUpdateMeta('robots', 'index, follow, max-image-preview:large');
+    } else if (robotsDirective) {
+      this.setOrUpdateMeta('robots', robotsDirective);
+    }
   }
 
   private static setOpenGraph(seoData: SEOData): void {
