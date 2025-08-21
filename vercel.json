@@ -15,13 +15,6 @@
       "destination": "/robots.txt"
     }
   ],
-  "redirects": [
-    {
-      "source": "/:path*/(.*)",
-      "destination": "/:path*",
-      "permanent": true
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",
