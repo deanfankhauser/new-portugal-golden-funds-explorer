@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { User } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface FundManagerData {
   name: string;
@@ -42,7 +43,13 @@ const FundManagerHeader: React.FC<FundManagerHeaderProps> = ({ managerData }) =>
           )}
           <p className="text-lg text-gray-600">
             {managerData.name} manages {managerData.fundsCount} fund{managerData.fundsCount > 1 ? 's' : ''} with a combined 
-            size of {managerData.totalFundSize} million EUR.
+            size of {managerData.totalFundSize} million EUR. Compare their funds in our{' '}
+            <Link to="/index" className="text-primary hover:text-primary/80 underline">
+              fund database
+            </Link> or explore other{' '}
+            <Link to="/managers" className="text-primary hover:text-primary/80 underline">
+              fund managers
+            </Link> to find the best investment options for your Golden Visa application.
           </p>
         </div>
       </CardContent>

@@ -37,6 +37,7 @@ export async function generateStaticFiles() {
 
   let successCount = 0;
   const failedRoutes: string[] = [];
+  const successfulRoutes: any[] = [];
 
   // Process each route
   for (const route of routes) {
@@ -44,6 +45,7 @@ export async function generateStaticFiles() {
     
     if (result.success && result.outputPath && result.seoData) {
       successCount++;
+      successfulRoutes.push(route);
       validateGeneratedFile(result.outputPath, result.seoData, validCss, validJs);
     } else {
       failedRoutes.push(route.path);
@@ -53,8 +55,8 @@ export async function generateStaticFiles() {
   // Generate 404 page
   await generate404Page(distDir);
   
-  // Generate sitemap
-  generateSitemap(routes, distDir);
+  // Generate sitemap only with successful routes
+  generateSitemap(successfulRoutes, distDir);
   
   // Final report
   if (process.env.NODE_ENV !== 'production') {

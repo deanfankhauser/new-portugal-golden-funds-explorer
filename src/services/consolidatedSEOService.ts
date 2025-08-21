@@ -69,7 +69,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Portugal Golden Visa Investment Funds | Compare & Analyze | Movingto', 60),
           description: this.optimizeText('Discover and compare Portugal Golden Visa Investment Funds. Comprehensive analysis, performance data, and expert insights for qualified Golden Visa investment decisions.', this.MAX_DESCRIPTION_LENGTH),
-          url: baseUrl,
+          url: URL_CONFIG.buildUrl('/'),
           structuredData: this.getHomepageStructuredData()
         };
 
