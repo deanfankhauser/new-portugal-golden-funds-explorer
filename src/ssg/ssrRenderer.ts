@@ -168,27 +168,74 @@ export class SSRRenderer {
     // Clear any previous helmet data
     Helmet.rewind();
     
+    // Ensure we have complete SEO data
+    const finalSeoData = {
+      title: seoData.title || 'Portugal Golden Visa Investment Funds | Eligible Investments 2025',
+      description: seoData.description || 'Compare and discover the best Golden Visa-eligible investment funds in Portugal.',
+      url: seoData.url || `https://funds.movingto.com${route.path}`,
+      structuredData: seoData.structuredData || {},
+      robots: seoData.robots,
+      helmetData: {
+        title: '',
+        meta: '',
+        link: '',
+        script: ''
+      }
+    };
+    
     try {
+      // Wait for any lazy components to initialize
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       const html = renderToString(React.createElement(AppRouter));
+      
+      // Ensure the HTML has substantial content - if not, it might be a lazy loading issue
+      if (html.length < 500) {
+        if (isDev) {
+          console.warn(`🔥 SSR: Short HTML content for ${route.path} (${html.length} chars), possible lazy loading issue`);
+        }
+        // Try again after a longer wait
+        await new Promise(resolve => setTimeout(resolve, 500));
+        const retryHtml = renderToString(React.createElement(AppRouter));
+        if (retryHtml.length > html.length) {
+          if (isDev) {
+            console.log(`🔥 SSR: Retry successful for ${route.path}, improved from ${html.length} to ${retryHtml.length} chars`);
+          }
+          const helmet = Helmet.rewind();
+          finalSeoData.helmetData = {
+            title: helmet.title.toString(),
+            meta: helmet.meta.toString(),
+            link: helmet.link.toString(),
+            script: helmet.script.toString()
+          };
+          return { html: retryHtml, seoData: finalSeoData };
+        }
+      }
+      
       if (isDev) {
         console.log(`🔥 SSR: Successfully rendered HTML for ${route.path}, length: ${html.length} chars`);
+        
+        // Check for content quality indicators
+        const hasH1 = html.includes('<h1');
+        const hasMainContent = html.includes('main') || html.includes('article') || html.includes('section');
+        const hasLinks = html.includes('<a href');
+        
+        console.log(`🔥 SSR: Content quality for ${route.path}:`, {
+          hasH1,
+          hasMainContent,
+          hasLinks,
+          contentLength: html.length
+        });
       }
       
       const helmet = Helmet.rewind();
-
-      // Ensure we have complete SEO data
-      const finalSeoData = {
-        title: seoData.title || 'Portugal Golden Visa Investment Funds | Eligible Investments 2025',
-        description: seoData.description || 'Compare and discover the best Golden Visa-eligible investment funds in Portugal.',
-        url: seoData.url || `https://funds.movingto.com${route.path}`,
-        structuredData: seoData.structuredData || {},
-        robots: seoData.robots,
-        helmetData: {
-          title: helmet.title.toString(),
-          meta: helmet.meta.toString(),
-          link: helmet.link.toString(),
-          script: helmet.script.toString()
-        }
+      
+      // Update helmet data in finalSeoData
+      finalSeoData.helmetData = {
+        title: helmet.title.toString(),
+        meta: helmet.meta.toString(),
+        link: helmet.link.toString(),
+        script: helmet.script.toString()
       };
 
       if (isDev) {

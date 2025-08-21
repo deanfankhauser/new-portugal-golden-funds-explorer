@@ -4,6 +4,7 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "framework": "vite",
+  "trailingSlash": false,
   "rewrites": [
     {
       "source": "/sitemap.xml",
@@ -12,6 +13,13 @@
     {
       "source": "/robots.txt",
       "destination": "/robots.txt"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/:path*/(.*)",
+      "destination": "/:path*",
+      "permanent": true
     }
   ],
   "headers": [

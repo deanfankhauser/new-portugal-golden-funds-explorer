@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Tag as TagIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface TagPageHeaderProps {
   tagName: string;
@@ -19,7 +20,12 @@ const TagPageHeader = ({ tagName }: TagPageHeaderProps) => {
       </h1>
       
       <p className="text-xl text-gray-600 max-w-3xl mx-auto text-center" itemProp="description">
-        Explore {tagName} Golden Visa Investment Funds and Compare
+        Explore {tagName} Golden Visa Investment Funds and compare qualified options. 
+        Use our <Link to="/fund-quiz" className="text-primary hover:text-primary/80 underline">
+          fund finder quiz
+        </Link> to get personalized recommendations or browse all <Link to="/tags" className="text-primary hover:text-primary/80 underline">
+          fund tags
+        </Link> to find funds that match your investment criteria.
       </p>
     </div>
   );
