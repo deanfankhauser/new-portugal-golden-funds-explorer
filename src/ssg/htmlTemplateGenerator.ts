@@ -34,9 +34,14 @@ export function generateHTMLTemplate(
     });
   }
 
-  const validatedCssFiles = cssFiles;
+  // Simplify asset loading: only include stable entry files
+  const validatedCssFiles = cssFiles.filter(f =>
+    f.includes('index-') || f.startsWith('index.') || f.includes('style') || f.includes('main')
+  );
 
-  const validatedJsFiles = jsFiles;
+  const validatedJsFiles = jsFiles.filter(f =>
+    f.includes('index-') || f.startsWith('index.') || f.includes('vendor')
+  );
 
   return `<!DOCTYPE html>
 <html lang="en">

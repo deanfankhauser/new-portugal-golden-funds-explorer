@@ -113,20 +113,18 @@ const ComparisonsList = () => {
         </div>
       )}
 
-      {/* SEO: Expose all comparison links for crawlers while keeping paginated UI */}
-      <nav aria-label="All comparison links" className="mt-10">
-        <details>
-          <summary className="text-sm text-muted-foreground hover:text-foreground transition-colors">Browse all {comparisons.length} comparison links</summary>
-          <ul className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-            {comparisons.map((c) => (
-              <li key={`all-link-${c.slug}`}>
-                <a href={`/compare/${c.slug}`} className="underline underline-offset-2 hover:no-underline">
-                  {c.fund1.name} vs {c.fund2.name}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </details>
+      {/* SEO: Expose all comparison links visibly for crawlers */}
+      <nav aria-label="All fund comparison links" className="mt-10">
+        <h2 className="text-lg font-semibold mb-3">All Fund Comparison Links</h2>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+          {comparisons.map((c) => (
+            <li key={`all-link-${c.slug}`}>
+              <a href={`/compare/${c.slug}`} className="underline underline-offset-2 hover:no-underline">
+                {c.fund1.name} vs {c.fund2.name}
+              </a>
+            </li>
+          ))}
+        </ul>
       </nav>
     </div>
   );
