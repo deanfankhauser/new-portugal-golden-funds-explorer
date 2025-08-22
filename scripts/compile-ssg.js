@@ -48,7 +48,11 @@ export function compileSSGFiles() {
     if (fs.existsSync(sitemapPath)) {
       const sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
       const comparisonUrls = (sitemapContent.match(/\/compare\//g) || []).length;
-      console.log(`✅ SSG: Generated ${fundPagesGenerated} fund pages and ${comparisonUrls} comparison URLs successfully`);
+      const alternativesUrls = (sitemapContent.match(/\/alternatives\//g) || []).length;
+      console.log(`✅ SSG: Generated ${fundPagesGenerated} fund pages, ${comparisonUrls} comparison URLs, ${alternativesUrls} alternatives URLs`);
+      if (alternativesUrls === 0) {
+        console.warn('⚠️  SSG: No alternatives pages detected in sitemap. Verify /:id/alternatives generation.');
+      }
     } else {
       console.log(`✅ SSG: Generated ${fundPagesGenerated} fund pages successfully`);
     }

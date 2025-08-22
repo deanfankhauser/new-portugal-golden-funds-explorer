@@ -14,7 +14,7 @@ interface FundManagerContentProps {
 const FundManagerContent: React.FC<FundManagerContentProps> = ({ managerFunds, managerName }) => {
   return (
     <>
-      <h2 className="text-2xl font-bold mb-6">Portugal Golden Visa Investment Funds Managed by {managerName}</h2>
+      <h1 className="text-2xl font-bold mb-6">Portugal Golden Visa Investment Funds Managed by {managerName}</h1>
       
       <div className="space-y-4 mb-12">
         {managerFunds.map(fund => (
