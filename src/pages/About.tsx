@@ -71,8 +71,8 @@ const About = () => {
             <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Our Commitment to Excellence</h2>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
@@ -89,8 +89,8 @@ const About = () => {
                 <p className="text-gray-600">Our platform provides clear, unbiased information without hidden agendas or conflicts of interest.</p>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 12l0 0M12 12l0 0M12 12l0 0" />
                   </svg>
                 </div>
@@ -100,7 +100,7 @@ const About = () => {
             </div>
           </div>
 
-          <div className="bg-blue-50 rounded-lg p-8 text-center">
+          <div className="bg-primary/5 rounded-lg p-8 text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Ready to Start Your Golden Visa Journey?</h2>
             <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
               Whether you're a seasoned investor or just beginning to explore Portugal Golden Visa options, 
@@ -111,7 +111,7 @@ const About = () => {
                 href={buildContactUrl('about-page')}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors duration-200"
               >
                 Get Expert Guidance
                 <svg className="ml-2 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -120,7 +120,7 @@ const About = () => {
               </a>
               <Link 
                 to="/index" 
-                className="inline-flex items-center px-6 py-3 text-blue-600 font-semibold rounded-lg border border-blue-600 hover:bg-blue-50 transition-colors duration-200"
+                className="inline-flex items-center px-6 py-3 text-primary font-semibold rounded-lg border border-primary hover:bg-primary/5 transition-colors duration-200"
               >
                 Browse Portugal Golden Visa Investment Fund Index
               </Link>
@@ -128,7 +128,7 @@ const About = () => {
                 href="https://movingto.com/pt/portugal-golden-visa" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-3 text-blue-600 font-semibold rounded-lg border border-blue-600 hover:bg-blue-50 transition-colors duration-200"
+                className="inline-flex items-center px-6 py-3 text-primary font-semibold rounded-lg border border-primary hover:bg-primary/5 transition-colors duration-200"
               >
                 Learn About Golden Visa
               </a>

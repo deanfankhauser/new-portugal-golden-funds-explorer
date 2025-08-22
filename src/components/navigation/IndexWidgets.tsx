@@ -6,16 +6,16 @@ export const FundIndexWidget: React.FC = () => {
   return (
     <Link 
       to="/index" 
-      className="group block p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-100 hover:border-blue-200 transition-all duration-200 hover:shadow-md"
+      className="group block p-4 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg border border-primary/20 hover:border-primary/30 transition-all duration-200 hover:shadow-md"
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-blue-100 rounded-md group-hover:bg-blue-200 transition-colors">
-            <TrendingUp className="h-4 w-4 text-blue-600" />
+          <div className="p-1.5 bg-primary/10 rounded-md group-hover:bg-primary/20 transition-colors">
+            <TrendingUp className="h-4 w-4 text-primary" />
           </div>
           <span className="font-semibold text-gray-900">Fund Index</span>
         </div>
-        <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
       </div>
       <p className="text-sm text-gray-600 mb-2">
         Complete Portugal Golden Visa fund rankings
@@ -38,16 +38,16 @@ export const ComparisonWidget: React.FC = () => {
   return (
     <Link 
       to="/compare" 
-      className="group block p-4 bg-gradient-to-br from-orange-50 to-red-50 rounded-lg border border-orange-100 hover:border-orange-200 transition-all duration-200 hover:shadow-md"
+      className="group block p-4 bg-gradient-to-br from-accent/5 to-warning/5 rounded-lg border border-accent/20 hover:border-accent/30 transition-all duration-200 hover:shadow-md"
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-orange-100 rounded-md group-hover:bg-orange-200 transition-colors">
-            <BarChart3 className="h-4 w-4 text-orange-600" />
+          <div className="p-1.5 bg-accent/10 rounded-md group-hover:bg-accent/20 transition-colors">
+            <BarChart3 className="h-4 w-4 text-accent" />
           </div>
           <span className="font-semibold text-gray-900">Compare Funds</span>
         </div>
-        <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-orange-600 transition-colors" />
+        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-accent transition-colors" />
       </div>
       <p className="text-sm text-gray-600">
         Side-by-side fund analysis

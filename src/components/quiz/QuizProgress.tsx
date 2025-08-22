@@ -21,7 +21,7 @@ const QuizProgress: React.FC<QuizProgressProps> = ({
       <div className="flex items-center gap-4">
         <h2 className="text-2xl font-semibold">Investor Profile Questionnaire</h2>
         {hasUnsavedChanges && (
-          <div className="flex items-center gap-2 text-sm text-blue-600">
+          <div className="flex items-center gap-2 text-sm text-primary">
             <Save className="w-4 h-4" />
             Progress saved
           </div>

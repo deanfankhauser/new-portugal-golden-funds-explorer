@@ -134,8 +134,8 @@ const FundManagerFAQs: React.FC<FundManagerFAQsProps> = ({ fund }) => {
           ))}
         </Accordion>
 
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <p className="text-sm text-blue-800">
+        <div className="mt-6 p-4 bg-muted rounded-lg border border-border">
+          <p className="text-sm text-muted-foreground">
             <strong>Need personalized advice?</strong> Our fund advisory team can help you determine if {fund.name} is right for your Golden Visa investment strategy.
           </p>
         </div>
