@@ -31,7 +31,7 @@ const FundQuizHeader = () => {
           </p>
         </Card>
         <Card className="text-center p-4 sm:p-6">
-          <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 mx-auto mb-2 sm:mb-3" />
+          <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-success mx-auto mb-2 sm:mb-3" />
           <h3 className="font-semibold mb-2 text-sm sm:text-base">Optimized Returns</h3>
           <p className="text-xs sm:text-sm text-gray-600">
             Find funds that offer the best potential returns within your comfort zone
