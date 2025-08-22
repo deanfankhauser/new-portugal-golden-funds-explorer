@@ -39,15 +39,15 @@ const EmptyFundsState: React.FC<EmptyFundsStateProps> = ({
   };
 
   return (
-    <div className="text-center py-16 bg-gradient-to-br from-white to-gray-50 rounded-2xl 
-                   shadow-sm border border-gray-200 card-hover-effect">
+    <div className="text-center py-16 bg-gradient-to-br from-card to-muted rounded-2xl 
+                   shadow-sm border border-border card-hover-effect">
       <div className="max-w-lg mx-auto space-y-8 px-6">
         {/* Icon and Main Message */}
         <div className="space-y-4">
           <div className="relative mx-auto">
-            <div className="bg-gradient-to-br from-gray-100 to-gray-200 w-24 h-24 rounded-full 
+            <div className="bg-gradient-to-br from-secondary to-muted w-24 h-24 rounded-full 
                            flex items-center justify-center mx-auto interactive-hover-subtle">
-              <Search className="h-12 w-12 text-gray-400" aria-hidden="true" />
+              <Search className="h-12 w-12 text-muted-foreground" aria-hidden="true" />
             </div>
             <div className="absolute -top-2 -right-2 bg-primary/10 p-2 rounded-full">
               <Filter className="h-5 w-5 text-primary" />
@@ -75,9 +75,9 @@ const EmptyFundsState: React.FC<EmptyFundsStateProps> = ({
                              shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                     aria-label="Take quiz for fund recommendations">
               <div className="flex items-center gap-3">
-                <div className="p-1 bg-white/20 rounded-lg">
-                  <ClipboardCheck className="h-6 w-6" aria-hidden="true" />
-                </div>
+                 <div className="p-1 bg-primary-foreground/20 rounded-lg">
+                   <ClipboardCheck className="h-6 w-6" aria-hidden="true" />
+                 </div>
                 <div className="text-left">
                   <div className="font-bold">Get Personalized Recommendations</div>
                   <div className="text-sm opacity-90">3-minute smart quiz</div>
@@ -102,14 +102,14 @@ const EmptyFundsState: React.FC<EmptyFundsStateProps> = ({
         {/* Smart Suggestions */}
         <div className="space-y-4">
           <div className="flex items-center gap-2 justify-center">
-            <div className="h-px bg-gray-200 flex-1"></div>
+            <div className="h-px bg-border flex-1"></div>
             <div className="flex items-center gap-2 px-3">
-              <Lightbulb className="h-4 w-4 text-amber-500" />
-              <span className="text-sm font-medium text-gray-500">
+              <Lightbulb className="h-4 w-4 text-warning" />
+              <span className="text-sm font-medium text-muted-foreground">
                 {hasActiveFilters ? 'Try these instead' : 'Popular searches'}
               </span>
             </div>
-            <div className="h-px bg-gray-200 flex-1"></div>
+            <div className="h-px bg-border flex-1"></div>
           </div>
           
           <div className="grid grid-cols-2 gap-3">
@@ -118,7 +118,7 @@ const EmptyFundsState: React.FC<EmptyFundsStateProps> = ({
                 key={suggestion.label}
                 variant="ghost"
                 onClick={() => handleSuggestionClick(suggestion.tag)}
-                className="h-auto p-4 text-left border-2 border-dashed border-gray-200 
+                className="h-auto p-4 text-left border-2 border-dashed border-border 
                          hover:border-primary hover:bg-primary/5 rounded-xl transition-all duration-300
                          hover:scale-105 group"
                 style={{ animationDelay: `${index * 0.1}s` }}
@@ -128,10 +128,10 @@ const EmptyFundsState: React.FC<EmptyFundsStateProps> = ({
                     <Sparkles className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <div className="font-medium text-gray-900 group-hover:text-primary transition-colors duration-300">
+                    <div className="font-medium text-foreground group-hover:text-primary transition-colors duration-300">
                       {suggestion.label}
                     </div>
-                    <div className="text-xs text-gray-500 group-hover:text-primary/80 transition-colors duration-300">
+                    <div className="text-xs text-muted-foreground group-hover:text-primary/80 transition-colors duration-300">
                       Tap to explore
                     </div>
                   </div>
@@ -142,18 +142,18 @@ const EmptyFundsState: React.FC<EmptyFundsStateProps> = ({
         </div>
 
         {/* Additional Help */}
-        <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
+        <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
           <div className="flex items-start gap-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Lightbulb className="h-5 w-5 text-blue-600" />
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Lightbulb className="h-5 w-5 text-primary" />
             </div>
             <div className="text-left">
-              <h4 className="font-semibold text-blue-900 mb-2">Need help choosing?</h4>
-              <p className="text-sm text-blue-700 mb-3">
+              <h4 className="font-semibold text-foreground mb-2">Need help choosing?</h4>
+              <p className="text-sm text-muted-foreground mb-3">
                 Our fund experts can guide you through the selection process based on your specific goals and requirements.
               </p>
               <Link to="/about">
-                <Button variant="outline" size="sm" className="text-blue-700 border-blue-300 hover:bg-blue-100">
+                <Button variant="outline" size="sm" className="text-primary border-primary/30 hover:bg-primary/10">
                   Learn more about our process
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
