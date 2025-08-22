@@ -91,7 +91,28 @@ export class SSRRenderer {
 
     // Load all components
     const components = await loadComponents();
-    const FallbackComponent = () => React.createElement('div', { className: 'p-8 text-center' }, 'Page Loading...');
+    const FallbackComponent = () => React.createElement(
+      'div',
+      { className: 'p-8 text-center' },
+      React.createElement('div', { className: 'mb-6 font-semibold' }, 'Page Loading...'),
+      React.createElement(
+        'nav',
+        { 'aria-label': 'Continue exploring', className: 'mt-2' },
+        React.createElement(
+          'ul',
+          { className: 'flex flex-wrap justify-center gap-3 text-sm' },
+          React.createElement('li', null, React.createElement('a', { href: '/' }, 'Home')),
+          React.createElement('li', null, React.createElement('a', { href: '/index' }, 'All Funds')),
+          React.createElement('li', null, React.createElement('a', { href: '/comparisons' }, 'Comparisons')),
+          React.createElement('li', null, React.createElement('a', { href: '/alternatives' }, 'Alternatives')),
+          React.createElement('li', null, React.createElement('a', { href: '/categories' }, 'Categories')),
+          React.createElement('li', null, React.createElement('a', { href: '/tags' }, 'Tags')),
+          React.createElement('li', null, React.createElement('a', { href: '/managers' }, 'Fund Managers')),
+          React.createElement('li', null, React.createElement('a', { href: '/fund-quiz' }, 'Fund Quiz')),
+          React.createElement('li', null, React.createElement('a', { href: '/roi-calculator' }, 'ROI Calculator'))
+        )
+      )
+    );
 
     // Create a proper fallback for missing components
     const getComponent = (componentName: string) => {
@@ -259,7 +280,24 @@ export class SSRRenderer {
         console.error(`🔥 SSR: Error rendering route ${route.path}:`, error);
       }
       return { 
-        html: '<div class="p-8 text-center text-red-600">Error rendering page. Please try again later.</div>', 
+        html: `
+          <div class="p-8 text-center">
+            <div class="mb-4 font-semibold">Error rendering page. Please try again later.</div>
+            <nav aria-label="Continue exploring" class="mt-2">
+              <ul class="flex flex-wrap justify-center gap-3 text-sm">
+                <li><a href="/">Home</a></li>
+                <li><a href="/index">All Funds</a></li>
+                <li><a href="/comparisons">Comparisons</a></li>
+                <li><a href="/alternatives">Alternatives</a></li>
+                <li><a href="/categories">Categories</a></li>
+                <li><a href="/tags">Tags</a></li>
+                <li><a href="/managers">Fund Managers</a></li>
+                <li><a href="/fund-quiz">Fund Quiz</a></li>
+                <li><a href="/roi-calculator">ROI Calculator</a></li>
+              </ul>
+            </nav>
+          </div>
+        `, 
         seoData: {
           title: 'Error - Portugal Golden Visa Investment Funds | Movingto',
           description: 'An error occurred while loading this page. Please try again later.',
