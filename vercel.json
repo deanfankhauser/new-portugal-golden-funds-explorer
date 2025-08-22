@@ -15,6 +15,18 @@
       "destination": "/robots.txt"
     }
   ],
+  "redirects": [
+    {
+      "source": "/funds",
+      "destination": "/index",
+      "permanent": true
+    },
+    {
+      "source": "/funds/",
+      "destination": "/index",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
