@@ -46,7 +46,7 @@ const Footer = () => {
                 href="https://www.facebook.com/groups/zoark" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-muted-foreground hover:text-accent transition-colors"
                 aria-label="Facebook"
               >
                 <Facebook size={20} />
@@ -55,7 +55,7 @@ const Footer = () => {
                 href="https://www.linkedin.com/company/90556445" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-muted-foreground hover:text-accent transition-colors"
                 aria-label="LinkedIn"
               >
                 <Linkedin size={20} />
@@ -67,34 +67,34 @@ const Footer = () => {
             <h3 className="text-base font-semibold mb-4">Navigation</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-muted-foreground hover:text-primary text-sm transition-colors">Home</Link>
+                <Link to="/" className="text-muted-foreground hover:text-accent text-sm transition-colors">Home</Link>
               </li>
               <li>
-                <Link to="/index" className="text-muted-foreground hover:text-primary text-sm transition-colors">Fund Index</Link>
+                <Link to="/index" className="text-muted-foreground hover:text-accent text-sm transition-colors">Fund Index</Link>
               </li>
               <li>
-                <Link to="/fund-quiz" className="text-muted-foreground hover:text-primary text-sm transition-colors">Fund Quiz</Link>
+                <Link to="/fund-quiz" className="text-muted-foreground hover:text-accent text-sm transition-colors">Fund Quiz</Link>
               </li>
               <li>
-                <Link to="/about" className="text-muted-foreground hover:text-primary text-sm transition-colors">About</Link>
+                <Link to="/about" className="text-muted-foreground hover:text-accent text-sm transition-colors">About</Link>
               </li>
               <li>
-                <Link to="/categories" className="text-muted-foreground hover:text-primary text-sm transition-colors">Categories</Link>
+                <Link to="/categories" className="text-muted-foreground hover:text-accent text-sm transition-colors">Categories</Link>
               </li>
               <li>
-                <Link to="/tags" className="text-muted-foreground hover:text-primary text-sm transition-colors">Tags</Link>
+                <Link to="/tags" className="text-muted-foreground hover:text-accent text-sm transition-colors">Tags</Link>
               </li>
               <li>
-                <Link to="/managers" className="text-muted-foreground hover:text-primary text-sm transition-colors">Fund Managers</Link>
+                <Link to="/managers" className="text-muted-foreground hover:text-accent text-sm transition-colors">Fund Managers</Link>
               </li>
               <li>
-                <Link to="/comparisons" className="text-muted-foreground hover:text-primary text-sm transition-colors">Fund Comparisons</Link>
+                <Link to="/comparisons" className="text-muted-foreground hover:text-accent text-sm transition-colors">Fund Comparisons</Link>
               </li>
               <li>
-                <Link to="/alternatives" className="text-muted-foreground hover:text-primary text-sm transition-colors">Fund Alternatives</Link>
+                <Link to="/alternatives" className="text-muted-foreground hover:text-accent text-sm transition-colors">Fund Alternatives</Link>
               </li>
               <li>
-                <Link to="/roi-calculator" className="text-muted-foreground hover:text-primary text-sm transition-colors">ROI Calculator</Link>
+                <Link to="/roi-calculator" className="text-muted-foreground hover:text-accent text-sm transition-colors">ROI Calculator</Link>
               </li>
               <li>
                 <a 
@@ -108,7 +108,7 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <Link to="/faqs" className="text-muted-foreground hover:text-primary text-sm transition-colors">FAQs</Link>
+                <Link to="/faqs" className="text-muted-foreground hover:text-accent text-sm transition-colors">FAQs</Link>
               </li>
             </ul>
           </div>
@@ -172,10 +172,10 @@ const Footer = () => {
             <h3 className="text-base font-semibold mb-4">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/disclaimer" className="text-muted-foreground hover:text-primary text-sm transition-colors">Disclaimer</Link>
+                <Link to="/disclaimer" className="text-muted-foreground hover:text-accent text-sm transition-colors">Disclaimer</Link>
               </li>
               <li>
-                <Link to="/privacy" className="text-muted-foreground hover:text-primary text-sm transition-colors">Privacy Policy</Link>
+                <Link to="/privacy" className="text-muted-foreground hover:text-accent text-sm transition-colors">Privacy Policy</Link>
               </li>
             </ul>
           </div>

@@ -57,7 +57,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
             <CardTitle className="text-xl">
-              <Link to={`/${fund.id}`} className="hover:text-portugal-blue transition-colors">
+              <Link to={`/${fund.id}`} className="hover:text-accent transition-colors">
                 {fund.name}
               </Link>
             </CardTitle>
@@ -89,10 +89,10 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
           </div>
 
           {/* Gated Fee Information */}
-          <div className="grid grid-cols-2 gap-2 mb-4 p-3 bg-muted rounded-lg">
+          <div className="grid grid-cols-2 gap-2 mb-4 p-3 bg-accent/5 border border-accent/20 rounded-lg">
             <div>
               <div className="flex items-center gap-1 mb-1">
-                <Euro className="w-3 h-3 text-primary" />
+                <Euro className="w-3 h-3 text-accent" />
                 <p className="text-sm text-muted-foreground">Mgmt Fee</p>
               </div>
               {isAuthenticated ? (
@@ -130,12 +130,12 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
 
           {/* Fund Manager Section */}
           <div className="flex items-center gap-2 mb-4 bg-secondary p-2 rounded-md">
-            <User className="w-4 h-4 text-primary" />
+            <User className="w-4 h-4 text-accent" />
             <div className="flex-1">
               <p className="text-sm text-muted-foreground">Fund Manager</p>
               <Link 
                 to={`/manager/${managerToSlug(fund.managerName)}`}
-                className="font-medium hover:text-primary transition-colors"
+                className="font-medium hover:text-accent transition-colors"
               >
                 {fund.managerName}
               </Link>

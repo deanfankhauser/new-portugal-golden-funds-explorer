@@ -117,7 +117,7 @@ const FundFilter: React.FC<FundFilterProps> = ({
     return (
       <div className="mb-6">
           <div className="flex items-center gap-2 mb-3">
-            <div className="p-1 bg-primary/10 rounded-lg">
+            <div className="p-1 bg-accent/10 rounded-lg">
               {icon}
             </div>
             <h4 className="text-sm font-semibold text-foreground">{title}</h4>
@@ -147,10 +147,10 @@ const FundFilter: React.FC<FundFilterProps> = ({
     <>
       <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
         {/* Header */}
-        <div className="p-6 border-b border-border bg-gradient-to-r from-secondary to-background">
+        <div className="p-6 border-b border-border bg-gradient-to-r from-accent/5 to-background">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-primary/10 rounded-xl">
-              <Filter className="h-5 w-5 text-primary" />
+            <div className="p-2 bg-accent/10 rounded-xl">
+              <Filter className="h-5 w-5 text-accent" />
             </div>
             <h2 className="text-xl font-bold text-foreground">Search & Filter</h2>
           </div>
@@ -165,7 +165,7 @@ const FundFilter: React.FC<FundFilterProps> = ({
             </label>
             <div className="relative">
               <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors duration-200 ${
-                searchFocus ? 'text-primary' : 'text-muted-foreground'
+                searchFocus ? 'text-accent' : 'text-muted-foreground'
               }`} />
               <Input
                 id="search"
@@ -178,7 +178,7 @@ const FundFilter: React.FC<FundFilterProps> = ({
                 onBlur={() => setSearchFocus(false)}
                 className={`pl-10 h-12 rounded-xl border-2 transition-all duration-200 ${
                   searchFocus 
-                    ? 'border-primary ring-2 ring-primary/20' 
+                    ? 'border-accent ring-2 ring-accent/20' 
                     : 'border-border hover:border-accent'
                 } ${!isAuthenticated ? 'cursor-pointer' : ''}`}
                 readOnly={!isAuthenticated}
@@ -200,8 +200,8 @@ const FundFilter: React.FC<FundFilterProps> = ({
                     variant={selectedTags.includes(filter.tag) ? "default" : "outline"}
                     className={`cursor-pointer transition-all duration-200 hover:scale-105 px-3 py-1.5 rounded-full ${
                       selectedTags.includes(filter.tag)
-                        ? 'bg-primary text-primary-foreground shadow-md'
-                        : 'hover:bg-primary/10 hover:text-primary hover:border-primary'
+                        ? 'bg-accent text-accent-foreground shadow-md'
+                        : 'hover:bg-accent/10 hover:text-accent hover:border-accent'
                     }`}
                     onClick={() => toggleTag(filter.tag)}
                   >
@@ -242,10 +242,10 @@ const FundFilter: React.FC<FundFilterProps> = ({
               </div>
             ) : (
               <div className="space-y-6">
-                {renderTagGroup('Investment Categories', categoryTags, <Filter className="h-4 w-4 text-primary" />)}
-                {renderTagGroup('Investment Amounts', investmentTags, <span className="text-primary font-bold text-sm">€</span>)}
-                {renderTagGroup('Risk Levels', riskTags, <span className="text-primary font-bold text-xs">⚡</span>)}
-                {renderTagGroup('Other Filters', otherTags, <span className="text-primary font-bold text-xs">•</span>)}
+                {renderTagGroup('Investment Categories', categoryTags, <Filter className="h-4 w-4 text-accent" />)}
+                {renderTagGroup('Investment Amounts', investmentTags, <span className="text-accent font-bold text-sm">€</span>)}
+                {renderTagGroup('Risk Levels', riskTags, <span className="text-accent font-bold text-xs">⚡</span>)}
+                {renderTagGroup('Other Filters', otherTags, <span className="text-accent font-bold text-xs">•</span>)}
               </div>
             )}
             
