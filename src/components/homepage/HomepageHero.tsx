@@ -23,8 +23,7 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold 
                          mb-4 sm:mb-6 text-high-contrast leading-[1.1] tracking-tight">
             <span className="block">Portugal Golden Visa</span>
-            <span className="bg-gradient-to-r from-primary via-primary to-primary/80 
-                           bg-clip-text text-transparent">
+            <span className="text-primary font-bold">
               Investment Funds
             </span>
           </h1>
