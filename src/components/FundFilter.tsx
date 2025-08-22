@@ -131,7 +131,7 @@ const FundFilter: React.FC<FundFilterProps> = ({
               onClick={() => toggleTag(tag)}
               className={`${selectedTags.includes(tag) ? 
                 "bg-primary hover:bg-primary/90 text-white shadow-md" : 
-                "border-gray-300 hover:bg-gray-50 text-gray-700 hover:text-gray-800 hover:border-gray-400"} 
+                "border-border hover:bg-secondary text-muted-foreground hover:text-foreground hover:border-border/80"} 
                 text-xs px-3 py-2 h-auto min-h-[32px] rounded-full transition-all duration-200 
                 hover:scale-105 hover:shadow-sm`}
             >

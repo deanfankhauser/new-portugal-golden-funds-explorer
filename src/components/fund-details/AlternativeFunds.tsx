@@ -32,35 +32,35 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Open':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-success/20 text-success-foreground border-success/30';
       case 'Closing Soon':
-        return 'bg-amber-100 text-amber-800 border-amber-200';
+        return 'bg-warning/20 text-warning-foreground border-warning/30';
       case 'Closed':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-destructive/20 text-destructive-foreground border-destructive/30';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-muted/20 text-muted-foreground border-muted/30';
     }
   };
 
   return (
-    <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+    <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-xl text-gray-900">
-          <TrendingUp className="w-5 h-5 text-blue-600" />
+        <CardTitle className="flex items-center gap-2 text-xl text-foreground">
+          <TrendingUp className="w-5 h-5 text-accent" />
           Alternative Fund Suggestions
         </CardTitle>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           If this fund is full or doesn't meet your requirements, here are similar options:
         </p>
       </CardHeader>
       <CardContent>
         <div className="grid gap-4">
           {alternativeFunds.map((fund) => (
-            <div key={fund.id} className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
+            <div key={fund.id} className="bg-card rounded-lg border border-border p-4 hover:shadow-md transition-shadow">
               <div className="flex justify-between items-start mb-3">
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 mb-1">{fund.name}</h3>
-                  <p className="text-sm text-gray-600 line-clamp-2">{fund.description}</p>
+                  <h3 className="font-semibold text-foreground mb-1">{fund.name}</h3>
+                  <p className="text-sm text-muted-foreground line-clamp-2">{fund.description}</p>
                 </div>
                 <Badge className={`ml-3 ${getStatusColor(fund.fundStatus)}`}>
                   {fund.fundStatus}
@@ -69,24 +69,24 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 text-sm">
                 <div className="flex items-center gap-1">
-                  <Users className="w-4 h-4 text-gray-400" />
-                  <span className="text-gray-600">Min: {formatCurrency(fund.minimumInvestment)}</span>
+                  <Users className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">Min: {formatCurrency(fund.minimumInvestment)}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <TrendingUp className="w-4 h-4 text-gray-400" />
-                  <span className="text-gray-600">{fund.returnTarget}</span>
+                  <TrendingUp className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">{fund.returnTarget}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Clock className="w-4 h-4 text-gray-400" />
-                  <span className="text-gray-600">{fund.term} years</span>
+                  <Clock className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">{fund.term} years</span>
                 </div>
-                <div className="text-gray-600">
+                <div className="text-muted-foreground">
                   {fund.category}
                 </div>
               </div>
               
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-muted-foreground">
                   Managed by {fund.managerName}
                 </span>
                 <Link to={`/${fund.id}`}>
@@ -100,18 +100,18 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
           ))}
         </div>
         
-         <div className="mt-6 pt-4 border-t border-gray-200">
-           <div className="flex justify-between items-center">
+          <div className="mt-6 pt-4 border-t border-border">
+            <div className="flex justify-between items-center">
               <Link 
                 to={`/${currentFund.id}/alternatives`}
-                className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
+                className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium"
                 aria-label={`View all alternative funds similar to ${currentFund.name}`}
               >
                 View all {currentFund.name} alternatives
                 <ArrowRight className="w-4 h-4" />
               </Link>
              
-             <Button asChild size="sm" className="bg-[#EF4444] hover:bg-[#DC2626] text-white">
+             <Button asChild size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">
                <a 
                  href={buildContactUrl('alternatives')}
                  target="_blank" 

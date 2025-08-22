@@ -46,7 +46,7 @@ const RelatedComparisons: React.FC<RelatedComparisonsProps> = ({
     <Card className="mt-8">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-[#EF4444]" />
+          <TrendingUp className="w-5 h-5 text-primary" />
           Related Fund Comparisons
         </CardTitle>
       </CardHeader>
@@ -56,29 +56,29 @@ const RelatedComparisons: React.FC<RelatedComparisonsProps> = ({
             <Link
               key={comparison.slug}
               to={`/compare/${comparison.slug}`}
-              className="group block p-4 border rounded-lg hover:border-[#EF4444]/30 hover:bg-[#EF4444]/5 transition-all duration-200"
+              className="group block p-4 border border-border rounded-lg hover:border-primary/30 hover:bg-primary/5 transition-all duration-200"
             >
               <div className="flex justify-between items-start mb-2">
-                <h3 className="font-medium text-sm text-gray-900 group-hover:text-[#EF4444] transition-colors line-clamp-2">
+                <h3 className="font-medium text-sm text-foreground group-hover:text-primary transition-colors line-clamp-2">
                   {comparison.fund1.name} vs {comparison.fund2.name}
                 </h3>
-                <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-[#EF4444] transition-colors flex-shrink-0 ml-2" />
+                <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0 ml-2" />
               </div>
               
               <div className="space-y-1">
-                <div className="flex justify-between text-xs text-gray-600">
+                <div className="flex justify-between text-xs text-muted-foreground">
                   <span>{comparison.fund1.category}</span>
                   <span>vs</span>
                   <span>{comparison.fund2.category}</span>
                 </div>
                 
-                <div className="flex justify-between text-xs text-gray-500">
+                <div className="flex justify-between text-xs text-muted-foreground">
                   <span>{comparison.fund1.managerName}</span>
                   <span>•</span>
                   <span>{comparison.fund2.managerName}</span>
                 </div>
                 
-                <div className="flex justify-between text-xs text-gray-500">
+                <div className="flex justify-between text-xs text-muted-foreground">
                   <span>€{comparison.fund1.minimumInvestment.toLocaleString()}</span>
                   <span>vs</span>
                   <span>€{comparison.fund2.minimumInvestment.toLocaleString()}</span>
@@ -91,7 +91,7 @@ const RelatedComparisons: React.FC<RelatedComparisonsProps> = ({
         <div className="mt-4 pt-4 border-t">
           <Link 
             to="/comparisons" 
-            className="inline-flex items-center gap-2 text-sm text-[#EF4444] hover:text-[#EF4444]/80 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors"
           >
             View All Fund Comparisons
             <ArrowRight className="w-4 h-4" />

@@ -21,9 +21,9 @@ export const DataFreshnessIndicator: React.FC<DataFreshnessIndicatorProps> = ({
   const dataAge = DateManagementService.getContentAge(contentDates.dataLastVerified);
   
   const getFreshnessColor = () => {
-    if (dataAge <= 7) return 'bg-green-500';
-    if (dataAge <= 30) return 'bg-yellow-500';
-    return 'bg-red-500';
+    if (dataAge <= 7) return 'bg-success';
+    if (dataAge <= 30) return 'bg-warning';
+    return 'bg-destructive';
   };
 
   const getFreshnessText = () => {
@@ -33,9 +33,9 @@ export const DataFreshnessIndicator: React.FC<DataFreshnessIndicatorProps> = ({
   };
 
   const getFreshnessTextColor = () => {
-    if (dataAge <= 7) return 'text-green-700';
-    if (dataAge <= 30) return 'text-yellow-700';
-    return 'text-red-700';
+    if (dataAge <= 7) return 'text-success-foreground';
+    if (dataAge <= 30) return 'text-warning-foreground';
+    return 'text-destructive-foreground';
   };
 
   if (variant === 'dot') {
@@ -75,7 +75,7 @@ export const DataFreshnessIndicator: React.FC<DataFreshnessIndicatorProps> = ({
               <p>Last verified: {DateManagementService.formatDisplayDate(contentDates.dataLastVerified)}</p>
               <p className={getFreshnessTextColor()}>{getFreshnessText()} ({dataAge} days old)</p>
               {dataAge > 30 && (
-                <p className="text-orange-600 flex items-center gap-1">
+                <p className="text-destructive flex items-center gap-1">
                   <AlertTriangle className="h-3 w-3" />
                   Consider verifying with official sources
                 </p>

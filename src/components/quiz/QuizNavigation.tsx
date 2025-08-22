@@ -45,7 +45,7 @@ const QuizNavigation: React.FC<QuizNavigationProps> = ({
             type="button"
             variant="ghost"
             onClick={onResetQuiz}
-            className="flex items-center gap-2 text-gray-600"
+            className="flex items-center gap-2 text-muted-foreground"
           >
             <RotateCcw className="w-4 h-4" />
             Reset
@@ -56,7 +56,7 @@ const QuizNavigation: React.FC<QuizNavigationProps> = ({
       {isLastStep ? (
         <Button 
           type="submit" 
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+          className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
           disabled={!isStepValid}
           onClick={onSubmit}
         >

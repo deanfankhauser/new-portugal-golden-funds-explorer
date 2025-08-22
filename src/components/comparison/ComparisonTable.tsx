@@ -33,13 +33,13 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
 
   // Component for gated row placeholder
   const GatedRow: React.FC<{ label: string; placeholder: string }> = ({ label, placeholder }) => (
-    <tr className="border-b bg-amber-50/30">
-      <td className="py-3 px-4 font-medium text-gray-600 relative">
+    <tr className="border-b bg-warning/10">
+      <td className="py-3 px-4 font-medium text-muted-foreground relative">
         {label}
-        <span className="ml-2 text-xs text-amber-600 font-medium">CLIENT ONLY</span>
+        <span className="ml-2 text-xs text-warning font-medium">CLIENT ONLY</span>
       </td>
       {funds.map(fund => (
-        <td key={fund.id} className="py-3 px-4 text-amber-600 font-medium">{placeholder}</td>
+        <td key={fund.id} className="py-3 px-4 text-warning font-medium">{placeholder}</td>
       ))}
     </tr>
   );
@@ -191,8 +191,8 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             </tr>
 
             {/* Data Freshness - Always visible */}
-            <tr className="border-b bg-blue-50/50">
-              <td className="py-3 px-4 font-medium text-blue-900">Data Last Verified</td>
+            <tr className="border-b bg-accent/10">
+              <td className="py-3 px-4 font-medium text-accent-foreground">Data Last Verified</td>
               {funds.map(fund => (
                 <td key={fund.id} className="py-3 px-4">
                   <DataFreshnessIndicator fund={fund} variant="full" className="justify-start" />
@@ -205,18 +205,18 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
 
       {/* Client Access CTA - Only show if content is gated */}
       {ContentGatingService.shouldGateMetric('managementFee', isAuthenticated) && (
-        <div className="mt-6 bg-gradient-to-r from-amber-50 to-orange-50 p-8 rounded-xl border-2 border-amber-200">
+        <div className="mt-6 bg-gradient-to-r from-warning/10 to-accent/10 p-8 rounded-xl border-2 border-warning/20">
           <div className="text-center">
             <div className="flex justify-center items-center gap-2 mb-4">
-              <Lock className="w-6 h-6 text-amber-600" />
-              <span className="text-sm font-bold text-amber-800 uppercase tracking-wide">For Movingto Clients Only</span>
+              <Lock className="w-6 h-6 text-warning" />
+              <span className="text-sm font-bold text-warning-foreground uppercase tracking-wide">For Movingto Clients Only</span>
             </div>
             
-            <h3 className="text-xl font-bold text-gray-900 mb-3">
+            <h3 className="text-xl font-bold text-foreground mb-3">
               Access Detailed Fund Analysis & Due Diligence
             </h3>
             
-            <p className="text-gray-700 mb-4 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-muted-foreground mb-4 max-w-2xl mx-auto leading-relaxed">
               Our clients receive comprehensive fund analysis including detailed fee breakdowns, geographic allocations, 
               redemption terms, and verified due diligence data to make informed Golden Visa investment decisions.
             </p>
@@ -224,25 +224,25 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               <Button 
                 onClick={handleUnlockClick}
-                className="bg-[#EF4444] hover:bg-[#EF4444]/90 px-6 py-3 text-white font-semibold"
+                className="bg-primary hover:bg-primary/90 px-6 py-3 text-primary-foreground font-semibold"
               >
                 <Eye className="w-5 h-5 mr-2" />
                 Existing Client Login
               </Button>
               
-              <div className="text-sm text-gray-500 sm:mx-3">or</div>
+              <div className="text-sm text-muted-foreground sm:mx-3">or</div>
               
               <a 
                 href="https://cal.com/movingto/30min" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-[#EF4444] border-2 border-[#EF4444] px-6 py-3 rounded-md font-semibold transition-colors"
+                className="inline-flex items-center gap-2 bg-card hover:bg-secondary text-primary border-2 border-primary px-6 py-3 rounded-md font-semibold transition-colors"
               >
                 📞 Book Free Consultation
               </a>
             </div>
             
-            <p className="text-xs text-gray-500 mt-3">
+            <p className="text-xs text-muted-foreground mt-3">
               Free 30-minute consultation • No obligation • Speak with Portugal investment specialist
             </p>
           </div>
