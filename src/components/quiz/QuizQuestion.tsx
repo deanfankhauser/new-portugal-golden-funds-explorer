@@ -48,21 +48,21 @@ const QuizQuestion = <T extends FieldValues>({
   return (
     <div className="min-h-[500px]">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-blue-100 rounded-lg">
-          <IconComponent className="w-6 h-6 text-blue-600" />
+        <div className="p-2 bg-accent/20 rounded-lg">
+          <IconComponent className="w-6 h-6 text-accent" />
         </div>
         <div className="flex-1">
           <h3 className="text-xl font-semibold">{question.title}</h3>
-          <p className="text-gray-600">{question.subtitle}</p>
+          <p className="text-muted-foreground">{question.subtitle}</p>
         </div>
-        <div className="text-gray-400 hover:text-gray-600 cursor-help" title={question.helpText}>
+        <div className="text-muted-foreground hover:text-foreground cursor-help" title={question.helpText}>
           <HelpCircle className="w-5 h-5" />
         </div>
       </div>
 
       {question.helpText && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-          <p className="text-sm text-blue-800">{question.helpText}</p>
+        <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 mb-6">
+          <p className="text-sm text-accent-foreground">{question.helpText}</p>
         </div>
       )}
 
@@ -83,7 +83,7 @@ const QuizQuestion = <T extends FieldValues>({
                         <div>
                           <div className="font-medium">{option.label}</div>
                           {option.description && (
-                            <div className="text-sm text-gray-500 mt-1">{option.description}</div>
+                            <div className="text-sm text-muted-foreground mt-1">{option.description}</div>
                           )}
                         </div>
                       </SelectItem>
@@ -114,7 +114,7 @@ const QuizQuestion = <T extends FieldValues>({
                             </Badge>
                           )}
                         </div>
-                        <p className="text-sm text-gray-600">{option.description}</p>
+                        <p className="text-sm text-muted-foreground">{option.description}</p>
                       </div>
                     </label>
                   ))}
@@ -122,8 +122,8 @@ const QuizQuestion = <T extends FieldValues>({
               )}
             </FormControl>
             {getFieldError() && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-3">
-                <FormMessage className="text-red-600" />
+              <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 mt-3">
+                <FormMessage className="text-destructive" />
               </div>
             )}
           </FormItem>

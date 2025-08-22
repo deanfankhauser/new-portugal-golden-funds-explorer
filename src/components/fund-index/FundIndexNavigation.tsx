@@ -18,7 +18,7 @@ const FundIndexNavigation: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white border-b border-gray-200 py-4">
+    <div className="bg-background border-b border-border py-4">
       <div className="max-w-4xl mx-auto px-6">
         <div className="flex flex-wrap justify-center gap-1">
           {navItems.map((item) => (
@@ -27,7 +27,7 @@ const FundIndexNavigation: React.FC = () => {
               variant="ghost"
               size="sm"
               onClick={() => scrollToSection(item.id)}
-              className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-4 py-2 rounded-md text-sm"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted px-4 py-2 rounded-md text-sm"
             >
               <item.icon className="w-4 h-4 mr-2" />
               {item.label}

@@ -32,7 +32,7 @@ export const ReviewItem: React.FC<ReviewItemProps> = ({ review }) => {
           <div className="flex items-center gap-2">
             <h4 className="font-medium text-sm">{review.title}</h4>
             {review.verified && (
-              <div className="flex items-center gap-1 text-green-600">
+              <div className="flex items-center gap-1 text-success">
                 <CheckCircle className="w-3 h-3" />
                 <span className="text-xs">Verified</span>
               </div>

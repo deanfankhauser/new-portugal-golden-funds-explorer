@@ -22,8 +22,8 @@ const FundAlternatives = () => {
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Fund Not Found</h1>
-            <p className="text-gray-600">The fund you're looking for doesn't exist.</p>
+            <h1 className="text-2xl font-bold text-foreground mb-4">Fund Not Found</h1>
+            <p className="text-muted-foreground">The fund you're looking for doesn't exist.</p>
           </div>
         </main>
         <Footer />
@@ -64,12 +64,12 @@ const FundAlternatives = () => {
               </Link>
             </div>
             
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            <h1 className="text-3xl font-bold text-foreground mb-4">
               {fund.name} Alternatives
             </h1>
             
             <div className="text-center py-12">
-              <p className="text-gray-600 mb-4">
+              <p className="text-muted-foreground mb-4">
                 No alternative funds found similar to {fund.name}.
               </p>
               <Link to="/index">
@@ -95,13 +95,13 @@ const FundAlternatives = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Open':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-success/10 text-success border-success/20';
       case 'Closing Soon':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return 'bg-warning/10 text-warning border-warning/20';
       case 'Closed':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -124,10 +124,10 @@ const FundAlternatives = () => {
           </div>
           
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            <h1 className="text-3xl font-bold text-foreground mb-4">
               {fund.name} Alternatives | Portugal Golden Visa Investment Funds
             </h1>
-            <p className="text-gray-600 text-lg">
+            <p className="text-muted-foreground text-lg">
               Discover similar investment opportunities to <strong>{fund.name}</strong>. 
               These funds share similar characteristics such as investment range, category, 
               or management approach.
@@ -140,7 +140,7 @@ const FundAlternatives = () => {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <CardTitle className="text-xl text-gray-900 mb-2">
+                      <CardTitle className="text-xl text-foreground mb-2">
                         {alternativeFund.name}
                       </CardTitle>
                       <Badge className={`${getStatusColor(alternativeFund.fundStatus)} mb-3`}>
@@ -156,43 +156,43 @@ const FundAlternatives = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600 mb-4 line-clamp-2">
+                  <p className="text-muted-foreground mb-4 line-clamp-2">
                     {alternativeFund.description}
                   </p>
                   
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
-                      <span className="font-medium text-gray-900">Minimum Investment:</span>
-                      <p className="text-gray-600">{formatCurrency(alternativeFund.minimumInvestment)}</p>
+                      <span className="font-medium text-foreground">Minimum Investment:</span>
+                      <p className="text-muted-foreground">{formatCurrency(alternativeFund.minimumInvestment)}</p>
                     </div>
                     <div>
-                      <span className="font-medium text-gray-900">Return Target:</span>
-                      <p className="text-gray-600">{alternativeFund.returnTarget}%</p>
+                      <span className="font-medium text-foreground">Return Target:</span>
+                      <p className="text-muted-foreground">{alternativeFund.returnTarget}%</p>
                     </div>
                     <div>
-                      <span className="font-medium text-gray-900">Term:</span>
-                      <p className="text-gray-600">{alternativeFund.term} years</p>
+                      <span className="font-medium text-foreground">Term:</span>
+                      <p className="text-muted-foreground">{alternativeFund.term} years</p>
                     </div>
                     <div>
-                      <span className="font-medium text-gray-900">Category:</span>
-                      <p className="text-gray-600">{alternativeFund.category}</p>
+                      <span className="font-medium text-foreground">Category:</span>
+                      <p className="text-muted-foreground">{alternativeFund.category}</p>
                     </div>
                   </div>
                   
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <span className="font-medium text-gray-900">Manager:</span>
-                    <p className="text-gray-600">{alternativeFund.managerName}</p>
+                  <div className="mt-4 pt-4 border-t border-border">
+                    <span className="font-medium text-foreground">Manager:</span>
+                    <p className="text-muted-foreground">{alternativeFund.managerName}</p>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
 
-          <div className="mt-12 text-center p-8 bg-white rounded-lg border">
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+          <div className="mt-12 text-center p-8 bg-card rounded-lg border border-border">
+            <h2 className="text-xl font-semibold text-foreground mb-3">
               Need Portugal Golden Visa Investment Fund Guidance?
             </h2>
-            <p className="text-gray-600 mb-4">
+            <p className="text-muted-foreground mb-4">
               Our fund experts can help you evaluate these alternatives and find the perfect investment match for your goals.
             </p>
             <Button asChild>

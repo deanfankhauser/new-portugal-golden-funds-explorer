@@ -90,9 +90,9 @@ const FundIndexFAQ: React.FC = () => {
   return (
     <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-gray-50" itemScope itemType="https://schema.org/FAQPage">
       <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-900">
-          <div className="bg-blue-100 p-2 rounded-xl">
-            <HelpCircle className="h-6 w-6 text-blue-600" />
+        <CardTitle className="flex items-center gap-3 text-xl font-bold text-foreground">
+          <div className="bg-accent/20 p-2 rounded-xl">
+            <HelpCircle className="h-6 w-6 text-accent" />
           </div>
           Frequently Asked Questions
         </CardTitle>
@@ -103,18 +103,18 @@ const FundIndexFAQ: React.FC = () => {
             <AccordionItem 
               key={index} 
               value={`item-${index}`}
-              className="bg-white rounded-lg border border-gray-200 shadow-sm"
+              className="bg-card rounded-lg border border-border shadow-sm"
               itemScope 
               itemType="https://schema.org/Question"
             >
               <AccordionTrigger 
-                className="px-6 py-3 text-left hover:no-underline hover:bg-gray-50 rounded-t-lg text-sm font-medium"
+                className="px-6 py-3 text-left hover:no-underline hover:bg-muted rounded-t-lg text-sm font-medium"
                 itemProp="name"
               >
-                <span className="text-gray-900">{faq.question}</span>
+                <span className="text-foreground">{faq.question}</span>
               </AccordionTrigger>
               <AccordionContent 
-                className="px-6 pb-4 text-sm text-gray-700 leading-relaxed"
+                className="px-6 pb-4 text-sm text-muted-foreground leading-relaxed"
                 itemScope 
                 itemType="https://schema.org/Answer"
               >

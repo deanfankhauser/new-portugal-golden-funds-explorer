@@ -49,7 +49,7 @@ export const VerifiedReviews: React.FC<VerifiedReviewsProps> = ({ fund }) => {
   if (allReviews.length === 0) {
     return (
       <Card className="p-6 text-center">
-        <Star className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+        <Star className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
         <h3 className="text-lg font-semibold mb-2">No Reviews Yet</h3>
         <p className="text-muted-foreground">
           This fund hasn't received any verified investor reviews yet. Reviews help other investors make informed decisions.
@@ -92,10 +92,10 @@ export const VerifiedReviews: React.FC<VerifiedReviewsProps> = ({ fund }) => {
               return (
                 <div key={rating} className="flex items-center gap-2 text-sm">
                   <span className="w-8">{rating}</span>
-                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                  <div className="flex-1 bg-gray-200 rounded-full h-2">
+                  <Star className="w-3 h-3 fill-accent text-accent" />
+                  <div className="flex-1 bg-muted rounded-full h-2">
                     <div 
-                      className="bg-yellow-400 h-2 rounded-full transition-all"
+                      className="bg-accent h-2 rounded-full transition-all"
                       style={{ width: `${percentage}%` }}
                     />
                   </div>

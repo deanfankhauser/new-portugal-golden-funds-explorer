@@ -136,21 +136,21 @@ const MethodologySection: React.FC = () => {
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div 
-            className="bg-blue-50 p-6 rounded-xl border border-blue-100"
+            className="bg-accent/10 p-6 rounded-xl border border-accent/20"
             itemScope 
             itemType="https://schema.org/HowToStep"
             itemProp="step"
           >
             <div className="flex items-center gap-3 mb-3">
-              <div className="bg-blue-100 p-2 rounded-lg">
-                <BarChart3 className="h-6 w-6 text-blue-600" />
+              <div className="bg-accent/20 p-2 rounded-lg">
+                <BarChart3 className="h-6 w-6 text-accent" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900" itemProp="name">Performance (40%)</h3>
-                <span className="text-sm text-blue-600 font-medium">Highest Weight</span>
+                <h3 className="font-semibold text-foreground" itemProp="name">Performance (40%)</h3>
+                <span className="text-sm text-accent font-medium">Highest Weight</span>
               </div>
             </div>
-            <p className="text-sm text-gray-700 leading-relaxed" itemProp="text">
+            <p className="text-sm text-muted-foreground leading-relaxed" itemProp="text">
               Evaluates fund performance metrics including returns, volatility, and consistency over time. 
               We analyze historical performance, risk-adjusted returns, and benchmark comparisons.
             </p>
@@ -158,21 +158,21 @@ const MethodologySection: React.FC = () => {
           </div>
 
           <div 
-            className="bg-green-50 p-6 rounded-xl border border-green-100"
+            className="bg-success/10 p-6 rounded-xl border border-success/20"
             itemScope 
             itemType="https://schema.org/HowToStep"
             itemProp="step"
           >
             <div className="flex items-center gap-3 mb-3">
-              <div className="bg-green-100 p-2 rounded-lg">
-                <Shield className="h-6 w-6 text-green-600" />
+              <div className="bg-success/20 p-2 rounded-lg">
+                <Shield className="h-6 w-6 text-success" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900" itemProp="name">Regulatory Quality (25%)</h3>
-                <span className="text-sm text-green-600 font-medium">Second Priority</span>
+                <h3 className="font-semibold text-foreground" itemProp="name">Regulatory Quality (25%)</h3>
+                <span className="text-sm text-success font-medium">Second Priority</span>
               </div>
             </div>
-            <p className="text-sm text-gray-700 leading-relaxed" itemProp="text">
+            <p className="text-sm text-muted-foreground leading-relaxed" itemProp="text">
               Reviews regulatory compliance, licensing, and oversight by Portuguese authorities. 
               Includes assessment of fund registration, compliance history, and regulatory standing.
             </p>
@@ -180,21 +180,21 @@ const MethodologySection: React.FC = () => {
           </div>
 
           <div 
-            className="bg-orange-50 p-6 rounded-xl border border-orange-100"
+            className="bg-warning/10 p-6 rounded-xl border border-warning/20"
             itemScope 
             itemType="https://schema.org/HowToStep"
             itemProp="step"
           >
             <div className="flex items-center gap-3 mb-3">
-              <div className="bg-orange-100 p-2 rounded-lg">
-                <DollarSign className="h-6 w-6 text-orange-600" />
+              <div className="bg-warning/20 p-2 rounded-lg">
+                <DollarSign className="h-6 w-6 text-warning" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900" itemProp="name">Fee Structure (20%)</h3>
-                <span className="text-sm text-orange-600 font-medium">Cost Efficiency</span>
+                <h3 className="font-semibold text-foreground" itemProp="name">Fee Structure (20%)</h3>
+                <span className="text-sm text-warning font-medium">Cost Efficiency</span>
               </div>
             </div>
-            <p className="text-sm text-gray-700 leading-relaxed" itemProp="text">
+            <p className="text-sm text-muted-foreground leading-relaxed" itemProp="text">
               Analyzes management fees, performance fees, and other costs to determine value for investors. 
               Compares fee structures across similar funds and assesses cost-effectiveness.
             </p>
@@ -202,21 +202,21 @@ const MethodologySection: React.FC = () => {
           </div>
 
           <div 
-            className="bg-purple-50 p-6 rounded-xl border border-purple-100"
+            className="bg-primary/10 p-6 rounded-xl border border-primary/20"
             itemScope 
             itemType="https://schema.org/HowToStep"
             itemProp="step"
           >
             <div className="flex items-center gap-3 mb-3">
-              <div className="bg-purple-100 p-2 rounded-lg">
-                <Users className="h-6 w-6 text-purple-600" />
+              <div className="bg-primary/20 p-2 rounded-lg">
+                <Users className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900" itemProp="name">Investor Protection (15%)</h3>
-                <span className="text-sm text-purple-600 font-medium">Safety Focus</span>
+                <h3 className="font-semibold text-foreground" itemProp="name">Investor Protection (15%)</h3>
+                <span className="text-sm text-primary font-medium">Safety Focus</span>
               </div>
             </div>
-            <p className="text-sm text-gray-700 leading-relaxed" itemProp="text">
+            <p className="text-sm text-muted-foreground leading-relaxed" itemProp="text">
               Evaluates investor protection measures, transparency, and fund governance structures. 
               Reviews reporting standards, investor communication, and conflict of interest policies.
             </p>
@@ -224,29 +224,29 @@ const MethodologySection: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200" itemScope itemType="https://schema.org/PropertyValue">
-          <h4 className="font-semibold text-gray-900 mb-3" itemProp="name">Scoring System</h4>
-          <div className="space-y-2 text-sm text-gray-700" itemProp="value">
+        <div className="bg-muted p-6 rounded-xl border border-border" itemScope itemType="https://schema.org/PropertyValue">
+          <h4 className="font-semibold text-foreground mb-3" itemProp="name">Scoring System</h4>
+          <div className="space-y-2 text-sm text-muted-foreground" itemProp="value">
             <div className="flex justify-between">
               <span>Excellent (85-100):</span>
-              <span className="font-medium text-green-600">Top-tier funds with outstanding metrics</span>
+              <span className="font-medium text-success">Top-tier funds with outstanding metrics</span>
             </div>
             <div className="flex justify-between">
               <span>Very Good (70-84):</span>
-              <span className="font-medium text-blue-600">Strong funds with solid performance</span>
+              <span className="font-medium text-accent">Strong funds with solid performance</span>
             </div>
             <div className="flex justify-between">
               <span>Good (55-69):</span>
-              <span className="font-medium text-yellow-600">Acceptable funds with room for improvement</span>
+              <span className="font-medium text-warning">Acceptable funds with room for improvement</span>
             </div>
             <div className="flex justify-between">
               <span>Fair (Below 55):</span>
-              <span className="font-medium text-red-600">Funds requiring careful consideration</span>
+              <span className="font-medium text-destructive">Funds requiring careful consideration</span>
             </div>
           </div>
         </div>
 
-        <div className="text-xs text-gray-500 pt-4 border-t">
+        <div className="text-xs text-muted-foreground pt-4 border-t border-border">
           <p itemProp="disclaimer">
             Methodology updated regularly to reflect market changes and regulatory updates. 
             Scores are based on publicly available information and professional analysis.
