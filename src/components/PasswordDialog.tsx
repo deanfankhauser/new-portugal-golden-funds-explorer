@@ -113,18 +113,6 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
           </div>
         </div>
 
-        {/* Urgency Message */}
-        <div className="bg-warning/10 border border-warning/20 rounded-lg p-4 mb-6">
-          <div className="flex items-start gap-3">
-            <Star className="w-5 h-5 text-warning mt-0.5 flex-shrink-0" />
-            <div>
-              <h4 className="font-semibold text-warning-foreground text-sm">Limited Access</h4>
-              <p className="text-sm text-warning-foreground/80 mt-1">
-                Only active MovingTo clients have access to these detailed fund analytics and comparison tools used by our guidance team.
-              </p>
-            </div>
-          </div>
-        </div>
 
         {/* Password Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
