@@ -16,11 +16,11 @@ const FundCategory: React.FC<FundCategoryProps> = ({ category }) => {
     <Card className="border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
       <CardContent className="p-6">
         <div className="flex items-center mb-4">
-          <Folder className="w-5 h-5 mr-2 text-[#EF4444]" />
+          <Folder className="w-5 h-5 mr-2 text-primary" />
           <h2 className="text-xl font-bold">Fund Category</h2>
         </div>
         <Link to={`/categories/${categoryToSlug(category)}`}>
-          <Badge className="px-3 py-1.5 text-base bg-[#EF4444] hover:bg-[#EF4444]/80 shadow-sm cursor-pointer">
+          <Badge className="px-3 py-1.5 text-base bg-primary hover:bg-primary/80 shadow-sm cursor-pointer">
             {category}
           </Badge>
         </Link>

@@ -130,12 +130,12 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
 
           {/* Fund Manager Section */}
           <div className="flex items-center gap-2 mb-4 bg-slate-50 p-2 rounded-md">
-            <User className="w-4 h-4 text-[#EF4444]" />
+            <User className="w-4 h-4 text-primary" />
             <div className="flex-1">
               <p className="text-sm text-muted-foreground">Fund Manager</p>
               <Link 
                 to={`/manager/${managerToSlug(fund.managerName)}`}
-                className="font-medium hover:text-[#EF4444] transition-colors"
+                className="font-medium hover:text-primary transition-colors"
               >
                 {fund.managerName}
               </Link>
@@ -168,8 +168,8 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
               size="sm"
               className={`${
                 isSelected 
-                  ? 'bg-[#EF4444] text-white' 
-                  : 'border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white'
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'border-primary text-primary hover:bg-primary hover:text-primary-foreground'
               }`}
               onClick={handleCompareClick}
             >

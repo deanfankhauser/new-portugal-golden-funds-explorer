@@ -48,7 +48,7 @@ const Header = () => {
                         <ComparisonWidget />
                         <NavigationMenuLink asChild>
                           <Link to="/alternatives" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
-                            <GitCompareArrows className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
+                            <GitCompareArrows className="h-5 w-5 text-primary flex-shrink-0" />
                             <div>
                               <div className="font-medium text-gray-900">Fund Alternatives</div>
                               <div className="text-sm text-gray-500">Find alternative funds</div>
@@ -70,7 +70,7 @@ const Header = () => {
                       <div className="space-y-2">
                         <NavigationMenuLink asChild>
                           <Link to="/fund-quiz" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
-                            <ClipboardCheck className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
+                            <ClipboardCheck className="h-5 w-5 text-primary flex-shrink-0" />
                             <div>
                               <div className="font-medium text-gray-900">Fund Quiz</div>
                               <div className="text-sm text-gray-500">Find your ideal fund</div>
@@ -79,7 +79,7 @@ const Header = () => {
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
                           <Link to="/roi-calculator" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
-                            <Calculator className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
+                            <Calculator className="h-5 w-5 text-primary flex-shrink-0" />
                             <div>
                               <div className="font-medium text-gray-900">ROI Calculator</div>
                               <div className="text-sm text-gray-500">Calculate returns</div>
@@ -88,7 +88,7 @@ const Header = () => {
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
                           <a href="https://www.movingto.com/tools/golden-visa-cost-calculator" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
-                            <Calculator className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
+                            <Calculator className="h-5 w-5 text-primary flex-shrink-0" />
                             <div>
                               <div className="font-medium text-gray-900">Golden Visa Cost Calculator</div>
                               <div className="text-sm text-gray-500">Calculate total investment costs</div>
@@ -111,7 +111,7 @@ const Header = () => {
                       <div className="space-y-2">
                         <NavigationMenuLink asChild>
                           <Link to="/managers" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
-                            <Users className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
+                            <Users className="h-5 w-5 text-primary flex-shrink-0" />
                             <div>
                               <div className="font-medium text-gray-900">Fund Managers</div>
                               <div className="text-sm text-gray-500">Explore managers</div>
@@ -120,7 +120,7 @@ const Header = () => {
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
                           <Link to="/categories" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
-                            <ExternalLink className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
+                            <ExternalLink className="h-5 w-5 text-primary flex-shrink-0" />
                             <div>
                               <div className="font-medium text-gray-900">Categories</div>
                               <div className="text-sm text-gray-500">Browse by category</div>
@@ -129,7 +129,7 @@ const Header = () => {
                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
                           <Link to="/tags" className="flex items-center gap-3 p-3 rounded-md hover:bg-gray-100 transition-colors">
-                            <ExternalLink className="h-5 w-5 text-[#EF4444] flex-shrink-0" />
+                            <ExternalLink className="h-5 w-5 text-primary flex-shrink-0" />
                             <div>
                               <div className="font-medium text-gray-900">Tags</div>
                               <div className="text-sm text-gray-500">Browse by tags</div>

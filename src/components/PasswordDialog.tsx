@@ -89,7 +89,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
       >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
-            <Lock className="w-5 h-5 text-[#EF4444]" />
+            <Lock className="w-5 h-5 text-primary" />
             Exclusive Client Access Required
           </DialogTitle>
           <DialogDescription className="text-base">
@@ -103,7 +103,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {premiumFeatures.map((feature, index) => (
               <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg border">
-                <feature.icon className="w-5 h-5 text-[#EF4444] mt-0.5 flex-shrink-0" />
+                <feature.icon className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                 <div>
                   <h4 className="font-medium text-sm text-gray-900">{feature.title}</h4>
                   <p className="text-xs text-gray-600 mt-1">{feature.description}</p>
@@ -153,7 +153,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
             <Button
               type="submit"
               disabled={isLoading || !password.trim()}
-              className="bg-[#EF4444] hover:bg-[#EF4444]/90 flex-1"
+              className="bg-primary hover:bg-primary/90 flex-1"
               data-analytics="access-premium-button"
             >
               {isLoading ? "Verifying..." : "Access Premium Features"}
@@ -163,7 +163,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
         
         {/* Prominent CTA */}
         <div className="text-center pt-6 border-t border-gray-200">
-          <div className="bg-gradient-to-r from-[#EF4444]/10 to-[#EF4444]/5 p-6 rounded-xl">
+          <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-6 rounded-xl">
             <h3 className="font-bold text-gray-900 mb-2">Not a MovingTo client yet?</h3>
             <p className="text-sm text-gray-600 mb-4">
               Get personalized Golden Visa guidance plus full access to our premium fund analysis tools.
@@ -173,7 +173,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
               target="_blank" 
               rel="noopener noreferrer"
               onClick={handleConsultationClick}
-              className="inline-flex items-center justify-center bg-[#EF4444] hover:bg-[#EF4444]/90 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+              className="inline-flex items-center justify-center bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6 py-3 rounded-lg transition-colors"
               data-analytics="consultation-cta"
             >
               Book Free Consultation →

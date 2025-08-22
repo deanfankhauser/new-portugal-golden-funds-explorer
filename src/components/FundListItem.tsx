@@ -58,7 +58,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between mb-2">
                 <h3 className="text-lg sm:text-xl font-semibold leading-tight">
-                  <Link to={`/${fund.id}`} className="hover:text-[#EF4444] transition-colors block">
+                  <Link to={`/${fund.id}`} className="hover:text-primary transition-colors block">
                     {fund.name}
                   </Link>
                 </h3>
@@ -69,11 +69,11 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
                 <div className="flex items-center min-w-0">
-                  <Tag className="w-4 h-4 mr-2 text-[#EF4444] flex-shrink-0" />
+                  <Tag className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm text-muted-foreground">Category</p>
                     <p className="font-medium text-sm sm:text-base truncate">
-                      <Link to={`/categories/${categoryToSlug(fund.category)}`} className="hover:text-[#EF4444] transition-colors">
+                      <Link to={`/categories/${categoryToSlug(fund.category)}`} className="hover:text-primary transition-colors">
                         {fund.category}
                       </Link>
                     </p>
@@ -82,7 +82,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 
                 {mainGeoAllocation && (
                   <div className="flex items-center min-w-0">
-                    <Globe className="w-4 h-4 mr-2 text-[#EF4444] flex-shrink-0" />
+                    <Globe className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
                     <div className="min-w-0">
                       <p className="text-xs sm:text-sm text-muted-foreground">Main Region</p>
                       <p className="font-medium text-sm sm:text-base truncate">
@@ -93,7 +93,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 )}
                 
                 <div className="flex items-center min-w-0">
-                  <PieChart className="w-4 h-4 mr-2 text-[#EF4444] flex-shrink-0" />
+                  <PieChart className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm text-muted-foreground">Target Return</p>
                     <p className="font-medium text-sm sm:text-base truncate">{fund.returnTarget}</p>
@@ -101,12 +101,12 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 </div>
                 
                 <div className="flex items-center min-w-0">
-                  <User className="w-4 h-4 mr-2 text-[#EF4444] flex-shrink-0" />
+                  <User className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm text-muted-foreground">Fund Manager</p>
                     <Link 
                       to={`/manager/${managerToSlug(fund.managerName)}`} 
-                      className="font-medium hover:text-[#EF4444] transition-colors text-sm sm:text-base block truncate"
+                      className="font-medium hover:text-primary transition-colors text-sm sm:text-base block truncate"
                       title={fund.managerName}
                     >
                       {fund.managerName}
@@ -185,8 +185,8 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 size="sm"
                 className={`text-xs sm:text-sm ${
                   isSelected 
-                    ? 'bg-[#EF4444] text-white' 
-                    : 'border-[#EF4444] text-[#EF4444] hover:bg-[#EF4444] hover:text-white'
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'border-primary text-primary hover:bg-primary hover:text-primary-foreground'
                 }`}
                 onClick={handleCompareClick}
               >

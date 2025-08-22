@@ -5,38 +5,44 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 5% 15%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 5% 15%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 5% 15%;
-    --primary: 0 85% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 0 5% 15%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 0 85% 60%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
+    /* Brand Color System - Classic Luxury */
+    --brand-charcoal: 0 0% 5%;          /* Deep Charcoal #0D0D0D */
+    --brand-gold: 39 33% 59%;           /* Gold Accents #C5A46D */
+    --brand-ivory: 44 29% 96%;          /* Ivory #F8F5F0 */
+    
+    /* Core Design Tokens */
+    --background: var(--brand-ivory);
+    --foreground: var(--brand-charcoal);
+    --card: var(--brand-ivory);
+    --card-foreground: var(--brand-charcoal);
+    --popover: var(--brand-ivory);
+    --popover-foreground: var(--brand-charcoal);
+    --primary: var(--brand-gold);
+    --primary-foreground: var(--brand-charcoal);
+    --secondary: 39 20% 92%;             /* Lighter gold tint */
+    --secondary-foreground: var(--brand-charcoal);
+    --muted: 39 15% 90%;
+    --muted-foreground: 0 0% 40%;
+    --accent: var(--brand-gold);
+    --accent-foreground: var(--brand-charcoal);
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 0 85% 60%;
+    --border: 39 20% 85%;
+    --input: 39 20% 85%;
+    --ring: var(--brand-gold);
     --radius: 0.5rem;
     
-    /* Enhanced color palette */
-    --primary-50: 0 100% 97%;
-    --primary-100: 0 100% 92%;
-    --primary-200: 0 100% 85%;
-    --primary-300: 0 100% 78%;
-    --primary-400: 0 100% 67%;
-    --primary-500: 0 85% 60%;
-    --primary-600: 0 85% 55%;
-    --primary-700: 0 85% 50%;
-    --primary-800: 0 85% 45%;
-    --primary-900: 0 85% 40%;
+    /* Gold Color Palette */
+    --gold-50: 44 35% 97%;
+    --gold-100: 42 35% 92%;
+    --gold-200: 40 35% 85%;
+    --gold-300: 39 35% 75%;
+    --gold-400: 39 33% 67%;
+    --gold-500: 39 33% 59%;            /* Main gold */
+    --gold-600: 39 35% 52%;
+    --gold-700: 39 40% 45%;
+    --gold-800: 39 45% 38%;
+    --gold-900: 39 50% 30%;
     
     /* Enhanced neutral palette */
     --gray-50: 210 20% 98%;
@@ -67,25 +73,26 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 0 85% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 0 85% 60%;
+    /* Dark Mode - Inverted Luxury */
+    --background: var(--brand-charcoal);
+    --foreground: var(--brand-ivory);
+    --card: 0 0% 8%;
+    --card-foreground: var(--brand-ivory);
+    --popover: 0 0% 8%;
+    --popover-foreground: var(--brand-ivory);
+    --primary: var(--brand-gold);
+    --primary-foreground: var(--brand-charcoal);
+    --secondary: 0 0% 12%;
+    --secondary-foreground: var(--brand-ivory);
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: var(--brand-gold);
+    --accent-foreground: var(--brand-charcoal);
+    --destructive: 0 62% 51%;
+    --destructive-foreground: var(--brand-ivory);
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: var(--brand-gold);
   }
 }
 
