@@ -20,7 +20,7 @@ const HomepageSidebar: React.FC<HomepageSidebarProps> = ({
     <aside className="lg:col-span-1 order-2 lg:order-1 hidden lg:block" aria-label="Sidebar tools">
       <div className="lg:sticky lg:top-4">
         {/* Filter Section */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
           <FundFilter
             selectedTags={selectedTags}
             setSelectedTags={setSelectedTags}

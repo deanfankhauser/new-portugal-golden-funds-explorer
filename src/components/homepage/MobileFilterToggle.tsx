@@ -28,8 +28,8 @@ const MobileFilterToggle: React.FC<MobileFilterToggleProps> = ({
         className={`w-full justify-between gap-3 h-16 text-base font-medium rounded-2xl 
                    border-2 transition-all duration-300 ${
           showMobileFilter 
-            ? 'bg-primary text-white border-primary shadow-lg' 
-            : 'bg-white border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+            ? 'bg-primary text-primary-foreground border-primary shadow-lg' 
+            : 'bg-card border-border hover:bg-secondary/50 hover:border-border'
         }`}
         aria-expanded={showMobileFilter}
         aria-controls="mobile-filter-section"
@@ -78,8 +78,8 @@ const MobileFilterToggle: React.FC<MobileFilterToggleProps> = ({
             variant="ghost"
             size="sm"
             onClick={() => setShowMobileFilter(true)}
-            className="flex-1 h-10 text-sm text-gray-600 hover:text-gray-800 
-                     hover:bg-gray-100 rounded-xl border border-gray-200"
+            className="flex-1 h-10 text-sm text-muted-foreground hover:text-foreground 
+                     hover:bg-secondary rounded-xl border border-border"
           >
             <Search className="h-4 w-4 mr-2" />
             Edit Filters
@@ -87,8 +87,8 @@ const MobileFilterToggle: React.FC<MobileFilterToggleProps> = ({
           <Button
             variant="ghost"
             size="sm"
-            className="h-10 px-3 text-sm text-red-600 hover:text-red-700 
-                     hover:bg-red-50 rounded-xl border border-red-200"
+            className="h-10 px-3 text-sm text-destructive hover:text-destructive 
+                     hover:bg-destructive/10 rounded-xl border border-destructive/20"
           >
             <X className="h-4 w-4" />
           </Button>

@@ -19,12 +19,12 @@ const ResultsHeader: React.FC<ResultsHeaderProps> = ({
   setSearchQuery
 }) => {
   return (
-    <div className="flex justify-between items-center mb-6 p-4 bg-white rounded-lg border border-gray-200">
+    <div className="flex justify-between items-center mb-6 p-4 bg-card rounded-lg border border-border">
       <div>
-        <p className="text-high-contrast font-semibold text-lg" role="status">
+        <p className="text-foreground font-semibold text-lg" role="status">
           {filteredFunds.length} fund{filteredFunds.length !== 1 ? 's' : ''} found
         </p>
-        <p className="text-sm text-medium-contrast">
+        <p className="text-sm text-muted-foreground">
           All funds are Golden Visa eligible
         </p>
       </div>
