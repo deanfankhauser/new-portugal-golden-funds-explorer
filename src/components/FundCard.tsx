@@ -89,47 +89,47 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
           </div>
 
           {/* Gated Fee Information */}
-          <div className="grid grid-cols-2 gap-2 mb-4 p-3 bg-gray-50 rounded-lg">
+          <div className="grid grid-cols-2 gap-2 mb-4 p-3 bg-muted rounded-lg">
             <div>
               <div className="flex items-center gap-1 mb-1">
-                <Euro className="w-3 h-3 text-blue-500" />
+                <Euro className="w-3 h-3 text-primary" />
                 <p className="text-sm text-muted-foreground">Mgmt Fee</p>
               </div>
               {isAuthenticated ? (
                 <p className="font-medium">{fund.managementFee}%</p>
               ) : (
                 <div 
-                  className="flex items-center cursor-pointer hover:bg-gray-100 rounded px-2 py-1"
+                  className="flex items-center cursor-pointer hover:bg-secondary rounded px-2 py-1"
                   onClick={handleUnlockClick}
                   title={ContentGatingService.getGatedMessage('fees')}
                 >
-                  <Lock className="h-3 w-3 text-gray-400 mr-1" />
-                  <span className="text-xs text-gray-500">Gated</span>
+                  <Lock className="h-3 w-3 text-muted-foreground mr-1" />
+                  <span className="text-xs text-muted-foreground">Gated</span>
                 </div>
               )}
             </div>
             <div>
               <div className="flex items-center gap-1 mb-1">
-                <Euro className="w-3 h-3 text-green-500" />
+                <Euro className="w-3 h-3 text-accent" />
                 <p className="text-sm text-muted-foreground">Perf Fee</p>
               </div>
               {isAuthenticated ? (
                 <p className="font-medium">{fund.performanceFee}%</p>
               ) : (
                 <div 
-                  className="flex items-center cursor-pointer hover:bg-gray-100 rounded px-2 py-1"
+                  className="flex items-center cursor-pointer hover:bg-secondary rounded px-2 py-1"
                   onClick={handleUnlockClick}
                   title={ContentGatingService.getGatedMessage('fees')}
                 >
-                  <Lock className="h-3 w-3 text-gray-400 mr-1" />
-                  <span className="text-xs text-gray-500">Gated</span>
+                  <Lock className="h-3 w-3 text-muted-foreground mr-1" />
+                  <span className="text-xs text-muted-foreground">Gated</span>
                 </div>
               )}
             </div>
           </div>
 
           {/* Fund Manager Section */}
-          <div className="flex items-center gap-2 mb-4 bg-slate-50 p-2 rounded-md">
+          <div className="flex items-center gap-2 mb-4 bg-secondary p-2 rounded-md">
             <User className="w-4 h-4 text-primary" />
             <div className="flex-1">
               <p className="text-sm text-muted-foreground">Fund Manager</p>
@@ -144,18 +144,18 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
 
           {/* Gated Content Notice for Non-Authenticated Users */}
           {!isAuthenticated && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+            <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 mb-4">
               <div className="flex items-center gap-2 mb-2">
-                <Lock className="h-4 w-4 text-blue-600" />
-                <span className="text-sm font-medium text-blue-900">Premium Data Available</span>
+                <Lock className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium text-foreground">Premium Data Available</span>
               </div>
-              <p className="text-xs text-blue-700 mb-2">
+              <p className="text-xs text-muted-foreground mb-2">
                 Access detailed fee analysis and comparison tools
               </p>
               <Button 
                 size="sm" 
                 onClick={handleUnlockClick}
-                className="bg-blue-600 hover:bg-blue-700 text-xs px-3 py-1"
+                className="text-xs px-3 py-1"
               >
                 Unlock Premium Data
               </Button>

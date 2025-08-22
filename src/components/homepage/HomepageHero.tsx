@@ -15,8 +15,8 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
         {/* Background decoration */}
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-gradient-to-br from-primary/10 to-primary/5 rounded-full blur-3xl opacity-50"></div>
-          <div className="absolute top-20 left-1/4 w-64 h-64 bg-gradient-to-br from-blue-500/10 to-blue-500/5 rounded-full blur-2xl opacity-40"></div>
-          <div className="absolute top-40 right-1/4 w-48 h-48 bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 rounded-full blur-2xl opacity-30"></div>
+          <div className="absolute top-20 left-1/4 w-64 h-64 bg-gradient-to-br from-primary/5 to-primary/2 rounded-full blur-2xl opacity-40"></div>
+          <div className="absolute top-40 right-1/4 w-48 h-48 bg-gradient-to-br from-accent/5 to-accent/2 rounded-full blur-2xl opacity-30"></div>
         </div>
 
         <div className="relative z-10 text-center">
@@ -52,7 +52,7 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
           </div>
           
           <div className="flex justify-center mb-8 sm:mb-10" role="complementary">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-gray-200 shadow-sm">
+            <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 border border-border shadow-sm">
               <LastUpdated />
             </div>
           </div>

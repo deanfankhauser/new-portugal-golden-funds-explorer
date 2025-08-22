@@ -33,8 +33,7 @@ const ComparisonIndicator = () => {
   return (
     <>
       <Button
-        variant="outline"
-        className="border-white bg-white text-[#1A1F2C] hover:bg-[#f0f0f0] hover:text-black transition-all duration-300"
+        variant="secondary"
         onClick={handleCompareClick}
       >
         <GitCompare className="mr-2 h-4 w-4" />

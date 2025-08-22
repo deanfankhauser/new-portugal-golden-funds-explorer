@@ -52,7 +52,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
 
   return (
     <>
-      <Card className="border rounded-lg hover:border-gray-300 transition-colors bg-white shadow-sm w-full">
+      <Card className="border rounded-lg hover:border-accent transition-colors bg-card shadow-sm w-full">
         <CardContent className="p-4 sm:p-6">
           <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
             <div className="flex-1 min-w-0">
@@ -65,7 +65,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 <DataFreshnessIndicator fund={fund} variant="compact" />
               </div>
               
-              <p className="text-gray-600 mb-4 line-clamp-2 text-sm sm:text-base">{fund.description}</p>
+              <p className="text-muted-foreground mb-4 line-clamp-2 text-sm sm:text-base">{fund.description}</p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
                 <div className="flex items-center min-w-0">
@@ -116,41 +116,41 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
               </div>
 
               {/* Gated Financial Information */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 p-3 bg-muted rounded-lg">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <Euro className="w-4 h-4 mr-2 text-blue-500" />
-                    <span className="text-sm text-gray-600">Mgmt Fee:</span>
+                    <Euro className="w-4 h-4 mr-2 text-primary" />
+                    <span className="text-sm text-muted-foreground">Mgmt Fee:</span>
                   </div>
                   {isAuthenticated ? (
                     <span className="font-medium text-sm">{fund.managementFee}%</span>
                   ) : (
                     <div 
-                      className="flex items-center cursor-pointer hover:bg-gray-100 rounded px-2 py-1"
+                      className="flex items-center cursor-pointer hover:bg-secondary rounded px-2 py-1"
                       onClick={handleUnlockClick}
                       title={ContentGatingService.getGatedMessage('fees')}
                     >
-                      <Lock className="h-3 w-3 text-gray-400 mr-1" />
-                      <span className="text-xs text-gray-500">Gated</span>
+                      <Lock className="h-3 w-3 text-muted-foreground mr-1" />
+                      <span className="text-xs text-muted-foreground">Gated</span>
                     </div>
                   )}
                 </div>
                 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <Euro className="w-4 h-4 mr-2 text-green-500" />
-                    <span className="text-sm text-gray-600">Perf Fee:</span>
+                    <Euro className="w-4 h-4 mr-2 text-accent" />
+                    <span className="text-sm text-muted-foreground">Perf Fee:</span>
                   </div>
                   {isAuthenticated ? (
                     <span className="font-medium text-sm">{fund.performanceFee}%</span>
                   ) : (
                     <div 
-                      className="flex items-center cursor-pointer hover:bg-gray-100 rounded px-2 py-1"
+                      className="flex items-center cursor-pointer hover:bg-secondary rounded px-2 py-1"
                       onClick={handleUnlockClick}
                       title={ContentGatingService.getGatedMessage('fees')}
                     >
-                      <Lock className="h-3 w-3 text-gray-400 mr-1" />
-                      <span className="text-xs text-gray-500">Gated</span>
+                      <Lock className="h-3 w-3 text-muted-foreground mr-1" />
+                      <span className="text-xs text-muted-foreground">Gated</span>
                     </div>
                   )}
                 </div>
@@ -158,18 +158,18 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
 
               {/* Non-authenticated users see gated content notice */}
               {!isAuthenticated && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 mb-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <Lock className="h-4 w-4 text-blue-600" />
-                    <span className="text-sm font-medium text-blue-900">Premium Data Available</span>
+                    <Lock className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-medium text-foreground">Premium Data Available</span>
                   </div>
-                  <p className="text-xs text-blue-700 mb-2">
+                  <p className="text-xs text-muted-foreground mb-2">
                     Access detailed fee analysis, performance metrics, and comparison tools
                   </p>
                   <Button 
                     size="sm" 
                     onClick={handleUnlockClick}
-                    className="bg-blue-600 hover:bg-blue-700 text-xs px-3 py-1"
+                    className="text-xs px-3 py-1"
                   >
                     Unlock Premium Data
                   </Button>

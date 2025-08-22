@@ -16,7 +16,6 @@ const FundWebsite: React.FC<FundWebsiteProps> = ({ websiteUrl }) => {
     <div className="text-center">
       <Button
         variant="outline"
-        className="border-[#EF4444] text-[#EF4444] hover:bg-[#f0f0f0] hover:text-[#EF4444]"
         onClick={() => window.open(websiteUrl, '_blank', 'noopener,noreferrer')}
       >
         Visit Fund Website

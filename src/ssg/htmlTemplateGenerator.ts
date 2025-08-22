@@ -84,7 +84,7 @@ export function generateHTMLTemplate(
   <meta name="keywords" content="${seoData.keywords?.join(', ') || 'Portugal Golden Visa, investment funds, Portuguese residency, Golden Visa funds 2025, fund comparison, investment migration'}" />
   <meta name="author" content="Dean Fankhauser, CEO - Movingto" />
   <meta name="robots" content="${seoData.robots || 'index, follow, max-image-preview:large'}" />
-  <meta name="theme-color" content="#EF4444" />
+  <meta name="theme-color" content="#C5A46D" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="format-detection" content="telephone=no" />
@@ -115,8 +115,8 @@ export function generateHTMLTemplate(
       margin: 0;
       padding: 0;
       line-height: 1.6;
-      color: #1f2937;
-      background-color: #ffffff;
+      color: hsl(var(--foreground));
+      background-color: hsl(var(--background));
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       font-feature-settings: "rlig" 1, "calt" 1;
@@ -165,8 +165,8 @@ export function generateHTMLTemplate(
     /* High contrast mode support */
     @media (prefers-contrast: high) {
       body {
-        background-color: #ffffff;
-        color: #000000;
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
       }
     }
     
