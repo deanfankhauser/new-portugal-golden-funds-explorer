@@ -51,7 +51,7 @@ const HomepageInfoSections = () => {
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <ClipboardCheck className="h-5 w-5 text-success" />
+                <ClipboardCheck className="h-5 w-5 text-primary" />
                 Fund Quiz
               </CardTitle>
               <CardDescription>
