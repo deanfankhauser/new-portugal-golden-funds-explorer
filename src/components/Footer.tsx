@@ -27,7 +27,7 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-1 lg:col-span-1">
             <Link to="/" className="inline-block mb-4">
               <img 
-                src="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/65bf8dcb56803298881e81c7_movingto-logo-full.svg" 
+                src="/lovable-uploads/9bdf45a5-6a2f-466e-8c2d-b8ba65863e8a.png" 
                 alt="MovingTo Logo" 
                 className="h-8"
               />
