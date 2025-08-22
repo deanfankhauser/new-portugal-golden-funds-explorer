@@ -119,9 +119,9 @@ const CompactFilter: React.FC<CompactFilterProps> = ({
       <div className="sticky top-4 z-20 bg-background/95 backdrop-blur-sm border border-border rounded-2xl shadow-lg">
         {/* Compact Search and Filter Bar */}
         <div className="p-4">
-          <div className="flex gap-3">
+          <div className="space-y-3">
             {/* Search Input */}
-            <div className="flex-1 relative">
+            <div className="relative">
               <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors duration-200 ${
                 searchFocus ? 'text-accent' : 'text-muted-foreground'
               }`} />
@@ -148,7 +148,7 @@ const CompactFilter: React.FC<CompactFilterProps> = ({
                 <Button
                   variant="outline"
                   size="sm"
-                  className={`h-11 px-4 rounded-xl border-2 transition-all duration-200 ${
+                  className={`w-full h-11 px-4 rounded-xl border-2 transition-all duration-200 ${
                     activeFiltersCount > 0 
                       ? 'border-accent bg-accent/10 text-accent' 
                       : 'border-border hover:border-accent'
