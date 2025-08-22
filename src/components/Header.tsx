@@ -25,7 +25,7 @@ const Header = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
               <img 
-                src="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/65bf8df2803e405540708b3c_movingto-logo-white.svg" 
+                src="/lovable-uploads/ab17d046-1cb9-44fd-aa6d-c4d338e11090.png" 
                 alt="MovingTo Logo" 
                 className="h-6"
               />
