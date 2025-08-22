@@ -13,6 +13,10 @@
     {
       "source": "/robots.txt",
       "destination": "/robots.txt"
+    },
+    {
+      "source": "/((?!api|assets/|.*\\.(?:js|css|png|jpg|jpeg|gif|ico|svg|txt|xml|map|json|webp|avif)).*)",
+      "destination": "/index.html"
     }
   ],
   "redirects": [
