@@ -29,7 +29,7 @@ const ComparisonFinder = () => {
       <CardContent>
         <div className="flex flex-col md:flex-row gap-4 items-end">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               First Fund
             </label>
             <Select value={fund1} onValueChange={setFund1}>
@@ -46,12 +46,12 @@ const ComparisonFinder = () => {
             </Select>
           </div>
 
-          <div className="hidden md:block text-gray-400">
+          <div className="hidden md:block text-muted-foreground">
             <ArrowRight className="h-6 w-6" />
           </div>
 
           <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Second Fund
             </label>
             <Select 

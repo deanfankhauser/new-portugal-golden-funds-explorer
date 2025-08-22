@@ -5,17 +5,17 @@ import { Link } from 'react-router-dom';
 const ComparisonBreadcrumbs = () => {
   return (
     <nav aria-label="breadcrumbs" className="mb-6">
-      <ol className="flex items-center text-sm text-gray-500">
+      <ol className="flex items-center text-sm text-muted-foreground">
         <li>
-          <Link to="/" className="hover:text-[#EF4444]">Home</Link>
+          <Link to="/" className="hover:text-primary">Home</Link>
         </li>
         <li className="mx-2">/</li>
         <li>
-          <Link to="/comparisons" className="hover:text-[#EF4444]">Fund Comparisons</Link>
+          <Link to="/comparisons" className="hover:text-primary">Fund Comparisons</Link>
         </li>
         <li className="mx-2">/</li>
         <li>
-          <span className="font-medium text-[#EF4444]">Compare Selected Funds</span>
+          <span className="font-medium text-primary">Compare Selected Funds</span>
         </li>
       </ol>
     </nav>

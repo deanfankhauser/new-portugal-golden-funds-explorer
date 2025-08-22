@@ -28,16 +28,16 @@ export default {
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))',
-					50: 'hsl(var(--gold-50))',
-					100: 'hsl(var(--gold-100))',
-					200: 'hsl(var(--gold-200))',
-					300: 'hsl(var(--gold-300))',
-					400: 'hsl(var(--gold-400))',
-					500: 'hsl(var(--gold-500))',
-					600: 'hsl(var(--gold-600))',
-					700: 'hsl(var(--gold-700))',
-					800: 'hsl(var(--gold-800))',
-					900: 'hsl(var(--gold-900))'
+					50: 'hsl(var(--bordeaux-50))',
+					100: 'hsl(var(--bordeaux-100))',
+					200: 'hsl(var(--bordeaux-200))',
+					300: 'hsl(var(--bordeaux-300))',
+					400: 'hsl(var(--bordeaux-400))',
+					500: 'hsl(var(--bordeaux-500))',
+					600: 'hsl(var(--bordeaux-600))',
+					700: 'hsl(var(--bordeaux-700))',
+					800: 'hsl(var(--bordeaux-800))',
+					900: 'hsl(var(--bordeaux-900))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -53,7 +53,17 @@ export default {
 				},
 				accent: {
 					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
+					foreground: 'hsl(var(--accent-foreground))',
+					50: 'hsl(var(--bronze-50))',
+					100: 'hsl(var(--bronze-100))',
+					200: 'hsl(var(--bronze-200))',
+					300: 'hsl(var(--bronze-300))',
+					400: 'hsl(var(--bronze-400))',
+					500: 'hsl(var(--bronze-500))',
+					600: 'hsl(var(--bronze-600))',
+					700: 'hsl(var(--bronze-700))',
+					800: 'hsl(var(--bronze-800))',
+					900: 'hsl(var(--bronze-900))'
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',

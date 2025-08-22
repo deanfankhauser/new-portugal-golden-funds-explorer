@@ -100,8 +100,8 @@ const FundComparisonFAQ: React.FC<FundComparisonFAQProps> = ({ fund1, fund2 }) =
   }, [faqs]);
 
   return (
-    <section className="bg-white rounded-lg p-6 shadow-sm border mt-8" itemScope itemType="https://schema.org/FAQPage">
-      <h2 className="text-2xl font-bold mb-6 text-gray-900">
+    <section className="bg-card rounded-lg p-6 shadow-sm border border-border mt-8" itemScope itemType="https://schema.org/FAQPage">
+      <h2 className="text-2xl font-bold mb-6 text-foreground">
         Frequently Asked Questions: {fund1.name} vs {fund2.name}
       </h2>
       
@@ -110,18 +110,18 @@ const FundComparisonFAQ: React.FC<FundComparisonFAQProps> = ({ fund1, fund2 }) =
           <AccordionItem 
             key={index} 
             value={`item-${index}`}
-            className="bg-gray-50 rounded-lg border border-gray-200"
+            className="bg-muted/50 rounded-lg border border-border"
             itemScope 
             itemType="https://schema.org/Question"
           >
             <AccordionTrigger 
-              className="px-6 py-3 text-left hover:no-underline hover:bg-gray-100 rounded-t-lg text-sm"
+              className="px-6 py-3 text-left hover:no-underline hover:bg-muted rounded-t-lg text-sm"
               itemProp="name"
             >
-              <span className="font-medium text-gray-900">{faq.question}</span>
+              <span className="font-medium text-foreground">{faq.question}</span>
             </AccordionTrigger>
             <AccordionContent 
-              className="px-6 pb-4 text-sm text-gray-700 leading-relaxed"
+              className="px-6 pb-4 text-sm text-muted-foreground leading-relaxed"
               itemScope 
               itemType="https://schema.org/Answer"
             >

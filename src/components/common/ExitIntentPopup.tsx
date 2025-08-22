@@ -107,7 +107,7 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) =
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-md bg-white border-2 border-primary/20">
+      <DialogContent className="sm:max-w-md bg-card border-2 border-primary/20">
         <button
           onClick={handleClose}
           className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
@@ -119,7 +119,7 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) =
         <DialogHeader className="text-center space-y-4">
           <div className="flex justify-center">
             <div className="bg-gradient-to-r from-primary to-primary/80 p-3 rounded-full">
-              <Users className="h-8 w-8 text-white" />
+              <Users className="h-8 w-8 text-primary-foreground" />
             </div>
           </div>
           
@@ -157,7 +157,7 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) =
           <div className="flex flex-col gap-3">
             <Button 
               onClick={handleContactClick}
-              className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-semibold h-12"
+              className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-semibold h-12"
             >
               <Users className="mr-2 h-5 w-5" />
               Speak with an Expert
