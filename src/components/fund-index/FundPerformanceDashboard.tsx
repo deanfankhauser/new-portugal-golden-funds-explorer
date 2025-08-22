@@ -11,7 +11,7 @@ interface FundPerformanceDashboardProps {
   scores: FundScore[];
 }
 
-const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#84CC16', '#F97316'];
+const COLORS = ['hsl(var(--primary))', 'hsl(var(--success))', 'hsl(var(--warning))', 'hsl(var(--destructive))', 'hsl(var(--accent))', 'hsl(var(--primary) / 0.7)', 'hsl(var(--success) / 0.7)', 'hsl(var(--warning) / 0.7)'];
 
 const FundPerformanceDashboard: React.FC<FundPerformanceDashboardProps> = ({ scores }) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -77,8 +77,8 @@ const FundPerformanceDashboard: React.FC<FundPerformanceDashboardProps> = ({ sco
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-          <p className="font-semibold text-gray-900">{label}</p>
+        <div className="bg-card p-3 border border-border rounded-lg shadow-lg">
+          <p className="font-semibold text-foreground">{label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
               {entry.name}: {entry.value}
@@ -94,7 +94,7 @@ const FundPerformanceDashboard: React.FC<FundPerformanceDashboardProps> = ({ sco
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Activity className="h-5 w-5 text-blue-500" />
+          <Activity className="h-5 w-5 text-primary" />
           Fund Performance Dashboard
         </CardTitle>
       </CardHeader>
@@ -130,7 +130,7 @@ const FundPerformanceDashboard: React.FC<FundPerformanceDashboardProps> = ({ sco
                       <XAxis dataKey="range" />
                       <YAxis />
                       <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="count" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -176,8 +176,8 @@ const FundPerformanceDashboard: React.FC<FundPerformanceDashboardProps> = ({ sco
                     <Area 
                       type="monotone" 
                       dataKey="avgScore" 
-                      stroke="#3B82F6" 
-                      fill="#3B82F6" 
+                      stroke="hsl(var(--primary))" 
+                      fill="hsl(var(--primary))" 
                       fillOpacity={0.3}
                     />
                   </AreaChart>
@@ -208,10 +208,10 @@ const FundPerformanceDashboard: React.FC<FundPerformanceDashboardProps> = ({ sco
                         return fund?.fullName || label;
                       }}
                     />
-                    <Bar dataKey="performance" stackId="a" fill="#10B981" name="Performance" />
-                    <Bar dataKey="regulatory" stackId="a" fill="#3B82F6" name="Regulatory" />
-                    <Bar dataKey="fees" stackId="a" fill="#F59E0B" name="Fees" />
-                    <Bar dataKey="protection" stackId="a" fill="#EF4444" name="Protection" />
+                    <Bar dataKey="performance" stackId="a" fill="hsl(var(--success))" name="Performance" />
+                    <Bar dataKey="regulatory" stackId="a" fill="hsl(var(--primary))" name="Regulatory" />
+                    <Bar dataKey="fees" stackId="a" fill="hsl(var(--warning))" name="Fees" />
+                    <Bar dataKey="protection" stackId="a" fill="hsl(var(--destructive))" name="Protection" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -244,8 +244,8 @@ const FundPerformanceDashboard: React.FC<FundPerformanceDashboardProps> = ({ sco
                         return fund?.fullName || label;
                       }}
                     />
-                    <Bar yAxisId="left" dataKey="score" fill="#3B82F6" name="Movingto Score" />
-                    <Line yAxisId="right" type="monotone" dataKey="fee" stroke="#EF4444" strokeWidth={3} name="Management Fee" />
+                    <Bar yAxisId="left" dataKey="score" fill="hsl(var(--primary))" name="Movingto Score" />
+                    <Line yAxisId="right" type="monotone" dataKey="fee" stroke="hsl(var(--destructive))" strokeWidth={3} name="Management Fee" />
                   </LineChart>
                 </ResponsiveContainer>
               </div>

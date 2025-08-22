@@ -25,14 +25,14 @@ const IndexVisualization: React.FC<IndexVisualizationProps> = ({ scores }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg">
-          <h4 className="font-medium text-gray-900 mb-2">{data.fullName}</h4>
+        <div className="bg-card p-4 border border-border rounded-lg shadow-lg">
+          <h4 className="font-medium text-foreground mb-2">{data.fullName}</h4>
           <div className="space-y-1">
-            <p className="text-sm text-gray-600">
-              Score: <span className="font-medium text-gray-900">{data.score}</span>
+            <p className="text-sm text-muted-foreground">
+              Score: <span className="font-medium text-foreground">{data.score}</span>
             </p>
-            <p className="text-sm text-gray-600">
-              Rank: <span className="font-medium text-gray-900">#{data.rank}</span>
+            <p className="text-sm text-muted-foreground">
+              Rank: <span className="font-medium text-foreground">#{data.rank}</span>
             </p>
           </div>
         </div>
@@ -42,12 +42,12 @@ const IndexVisualization: React.FC<IndexVisualizationProps> = ({ scores }) => {
   };
 
   return (
-    <Card className="border border-gray-200 bg-white">
-      <CardHeader className="border-b border-gray-200 bg-white">
-        <CardTitle className="text-xl font-semibold text-gray-900">
+    <Card className="border border-border bg-card">
+      <CardHeader className="border-b border-border bg-card">
+        <CardTitle className="text-xl font-semibold text-foreground">
           Performance Overview
         </CardTitle>
-        <p className="text-sm text-gray-600 mt-1">
+        <p className="text-sm text-muted-foreground mt-1">
           Comparative scoring visualization
         </p>
       </CardHeader>
@@ -55,24 +55,24 @@ const IndexVisualization: React.FC<IndexVisualizationProps> = ({ scores }) => {
         <div className="h-80 w-full mb-6">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis 
                 dataKey="name" 
                 angle={-45}
                 textAnchor="end"
                 height={80}
                 interval={0}
-                tick={{ fontSize: 12, fill: '#64748b' }}
+                tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
               />
               <YAxis 
                 domain={[0, 100]}
-                tick={{ fontSize: 12, fill: '#64748b' }}
+                tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
                 label={{ value: 'Score', angle: -90, position: 'insideLeft' }}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="score" radius={[4, 4, 0, 0]} fill="#6b7280">
+              <Bar dataKey="score" radius={[4, 4, 0, 0]} fill="hsl(var(--primary))">
                 {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill="#6b7280" />
+                  <Cell key={`cell-${index}`} fill="hsl(var(--primary))" />
                 ))}
               </Bar>
             </BarChart>
@@ -80,25 +80,25 @@ const IndexVisualization: React.FC<IndexVisualizationProps> = ({ scores }) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div className="text-2xl font-bold text-gray-900">
+          <div className="bg-muted/50 p-4 rounded-lg border border-border">
+            <div className="text-2xl font-bold text-foreground">
               {Math.max(...chartData.map(d => d.score))}
             </div>
-            <div className="text-sm text-gray-600">Highest Score</div>
+            <div className="text-sm text-muted-foreground">Highest Score</div>
           </div>
           
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div className="text-2xl font-bold text-gray-900">
+          <div className="bg-muted/50 p-4 rounded-lg border border-border">
+            <div className="text-2xl font-bold text-foreground">
               {(chartData.reduce((sum, d) => sum + d.score, 0) / chartData.length).toFixed(1)}
             </div>
-            <div className="text-sm text-gray-600">Average Score</div>
+            <div className="text-sm text-muted-foreground">Average Score</div>
           </div>
           
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div className="text-2xl font-bold text-gray-900">
+          <div className="bg-muted/50 p-4 rounded-lg border border-border">
+            <div className="text-2xl font-bold text-foreground">
               {chartData.length}
             </div>
-            <div className="text-sm text-gray-600">Total Funds</div>
+            <div className="text-sm text-muted-foreground">Total Funds</div>
           </div>
         </div>
       </CardContent>

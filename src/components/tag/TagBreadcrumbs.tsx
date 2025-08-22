@@ -10,17 +10,17 @@ interface TagBreadcrumbsProps {
 const TagBreadcrumbs = ({ tagName, tagSlug }: TagBreadcrumbsProps) => {
   return (
     <nav aria-label="breadcrumbs" className="mb-6">
-      <ol className="flex items-center text-sm text-gray-500">
+      <ol className="flex items-center text-sm text-muted-foreground">
         <li>
-          <Link to="/" className="hover:text-[#EF4444]">Home</Link>
+          <Link to="/" className="hover:text-primary">Home</Link>
         </li>
         <li className="mx-2">/</li>
         <li>
-          <Link to="/tags" className="hover:text-[#EF4444]">Tags</Link>
+          <Link to="/tags" className="hover:text-primary">Tags</Link>
         </li>
         <li className="mx-2">/</li>
         <li>
-          <span className="font-medium text-[#EF4444]">{tagName}</span>
+          <span className="font-medium text-primary">{tagName}</span>
         </li>
       </ol>
     </nav>
