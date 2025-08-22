@@ -33,7 +33,7 @@ const FundIndexMobileCard: React.FC<FundIndexMobileCardProps> = ({ score }) => {
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg font-bold text-blue-600">#{score.rank}</span>
+                <span className="text-lg font-bold text-primary">#{score.rank}</span>
                 {score.rank <= 3 && (
                   <Badge variant="secondary" className="text-xs">
                     Top {score.rank}
@@ -46,8 +46,8 @@ const FundIndexMobileCard: React.FC<FundIndexMobileCardProps> = ({ score }) => {
             <div className="text-right">
               {isAuthenticated ? (
                 <>
-                  <div className="text-2xl font-bold text-blue-600">{score.movingtoScore}</div>
-                  <div className="text-xs text-gray-500">Movingto Score</div>
+                  <div className="text-2xl font-bold text-primary">{score.movingtoScore}</div>
+                  <div className="text-xs text-muted-foreground">Movingto Score</div>
                 </>
               ) : (
                 <div 

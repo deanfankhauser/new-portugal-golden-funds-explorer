@@ -102,22 +102,22 @@ const ProcessingTimeTracker: React.FC<ProcessingTimeTrackerProps> = ({ fund }) =
   const totalTime = calculateTotalTime(steps);
 
   return (
-    <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+    <Card className="bg-gradient-to-br from-accent/5 to-accent/10 border-accent/20">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-xl text-gray-900">
-          <Clock className="w-5 h-5 text-blue-600" />
+        <CardTitle className="flex items-center gap-2 text-xl text-foreground">
+          <Clock className="w-5 h-5 text-accent" />
           Investment Processing Timeline
         </CardTitle>
-        <p className="text-gray-600">
-          Expected processing time: <span className="font-semibold text-blue-700">{totalTime}</span>
+        <p className="text-muted-foreground">
+          Expected processing time: <span className="font-semibold text-accent">{totalTime}</span>
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Progress Overview */}
-        <div className="bg-white rounded-lg p-4 border border-blue-100">
+        <div className="bg-card rounded-lg p-4 border border-accent/10">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">Overall Progress</span>
-            <span className="text-sm text-gray-500">0% Complete</span>
+            <span className="text-sm font-medium text-foreground">Overall Progress</span>
+            <span className="text-sm text-muted-foreground">0% Complete</span>
           </div>
           <Progress value={0} className="h-2" />
         </div>
@@ -125,29 +125,29 @@ const ProcessingTimeTracker: React.FC<ProcessingTimeTrackerProps> = ({ fund }) =
         {/* Processing Steps */}
         <div className="space-y-4">
           {steps.map((step, index) => (
-            <div key={step.id} className="flex items-start gap-4 p-4 bg-white rounded-lg border border-gray-100">
+            <div key={step.id} className="flex items-start gap-4 p-4 bg-card rounded-lg border border-border">
               <div className="flex-shrink-0 mt-1">
                 {step.completed ? (
-                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <CheckCircle className="w-5 h-5 text-success" />
                 ) : (
-                  <Circle className="w-5 h-5 text-gray-300" />
+                  <Circle className="w-5 h-5 text-muted-foreground/50" />
                 )}
               </div>
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1">
-                  <h4 className="font-medium text-gray-900">{step.title}</h4>
-                  <span className="text-sm text-blue-600 font-medium">{step.duration}</span>
+                  <h4 className="font-medium text-foreground">{step.title}</h4>
+                  <span className="text-sm text-accent font-medium">{step.duration}</span>
                 </div>
-                <p className="text-sm text-gray-600">{step.description}</p>
+                <p className="text-sm text-muted-foreground">{step.description}</p>
               </div>
             </div>
           ))}
         </div>
 
         {/* Important Notes */}
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-          <h4 className="font-semibold text-amber-800 mb-2">Important Notes</h4>
-          <ul className="text-xs text-amber-700 space-y-1">
+        <div className="bg-warning/10 border border-warning/20 rounded-lg p-4">
+          <h4 className="font-semibold text-warning mb-2">Important Notes</h4>
+          <ul className="text-xs text-warning-foreground/80 space-y-1">
             <li>• Processing times are estimates and may vary based on application complexity</li>
             <li>• Additional documentation requests may extend processing time</li>
             <li>• Peak periods may result in longer processing times</li>

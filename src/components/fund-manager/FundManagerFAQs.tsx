@@ -102,7 +102,7 @@ const FundManagerFAQs: React.FC<FundManagerFAQsProps> = ({ fund }) => {
           </h3>
           <Link 
             to={`/${fund.id}`}
-            className="text-[#EF4444] hover:text-[#EF4444]/80 transition-colors flex items-center gap-1 text-sm"
+            className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1 text-sm"
           >
             View full details
             <ExternalLink className="w-3 h-3" />
