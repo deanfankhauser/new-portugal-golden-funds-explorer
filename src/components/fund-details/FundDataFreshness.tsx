@@ -17,26 +17,26 @@ export const FundDataFreshness: React.FC<FundDataFreshnessProps> = ({
   const dataAge = DateManagementService.getContentAge(contentDates.dataLastVerified);
   
   return (
-    <div className={`bg-gray-50 rounded-lg p-4 space-y-3 ${className}`}>
-      <h3 className="text-sm font-semibold text-gray-900">Data Freshness</h3>
+    <div className={`bg-muted rounded-lg p-4 space-y-3 ${className}`}>
+      <h3 className="text-sm font-semibold text-foreground">Data Freshness</h3>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
         <div className="space-y-2">
           <div className="flex justify-between">
-            <span className="text-gray-600">Last Updated:</span>
+            <span className="text-muted-foreground">Last Updated:</span>
             <time 
               dateTime={contentDates.dateModified}
-              className="font-medium text-gray-900"
+              className="font-medium text-foreground"
             >
               {DateManagementService.formatDisplayDate(contentDates.dateModified)}
             </time>
           </div>
           
           <div className="flex justify-between">
-            <span className="text-gray-600">Data Verified:</span>
+            <span className="text-muted-foreground">Data Verified:</span>
             <time 
               dateTime={contentDates.dataLastVerified}
-              className="font-medium text-gray-900"
+              className="font-medium text-foreground"
             >
               {DateManagementService.formatDisplayDate(contentDates.dataLastVerified)}
             </time>
@@ -46,10 +46,10 @@ export const FundDataFreshness: React.FC<FundDataFreshnessProps> = ({
         <div className="space-y-2">
           {fund.performanceDataDate && (
             <div className="flex justify-between">
-              <span className="text-gray-600">Performance Data:</span>
+              <span className="text-muted-foreground">Performance Data:</span>
               <time 
                 dateTime={fund.performanceDataDate}
-                className="font-medium text-gray-900"
+                className="font-medium text-foreground"
               >
                 {DateManagementService.formatDisplayDate(fund.performanceDataDate)}
               </time>
@@ -58,10 +58,10 @@ export const FundDataFreshness: React.FC<FundDataFreshnessProps> = ({
           
           {fund.feeLastUpdated && (
             <div className="flex justify-between">
-              <span className="text-gray-600">Fees Updated:</span>
+              <span className="text-muted-foreground">Fees Updated:</span>
               <time 
                 dateTime={fund.feeLastUpdated}
-                className="font-medium text-gray-900"
+                className="font-medium text-foreground"
               >
                 {DateManagementService.formatDisplayDate(fund.feeLastUpdated)}
               </time>
@@ -71,13 +71,13 @@ export const FundDataFreshness: React.FC<FundDataFreshnessProps> = ({
       </div>
       
       {/* Data freshness indicator */}
-      <div className="flex items-center gap-2 pt-2 border-t border-gray-200">
+      <div className="flex items-center gap-2 pt-2 border-t border-border">
         <div className={`h-2 w-2 rounded-full ${
-          dataAge <= 7 ? 'bg-green-500' : 
-          dataAge <= 30 ? 'bg-yellow-500' : 
-          'bg-red-500'
+          dataAge <= 7 ? 'bg-success' : 
+          dataAge <= 30 ? 'bg-warning' : 
+          'bg-destructive'
         }`} />
-        <span className="text-xs text-gray-600">
+        <span className="text-xs text-muted-foreground">
           Data is {dataAge} days old
           {dataAge <= 7 && ' (Very Fresh)'}
           {dataAge > 7 && dataAge <= 30 && ' (Fresh)'}
@@ -86,8 +86,8 @@ export const FundDataFreshness: React.FC<FundDataFreshnessProps> = ({
       </div>
       
       {shouldShowWarning && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded p-2">
-          <p className="text-xs text-yellow-800">
+        <div className="bg-warning/10 border border-warning/30 rounded p-2">
+          <p className="text-xs text-warning-foreground">
             ⚠️ This data is over 90 days old and should be verified against official sources.
           </p>
         </div>

@@ -38,13 +38,13 @@ export const StarRating: React.FC<StarRatingProps> = ({
           return (
             <div key={index} className={`relative ${sizeClasses[size]}`}>
               {/* Background star (empty) */}
-              <Star className={`absolute inset-0 ${sizeClasses[size]} fill-none text-muted`} />
+              <Star className={`absolute inset-0 ${sizeClasses[size]} fill-none text-muted-foreground`} />
               {/* Foreground star (filled) with clipping */}
               <div 
                 className="overflow-hidden"
                 style={{ width: `${fillPercentage}%` }}
               >
-                <Star className={`${sizeClasses[size]} fill-warning text-warning`} />
+                <Star className={`${sizeClasses[size]} fill-accent text-accent`} />
               </div>
             </div>
           );

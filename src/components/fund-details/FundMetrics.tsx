@@ -79,16 +79,16 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
         {allMetrics.map((metric) => (
-          <Card key={`${metric.label}-${metric.value}`} className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+          <Card key={`${metric.label}-${metric.value}`} className="bg-card border border-border shadow-sm hover:shadow-md transition-all duration-300">
             <CardContent className="p-4 md:p-6">
-              <h3 className="font-medium text-gray-500 mb-1 md:mb-2 text-xs md:text-sm uppercase tracking-wide">
+              <h3 className="font-medium text-muted-foreground mb-1 md:mb-2 text-xs md:text-sm uppercase tracking-wide">
                 {metric.label}
               </h3>
-              <p className="text-lg md:text-2xl font-bold text-[#EF4444] leading-tight">
+              <p className="text-lg md:text-2xl font-bold text-primary leading-tight">
                 {metric.value}
               </p>
               {metric.subtitle && (
-                <p className="text-xs md:text-sm text-gray-600 mt-1">{metric.subtitle}</p>
+                <p className="text-xs md:text-sm text-muted-foreground mt-1">{metric.subtitle}</p>
               )}
             </CardContent>
           </Card>
@@ -96,16 +96,16 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
       </div>
 
       {!isAuthenticated && (
-        <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 md:p-6 rounded-lg border border-blue-200">
+        <div className="mt-6 bg-gradient-to-r from-primary/5 to-accent/5 p-4 md:p-6 rounded-lg border border-primary/20">
           <div className="text-center">
-            <Lock className="w-6 h-6 text-blue-600 mx-auto mb-3" />
-            <h3 className="font-semibold text-blue-900 mb-2">Advanced Fund Analytics Available</h3>
-            <p className="text-sm text-blue-700 mb-4 max-w-md mx-auto">
+            <Lock className="w-6 h-6 text-primary mx-auto mb-3" />
+            <h3 className="font-semibold text-foreground mb-2">Advanced Fund Analytics Available</h3>
+            <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
               Get access to detailed performance metrics, risk analysis, and portfolio allocation data
             </p>
             <Button 
               onClick={handleUnlockClick}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               <Eye className="w-4 h-4 mr-2" />
               View Advanced Analytics

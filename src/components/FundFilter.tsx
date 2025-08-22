@@ -129,11 +129,11 @@ const FundFilter: React.FC<FundFilterProps> = ({
               variant={selectedTags.includes(tag) ? "default" : "outline"}
               size="sm"
               onClick={() => toggleTag(tag)}
-              className={`${selectedTags.includes(tag) ? 
-                "bg-primary hover:bg-primary/90 text-white shadow-md" : 
-                "border-border hover:bg-secondary text-muted-foreground hover:text-foreground hover:border-border/80"} 
-                text-xs px-3 py-2 h-auto min-h-[32px] rounded-full transition-all duration-200 
-                hover:scale-105 hover:shadow-sm`}
+                      className={`${selectedTags.includes(tag) ? 
+                        "bg-primary hover:bg-primary/90 text-primary-foreground shadow-md" : 
+                        "border-border hover:bg-secondary text-muted-foreground hover:text-foreground hover:border-border/80"} 
+                        text-xs px-3 py-2 h-auto min-h-[32px] rounded-full transition-all duration-200 
+                        hover:scale-105 hover:shadow-sm`}
             >
               {tag}
             </Button>
@@ -309,8 +309,8 @@ const FundFilter: React.FC<FundFilterProps> = ({
                   variant="outline" 
                   size="sm" 
                   onClick={clearFilters}
-                  className="text-sm text-destructive hover:text-destructive/90 hover:bg-destructive/10 
-                           flex items-center gap-2 rounded-full border-destructive/20 hover:border-destructive/30"
+                  className="text-sm text-muted-foreground hover:text-foreground hover:bg-muted 
+                           flex items-center gap-2 rounded-full border-border hover:border-accent"
                 >
                   <X className="w-4 h-4" />
                   Clear All
