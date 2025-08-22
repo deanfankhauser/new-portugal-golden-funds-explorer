@@ -3,12 +3,25 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PremiumCTA from '../cta/PremiumCTA';
 import LastUpdated from '../common/LastUpdated';
+import { funds } from '../../data/funds';
 
 interface HomepageHeroProps {
   isAuthenticated: boolean;
 }
 
 const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
+  // Calculate the most recent update date from all funds
+  const getMostRecentUpdateDate = () => {
+    const dates = funds
+      .map(fund => fund.dateModified || fund.dataLastVerified)
+      .filter(Boolean)
+      .sort((a, b) => new Date(b!).getTime() - new Date(a!).getTime());
+    
+    return dates[0] || null;
+  };
+
+  const mostRecentUpdate = getMostRecentUpdateDate();
+
   return (
     <header className="mb-12 sm:mb-16 lg:mb-20 max-w-7xl mx-auto container-responsive-padding">
       <div className="relative">
@@ -48,11 +61,13 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
             </a>
           </div>
           
-          <div className="flex justify-center mb-8 sm:mb-10" role="complementary">
-            <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 border border-border shadow-sm">
-              <LastUpdated />
+          {mostRecentUpdate && (
+            <div className="flex justify-center mb-8 sm:mb-10" role="complementary">
+              <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 border border-border shadow-sm">
+                <LastUpdated dateModified={mostRecentUpdate} />
+              </div>
             </div>
-          </div>
+          )}
 
           {!isAuthenticated && (
               <div className="mb-10 sm:mb-12" role="complementary" aria-label="Get expert guidance">
