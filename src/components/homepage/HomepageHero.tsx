@@ -31,10 +31,7 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
           <p className="text-lg sm:text-xl md:text-2xl text-medium-contrast 
                        mb-6 sm:mb-8 max-w-4xl leading-relaxed font-light mx-auto">
             Explore <span className="font-semibold text-accent">Portugal Golden Visa Investment Funds</span> with 
-            comprehensive analysis and compare qualified funds for your Golden Visa application. Access our 
-            <Link to="/index" className="text-accent hover:text-accent/80 font-medium underline">
-              complete fund database
-            </Link> for detailed rankings and comparisons.
+            comprehensive analysis and compare qualified funds for your Golden Visa application.
           </p>
           
           <div className="mb-8 sm:mb-10">
