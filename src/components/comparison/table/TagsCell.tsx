@@ -17,7 +17,7 @@ const TagsCell: React.FC<TagsCellProps> = ({ tags, highlight = false }) => {
         <Link
           key={tag}
           to={`/tags/${tagToSlug(tag)}`}
-          className="text-xs bg-secondary hover:bg-primary hover:text-white px-2 py-1 rounded-full transition-colors duration-200"
+          className="text-xs bg-secondary hover:bg-primary hover:text-primary-foreground px-2 py-1 rounded-full transition-colors duration-200"
           title={`View all funds tagged with ${tag}`}
         >
           {tag}

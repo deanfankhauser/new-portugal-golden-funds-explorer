@@ -8,7 +8,7 @@ interface ComparisonCellProps {
 
 const ComparisonCell: React.FC<ComparisonCellProps> = ({ value, highlight = false }) => {
   return (
-    <td className={`py-3 px-4 ${highlight ? "bg-green-50" : ""}`}>
+    <td className={`py-3 px-4 ${highlight ? "bg-success/10" : ""}`}>
       {value}
     </td>
   );
