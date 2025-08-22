@@ -98,7 +98,8 @@ export function generateHTMLTemplate(
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="https://cdn.prod.website-files.com/6095501e0284878a0e7c5c52/66fbc14f0b738f09e77cadb8_fav.png">
+  <link rel="icon" href="/lovable-uploads/98ee9edf-f243-4fb8-9277-d11d472efd15.png" type="image/png">
+  <link rel="apple-touch-icon" href="/lovable-uploads/98ee9edf-f243-4fb8-9277-d11d472efd15.png">
   
   <!-- Critical CSS Inline for Performance -->
   <style>
