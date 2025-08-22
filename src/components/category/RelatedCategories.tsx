@@ -12,14 +12,14 @@ const RelatedCategories: React.FC<RelatedCategoriesProps> = ({ allCategories, cu
   const otherCategories = allCategories.filter(cat => cat !== currentCategory);
 
   return (
-    <div className="mt-8 pt-4 border-t border-gray-200">
+    <div className="mt-8 pt-4 border-t border-border">
       <h2 className="text-xl font-semibold mb-4">Other Categories</h2>
       <div className="flex flex-wrap gap-2">
         {otherCategories.map(cat => (
           <Link 
             key={cat} 
             to={`/categories/${categoryToSlug(cat)}`}
-            className="px-3 py-1 bg-white border border-gray-200 rounded-full hover:bg-gray-100 text-sm"
+            className="px-3 py-1 bg-card border border-border rounded-full hover:bg-muted text-sm"
           >
             {cat}
           </Link>

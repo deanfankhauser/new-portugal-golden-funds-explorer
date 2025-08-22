@@ -10,7 +10,7 @@ interface CategoriesListProps {
 
 const CategoriesList: React.FC<CategoriesListProps> = ({ categories }) => {
   return (
-    <section className="bg-white p-4 sm:p-6 rounded-lg shadow-sm" aria-labelledby="categories-heading">
+    <section className="bg-card p-4 sm:p-6 rounded-lg shadow-sm" aria-labelledby="categories-heading">
       <h2 id="categories-heading" className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
         Portugal Golden Visa Investment Fund Categories ({categories.length})
       </h2>
@@ -25,13 +25,13 @@ const CategoriesList: React.FC<CategoriesListProps> = ({ categories }) => {
           >
             <Link 
               to={`/categories/${categoryToSlug(category)}`} 
-              className="p-3 sm:p-4 flex items-center justify-between hover:bg-gray-50 min-h-[60px]"
+              className="p-3 sm:p-4 flex items-center justify-between hover:bg-muted min-h-[60px]"
             >
               <div className="flex items-center min-w-0 flex-1">
                 <Folder className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 text-[#EF4444] flex-shrink-0" />
                 <div className="min-w-0 flex-1">
                   <meta itemProp="position" content={`${index + 1}`} />
-                  <span itemProp="name" className="font-medium text-base sm:text-lg text-gray-800 block truncate">
+                  <span itemProp="name" className="font-medium text-base sm:text-lg text-foreground block truncate">
                     {category}
                   </span>
                 </div>
@@ -43,7 +43,7 @@ const CategoriesList: React.FC<CategoriesListProps> = ({ categories }) => {
       </ul>
       
       <div className="mt-6 sm:mt-8 pt-4 border-t border-gray-200">
-        <p className="text-gray-600 mb-4 text-sm sm:text-base">
+        <p className="text-muted-foreground mb-4 text-sm sm:text-base">
           Each category represents a different investment approach in the Portuguese market. Click on a category to see all funds in that investment area.
         </p>
         <Link 

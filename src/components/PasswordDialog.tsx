@@ -99,14 +99,14 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
         
         {/* Premium Features Preview */}
         <div className="my-6">
-          <h3 className="font-semibold text-gray-900 mb-4">🔒 What you're missing:</h3>
+          <h3 className="font-semibold text-foreground mb-4">🔒 What you're missing:</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {premiumFeatures.map((feature, index) => (
-              <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg border">
+              <div key={index} className="flex items-start gap-3 p-3 bg-muted rounded-lg border border-border">
                 <feature.icon className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                 <div>
-                  <h4 className="font-medium text-sm text-gray-900">{feature.title}</h4>
-                  <p className="text-xs text-gray-600 mt-1">{feature.description}</p>
+                  <h4 className="font-medium text-sm text-foreground">{feature.title}</h4>
+                  <p className="text-xs text-muted-foreground mt-1">{feature.description}</p>
                 </div>
               </div>
             ))}
@@ -114,12 +114,12 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
         </div>
 
         {/* Urgency Message */}
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+        <div className="bg-warning/10 border border-warning/20 rounded-lg p-4 mb-6">
           <div className="flex items-start gap-3">
-            <Star className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+            <Star className="w-5 h-5 text-warning mt-0.5 flex-shrink-0" />
             <div>
-              <h4 className="font-semibold text-amber-900 text-sm">Limited Access</h4>
-              <p className="text-sm text-amber-800 mt-1">
+              <h4 className="font-semibold text-warning-foreground text-sm">Limited Access</h4>
+              <p className="text-sm text-warning-foreground/80 mt-1">
                 Only active MovingTo clients have access to these detailed fund analytics and comparison tools used by our guidance team.
               </p>
             </div>
@@ -162,10 +162,10 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
         </form>
         
         {/* Prominent CTA */}
-        <div className="text-center pt-6 border-t border-gray-200">
+        <div className="text-center pt-6 border-t border-border">
           <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-6 rounded-xl">
-            <h3 className="font-bold text-gray-900 mb-2">Not a MovingTo client yet?</h3>
-            <p className="text-sm text-gray-600 mb-4">
+            <h3 className="font-bold text-foreground mb-2">Not a MovingTo client yet?</h3>
+            <p className="text-sm text-muted-foreground mb-4">
               Get personalized Golden Visa guidance plus full access to our premium fund analysis tools.
             </p>
             <a 
@@ -178,7 +178,7 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({
             >
               Book Free Consultation →
             </a>
-            <p className="text-xs text-gray-500 mt-3">
+            <p className="text-xs text-muted-foreground mt-3">
               🚀 Get instant access to premium features when you become a client
             </p>
           </div>

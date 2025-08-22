@@ -32,28 +32,28 @@ const CategoryPageFundSummary: React.FC<CategoryPageFundSummaryProps> = ({ count
   const freshness = calculateCategoryFreshness();
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6 bg-white p-4 rounded-lg shadow-sm">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6 bg-card p-4 rounded-lg shadow-sm">
       <div className="flex-1">
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           <span itemProp="numberOfItems">{count}</span> fund{count !== 1 ? 's' : ''} in <span className="font-semibold">{categoryName}</span> category
         </p>
         {freshness && (
-          <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
+          <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
             <Calendar className="h-3 w-3" />
             <span>Data:</span>
             {freshness.fresh > 0 && (
-              <span className="text-green-600">{freshness.fresh} fresh</span>
+              <span className="text-success">{freshness.fresh} fresh</span>
             )}
             {freshness.recent > 0 && (
-              <span className="text-yellow-600">{freshness.recent} recent</span>
+              <span className="text-warning">{freshness.recent} recent</span>
             )}
             {freshness.stale > 0 && (
-              <span className="text-red-600">{freshness.stale} need review</span>
+              <span className="text-destructive">{freshness.stale} need review</span>
             )}
           </div>
         )}
       </div>
-      <div className="text-sm text-gray-500">
+      <div className="text-sm text-muted-foreground">
         Sorted by relevance
       </div>
     </div>
