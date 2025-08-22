@@ -24,24 +24,24 @@ const ROICalculatorResults: React.FC<ROICalculatorResultsProps> = ({ results }) 
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
-      <div className="text-center p-4 bg-green-50 rounded-lg">
-        <h4 className="font-medium text-gray-700 mb-1">Total Value</h4>
-        <p className="text-2xl font-bold text-green-600">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-border">
+      <div className="text-center p-4 bg-success/10 rounded-lg border border-success/30">
+        <h4 className="font-medium text-muted-foreground mb-1">Total Value</h4>
+        <p className="text-2xl font-bold text-success">
           {formatCurrency(results.totalValue)}
         </p>
       </div>
       
-      <div className="text-center p-4 bg-blue-50 rounded-lg">
-        <h4 className="font-medium text-gray-700 mb-1">Total Return</h4>
-        <p className="text-2xl font-bold text-blue-600">
+      <div className="text-center p-4 bg-primary/10 rounded-lg border border-primary/30">
+        <h4 className="font-medium text-muted-foreground mb-1">Total Return</h4>
+        <p className="text-2xl font-bold text-primary">
           {formatCurrency(results.totalReturn)}
         </p>
       </div>
       
-      <div className="text-center p-4 bg-purple-50 rounded-lg">
-        <h4 className="font-medium text-gray-700 mb-1">Annualized Return</h4>
-        <p className="text-2xl font-bold text-purple-600">
+      <div className="text-center p-4 bg-accent/10 rounded-lg border border-accent/30">
+        <h4 className="font-medium text-muted-foreground mb-1">Annualized Return</h4>
+        <p className="text-2xl font-bold text-accent">
           {formatPercentage(results.annualizedReturn)}
         </p>
       </div>

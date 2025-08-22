@@ -39,7 +39,7 @@ const FundStructureInfo: React.FC<FundStructureInfoProps> = ({ fund }) => {
   }
   
   return (
-    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-gray-700">
+    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted text-muted-foreground">
       <span className="font-medium">{structureDescription}</span>
     </div>
   );

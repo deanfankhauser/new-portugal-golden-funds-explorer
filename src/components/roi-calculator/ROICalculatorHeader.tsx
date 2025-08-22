@@ -11,7 +11,7 @@ const ROICalculatorHeader: React.FC = () => {
       <p className="text-lg text-gray-600 max-w-3xl mx-auto">
         Calculate potential returns on your Portuguese Golden Visa fund investment. 
         Select a fund and adjust parameters to see projected returns over your investment timeline.
-        Browse our <Link to="/index" className="text-[#EF4444] hover:underline">Portugal Golden Visa Investment Fund Index</Link> to compare all available options.
+        Browse our <Link to="/index" className="text-primary hover:underline">Portugal Golden Visa Investment Fund Index</Link> to compare all available options.
       </p>
     </div>
   );

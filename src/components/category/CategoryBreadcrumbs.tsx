@@ -9,17 +9,17 @@ interface CategoryBreadcrumbsProps {
 const CategoryBreadcrumbs: React.FC<CategoryBreadcrumbsProps> = ({ categoryName }) => {
   return (
     <nav aria-label="breadcrumbs" className="mb-6">
-      <ol className="flex items-center text-sm text-gray-500">
+      <ol className="flex items-center text-sm text-muted-foreground">
         <li>
-          <Link to="/" className="hover:text-[#EF4444]">Home</Link>
+          <Link to="/" className="hover:text-primary">Home</Link>
         </li>
         <li className="mx-2">/</li>
         <li>
-          <Link to="/categories" className="hover:text-[#EF4444]">Categories</Link>
+          <Link to="/categories" className="hover:text-primary">Categories</Link>
         </li>
         <li className="mx-2">/</li>
         <li>
-          <span className="font-medium text-[#EF4444]">{categoryName}</span>
+          <span className="font-medium text-primary">{categoryName}</span>
         </li>
       </ol>
     </nav>

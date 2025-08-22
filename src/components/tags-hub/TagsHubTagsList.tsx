@@ -28,7 +28,7 @@ const TagsHubTagsList = ({ allTags }: TagsHubTagsListProps) => {
                 <meta itemProp="position" content={`${index + 1}`} />
                 <span itemProp="name" className="font-medium text-base sm:text-lg text-gray-800">{tag}</span>
               </div>
-              <span className="text-[#EF4444]">→</span>
+              <span className="text-primary">→</span>
             </Link>
           </li>
         ))}

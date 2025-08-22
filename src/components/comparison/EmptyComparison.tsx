@@ -13,15 +13,15 @@ const EmptyComparison = () => {
   
   return (
     <div className="space-y-8">
-      <div className="bg-white rounded-lg shadow-sm border p-10 text-center">
-        <h2 className="text-2xl font-bold mb-4">No Funds Selected for Comparison</h2>
-        <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-10 text-center">
+        <h2 className="text-2xl font-bold mb-4 text-foreground">No Funds Selected for Comparison</h2>
+        <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
           You haven't selected any funds to compare yet. Browse our collection of Portugal Golden Visa eligible funds
           and click the "Compare" button to add them to your comparison list.
         </p>
         <Button
           onClick={handleBrowseFunds}
-          className="bg-[#EF4444] hover:bg-[#EF4444]/90 text-white"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground"
         >
           Browse Portugal Golden Visa Investment Fund Index
         </Button>

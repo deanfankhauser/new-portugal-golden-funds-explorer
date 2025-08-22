@@ -66,7 +66,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   return (
     <div className={`relative overflow-hidden ${className}`}>
       {!isLoaded && !error && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse rounded" />
+        <div className="absolute inset-0 bg-muted animate-pulse rounded" />
       )}
       <img
         ref={imgRef}

@@ -14,9 +14,9 @@ const FundIndexStats: React.FC<FundIndexStatsProps> = ({
   totalCount
 }) => {
   return (
-    <div className="text-sm text-gray-500 bg-gray-50 px-3 py-2 rounded-md">
-      Showing <span className="font-medium">{paginatedCount}</span> of <span className="font-medium">{filteredCount}</span> funds 
-      (<span className="font-medium">{totalCount}</span> total)
+    <div className="text-sm text-muted-foreground bg-muted px-3 py-2 rounded-md">
+      Showing <span className="font-medium text-foreground">{paginatedCount}</span> of <span className="font-medium text-foreground">{filteredCount}</span> funds 
+      (<span className="font-medium text-foreground">{totalCount}</span> total)
     </div>
   );
 };

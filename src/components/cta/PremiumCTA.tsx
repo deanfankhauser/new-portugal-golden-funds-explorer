@@ -27,7 +27,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
   if (variant === 'compact') {
     return (
       <Button 
-        className="bg-gradient-to-r from-[#EF4444] to-[#DC2626] hover:from-[#DC2626] hover:to-[#B91C1C] text-white font-medium shadow-lg transition-all duration-300 transform hover:scale-105"
+        className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground font-medium shadow-lg transition-all duration-300 transform hover:scale-105"
         onClick={handleCTAClick}
       >
         <Crown className="mr-2 h-4 w-4" />
@@ -39,18 +39,18 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
 
   if (variant === 'banner') {
     return (
-      <div className="bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white p-4 rounded-lg shadow-lg">
+      <div className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground p-4 rounded-lg shadow-lg">
         <div className="flex items-center justify-between flex-wrap gap-4 text-left">
           <div className="flex items-center gap-3">
-            <Crown className="h-5 w-5 text-white" />
+            <Crown className="h-5 w-5 text-primary-foreground" />
             <div>
-              <p className="font-semibold text-white">Get Expert Fund Guidance</p>
-              <p className="text-sm text-white opacity-90">Personal consultation with our Golden Visa specialists</p>
+              <p className="font-semibold text-primary-foreground">Get Expert Fund Guidance</p>
+              <p className="text-sm text-primary-foreground opacity-90">Personal consultation with our Golden Visa specialists</p>
             </div>
           </div>
           <Button 
             variant="outline"
-            className="bg-white text-[#EF4444] border-white hover:bg-gray-50 hover:text-[#EF4444] font-medium"
+            className="bg-background text-primary border-background hover:bg-secondary hover:text-primary font-medium"
             onClick={handleCTAClick}
           >
             Start Now
@@ -62,47 +62,47 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
   }
   
   return (
-    <Card className="border-2 border-[#EF4444]/20 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50">
+    <Card className="border-2 border-primary/20 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-background to-secondary/30">
       <CardContent className="p-8">
         <div className="text-center space-y-6">
           <div className="flex justify-center">
-            <div className="bg-gradient-to-r from-[#EF4444] to-[#DC2626] p-3 rounded-full">
-              <Crown className="h-8 w-8 text-white" />
+            <div className="bg-gradient-to-r from-primary to-primary/90 p-3 rounded-full">
+              <Crown className="h-8 w-8 text-primary-foreground" />
             </div>
           </div>
           
           <div>
-            <h3 className="text-2xl font-bold text-gray-800 mb-2">
+            <h3 className="text-2xl font-bold text-foreground mb-2">
               Unlock Premium Fund Guidance
             </h3>
-            <p className="text-gray-600 text-lg">
+            <p className="text-muted-foreground text-lg">
               Get personalized guidance from our Golden Visa experts to maximize your investment success
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div className="flex items-center gap-2 bg-white p-3 rounded-lg shadow-sm">
-              <Users className="h-4 w-4 text-[#EF4444]" />
+            <div className="flex items-center gap-2 bg-card p-3 rounded-lg shadow-sm">
+              <Users className="h-4 w-4 text-primary" />
               <span>1-on-1 Expert Consultation</span>
             </div>
-            <div className="flex items-center gap-2 bg-white p-3 rounded-lg shadow-sm">
-              <Shield className="h-4 w-4 text-[#EF4444]" />
+            <div className="flex items-center gap-2 bg-card p-3 rounded-lg shadow-sm">
+              <Shield className="h-4 w-4 text-primary" />
               <span>Due Diligence Reports</span>
             </div>
-            <div className="flex items-center gap-2 bg-white p-3 rounded-lg shadow-sm">
-              <Zap className="h-4 w-4 text-[#EF4444]" />
+            <div className="flex items-center gap-2 bg-card p-3 rounded-lg shadow-sm">
+              <Zap className="h-4 w-4 text-primary" />
               <span>Priority Fund Access</span>
             </div>
           </div>
           
-          <div className="bg-[#EF4444]/5 p-4 rounded-lg border border-[#EF4444]/20">
-            <p className="text-[#EF4444] font-medium text-sm">
+          <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
+            <p className="text-primary font-medium text-sm">
               ✨ Premium clients often secure better terms and exclusive fund opportunities not available to the public
             </p>
           </div>
           
           <Button 
-            className="bg-gradient-to-r from-[#EF4444] to-[#DC2626] hover:from-[#DC2626] hover:to-[#B91C1C] text-white w-full md:w-auto px-8 py-6 h-auto text-lg font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
+            className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground w-full md:w-auto px-8 py-6 h-auto text-lg font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
             onClick={handleCTAClick}
           >
             <Crown className="mr-2 h-5 w-5" />

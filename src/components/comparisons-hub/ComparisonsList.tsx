@@ -19,7 +19,7 @@ const ComparisonsList = () => {
     <div className="space-y-6">
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold mb-4">Portugal Golden Visa Investment Fund Comparisons</h2>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Compare Portugal Golden Visa investment funds side by side to make informed decisions.
           Browse all {comparisons.length} possible fund comparisons.
         </p>
@@ -27,20 +27,20 @@ const ComparisonsList = () => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {currentComparisons.map((comparison) => (
-          <div key={comparison.slug} className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+          <div key={comparison.slug} className="bg-card p-6 rounded-lg shadow-sm border border-border hover:shadow-md transition-shadow">
             <div className="flex flex-col space-y-4">
               <div className="flex items-center justify-between">
-                <GitCompare className="h-5 w-5 text-[#EF4444]" />
-                <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
+                <GitCompare className="h-5 w-5 text-primary" />
+                <span className="text-xs bg-muted px-2 py-1 rounded-full">
                   Comparison
                 </span>
               </div>
               
               <div>
-                <h3 className="font-semibold text-lg mb-2">
+                <h3 className="font-semibold text-lg mb-2 text-foreground">
                   {comparison.fund1.name} vs {comparison.fund2.name}
                 </h3>
-                <div className="space-y-2 text-sm text-gray-600">
+                <div className="space-y-2 text-sm text-muted-foreground">
                   <div className="flex justify-between">
                     <span>Categories:</span>
                     <span>{comparison.fund1.category} vs {comparison.fund2.category}</span>
@@ -53,7 +53,7 @@ const ComparisonsList = () => {
               </div>
               
               <Link to={`/compare/${comparison.slug}`}>
-                <Button className="w-full bg-[#EF4444] hover:bg-[#EF4444]/90 text-white">
+                <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                   Compare Funds
                 </Button>
               </Link>

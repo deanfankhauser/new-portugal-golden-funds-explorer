@@ -118,7 +118,7 @@ function App() {
               <Router>
                 <SEOProvider>
                   <ScrollToTop />
-                  <div className="min-h-screen w-full bg-gray-50">
+                  <div className="min-h-screen w-full bg-background">
                     <Routes>
                       <Route path="/" element={<Index />} />
                       <Route path="/index" element={

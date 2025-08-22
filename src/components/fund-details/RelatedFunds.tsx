@@ -32,21 +32,21 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-[#EF4444]" />
+              <TrendingUp className="h-5 w-5 text-accent" />
               More {currentFund.category} Funds
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {sameCategoryFunds.map(fund => (
-                <div key={fund.id} className="border border-gray-200 rounded-lg p-4 hover:border-[#EF4444] transition-colors">
+                <div key={fund.id} className="border border-border rounded-lg p-4 hover:border-accent transition-colors">
                   <Link to={`/${fund.id}`}>
-                    <h4 className="font-semibold text-gray-900 mb-2 hover:text-[#EF4444] transition-colors">
+                    <h4 className="font-semibold text-foreground mb-2 hover:text-accent transition-colors">
                       {fund.name}
                     </h4>
                   </Link>
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{fund.description}</p>
-                  <div className="flex justify-between items-center text-xs text-gray-500 mb-3">
+                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{fund.description}</p>
+                  <div className="flex justify-between items-center text-xs text-muted-foreground mb-3">
                     <span>Min: €{fund.minimumInvestment.toLocaleString()}</span>
                     <span>Fee: {fund.managementFee}%</span>
                   </div>
@@ -75,21 +75,21 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-[#EF4444]" />
+              <DollarSign className="h-5 w-5 text-accent" />
               Similar Investment Range
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {similarInvestmentFunds.map(fund => (
-                <div key={fund.id} className="border border-gray-200 rounded-lg p-4 hover:border-[#EF4444] transition-colors">
+                <div key={fund.id} className="border border-border rounded-lg p-4 hover:border-accent transition-colors">
                   <Link to={`/${fund.id}`}>
-                    <h4 className="font-semibold text-gray-900 mb-2 hover:text-[#EF4444] transition-colors">
+                    <h4 className="font-semibold text-foreground mb-2 hover:text-accent transition-colors">
                       {fund.name}
                     </h4>
                   </Link>
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{fund.description}</p>
-                  <div className="flex justify-between items-center text-xs text-gray-500 mb-3">
+                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{fund.description}</p>
+                  <div className="flex justify-between items-center text-xs text-muted-foreground mb-3">
                     <span>Min: €{fund.minimumInvestment.toLocaleString()}</span>
                     <span>{fund.category}</span>
                   </div>

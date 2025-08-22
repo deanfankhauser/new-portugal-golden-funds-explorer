@@ -9,20 +9,20 @@ const HomepageInfoSections = () => {
   return (
     <div className="space-y-12">
       {/* Fund Index CTA Section */}
-      <section className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-8 border border-blue-100">
+      <section className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-xl p-8 border border-primary/20">
         <div className="text-center max-w-3xl mx-auto">
           <div className="flex justify-center mb-4">
-            <TrendingUp className="h-12 w-12 text-blue-600" />
+            <TrendingUp className="h-12 w-12 text-primary" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-foreground mb-4">
             2025 Portugal Golden Visa Investment Fund Index
           </h2>
-          <p className="text-lg text-gray-600 mb-6">
+          <p className="text-lg text-muted-foreground mb-6">
             Discover our comprehensive, data-driven ranking of all Golden Visa-eligible investment funds. 
             Compare performance, fees, regulatory compliance, and investor protection scores in one place.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
+            <Button asChild size="lg" variant="default">
               <Link to="/index" className="flex items-center gap-2">
                 <BarChart3 className="h-5 w-5" />
                 View Fund Index
@@ -41,8 +41,8 @@ const HomepageInfoSections = () => {
       {/* Tools and Resources Grid */}
       <section>
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Golden Visa Investment Tools & Resources</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold text-foreground mb-4">Golden Visa Investment Tools & Resources</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             Use our specialized tools to find the perfect Golden Visa investment fund for your needs
           </p>
         </div>
@@ -51,7 +51,7 @@ const HomepageInfoSections = () => {
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <ClipboardCheck className="h-5 w-5 text-green-600" />
+                <ClipboardCheck className="h-5 w-5 text-success" />
                 Fund Quiz
               </CardTitle>
               <CardDescription>
@@ -68,7 +68,7 @@ const HomepageInfoSections = () => {
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calculator className="h-5 w-5 text-blue-600" />
+                <Calculator className="h-5 w-5 text-primary" />
                 ROI Calculator
               </CardTitle>
               <CardDescription>
@@ -85,7 +85,7 @@ const HomepageInfoSections = () => {
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-purple-600" />
+                <Users className="h-5 w-5 text-accent" />
                 Fund Managers
               </CardTitle>
               <CardDescription>
@@ -102,7 +102,7 @@ const HomepageInfoSections = () => {
           <Card className="hover:shadow-lg transition-shadow md:col-span-2 lg:col-span-1">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-orange-600" />
+                <FileText className="h-5 w-5 text-warning" />
                 List Your Fund
               </CardTitle>
               <CardDescription>
@@ -116,10 +116,10 @@ const HomepageInfoSections = () => {
       </section>
 
       {/* Additional Resources */}
-      <section className="bg-gray-50 rounded-xl p-8">
+      <section className="bg-secondary/30 rounded-xl p-8">
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Learn More</h2>
-          <p className="text-gray-600">
+          <h2 className="text-2xl font-bold text-foreground mb-4">Learn More</h2>
+          <p className="text-muted-foreground">
             Get comprehensive information about the Portugal Golden Visa program
           </p>
         </div>
@@ -135,7 +135,7 @@ const HomepageInfoSections = () => {
               <ExternalLink className="h-5 w-5 mt-0.5 flex-shrink-0" />
               <div>
                 <div className="font-medium">Golden Visa Guide</div>
-                <div className="text-sm text-gray-500">Complete program overview</div>
+                <div className="text-sm text-muted-foreground">Complete program overview</div>
               </div>
             </a>
           </Button>
@@ -150,7 +150,7 @@ const HomepageInfoSections = () => {
               <ExternalLink className="h-5 w-5 mt-0.5 flex-shrink-0" />
               <div>
                 <div className="font-medium">Best Law Firms</div>
-                <div className="text-sm text-gray-500">Top legal advisors</div>
+                <div className="text-sm text-muted-foreground">Top legal advisors</div>
               </div>
             </a>
           </Button>
@@ -165,7 +165,7 @@ const HomepageInfoSections = () => {
               <ExternalLink className="h-5 w-5 mt-0.5 flex-shrink-0" />
               <div>
                 <div className="font-medium">Statistics</div>
-                <div className="text-sm text-gray-500">Program data & trends</div>
+                <div className="text-sm text-muted-foreground">Program data & trends</div>
               </div>
             </a>
           </Button>

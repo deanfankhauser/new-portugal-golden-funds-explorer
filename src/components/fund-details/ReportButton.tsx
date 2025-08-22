@@ -19,7 +19,7 @@ const ReportButton: React.FC<ReportButtonProps> = ({ fundName }) => {
     <Button
       variant="ghost"
       size="sm"
-      className="text-gray-500 hover:text-red-600 transition-colors"
+      className="text-muted-foreground hover:text-destructive transition-colors"
       onClick={handleReport}
     >
       <Flag className="w-4 h-4 mr-2" />

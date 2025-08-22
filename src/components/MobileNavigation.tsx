@@ -18,7 +18,7 @@ const MobileNavigation = () => {
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden text-white hover:bg-white/10"
+          className="md:hidden text-background hover:bg-background/10"
           aria-label="Open navigation menu"
         >
           <Menu className="h-5 w-5" />
@@ -31,7 +31,7 @@ const MobileNavigation = () => {
         <div className="flex flex-col gap-4 mt-6">
           {/* Tools Section */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
               Tools
             </h3>
             <div className="space-y-2">
@@ -54,7 +54,7 @@ const MobileNavigation = () => {
 
           {/* Browse Section */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
               Browse
             </h3>
             <div className="space-y-2">
@@ -83,7 +83,7 @@ const MobileNavigation = () => {
 
           {/* Contact Section */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
               Support
             </h3>
             <Button 

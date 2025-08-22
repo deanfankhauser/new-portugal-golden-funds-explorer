@@ -21,7 +21,7 @@ const RecentlyViewedFunds = () => {
   };
 
   return (
-    <div className="border-t border-gray-200 pt-6">
+    <div className="border-t border-border pt-6">
       <h3 className="text-base font-semibold mb-4 flex items-center gap-2">
         <Clock size={18} className="text-primary" />
         Recently Viewed Funds
@@ -31,24 +31,24 @@ const RecentlyViewedFunds = () => {
           <Link
             key={fund.id}
             to={`/${fund.id}`}
-            className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow group"
+            className="bg-card border border-border rounded-lg p-3 hover:shadow-md transition-shadow group"
           >
             <h4 className="font-medium text-sm mb-2 group-hover:text-primary transition-colors line-clamp-2">
               {fund.name}
             </h4>
             <div className="space-y-1">
-              <div className="flex justify-between text-xs text-gray-600">
+              <div className="flex justify-between text-xs text-muted-foreground">
                 <span>Min Investment</span>
                 <span className="font-medium">{formatCurrency(fund.minimumInvestment)}</span>
               </div>
-              <div className="flex justify-between text-xs text-gray-600">
+              <div className="flex justify-between text-xs text-muted-foreground">
                 <span>Target Return</span>
                 <span className="font-medium flex items-center gap-1">
                   <TrendingUp size={12} />
                   {fund.returnTarget}
                 </span>
               </div>
-              <div className="text-xs text-gray-500 mt-2">
+              <div className="text-xs text-muted-foreground mt-2">
                 {fund.managerName}
               </div>
             </div>

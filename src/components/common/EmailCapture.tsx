@@ -31,18 +31,18 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({
   return (
     <Card className="max-w-md mx-auto">
       <CardHeader className="text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-          <Lock className="h-6 w-6 text-blue-600" />
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-accent/20">
+          <Lock className="h-6 w-6 text-accent" />
         </div>
         <CardTitle className="text-xl">{title}</CardTitle>
-        <p className="text-sm text-gray-600">{description}</p>
+        <p className="text-sm text-muted-foreground">{description}</p>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email Address</Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
                 id="email"
                 type="email"
@@ -62,7 +62,7 @@ const EmailCapture: React.FC<EmailCaptureProps> = ({
             {isSubmitting ? 'Processing...' : 'Continue'}
           </Button>
         </form>
-        <p className="text-xs text-gray-500 mt-4 text-center">
+        <p className="text-xs text-muted-foreground mt-4 text-center">
           We'll use your email to send you updates about Portuguese Golden Visa investments.
         </p>
       </CardContent>

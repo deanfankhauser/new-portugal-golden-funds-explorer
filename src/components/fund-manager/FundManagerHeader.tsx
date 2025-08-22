@@ -29,7 +29,7 @@ const FundManagerHeader: React.FC<FundManagerHeaderProps> = ({ managerData }) =>
     <Card className="border border-gray-100 shadow-md mb-10">
       <CardContent className="p-6">
         <div className="flex items-center mb-5">
-          <User className="w-6 h-6 mr-2 text-[#EF4444]" />
+          <User className="w-6 h-6 mr-2 text-primary" />
           <h1 className="text-3xl font-bold">{managerData.name} | Portugal Golden Visa Fund Manager</h1>
         </div>
         

@@ -11,15 +11,15 @@ const FundManagerBreadcrumbs: React.FC<FundManagerBreadcrumbsProps> = ({ manager
     <nav aria-label="breadcrumbs" className="mb-6">
       <ol className="flex items-center text-sm text-gray-500">
         <li>
-          <Link to="/" className="hover:text-[#EF4444]">Home</Link>
+          <Link to="/" className="hover:text-primary">Home</Link>
         </li>
         <li className="mx-2">/</li>
         <li>
-          <Link to="/managers" className="hover:text-[#EF4444]">Fund Managers</Link>
+          <Link to="/managers" className="hover:text-primary">Fund Managers</Link>
         </li>
         <li className="mx-2">/</li>
         <li>
-          <span className="font-medium text-[#EF4444]">{managerName}</span>
+          <span className="font-medium text-primary">{managerName}</span>
         </li>
       </ol>
     </nav>

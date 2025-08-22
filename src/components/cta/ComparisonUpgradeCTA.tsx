@@ -12,32 +12,32 @@ const ComparisonUpgradeCTA: React.FC = () => {
   };
 
   return (
-    <Card className="border-2 border-[#EF4444]/20 bg-gradient-to-r from-[#EF4444]/5 to-[#DC2626]/5">
+    <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-accent/5">
       <CardContent className="p-6">
         <div className="flex items-start gap-4">
-          <div className="bg-[#EF4444] p-2 rounded-lg">
-            <BarChart3 className="h-5 w-5 text-white" />
+          <div className="bg-primary p-2 rounded-lg">
+            <BarChart3 className="h-5 w-5 text-primary-foreground" />
           </div>
           <div className="flex-1">
-            <h4 className="font-semibold text-gray-800 mb-2">
+            <h4 className="font-semibold text-foreground mb-2">
               Want Advanced Fund Comparison?
             </h4>
-            <p className="text-gray-600 text-sm mb-3">
+            <p className="text-muted-foreground text-sm mb-3">
               Get access to detailed performance analytics, risk assessments, and side-by-side fund analysis tools
             </p>
             <div className="flex flex-wrap gap-2 mb-3">
-              <span className="inline-flex items-center gap-1 text-xs bg-white px-2 py-1 rounded-full border">
-                <Star className="h-3 w-3 text-[#EF4444]" />
+              <span className="inline-flex items-center gap-1 text-xs bg-card px-2 py-1 rounded-full border border-border">
+                <Star className="h-3 w-3 text-primary" />
                 Historical Performance
               </span>
-              <span className="inline-flex items-center gap-1 text-xs bg-white px-2 py-1 rounded-full border">
-                <TrendingUp className="h-3 w-3 text-[#EF4444]" />
+              <span className="inline-flex items-center gap-1 text-xs bg-card px-2 py-1 rounded-full border border-border">
+                <TrendingUp className="h-3 w-3 text-primary" />
                 Risk Analysis
               </span>
             </div>
             <Button 
               size="sm"
-              className="bg-[#EF4444] hover:bg-[#DC2626] text-white"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
               onClick={handleUpgradeClick}
             >
               Upgrade to Premium

@@ -13,7 +13,7 @@ interface ManagersListProps {
 
 const ManagersList: React.FC<ManagersListProps> = ({ managers }) => {
   return (
-    <section className="bg-white p-6 rounded-lg shadow-sm" aria-labelledby="managers-heading">
+    <section className="bg-card p-6 rounded-lg shadow-sm border border-border" aria-labelledby="managers-heading">
       <h2 id="managers-heading" className="text-2xl font-bold mb-6">Portugal Golden Visa Investment Fund Managers ({managers.length})</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -40,11 +40,11 @@ const ManagersList: React.FC<ManagersListProps> = ({ managers }) => {
                 <CardContent>
                   <div className="flex flex-col gap-1">
                     <div className="flex justify-between text-xs sm:text-sm">
-                      <span className="text-gray-500">Funds:</span>
+                      <span className="text-muted-foreground">Funds:</span>
                       <span className="font-medium">{fundsCount}</span>
                     </div>
                     <div className="flex justify-between text-xs sm:text-sm">
-                      <span className="text-gray-500">Total fund size:</span>
+                      <span className="text-muted-foreground">Total fund size:</span>
                       <span className="font-medium">€{totalFundSize} million</span>
                     </div>
                   </div>
@@ -55,13 +55,13 @@ const ManagersList: React.FC<ManagersListProps> = ({ managers }) => {
         })}
       </div>
       
-      <div className="mt-8 pt-4 border-t border-gray-200">
-        <p className="text-gray-600 mb-4">
+      <div className="mt-8 pt-4 border-t border-border">
+        <p className="text-muted-foreground mb-4">
           Each fund manager brings unique expertise and investment strategies to the Portuguese market. Click on a manager to see all their funds and learn more about their approach.
         </p>
         <Link 
           to="/index" 
-          className="text-[#EF4444] hover:underline flex items-center"
+          className="text-primary hover:underline flex items-center"
         >
           Browse Portugal Golden Visa Investment Fund Index
         </Link>

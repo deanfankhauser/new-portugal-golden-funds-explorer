@@ -26,8 +26,18 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: '#EF4444',
-					foreground: 'hsl(var(--primary-foreground))'
+					DEFAULT: 'hsl(var(--primary))',
+					foreground: 'hsl(var(--primary-foreground))',
+					50: 'hsl(var(--bordeaux-50))',
+					100: 'hsl(var(--bordeaux-100))',
+					200: 'hsl(var(--bordeaux-200))',
+					300: 'hsl(var(--bordeaux-300))',
+					400: 'hsl(var(--bordeaux-400))',
+					500: 'hsl(var(--bordeaux-500))',
+					600: 'hsl(var(--bordeaux-600))',
+					700: 'hsl(var(--bordeaux-700))',
+					800: 'hsl(var(--bordeaux-800))',
+					900: 'hsl(var(--bordeaux-900))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -42,8 +52,18 @@ export default {
 					foreground: 'hsl(var(--muted-foreground))'
 				},
 				accent: {
-					DEFAULT: '#EF4444',
-					foreground: 'hsl(var(--accent-foreground))'
+					DEFAULT: 'hsl(var(--accent))',
+					foreground: 'hsl(var(--accent-foreground))',
+					50: 'hsl(var(--bronze-50))',
+					100: 'hsl(var(--bronze-100))',
+					200: 'hsl(var(--bronze-200))',
+					300: 'hsl(var(--bronze-300))',
+					400: 'hsl(var(--bronze-400))',
+					500: 'hsl(var(--bronze-500))',
+					600: 'hsl(var(--bronze-600))',
+					700: 'hsl(var(--bronze-700))',
+					800: 'hsl(var(--bronze-800))',
+					900: 'hsl(var(--bronze-900))'
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
@@ -52,6 +72,14 @@ export default {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
+				},
+				success: {
+					DEFAULT: 'hsl(var(--success))',
+					foreground: 'hsl(var(--success-foreground))'
+				},
+				warning: {
+					DEFAULT: 'hsl(var(--warning))',
+					foreground: 'hsl(var(--warning-foreground))'
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',

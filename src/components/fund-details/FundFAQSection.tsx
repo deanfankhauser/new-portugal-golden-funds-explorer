@@ -79,8 +79,8 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
   }
 
   return (
-    <section className="bg-gray-50 rounded-lg p-6" itemScope itemType="https://schema.org/FAQPage">
-      <h2 className="text-2xl font-bold mb-6 text-gray-900">
+    <section className="bg-muted rounded-lg p-6" itemScope itemType="https://schema.org/FAQPage">
+      <h2 className="text-2xl font-bold mb-6 text-foreground">
         Frequently Asked Questions about {fund.name}
       </h2>
       
@@ -89,18 +89,18 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
           <AccordionItem 
             key={index} 
             value={`item-${index}`}
-            className="bg-white rounded-lg border border-gray-200"
+            className="bg-card rounded-lg border border-border"
             itemScope 
             itemType="https://schema.org/Question"
           >
             <AccordionTrigger 
-              className="px-6 py-3 text-left hover:no-underline hover:bg-gray-50 rounded-t-lg text-sm"
+              className="px-6 py-3 text-left hover:no-underline hover:bg-muted rounded-t-lg text-sm"
               itemProp="name"
             >
-              <span className="font-medium text-gray-900">{faq.question}</span>
+              <span className="font-medium text-foreground">{faq.question}</span>
             </AccordionTrigger>
             <AccordionContent 
-              className="px-6 pb-4 text-sm text-gray-700 leading-relaxed"
+              className="px-6 pb-4 text-sm text-muted-foreground leading-relaxed"
               itemScope 
               itemType="https://schema.org/Answer"
             >

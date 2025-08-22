@@ -50,16 +50,16 @@ const FAQsContent = () => {
   ];
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-sm">
+    <div className="bg-card p-8 rounded-lg shadow-sm">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-4 text-gray-900">
+        <h1 className="text-3xl font-bold mb-4 text-foreground">
           Portugal Golden Visa Investment Funds - Frequently Asked Questions
         </h1>
-        <p className="text-gray-600 text-lg">
+        <p className="text-muted-foreground text-lg">
           Find answers to common questions about Portugal Golden Visa investment funds, eligibility requirements, and the application process.
-          Browse our comprehensive <Link to="/index" className="text-[#EF4444] hover:underline">Portugal Golden Visa Investment Fund Index</Link> for detailed fund rankings and comparisons.
+          Browse our comprehensive <Link to="/index" className="text-primary hover:underline">Portugal Golden Visa Investment Fund Index</Link> for detailed fund rankings and comparisons.
         </p>
-        <h2 className="text-xl font-semibold mt-6 mb-2 text-gray-800">
+        <h2 className="text-xl font-semibold mt-6 mb-2 text-foreground">
           Portugal Golden Visa Investment Fund Questions and Answers
         </h2>
       </div>
@@ -69,12 +69,12 @@ const FAQsContent = () => {
           <AccordionItem 
             key={index} 
             value={`item-${index}`}
-            className="border border-gray-200 rounded-lg"
+            className="border border-border rounded-lg"
           >
-            <AccordionTrigger className="px-6 py-4 text-left hover:no-underline hover:bg-gray-50 rounded-t-lg">
-              <span className="font-semibold text-gray-900">{faq.question}</span>
+            <AccordionTrigger className="px-6 py-4 text-left hover:no-underline hover:bg-muted/50 rounded-t-lg">
+              <span className="font-semibold text-foreground">{faq.question}</span>
             </AccordionTrigger>
-            <AccordionContent className="px-6 pb-4 text-gray-700 leading-relaxed">
+            <AccordionContent className="px-6 pb-4 text-muted-foreground leading-relaxed">
               {faq.answer}
             </AccordionContent>
           </AccordionItem>

@@ -136,14 +136,14 @@ const TrustSignals: React.FC = () => {
     <Card itemScope itemType="https://schema.org/AboutPage">
       <CardHeader>
         <CardTitle className="flex items-center gap-2" itemProp="name">
-          <Users className="h-5 w-5 text-blue-500" />
+          <Users className="h-5 w-5 text-accent" />
           Index Created By
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6" itemProp="mainEntity" itemScope itemType="https://schema.org/ItemList">
         <div className="space-y-4">
           <div 
-            className="flex items-start gap-4 p-4 bg-blue-50 rounded-lg"
+            className="flex items-start gap-4 p-4 bg-accent/5 rounded-lg"
             itemScope 
             itemType="https://schema.org/Person"
             itemProp="itemListElement"
@@ -154,13 +154,13 @@ const TrustSignals: React.FC = () => {
                 alt="Dean Fankhauser"
                 itemProp="image"
               />
-              <AvatarFallback className="bg-blue-100 text-blue-600">DF</AvatarFallback>
+              <AvatarFallback className="bg-accent/10 text-accent">DF</AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <div className="flex items-start justify-between mb-2">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1" itemProp="name">Dean Fankhauser</h4>
-                  <p className="text-sm text-blue-700 font-medium mb-2" itemProp="jobTitle">CEO of Movingto</p>
+                  <h4 className="font-semibold text-foreground mb-1" itemProp="name">Dean Fankhauser</h4>
+                  <p className="text-sm text-accent font-medium mb-2" itemProp="jobTitle">CEO of Movingto</p>
                   <meta itemProp="worksFor" content="Movingto" />
                   <meta itemProp="sameAs" content="https://www.linkedin.com/in/deanfankhauser/" />
                 </div>
@@ -182,14 +182,14 @@ const TrustSignals: React.FC = () => {
                   </a>
                 </Button>
               </div>
-              <p className="text-sm text-gray-600" itemProp="description">
+              <p className="text-sm text-muted-foreground" itemProp="description">
                 Created and designed this comprehensive fund index to help investors make informed decisions about Golden Visa investment opportunities.
               </p>
             </div>
           </div>
           
           <div 
-            className="flex items-start gap-4 p-4 bg-green-50 rounded-lg"
+            className="flex items-start gap-4 p-4 bg-success/5 rounded-lg"
             itemScope 
             itemType="https://schema.org/Person"
             itemProp="itemListElement"
@@ -200,13 +200,13 @@ const TrustSignals: React.FC = () => {
                 alt="Anna Luisa Lacerda"
                 itemProp="image"
               />
-              <AvatarFallback className="bg-green-100 text-green-600">AL</AvatarFallback>
+              <AvatarFallback className="bg-success/10 text-success">AL</AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <div className="flex items-start justify-between mb-2">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1" itemProp="name">Anna Luisa Lacerda</h4>
-                  <p className="text-sm text-green-700 font-medium mb-2" itemProp="jobTitle">Licensed Portuguese Lawyer</p>
+                  <h4 className="font-semibold text-foreground mb-1" itemProp="name">Anna Luisa Lacerda</h4>
+                  <p className="text-sm text-success font-medium mb-2" itemProp="jobTitle">Licensed Portuguese Lawyer</p>
                   <meta itemProp="worksFor" content="Movingto" />
                   <meta itemProp="sameAs" content="https://www.linkedin.com/in/annaluisalmb/" />
                 </div>
@@ -228,14 +228,14 @@ const TrustSignals: React.FC = () => {
                   </a>
                 </Button>
               </div>
-              <p className="text-sm text-gray-600" itemProp="description">
+              <p className="text-sm text-muted-foreground" itemProp="description">
                 Conducted comprehensive due diligence on all funds included in this index, ensuring regulatory compliance and accuracy of information.
               </p>
             </div>
           </div>
         </div>
         
-        <div className="text-xs text-gray-500 pt-4 border-t" itemScope itemType="https://schema.org/CreativeWork">
+        <div className="text-xs text-muted-foreground pt-4 border-t border-border" itemScope itemType="https://schema.org/CreativeWork">
           <span itemProp="text">
             All fund data has been professionally reviewed and verified through official regulatory sources. 
             The index is updated regularly to maintain accuracy and relevance.

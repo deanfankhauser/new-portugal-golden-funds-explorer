@@ -30,9 +30,9 @@ export const DataFreshnessWarning: React.FC<DataFreshnessWarningProps> = ({
   };
 
   return (
-    <Alert variant="destructive" className={`bg-yellow-50 border-yellow-300 ${className}`}>
-      <AlertTriangle className="h-4 w-4 text-yellow-600" />
-      <AlertDescription className="text-yellow-800">
+    <Alert variant="destructive" className={`bg-warning/10 border-warning/30 ${className}`}>
+      <AlertTriangle className="h-4 w-4 text-warning" />
+      <AlertDescription className="text-warning-foreground">
         <div className="space-y-2">
           <p className="font-medium">
             Data Verification Recommended
@@ -50,7 +50,7 @@ export const DataFreshnessWarning: React.FC<DataFreshnessWarningProps> = ({
                   size="sm"
                   variant="outline"
                   onClick={handleVerifyClick}
-                  className="bg-white hover:bg-gray-50 border-yellow-400 text-yellow-800"
+                  className="bg-card hover:bg-secondary border-warning text-warning-foreground"
                 >
                   <ExternalLink className="h-3 w-3 mr-1" />
                   Verify on Fund Website
@@ -59,7 +59,7 @@ export const DataFreshnessWarning: React.FC<DataFreshnessWarningProps> = ({
               <Button
                 size="sm"
                 variant="outline"
-                className="bg-white hover:bg-gray-50 border-yellow-400 text-yellow-800"
+                className="bg-card hover:bg-secondary border-warning text-warning-foreground"
                 onClick={() => {
                   // Could trigger a report mechanism or contact form
                   alert('Thank you for helping us maintain data quality. Our team will review this fund\'s information.');

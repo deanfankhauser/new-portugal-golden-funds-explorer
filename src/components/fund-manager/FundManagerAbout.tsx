@@ -17,13 +17,13 @@ const FundManagerAbout: React.FC<FundManagerAboutProps> = ({ fund }) => {
         <div className="flex items-center justify-between mb-4">
           <Link 
             to={`/${fund.id}`}
-            className="text-xl font-bold text-gray-900 hover:text-[#EF4444] transition-colors"
+            className="text-xl font-bold text-foreground hover:text-primary transition-colors"
           >
             {fund.name}
           </Link>
           <Link 
             to={`/${fund.id}`}
-            className="text-[#EF4444] hover:text-[#EF4444]/80 transition-colors"
+            className="text-primary hover:text-primary/80 transition-colors"
           >
             <ExternalLink className="w-4 h-4" />
           </Link>

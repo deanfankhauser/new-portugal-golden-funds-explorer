@@ -115,14 +115,14 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
                 {/* Overlay with unlock button */}
                 <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
                   <div className="text-center">
-                    <Filter className="w-8 h-8 text-[#EF4444] mx-auto mb-3" />
-                    <h3 className="font-semibold text-gray-900 mb-2">Advanced Fund Filters</h3>
-                    <p className="text-sm text-gray-600 mb-4 max-w-xs">
+                    <Filter className="w-8 h-8 text-primary mx-auto mb-3" />
+                    <h3 className="font-semibold text-foreground mb-2">Advanced Fund Filters</h3>
+                    <p className="text-sm text-muted-foreground mb-4 max-w-xs">
                       Filter by category, status, investment amounts, and fee structures
                     </p>
                     <Button 
                       onClick={handleUnlockClick}
-                      className="bg-[#EF4444] hover:bg-[#EF4444]/90"
+                      className="bg-primary hover:bg-primary/90"
                     >
                       <Eye className="w-4 h-4 mr-2" />
                       Access Advanced Filters

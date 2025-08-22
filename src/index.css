@@ -5,38 +5,56 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 5% 15%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 5% 15%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 5% 15%;
-    --primary: 0 85% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 0 5% 15%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 0 85% 60%;
+    /* Brand Color System - Warm Premium Heritage */
+    --brand-bordeaux: 340 66% 18%;      /* Rich Bordeaux #4B0F23 */
+    --brand-bronze: 20 33% 50%;         /* Matte Bronze #A97155 */
+    --brand-bone: 36 16% 92%;           /* Bone White #EDEAE6 */
+    
+    /* Core Design Tokens */
+    --background: var(--brand-bone);
+    --foreground: 340 20% 16%;
+    --card: 36 15% 97%;
+    --card-foreground: 340 20% 16%;
+    --popover: 36 15% 97%;
+    --popover-foreground: 340 20% 16%;
+    --primary: var(--brand-bordeaux);
+    --primary-foreground: 0 0% 98%;
+    --secondary: 36 12% 96%;
+    --secondary-foreground: 340 20% 20%;
+    --muted: 36 12% 90%;
+    --muted-foreground: 340 15% 45%;
+    --accent: var(--brand-bronze);
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 0 85% 60%;
+    --border: 20 10% 80%;
+    --input: 20 10% 80%;
+    --ring: var(--brand-bordeaux);
     --radius: 0.5rem;
     
-    /* Enhanced color palette */
-    --primary-50: 0 100% 97%;
-    --primary-100: 0 100% 92%;
-    --primary-200: 0 100% 85%;
-    --primary-300: 0 100% 78%;
-    --primary-400: 0 100% 67%;
-    --primary-500: 0 85% 60%;
-    --primary-600: 0 85% 55%;
-    --primary-700: 0 85% 50%;
-    --primary-800: 0 85% 45%;
-    --primary-900: 0 85% 40%;
+    /* Bordeaux Color Palette */
+    --bordeaux-50: 340 50% 96%;
+    --bordeaux-100: 340 45% 90%;
+    --bordeaux-200: 340 45% 80%;
+    --bordeaux-300: 340 55% 60%;
+    --bordeaux-400: 340 60% 40%;
+    --bordeaux-500: 340 66% 30%;
+    --bordeaux-600: 340 66% 22%;
+    --bordeaux-700: 340 66% 18%;        /* Main bordeaux */
+    --bordeaux-800: 340 66% 14%;
+    --bordeaux-900: 340 66% 10%;
+
+    /* Bronze Color Palette */
+    --bronze-50: 20 25% 96%;
+    --bronze-100: 20 25% 90%;
+    --bronze-200: 20 25% 80%;
+    --bronze-300: 20 30% 70%;
+    --bronze-400: 20 35% 60%;
+    --bronze-500: 20 33% 50%;           /* Main bronze */
+    --bronze-600: 20 33% 40%;
+    --bronze-700: 20 33% 30%;
+    --bronze-800: 20 33% 22%;
+    --bronze-900: 20 33% 15%;
     
     /* Enhanced neutral palette */
     --gray-50: 210 20% 98%;
@@ -67,25 +85,26 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 0 85% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 0 85% 60%;
+    /* Dark Mode - Warm Premium Heritage */
+    --background: 340 30% 10%;
+    --foreground: 36 22% 92%;
+    --card: 340 25% 12%;
+    --card-foreground: 36 22% 92%;
+    --popover: 340 25% 12%;
+    --popover-foreground: 36 22% 92%;
+    --primary: var(--brand-bronze);
+    --primary-foreground: 0 0% 10%;
+    --secondary: 340 22% 16%;
+    --secondary-foreground: 36 22% 92%;
+    --muted: 340 20% 18%;
+    --muted-foreground: 36 18% 65%;
+    --accent: var(--brand-bordeaux);
+    --accent-foreground: 36 22% 92%;
+    --destructive: 0 62% 51%;
+    --destructive-foreground: 36 22% 92%;
+    --border: 340 15% 25%;
+    --input: 340 15% 25%;
+    --ring: var(--brand-bronze);
   }
 }
 
@@ -207,25 +226,25 @@
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
   }
   50% {
-    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+    box-shadow: 0 0 0 10px hsl(var(--primary) / 0);
   }
 }
 
 @layer components {
   /* Enhanced tag styling */
   .tag {
-    @apply inline-flex items-center gap-1.5 bg-gray-100 text-gray-700 text-sm px-3 py-1.5 rounded-full mr-2 mb-2 
+    @apply inline-flex items-center gap-1.5 bg-muted text-muted-foreground text-sm px-3 py-1.5 rounded-full mr-2 mb-2 
            font-medium transition-all duration-300 ease-out cursor-pointer border border-transparent
-           hover:bg-primary hover:text-white hover:border-primary hover:shadow-md hover:-translate-y-0.5
+           hover:bg-primary hover:text-primary-foreground hover:border-primary hover:shadow-md hover:-translate-y-0.5
            focus:ring-2 focus:ring-primary focus:ring-offset-1 focus:outline-none;
     letter-spacing: 0.01em;
   }
 
   .tag.selected {
-    @apply bg-primary text-white border-primary shadow-md;
+    @apply bg-primary text-primary-foreground border-primary shadow-md;
   }
 
   /* Enhanced spacing utilities */
@@ -269,12 +288,12 @@
   }
 
   .card-modern {
-    @apply bg-white rounded-2xl border border-gray-200 shadow-sm transition-all duration-300 ease-out;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(250, 250, 250, 1) 100%);
+    @apply bg-card rounded-2xl border border-border shadow-sm transition-all duration-300 ease-out;
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%);
   }
 
   .card-modern:hover {
-    @apply shadow-lg border-gray-300 transform -translate-y-1;
+    @apply shadow-lg border-accent transform -translate-y-1;
   }
 
   /* Enhanced button styles */
@@ -291,14 +310,14 @@
   }
 
   .btn-secondary-enhanced {
-    @apply bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 border border-border hover:border-accent
            transition-all duration-300 ease-out hover:scale-105 hover:shadow-md
-           focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none
+           focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:outline-none
            font-semibold px-6 py-3 rounded-xl;
   }
 
   .btn-outline-enhanced {
-    @apply bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-white
+    @apply bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-primary-foreground
            transition-all duration-300 ease-out hover:scale-105 hover:shadow-md
            focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:outline-none
            font-semibold px-6 py-3 rounded-xl;
@@ -323,7 +342,7 @@
   }
 
   .text-low-contrast {
-    color: hsl(var(--gray-400));
+    color: hsl(var(--muted-foreground) / 0.6);
   }
 
   /* Skip link enhancement */
@@ -334,7 +353,7 @@
 
   /* Loading states */
   .loading-shimmer {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--muted-foreground)/0.1) 50%, hsl(var(--muted)) 75%);
     background-size: 200% 100%;
     animation: shimmer 2s infinite;
   }
@@ -345,12 +364,12 @@
   }
 
   .gradient-bg-secondary {
-    background: linear-gradient(135deg, hsl(var(--gray-50)) 0%, hsl(var(--gray-100)) 100%);
+    background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--muted-foreground) / 0.1) 100%);
   }
 
   /* Glass effect */
   .glass-effect {
-    @apply backdrop-blur-sm bg-white/80 border border-white/20;
+    @apply backdrop-blur-sm bg-card/80 border border-border;
   }
 
   /* Floating animation */
@@ -426,7 +445,7 @@
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .card-modern {
-    @apply border-2 border-gray-400;
+    @apply border-2 border-foreground;
   }
   
   .tag {

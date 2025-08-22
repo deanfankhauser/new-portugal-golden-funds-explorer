@@ -116,12 +116,12 @@ const FundFilter: React.FC<FundFilterProps> = ({
     
     return (
       <div className="mb-6">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="p-1 bg-primary/10 rounded-lg">
-            {icon}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="p-1 bg-accent/10 rounded-lg">
+              {icon}
+            </div>
+            <h4 className="text-sm font-semibold text-foreground">{title}</h4>
           </div>
-          <h4 className="text-sm font-semibold text-gray-700">{title}</h4>
-        </div>
         <div className="flex flex-wrap gap-2">
           {tags.map(tag => (
             <Button
@@ -129,11 +129,11 @@ const FundFilter: React.FC<FundFilterProps> = ({
               variant={selectedTags.includes(tag) ? "default" : "outline"}
               size="sm"
               onClick={() => toggleTag(tag)}
-              className={`${selectedTags.includes(tag) ? 
-                "bg-primary hover:bg-primary/90 text-white shadow-md" : 
-                "border-gray-300 hover:bg-gray-50 text-gray-700 hover:text-gray-800 hover:border-gray-400"} 
-                text-xs px-3 py-2 h-auto min-h-[32px] rounded-full transition-all duration-200 
-                hover:scale-105 hover:shadow-sm`}
+                      className={`${selectedTags.includes(tag) ? 
+                        "bg-primary hover:bg-primary/90 text-primary-foreground shadow-md" : 
+                        "border-border hover:bg-secondary text-muted-foreground hover:text-foreground hover:border-border/80"} 
+                        text-xs px-3 py-2 h-auto min-h-[32px] rounded-full transition-all duration-200 
+                        hover:scale-105 hover:shadow-sm`}
             >
               {tag}
             </Button>
@@ -145,27 +145,27 @@ const FundFilter: React.FC<FundFilterProps> = ({
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
         {/* Header */}
-        <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+        <div className="p-6 border-b border-border bg-gradient-to-r from-accent/5 to-background">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-primary/10 rounded-xl">
-              <Filter className="h-5 w-5 text-primary" />
+            <div className="p-2 bg-accent/10 rounded-xl">
+              <Filter className="h-5 w-5 text-accent" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900">Search & Filter</h2>
+            <h2 className="text-xl font-bold text-foreground">Search & Filter</h2>
           </div>
-          <p className="text-sm text-gray-600">Find your perfect investment fund</p>
+          <p className="text-sm text-muted-foreground">Find your perfect investment fund</p>
         </div>
 
         <div className="p-6 space-y-6">
           {/* Enhanced Search */}
           <div className="space-y-3">
-            <label htmlFor="search" className="block text-sm font-semibold text-gray-700">
+            <label htmlFor="search" className="block text-sm font-semibold text-foreground">
               Search Funds
             </label>
             <div className="relative">
               <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors duration-200 ${
-                searchFocus ? 'text-primary' : 'text-gray-400'
+                searchFocus ? 'text-accent' : 'text-muted-foreground'
               }`} />
               <Input
                 id="search"
@@ -178,8 +178,8 @@ const FundFilter: React.FC<FundFilterProps> = ({
                 onBlur={() => setSearchFocus(false)}
                 className={`pl-10 h-12 rounded-xl border-2 transition-all duration-200 ${
                   searchFocus 
-                    ? 'border-primary ring-2 ring-primary/20' 
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-accent ring-2 ring-accent/20' 
+                    : 'border-border hover:border-accent'
                 } ${!isAuthenticated ? 'cursor-pointer' : ''}`}
                 readOnly={!isAuthenticated}
               />
@@ -190,8 +190,8 @@ const FundFilter: React.FC<FundFilterProps> = ({
           {isAuthenticated && (
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-amber-500" />
-                <label className="text-sm font-semibold text-gray-700">Popular Filters</label>
+                <Sparkles className="h-4 w-4 text-accent" />
+                <label className="text-sm font-semibold text-foreground">Popular Filters</label>
               </div>
               <div className="flex flex-wrap gap-2">
                 {quickFilters.map(filter => (
@@ -200,8 +200,8 @@ const FundFilter: React.FC<FundFilterProps> = ({
                     variant={selectedTags.includes(filter.tag) ? "default" : "outline"}
                     className={`cursor-pointer transition-all duration-200 hover:scale-105 px-3 py-1.5 rounded-full ${
                       selectedTags.includes(filter.tag)
-                        ? 'bg-primary text-white shadow-md'
-                        : 'hover:bg-primary/10 hover:text-primary hover:border-primary'
+                        ? 'bg-accent text-accent-foreground shadow-md'
+                        : 'hover:bg-accent/10 hover:text-accent hover:border-accent'
                     }`}
                     onClick={() => toggleTag(filter.tag)}
                   >
@@ -213,12 +213,12 @@ const FundFilter: React.FC<FundFilterProps> = ({
           )}
 
           {/* Categorized Tag Groups */}
-          <div className="space-y-6">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="h-px bg-gray-200 flex-1"></div>
-              <span className="text-sm font-medium text-gray-500 px-3">All Filters</span>
-              <div className="h-px bg-gray-200 flex-1"></div>
-            </div>
+            <div className="space-y-6">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="h-px bg-border flex-1"></div>
+                <span className="text-sm font-medium text-muted-foreground px-3">All Filters</span>
+                <div className="h-px bg-border flex-1"></div>
+              </div>
 
             {!showAllTags ? (
               <div className="space-y-3">
@@ -230,8 +230,8 @@ const FundFilter: React.FC<FundFilterProps> = ({
                       size="sm"
                       onClick={() => toggleTag(tag)}
                       className={`${selectedTags.includes(tag) ? 
-                        "bg-primary hover:bg-primary/90 text-white shadow-md" : 
-                        "border-gray-300 hover:bg-gray-50 text-gray-700 hover:text-gray-800 hover:border-gray-400"} 
+                        "bg-primary hover:bg-primary/90 text-primary-foreground shadow-md" : 
+                        "border-border hover:bg-muted text-foreground hover:text-foreground hover:border-accent"} 
                         text-xs px-3 py-2 h-auto min-h-[32px] rounded-full transition-all duration-200 
                         hover:scale-105 hover:shadow-sm`}
                     >
@@ -242,10 +242,10 @@ const FundFilter: React.FC<FundFilterProps> = ({
               </div>
             ) : (
               <div className="space-y-6">
-                {renderTagGroup('Investment Categories', categoryTags, <Filter className="h-4 w-4 text-primary" />)}
-                {renderTagGroup('Investment Amounts', investmentTags, <span className="text-primary font-bold text-sm">€</span>)}
-                {renderTagGroup('Risk Levels', riskTags, <span className="text-primary font-bold text-xs">⚡</span>)}
-                {renderTagGroup('Other Filters', otherTags, <span className="text-primary font-bold text-xs">•</span>)}
+                {renderTagGroup('Investment Categories', categoryTags, <Filter className="h-4 w-4 text-accent" />)}
+                {renderTagGroup('Investment Amounts', investmentTags, <span className="text-accent font-bold text-sm">€</span>)}
+                {renderTagGroup('Risk Levels', riskTags, <span className="text-accent font-bold text-xs">⚡</span>)}
+                {renderTagGroup('Other Filters', otherTags, <span className="text-accent font-bold text-xs">•</span>)}
               </div>
             )}
             
@@ -253,9 +253,9 @@ const FundFilter: React.FC<FundFilterProps> = ({
               <Button
                 variant="ghost"
                 onClick={() => setShowAllTags(!showAllTags)}
-                className="w-full mt-4 text-gray-600 hover:text-gray-800 hover:bg-gray-50 
+                className="w-full mt-4 text-muted-foreground hover:text-foreground hover:bg-muted 
                          flex items-center justify-center gap-2 h-12 rounded-xl border-2 border-dashed 
-                         border-gray-200 hover:border-gray-300 transition-all duration-200"
+                         border-border hover:border-accent transition-all duration-200"
               >
                 {showAllTags ? (
                   <>
@@ -274,10 +274,10 @@ const FundFilter: React.FC<FundFilterProps> = ({
           
           {/* Active Filters Summary */}
           {(selectedTags.length > 0 || searchQuery) && (
-            <div className="pt-6 border-t border-gray-100">
+            <div className="pt-6 border-t border-border">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-medium text-gray-700">Active filters:</span>
+                  <span className="text-sm font-medium text-foreground">Active filters:</span>
                   {selectedTags.map(tag => (
                     <Badge key={tag} variant="secondary" className="flex items-center gap-1 rounded-full">
                       {tag}
@@ -309,8 +309,8 @@ const FundFilter: React.FC<FundFilterProps> = ({
                   variant="outline" 
                   size="sm" 
                   onClick={clearFilters}
-                  className="text-sm text-red-600 hover:text-red-700 hover:bg-red-50 
-                           flex items-center gap-2 rounded-full border-red-200 hover:border-red-300"
+                  className="text-sm text-muted-foreground hover:text-foreground hover:bg-muted 
+                           flex items-center gap-2 rounded-full border-border hover:border-accent"
                 >
                   <X className="w-4 h-4" />
                   Clear All

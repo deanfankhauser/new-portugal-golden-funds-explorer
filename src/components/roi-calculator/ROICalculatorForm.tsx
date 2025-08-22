@@ -86,10 +86,10 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
   };
 
   return (
-    <Card className="bg-white border border-gray-100 shadow-sm">
+    <Card className="bg-card border border-border shadow-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-2xl">
-          <Calculator className="w-6 h-6 text-[#EF4444]" />
+          <Calculator className="w-6 h-6 text-primary" />
           Investment Calculator
         </CardTitle>
       </CardHeader>
@@ -113,7 +113,7 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
             </SelectContent>
           </Select>
           {selectedFund && (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               Selected: {selectedFund.name} | Min Investment: {formatCurrency(selectedFund.minimumInvestment)}
             </p>
           )}
@@ -133,7 +133,7 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
                   min={selectedFund.minimumInvestment}
                   step="1000"
                 />
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   Minimum: {formatCurrency(selectedFund.minimumInvestment)}
                 </p>
               </div>
@@ -162,7 +162,7 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
                   max="50"
                   step="0.1"
                 />
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   Fund target: {selectedFund.returnTarget}
                 </p>
               </div>
@@ -171,17 +171,17 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
             {/* Calculate Button */}
             <Button 
               onClick={calculateROI}
-              className="w-full bg-[#EF4444] hover:bg-[#DC2626] text-white"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               <TrendingUp className="w-4 h-4 mr-2" />
               Calculate ROI
             </Button>
 
             {/* Fund Information Card */}
-            <Card className="bg-gray-50 border-gray-200">
+            <Card className="bg-secondary border-border">
               <CardContent className="pt-4">
-                <h3 className="font-semibold text-gray-900 mb-2">{selectedFund.name}</h3>
-                <p className="text-sm text-gray-600 mb-2">{selectedFund.description}</p>
+                <h3 className="font-semibold text-foreground mb-2">{selectedFund.name}</h3>
+                <p className="text-sm text-muted-foreground mb-2">{selectedFund.description}</p>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="font-medium">Fund Size:</span> €{selectedFund.fundSize}M
@@ -202,9 +202,9 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
         )}
 
         {/* Legal Disclaimer */}
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start space-x-3">
-          <AlertTriangle className="text-amber-600 w-5 h-5 mt-0.5 flex-shrink-0" />
-          <div className="text-sm text-amber-800">
+        <div className="bg-warning/10 border border-warning/20 rounded-lg p-4 flex items-start space-x-3">
+          <AlertTriangle className="text-warning w-5 h-5 mt-0.5 flex-shrink-0" />
+          <div className="text-sm text-warning-foreground">
             <h4 className="font-medium mb-2">Important Legal Disclaimer</h4>
             <p className="leading-relaxed">
               This calculator is for illustrative purposes only and does not constitute investment guidance. 

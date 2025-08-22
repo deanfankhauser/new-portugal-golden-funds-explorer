@@ -79,13 +79,13 @@ const InteractiveFundComparison: React.FC<InteractiveFundComparisonProps> = ({ s
     }).filter(Boolean);
   };
 
-  const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
+  const COLORS = ['hsl(var(--primary))', 'hsl(var(--accent))', 'hsl(var(--success))', 'hsl(var(--warning))'];
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <GitCompare className="h-5 w-5 text-blue-500" />
+          <GitCompare className="h-5 w-5 text-accent" />
           Interactive Fund Comparison
         </CardTitle>
       </CardHeader>
@@ -121,7 +121,7 @@ const InteractiveFundComparison: React.FC<InteractiveFundComparisonProps> = ({ s
           {selectedFunds.length > 0 && (
             <div className="flex items-center justify-between mt-4">
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">Selected: {selectedFunds.length}/4</span>
+                <span className="text-sm text-muted-foreground">Selected: {selectedFunds.length}/4</span>
                 {selectedFunds.map((fundId) => {
                   const fund = getFundById(fundId);
                   return (
@@ -216,7 +216,7 @@ const InteractiveFundComparison: React.FC<InteractiveFundComparisonProps> = ({ s
                         if (payload && payload.length > 0) {
                           const data = payload[0].payload;
                           return (
-                            <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
+                            <div className="bg-card p-3 border border-border rounded-lg shadow-lg">
                               <p className="font-semibold">{data.name}</p>
                               <p className="text-sm">Management Fee: {data.x}%</p>
                               <p className="text-sm">Movingto Score: {data.y}</p>
@@ -252,7 +252,7 @@ const InteractiveFundComparison: React.FC<InteractiveFundComparisonProps> = ({ s
                     if (!score || !fund) return null;
                     
                     return (
-                      <div key={fundId} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                      <div key={fundId} className="flex justify-between items-center p-2 bg-muted/30 rounded">
                         <span className="font-medium text-sm">{fund.name.substring(0, 20)}...</span>
                         <div className="flex gap-2 text-xs">
                           <Badge variant="outline">Score: {score.movingtoScore}</Badge>
@@ -266,7 +266,7 @@ const InteractiveFundComparison: React.FC<InteractiveFundComparisonProps> = ({ s
               
               <div>
                 <h5 className="font-semibold mb-2">Key Insights</h5>
-                <div className="text-sm text-gray-600 space-y-1">
+                <div className="text-sm text-muted-foreground space-y-1">
                   <p>• Radar chart shows scoring across all categories</p>
                   <p>• Scatter plot reveals fee vs performance relationship</p>
                   <p>• Compare up to 4 funds simultaneously</p>
@@ -278,7 +278,7 @@ const InteractiveFundComparison: React.FC<InteractiveFundComparisonProps> = ({ s
         )}
 
         {selectedFunds.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-muted-foreground">
             <GitCompare className="h-12 w-12 mx-auto mb-3 opacity-50" />
             <p>Select funds from the top 10 to start comparing</p>
             <p className="text-sm">Choose up to 4 funds for detailed comparison</p>

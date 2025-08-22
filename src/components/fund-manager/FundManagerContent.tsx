@@ -25,7 +25,7 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({ managerFunds, m
       {/* About Section for each fund */}
       <div className="space-y-8 mb-12">
         <div className="flex items-center mb-6">
-          <Info className="w-6 h-6 mr-2 text-[#EF4444]" />
+          <Info className="w-6 h-6 mr-2 text-primary" />
           <h2 className="text-2xl font-bold">About Our Funds</h2>
         </div>
         {managerFunds.map(fund => (
@@ -36,7 +36,7 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({ managerFunds, m
       {/* FAQs Section */}
       <div className="space-y-8">
         <div className="flex items-center mb-6">
-          <HelpCircle className="w-6 h-6 mr-2 text-[#EF4444]" />
+          <HelpCircle className="w-6 h-6 mr-2 text-primary" />
           <h2 className="text-2xl font-bold">Frequently Asked Questions</h2>
         </div>
         {managerFunds.map(fund => (

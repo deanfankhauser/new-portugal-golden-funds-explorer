@@ -7,11 +7,11 @@ const TagsHubBreadcrumbs = () => {
     <nav aria-label="breadcrumbs" className="mb-4 sm:mb-6">
       <ol className="flex items-center text-xs sm:text-sm text-gray-500">
         <li>
-          <Link to="/" className="hover:text-[#EF4444]">Home</Link>
+          <Link to="/" className="hover:text-primary">Home</Link>
         </li>
         <li className="mx-2">/</li>
         <li>
-          <span className="font-medium text-[#EF4444]">Tags</span>
+          <span className="font-medium text-primary">Tags</span>
         </li>
       </ol>
     </nav>

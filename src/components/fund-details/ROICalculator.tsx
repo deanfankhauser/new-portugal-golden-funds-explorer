@@ -85,12 +85,12 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
   if (!isAuthenticated) {
     return (
       <>
-        <Card id="roi-calculator" className="bg-white border border-gray-100 shadow-sm relative overflow-hidden">
+        <Card id="roi-calculator" className="bg-card border border-border shadow-sm relative overflow-hidden">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-xl">
-              <Calculator className="w-5 h-5 text-[#EF4444]" />
+              <Calculator className="w-5 h-5 text-primary" />
               ROI Calculator for {fund.name}
-              <Lock className="w-5 h-5 text-gray-400 ml-auto" />
+              <Lock className="w-5 h-5 text-muted-foreground ml-auto" />
             </CardTitle>
           </CardHeader>
           <CardContent className="relative">
@@ -112,32 +112,32 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <h4 className="font-medium text-gray-700 mb-1">Total Value</h4>
-                  <p className="text-2xl font-bold text-green-600">€•••,•••</p>
+                <div className="text-center p-4 bg-success/10 rounded-lg">
+                  <h4 className="font-medium text-muted-foreground mb-1">Total Value</h4>
+                  <p className="text-2xl font-bold text-success">€•••,•••</p>
                 </div>
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <h4 className="font-medium text-gray-700 mb-1">Total Return</h4>
-                  <p className="text-2xl font-bold text-blue-600">€•••,•••</p>
+                <div className="text-center p-4 bg-primary/10 rounded-lg">
+                  <h4 className="font-medium text-muted-foreground mb-1">Total Return</h4>
+                  <p className="text-2xl font-bold text-primary">€•••,•••</p>
                 </div>
-                <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <h4 className="font-medium text-gray-700 mb-1">Annualized Return</h4>
-                  <p className="text-2xl font-bold text-purple-600">••.••%</p>
+                <div className="text-center p-4 bg-accent/10 rounded-lg">
+                  <h4 className="font-medium text-muted-foreground mb-1">Annualized Return</h4>
+                  <p className="text-2xl font-bold text-accent">••.••%</p>
                 </div>
               </div>
             </div>
             
             {/* Overlay with unlock button */}
-            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
+            <div className="absolute inset-0 bg-card/80 backdrop-blur-sm flex items-center justify-center">
               <div className="text-center">
-                <Calculator className="w-8 h-8 text-[#EF4444] mx-auto mb-3" />
-                <h3 className="font-semibold text-gray-900 mb-2">Advanced ROI Calculator</h3>
-                <p className="text-sm text-gray-600 mb-4 max-w-xs">
+                <Calculator className="w-8 h-8 text-primary mx-auto mb-3" />
+                <h3 className="font-semibold text-foreground mb-2">Advanced ROI Calculator</h3>
+                <p className="text-sm text-muted-foreground mb-4 max-w-xs">
                   Calculate personalized return projections with detailed scenarios and risk analysis
                 </p>
                 <Button 
                   onClick={handleUnlockClick}
-                  className="bg-[#EF4444] hover:bg-[#EF4444]/90"
+                  className="bg-primary hover:bg-primary/90"
                 >
                   <Eye className="w-4 h-4 mr-2" />
                   Access ROI Calculator
@@ -157,10 +157,10 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
 
   // Show full content for authenticated users
   return (
-    <Card id="roi-calculator" className="bg-white border border-gray-100 shadow-sm">
+    <Card id="roi-calculator" className="bg-card border border-border shadow-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl">
-          <Calculator className="w-5 h-5 text-[#EF4444]" />
+          <Calculator className="w-5 h-5 text-primary" />
           ROI Calculator for {fund.name}
         </CardTitle>
       </CardHeader>
@@ -177,7 +177,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
               min={fund.minimumInvestment}
               step="1000"
             />
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               Minimum: {formatCurrency(fund.minimumInvestment)}
             </p>
           </div>
@@ -206,7 +206,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
               max="50"
               step="0.1"
             />
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               Fund target: {fund.returnTarget}
             </p>
           </div>
@@ -215,7 +215,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
         {/* Calculate Button */}
         <Button 
           onClick={calculateROI}
-          className="w-full bg-[#EF4444] hover:bg-[#DC2626] text-white"
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
         >
           Calculate ROI
         </Button>
@@ -223,23 +223,23 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
         {/* Results */}
         {results && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <h4 className="font-medium text-gray-700 mb-1">Total Value</h4>
-              <p className="text-2xl font-bold text-green-600">
+            <div className="text-center p-4 bg-success/10 rounded-lg">
+              <h4 className="font-medium text-muted-foreground mb-1">Total Value</h4>
+              <p className="text-2xl font-bold text-success">
                 {formatCurrency(results.totalValue)}
               </p>
             </div>
             
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <h4 className="font-medium text-gray-700 mb-1">Total Return</h4>
-              <p className="text-2xl font-bold text-blue-600">
+            <div className="text-center p-4 bg-primary/10 rounded-lg">
+              <h4 className="font-medium text-muted-foreground mb-1">Total Return</h4>
+              <p className="text-2xl font-bold text-primary">
                 {formatCurrency(results.totalReturn)}
               </p>
             </div>
             
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <h4 className="font-medium text-gray-700 mb-1">Annualized Return</h4>
-              <p className="text-2xl font-bold text-purple-600">
+            <div className="text-center p-4 bg-accent/10 rounded-lg">
+              <h4 className="font-medium text-muted-foreground mb-1">Annualized Return</h4>
+              <p className="text-2xl font-bold text-accent">
                 {formatPercentage(results.annualizedReturn)}
               </p>
             </div>
@@ -247,9 +247,9 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
         )}
 
         {/* Legal Disclaimer */}
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start space-x-3">
-          <AlertTriangle className="text-amber-600 w-5 h-5 mt-0.5 flex-shrink-0" />
-          <div className="text-sm text-amber-800">
+        <div className="bg-warning/10 border border-warning/20 rounded-lg p-4 flex items-start space-x-3">
+          <AlertTriangle className="text-warning w-5 h-5 mt-0.5 flex-shrink-0" />
+          <div className="text-sm text-warning-foreground">
             <h4 className="font-medium mb-2">Important Legal Disclaimer</h4>
             <p className="leading-relaxed">
               This calculator is for illustrative purposes only and does not constitute investment guidance. 

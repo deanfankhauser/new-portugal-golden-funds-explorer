@@ -36,7 +36,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       {/* Back to Funds Button */}
       <BackToFundsButton />
       
-      <div className="bg-white rounded-xl md:rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-shadow duration-300 hover:shadow-lg">
+      <div className="bg-card rounded-xl md:rounded-2xl shadow-md border border-border overflow-hidden transition-shadow duration-300 hover:shadow-lg">
         {/* Fund Header Section with built-in CTA */}
         <FundHeader fund={fund} />
 
@@ -63,17 +63,17 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           </div>
           
           {/* Marketing CTAs - Lower Priority */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 md:p-6 rounded-lg border border-blue-200">
+          <div className="bg-gradient-to-r from-primary/5 to-accent/5 p-4 md:p-6 rounded-lg border border-primary/20">
             <div className="text-center">
-              <h3 className="font-semibold text-blue-900 mb-2 text-sm md:text-base">Portugal Golden Visa Qualified Fund</h3>
-              <p className="text-xs md:text-sm text-blue-700 mb-4">
+              <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Portugal Golden Visa Qualified Fund</h3>
+              <p className="text-xs md:text-sm text-muted-foreground mb-4">
                 Lawyers at Movingto have done due diligence on this firm and can confirm it meets the requirements for the Portugal Golden Visa
               </p>
               <a 
                 href="https://movingto.com/pt/portugal-golden-visa" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors duration-200"
+                className="inline-flex items-center text-primary hover:text-primary/80 font-medium text-sm transition-colors duration-200"
               >
                 Learn about Golden Visa requirements
                 <svg className="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -83,18 +83,18 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 md:p-6 rounded-lg border border-green-200">
+          <div className="bg-gradient-to-r from-success/10 to-success/5 p-4 md:p-6 rounded-lg border border-success/30">
             <div className="text-center">
-              <h3 className="font-semibold text-green-900 mb-2 text-sm md:text-base">Want to see how this fund compares to others?</h3>
-              <p className="text-xs md:text-sm text-green-700 mb-4">Take our quiz to get personalized recommendations based on your investment profile</p>
+              <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Want to see how this fund compares to others?</h3>
+              <p className="text-xs md:text-sm text-muted-foreground mb-4">Take our quiz to get personalized recommendations based on your investment profile</p>
               <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                <Button asChild className="bg-green-600 hover:bg-green-700">
+                <Button asChild className="bg-success hover:bg-success/90 text-success-foreground">
                   <Link to="/fund-quiz">
                     <ClipboardCheck className="mr-2 h-4 w-4" />
                     Take Fund Quiz
                   </Link>
                 </Button>
-                <Button asChild variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
+                <Button asChild variant="outline" className="border-success text-success hover:bg-success/10">
                   <Link to="/index">
                     <TrendingUp className="mr-2 h-4 w-4" />
                     View Fund Index
@@ -111,14 +111,14 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           <IntroductionButton variant="full" />
           
           {/* Tags Section - Bottom */}
-          <div className="border-t border-gray-100 pt-6">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">Fund Tags</h3>
+          <div className="border-t border-border pt-6">
+            <h3 className="text-lg font-semibold mb-4 text-foreground">Fund Tags</h3>
             <div className="flex flex-wrap gap-2">
               {fund.tags.map(tag => (
                 <Link 
                   key={tag} 
                   to={`/tags/${tagToSlug(tag)}`}
-                  className="bg-white/80 hover:bg-[#EF4444] hover:text-white text-[#EF4444] border border-[#EF4444] px-2 py-1 md:px-3 md:py-1 rounded-full transition-all duration-300 shadow-sm text-xs md:text-sm font-medium"
+                  className="bg-card hover:bg-primary hover:text-primary-foreground text-primary border border-primary px-2 py-1 md:px-3 md:py-1 rounded-full transition-all duration-300 shadow-sm text-xs md:text-sm font-medium"
                 >
                   {tag}
                 </Link>

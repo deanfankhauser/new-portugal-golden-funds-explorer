@@ -7,17 +7,17 @@ import { ClipboardCheck } from 'lucide-react';
 const MobileFundQuizCTA: React.FC = () => {
   return (
     <div className="lg:hidden mt-8">
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl 
-                     border border-blue-200 shadow-sm card-hover-effect">
+      <div className="bg-gradient-to-r from-primary/10 to-accent/10 p-6 rounded-xl 
+                     border border-primary/20 shadow-sm card-hover-effect">
         <div className="text-center space-y-4">
-          <div className="bg-blue-100 p-3 rounded-lg inline-flex interactive-hover">
-            <ClipboardCheck className="h-6 w-6 text-blue-600" aria-hidden="true" />
+          <div className="bg-primary/20 p-3 rounded-lg inline-flex interactive-hover">
+            <ClipboardCheck className="h-6 w-6 text-primary" aria-hidden="true" />
           </div>
           <div>
-            <h3 className="font-semibold text-blue-900 mb-2 text-lg text-high-contrast">
+            <h3 className="font-semibold text-foreground mb-2 text-lg text-high-contrast">
               Find Your Ideal Fund
             </h3>
-            <p className="text-sm text-blue-700 mb-4 text-medium-contrast">
+            <p className="text-sm text-muted-foreground mb-4 text-medium-contrast">
               Get personalized recommendations in under 2 minutes
             </p>
           </div>
