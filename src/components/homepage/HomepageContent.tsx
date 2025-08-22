@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Fund, FundTag } from '../../data/funds';
-import FundFilter from '../FundFilter';
+import CompactFilter from './CompactFilter';
 import FundListSkeleton from '../common/FundListSkeleton';
 import MobileFilterToggle from './MobileFilterToggle';
 import HomepageSidebar from './HomepageSidebar';
@@ -50,7 +50,7 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
 
       {showMobileFilter && (
         <div className="lg:hidden mb-6" id="mobile-filter-section">
-          <FundFilter
+          <CompactFilter
             selectedTags={selectedTags}
             setSelectedTags={setSelectedTags}
             searchQuery={searchQuery}

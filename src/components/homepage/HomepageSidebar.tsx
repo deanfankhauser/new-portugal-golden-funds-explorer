@@ -1,6 +1,6 @@
 
 import React from 'react';
-import FundFilter from '../FundFilter';
+import CompactFilter from './CompactFilter';
 import { FundTag } from '../../data/funds';
 
 interface HomepageSidebarProps {
@@ -18,17 +18,12 @@ const HomepageSidebar: React.FC<HomepageSidebarProps> = ({
 }) => {
   return (
     <aside className="lg:col-span-1 order-2 lg:order-1 hidden lg:block" aria-label="Sidebar tools">
-      <div className="lg:sticky lg:top-4">
-        {/* Filter Section */}
-        <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
-          <FundFilter
-            selectedTags={selectedTags}
-            setSelectedTags={setSelectedTags}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-          />
-        </div>
-      </div>
+      <CompactFilter
+        selectedTags={selectedTags}
+        setSelectedTags={setSelectedTags}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
     </aside>
   );
 };
