@@ -18,30 +18,58 @@ export function findBuiltAssets(distDir: string): AssetFiles {
   
   const files = fs.readdirSync(assetsDir);
   
+  // Group files by type and get file stats
+  const cssFileMap = new Map<string, { file: string; mtime: Date }>();
+  const jsFileMap = new Map<string, { file: string; mtime: Date }>();
+  
   files.forEach(file => {
     const fullPath = path.join(assetsDir, file);
     
     if (fs.statSync(fullPath).isFile()) {
+      const stats = fs.statSync(fullPath);
+      
       if (file.endsWith('.css') && !file.includes('.map')) {
-        cssFiles.push(file);
+        // For index files, keep only the newest
+        if (file.includes('index-')) {
+          const existing = cssFileMap.get('index');
+          if (!existing || stats.mtime > existing.mtime) {
+            cssFileMap.set('index', { file, mtime: stats.mtime });
+          }
+        } else {
+          cssFiles.push(file);
+        }
       } else if (file.endsWith('.js') && !file.includes('.map')) {
-        jsFiles.push(file);
+        // For index files, keep only the newest
+        if (file.includes('index-')) {
+          const existing = jsFileMap.get('index');
+          if (!existing || stats.mtime > existing.mtime) {
+            jsFileMap.set('index', { file, mtime: stats.mtime });
+          }
+        } else {
+          jsFiles.push(file);
+        }
       }
     }
   });
   
-  // Sort files for predictable loading order
+  // Add the newest index files
+  if (cssFileMap.has('index')) {
+    cssFiles.unshift(cssFileMap.get('index')!.file);
+  }
+  if (jsFileMap.has('index')) {
+    jsFiles.unshift(jsFileMap.get('index')!.file);
+  }
+  
+  // Sort remaining files for predictable loading order
   cssFiles.sort((a, b) => {
-    // Prioritize main index files
-    if (a.includes('index-') && !b.includes('index-')) return -1;
-    if (!a.includes('index-') && b.includes('index-')) return 1;
+    if (a.includes('index-')) return -1;
+    if (b.includes('index-')) return 1;
     return a.localeCompare(b);
   });
   
   jsFiles.sort((a, b) => {
-    // Main index files first (these contain React)
-    if (a.includes('index-') && !b.includes('index-')) return -1;
-    if (!a.includes('index-') && b.includes('index-')) return 1;
+    if (a.includes('index-')) return -1;
+    if (b.includes('index-')) return 1;
     // Vendor files next
     if (a.includes('vendor') && !b.includes('vendor')) return -1;
     if (!a.includes('vendor') && b.includes('vendor')) return 1;
@@ -50,8 +78,6 @@ export function findBuiltAssets(distDir: string): AssetFiles {
     if (!a.includes('chunk-') && b.includes('chunk-')) return -1;
     return a.localeCompare(b);
   });
-  
-  // Asset summary: CSS: ${cssFiles.length}, JS: ${jsFiles.length}
   
   return { cssFiles, jsFiles };
 }

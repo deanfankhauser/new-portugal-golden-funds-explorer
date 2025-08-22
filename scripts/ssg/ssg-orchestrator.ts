@@ -22,12 +22,15 @@ export async function generateStaticFiles() {
   const { cssFiles, jsFiles } = findBuiltAssets(distDir);
   const { validCss, validJs } = validateAssetPaths(distDir, cssFiles, jsFiles);
   
-  if (validCss.length === 0 && process.env.NODE_ENV !== 'production') {
-    console.warn('⚠️  SSG: No valid CSS files found. Styles may not load correctly.');
+  // Fail fast if no assets found - this prevents deploying broken pages
+  if (validCss.length === 0) {
+    console.error('❌ SSG: No valid CSS files found. Cannot generate working pages.');
+    process.exit(1);
   }
   
-  if (validJs.length === 0 && process.env.NODE_ENV !== 'production') {
-    console.warn('⚠️  SSG: No valid JS files found. Interactivity may not work.');
+  if (validJs.length === 0) {
+    console.error('❌ SSG: No valid JS files found. Cannot generate interactive pages.');
+    process.exit(1);
   }
 
   const routes = await getAllStaticRoutes();

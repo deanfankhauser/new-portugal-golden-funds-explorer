@@ -34,29 +34,16 @@ export function generateHTMLTemplate(
     });
   }
 
-  // Simplify asset loading: only include stable entry files
-  const validatedCssFiles = cssFiles.filter(f =>
-    f.includes('index-') || f.startsWith('index.') || f.includes('style') || f.includes('main')
-  );
-
-  const validatedJsFiles = jsFiles.filter(f =>
-    f.includes('index-') || f.startsWith('index.') || f.includes('vendor')
-  );
+  // Use all validated assets passed from orchestrator
+  const validatedCssFiles = cssFiles;
+  const validatedJsFiles = jsFiles;
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BE3HZBVG9D"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-BE3HZBVG9D');
-  </script>
+  <base href="/" />
   
   <!-- Critical SEO Meta Tags -->
   <title>${title}</title>
@@ -92,10 +79,20 @@ export function generateHTMLTemplate(
   <!-- Structured Data -->
   ${hasStructuredData ? `<script type="application/ld+json" data-managed="consolidated-seo">${JSON.stringify(structuredData, null, 2)}</script>` : ''}
   
+  <!-- Helmet-managed tags from SSR -->
+  ${seoData.helmetData?.title || ''}
+  ${seoData.helmetData?.meta || ''}
+  ${seoData.helmetData?.link || ''}
+  ${seoData.helmetData?.script || ''}
+  
   <!-- Critical Resource Preconnects -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://www.googletagmanager.com">
+  
+  <!-- Asset Preloads -->
+  ${validatedCssFiles.length > 0 ? `<link rel="preload" href="/assets/${validatedCssFiles[0]}" as="style" />` : ''}
+  ${validatedJsFiles.map(js => `  <link rel="modulepreload" href="/assets/${js}" />`).join('\n')}
   
   <!-- Google Fonts - Load immediately -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -189,7 +186,14 @@ export function generateHTMLTemplate(
   <!-- Built JavaScript Files -->
   ${validatedJsFiles.map(js => `  <script type="module" src="/assets/${js}"></script>`).join('\n')}
   
-  <!-- Analytics and performance tracking (disabled in production build) -->
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BE3HZBVG9D"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-BE3HZBVG9D');
+  </script>
 </body>
 </html>`;
 }

@@ -17,4 +17,10 @@ export interface SEOData {
   robots?: string;
   keywords?: string[];
   canonical?: string;
+  helmetData?: {
+    title: string;
+    meta: string;
+    link: string;
+    script: string;
+  };
 }
