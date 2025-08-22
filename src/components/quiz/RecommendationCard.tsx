@@ -18,7 +18,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ fund, index, fo
   return (
     <Card className="relative overflow-hidden">
       {index === 0 && (
-        <div className="absolute top-4 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-semibold z-10">
+        <div className="absolute top-4 left-4 bg-warning text-warning-foreground px-3 py-1 rounded-full text-sm font-semibold z-10">
           Top Match
         </div>
       )}

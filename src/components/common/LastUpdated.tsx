@@ -32,14 +32,14 @@ export const LastUpdated: React.FC<LastUpdatedProps> = ({
           <span>Last updated:</span>
           <time 
             dateTime={modifiedDate}
-            className={`font-medium ${isStale ? 'text-warning' : 'text-success'}`}
+            className={`font-medium ${isStale ? 'text-warning' : 'text-primary'}`}
           >
             {DateManagementService.formatDisplayDate(modifiedDate)}
           </time>
           {contentAge <= 7 && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-success/20 text-success-foreground">
-              Recently updated
-            </span>
+             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-primary/20 text-primary-foreground">
+               Recently updated
+             </span>
           )}
         </div>
         

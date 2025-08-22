@@ -18,7 +18,7 @@ import { FundIndexWidget, ComparisonWidget } from "./navigation/IndexWidgets";
 
 const Header = () => {
   return (
-    <header className="bg-foreground text-background py-3 shadow-lg sticky top-0 z-50 w-full">
+    <header className="bg-foreground text-background py-3 shadow-lg w-full">
       <div className="container mx-auto px-4 w-full">
         <div className="flex justify-between items-center w-full">
           {/* Left section - Logo */}

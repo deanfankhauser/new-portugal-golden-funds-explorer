@@ -1,5 +1,5 @@
 import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { PerformanceMonitoringService } from './services/performanceMonitoringService'
@@ -22,8 +22,16 @@ if (typeof window !== 'undefined') {
   }
 }
 
-createRoot(document.getElementById("root")!).render(
+const rootElement = document.getElementById("root")!;
+const app = (
   <StrictMode>
     <App />
   </StrictMode>
 );
+
+// Use hydration for SSR pages, createRoot for SPA
+if (rootElement.innerHTML.trim()) {
+  hydrateRoot(rootElement, app);
+} else {
+  createRoot(rootElement).render(app);
+}

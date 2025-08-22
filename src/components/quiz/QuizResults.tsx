@@ -162,7 +162,7 @@ const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz,
                 formatCurrency={formatCurrency}
               />
               {index === 0 && (
-                <div className="absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-semibold shadow-lg z-10">
+                <div className="absolute -top-2 -right-2 bg-warning text-warning-foreground px-3 py-1 rounded-full text-sm font-semibold shadow-lg z-10">
                   🏆 Best Match
                 </div>
               )}

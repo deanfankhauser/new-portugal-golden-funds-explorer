@@ -17,7 +17,7 @@ const FundQuizProcessing = () => {
         <div className="max-w-2xl mx-auto">
           <Card className="text-center py-10 sm:py-12">
             <CardContent>
-              <div className="animate-spin w-10 h-10 sm:w-12 sm:h-12 border-4 border-blue-200 border-t-blue-600 rounded-full mx-auto mb-4 sm:mb-6"></div>
+              <div className="animate-spin w-10 h-10 sm:w-12 sm:h-12 border-4 border-primary/20 border-t-primary rounded-full mx-auto mb-4 sm:mb-6"></div>
               <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">Analyzing Your Investment Profile</h2>
               <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base px-2 sm:px-0">
                 We're matching your preferences with our database of Portugal Golden Visa funds...

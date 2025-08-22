@@ -146,13 +146,13 @@ const ROICalculator = () => {
           {results && emailSubmitted && (
             <div className="space-y-6">
               {/* Email Confirmation Card */}
-              <Card ref={emailConfirmationRef} className="bg-green-50 border-green-200">
+              <Card ref={emailConfirmationRef} className="bg-success/10 border-success/30">
                 <CardContent className="p-6">
                   <div className="flex items-center space-x-3 mb-4">
-                    <CheckCircle className="w-6 h-6 text-green-600" />
-                    <h3 className="text-lg font-semibold text-green-800">Email Sent Successfully!</h3>
+                    <CheckCircle className="w-6 h-6 text-success" />
+                    <h3 className="text-lg font-semibold text-success-foreground">Email Sent Successfully!</h3>
                   </div>
-                  <div className="space-y-3 text-green-700">
+                  <div className="space-y-3 text-success-foreground">
                     <div className="flex items-center space-x-2">
                       <Mail className="w-4 h-4" />
                       <span>Your detailed ROI calculation has been sent to <strong>{userEmail}</strong></span>
@@ -166,8 +166,8 @@ const ROICalculator = () => {
                       <span>The email includes your investment projections and fund details</span>
                     </div>
                   </div>
-                  <div className="mt-4 p-3 bg-green-100 rounded-lg">
-                    <p className="text-sm text-green-800">
+                  <div className="mt-4 p-3 bg-success/20 rounded-lg">
+                    <p className="text-sm text-success-foreground">
                       <strong>What's next?</strong> Review your results below and consider consulting with a financial advisor to discuss your Portugal Golden Visa investment strategy.
                     </p>
                   </div>
