@@ -39,7 +39,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
             <PaginationLink
               onClick={() => onPageChange(i)}
               isActive={currentPage === i}
-              className="cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition-colors"
+              className="cursor-pointer hover:bg-accent/10 hover:text-accent transition-colors"
             >
               {i}
             </PaginationLink>
@@ -53,7 +53,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
           <PaginationLink
             onClick={() => onPageChange(1)}
             isActive={currentPage === 1}
-            className="cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition-colors"
+            className="cursor-pointer hover:bg-accent/10 hover:text-accent transition-colors"
           >
             1
           </PaginationLink>
@@ -76,7 +76,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
               <PaginationLink
                 onClick={() => onPageChange(i)}
                 isActive={currentPage === i}
-                className="cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                className="cursor-pointer hover:bg-accent/10 hover:text-accent transition-colors"
               >
                 {i}
               </PaginationLink>
@@ -97,7 +97,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
             <PaginationLink
               onClick={() => onPageChange(totalPages)}
               isActive={currentPage === totalPages}
-              className="cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition-colors"
+              className="cursor-pointer hover:bg-accent/10 hover:text-accent transition-colors"
             >
               {totalPages}
             </PaginationLink>
@@ -113,10 +113,10 @@ const TablePagination: React.FC<TablePaginationProps> = ({
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6 px-2">
-      <div className="text-sm text-gray-600 font-medium order-2 sm:order-1">
-        Showing <span className="text-gray-900 font-semibold">{startItem}</span> to{' '}
-        <span className="text-gray-900 font-semibold">{endItem}</span> of{' '}
-        <span className="text-gray-900 font-semibold">{totalItems}</span> funds
+      <div className="text-sm text-muted-foreground font-medium order-2 sm:order-1">
+        Showing <span className="text-foreground font-semibold">{startItem}</span> to{' '}
+        <span className="text-foreground font-semibold">{endItem}</span> of{' '}
+        <span className="text-foreground font-semibold">{totalItems}</span> funds
       </div>
       
       <div className="order-1 sm:order-2">
@@ -128,7 +128,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
                 className={`cursor-pointer transition-all duration-200 ${
                   currentPage === 1 
                     ? 'pointer-events-none opacity-40 cursor-not-allowed' 
-                    : 'hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200'
+                    : 'hover:bg-accent/10 hover:text-accent hover:border-accent/20'
                 }`}
               />
             </PaginationItem>
@@ -141,7 +141,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
                 className={`cursor-pointer transition-all duration-200 ${
                   currentPage === totalPages 
                     ? 'pointer-events-none opacity-40 cursor-not-allowed' 
-                    : 'hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200'
+                    : 'hover:bg-accent/10 hover:text-accent hover:border-accent/20'
                 }`}
               />
             </PaginationItem>

@@ -14,21 +14,21 @@ export const quizQuestions = [
         label: 'Conservative',
         description: 'I prefer stable, predictable returns with minimal risk of losing my principal investment',
         badge: 'Low Risk',
-        badgeColor: 'bg-green-100 text-green-800'
+        badgeColor: 'bg-success/10 text-success'
       },
       {
         value: 'medium',
         label: 'Moderate', 
         description: 'I\'m comfortable with some volatility if it means potentially higher returns over time',
         badge: 'Balanced',
-        badgeColor: 'bg-yellow-100 text-yellow-800'
+        badgeColor: 'bg-warning/10 text-warning'
       },
       {
         value: 'high',
         label: 'Aggressive',
         description: 'I\'m willing to accept significant volatility for the potential of substantial returns',
         badge: 'High Risk',
-        badgeColor: 'bg-red-100 text-red-800'
+        badgeColor: 'bg-destructive/10 text-destructive'
       }
     ]
   },
@@ -44,21 +44,21 @@ export const quizQuestions = [
         label: 'Short-term (1-5 years)',
         description: 'I need access to my investment relatively soon or prefer more liquid options',
         badge: '1-5 Years',
-        badgeColor: 'bg-blue-100 text-blue-800'
+        badgeColor: 'bg-accent/10 text-accent'
       },
       {
         value: 'medium',
         label: 'Medium-term (5-10 years)',
         description: 'I can wait several years for my investment to mature and am planning for medium-term goals',
         badge: '5-10 Years',
-        badgeColor: 'bg-purple-100 text-purple-800'
+        badgeColor: 'bg-primary/10 text-primary'
       },
       {
         value: 'long',
         label: 'Long-term (10+ years)',
         description: 'I\'m investing for the long haul and can wait for maximum growth potential',
         badge: '10+ Years',
-        badgeColor: 'bg-indigo-100 text-indigo-800'
+        badgeColor: 'bg-secondary/10 text-secondary-foreground'
       }
     ]
   },

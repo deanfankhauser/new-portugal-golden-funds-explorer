@@ -68,10 +68,10 @@ const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz,
   if (!isAuthenticated && !emailSubmitted) {
     return (
       <div className="space-y-8 max-w-2xl mx-auto">
-        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+        <Card className="bg-gradient-to-r from-accent/10 to-accent/5 border-accent/20">
           <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
-              <Trophy className="h-8 w-8 text-blue-600" />
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/20">
+              <Trophy className="h-8 w-8 text-accent" />
             </div>
             <CardTitle className="text-2xl">Your Personalized Fund Recommendations Are Ready!</CardTitle>
             <CardDescription className="text-base">
@@ -81,19 +81,19 @@ const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz,
           <CardContent className="text-center">
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div className="text-center">
-                <Star className="w-6 h-6 text-yellow-500 mx-auto mb-2" />
+                <Star className="w-6 h-6 text-warning mx-auto mb-2" />
                 <p className="text-sm font-medium">Personalized</p>
-                <p className="text-xs text-gray-600">Matched to your profile</p>
+                <p className="text-xs text-muted-foreground">Matched to your profile</p>
               </div>
               <div className="text-center">
-                <TrendingUp className="w-6 h-6 text-green-500 mx-auto mb-2" />
+                <TrendingUp className="w-6 h-6 text-success mx-auto mb-2" />
                 <p className="text-sm font-medium">Optimized</p>
-                <p className="text-xs text-gray-600">Best returns for your risk</p>
+                <p className="text-xs text-muted-foreground">Best returns for your risk</p>
               </div>
               <div className="text-center">
-                <Users className="w-6 h-6 text-blue-500 mx-auto mb-2" />
+                <Users className="w-6 h-6 text-accent mx-auto mb-2" />
                 <p className="text-sm font-medium">Verified</p>
-                <p className="text-xs text-gray-600">Trusted fund managers</p>
+                <p className="text-xs text-muted-foreground">Trusted fund managers</p>
               </div>
             </div>
           </CardContent>
@@ -119,12 +119,12 @@ const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz,
   // Show results if authenticated or email submitted
   return (
     <div className="space-y-8">
-      <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
+      <Card className="bg-gradient-to-r from-success/10 to-success/5 border-success/20">
         <CardHeader>
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-green-100 rounded-lg">
-                <Trophy className="w-8 h-8 text-green-600" />
+              <div className="p-3 bg-success/20 rounded-lg">
+                <Trophy className="w-8 h-8 text-success" />
               </div>
               <div>
                 <CardTitle className="text-2xl">Your Personalized Fund Recommendations</CardTitle>
@@ -132,13 +132,13 @@ const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz,
                   Based on your investor profile, here are the top {recommendations.length} funds that match your preferences
                 </CardDescription>
                 <div className="flex gap-2 mt-3">
-                  <Badge variant="secondary" className="bg-green-100 text-green-800">
+                  <Badge variant="secondary" className="bg-success/10 text-success">
                     ✓ Risk-matched
                   </Badge>
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                  <Badge variant="secondary" className="bg-accent/10 text-accent">
                     ✓ Budget-appropriate
                   </Badge>
-                  <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                  <Badge variant="secondary" className="bg-primary/10 text-primary">
                     ✓ Timeline-aligned
                   </Badge>
                 </div>
@@ -170,13 +170,13 @@ const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz,
           ))}
           
           {/* Summary Card */}
-          <Card className="bg-blue-50 border-blue-200">
+          <Card className="bg-accent/10 border-accent/20">
             <CardContent className="pt-6">
               <div className="flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
+                <AlertCircle className="w-5 h-5 text-accent mt-0.5" />
                 <div>
-                  <h4 className="font-semibold text-blue-900 mb-2">Next Steps</h4>
-                  <ul className="text-blue-800 text-sm space-y-1">
+                  <h4 className="font-semibold text-accent-foreground mb-2">Next Steps</h4>
+                  <ul className="text-accent-foreground/80 text-sm space-y-1">
                     <li>• Review each fund's detailed information</li>
                     <li>• Contact fund managers for personalized consultations</li>
                     <li>• Consult with qualified financial and legal guidance professionals</li>
@@ -190,9 +190,9 @@ const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz,
       ) : (
         <Card>
           <CardContent className="text-center py-12">
-            <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-medium mb-2">No specific matches found</h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-muted-foreground mb-6">
               Based on your criteria, we couldn't find perfectly matching funds. 
               Try adjusting your preferences or browse all available funds.
             </p>
@@ -209,11 +209,11 @@ const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz,
         </Card>
       )}
 
-      <Card className="bg-amber-50 border-amber-200">
+      <Card className="bg-warning/10 border-warning/20">
         <CardContent className="pt-6">
           <div className="flex items-start gap-3">
-            <AlertCircle className="text-amber-600 w-5 h-5 mt-0.5 flex-shrink-0" />
-            <div className="text-sm text-amber-800">
+            <AlertCircle className="text-warning w-5 h-5 mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-warning-foreground">
               <h4 className="font-medium mb-2">Important Legal Disclaimer</h4>
               <p className="leading-relaxed">
                 These recommendations are for informational purposes only and do not constitute investment guidance. 

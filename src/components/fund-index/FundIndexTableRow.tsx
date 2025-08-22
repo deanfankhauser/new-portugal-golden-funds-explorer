@@ -63,7 +63,7 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
         <meta itemProp="url" content={`https://funds.movingto.com/${fund.id}`} />
         
         <TableCell className="py-4 w-16">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-blue-700 font-bold text-sm">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-accent/10 text-accent font-bold text-sm">
             <span itemProp="position">{score.rank}</span>
           </div>
         </TableCell>
@@ -90,22 +90,22 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
         </TableCell>
         
         <TableCell className="py-4 w-32">
-          <div 
-            className="text-xs text-gray-700 font-medium truncate" 
-            title={fund.managerName}
-            itemProp="provider"
-            itemScope
-            itemType="https://schema.org/Organization"
-          >
-            <span itemProp="name">{fund.managerName}</span>
-          </div>
+            <div 
+              className="text-xs text-foreground font-medium truncate" 
+              title={fund.managerName}
+              itemProp="provider"
+              itemScope
+              itemType="https://schema.org/Organization"
+            >
+              <span itemProp="name">{fund.managerName}</span>
+            </div>
         </TableCell>
         
         <TableCell className="py-4 w-20 text-center">
           {isAuthenticated ? (
             <div itemScope itemType="https://schema.org/AggregateRating">
               <div 
-                className="text-lg font-bold text-blue-600"
+                className="text-lg font-bold text-accent"
                 itemProp="ratingValue"
               >
                 {score.movingtoScore}
@@ -116,11 +116,11 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
             </div>
           ) : (
             <div 
-              className="flex items-center justify-center cursor-pointer hover:bg-blue-50 rounded p-1"
+              className="flex items-center justify-center cursor-pointer hover:bg-accent/10 rounded p-1"
               onClick={handleGatedCellClick}
               title="Score available to MovingTo clients"
             >
-              <Lock className="h-4 w-4 text-gray-400" />
+              <Lock className="h-4 w-4 text-muted-foreground" />
             </div>
           )}
         </TableCell>
@@ -128,12 +128,12 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
         <TableCell className="py-4 w-24 text-center">
           {isAuthenticated ? (
             <div className="space-y-1">
-              <div className="font-semibold text-gray-900 text-sm">{score.performanceScore}</div>
+              <div className="font-semibold text-foreground text-sm">{score.performanceScore}</div>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
                     <div 
-                      className="text-xs text-gray-600 cursor-help hover:text-gray-800 transition-colors"
+                      className="text-xs text-muted-foreground cursor-help hover:text-foreground transition-colors"
                       itemProp="expectedReturn"
                     >
                       {currentPerformance}
@@ -147,11 +147,11 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
             </div>
           ) : (
             <div 
-              className="flex items-center justify-center cursor-pointer hover:bg-blue-50 rounded p-1"
+              className="flex items-center justify-center cursor-pointer hover:bg-accent/10 rounded p-1"
               onClick={handleGatedCellClick}
               title="Performance data available to MovingTo clients"
             >
-              <Lock className="h-4 w-4 text-gray-400" />
+              <Lock className="h-4 w-4 text-muted-foreground" />
             </div>
           )}
         </TableCell>
@@ -160,7 +160,7 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
           {isAuthenticated ? (
             <div itemScope itemType="https://schema.org/PropertyValue">
               <div 
-                className="font-semibold text-gray-900 text-sm"
+                className="font-semibold text-foreground text-sm"
                 itemProp="value"
               >
                 {fund.managementFee}%
@@ -169,11 +169,11 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
             </div>
           ) : (
             <div 
-              className="flex items-center justify-center cursor-pointer hover:bg-blue-50 rounded p-1"
+              className="flex items-center justify-center cursor-pointer hover:bg-accent/10 rounded p-1"
               onClick={handleGatedCellClick}
               title="Fee data available to MovingTo clients"
             >
-              <Lock className="h-4 w-4 text-gray-400" />
+              <Lock className="h-4 w-4 text-muted-foreground" />
             </div>
           )}
         </TableCell>
@@ -181,7 +181,7 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
         <TableCell className="py-4 w-24 text-center">
           <div itemScope itemType="https://schema.org/Offer">
             <div 
-              className="font-semibold text-gray-900 text-xs"
+              className="font-semibold text-foreground text-xs"
               itemProp="price"
             >
               €{(fund.minimumInvestment / 1000).toFixed(0)}k
@@ -197,8 +197,8 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
               variant={fund.fundStatus === 'Open' ? 'default' : 'secondary'}
               className={`text-xs px-2 py-1 ${
                 fund.fundStatus === 'Open' 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-gray-100 text-gray-600'
+                  ? 'bg-success/10 text-success' 
+                  : 'bg-muted text-muted-foreground'
               }`}
               itemProp="availability"
             >
