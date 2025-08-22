@@ -4,7 +4,7 @@ import { AlertCircle } from 'lucide-react';
 
 const InvestorNotice: React.FC = () => {
   return (
-    <div className="bg-warning/10 border border-warning/20 rounded-lg p-6 flex items-start space-x-4">
+    <div className="bg-warning/10 border border-warning/20 rounded-lg p-6 flex items-start space-x-4 my-6">
       <AlertCircle className="text-warning w-6 h-6 mt-1 flex-shrink-0" />
       <div>
         <h3 className="font-medium text-warning mb-2">Important Notice for Investors</h3>
