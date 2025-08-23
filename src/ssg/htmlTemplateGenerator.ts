@@ -109,8 +109,8 @@ export function generateHTMLTemplate(
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Favicon -->
-  <link rel="icon" href="/lovable-uploads/c5481949-8ec2-43f1-a77f-8d6cce1eec0e.png" type="image/png">
-  <link rel="apple-touch-icon" href="/lovable-uploads/c5481949-8ec2-43f1-a77f-8d6cce1eec0e.png">
+  <link rel="icon" href="/lovable-uploads/3965a727-dc95-4cfe-bc27-546bdd2397f3.png" type="image/png">
+  <link rel="apple-touch-icon" href="/lovable-uploads/3965a727-dc95-4cfe-bc27-546bdd2397f3.png">
   
   <!-- Critical CSS Inline for Performance -->
   <style>
