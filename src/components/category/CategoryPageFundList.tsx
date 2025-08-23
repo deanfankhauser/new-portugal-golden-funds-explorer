@@ -10,13 +10,9 @@ interface CategoryPageFundListProps {
 
 const CategoryPageFundList: React.FC<CategoryPageFundListProps> = ({ funds }) => {
   return (
-    <div className="space-y-4" itemProp="itemListElement" itemScope itemType="https://schema.org/ItemList">
+    <div className="space-y-4">
       {funds.map((fund, index) => (
-        <div key={fund.id} itemProp="item" itemScope itemType="https://schema.org/Product">
-          <meta itemProp="position" content={`${index + 1}`} />
-          <meta itemProp="name" content={fund.name} />
-          <meta itemProp="description" content={fund.description} />
-          <meta itemProp="url" content={URL_CONFIG.buildFundUrl(fund.id)} />
+        <div key={fund.id}>
           <FundListItem fund={fund} />
         </div>
       ))}

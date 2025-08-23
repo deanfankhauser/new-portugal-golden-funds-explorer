@@ -836,33 +836,6 @@ export class ConsolidatedSEOService {
             }
           ]
         }
-      },
-      // CompareAction schema
-      {
-        "@context": "https://schema.org",
-        "@type": "CompareAction",
-        "agent": {
-          "@type": "Organization",
-          "name": "Movingto",
-          "url": URL_CONFIG.BASE_URL
-        },
-        "object": [
-          {
-            "@type": "FinancialProduct",
-            "name": fund1.name,
-            "url": URL_CONFIG.buildFundUrl(fund1.id)
-          },
-          {
-            "@type": "FinancialProduct",
-            "name": fund2.name,
-            "url": URL_CONFIG.buildFundUrl(fund2.id)
-          }
-        ],
-        "result": {
-          "@type": "WebPage",
-          "name": `${fund1.name} vs ${fund2.name} Comparison`,
-          "url": comparisonUrl
-        }
       }
     ];
   }

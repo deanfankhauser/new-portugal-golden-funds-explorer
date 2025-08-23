@@ -164,11 +164,6 @@ export class StructuredDataService {
           }
         ]
       },
-      'potentialAction': {
-        '@type': 'CompareAction',
-        'name': 'Compare Fund',
-        'description': `Compare ${fund.name} with other investment funds`
-      }
     };
   }
 
