@@ -46,19 +46,7 @@ export function generateHTMLTemplate(
   <base href="/" />
   
   <!-- Critical SEO Meta Tags -->
-  ${(() => {
-    // Check if Helmet provides a non-empty title using regex to detect empty tags
-    const helmetTitle = seoData.helmetData?.title?.trim();
-    if (helmetTitle) {
-      // Use regex to detect empty title tags: <title></title> or <title> </title> etc.
-      const emptyTitleRegex = /<title[^>]*>\s*<\/title>/i;
-      if (!emptyTitleRegex.test(helmetTitle)) {
-        return helmetTitle;
-      }
-    }
-    // Fall back to our computed title if Helmet title is missing or empty
-    return `<title>${title}</title>`;
-  })()}
+  <title>${title}</title>
   <meta name="description" content="${description}" />
   <meta property="og:title" content="${title}" />  
   <meta property="og:description" content="${description}" />
@@ -109,8 +97,8 @@ export function generateHTMLTemplate(
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Favicon -->
-  <link rel="icon" href="/lovable-uploads/98ee9edf-f243-4fb8-9277-d11d472efd15.png" type="image/png">
-  <link rel="apple-touch-icon" href="/lovable-uploads/98ee9edf-f243-4fb8-9277-d11d472efd15.png">
+  <link rel="icon" href="/lovable-uploads/3965a727-dc95-4cfe-bc27-546bdd2397f3.png" type="image/png">
+  <link rel="apple-touch-icon" href="/lovable-uploads/3965a727-dc95-4cfe-bc27-546bdd2397f3.png">
   
   <!-- Critical CSS Inline for Performance -->
   <style>
