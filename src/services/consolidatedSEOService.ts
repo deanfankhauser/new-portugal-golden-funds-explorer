@@ -13,6 +13,25 @@ export class ConsolidatedSEOService {
 
   // Clean up duplicate meta tags
   static cleanup(): void {
+    // Remove duplicate and empty title tags
+    const titles = document.querySelectorAll('title');
+    if (titles.length > 1) {
+      // Remove empty titles first
+      titles.forEach(title => {
+        if (!title.textContent?.trim()) {
+          title.remove();
+        }
+      });
+      
+      // If still duplicates, keep only the first meaningful one
+      const remainingTitles = document.querySelectorAll('title');
+      if (remainingTitles.length > 1) {
+        for (let i = 1; i < remainingTitles.length; i++) {
+          remainingTitles[i].remove();
+        }
+      }
+    }
+
     // Remove duplicate viewports
     const viewports = document.querySelectorAll('meta[name="viewport"]');
     if (viewports.length > 1) {

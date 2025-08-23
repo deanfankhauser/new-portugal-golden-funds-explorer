@@ -46,7 +46,14 @@ export function generateHTMLTemplate(
   <base href="/" />
   
   <!-- Critical SEO Meta Tags -->
-  <title>${title}</title>
+  ${(() => {
+    // Prefer non-empty Helmet title over our title to prevent duplicates
+    const helmetTitle = seoData.helmetData?.title?.trim();
+    if (helmetTitle && !helmetTitle.includes('<title></title>')) {
+      return helmetTitle;
+    }
+    return `<title>${title}</title>`;
+  })()}
   <meta name="description" content="${description}" />
   <meta property="og:title" content="${title}" />  
   <meta property="og:description" content="${description}" />
@@ -79,8 +86,7 @@ export function generateHTMLTemplate(
   <!-- Structured Data -->
   ${hasStructuredData ? `<script type="application/ld+json" data-managed="consolidated-seo">${JSON.stringify(structuredData, null, 2)}</script>` : ''}
   
-  <!-- Helmet-managed tags from SSR -->
-  ${seoData.helmetData?.title || ''}
+  <!-- Other Helmet-managed tags (excluding title) -->
   ${seoData.helmetData?.meta || ''}
   ${seoData.helmetData?.link || ''}
   ${seoData.helmetData?.script || ''}
