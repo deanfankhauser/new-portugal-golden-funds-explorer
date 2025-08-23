@@ -3,6 +3,7 @@ import path from 'path';
 
 export interface ValidationChecks {
   hasTitle: boolean;
+  hasNonEmptyTitle: boolean;
   hasDescription: boolean;
   hasStructuredData: boolean;
   hasFonts: boolean;
@@ -32,8 +33,14 @@ export function validateGeneratedFile(
   const titleMatches = generatedContent.match(/<title[^>]*>/g);
   const titleCount = titleMatches ? titleMatches.length : 0;
 
+  // Check for non-empty titles - detect empty title tags with regex
+  const emptyTitleRegex = /<title[^>]*>\s*<\/title>/i;
+  const hasEmptyTitle = emptyTitleRegex.test(generatedContent);
+  const hasNonEmptyTitle = titleCount > 0 && !hasEmptyTitle;
+
   const validationChecks: ValidationChecks = {
     hasTitle: generatedContent.includes(`<title>${seoData.title}</title>`),
+    hasNonEmptyTitle,
     hasDescription: generatedContent.includes(`content="${seoData.description}"`),
     hasStructuredData,
     hasFonts: generatedContent.includes('fonts.googleapis.com'),
@@ -68,6 +75,16 @@ export function validateGeneratedFile(
     const titleMatches = generatedContent.match(/<title[^>]*>.*?<\/title>/g);
     if (titleMatches) {
       console.error(`   Found titles: ${titleMatches.join(', ')}`);
+    }
+  }
+  
+  if (!validationChecks.hasNonEmptyTitle) {
+    console.error(`   ❌ Empty or missing title tag in ${filePath}`);
+    const titleMatches = generatedContent.match(/<title[^>]*>.*?<\/title>/g);
+    if (titleMatches) {
+      console.error(`   Found titles: ${titleMatches.join(', ')}`);
+    } else {
+      console.error(`   No title tags found`);
     }
   }
   
