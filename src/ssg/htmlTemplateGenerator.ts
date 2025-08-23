@@ -47,11 +47,16 @@ export function generateHTMLTemplate(
   
   <!-- Critical SEO Meta Tags -->
   ${(() => {
-    // Prefer non-empty Helmet title over our title to prevent duplicates
+    // Check if Helmet provides a non-empty title using regex to detect empty tags
     const helmetTitle = seoData.helmetData?.title?.trim();
-    if (helmetTitle && !helmetTitle.includes('<title></title>')) {
-      return helmetTitle;
+    if (helmetTitle) {
+      // Use regex to detect empty title tags: <title></title> or <title> </title> etc.
+      const emptyTitleRegex = /<title[^>]*>\s*<\/title>/i;
+      if (!emptyTitleRegex.test(helmetTitle)) {
+        return helmetTitle;
+      }
     }
+    // Fall back to our computed title if Helmet title is missing or empty
     return `<title>${title}</title>`;
   })()}
   <meta name="description" content="${description}" />
