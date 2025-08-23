@@ -12,6 +12,7 @@ export interface ValidationChecks {
   hasCorrectCanonical: boolean;
   hasCorrectOgUrl: boolean;
   hasCorrectDomain: boolean;
+  hasMultipleTitles: boolean;
 }
 
 export function validateGeneratedFile(
@@ -27,6 +28,10 @@ export function validateGeneratedFile(
     ? seoData.structuredData.length > 0 
     : !!seoData.structuredData && Object.keys(seoData.structuredData).length > 0;
 
+  // Check for multiple title tags
+  const titleMatches = generatedContent.match(/<title[^>]*>/g);
+  const titleCount = titleMatches ? titleMatches.length : 0;
+
   const validationChecks: ValidationChecks = {
     hasTitle: generatedContent.includes(`<title>${seoData.title}</title>`),
     hasDescription: generatedContent.includes(`content="${seoData.description}"`),
@@ -39,7 +44,8 @@ export function validateGeneratedFile(
     noAbsolutePaths: !generatedContent.includes('https://funds.movingto.com/assets/'),
     hasCorrectCanonical: generatedContent.includes(`href="${seoData.url}"`),
     hasCorrectOgUrl: generatedContent.includes(`content="${seoData.url}"`),
-    hasCorrectDomain: seoData.url.includes('https://funds.movingto.com')
+    hasCorrectDomain: seoData.url.includes('https://funds.movingto.com'),
+    hasMultipleTitles: titleCount <= 1
   };
   
   const validationResults = Object.entries(validationChecks)
@@ -55,6 +61,14 @@ export function validateGeneratedFile(
   if (!validationChecks.hasCorrectCanonical || !validationChecks.hasCorrectOgUrl) {
     console.error(`   ❌ Canonical or OG URL issues in ${filePath}`);
     console.error(`   Expected URL: ${seoData.url}`);
+  }
+  
+  if (!validationChecks.hasMultipleTitles) {
+    console.error(`   ❌ Multiple title tags detected in ${filePath}`);
+    const titleMatches = generatedContent.match(/<title[^>]*>.*?<\/title>/g);
+    if (titleMatches) {
+      console.error(`   Found titles: ${titleMatches.join(', ')}`);
+    }
   }
   
   return validationChecks;
