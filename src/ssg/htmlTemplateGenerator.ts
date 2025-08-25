@@ -183,8 +183,11 @@ export function generateHTMLTemplate(
 <body>
   <div id="root">${appHtml}</div>
   
-  <!-- Built JavaScript Files -->
-  ${validatedJsFiles.map(js => `  <script type="module" src="/assets/${js}"></script>`).join('\n')}
+  <!-- Built JavaScript Files - Only load main entry -->
+  ${(() => {
+    const mainEntry = validatedJsFiles.find(js => js.startsWith('index-')) || validatedJsFiles[0];
+    return mainEntry ? `  <script type="module" src="/assets/${mainEntry}"></script>` : '';
+  })()}
   
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-BE3HZBVG9D"></script>
