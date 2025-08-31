@@ -36,7 +36,7 @@ const TagPageFAQ: React.FC<TagPageFAQProps> = ({ tagName, tagSlug, fundsCount })
       },
       {
         question: `What is the minimum investment for ${tag} Golden Visa funds?`,
-        answer: `The minimum investment for ${tag} Golden Visa funds is €500,000, as required by Portugal's Golden Visa program. However, some ${tag.toLowerCase()} funds may have higher minimum investment thresholds depending on their specific investment strategy and structure.`
+        answer: `Portugal Golden Visa fund route requires €500,000 total investment (post-October 2023 regulatory changes), with no real estate exposure permitted. Individual ${tag.toLowerCase()} fund subscription minimums may be lower, but total qualifying investment must reach €500,000. Sources: Nomad Gate analysis & IMI Daily regulatory updates.`
       },
       {
         question: `Are ${tag} Golden Visa funds safe investments?`,
