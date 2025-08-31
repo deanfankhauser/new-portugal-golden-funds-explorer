@@ -21,8 +21,8 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
               <h2 className="text-xl font-bold text-foreground mb-4">Golden Visa Investment Funds</h2>
               <p className="text-muted-foreground text-sm leading-relaxed">
                 Compare Portugal investment funds for Golden Visa applications. Our directory includes 
-                funds from top managers with minimum investments starting from €500,000. 
-                Note: Since October 2023, real estate-linked funds are not Golden Visa eligible.
+                funds from top managers. Golden Visa fund route requires a total €500,000 investment. 
+                Note: Some funds may be structured to meet GV rules; eligibility depends on current law and fund strategy.
               </p>
             </div>
             
@@ -55,10 +55,9 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
           <h2 className="text-2xl font-bold text-foreground mb-6">Frequently Asked Questions</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="font-semibold text-foreground mb-2">What is the minimum investment for Portugal Golden Visa funds?</h3>
+              <h3 className="font-semibold text-foreground mb-2">What's the minimum for the fund route?</h3>
               <p className="text-sm text-muted-foreground">
-                The minimum investment for qualified investment funds is €500,000 for the Portugal Golden Visa program, 
-                the same as the requirement for real estate investments but offering more liquidity and diversification.
+                €500,000 total. A fund's subscription minimum can be lower, but you still need €500,000 across one or more qualifying funds.
                 <a href="https://movingto.com/pt/portugal-golden-visa" target="_blank" rel="noopener noreferrer" 
                    className="text-primary hover:text-primary/80 ml-2 underline">
                   Learn more about Golden Visa requirements →
