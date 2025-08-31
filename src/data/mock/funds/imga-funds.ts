@@ -357,7 +357,7 @@ export const imgaSilverDomusFund: Fund = {
   managerName: 'IM Gestão de Ativos (IMGA)',
   managerLogo: undefined, // No logo provided
   category: 'Real Estate',
-  tags: ['Real Estate', 'Golden Visa Eligible', 'Portugal', 'Open Ended', 'Dividends'],
+  tags: ['Real Estate', 'Portugal', 'Open Ended', 'Dividends'],
   description: 'An open-end real estate fund specializing in senior living and long-term rental residential assets in Portugal, targeting demographic demand drivers.',
   detailedDescription: `IMGA Silver Domus Fund is a specialized real estate investment vehicle that capitalizes on Portugal's demographic trends, focusing on senior living and long-term rental residential assets in high-demand markets.
 
@@ -466,7 +466,7 @@ The fund leverages IMGA's extensive real estate expertise and institutional infr
     },
     {
       question: 'Is this fund Golden Visa eligible?',
-      answer: 'Yes, the fund is Golden Visa compliant with a minimum investment of €500,000, offering real estate exposure through a regulated fund structure rather than direct property ownership.'
+      answer: 'No, since October 2023, real estate-linked funds are not eligible for Portugal Golden Visa applications due to new regulations excluding direct and indirect real estate investments.'
     },
     {
       question: 'What is IMGA\'s track record in real estate?',

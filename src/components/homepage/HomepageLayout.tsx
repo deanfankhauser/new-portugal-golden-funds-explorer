@@ -20,9 +20,9 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
             <div>
               <h2 className="text-xl font-bold text-foreground mb-4">Golden Visa Investment Funds</h2>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Compare Portugal Golden Visa qualified investment funds. Our directory includes 
+                Compare Portugal investment funds for Golden Visa applications. Our directory includes 
                 funds from top managers with minimum investments starting from €500,000. 
-                All funds meet Portuguese immigration requirements for residency applications.
+                Note: Since October 2023, real estate-linked funds are not Golden Visa eligible.
               </p>
             </div>
             
