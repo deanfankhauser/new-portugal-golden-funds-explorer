@@ -40,7 +40,7 @@ export class EnhancedStructuredDataService {
           'name': `Is ${fund.name} eligible for Portugal Golden Visa?`,
           'acceptedAnswer': {
             '@type': 'Answer',
-            'text': `Yes, ${fund.name} is a qualified investment fund eligible for the Portugal Golden Visa program.`
+            'text': `${fund.name} eligibility for Portugal Golden Visa depends on current regulations. Since October 2023, real estate-linked funds are not eligible. Please consult with legal professionals for current eligibility status.`
           }
         }
       ]

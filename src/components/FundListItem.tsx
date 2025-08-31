@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../data/funds';
+import { isFundGVEligible } from '../data/services/gv-eligibility-service';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,6 +26,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   
   const isSelected = isInComparison(fund.id);
+  const isGVEligible = isFundGVEligible(fund);
   
   const handleCompareClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation to fund details
@@ -57,11 +59,21 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between mb-2">
-                <h3 className="text-lg sm:text-xl font-semibold leading-tight">
-                  <Link to={`/${fund.id}`} className="hover:text-primary transition-colors block">
-                    {fund.name}
-                  </Link>
-                </h3>
+                <div className="flex-1 mr-2">
+                  <h3 className="text-lg sm:text-xl font-semibold leading-tight">
+                    <Link to={`/${fund.id}`} className="hover:text-primary transition-colors block">
+                      {fund.name}
+                    </Link>
+                  </h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Badge 
+                      variant={isGVEligible ? "default" : "destructive"} 
+                      className="text-xs"
+                    >
+                      {isGVEligible ? "GV Eligible" : "Not GV Eligible"}
+                    </Badge>
+                  </div>
+                </div>
                 <DataFreshnessIndicator fund={fund} variant="compact" />
               </div>
               

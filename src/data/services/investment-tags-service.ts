@@ -20,11 +20,7 @@ export const generateInvestmentTags = (minimumInvestment: number): FundTag[] => 
   
   // Range tags - only add the most specific range
   if (minimumInvestment >= 250000 && minimumInvestment <= 350000) {
-    if (minimumInvestment >= 280000) {
-      tags.push('€280k-€350k');
-    } else {
-      tags.push('€250k-€350k');
-    }
+    tags.push('€250k-€350k');
   } else if (minimumInvestment >= 300000 && minimumInvestment <= 400000) {
     tags.push('€300k-€400k');
   } else if (minimumInvestment >= 350000 && minimumInvestment <= 500000) {

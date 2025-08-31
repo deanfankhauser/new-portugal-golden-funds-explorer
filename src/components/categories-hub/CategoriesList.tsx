@@ -1,8 +1,9 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Folder } from 'lucide-react';
+import { Folder, AlertTriangle } from 'lucide-react';
 import { categoryToSlug } from '@/lib/utils';
+import { isCategoryGVEligible } from '../../data/services/gv-eligibility-service';
 
 interface CategoriesListProps {
   categories: string[];
@@ -16,30 +17,39 @@ const CategoriesList: React.FC<CategoriesListProps> = ({ categories }) => {
       </h2>
       
       <ul className="grid grid-cols-1 gap-3 sm:gap-4" itemProp="itemListElement" itemScope itemType="https://schema.org/ItemList">
-        {categories.map((category, index) => (
-          <li key={category} 
-            className="border border-border rounded-lg hover:shadow-md transition-all duration-300"
-            itemProp="item" 
-            itemScope 
-            itemType="https://schema.org/Thing"
-          >
-            <Link 
-              to={`/categories/${categoryToSlug(category)}`} 
-              className="p-3 sm:p-4 flex items-center justify-between hover:bg-muted min-h-[60px]"
+        {categories.map((category, index) => {
+          const isGVEligible = isCategoryGVEligible(category as any);
+          return (
+            <li key={category} 
+              className="border border-border rounded-lg hover:shadow-md transition-all duration-300"
+              itemProp="item" 
+              itemScope 
+              itemType="https://schema.org/Thing"
             >
-              <div className="flex items-center min-w-0 flex-1">
-                <Folder className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 text-primary flex-shrink-0" />
-                <div className="min-w-0 flex-1">
-                  <meta itemProp="position" content={`${index + 1}`} />
-                  <span itemProp="name" className="font-medium text-base sm:text-lg text-foreground block truncate">
-                    {category}
-                  </span>
+              <Link 
+                to={`/categories/${categoryToSlug(category)}`} 
+                className="p-3 sm:p-4 flex items-center justify-between hover:bg-muted min-h-[60px]"
+              >
+                <div className="flex items-center min-w-0 flex-1">
+                  <Folder className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 text-primary flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <meta itemProp="position" content={`${index + 1}`} />
+                    <span itemProp="name" className="font-medium text-base sm:text-lg text-foreground block truncate">
+                      {category}
+                    </span>
+                    {!isGVEligible && (
+                      <div className="flex items-center mt-1">
+                        <AlertTriangle className="w-3 h-3 text-amber-600 mr-1" />
+                        <span className="text-xs text-amber-700">Not GV Eligible</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <span className="text-primary ml-2 flex-shrink-0">→</span>
-            </Link>
-          </li>
-        ))}
+                <span className="text-primary ml-2 flex-shrink-0">→</span>
+              </Link>
+            </li>
+          );
+        })}
       </ul>
       
       <div className="mt-6 sm:mt-8 pt-4 border-t border-border">

@@ -17,7 +17,7 @@ const FAQsContent = () => {
   const faqs: FAQItem[] = [
     {
       question: "What is a Golden Visa investment fund?",
-      answer: "A Golden Visa investment fund is a regulated investment vehicle that allows foreign investors to obtain residency or citizenship in a country by making a qualifying investment. These funds typically invest in real estate, government bonds, or business ventures in the host country."
+      answer: "A Golden Visa investment fund is a regulated investment vehicle that allows foreign investors to obtain Portuguese residency by making a qualifying investment. For Portugal's Golden Visa program, eligible funds must focus on private equity/venture capital and cannot be linked to real estate (rule changed October 2023)."
     },
     {
       question: "What are the minimum investment amounts?",

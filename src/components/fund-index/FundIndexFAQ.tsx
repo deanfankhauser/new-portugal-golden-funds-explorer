@@ -30,7 +30,7 @@ const FundIndexFAQ: React.FC = () => {
     },
     {
       question: "Are all funds in the index eligible for the Portugal Golden Visa?",
-      answer: "Yes, all funds included in our index are verified to be eligible for the Portugal Golden Visa program. Each fund meets the minimum investment requirement of €500,000 and has been approved by Portuguese authorities for the Golden Visa scheme."
+      answer: "Not all funds are Golden Visa eligible. Since October 2023, real estate-linked funds are excluded from Portugal's Golden Visa program. Look for the green 'Golden Visa Eligible' badge on each fund - only these funds meet the current requirements (no real estate exposure; ≥60% in Portugal; ≥5-year maturity; CMVM registered)."
     },
     {
       question: "What does a fund's score mean for investors?",

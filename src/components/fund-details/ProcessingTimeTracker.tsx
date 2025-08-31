@@ -3,6 +3,7 @@ import { Fund } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Clock, CheckCircle, Circle } from 'lucide-react';
+import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
 
 interface ProcessingTimeTrackerProps {
   fund: Fund;
@@ -37,7 +38,7 @@ const ProcessingTimeTracker: React.FC<ProcessingTimeTrackerProps> = ({ fund }) =
     ];
 
     // Add fund-specific steps
-    if (fund.tags.includes('Golden Visa Eligible')) {
+    if (isFundGVEligible(fund)) {
       baseSteps.push({
         id: 'golden-visa-review',
         title: 'Golden Visa Review',

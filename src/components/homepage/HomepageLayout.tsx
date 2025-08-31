@@ -20,9 +20,9 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
             <div>
               <h2 className="text-xl font-bold text-foreground mb-4">Golden Visa Investment Funds</h2>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Compare Portugal Golden Visa qualified investment funds. Our directory includes 
-                funds from top managers with minimum investments starting from €280,000. 
-                All funds meet Portuguese immigration requirements for residency applications.
+                Compare Portugal investment funds for Golden Visa applications. Our directory includes 
+                funds from top managers with minimum investments starting from €500,000. 
+                Note: Since October 2023, real estate-linked funds are not Golden Visa eligible.
               </p>
             </div>
             
@@ -57,8 +57,8 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
             <div>
               <h3 className="font-semibold text-foreground mb-2">What is the minimum investment for Portugal Golden Visa funds?</h3>
               <p className="text-sm text-muted-foreground">
-                The minimum investment for qualified investment funds is €280,000 for the Portugal Golden Visa program, 
-                significantly lower than the €500,000 required for real estate investments.
+                The minimum investment for qualified investment funds is €500,000 for the Portugal Golden Visa program, 
+                the same as the requirement for real estate investments but offering more liquidity and diversification.
                 <a href="https://movingto.com/pt/portugal-golden-visa" target="_blank" rel="noopener noreferrer" 
                    className="text-primary hover:text-primary/80 ml-2 underline">
                   Learn more about Golden Visa requirements →
@@ -77,8 +77,7 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
             <div>
               <h3 className="font-semibold text-foreground mb-2">Are these funds regulated by Portuguese authorities?</h3>
               <p className="text-sm text-muted-foreground">
-                Yes, all listed funds are regulated by the Portuguese Securities Market Commission (CMVM) 
-                and approved for Golden Visa investments.
+                Yes, all listed funds are registered with CMVM and structured to meet GV rules (no real estate; ≥60% in PT; ≥5-year maturity).
               </p>
             </div>
             
