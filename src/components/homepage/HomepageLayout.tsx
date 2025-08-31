@@ -29,7 +29,6 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
             <div>
               <h2 className="text-xl font-bold text-foreground mb-4">Fund Categories</h2>
               <ul className="text-sm text-muted-foreground space-y-2">
-                <li>• Real Estate Investment Funds</li>
                 <li>• Technology & Innovation Funds</li>
                 <li>• Renewable Energy Funds</li>
                 <li>• Diversified Investment Funds</li>
@@ -76,7 +75,7 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
             <div>
               <h3 className="font-semibold text-foreground mb-2">Are these funds regulated by Portuguese authorities?</h3>
               <p className="text-sm text-muted-foreground">
-                Yes, all listed funds are registered with CMVM and structured to meet GV rules (no real estate; ≥60% in PT; ≥5-year maturity).
+                We source from CMVM-regulated managers where applicable. Verify each fund's registration and GV suitability with counsel.
               </p>
             </div>
             

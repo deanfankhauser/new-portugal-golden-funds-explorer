@@ -3,14 +3,13 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { GitCompare, Calculator } from 'lucide-react';
-import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
 import { useComparison } from '../../contexts/ComparisonContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { tagToSlug } from '@/lib/utils';
 import IntroductionButton from './IntroductionButton';
 import LazyPasswordDialog from '../common/LazyPasswordDialog';
+import EnhancedGVEligibilityBadge from './EnhancedGVEligibilityBadge';
 
 interface FundHeaderProps {
   fund: Fund;
@@ -23,7 +22,6 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   
   const isSelected = isInComparison(fund.id);
-  const isGVEligible = isFundGVEligible(fund);
   
   const handleCompareClick = () => {
     if (!isAuthenticated) {
@@ -61,15 +59,10 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
         <div className="flex flex-col gap-4 mb-4 md:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div className="flex-1">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 text-foreground tracking-tight leading-tight">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-foreground tracking-tight leading-tight">
                 {fund.name} | Portugal Investment Fund
               </h1>
-              <Badge 
-                variant={isGVEligible ? "default" : "destructive"} 
-                className="text-sm"
-              >
-                {isGVEligible ? "Golden Visa Eligible" : "Not Golden Visa Eligible"}
-              </Badge>
+              <EnhancedGVEligibilityBadge fund={fund} showDetails={false} />
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
               <Button 

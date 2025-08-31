@@ -50,7 +50,6 @@ const ComparisonPage = () => {
                 <div>
                   <h3 className="font-medium mb-2">Investment Categories:</h3>
                   <ul className="list-disc list-inside space-y-1">
-                    <li>Real Estate Investment Funds</li>
                     <li>Capital Risk Funds</li>
                     <li>Mixed Investment Strategies</li>
                     <li>Specialized Sector Funds</li>

@@ -5,17 +5,17 @@ import { Fund, FundTag } from '../types/funds';
 export const generateInvestmentTags = (minimumInvestment: number): FundTag[] => {
   const tags: FundTag[] = [];
   
-  // Under tags - only add the most specific one
+  // Fund subscription minimums - replace old "Under" tags
   if (minimumInvestment < 250000) {
-    tags.push('Under €250k');
+    tags.push('Fund subscription minimums');
   } else if (minimumInvestment < 300000) {
-    tags.push('Under €300k');
+    tags.push('Fund subscription minimums');
   } else if (minimumInvestment < 350000) {
-    tags.push('Under €350k');
+    tags.push('Fund subscription minimums');
   } else if (minimumInvestment < 400000) {
-    tags.push('Under €400k');
+    tags.push('Fund subscription minimums');
   } else if (minimumInvestment < 500000) {
-    tags.push('Under €500k');
+    tags.push('Fund subscription minimums');
   }
   
   // Range tags - only add the most specific range
