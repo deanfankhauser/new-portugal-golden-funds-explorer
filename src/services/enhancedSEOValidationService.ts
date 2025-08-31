@@ -31,6 +31,23 @@ export class EnhancedSEOValidationService {
     const duplicateMetaTags = this.detectDuplicateMetaTags();
     const imageValidation = this.validateImagesEnhanced();
     const preloadValidation = this.validatePreloadDirectives();
+    
+    // Dev-only: Check for multiple FAQ schemas
+    if (import.meta.env.DEV) {
+      const faqSchemas = document.querySelectorAll('script[type="application/ld+json"]');
+      const faqCount = Array.from(faqSchemas).filter(script => {
+        try {
+          const data = JSON.parse(script.textContent || '{}');
+          return data['@type'] === 'FAQPage';
+        } catch {
+          return false;
+        }
+      }).length;
+      
+      if (faqCount > 1) {
+        warnings.push(`Multiple FAQPage schemas detected (${faqCount}). Consider consolidating to avoid conflicts.`);
+      }
+    }
 
     // Aggregate results
     [titleValidation, descriptionValidation, headingsValidation, canonicalValidation, 

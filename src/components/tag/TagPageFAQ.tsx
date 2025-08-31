@@ -70,22 +70,22 @@ const TagPageFAQ: React.FC<TagPageFAQProps> = ({ tagName, tagSlug, fundsCount })
       }))
     };
 
-    // Remove existing FAQ schema for this tag
-    const existingFAQSchema = document.querySelector(`script[data-schema="tag-faq-${tagSlug}"]`);
+    // Remove existing FAQ schema
+    const existingFAQSchema = document.querySelector('script[data-schema="faq"]');
     if (existingFAQSchema) {
       existingFAQSchema.remove();
     }
 
-    // Add new FAQ schema
+    // Add new FAQ schema with unified data-schema="faq"
     const script = document.createElement('script');
     script.type = 'application/ld+json';
-    script.setAttribute('data-schema', `tag-faq-${tagSlug}`);
+    script.setAttribute('data-schema', 'faq');
     script.textContent = JSON.stringify(faqSchema);
     document.head.appendChild(script);
 
     // Cleanup function
     return () => {
-      const schemaScript = document.querySelector(`script[data-schema="tag-faq-${tagSlug}"]`);
+      const schemaScript = document.querySelector('script[data-schema="faq"]');
       if (schemaScript) {
         schemaScript.remove();
       }

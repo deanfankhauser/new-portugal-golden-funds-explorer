@@ -55,21 +55,21 @@ const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categor
     };
 
     // Remove existing FAQ schema
-    const existingFAQSchema = document.querySelector('script[data-schema="category-faq"]');
+    const existingFAQSchema = document.querySelector('script[data-schema="faq"]');
     if (existingFAQSchema) {
       existingFAQSchema.remove();
     }
 
-    // Add new FAQ schema
+    // Add new FAQ schema with unified data-schema="faq"
     const script = document.createElement('script');
     script.type = 'application/ld+json';
-    script.setAttribute('data-schema', 'category-faq');
+    script.setAttribute('data-schema', 'faq');
     script.textContent = JSON.stringify(faqSchema);
     document.head.appendChild(script);
 
     // Cleanup function
     return () => {
-      const schemaScript = document.querySelector('script[data-schema="category-faq"]');
+      const schemaScript = document.querySelector('script[data-schema="faq"]');
       if (schemaScript) {
         schemaScript.remove();
       }
