@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from 'react-router-dom';
 import { ExternalLink, Calendar, MapPin, DollarSign } from 'lucide-react';
+import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
 
 interface FundManagerAboutProps {
   fund: Fund;
@@ -70,7 +71,7 @@ const FundManagerAbout: React.FC<FundManagerAboutProps> = ({ fund }) => {
             <li>• Management fee: {fund.managementFee}% annually</li>
             <li>• Fund term: {fund.term} years</li>
             <li>• Regulated by: {fund.regulatedBy}</li>
-            {fund.tags.includes('Golden Visa Eligible') && (
+            {isFundGVEligible(fund) && (
               <li>• ✅ Golden Visa eligible investment</li>
             )}
           </ul>

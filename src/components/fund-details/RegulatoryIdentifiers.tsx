@@ -2,6 +2,7 @@ import React from 'react';
 import { Fund } from '../../data/funds';
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield } from 'lucide-react';
+import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
 
 interface RegulatoryIdentifiersProps {
   fund: Fund;
@@ -18,6 +19,7 @@ const RegulatoryIdentifiers: React.FC<RegulatoryIdentifiersProps> = ({ fund }) =
   
   // Check if fund is regulated by CMVM
   const isCMVMRegulated = fund.regulatedBy?.toLowerCase().includes('cmvm');
+  const isGVEligible = isFundGVEligible(fund);
   
   if (!isCMVMRegulated && !cmvmRegNumber && !isin) {
     return null;
@@ -28,12 +30,18 @@ const RegulatoryIdentifiers: React.FC<RegulatoryIdentifiersProps> = ({ fund }) =
       <CardContent className="p-6">
         <div className="flex items-center mb-5">
           <Shield className="w-5 h-5 mr-2 text-accent" />
-          <h2 className="text-2xl font-bold text-foreground">Golden Visa Eligibility</h2>
+          <h2 className="text-2xl font-bold text-foreground">Regulatory Identifiers</h2>
         </div>
         <div className="space-y-4">
-          <p className="text-foreground leading-relaxed">
-            This fund is registered with CMVM and structured to meet GV rules (no real estate; ≥60% in PT; ≥5-year maturity).
-          </p>
+          {isGVEligible ? (
+            <p className="text-foreground leading-relaxed">
+              This fund is registered with CMVM and structured to meet GV rules (no real estate; ≥60% in PT; ≥5-year maturity).
+            </p>
+          ) : (
+            <p className="text-foreground leading-relaxed">
+              This fund is registered with CMVM but <span className="text-destructive font-medium">not eligible for Golden Visa</span> due to real estate exposure or other regulatory restrictions since October 2023.
+            </p>
+          )}
           
           {(cmvmRegNumber || isin) && (
             <div className="mt-4 p-4 bg-muted rounded-lg">

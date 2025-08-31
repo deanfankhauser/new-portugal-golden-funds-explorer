@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { isTagGVEligible } from '../../data/services/gv-eligibility-service';
 
 interface FAQItem {
   question: string;
@@ -21,10 +22,13 @@ interface TagPageFAQProps {
 const TagPageFAQ: React.FC<TagPageFAQProps> = ({ tagName, tagSlug, fundsCount }) => {
   // Generate tag-specific FAQs
   const generateTagFAQs = (tag: string, count: number): FAQItem[] => {
+    const isEligible = isTagGVEligible(tag as any);
     return [
       {
         question: `What are ${tag} Golden Visa investment funds?`,
-        answer: `${tag} Golden Visa investment funds are specialized investment vehicles that focus on ${tag.toLowerCase()} sectors and are eligible for Portugal's Golden Visa program. These funds allow non-EU investors to obtain Portuguese residency by investing €500,000 or more in qualified ${tag.toLowerCase()} investment opportunities.`
+        answer: isEligible 
+          ? `${tag} Golden Visa investment funds are specialized investment vehicles that focus on ${tag.toLowerCase()} sectors and are eligible for Portugal's Golden Visa program. These funds allow non-EU investors to obtain Portuguese residency by investing €500,000 or more in qualified ${tag.toLowerCase()} investment opportunities.`
+          : `${tag} investment funds focus on ${tag.toLowerCase()} sectors but are NOT eligible for Portugal's Golden Visa program since October 2023. Real estate-linked funds were excluded from the Golden Visa program due to regulatory changes.`
       },
       {
         question: `How many ${tag} Golden Visa funds are available?`,

@@ -2,6 +2,7 @@
 import { funds } from '../data/funds';
 import { QuizFormData } from '../components/quiz/QuizForm';
 import { Fund } from '../data/types/funds';
+import { isFundGVEligible } from '../data/services/gv-eligibility-service';
 
 export const getRecommendations = (data: QuizFormData): (Fund & { score: number })[] => {
   let scoredFunds = funds.map(fund => {
@@ -41,7 +42,7 @@ export const getRecommendations = (data: QuizFormData): (Fund & { score: number 
     if (data.citizenship === 'china' && citizenshipTags.some(tag => tag.includes('Chinese citizens'))) score += 3;
 
     // Golden Visa eligibility bonus
-    if (fund.tags.includes('Golden Visa Eligible')) score += 1;
+    if (isFundGVEligible(fund)) score += 1;
 
     return { ...fund, score };
   });
