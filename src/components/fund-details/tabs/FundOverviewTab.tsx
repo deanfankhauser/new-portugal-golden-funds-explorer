@@ -4,6 +4,7 @@ import { Fund } from '../../../data/funds';
 import FundDescription from '../FundDescription';
 import FundManager from '../FundManager';
 import IntroductionButton from '../IntroductionButton';
+import RegulatoryIdentifiers from '../RegulatoryIdentifiers';
 
 interface FundOverviewTabProps {
   fund: Fund;
@@ -14,6 +15,9 @@ const FundOverviewTab: React.FC<FundOverviewTabProps> = ({ fund }) => {
     <div className="space-y-8 animate-fade-in">
       {/* Fund Description */}
       <FundDescription description={fund.detailedDescription} />
+      
+      {/* Regulatory Identifiers */}
+      <RegulatoryIdentifiers fund={fund} />
       
       {/* Fund Manager Section */}
       <FundManager 

@@ -77,8 +77,7 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
             <div>
               <h3 className="font-semibold text-foreground mb-2">Are these funds regulated by Portuguese authorities?</h3>
               <p className="text-sm text-muted-foreground">
-                Yes, all listed funds are regulated by the Portuguese Securities Market Commission (CMVM) 
-                and approved for Golden Visa investments.
+                Yes, all listed funds are registered with CMVM and structured to meet GV rules (no real estate; ≥60% in PT; ≥5-year maturity).
               </p>
             </div>
             
