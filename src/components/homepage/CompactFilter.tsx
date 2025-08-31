@@ -32,7 +32,7 @@ const CompactFilter: React.FC<CompactFilterProps> = ({
   const quickFilters = [
     { label: 'Low Risk', tag: 'Low Risk' as FundTag },
     { label: 'Real Estate', tag: 'Real Estate' as FundTag },
-    { label: 'Under €300k', tag: 'Under €350k Investment' as FundTag },
+    { label: 'Fund minimums', tag: 'Fund subscription minimums' as FundTag },
     { label: 'Open Now', tag: 'Open' as FundTag },
   ];
 

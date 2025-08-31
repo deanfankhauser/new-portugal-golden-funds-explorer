@@ -17,11 +17,11 @@ const FAQsContent = () => {
   const faqs: FAQItem[] = [
     {
       question: "What is a Golden Visa investment fund?",
-      answer: "A Golden Visa investment fund is a regulated investment vehicle that allows foreign investors to obtain Portuguese residency by making a qualifying investment. For Portugal's Golden Visa program, eligible funds must focus on private equity/venture capital and cannot be linked to real estate (rule changed October 2023)."
+      answer: "A Golden Visa investment fund is a regulated investment vehicle that allows foreign investors to obtain Portuguese residency by making a qualifying investment. For Portugal's Golden Visa program, eligible funds must focus on private equity/venture capital with €500,000 minimum investment and cannot be linked to real estate (rule changed October 2023). Sources: Nomad Gate Guide & IMI Daily change documentation."
     },
     {
       question: "What are the minimum investment amounts?",
-      answer: "Minimum investment amounts vary by country and fund type. Generally, they range from €250,000 to €2,000,000. Portugal funds typically require €500,000, while other jurisdictions may have different thresholds. Each fund has specific minimum investment requirements."
+      answer: "Portugal Golden Visa fund route requires €500,000 total investment (post-October 2023 changes), with no real estate exposure permitted. Individual fund subscription minimums may be lower, but total qualifying investment must reach €500,000. Sources: Nomad Gate analysis and IMI Daily regulatory updates."
     },
     {
       question: "How long does the Golden Visa process take?",

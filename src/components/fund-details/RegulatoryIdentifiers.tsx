@@ -35,7 +35,7 @@ const RegulatoryIdentifiers: React.FC<RegulatoryIdentifiersProps> = ({ fund }) =
         <div className="space-y-4">
           {isGVEligible ? (
             <p className="text-foreground leading-relaxed">
-              This fund is registered with CMVM and structured to meet GV rules (no real estate; ≥60% in PT; ≥5-year maturity).
+              We source from CMVM-regulated managers where applicable. Verify each fund's registration and GV suitability with counsel.
             </p>
           ) : (
             <p className="text-foreground leading-relaxed">

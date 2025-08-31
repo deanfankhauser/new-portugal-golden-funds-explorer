@@ -71,9 +71,9 @@ export const quizQuestions = [
     isSelect: true,
     selectOptions: [
       { 
-        value: 'under-300k', 
-        label: 'Under €300,000',
-        description: 'Entry-level Golden Visa investment'
+        value: 'fund-minimums', 
+        label: 'Fund subscription minimums',
+        description: 'GV still requires €500,000 total'
       },
       { 
         value: '300k-500k', 

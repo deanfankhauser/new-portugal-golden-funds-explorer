@@ -17,6 +17,7 @@ import ROICalculator from './ROICalculator';
 import AlternativeFunds from './AlternativeFunds';
 import RelatedFunds from './RelatedFunds';
 import FundComparisonSuggestions from './FundComparisonSuggestions';
+import EnhancedGVEligibilityBadge from './EnhancedGVEligibilityBadge';
 
 import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
@@ -55,6 +56,8 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           <FundDataFreshness fund={fund} />
           <DataFreshnessWarning fund={fund} />
           
+          {/* Enhanced GV Eligibility Badge */}
+          <EnhancedGVEligibilityBadge fund={fund} showDetails={true} />
           
           {/* Structure description and Report Button */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

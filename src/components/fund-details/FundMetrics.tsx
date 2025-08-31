@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from '../../contexts/AuthContext';
 import { ContentGatingService } from '../../services/contentGatingService';
 import LazyPasswordDialog from '../common/LazyPasswordDialog';
+import FeeDisclaimer from './FeeDisclaimer';
 import { Lock, Eye } from 'lucide-react';
 
 interface FundMetricsProps {
@@ -94,6 +95,8 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
           </Card>
         ))}
       </div>
+      
+      <FeeDisclaimer />
 
       {!isAuthenticated && (
         <div className="mt-6 bg-gradient-to-r from-primary/5 to-accent/5 p-4 md:p-6 rounded-lg border border-primary/20">
