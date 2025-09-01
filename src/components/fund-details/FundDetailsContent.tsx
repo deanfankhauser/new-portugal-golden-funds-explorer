@@ -85,9 +85,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           <div className="bg-gradient-to-r from-primary/5 to-accent/5 p-4 md:p-6 rounded-lg border border-primary/20">
             <div className="text-center">
               <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Portugal Golden Visa Qualified Fund</h3>
-              <p className="text-xs md:text-sm text-muted-foreground mb-4">
-                Appears GV-eligible based on manager docs; verify with your counsel.
-              </p>
+            <p className="text-xs md:text-sm text-muted-foreground mb-4">
+              Appears GV-eligible as of Aug 2025 based on manager documentation. Golden Visa still requires €500,000 total. Always verify with your lawyer and the fund manager.
+            </p>
               <a 
                 href="https://movingto.com/pt/portugal-golden-visa" 
                 target="_blank" 
