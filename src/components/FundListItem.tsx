@@ -108,7 +108,9 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                   <PieChart className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm text-muted-foreground">Target Return</p>
-                    <p className="font-medium text-sm sm:text-base truncate">{fund.returnTarget}</p>
+                    <p className="font-medium text-sm sm:text-base truncate">
+                      {fund.returnTarget} <span className="text-xs text-muted-foreground">(as of Aug 2025)</span>
+                    </p>
                   </div>
                 </div>
                 
@@ -135,7 +137,9 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                     <span className="text-sm text-muted-foreground">Mgmt Fee:</span>
                   </div>
                   {isAuthenticated ? (
-                    <span className="font-medium text-sm">{fund.managementFee}%</span>
+                    <span className="font-medium text-sm">
+                      {fund.managementFee}% <span className="text-xs text-muted-foreground">(as of Aug 2025)</span>
+                    </span>
                   ) : (
                     <div 
                       className="flex items-center cursor-pointer hover:bg-secondary rounded px-2 py-1"
@@ -154,7 +158,9 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                     <span className="text-sm text-muted-foreground">Perf Fee:</span>
                   </div>
                   {isAuthenticated ? (
-                    <span className="font-medium text-sm">{fund.performanceFee}%</span>
+                    <span className="font-medium text-sm">
+                      {fund.performanceFee}% <span className="text-xs text-muted-foreground">(as of Aug 2025)</span>
+                    </span>
                   ) : (
                     <div 
                       className="flex items-center cursor-pointer hover:bg-secondary rounded px-2 py-1"
@@ -185,6 +191,19 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                   >
                     Unlock Premium Data
                   </Button>
+                </div>
+              )}
+              
+              {/* Add eligibility basis info if available */}
+              {fund.eligibilityBasis && (
+                <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded text-xs">
+                  <strong className="text-amber-700">Eligibility basis:</strong> 
+                  <span className="text-amber-600 ml-1">
+                    {fund.eligibilityBasis.portugalAllocation !== 'Not provided' ? `≥60% Portugal` : 'Portugal allocation: Not provided'} / 
+                    {fund.eligibilityBasis.maturityYears !== 'Not provided' ? ` ≥5-year maturity` : ' Maturity: Not provided'} / 
+                    {fund.eligibilityBasis.realEstateExposure === 'None' ? ' no RE exposure' : ` ${fund.eligibilityBasis.realEstateExposure || 'RE exposure: Not provided'}`}
+                    {fund.eligibilityBasis.managerAttestation ? ' (manager attestation on file)' : ''}
+                  </span>
                 </div>
               )}
             </div>

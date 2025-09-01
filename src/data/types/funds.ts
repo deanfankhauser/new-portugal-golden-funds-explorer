@@ -176,4 +176,17 @@ export interface Fund {
   performanceDataDate?: string; // ISO 8601 date for performance metrics
   feeLastUpdated?: string; // ISO 8601 date when fees were last changed
   statusLastUpdated?: string; // ISO 8601 date when fund status was last changed
+  
+  // Additional regulatory and compliance fields
+  cmvmId?: string;
+  auditor?: string;
+  custodian?: string;
+  navFrequency?: string;
+  pficStatus?: 'QEF available' | 'MTM only' | 'Not provided';
+  eligibilityBasis?: {
+    portugalAllocation?: number | 'Not provided';
+    maturityYears?: number | 'Not provided';
+    realEstateExposure?: 'None' | 'Direct' | 'Indirect' | 'Not provided';
+    managerAttestation?: boolean;
+  };
 }
