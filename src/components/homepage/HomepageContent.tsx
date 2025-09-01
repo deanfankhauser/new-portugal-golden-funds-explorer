@@ -19,6 +19,8 @@ interface HomepageContentProps {
   setSearchQuery: (query: string) => void;
   isAuthenticated: boolean;
   allFunds?: Fund[];
+  showOnlyGVEligible: boolean;
+  setShowOnlyGVEligible: (show: boolean) => void;
 }
 
 const HomepageContent: React.FC<HomepageContentProps> = ({
@@ -28,7 +30,9 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
   searchQuery,
   setSearchQuery,
   isAuthenticated,
-  allFunds = []
+  allFunds = [],
+  showOnlyGVEligible,
+  setShowOnlyGVEligible
 }) => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const [isLoading] = useState(false);
@@ -87,6 +91,8 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
                 searchQuery={searchQuery}
                 setSelectedTags={setSelectedTags}
                 setSearchQuery={setSearchQuery}
+                showOnlyGVEligible={showOnlyGVEligible}
+                setShowOnlyGVEligible={setShowOnlyGVEligible}
               />
               
               {/* Data Freshness Dashboard - only show when no filters applied */}

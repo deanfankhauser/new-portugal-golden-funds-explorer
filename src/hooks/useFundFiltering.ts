@@ -1,22 +1,29 @@
 
 import { useState, useMemo } from 'react';
 import { Fund, FundTag, funds, searchFunds } from '../data/funds';
+import { getGVEligibleFunds } from '../data/services/gv-eligibility-service';
 
 export const useFundFiltering = () => {
   const [selectedTags, setSelectedTags] = useState<FundTag[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showOnlyGVEligible, setShowOnlyGVEligible] = useState(true); // Default to GV eligible only
 
   const filteredFunds = useMemo(() => {
     let result = [...funds];
     
-    // Apply tag filtering first
+    // Apply GV eligibility filter first (default behavior)
+    if (showOnlyGVEligible) {
+      result = getGVEligibleFunds(result);
+    }
+    
+    // Apply tag filtering
     if (selectedTags.length > 0) {
       result = result.filter(fund => 
         selectedTags.every(tag => fund.tags.includes(tag))
       );
     }
     
-    // Apply search filtering to the already tag-filtered results
+    // Apply search filtering to the already filtered results
     if (searchQuery) {
       const lowerCaseQuery = searchQuery.toLowerCase();
       result = result.filter(fund => 
@@ -27,13 +34,15 @@ export const useFundFiltering = () => {
     }
     
     return result;
-  }, [selectedTags, searchQuery]);
+  }, [selectedTags, searchQuery, showOnlyGVEligible]);
 
   return {
     selectedTags,
     setSelectedTags,
     searchQuery,
     setSearchQuery,
-    filteredFunds
+    filteredFunds,
+    showOnlyGVEligible,
+    setShowOnlyGVEligible
   };
 };

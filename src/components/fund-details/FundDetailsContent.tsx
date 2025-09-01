@@ -18,6 +18,9 @@ import AlternativeFunds from './AlternativeFunds';
 import RelatedFunds from './RelatedFunds';
 import FundComparisonSuggestions from './FundComparisonSuggestions';
 import EnhancedGVEligibilityBadge from './EnhancedGVEligibilityBadge';
+import EligibilityBasisInfo from './EligibilityBasisInfo';
+import RegulatoryComplianceInfo from './RegulatoryComplianceInfo';
+import FeeDisclaimer from './FeeDisclaimer';
 
 import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
@@ -58,6 +61,15 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           
           {/* Enhanced GV Eligibility Badge */}
           <EnhancedGVEligibilityBadge fund={fund} showDetails={true} />
+          
+          {/* Eligibility Basis Information */}
+          <EligibilityBasisInfo fund={fund} />
+          
+          {/* Fee Disclaimer */}
+          <FeeDisclaimer />
+          
+          {/* Regulatory & Compliance Information */}
+          <RegulatoryComplianceInfo fund={fund} />
           
           {/* Structure description and Report Button */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
