@@ -21,6 +21,7 @@ import EnhancedGVEligibilityBadge from './EnhancedGVEligibilityBadge';
 import EligibilityBasisInfo from './EligibilityBasisInfo';
 import RegulatoryComplianceInfo from './RegulatoryComplianceInfo';
 import FeeDisclaimer from './FeeDisclaimer';
+import EligibilityBasisDisplayLine from './EligibilityBasisDisplayLine';
 
 import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
@@ -62,6 +63,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           {/* Enhanced GV Eligibility Badge */}
           <EnhancedGVEligibilityBadge fund={fund} showDetails={true} />
           
+          {/* Eligibility Basis Display Line */}
+          <EligibilityBasisDisplayLine fund={fund} />
+          
           {/* Eligibility Basis Information */}
           <EligibilityBasisInfo fund={fund} />
           
@@ -82,7 +86,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
             <div className="text-center">
               <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Portugal Golden Visa Qualified Fund</h3>
               <p className="text-xs md:text-sm text-muted-foreground mb-4">
-                Lawyers at Movingto have done due diligence on this firm and can confirm it meets the requirements for the Portugal Golden Visa
+                Appears GV-eligible based on manager docs; verify with your counsel.
               </p>
               <a 
                 href="https://movingto.com/pt/portugal-golden-visa" 

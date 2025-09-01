@@ -26,10 +26,10 @@ const AlternativesHub: React.FC = () => {
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-foreground mb-4">
-              Portugal Golden Visa Fund Alternatives Hub
+              Portugal Investment Fund Alternatives Hub
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Discover alternative investment options for every fund in our database. 
+              These are not GV-eligible alternatives (or mixed). Use this page if you're exploring non-GV investments.
               Compare similar funds based on category, investment requirements, and performance metrics.
             </p>
           </div>

@@ -224,8 +224,8 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
                   <SelectContent>
                     <SelectItem value="all">All Amounts</SelectItem>
                     <SelectItem value="0-250000">€0 - €250k</SelectItem>
-                    <SelectItem value="250000-350000">€250k - €350k</SelectItem>
-                    <SelectItem value="350000-500000">€350k - €500k</SelectItem>
+                    <SelectItem value="250000-350000">€250k - €350k (GV still requires €500k total)</SelectItem>
+                    <SelectItem value="350000-500000">€350k - €500k (GV still requires €500k total)</SelectItem>
                     <SelectItem value="500000+">€500k+</SelectItem>
                   </SelectContent>
                 </Select>
