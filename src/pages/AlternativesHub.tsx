@@ -2,17 +2,21 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { fundsData } from '../data/mock/funds';
 import { findAlternativeFunds } from '../data/services/alternative-funds-service';
+import { isFundGVEligible } from '../data/services/gv-eligibility-service';
 import { PageSEO } from '../components/common/PageSEO';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { ArrowRight, TrendingUp } from 'lucide-react';
 
 const AlternativesHub: React.FC = () => {
-  // Get all funds that have alternatives
-  const fundsWithAlternatives = fundsData
+  // Filter to non-GV eligible funds only
+  const nonGVFunds = fundsData.filter(fund => !isFundGVEligible(fund));
+  
+  // Get non-GV funds that have alternatives
+  const fundsWithAlternatives = nonGVFunds
     .map(fund => ({
       fund,
-      alternatives: findAlternativeFunds(fund, 3)
+      alternatives: findAlternativeFunds(fund, 3).filter(alt => !isFundGVEligible(alt))
     }))
     .filter(item => item.alternatives.length > 0)
     .sort((a, b) => b.alternatives.length - a.alternatives.length);
@@ -45,8 +49,8 @@ const AlternativesHub: React.FC = () => {
             </Card>
             <Card>
               <CardContent className="p-6 text-center">
-                <div className="text-2xl font-bold text-foreground">{fundsData.length}</div>
-                <div className="text-muted-foreground">Total Funds</div>
+                <div className="text-2xl font-bold text-foreground">{nonGVFunds.length}</div>
+                <div className="text-muted-foreground">Non-GV Funds</div>
               </CardContent>
             </Card>
             <Card>

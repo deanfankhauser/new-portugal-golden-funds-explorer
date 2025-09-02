@@ -18,7 +18,7 @@ export const steadyGrowthInvestment: Fund = {
     'Diversified'
   ],
   category: 'Multi-Asset',
-  minimumInvestment: 0, // N/A
+  minimumInvestment: 500000, // Standard GV minimum
   fundSize: 0, // N/A
   managementFee: 0, // N/A
   performanceFee: 0, // N/A

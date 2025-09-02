@@ -15,6 +15,7 @@ import LazyPasswordDialog from './common/LazyPasswordDialog';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 import DataFreshnessIndicator from './common/DataFreshnessIndicator';
+import EligibilityBasisDisplayLine from './fund-details/EligibilityBasisDisplayLine';
 
 interface FundListItemProps {
   fund: Fund;
@@ -194,18 +195,10 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 </div>
               )}
               
-              {/* Add eligibility basis info if available */}
-              {fund.eligibilityBasis && (
-                <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded text-xs">
-                  <strong className="text-amber-700">Eligibility basis:</strong> 
-                  <span className="text-amber-600 ml-1">
-                    {fund.eligibilityBasis.portugalAllocation !== 'Not provided' ? `≥60% Portugal` : 'Portugal allocation: Not provided'} / 
-                    {fund.eligibilityBasis.maturityYears !== 'Not provided' ? ` ≥5-year maturity` : ' Maturity: Not provided'} / 
-                    {fund.eligibilityBasis.realEstateExposure === 'None' ? ' no RE exposure' : ` ${fund.eligibilityBasis.realEstateExposure || 'RE exposure: Not provided'}`}
-                    {fund.eligibilityBasis.managerAttestation ? ' (manager attestation on file)' : ''}
-                  </span>
-                </div>
-              )}
+              {/* Eligibility basis line - always show */}
+              <div className="mt-2">
+                <EligibilityBasisDisplayLine fund={fund} />
+              </div>
             </div>
             
             <div className="flex flex-col sm:flex-row lg:flex-col gap-2 sm:gap-3 justify-center lg:min-w-[160px]">

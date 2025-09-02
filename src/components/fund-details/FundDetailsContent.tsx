@@ -22,6 +22,7 @@ import EligibilityBasisInfo from './EligibilityBasisInfo';
 import RegulatoryComplianceInfo from './RegulatoryComplianceInfo';
 import FeeDisclaimer from './FeeDisclaimer';
 import EligibilityBasisDisplayLine from './EligibilityBasisDisplayLine';
+import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
 
 import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
@@ -36,6 +37,12 @@ interface FundDetailsContentProps {
 }
 
 const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
+  const isGVEligible = isFundGVEligible(fund);
+  
+  // Filter out "Golden Visa Eligible" tag for non-GV funds
+  const displayTags = fund.tags.filter(tag => 
+    tag !== 'Golden Visa Eligible' || isGVEligible
+  );
   return (
     <div className="space-y-6 md:space-y-8">
       {/* Back to Funds Button */}
@@ -82,25 +89,45 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           </div>
           
           {/* Marketing CTAs - Lower Priority */}
-          <div className="bg-gradient-to-r from-primary/5 to-accent/5 p-4 md:p-6 rounded-lg border border-primary/20">
-            <div className="text-center">
-              <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Portugal Golden Visa Qualified Fund</h3>
+          {isGVEligible ? (
+            <div className="bg-gradient-to-r from-primary/5 to-accent/5 p-4 md:p-6 rounded-lg border border-primary/20">
+              <div className="text-center">
+                <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Portugal Golden Visa Qualified Fund</h3>
               <p className="text-xs md:text-sm text-muted-foreground mb-4">
-                Appears GV-eligible based on manager docs; verify with your counsel.
+                Appears GV-eligible as of Aug 2025 based on manager documentation. Golden Visa still requires €500,000 total. Always verify with your lawyer and the fund manager.
               </p>
-              <a 
-                href="https://movingto.com/pt/portugal-golden-visa" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-primary hover:text-primary/80 font-medium text-sm transition-colors duration-200"
-              >
-                Learn about Golden Visa requirements
-                <svg className="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
+                <a 
+                  href="https://movingto.com/pt/portugal-golden-visa" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-primary hover:text-primary/80 font-medium text-sm transition-colors duration-200"
+                >
+                  Learn about Golden Visa requirements
+                  <svg className="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="bg-gradient-to-r from-destructive/10 to-destructive/5 p-4 md:p-6 rounded-lg border border-destructive/30">
+              <div className="text-center">
+                <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Not Golden Visa Eligible</h3>
+                <p className="text-xs md:text-sm text-muted-foreground mb-4">
+                  Since October 2023, Portugal GV funds cannot have direct or indirect real estate exposure. Verify with your counsel.
+                </p>
+                <Link 
+                  to="/alternatives"
+                  className="inline-flex items-center text-destructive hover:text-destructive/80 font-medium text-sm transition-colors duration-200"
+                >
+                  See non-GV alternatives
+                  <svg className="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+          )}
 
           <div className="bg-gradient-to-r from-success/10 to-success/5 p-4 md:p-6 rounded-lg border border-success/30">
             <div className="text-center">
@@ -133,7 +160,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           <div className="border-t border-border pt-6">
             <h3 className="text-lg font-semibold mb-4 text-foreground">Fund Tags</h3>
             <div className="flex flex-wrap gap-2">
-              {fund.tags.map(tag => (
+              {displayTags.map(tag => (
                 <Link 
                   key={tag} 
                   to={`/tags/${tagToSlug(tag)}`}

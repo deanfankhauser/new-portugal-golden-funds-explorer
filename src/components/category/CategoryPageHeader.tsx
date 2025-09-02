@@ -19,17 +19,17 @@ const CategoryPageHeader: React.FC<CategoryPageHeaderProps> = ({ categoryName })
       </div>
       
       <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-center" itemProp="name">
-        {categoryName} Portugal Investment Funds
+        {categoryName === 'Real Estate' ? 'Real Estate (Not Portugal GV-eligible)' : `${categoryName} Portugal Investment Funds`}
       </h1>
       
       {!isGVEligible && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6 max-w-4xl mx-auto">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 max-w-4xl mx-auto">
           <div className="flex items-start">
-            <AlertTriangle className="w-5 h-5 text-amber-600 mr-3 mt-0.5 flex-shrink-0" />
+            <AlertTriangle className="w-5 h-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" />
             <div>
-              <h3 className="font-semibold text-amber-800 mb-1">Not Golden Visa Eligible</h3>
-              <p className="text-amber-700 text-sm">
-                {getGVIneligibilityWarning('category', categoryName)}
+              <h3 className="font-semibold text-red-800 mb-1">Not Golden Visa Eligible</h3>
+              <p className="text-red-700 text-sm">
+                Portugal GV funds cannot have direct or indirect RE exposure since Oct 2023.
               </p>
             </div>
           </div>

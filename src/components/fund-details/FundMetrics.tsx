@@ -34,13 +34,13 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
   const publicMetrics: MetricItem[] = [
     {
       label: "Minimum Investment",
-      value: formatCurrency(fund.minimumInvestment),
+      value: fund.minimumInvestment <= 0 ? "Not provided" : formatCurrency(fund.minimumInvestment),
       subtitle: fund.id === '3cc-golden-income' ? 'Class A (€300,000 for Class D)' : undefined,
       isPublic: true
     },
     {
       label: "Target Return", 
-      value: fund.returnTarget,
+      value: `${fund.returnTarget} (as of Aug 2025)`,
       isPublic: true
     },
     {
