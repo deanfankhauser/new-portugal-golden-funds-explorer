@@ -21,6 +21,25 @@ interface CategoryPageFAQProps {
 const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categorySlug, fundsCount }) => {
   // Generate category-specific FAQs
   const generateCategoryFAQs = (category: string, count: number): FAQItem[] => {
+    // Special handling for Real Estate category (not GV-eligible)
+    if (category === 'Real Estate') {
+      return [
+        {
+          question: `What are ${category} investment funds?`,
+          answer: `${category} investment funds focus on ${category.toLowerCase()} sectors but are NOT eligible for Portugal's Golden Visa program. Since October 2023, Golden Visa funds cannot have direct or indirect real estate exposure. These funds are available for general investment purposes outside the Golden Visa framework.`
+        },
+        {
+          question: `How many ${category} funds are available?`,
+          answer: `Currently, there are ${count} ${category.toLowerCase()} funds available in our directory. Note: These funds are NOT eligible for the Portugal Golden Visa program due to real estate exposure restrictions implemented in October 2023.`
+        },
+        {
+          question: `Can I use ${category} funds for the Portugal Golden Visa?`,
+          answer: `No. Since October 2023, Portugal Golden Visa funds cannot have any direct or indirect real estate exposure. These ${category.toLowerCase()} funds are available for general investment but do not qualify for Golden Visa residency purposes. Sources: Nomad Gate Guide & IMI Daily.`
+        }
+      ];
+    }
+
+    // Default FAQs for GV-eligible categories
     return [
       {
         question: `What are ${category} Golden Visa investment funds?`,
