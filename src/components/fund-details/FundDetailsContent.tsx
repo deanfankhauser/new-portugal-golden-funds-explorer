@@ -22,6 +22,7 @@ import EligibilityBasisInfo from './EligibilityBasisInfo';
 import RegulatoryComplianceInfo from './RegulatoryComplianceInfo';
 import FeeDisclaimer from './FeeDisclaimer';
 import EligibilityBasisDisplayLine from './EligibilityBasisDisplayLine';
+import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
 
 import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
@@ -36,6 +37,12 @@ interface FundDetailsContentProps {
 }
 
 const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
+  const isGVEligible = isFundGVEligible(fund);
+  
+  // Filter out "Golden Visa Eligible" tag for non-GV funds
+  const displayTags = fund.tags.filter(tag => 
+    tag !== 'Golden Visa Eligible' || isGVEligible
+  );
   return (
     <div className="space-y-6 md:space-y-8">
       {/* Back to Funds Button */}
@@ -133,7 +140,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           <div className="border-t border-border pt-6">
             <h3 className="text-lg font-semibold mb-4 text-foreground">Fund Tags</h3>
             <div className="flex flex-wrap gap-2">
-              {fund.tags.map(tag => (
+              {displayTags.map(tag => (
                 <Link 
                   key={tag} 
                   to={`/tags/${tagToSlug(tag)}`}

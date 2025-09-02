@@ -35,7 +35,7 @@ export const heedTopFund: Fund = {
 
 The fund follows a prudent investment strategy with strict risk limits, including maximum 65% exposure to equity-related instruments and maximum 15% exposure per issuer (35% for sovereign OECD/EU securities). With daily liquidity and redemption proceeds paid within 4-5 business days, the fund offers flexibility while targeting 5% annual returns net of fees.
 
-Managed by Heed Capital SGOIC, S.A., an independent asset manager with over €350M under management and a 20+ year track record, the fund is fully compliant for Golden Visa investments and registered with both CMVM and the US SEC for accredited investors.`,
+Managed by Heed Capital SGOIC, S.A., an independent asset manager with over €350M under management and a 20+ year track record, the fund is fully compliant for Golden Visa investments and regulated by CMVM.`,
   geographicAllocation: [
     { region: 'Portugal', percentage: 75 },
     { region: 'Other EU', percentage: 15 },
