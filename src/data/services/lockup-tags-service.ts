@@ -6,6 +6,11 @@ export const generateLockupTags = (fund: Fund): FundTag[] => {
   const tags: FundTag[] = [];
   
   // Only assign lock-up tags if fund is actually locked up (not open for redemption)
+  // AND explicitly exclude funds that already have "No Lock-Up" tag to avoid conflicts
+  if (fund.tags.includes('No Lock-Up')) {
+    return []; // Don't add any lockup tags if the fund explicitly has "No Lock-Up"
+  }
+  
   if (fund.redemptionTerms?.frequency === 'End of Term' && !fund.redemptionTerms.redemptionOpen) {
     // If fund is locked until maturity, use the fund term
     const termYears = fund.term;

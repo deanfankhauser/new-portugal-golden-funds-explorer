@@ -33,8 +33,12 @@ const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categor
           answer: `Currently, there are ${count} ${category.toLowerCase()} funds available in our directory. Note: These funds are NOT eligible for the Portugal Golden Visa program due to real estate exposure restrictions implemented in October 2023.`
         },
         {
-          question: `Can I use ${category} funds for the Portugal Golden Visa?`,
-          answer: `No. Since October 2023, Portugal Golden Visa funds cannot have any direct or indirect real estate exposure. These ${category.toLowerCase()} funds are available for general investment but do not qualify for Golden Visa residency purposes. Sources: Nomad Gate Guide & IMI Daily.`
+        question: `Why aren't Real Estate funds eligible for Portugal Golden Visa since Oct 2023?`,
+        answer: `Since October 2023, Portugal Golden Visa funds cannot have any direct or indirect real estate exposure due to new regulations. Real estate-linked investments no longer qualify for residency purposes. Sources: Nomad Gate Guide & IMI Daily.`
+      },
+      {
+        question: `What should I invest in instead of Real Estate funds for Golden Visa?`,
+        answer: `For Portugal Golden Visa eligibility, consider investment funds focused on: debt instruments, equity investments, clean energy projects, private equity, or venture capital. These sectors remain eligible as they don't involve real estate exposure. Minimum €500,000 total investment required.`
         }
       ];
     }

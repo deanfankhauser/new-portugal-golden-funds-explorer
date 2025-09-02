@@ -1,9 +1,14 @@
 
 import { Fund, FundTag } from '../types/funds';
+import { isFundGVEligible } from './gv-eligibility-service';
 
-// Function to generate audience segment tags for all funds
+// Function to generate audience segment tags for GV-eligible funds only
 export const generateAudienceTags = (fund: Fund): FundTag[] => {
-  // All funds are available to all audience segments for SEO purposes
+  // Only return GV audience tags for GV-eligible funds
+  if (!isFundGVEligible(fund)) {
+    return [];
+  }
+  
   return [
     'Golden Visa funds for U.S. citizens',
     'Golden Visa funds for Australian citizens',
