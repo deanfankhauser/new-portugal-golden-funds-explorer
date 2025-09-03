@@ -30,6 +30,15 @@ export const heedTopFund: Fund = {
   fundStatus: 'Open',
   established: 2004, // Approximately 20 years ago
   regulatedBy: 'CMVM',
+  pficStatus: "Not provided",
+  cmvmId: "Not provided",
+  navFrequency: "Daily",
+  eligibilityBasis: {
+    portugalAllocation: 75,
+    maturityYears: 0, // Open-ended
+    realEstateExposure: "None",
+    managerAttestation: true
+  },
   location: 'Portugal',
   detailedDescription: `Heed Top is a CMVM-regulated, open-ended alternative investment fund designed to deliver consistent, moderate returns through a diversified investment approach. The fund invests at least 60% in bonds and equities of Portuguese commercial companies, with the remainder allocated to corporate and subordinated bonds, ETFs, equities, and other investment funds for enhanced diversification.
 

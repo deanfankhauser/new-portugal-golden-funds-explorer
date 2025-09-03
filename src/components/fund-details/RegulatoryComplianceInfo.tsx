@@ -46,7 +46,12 @@ const RegulatoryComplianceInfo: React.FC<RegulatoryComplianceInfoProps> = ({ fun
           
           <div className="md:col-span-2">
             <h4 className="font-medium text-sm text-muted-foreground mb-1">PFIC/QEF Status (US Tax)</h4>
-            <p className="text-sm">{formatField(fund.pficStatus)}</p>
+            <p className="text-sm">
+              {fund.pficStatus === 'QEF available' ? 'QEF statement available' : 
+               fund.pficStatus === 'MTM only' ? 'MTM only' : 
+               fund.pficStatus === 'Not provided' ? 'QEF statement not available' : 
+               formatField(fund.pficStatus, 'QEF statement not available')} (as of Sep 2025)
+            </p>
           </div>
         </div>
         

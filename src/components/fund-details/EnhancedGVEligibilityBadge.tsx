@@ -23,6 +23,12 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
   // Determine eligibility status
   const getEligibilityStatus = () => {
     if (hasRealEstate) return 'no';
+    // Check Portugal allocation requirement (≥60%)
+    if (fund.eligibilityBasis?.portugalAllocation && 
+        typeof fund.eligibilityBasis.portugalAllocation === 'number' && 
+        fund.eligibilityBasis.portugalAllocation < 60) {
+      return 'no';
+    }
     if (isGVEligible) return 'yes';
     return 'unclear';
   };
@@ -71,6 +77,12 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
   const getExplanation = () => {
     if (hasRealEstate) {
       return "Fund has real estate exposure - not eligible since October 2023.";
+    }
+    // Check for <60% Portugal allocation
+    if (fund.eligibilityBasis?.portugalAllocation && 
+        typeof fund.eligibilityBasis.portugalAllocation === 'number' && 
+        fund.eligibilityBasis.portugalAllocation < 60) {
+      return `Fund has only ${fund.eligibilityBasis.portugalAllocation}% Portugal allocation - requires ≥60% for Golden Visa eligibility.`;
     }
     if (status === 'unclear') {
       return "Eligibility depends on fund structure, allocation rules, and current regulations.";

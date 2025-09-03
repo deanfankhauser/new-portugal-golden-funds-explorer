@@ -31,6 +31,15 @@ export const threeCommaCGoldenIncome: Fund = {
   websiteUrl: "https://example.com/3cc-golden-income",
   established: 2025, // April 2025
   regulatedBy: "CMVM (Portuguese Securities Market Authority)",
+  pficStatus: "QEF available",
+  cmvmId: "182126",
+  navFrequency: "Daily",
+  eligibilityBasis: {
+    portugalAllocation: 70,
+    maturityYears: 0, // Perpetual
+    realEstateExposure: "None",
+    managerAttestation: true
+  },
   location: "Portugal",
   detailedDescription: "3CC Portugal Golden Income Fund is an open-ended alternative investment vehicle managed by 3 Comma Capital SCR, S.A., structured to satisfy Portuguese Golden Visa requirements by allocating 70% to investment-grade Portuguese corporate bonds and 30% to growth assets—including global equities and digital assets such as Bitcoin, Ethereum, and Solana. Launched in April 2025, it provides daily liquidity with no subscription fee or lock-up. Share Class A (accumulation) requires a €100,000 minimum investment; Class D (distribution) requires €300,000. Both must be held for five years for residency eligibility. Fees comprise a 1.50% management fee for Class A (1.75% for Class D), a 20% performance fee over a 5% high-water mark, and redemption fees tapering from 5% in year 1 to 0% after 5 years + 1 day. The fund targets a 10% p.a. return, currently manages over €25 million (aiming for €50 million), and issues quarterly reports and annual audited statements.",
   geographicAllocation: [

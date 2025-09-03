@@ -32,6 +32,15 @@ export const steadyGrowthInvestment: Fund = {
   websiteUrl: undefined,
   established: 0, // N/A
   regulatedBy: 'N/A',
+  pficStatus: "Not provided",
+  cmvmId: "Not provided",
+  navFrequency: "Quarterly",
+  eligibilityBasis: {
+    portugalAllocation: 60,
+    maturityYears: 10,
+    realEstateExposure: "None",
+    managerAttestation: true
+  },
   location: 'Portugal',
   detailedDescription: 'Steady Growth Investment Fund is an open-ended, actively managed vehicle designed to deliver stable, long-term returns by blending 70 % bonds, 15 % equities, 10 % gold and 5 % deposits. The bond sleeve spans corporate and government issuers across Portugal, Europe and North America, while equity exposure is achieved via diversified stock indices and ETFs. The portfolio is rebalanced quarterly to navigate market cycles and protect capital. Despite major geopolitical and economic shocks over the past seven years, the strategy has achieved a cumulative 4.14 % gain and currently delivers an annualized return of 7.86 %.',
   geographicAllocation: [

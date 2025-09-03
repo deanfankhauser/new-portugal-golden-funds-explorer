@@ -11,7 +11,6 @@ export const portugalLiquidOpportunities: Fund = {
     'Equities',
     'Liquid',
     'Open Ended',
-    'PFIC-Compliant',
     'Low Risk',
     'No Fees',
     'Daily NAV',
