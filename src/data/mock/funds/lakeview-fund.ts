@@ -6,7 +6,7 @@ export const lakeviewFund: Fund = {
   managerName: 'Visadoro',
   managerLogo: undefined, // No logo provided
   category: 'Real Estate',
-  tags: ['Real Estate', 'Tourism', 'Portugal', 'Closed Ended'],
+  tags: ['Real Estate', 'Tourism', 'Portugal', 'Closed Ended', '€500k+', '5-10 year lock-up'],
   description: 'Investment opportunity in the development of a 5-star luxury tourist complex in Portugal\'s West Region, near Óbidos, offering attractive projected returns and lifestyle benefits.',
   detailedDescription: `The Lakeview Fund provides investors with the opportunity to participate in the development of a premium 5-star luxury tourist complex strategically located in Portugal's West Region, just 20 minutes from the historic Óbidos Castle.
 

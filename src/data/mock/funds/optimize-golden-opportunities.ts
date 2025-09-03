@@ -32,6 +32,9 @@ export const optimizeGoldenOpportunities: Fund = {
   websiteUrl: "https://example.com/optimize-golden-opportunities",
   established: 2008, // Using the founding date of the manager
   regulatedBy: "CMVM (Portuguese Securities Supervisor)",
+  pficStatus: "QEF available",
+  cmvmId: "327",
+  navFrequency: "Daily",
   location: "Portugal",
   detailedDescription: "Optimize Portugal Golden Opportunities Fund is a UCITS-compliant, open-ended vehicle designed for Golden Visa investors, blending a 75% allocation to Portuguese listed equities with 25% in bonds to achieve lower volatility and attractive long-term capital appreciation. The fund provides daily NAV and processing of subscriptions/redemptions within five business days, with no lock-up period or redemption fees. Investors benefit from PFIC compliance and the ability for U.S. persons to elect QEF treatment. The minimum investment of €500,000 (€505,255 including taxes and commissions) must be maintained for five years to satisfy Golden Visa requirements. Past performance (net of fees) includes +4.2% in 2022, +17.3% in 2023, +6.3% in 2024, and +8.4% year-to-date through April 30, 2025.",
   eligibilityBasis: {

@@ -32,6 +32,17 @@
       ]
     },
     {
+      "source": "/(.*)",
+      "destination": "https://funds.movingto.com/$1",
+      "permanent": true,
+      "has": [
+        {
+          "type": "host",
+          "value": "funds.movingto.io"
+        }
+      ]
+    },
+    {
       "source": "/funds",
       "destination": "/index",
       "permanent": true

@@ -128,9 +128,8 @@ const FundAlternatives = () => {
               {fund.name} Alternatives | Portugal Golden Visa Investment Funds
             </h1>
             <p className="text-muted-foreground text-lg">
-              Discover similar investment opportunities to <strong>{fund.name}</strong>. 
-              These funds share similar characteristics such as investment range, category, 
-              or management approach.
+              These are similar funds. Eligibility varies — check the badge on each card. 
+              To view non-GV alternatives only, use the Real Estate or other non-GV categories.
             </p>
           </div>
 
