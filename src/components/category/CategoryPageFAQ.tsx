@@ -34,7 +34,7 @@ const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categor
         },
         {
         question: `Why aren't Real Estate funds eligible for Portugal Golden Visa since Oct 2023?`,
-        answer: `Since October 2023, Portugal Golden Visa funds cannot have any direct or indirect real estate exposure due to new regulations. Real estate-linked investments no longer qualify for residency purposes. Sources: Nomad Gate Guide & IMI Daily.`
+        answer: `Since October 2023, Portugal Golden Visa funds cannot have any direct or indirect real estate exposure due to new regulations. Real estate-linked investments no longer qualify for residency purposes. For current Golden Visa eligible funds, see the main fund index. Sources: Nomad Gate Guide & IMI Daily.`
       },
       {
         question: `What should I invest in instead of Real Estate funds for Golden Visa?`,

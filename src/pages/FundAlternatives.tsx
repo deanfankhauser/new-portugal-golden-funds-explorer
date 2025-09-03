@@ -166,7 +166,7 @@ const FundAlternatives = () => {
                     </div>
                     <div>
                       <span className="font-medium text-foreground">Return Target:</span>
-                      <p className="text-muted-foreground">{alternativeFund.returnTarget}%</p>
+                      <p className="text-muted-foreground">{alternativeFund.returnTarget}</p>
                     </div>
                     <div>
                       <span className="font-medium text-foreground">Term:</span>

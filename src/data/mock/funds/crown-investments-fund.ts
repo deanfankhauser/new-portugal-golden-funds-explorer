@@ -50,6 +50,7 @@ The fund is managed by Insight Venture, a CMVM-licensed Portuguese venture capit
     managerAttestation: true
   },
   cmvmId: "1877002",
+  navFrequency: "Quarterly",
   location: 'Portugal',
   redemptionTerms: {
     frequency: 'End of Term',

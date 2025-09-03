@@ -35,7 +35,8 @@ export const venturesEUFund: Fund = {
     realEstateExposure: 'None',
     managerAttestation: true
   },
-  cmvmId: "Not provided",
+  cmvmId: "SGI-445",
+  navFrequency: "Quarterly",
   location: 'Portugal',
   detailedDescription: `Ventures.eu Fund I is a CMVM-regulated, closed-ended private equity and venture capital fund that invests in high-growth technology-driven companies across Portugal and the EU. The fund focuses on sectors including fintech, AI, clean tech, health tech, and digital transformation, targeting companies with significant growth potential and clear paths to profitability.
 

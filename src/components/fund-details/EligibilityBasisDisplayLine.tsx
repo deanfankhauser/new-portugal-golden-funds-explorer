@@ -19,14 +19,14 @@ const EligibilityBasisDisplayLine: React.FC<EligibilityBasisDisplayLineProps> = 
 
   // Portugal allocation
   if (basis.portugalAllocation !== 'Not provided' && typeof basis.portugalAllocation === 'number') {
-    parts.push('≥60% Portugal');
+    parts.push(`${basis.portugalAllocation}% Portugal`);
   } else {
     parts.push('Portugal allocation: Not provided');
   }
 
   // Maturity
   if (basis.maturityYears !== 'Not provided' && typeof basis.maturityYears === 'number') {
-    parts.push('≥5-year maturity');
+    parts.push(`${basis.maturityYears}-year maturity`);
   } else {
     parts.push('Maturity: Not provided');
   }
@@ -45,7 +45,7 @@ const EligibilityBasisDisplayLine: React.FC<EligibilityBasisDisplayLineProps> = 
 
   return (
     <p className="text-sm text-muted-foreground">
-      <strong>Eligibility basis:</strong> {parts.join(' / ')} {attestation}, as of Aug 2025.
+      <strong>Eligibility basis (as of Sep 2025):</strong> {parts.join(' / ')} {attestation}; CMVM ID: {fund.cmvmId || 'Not provided'}; NAV: {fund.navFrequency || 'Not provided'}.
     </p>
   );
 };
