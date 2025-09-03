@@ -70,7 +70,7 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 text-sm">
                 <div className="flex items-center gap-1">
                   <Users className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Min: {formatCurrency(fund.minimumInvestment)}</span>
+                  <span className="text-muted-foreground">Min: {fund.minimumInvestment <= 0 ? "Not provided" : formatCurrency(fund.minimumInvestment)}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <TrendingUp className="w-4 h-4 text-muted-foreground" />
