@@ -110,7 +110,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm text-muted-foreground">Target Return</p>
                     <p className="font-medium text-sm sm:text-base truncate">
-                      {fund.returnTarget} <span className="text-xs text-muted-foreground">(as of Aug 2025)</span>
+                      {fund.returnTarget} <span className="text-xs text-muted-foreground">(as of Sep 2025)</span>
                     </p>
                   </div>
                 </div>
@@ -139,7 +139,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                   </div>
                   {isAuthenticated ? (
                     <span className="font-medium text-sm">
-                      {fund.managementFee}% <span className="text-xs text-muted-foreground">(as of Aug 2025)</span>
+                      {fund.managementFee}% <span className="text-xs text-muted-foreground">(as of Sep 2025)</span>
                     </span>
                   ) : (
                     <div 
@@ -160,7 +160,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                   </div>
                   {isAuthenticated ? (
                     <span className="font-medium text-sm">
-                      {fund.performanceFee}% <span className="text-xs text-muted-foreground">(as of Aug 2025)</span>
+                      {fund.performanceFee}% <span className="text-xs text-muted-foreground">(as of Sep 2025)</span>
                     </span>
                   ) : (
                     <div 

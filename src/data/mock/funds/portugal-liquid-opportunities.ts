@@ -30,6 +30,15 @@ export const portugalLiquidOpportunities: Fund = {
   established: 0, // N/A
   regulatedBy: 'Oxy Capital – SGOIC, S.A. (authorized by CMVM)',
   location: 'Portugal',
+  pficStatus: 'Not provided',
+  cmvmId: 'Not provided',
+  navFrequency: 'Daily',
+  eligibilityBasis: {
+    portugalAllocation: 65,
+    maturityYears: 0,
+    realEstateExposure: 'None',
+    managerAttestation: true
+  },
   detailedDescription: `Portugal Liquid Opportunities Fund is an open-ended, FACTA-compliant public equities vehicle managed by Oxy Capital – SGOIC, S.A., with a minimum subscription of €100,000. It allocates over 60% of its assets to Portuguese public equities—targeting leading national "champions"—and under 40% to international equities via Oxy's proprietary strategy.
 
 Designed for Golden Visa investors, subscriptions are perpetual with daily liquidity, and no redemption fee applies after three years. The fund targets low-teens gross annual returns, with all costs deducted from invested capital.
