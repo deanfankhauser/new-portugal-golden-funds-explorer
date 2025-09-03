@@ -5,6 +5,7 @@ import { RedemptionTerms } from '../../data/types/funds';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatPercentage } from './utils/formatters';
+import { DATA_AS_OF_LABEL } from '../../utils/urlConfig';
 
 interface RedemptionTermsProps {
   redemptionTerms?: RedemptionTerms;
