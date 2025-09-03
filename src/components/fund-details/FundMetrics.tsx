@@ -40,7 +40,7 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
     },
     {
       label: "Target Return", 
-      value: `${fund.returnTarget} (as of Aug 2025)`,
+      value: `${fund.returnTarget} (as of Sep 2025)`,
       isPublic: true
     },
     {
