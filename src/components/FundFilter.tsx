@@ -36,7 +36,7 @@ const FundFilter: React.FC<FundFilterProps> = ({
     tag.includes('€') || tag.includes('Investment')
   );
   const riskTags = allTags.filter(tag => 
-    ['Low Risk', 'Medium Risk', 'High Risk', 'Conservative', 'Aggressive'].includes(tag)
+    ['Low-risk', 'Medium-risk', 'High-risk', 'Conservative', 'Aggressive'].includes(tag)
   );
   const otherTags = allTags.filter(tag => 
     !categoryTags.includes(tag) && !investmentTags.includes(tag) && !riskTags.includes(tag)
@@ -48,7 +48,7 @@ const FundFilter: React.FC<FundFilterProps> = ({
   
   // Quick filter suggestions
   const quickFilters = [
-    { label: 'Low Risk', tag: 'Low Risk' as FundTag },
+    { label: 'Low Risk', tag: 'Low-risk' as FundTag },
     { label: 'Real Estate', tag: 'Real Estate' as FundTag },
     { label: 'Fund minimums', tag: 'Fund subscription minimums' as FundTag },
     { label: 'Open Now', tag: 'Open' as FundTag },
