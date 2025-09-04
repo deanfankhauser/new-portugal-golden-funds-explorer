@@ -72,7 +72,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
           <div className="grid grid-cols-2 gap-2 mb-4">
             <div>
               <p className="text-sm text-muted-foreground">Min Investment</p>
-              <p className="font-medium">{formatCurrency(fund.minimumInvestment)}</p>
+              <p className="font-medium">{fund.minimumInvestment > 0 ? formatCurrency(fund.minimumInvestment) : 'Not provided'}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Target Return</p>
