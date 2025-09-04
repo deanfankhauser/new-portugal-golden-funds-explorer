@@ -24,13 +24,12 @@ const Disclaimer = () => {
           </p>
 
           <p className="mb-6">
-            By accessing or using this Site, you acknowledge and agree to the terms of this disclaimer. 
-            If you do not agree, you must immediately stop using the Site.
+            By accessing or using this Site, you agree to the terms of this disclaimer. If you do not agree, you must immediately stop using the Site.
           </p>
 
-          <h2 className="text-xl font-semibold mb-4">1. No Financial or Legal Advice</h2>
+          <h2 className="text-xl font-semibold mb-4">1. No Financial, Legal, or Tax Advice</h2>
           <p className="mb-4">
-            The information provided on this Site is for general informational purposes only. It does not constitute:
+            All information on this Site is provided for general informational purposes only. It does not constitute:
           </p>
           <ul className="list-disc pl-6 mb-6 space-y-1">
             <li>Financial advice</li>
@@ -41,83 +40,111 @@ const Disclaimer = () => {
           </ul>
           <p className="mb-6">
             You should not rely on the information on this Site as a substitute for professional advice. 
-            Always consult a qualified financial advisor, legal advisor, or tax professional before making any decision related to investments, visas, or residency.
+            Always consult a qualified financial, legal, or tax advisor before making any decision related to investments, visas, or residency.
           </p>
 
-          <h2 className="text-xl font-semibold mb-4">2. Accuracy of Information</h2>
-          <p className="mb-4">We strive to ensure that the information presented is accurate and up to date. However, we:</p>
+          <h2 className="text-xl font-semibold mb-4">2. Accuracy & Reliability of Information</h2>
+          <p className="mb-4">We strive to keep content accurate and up to date, but we:</p>
           <ul className="list-disc pl-6 mb-6 space-y-1">
-            <li>Make no guarantees or warranties as to the completeness, accuracy, reliability, suitability, or availability of any content.</li>
+            <li>Make no warranties or representations as to the completeness, reliability, or accuracy of any information.</li>
             <li>May update, change, or remove content at any time without notice.</li>
             <li>Are not responsible for errors, omissions, outdated information, or third-party data inaccuracies.</li>
           </ul>
           <p className="mb-6">
-            All information is provided on an "as is" basis without any warranties of any kind, express or implied.
+            All content is provided on an "as is" and "as available" basis, without warranties of any kind, express or implied.
           </p>
 
-          <h2 className="text-xl font-semibold mb-4">3. No Endorsement or Affiliation</h2>
-          <p className="mb-4">The listing of funds, managers, service providers, or any third-party content on this Site:</p>
+          <h2 className="text-xl font-semibold mb-4">3. Past & Future Performance</h2>
+          <p className="mb-6">
+            Any references to fund performance, projections, or potential returns are illustrative only and do not guarantee future outcomes. Past performance is not indicative of future results.
+          </p>
+
+          <h2 className="text-xl font-semibold mb-4">4. No Endorsement or Verification</h2>
+          <p className="mb-4">Listings of funds, managers, service providers, or other third-party content:</p>
           <ul className="list-disc pl-6 mb-6 space-y-1">
-            <li>Does not imply endorsement, affiliation, partnership, or recommendation.</li>
-            <li>Is provided for reference only.</li>
-            <li>Does not mean we have independently verified the claims, performance, or legality of such entities.</li>
+            <li>Do not imply endorsement, affiliation, partnership, or recommendation.</li>
+            <li>Are provided strictly for reference.</li>
+            <li>Have not been independently verified by us for accuracy, legality, or performance.</li>
           </ul>
           <p className="mb-6">You are solely responsible for conducting your own due diligence.</p>
 
-          <h2 className="text-xl font-semibold mb-4">4. Limitation of Liability</h2>
+          <h2 className="text-xl font-semibold mb-4">5. Compensation Disclosure</h2>
+          <p className="mb-6">
+            We may receive fees, commissions, or other compensation from third parties featured on or linked through this Site. 
+            Such compensation does not constitute an endorsement or recommendation and does not influence the information provided.
+          </p>
+
+          <h2 className="text-xl font-semibold mb-4">6. Limitation of Liability</h2>
           <p className="mb-4">
             To the fullest extent permitted by law, Moving To Global Pte Ltd and its directors, officers, employees, and agents 
             shall not be liable for any direct, indirect, incidental, consequential, or special damages, including but not limited to:
           </p>
           <ul className="list-disc pl-6 mb-4 space-y-1">
             <li>Loss of profits, revenue, or savings</li>
-            <li>Investment losses</li>
+            <li>Investment or business losses</li>
             <li>Business interruption</li>
-            <li>Reputational harm</li>
             <li>Data loss</li>
-            <li>Legal or regulatory consequences</li>
+            <li>Reputational harm</li>
+            <li>Legal, regulatory, or tax consequences</li>
           </ul>
-          <p className="mb-6">arising from or in connection with:</p>
+          <p className="mb-6">arising out of or in connection with:</p>
           <ul className="list-disc pl-6 mb-6 space-y-1">
             <li>Your use of the Site</li>
-            <li>Reliance on any information provided herein</li>
-            <li>Interactions with any third-party fund, service provider, or platform referenced</li>
+            <li>Reliance on any information contained herein</li>
+            <li>Interactions with any third-party fund, provider, or platform</li>
           </ul>
+          <p className="mb-6">You assume full responsibility for any reliance placed on Site content.</p>
 
-          <h2 className="text-xl font-semibold mb-4">5. Third-Party Links</h2>
+          <h2 className="text-xl font-semibold mb-4">7. Third-Party Websites</h2>
           <p className="mb-6">
-            This Site may contain links to third-party websites. We have no control over the content, practices, or accuracy of third-party sites. 
-            Accessing third-party websites is at your own risk.
+            This Site may contain links to third-party websites. We have no control over their content, security, or practices. 
+            Accessing such websites is at your own risk.
           </p>
 
-          <h2 className="text-xl font-semibold mb-4">6. Regulatory Status</h2>
+          <h2 className="text-xl font-semibold mb-4">8. Regulatory Status</h2>
           <p className="mb-4">
             Moving To Global Pte Ltd is not licensed as a financial institution, financial adviser, investment adviser, or broker-dealer 
             under the laws of Singapore or any other jurisdiction.
           </p>
-          <p className="mb-6">Nothing on this Site should be construed as regulated financial activity.</p>
-
-          <h2 className="text-xl font-semibold mb-4">7. Governing Law & Jurisdiction</h2>
           <p className="mb-4">
-            This disclaimer and any disputes arising out of or in connection with it shall be governed by the laws of Singapore.
+            Nothing on this Site should be construed as regulated financial activity or as creating any fiduciary duty on our part.
           </p>
           <p className="mb-6">
-            By using this Site, you submit to the exclusive jurisdiction of the courts of Singapore.
+            We do not manage, operate, or custody any investments. All transactions are strictly between you and the relevant third-party provider.
           </p>
 
-          <h2 className="text-xl font-semibold mb-4">8. Changes to This Disclaimer</h2>
+          <h2 className="text-xl font-semibold mb-4">9. Compliance With Local Laws</h2>
           <p className="mb-6">
-            We reserve the right to modify this disclaimer at any time. Updated versions will be posted on this page with the revised effective date.
+            Access to this Site may be unlawful in certain jurisdictions. It is your responsibility to ensure that use of this Site 
+            and reliance on its information complies with the laws applicable to you.
           </p>
 
-          <h2 className="text-xl font-semibold mb-4">9. Contact</h2>
-          <p className="mb-4">For any questions regarding this disclaimer, please contact:</p>
+          <h2 className="text-xl font-semibold mb-4">10. Data & Security</h2>
+          <p className="mb-6">
+            We do not warrant that the Site will be free from errors, viruses, or security vulnerabilities, and we disclaim liability 
+            for any damages arising from such issues.
+          </p>
+
+          <h2 className="text-xl font-semibold mb-4">11. Governing Law & Jurisdiction</h2>
+          <p className="mb-4">
+            This disclaimer and any disputes arising in connection with it shall be governed by the laws of Singapore.
+          </p>
+          <p className="mb-6">
+            By using this Site, you submit to the exclusive jurisdiction of the courts of Singapore, without prejudice to any 
+            mandatory laws of your country of residence.
+          </p>
+
+          <h2 className="text-xl font-semibold mb-4">12. Changes to This Disclaimer</h2>
+          <p className="mb-6">
+            We may modify this disclaimer at any time. Updated versions will be posted on this page with the revised effective date.
+          </p>
+
+          <h2 className="text-xl font-semibold mb-4">13. Contact</h2>
           <div className="bg-muted p-4 rounded-lg">
             <p className="font-medium">Moving To Global Pte Ltd</p>
             <p>160 Robinson Road, #14-04</p>
             <p>Singapore Business Federation Center</p>
             <p>Singapore 068914</p>
-            <p>Singapore</p>
             <p className="mt-2">
               <strong>Email:</strong> <a href="mailto:info@movingto.com" className="text-primary hover:underline">info@movingto.com</a>
             </p>

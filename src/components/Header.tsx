@@ -13,12 +13,15 @@ import {
 } from "@/components/ui/navigation-menu";
 import ComparisonIndicator from "./ComparisonIndicator";
 import MobileNavigation from "./MobileNavigation";
+import DisclaimerBanner from "./common/DisclaimerBanner";
 import { ArrowLeft, Mail, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3, FileText, GitCompareArrows } from "lucide-react";
 import { FundIndexWidget, ComparisonWidget } from "./navigation/IndexWidgets";
 
 const Header = () => {
   return (
-    <header className="bg-foreground text-background py-3 shadow-lg w-full">
+    <>
+      <DisclaimerBanner />
+      <header className="bg-foreground text-background py-3 shadow-lg w-full">
       <div className="container mx-auto px-4 w-full">
         <div className="flex justify-between items-center w-full">
           {/* Left section - Logo */}
@@ -177,6 +180,7 @@ const Header = () => {
         </div>
       </div>
     </header>
+    </>
   );
 };
 
