@@ -87,7 +87,7 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
     if (status === 'unclear') {
       return "Eligibility depends on fund structure, allocation rules, and current regulations.";
     }
-    return "Fund appears to meet GV requirements based on available information.";
+    return "Appears GV-eligible based on manager docs; verify with counsel.";
   };
 
   return (

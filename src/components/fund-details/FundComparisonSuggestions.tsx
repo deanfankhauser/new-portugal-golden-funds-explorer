@@ -49,7 +49,7 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
                 <div>
                   <div className="font-medium text-sm">{currentFund.name} vs {fund.name}</div>
                   <div className="text-xs text-muted-foreground">
-                    Compare {fund.category} • Min. €{(fund.minimumInvestment || 0).toLocaleString()}
+                    Compare {fund.category} • Min. {fund.minimumInvestment > 0 ? `€${fund.minimumInvestment.toLocaleString()}` : 'Not provided'}
                   </div>
                 </div>
                 <GitCompare className="h-4 w-4 text-muted-foreground" />
