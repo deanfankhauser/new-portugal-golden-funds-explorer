@@ -11,7 +11,7 @@ export const portugalLiquidOpportunities: Fund = {
     'Equities',
     'Liquid',
     'Open Ended',
-    'Low Risk',
+    'Low-risk',
     'No Fees',
     'Daily NAV',
     'Portugal'

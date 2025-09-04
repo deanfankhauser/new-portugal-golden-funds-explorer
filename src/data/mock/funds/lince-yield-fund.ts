@@ -11,7 +11,7 @@ export const linceYieldFund: Fund = {
     'Hybrid',
     'SMEs',
     'Liquid',
-    'Low Risk',
+    'Low-risk',
     'Secondary Market',
     'Diversified',
     'Dividends',

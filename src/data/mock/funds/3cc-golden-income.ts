@@ -11,7 +11,7 @@ export const threeCommaCGoldenIncome: Fund = {
     'Bonds', 
     'Equities', 
     'Capital Preservation', 
-    'Low Risk', 
+    'Low-risk', 
     'Liquid', 
     'Daily NAV', 
     'Bitcoin', 

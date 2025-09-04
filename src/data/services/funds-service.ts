@@ -9,6 +9,17 @@ import { generateFundSizeTags } from './fund-size-tags-service';
 import { generateAudienceTags } from './audience-tags-service';
 import { FundDataMigrationService } from '../../services/fundDataMigrationService';
 
+// Function to normalize risk tags
+const normalizeRiskTags = (tags: string[]): string[] => {
+  return tags.map(tag => {
+    // Normalize risk tags to use hyphens consistently
+    if (tag === 'Low Risk') return 'Low-risk';
+    if (tag === 'Medium Risk') return 'Medium-risk';
+    if (tag === 'High Risk') return 'High-risk';
+    return tag;
+  });
+};
+
 // Function to add investment, risk, APY, lock-up, management fee, fund size, and audience tags to funds
 const addTagsToFunds = (funds: any[]): any[] => {
   return funds.map(fund => {
@@ -32,9 +43,12 @@ const addTagsToFunds = (funds: any[]): any[] => {
       ...audienceTags
     ];
     
+    // Normalize risk tags and remove duplicates
+    const normalizedTags = normalizeRiskTags([...new Set(allTags)]);
+    
     return {
       ...fund,
-      tags: [...new Set(allTags)] // Remove duplicates
+      tags: normalizedTags
     };
   });
 };

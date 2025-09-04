@@ -4,6 +4,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Fund } from '../../data/funds';
 import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
 import { AlertTriangle, CheckCircle, HelpCircle } from 'lucide-react';
+import { DATA_AS_OF_LABEL } from '../../utils/constants';
 
 interface EnhancedGVEligibilityBadgeProps {
   fund: Fund;
@@ -34,10 +35,6 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
   };
   
   const status = getEligibilityStatus();
-  const currentDate = new Date().toLocaleDateString('en-US', { 
-    month: 'long', 
-    year: 'numeric' 
-  });
   
   const getStatusConfig = () => {
     switch (status) {
@@ -87,7 +84,7 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
     if (status === 'unclear') {
       return "Eligibility depends on fund structure, allocation rules, and current regulations.";
     }
-    return "Fund appears to meet GV requirements based on available information.";
+    return "Appears GV-eligible based on manager docs; verify with counsel.";
   };
 
   return (
@@ -98,7 +95,7 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
           {config.label}
         </Badge>
         <span className="text-xs text-muted-foreground">
-          as of {currentDate}
+          {DATA_AS_OF_LABEL}
         </span>
       </div>
       

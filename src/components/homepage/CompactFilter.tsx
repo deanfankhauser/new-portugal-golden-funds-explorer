@@ -30,7 +30,7 @@ const CompactFilter: React.FC<CompactFilterProps> = ({
   
   // Categorize tags for better organization
   const quickFilters = [
-    { label: 'Low Risk', tag: 'Low Risk' as FundTag },
+    { label: 'Low Risk', tag: 'Low-risk' as FundTag },
     { label: 'Real Estate', tag: 'Real Estate' as FundTag },
     { label: 'Fund minimums', tag: 'Fund subscription minimums' as FundTag },
     { label: 'Open Now', tag: 'Open' as FundTag },
@@ -40,7 +40,7 @@ const CompactFilter: React.FC<CompactFilterProps> = ({
     ['Venture Capital', 'Private Equity', 'Real Estate', 'Mixed', 'Infrastructure', 'Debt'].includes(tag)
   );
   const riskTags = allTags.filter(tag => 
-    ['Low Risk', 'Medium Risk', 'High Risk', 'Conservative', 'Aggressive'].includes(tag)
+    ['Low-risk', 'Medium-risk', 'High-risk', 'Conservative', 'Aggressive'].includes(tag)
   );
   const investmentTags = allTags.filter(tag => 
     tag.includes('€') || tag.includes('Investment')

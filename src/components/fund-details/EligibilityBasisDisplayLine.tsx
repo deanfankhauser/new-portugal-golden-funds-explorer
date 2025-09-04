@@ -1,5 +1,6 @@
 import React from 'react';
 import { Fund } from '../../data/funds';
+import { DATA_AS_OF_LABEL } from '../../utils/constants';
 
 interface EligibilityBasisDisplayLineProps {
   fund: Fund;
@@ -45,7 +46,7 @@ const EligibilityBasisDisplayLine: React.FC<EligibilityBasisDisplayLineProps> = 
 
   return (
     <p className="text-sm text-muted-foreground">
-      <strong>Eligibility basis (as of Sep 2025):</strong> {parts.join(' / ')} {attestation}; CMVM ID: {fund.cmvmId || 'Not provided'}; NAV: {fund.navFrequency || 'Not provided'}.
+      <strong>Eligibility basis {DATA_AS_OF_LABEL}:</strong> {parts.join(' / ')} {attestation}; CMVM ID: {fund.cmvmId || 'Not provided'}; NAV: {fund.navFrequency || 'Not provided'}.
     </p>
   );
 };

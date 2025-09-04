@@ -16,7 +16,7 @@ export const venturesEUFund: Fund = {
     'Portugal',
     'Healthcare',
     'Energy',
-    'High Risk'
+    'High-risk'
   ],
   category: 'Private Equity & Venture Capital',
   minimumInvestment: 100000,

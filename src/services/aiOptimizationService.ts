@@ -82,10 +82,10 @@ MINIMUM_HOLD_PERIOD: 5 years`;
 
   // Calculate risk level based on fund characteristics
   private static calculateRiskLevel(fund: Fund): 'Low' | 'Medium' | 'High' {
-    if (fund.tags.includes('Low Risk') || fund.category === 'Real Estate') {
+    if (fund.tags.includes('Low-risk') || fund.category === 'Real Estate') {
       return 'Low';
     }
-    if (fund.tags.includes('High Risk') || fund.category === 'Venture Capital' || fund.category === 'Private Equity') {
+    if (fund.tags.includes('High-risk') || fund.category === 'Venture Capital' || fund.category === 'Private Equity') {
       return 'High';
     }
     return 'Medium';

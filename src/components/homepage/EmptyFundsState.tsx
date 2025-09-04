@@ -20,7 +20,7 @@ const EmptyFundsState: React.FC<EmptyFundsStateProps> = ({
 }) => {
   const popularSuggestions = [
     { label: 'Real Estate Funds', tag: 'Real Estate' as FundTag },
-    { label: 'Low Risk Options', tag: 'Low Risk' as FundTag },
+    { label: 'Low Risk Options', tag: 'Low-risk' as FundTag },
     { label: 'Fund minimums', tag: 'Fund subscription minimums' as FundTag },
     { label: 'Currently Open', tag: 'Open' as FundTag },
   ];

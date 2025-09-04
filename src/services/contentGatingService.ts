@@ -119,8 +119,8 @@ export class ContentGatingService {
 
   // Simplify risk level for public display
   private static simplifyRiskLevel(tags: string[]): string {
-    if (tags.some(tag => tag.includes('Low Risk'))) return 'Conservative';
-    if (tags.some(tag => tag.includes('High Risk'))) return 'Growth-Oriented';
+    if (tags.some(tag => tag.includes('Low-risk'))) return 'Conservative';
+    if (tags.some(tag => tag.includes('High-risk'))) return 'Growth-Oriented';
     return 'Balanced';
   }
 

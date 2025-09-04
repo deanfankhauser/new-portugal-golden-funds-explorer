@@ -10,6 +10,7 @@ import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Alert, AlertDescription } from '../components/ui/alert';
 
 const FundAlternatives = () => {
   const { id } = useParams<{ id: string }>();
@@ -124,6 +125,11 @@ const FundAlternatives = () => {
           </div>
           
           <div className="mb-8">
+            <Alert className="mb-4">
+              <AlertDescription>
+                These are similar funds; eligibility varies — check the GV badge on each card. Verify with counsel.
+              </AlertDescription>
+            </Alert>
             <h1 className="text-3xl font-bold text-foreground mb-4">
               {fund.name} Alternatives | Portugal Golden Visa Investment Funds
             </h1>
@@ -162,7 +168,7 @@ const FundAlternatives = () => {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
                       <span className="font-medium text-foreground">Minimum Investment:</span>
-                      <p className="text-muted-foreground">{formatCurrency(alternativeFund.minimumInvestment)}</p>
+                      <p className="text-muted-foreground">{alternativeFund.minimumInvestment > 0 ? formatCurrency(alternativeFund.minimumInvestment) : 'Not provided'}</p>
                     </div>
                     <div>
                       <span className="font-medium text-foreground">Return Target:</span>

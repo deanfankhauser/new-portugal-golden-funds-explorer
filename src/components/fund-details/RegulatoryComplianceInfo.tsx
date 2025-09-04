@@ -1,16 +1,13 @@
 import React from 'react';
 import { Fund } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DATA_AS_OF_LABEL } from '../../utils/constants';
 
 interface RegulatoryComplianceInfoProps {
   fund: Fund;
 }
 
 const RegulatoryComplianceInfo: React.FC<RegulatoryComplianceInfoProps> = ({ fund }) => {
-  const currentDate = new Date().toLocaleDateString('en-US', { 
-    month: 'long', 
-    year: 'numeric' 
-  });
 
   const formatField = (value: any, fallback: string = 'Not provided') => {
     return value || fallback;
@@ -20,7 +17,7 @@ const RegulatoryComplianceInfo: React.FC<RegulatoryComplianceInfoProps> = ({ fun
     <Card className="mt-4">
       <CardHeader>
         <CardTitle className="text-lg">Regulatory & Compliance Information</CardTitle>
-        <p className="text-sm text-muted-foreground">As of {currentDate}</p>
+        <p className="text-sm text-muted-foreground">{DATA_AS_OF_LABEL}</p>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -49,7 +46,7 @@ const RegulatoryComplianceInfo: React.FC<RegulatoryComplianceInfoProps> = ({ fun
             <p className="text-sm">
               {fund.pficStatus === 'QEF available' ? 'QEF statement available' : 
                fund.pficStatus === 'MTM only' ? 'MTM only' : 
-               'QEF status unknown'} (as of Sep 2025)
+               'QEF status unknown'} {DATA_AS_OF_LABEL}
             </p>
           </div>
         </div>

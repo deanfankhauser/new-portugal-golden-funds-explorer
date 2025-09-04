@@ -31,6 +31,7 @@ import { ClipboardCheck, TrendingUp } from 'lucide-react';
 import DataFreshnessWarning from '../common/DataFreshnessWarning';
 import { tagToSlug } from '@/lib/utils';
 import { VerifiedReviews } from './reviews/VerifiedReviews';
+import { DATA_AS_OF_LABEL } from '../../utils/constants';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -94,7 +95,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
               <div className="text-center">
                 <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Portugal Golden Visa Qualified Fund</h3>
               <p className="text-xs md:text-sm text-muted-foreground mb-4">
-                Appears GV-eligible as of Sep 2025 based on manager documentation. GV still requires €500,000 total. Always verify with your lawyer and the fund manager.
+                Appears GV-eligible {DATA_AS_OF_LABEL} based on manager documentation. GV still requires €500,000 total. Always verify with your lawyer and the fund manager.
               </p>
                 <a 
                   href="https://movingto.com/pt/portugal-golden-visa" 

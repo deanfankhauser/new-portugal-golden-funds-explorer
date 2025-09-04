@@ -6,7 +6,7 @@ export const horizonFund: Fund = {
   name: "Horizon Fund",
   description: "Fund investment in Fixed Income and Digital Assets with access to Golden Visa in Portugal",
   category: "Mixed",
-  tags: ['Bonds', 'Crypto', 'Liquid', 'Low Risk', 'Regulated', 'Open Ended', 'Bitcoin', 'Ethereum', 'Solana'],
+  tags: ['Bonds', 'Crypto', 'Liquid', 'Low-risk', 'Regulated', 'Open Ended', 'Bitcoin', 'Ethereum', 'Solana'],
   minimumInvestment: 100000,
   fundSize: 100,
   managementFee: 2,

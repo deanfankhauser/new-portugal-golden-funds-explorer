@@ -21,13 +21,13 @@ export const generateInvestmentTags = (minimumInvestment: number): FundTag[] => 
   // Range tags - only add the most specific range
   // Note: All ranges below €500k include disclaimer that GV still requires €500k total
   if (minimumInvestment >= 250000 && minimumInvestment <= 350000) {
-    tags.push('€250k-€350k (GV still requires €500k total)');
+    tags.push('€250k-€350k (subscription min only; GV still requires €500k total)');
   } else if (minimumInvestment >= 300000 && minimumInvestment <= 400000) {
-    tags.push('€300k-€400k (GV still requires €500k total)');
+    tags.push('€300k-€400k (subscription min only; GV still requires €500k total)');
   } else if (minimumInvestment >= 350000 && minimumInvestment <= 500000) {
-    tags.push('€350k-€500k (GV still requires €500k total)');
+    tags.push('€350k-€500k (subscription min only; GV still requires €500k total)');
   } else if (minimumInvestment >= 400000 && minimumInvestment <= 600000) {
-    tags.push('€400k-€600k (GV still requires €500k total)');
+    tags.push('€400k-€600k (subscription min only; GV still requires €500k total)');
   } else if (minimumInvestment >= 500000) {
     tags.push('€500k+');
   }
