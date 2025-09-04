@@ -6,7 +6,7 @@ export const portugalPrimeFund: Fund = {
   managerName: 'BiG Capital SGOIC',
   managerLogo: undefined, // No logo provided
   category: 'Private Equity',
-  tags: ['Private Equity', 'Real Estate', 'Tourism', 'Golden Visa Eligible', 'Low Risk', 'Portugal', 'Closed Ended'],
+  tags: ['Private Equity', 'Real Estate', 'Tourism', 'Golden Visa Eligible', 'Low-risk', 'Portugal', 'Closed Ended'],
   description: 'A closed-end private equity fund regulated by CMVM, investing in Portugal\'s thriving hospitality sector. Designed to comply fully with the Portugal Golden Visa requirements.',
   detailedDescription: `Portugal Prime Fund is a specialized hospitality investment fund targeting Portugal's strongest tourism hubs. The fund leverages Portugal's position as a leading European destination with tourism representing 19% of GDP and 31M+ visitors in 2023.
 

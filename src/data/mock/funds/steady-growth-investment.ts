@@ -13,7 +13,7 @@ export const steadyGrowthInvestment: Fund = {
     'Deposits',
     'Liquid',
     'Balanced',
-    'Low Risk',
+    'Low-risk',
     'AI-Driven',
     'Diversified'
   ],

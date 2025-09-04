@@ -8,7 +8,7 @@ import { ContentGatingService } from '../../services/contentGatingService';
 import LazyPasswordDialog from '../common/LazyPasswordDialog';
 import FeeDisclaimer from './FeeDisclaimer';
 import { Lock, Eye } from 'lucide-react';
-import { DATA_AS_OF_LABEL } from '../../utils/urlConfig';
+import { DATA_AS_OF_LABEL } from '../../utils/constants';
 
 interface FundMetricsProps {
   fund: Fund;
@@ -41,7 +41,7 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
     },
     {
       label: "Target Return", 
-      value: `${fund.returnTarget} (as of Sep 2025)`,
+      value: `${fund.returnTarget} ${DATA_AS_OF_LABEL}`,
       isPublic: true
     },
     {

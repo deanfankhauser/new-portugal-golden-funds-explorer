@@ -16,6 +16,7 @@ import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 import DataFreshnessIndicator from './common/DataFreshnessIndicator';
 import EligibilityBasisDisplayLine from './fund-details/EligibilityBasisDisplayLine';
+import { DATA_AS_OF_LABEL } from '../utils/constants';
 
 interface FundListItemProps {
   fund: Fund;
@@ -110,7 +111,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm text-muted-foreground">Target Return</p>
                     <p className="font-medium text-sm sm:text-base truncate">
-                      {fund.returnTarget} <span className="text-xs text-muted-foreground">(as of Sep 2025)</span>
+                      {fund.returnTarget} <span className="text-xs text-muted-foreground">{DATA_AS_OF_LABEL}</span>
                     </p>
                   </div>
                 </div>
@@ -139,7 +140,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                   </div>
                   {isAuthenticated ? (
                     <span className="font-medium text-sm">
-                      {fund.managementFee}% <span className="text-xs text-muted-foreground">(as of Sep 2025)</span>
+                      {fund.managementFee}% <span className="text-xs text-muted-foreground">{DATA_AS_OF_LABEL}</span>
                     </span>
                   ) : (
                     <div 
@@ -160,7 +161,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                   </div>
                   {isAuthenticated ? (
                     <span className="font-medium text-sm">
-                      {fund.performanceFee}% <span className="text-xs text-muted-foreground">(as of Sep 2025)</span>
+                      {fund.performanceFee}% <span className="text-xs text-muted-foreground">{DATA_AS_OF_LABEL}</span>
                     </span>
                   ) : (
                     <div 

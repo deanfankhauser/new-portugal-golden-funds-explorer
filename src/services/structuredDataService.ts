@@ -113,9 +113,9 @@ export class StructuredDataService {
         'value': fund.minimumInvestment
       },
       'expectedReturn': fund.returnTarget,
-      'riskLevel': fund.tags.includes('Low Risk') ? 'Low' : 
-                   fund.tags.includes('Medium Risk') ? 'Medium' : 
-                   fund.tags.includes('High Risk') ? 'High' : 'Medium',
+      'riskLevel': fund.tags.includes('Low-risk') ? 'Low' : 
+                   fund.tags.includes('Medium-risk') ? 'Medium' : 
+                   fund.tags.includes('High-risk') ? 'High' : 'Medium',
       'provider': {
         '@type': 'Organization',
         'name': fund.managerName
