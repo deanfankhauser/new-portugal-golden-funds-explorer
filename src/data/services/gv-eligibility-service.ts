@@ -20,6 +20,13 @@ export const isFundGVEligible = (fund: Fund): boolean => {
     return false;
   }
   
+  // Check Portugal allocation requirement (≥60%)
+  if (fund.eligibilityBasis?.portugalAllocation && 
+      typeof fund.eligibilityBasis.portugalAllocation === 'number' && 
+      fund.eligibilityBasis.portugalAllocation < 60) {
+    return false;
+  }
+  
   return true;
 };
 

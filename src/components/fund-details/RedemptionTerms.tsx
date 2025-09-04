@@ -5,6 +5,7 @@ import { RedemptionTerms } from '../../data/types/funds';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatPercentage } from './utils/formatters';
+import { DATA_AS_OF_LABEL } from '../../utils/urlConfig';
 
 interface RedemptionTermsProps {
   redemptionTerms?: RedemptionTerms;
@@ -28,7 +29,7 @@ const RedemptionTermsComponent: React.FC<RedemptionTermsProps> = ({ redemptionTe
         <div className="flex items-center mb-5">
           <ClockAlert className="w-5 h-5 mr-2 text-primary" />
           <h2 className="text-xl font-bold">Redemption Terms</h2>
-          <span className="text-xs text-muted-foreground ml-auto">(as of Aug 2025)</span>
+          <span className="text-xs text-muted-foreground ml-auto">(as of Sep 2025)</span>
         </div>
 
         <div className="space-y-4">

@@ -24,6 +24,15 @@ export const growthBlueFund: Fund = {
   fundStatus: 'Closed',
   established: 2024,
   regulatedBy: 'CMVM (Portuguese Securities Market Commission)',
+  pficStatus: "Not provided",
+  cmvmId: "Not provided",
+  navFrequency: "Quarterly",
+  eligibilityBasis: {
+    portugalAllocation: 85,
+    maturityYears: 10,
+    realEstateExposure: "None",
+    managerAttestation: true
+  },
   location: 'Portugal',
   detailedDescription: 'Growth Blue Fund, managed by Growth Partners Capital, is the only European private equity vehicle dedicated to sustainable ocean-resource businesses ("Blue Economy"), targeting profitable SMEs and mid-caps via growth and build-up strategies. With more than 85% of capital invested in Portugal and backed by a €28 m EIF anchor commitment, the fund combines rigorous due diligence, downside-protection deal structures (dividend preference, anti-dilution), and active portfolio management to achieve an IRR above 20% and 3.3× MoM over a ten-year horizon. The strategy emphasizes ESG integration, sector and geographic diversification, and a clear exit roadmap within a 5-year investment period followed by a 5-year harvest period.',
   geographicAllocation: [

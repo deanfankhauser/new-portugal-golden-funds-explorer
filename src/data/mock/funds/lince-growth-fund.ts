@@ -29,6 +29,15 @@ export const linceGrowthFund: Fund = {
   fundStatus: 'Open',
   established: 2025,
   regulatedBy: 'CMVM (Portuguese Securities Market Commission)',
+  pficStatus: "Not provided",
+  cmvmId: "Not provided",
+  navFrequency: "Quarterly",
+  eligibilityBasis: {
+    portugalAllocation: 100,
+    maturityYears: 7,
+    realEstateExposure: "None",
+    managerAttestation: true
+  },
   location: 'Portugal',
   detailedDescription: 'Lince Growth Fund I is a closed-ended FCR vehicle designed for non-EU investors seeking Portuguese residency through the Golden Visa program. The fund targets small-to-mid-cap industrial and circular-economy businesses, deploying €1.5 m–€5 m tickets via equity, hybrids and secured debt to balance upside potential with downside protection. Leveraging Lince Capital\'s 30+ years of experience and Omnium Guidance\'s deal-sourcing network, the strategy emphasizes operational improvements, export growth and ESG integration. Investors benefit from a 3 % one-off setup fee, 2 % p.a. management fee, and 20 % carry above a 5 % IRR hurdle. Units carry a 7-year maturity, with distributions from year 3 and a secondary-market exit option thereafter. The fund aims for a 15–20 % annualized return, fully aligning with residency requirements.',
   geographicAllocation: [

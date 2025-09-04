@@ -43,6 +43,14 @@ The fund is managed by Insight Venture, a CMVM-licensed Portuguese venture capit
   websiteUrl: 'insightventure.com',
   established: 2023,
   regulatedBy: 'CMVM',
+  eligibilityBasis: {
+    portugalAllocation: 60,
+    maturityYears: 8,
+    realEstateExposure: 'None',
+    managerAttestation: true
+  },
+  cmvmId: "1877002",
+  navFrequency: "Quarterly",
   location: 'Portugal',
   redemptionTerms: {
     frequency: 'End of Term',

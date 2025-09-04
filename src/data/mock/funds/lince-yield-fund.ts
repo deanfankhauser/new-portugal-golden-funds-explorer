@@ -30,6 +30,15 @@ export const linceYieldFund: Fund = {
   fundStatus: 'Open',
   established: 2025,
   regulatedBy: 'CMVM (license PT.135.267)',
+  pficStatus: "Not provided",
+  cmvmId: "135267",
+  navFrequency: "Quarterly",
+  eligibilityBasis: {
+    portugalAllocation: 100,
+    maturityYears: 6,
+    realEstateExposure: "None",
+    managerAttestation: true
+  },
   location: 'Portugal',
   detailedDescription: 'Lince Yield Fund is designed to generate a dependable 5 % p.a. yield by financing profitable Portuguese SMEs through a mix of senior secured loans, second-lien debt, mezzanine instruments and selected hybrids. The strategy emphasizes capital preservation and downside protection via rigorous covenants, high-quality collateral and sector diversification. Investors receive annual dividends commencing in 2026, with full capital reimbursement by year 5, and may trade participation units on the secondary market at any time.',
   geographicAllocation: [

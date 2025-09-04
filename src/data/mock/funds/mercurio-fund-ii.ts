@@ -29,6 +29,15 @@ export const mercurioFundII: Fund = {
   fundStatus: 'Open',
   established: 2024, // Estimated based on fundraising status
   regulatedBy: 'Oxy Capital – SGOIC, S.A. (CMVM No. 103588)',
+  pficStatus: "Not provided",
+  cmvmId: "103588",
+  navFrequency: "Quarterly",
+  eligibilityBasis: {
+    portugalAllocation: 60,
+    maturityYears: 10,
+    realEstateExposure: "None",
+    managerAttestation: true
+  },
   location: 'Portugal',
   detailedDescription: `Mercúrio Fund II is a Portuguese FCR-structured vehicle that invests in mature small- and mid-cap companies via flexible debt and equity instruments to promote growth, expansion, or consolidation. It follows a special-situations approach—providing liquidity and acquiring minority or majority stakes—while deploying excess cash into the Portugal Liquid Opportunities Fund for further upside.
 

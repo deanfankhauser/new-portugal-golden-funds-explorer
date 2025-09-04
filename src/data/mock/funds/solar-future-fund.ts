@@ -30,6 +30,15 @@ export const solarFutureFund: Fund = {
   fundStatus: "Open", // Changed from "Fundraising" to "Open" to match allowed values
   established: 0, // N/A, using 0 to represent not specified
   regulatedBy: "CMVM",
+  pficStatus: "Not provided",
+  cmvmId: "Not provided",
+  navFrequency: "Quarterly",
+  eligibilityBasis: {
+    portugalAllocation: 100,
+    maturityYears: 7,
+    realEstateExposure: "None",
+    managerAttestation: true
+  },
   location: "Portugal",
   detailedDescription: "Solar Future Fund is a CMVM-regulated vehicle tailored for Golden Visa investors, channeling capital into a diversified pipeline of solar energy-as-a-service and battery-storage projects across Portugal. Through \"Tejo 360,\" a digital platform, the fund streamlines legal, tax, banking, and government liaison services, while fostering a local community network for relocating families. The fund offers a one-time €500 000 qualifying investment (with a €250 000 minimum subscription), annual 4% dividends from year 2, and an anticipated 12% p.a. return. Capital is raised to a €20 million target, with units tradable on the secondary market for ongoing liquidity. Management fee is 2% p.a., subscription fee 1.5%, and a 5% preferred return precedes a 20% carried interest.",
   geographicAllocation: [
