@@ -100,30 +100,14 @@ export const loadComponents = async () => {
         console.warn('ComponentLoader: Failed to load AlternativesHub:', err.message);
         return null;
       }),
-      ManagerAuth: (() => {
-        // Static SSG version without context dependencies
-        return () => React.createElement('div', { className: "min-h-screen flex items-center justify-center bg-background p-4" }, 
-          React.createElement('div', { className: "w-full max-w-md bg-card rounded-lg shadow-lg p-8 text-center" },
-            React.createElement('h1', { className: "text-2xl font-bold mb-4" }, "Manager Portal"),
-            React.createElement('p', { className: "text-muted-foreground mb-6" }, "Access your investment management dashboard"),
-            React.createElement('div', { className: "space-y-4" },
-              React.createElement('p', { className: "text-sm" }, "Please enable JavaScript to access the authentication features.")
-            )
-          )
-        );
-      })(),
-      InvestorAuth: (() => {
-        // Static SSG version without context dependencies
-        return () => React.createElement('div', { className: "min-h-screen flex items-center justify-center bg-background p-4" }, 
-          React.createElement('div', { className: "w-full max-w-md bg-card rounded-lg shadow-lg p-8 text-center" },
-            React.createElement('h1', { className: "text-2xl font-bold mb-4" }, "Investor Portal"),
-            React.createElement('p', { className: "text-muted-foreground mb-6" }, "Join thousands of investors exploring top investment opportunities"),
-            React.createElement('div', { className: "space-y-4" },
-              React.createElement('p', { className: "text-sm" }, "Please enable JavaScript to access the authentication features.")
-            )
-          )
-        );
-      })(),
+      ManagerAuth: import('../pages/ManagerAuth').then(m => m.default).catch(err => {
+        console.warn('ComponentLoader: Failed to load ManagerAuth:', err.message);
+        return null;
+      }),
+      InvestorAuth: import('../pages/InvestorAuth').then(m => m.default).catch(err => {
+        console.warn('ComponentLoader: Failed to load InvestorAuth:', err.message);
+        return null;
+      }),
     };
 
     const components = await Promise.all(Object.values(componentPromises));
