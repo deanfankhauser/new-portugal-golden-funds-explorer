@@ -92,7 +92,7 @@ const TagPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <PageSEO pageType="tag" tagName={displayTagName} />
+      <PageSEO pageType="tag" tagName={displayTagName} funds={funds} />
       
       <Header />
       

@@ -46,6 +46,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 import { fundsData } from './data/mock/funds';
 
 import './App.css';
+import SEODebugger from './components/common/SEODebugger';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -222,6 +223,7 @@ function App() {
                   </div>
                   <Toaster />
                   <LazyExitIntentPopup />
+                  <SEODebugger />
                 </SEOProvider>
               </Router>
             </TooltipProvider>

@@ -60,6 +60,12 @@ export class ConsolidatedSEOService {
     const managedSchemas = document.querySelectorAll('script[type="application/ld+json"][data-managed="consolidated-seo"]');
     managedSchemas.forEach(script => script.remove());
     
+    // Remove duplicate robots meta tags (keep only one)
+    const robotsTags = document.querySelectorAll('meta[name="robots"]');
+    robotsTags.forEach((robot, index) => {
+      if (index > 0) robot.remove();
+    });
+    
     // If we're about to inject new JSON-LD and there are existing ones, replace or skip to prevent duplication
     const existingJsonLd = document.querySelectorAll('script[type="application/ld+json"]:not([data-managed])');
     if (existingJsonLd.length > 0) {
@@ -117,7 +123,7 @@ export class ConsolidatedSEOService {
           title: this.optimizeText(`${params.categoryName} Portugal Golden Visa Investment Funds | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(`Discover ${params.categoryName} Portugal Golden Visa investment funds. Compare minimum investments, returns, fees, and eligibility for residency applications.`, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildCategoryUrl(params.categoryName),
-          structuredData: this.getCategoryStructuredData(params.categoryName)
+          structuredData: this.getCategoryStructuredData(params.categoryName, params.funds || [])
         };
 
       case 'tag':
@@ -125,7 +131,7 @@ export class ConsolidatedSEOService {
           title: this.optimizeText(`${params.tagName} Portugal Golden Visa Investment Funds | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(`Explore ${params.tagName} Portugal Golden Visa investment funds. Compare minimum investments, returns, and Golden Visa eligibility requirements.`, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildTagUrl(params.tagName),
-          structuredData: this.getTagStructuredData(params.tagName)
+          structuredData: this.getTagStructuredData(params.tagName, params.funds || [])
         };
 
       case 'manager':
@@ -290,8 +296,9 @@ export class ConsolidatedSEOService {
       this.setRobots(seoData.robots);
       
       // Social media tags
-      this.setOpenGraph(seoData);
-      this.setTwitterCard(seoData);
+    this.setOpenGraph(seoData);
+    this.setTwitterCard(seoData);
+    this.setLocale();
       
       // Structured data
       if (seoData.structuredData) {
@@ -301,20 +308,31 @@ export class ConsolidatedSEOService {
       // Security headers
       this.addSecurityHeaders();
       
+      // Dispatch event to notify components of SEO update
+      window.dispatchEvent(new CustomEvent('seo:updated', { detail: seoData }));
+      
     } catch (error) {
       // Silent fallback - no console logging in production
     }
   }
 
   // Helper methods
-  private static setOrUpdateMeta(name: string, content: string): void {
-    let meta = document.querySelector(`meta[name="${name}"]`);
+  private static setOrUpdateMeta(nameOrProperty: string, content: string): void;
+  private static setOrUpdateMeta(nameOrProperty: string, attribute: string, content: string): void;
+  private static setOrUpdateMeta(nameOrProperty: string, contentOrAttribute: string, content?: string): void {
+    const isProperty = nameOrProperty === 'property';
+    const attributeName = isProperty ? contentOrAttribute : nameOrProperty;
+    const metaContent = isProperty ? content! : contentOrAttribute;
+    
+    const selector = isProperty ? `meta[property="${attributeName}"]` : `meta[name="${attributeName}"]`;
+    let meta = document.querySelector(selector);
+    
     if (!meta) {
       meta = document.createElement('meta');
-      meta.setAttribute('name', name);
+      meta.setAttribute(isProperty ? 'property' : 'name', attributeName);
       document.head.appendChild(meta);
     }
-    meta.setAttribute('content', content);
+    meta.setAttribute('content', metaContent);
   }
 
   private static setCanonical(url: string): void {
@@ -334,14 +352,22 @@ export class ConsolidatedSEOService {
   }
 
   private static setOpenGraph(seoData: SEOData): void {
-    // Determine og:type based on URL pattern and structured data
+    // Enhanced og:type detection
     let ogType = 'website';
     if (seoData.url.includes('/compare/') && seoData.url.includes('-vs-')) {
       ogType = 'article';
-    } else if (seoData.structuredData && seoData.structuredData['@type'] === 'FinancialProduct') {
-      ogType = 'product';
-    } else if (seoData.structuredData && seoData.structuredData['@type'] === 'Person') {
-      ogType = 'profile';
+    } else if (seoData.structuredData) {
+      // Check for fund pages (multiple schemas)
+      if (Array.isArray(seoData.structuredData)) {
+        const hasInvestmentFund = seoData.structuredData.some(schema => schema['@type'] === 'InvestmentFund');
+        if (hasInvestmentFund) ogType = 'product';
+      } else if (seoData.structuredData['@type'] === 'InvestmentFund') {
+        ogType = 'product';
+      } else if (seoData.structuredData['@type'] === 'FinancialProduct') {
+        ogType = 'product';
+      } else if (seoData.structuredData['@type'] === 'Person') {
+        ogType = 'profile';
+      }
     }
     
     // DEV-only verification log
@@ -358,7 +384,19 @@ export class ConsolidatedSEOService {
       { property: 'og:site_name', content: 'Movingto' },
     ];
 
-    document.querySelectorAll('meta[property^="og:"]').forEach(tag => tag.remove());
+    // Add article:modified_time for fund pages
+    if (ogType === 'product' && seoData.structuredData) {
+      let modifiedTime = new Date().toISOString();
+      if (Array.isArray(seoData.structuredData)) {
+        const webPageSchema = seoData.structuredData.find(schema => schema['@type'] === 'WebPage');
+        if (webPageSchema && webPageSchema.dateModified) {
+          modifiedTime = webPageSchema.dateModified;
+        }
+      }
+      ogTags.push({ property: 'article:modified_time', content: modifiedTime });
+    }
+
+    document.querySelectorAll('meta[property^="og:"], meta[property^="article:"]').forEach(tag => tag.remove());
     
     ogTags.forEach(tag => {
       const meta = document.createElement('meta');
@@ -385,6 +423,10 @@ export class ConsolidatedSEOService {
       meta.content = tag.content;
       document.head.appendChild(meta);
     });
+  }
+
+  private static setLocale(): void {
+    this.setOrUpdateMeta('property', 'og:locale', 'en_US');
   }
 
   private static setStructuredData(structuredData: any): void {
@@ -428,18 +470,39 @@ export class ConsolidatedSEOService {
 
   // Structured data generators
   private static getHomepageStructuredData(): any {
-    return {
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      'name': 'Movingto - Portugal Golden Visa Investment Funds',
-      'url': URL_CONFIG.BASE_URL,
-      'description': 'Comprehensive analysis and comparison of Portugal Golden Visa Investment Funds',
-      'potentialAction': {
-        '@type': 'SearchAction',
-        'target': `${URL_CONFIG.BASE_URL}/search?q={search_term_string}`,
-        'query-input': 'required name=search_term_string'
+    return [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        'name': 'Movingto - Portugal Golden Visa Investment Funds',
+        'url': URL_CONFIG.BASE_URL,
+        'description': 'Comprehensive analysis and comparison of Portugal Golden Visa Investment Funds',
+        'potentialAction': {
+          '@type': 'SearchAction',
+          'target': `${URL_CONFIG.BASE_URL}/search?q={search_term_string}`,
+          'query-input': 'required name=search_term_string'
+        }
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        'name': 'Portugal Investment Funds',
+        'url': URL_CONFIG.BASE_URL,
+        'description': 'Independent platform for comparing Portugal Golden Visa investment funds',
+        'foundingDate': '2024',
+        'knowsAbout': [
+          'Portugal Golden Visa',
+          'Investment Funds',
+          'Real Estate Investment',
+          'Portuguese Residency',
+          'Fund Management'
+        ],
+        'areaServed': {
+          '@type': 'Country',
+          'name': 'Portugal'
+        }
       }
-    };
+    ];
   }
 
   private static getFundStructuredData(fund: any): any {
@@ -456,9 +519,9 @@ export class ConsolidatedSEOService {
       'breadcrumb': {
         '@type': 'BreadcrumbList',
         'itemListElement': [
-          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
-          { '@type': 'ListItem', 'position': 2, 'name': 'Fund Index', 'item': URL_CONFIG.buildUrl('/index') },
-          { '@type': 'ListItem', 'position': 3, 'name': fund.name }
+          { '@type': 'ListItem', 'position': 1, 'name': 'Portugal Golden Visa Funds Home', 'item': URL_CONFIG.BASE_URL },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Complete Portugal Fund Database', 'item': URL_CONFIG.buildUrl('/index') },
+          { '@type': 'ListItem', 'position': 3, 'name': `${fund.name} Details & Analysis` }
         ]
       }
     };
@@ -473,24 +536,110 @@ export class ConsolidatedSEOService {
     return [investmentFundSchema, baseStructuredData];
   }
 
-  private static getCategoryStructuredData(categoryName: string): any {
-    return {
+  private static getCategoryStructuredData(categoryName: string, funds: any[] = []): any {
+    const categorySlug = this.slugify(categoryName);
+    const baseSchema = {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
       'name': `${categoryName} Investment Funds`,
       'description': `Collection of ${categoryName} investment funds in Portugal`,
       'url': URL_CONFIG.buildCategoryUrl(categoryName)
     };
+
+    // Add ItemList schema for SEO
+    const itemListSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      'name': `${categoryName} Portugal Golden Visa Investment Funds`,
+      'numberOfItems': funds.length,
+      'itemListElement': funds.map((fund, index) => ({
+        '@type': 'ListItem',
+        'position': index + 1,
+        'url': URL_CONFIG.buildFundUrl(fund.id),
+        'name': fund.name
+      }))
+    };
+
+    // Add BreadcrumbList schema
+    const breadcrumbSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      'itemListElement': [
+        {
+          '@type': 'ListItem',
+          'position': 1,
+          'name': 'Home',
+          'item': URL_CONFIG.BASE_URL
+        },
+        {
+          '@type': 'ListItem',
+          'position': 2,
+          'name': 'Categories',
+          'item': `${URL_CONFIG.BASE_URL}/categories`
+        },
+        {
+          '@type': 'ListItem',
+          'position': 3,
+          'name': categoryName,
+          'item': `${URL_CONFIG.BASE_URL}/categories/${categorySlug}`
+        }
+      ]
+    };
+
+    return [baseSchema, itemListSchema, breadcrumbSchema];
   }
 
-  private static getTagStructuredData(tagName: string): any {
-    return {
+  private static getTagStructuredData(tagName: string, funds: any[] = []): any {
+    const tagSlug = this.slugify(tagName);
+    const baseSchema = {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
       'name': `${tagName} Investment Funds`,
       'description': `Investment funds tagged with ${tagName}`,
       'url': URL_CONFIG.buildTagUrl(tagName)
     };
+
+    // Add ItemList schema for SEO
+    const itemListSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      'name': `${tagName} Portugal Golden Visa Investment Funds`,
+      'numberOfItems': funds.length,
+      'itemListElement': funds.map((fund, index) => ({
+        '@type': 'ListItem',
+        'position': index + 1,
+        'url': URL_CONFIG.buildFundUrl(fund.id),
+        'name': fund.name
+      }))
+    };
+
+    // Add BreadcrumbList schema
+    const breadcrumbSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      'itemListElement': [
+        {
+          '@type': 'ListItem',
+          'position': 1,
+          'name': 'Home',
+          'item': URL_CONFIG.BASE_URL
+        },
+        {
+          '@type': 'ListItem',
+          'position': 2,
+          'name': 'Tags',
+          'item': `${URL_CONFIG.BASE_URL}/tags`
+        },
+        {
+          '@type': 'ListItem',
+          'position': 3,
+          'name': tagName,
+          'item': `${URL_CONFIG.BASE_URL}/tags/${tagSlug}`
+        }
+      ]
+    };
+
+    return [baseSchema, itemListSchema, breadcrumbSchema];
   }
 
   private static getManagerStructuredData(managerName: string): any {
