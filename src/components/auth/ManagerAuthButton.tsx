@@ -1,91 +1,87 @@
-import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { LogIn, User, Settings, LogOut } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
-import ManagerLoginModal from './ManagerLoginModal';
-import ManagerProfileModal from './ManagerProfileModal';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { User, LogOut, Settings } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
-const ManagerAuthButton: React.FC = () => {
-  const { user, isAuthenticated, signOut } = useAuth();
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false);
+const ManagerAuthButton = () => {
+  const { user, signOut, loading } = useAuth();
+  const { toast } = useToast();
 
   const handleSignOut = async () => {
-    await signOut();
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to sign out"
+      });
+    } else {
+      toast({
+        title: "Signed out",
+        description: "You have been successfully signed out"
+      });
+    }
   };
 
-  if (!isAuthenticated) {
+  if (loading) {
+    return <Button variant="ghost" size="sm" disabled>Loading...</Button>;
+  }
+
+  if (!user) {
     return (
-      <>
-        <Button 
-          variant="outline" 
-          onClick={() => setShowLoginModal(true)}
-          className="flex items-center gap-2"
-        >
-          <LogIn className="w-4 h-4" />
-          Manager Login
-        </Button>
-        
-        <ManagerLoginModal
-          isOpen={showLoginModal}
-          onClose={() => setShowLoginModal(false)}
-          onLoginSuccess={() => setShowLoginModal(false)}
-        />
-      </>
+      <Button asChild variant="default" size="sm">
+        <Link to="/manager-auth">Manager Login</Link>
+      </Button>
     );
   }
 
-  const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Manager';
-  const avatarUrl = user?.user_metadata?.avatar_url;
+  const initials = user.email ? user.email.charAt(0).toUpperCase() : 'M';
 
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="flex items-center gap-2 px-2">
-            <Avatar className="w-8 h-8">
-              <AvatarImage src={avatarUrl} alt={userName} />
-              <AvatarFallback className="text-sm">
-                {userName.split(' ').map(n => n[0]).join('').toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <span className="hidden sm:inline-block font-medium">
-              {userName}
-            </span>
-          </Button>
-        </DropdownMenuTrigger>
-        
-        <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuItem 
-            onClick={() => setShowProfileModal(true)}
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            <Settings className="w-4 h-4" />
-            Profile Settings
-          </DropdownMenuItem>
-          
-          <DropdownMenuSeparator />
-          
-          <DropdownMenuItem 
-            onClick={handleSignOut}
-            className="flex items-center gap-2 cursor-pointer text-destructive focus:text-destructive"
-          >
-            <LogOut className="w-4 h-4" />
-            Sign Out
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      {user && (
-        <ManagerProfileModal
-          isOpen={showProfileModal}
-          onClose={() => setShowProfileModal(false)}
-          user={user}
-        />
-      )}
-    </>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">Manager</p>
+            <p className="text-xs leading-none text-muted-foreground">
+              {user.email}
+            </p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <User className="mr-2 h-4 w-4" />
+          <span>Profile</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Settings className="mr-2 h-4 w-4" />
+          <span>Settings</span>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleSignOut}>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Sign out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 

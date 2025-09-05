@@ -5,6 +5,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from "@/components/ui/sonner";
 import { ComparisonProvider } from './contexts/ComparisonContext';
 import { RecentlyViewedProvider } from './contexts/RecentlyViewedContext';
+import { AuthProvider } from './contexts/AuthContext';
 
 // Lazy load all pages for optimal performance
 
@@ -39,6 +40,7 @@ const FundQuiz = lazy(() => import('./pages/FundQuiz'));
 const FundComparison = lazy(() => import('./pages/FundComparison'));
 const FundAlternatives = lazy(() => import('./pages/FundAlternatives'));
 const AlternativesHub = lazy(() => import('./pages/AlternativesHub'));
+const ManagerAuth = lazy(() => import('./pages/ManagerAuth'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -113,7 +115,8 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ComparisonProvider>
           <RecentlyViewedProvider>
-            <TooltipProvider>
+            <AuthProvider>
+              <TooltipProvider>
               <Router>
                 <SEOProvider>
                   <ScrollToTop />
@@ -201,6 +204,13 @@ function App() {
                         </Suspense>
                       } />
                       
+                      {/* Manager Authentication */}
+                      <Route path="/manager-auth" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <ManagerAuth />
+                        </Suspense>
+                      } />
+                      
                       {/* Alternatives hub */}
                       <Route path="/alternatives" element={
                         <Suspense fallback={<PageLoader />}>
@@ -227,6 +237,7 @@ function App() {
                 </SEOProvider>
               </Router>
             </TooltipProvider>
+            </AuthProvider>
           </RecentlyViewedProvider>
         </ComparisonProvider>
     </QueryClientProvider>
