@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,11 +11,7 @@ import { Loader2 } from 'lucide-react';
 import { toast } from "sonner";
 
 const InvestorAuth = () => {
-  console.log('🔥 InvestorAuth: Component rendering');
-  const [isClient, setIsClient] = useState(false);
-  const [authContext, setAuthContext] = useState<any>(null);
   const navigate = useNavigate();
-  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,60 +32,36 @@ const InvestorAuth = () => {
     riskTolerance: ''
   });
   
-  // Client-side hydration
-  useEffect(() => {
-    setIsClient(true);
-    
-    // Dynamically import auth context only on client side
-    const loadAuthContext = async () => {
-      try {
-        const { useEnhancedAuth } = await import('@/contexts/EnhancedAuthContext');
-        setAuthContext({ useEnhancedAuth });
-      } catch (error) {
-        console.error('Failed to load auth context:', error);
+  // Simple auth functions for form handling
+  const handleAuthAction = async (action: 'signIn' | 'signUp', email: string, password: string, metadata?: any) => {
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      
+      if (action === 'signIn') {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        return { error };
+      } else {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/`,
+            data: metadata
+          }
+        });
+        return { error };
       }
-    };
-    
-    loadAuthContext();
-  }, []);
-
-  // Use auth context if available
-  const authData = authContext ? authContext.useEnhancedAuth() : { 
-    user: null, 
-    signIn: async () => ({ error: null }), 
-    signUp: async () => ({ error: null }), 
-    loading: false 
-  };
-  
-  const { user, signIn, signUp, loading } = authData;
-
-  // Redirect if already authenticated (only on client)
-  useEffect(() => {
-    if (isClient && user && !loading) {
-      navigate('/');
+    } catch (error) {
+      return { error: { message: 'Authentication service unavailable' } };
     }
-  }, [user, loading, navigate, isClient]);
-
-  // Show loading during SSR or before client hydration
-  if (!isClient || loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
-
-  // Client-side redirect after hydration
-  if (user) {
-    return <Navigate to="/" replace />;
-  }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
 
-    const { error } = await signIn(loginData.email, loginData.password);
+    const { error } = await handleAuthAction('signIn', loginData.email, loginData.password);
     
     if (error) {
       setError(error.message);
@@ -130,7 +102,7 @@ const InvestorAuth = () => {
       risk_tolerance: signupData.riskTolerance
     };
 
-    const { error } = await signUp(signupData.email, signupData.password, 'investor', metadata);
+    const { error } = await handleAuthAction('signUp', signupData.email, signupData.password, metadata);
     
     if (error) {
       if (error.message.includes('already registered')) {
