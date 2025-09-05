@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
+import SSGAuthWrapper from '@/components/auth/SSGAuthWrapper';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -147,7 +148,8 @@ const ManagerAuth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <SSGAuthWrapper>
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Manager Portal</CardTitle>
@@ -310,7 +312,8 @@ const ManagerAuth = () => {
           </Tabs>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </SSGAuthWrapper>
   );
 };
 
