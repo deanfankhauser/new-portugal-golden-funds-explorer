@@ -110,18 +110,49 @@ const ManagerAuth = () => {
     if (error) {
       if (error.message.includes('already registered')) {
         setError('This email is already registered. Please try logging in instead.');
+        toast({
+          variant: "destructive",
+          title: "Registration Failed",
+          description: "This email is already registered. Please try logging in instead."
+        });
+      } else if (error.message.includes('email')) {
+        setError('Please enter a valid email address.');
+        toast({
+          variant: "destructive",
+          title: "Invalid Email",
+          description: "Please enter a valid email address."
+        });
+      } else if (error.message.includes('password')) {
+        setError('Password must be at least 6 characters long.');
+        toast({
+          variant: "destructive",
+          title: "Weak Password",
+          description: "Password must be at least 6 characters long."
+        });
       } else {
         setError(error.message);
+        toast({
+          variant: "destructive",
+          title: "Registration Failed",
+          description: error.message
+        });
       }
-      toast({
-        variant: "destructive",
-        title: "Registration Failed",
-        description: error.message
-      });
     } else {
+      // Clear form and show success message
+      setSignupData({
+        email: '',
+        password: '',
+        confirmPassword: '',
+        companyName: '',
+        managerName: '',
+        website: '',
+        description: ''
+      });
+      setError(null);
+      
       toast({
-        title: "Registration Successful!",
-        description: "Please check your email to confirm your account."
+        title: "Registration Successful! 🎉",
+        description: "Your manager account has been created. Please check your email to confirm your account and complete the registration process."
       });
     }
     
