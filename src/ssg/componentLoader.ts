@@ -100,12 +100,12 @@ export const loadComponents = async () => {
         console.warn('ComponentLoader: Failed to load AlternativesHub:', err.message);
         return null;
       }),
-      ManagerAuth: import('../pages/SSGManagerAuth').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load SSGManagerAuth:', err.message);
+      ManagerAuth: import('../pages/ManagerAuth').then(m => m.default).catch(err => {
+        console.warn('ComponentLoader: Failed to load ManagerAuth:', err.message);
         return null;
       }),
-      InvestorAuth: import('../pages/SSGInvestorAuth').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load SSGInvestorAuth:', err.message);
+      InvestorAuth: import('../pages/InvestorAuth').then(m => m.default).catch(err => {
+        console.warn('ComponentLoader: Failed to load InvestorAuth:', err.message);
         return null;
       }),
     };

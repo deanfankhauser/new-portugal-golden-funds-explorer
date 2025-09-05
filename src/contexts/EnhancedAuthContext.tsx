@@ -61,6 +61,22 @@ const EnhancedAuthContext = createContext<EnhancedAuthContextType | undefined>(u
 export const useEnhancedAuth = () => {
   const context = useContext(EnhancedAuthContext);
   if (context === undefined) {
+    // During SSR, return a safe default instead of throwing
+    if (typeof window === 'undefined') {
+      return {
+        user: null,
+        session: null,
+        loading: true,
+        userType: null,
+        profile: null,
+        signUp: async () => ({ error: null }),
+        signIn: async () => ({ error: null }),
+        signOut: async () => ({ error: null }),
+        updateProfile: async () => ({ error: null }),
+        uploadAvatar: async () => ({ error: null }),
+        refreshProfile: async () => {},
+      };
+    }
     throw new Error('useEnhancedAuth must be used within an EnhancedAuthProvider');
   }
   return context;

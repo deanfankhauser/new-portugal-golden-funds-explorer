@@ -42,8 +42,6 @@ const FundAlternatives = lazy(() => import('./pages/FundAlternatives'));
 const AlternativesHub = lazy(() => import('./pages/AlternativesHub'));
 const ManagerAuth = lazy(() => import('./pages/ManagerAuth'));
 const InvestorAuth = lazy(() => import('./pages/InvestorAuth'));
-const SSGManagerAuth = lazy(() => import('./pages/SSGManagerAuth'));
-const SSGInvestorAuth = lazy(() => import('./pages/SSGInvestorAuth'));
 const AccountSettings = lazy(() => import('./pages/AccountSettings'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -108,19 +106,6 @@ const DirectFundRoute = () => {
 // SEO optimization removed - using consolidated service
 import SEOProvider from './components/providers/SEOProvider';
 import LazyExitIntentPopup from './components/common/LazyExitIntentPopup';
-import ClientOnlyAuth from './components/auth/ClientOnlyAuth';
-
-// Client-only auth component switcher
-const ClientOnlyAuthSwitch: React.FC<{
-  ssrComponent: React.ComponentType;
-  clientComponent: React.ComponentType;
-}> = ({ ssrComponent: SSRComponent, clientComponent: ClientComponent }) => {
-  return (
-    <ClientOnlyAuth fallback={SSRComponent}>
-      <ClientComponent />
-    </ClientOnlyAuth>
-  );
-};
 
 function App() {
   // SEO optimization handled by consolidated service
@@ -224,20 +209,14 @@ function App() {
                        {/* Manager Authentication */}
                        <Route path="/manager-auth" element={
                          <Suspense fallback={<PageLoader />}>
-                           <ClientOnlyAuthSwitch 
-                             ssrComponent={SSGManagerAuth}
-                             clientComponent={ManagerAuth}
-                           />
+                           <ManagerAuth />
                          </Suspense>
                        } />
                        
                        {/* Investor Authentication */}
                        <Route path="/investor-auth" element={
                          <Suspense fallback={<PageLoader />}>
-                           <ClientOnlyAuthSwitch 
-                             ssrComponent={SSGInvestorAuth}
-                             clientComponent={InvestorAuth}
-                           />
+                           <InvestorAuth />
                          </Suspense>
                        } />
                       
