@@ -5,7 +5,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from "@/components/ui/sonner";
 import { ComparisonProvider } from './contexts/ComparisonContext';
 import { RecentlyViewedProvider } from './contexts/RecentlyViewedContext';
-import { AuthProvider } from './contexts/AuthContext';
+import { EnhancedAuthProvider } from './contexts/EnhancedAuthContext';
 
 // Lazy load all pages for optimal performance
 
@@ -41,6 +41,8 @@ const FundComparison = lazy(() => import('./pages/FundComparison'));
 const FundAlternatives = lazy(() => import('./pages/FundAlternatives'));
 const AlternativesHub = lazy(() => import('./pages/AlternativesHub'));
 const ManagerAuth = lazy(() => import('./pages/ManagerAuth'));
+const InvestorAuth = lazy(() => import('./pages/InvestorAuth'));
+const AccountSettings = lazy(() => import('./pages/AccountSettings'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -115,7 +117,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ComparisonProvider>
           <RecentlyViewedProvider>
-            <AuthProvider>
+            <EnhancedAuthProvider>
               <TooltipProvider>
               <Router>
                 <SEOProvider>
@@ -211,6 +213,20 @@ function App() {
                         </Suspense>
                       } />
                       
+                      {/* Investor Authentication */}
+                      <Route path="/investor-auth" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <InvestorAuth />
+                        </Suspense>
+                      } />
+                      
+                      {/* Account Settings */}
+                      <Route path="/account-settings" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <AccountSettings />
+                        </Suspense>
+                      } />
+                      
                       {/* Alternatives hub */}
                       <Route path="/alternatives" element={
                         <Suspense fallback={<PageLoader />}>
@@ -237,7 +253,7 @@ function App() {
                 </SEOProvider>
               </Router>
             </TooltipProvider>
-            </AuthProvider>
+            </EnhancedAuthProvider>
           </RecentlyViewedProvider>
         </ComparisonProvider>
     </QueryClientProvider>

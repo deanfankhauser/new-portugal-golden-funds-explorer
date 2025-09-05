@@ -14,6 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
+      investor_profiles: {
+        Row: {
+          address: string | null
+          annual_income_range: string | null
+          avatar_url: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          date_of_birth: string | null
+          email: string
+          first_name: string
+          id: string
+          investment_experience: string | null
+          last_name: string
+          net_worth_range: string | null
+          phone: string | null
+          risk_tolerance: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          annual_income_range?: string | null
+          avatar_url?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          email: string
+          first_name: string
+          id?: string
+          investment_experience?: string | null
+          last_name: string
+          net_worth_range?: string | null
+          phone?: string | null
+          risk_tolerance?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          annual_income_range?: string | null
+          avatar_url?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          investment_experience?: string | null
+          last_name?: string
+          net_worth_range?: string | null
+          phone?: string | null
+          risk_tolerance?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       manager_profiles: {
         Row: {
           address: string | null

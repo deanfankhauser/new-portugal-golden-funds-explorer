@@ -7,11 +7,11 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2 } from 'lucide-react';
 import { toast } from "sonner";
 
-const ManagerAuth = () => {
+const InvestorAuth = () => {
   const { user, signIn, signUp, loading } = useEnhancedAuth();
   const navigate = useNavigate();
   
@@ -29,10 +29,10 @@ const ManagerAuth = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    companyName: '',
-    managerName: '',
-    website: '',
-    description: ''
+    firstName: '',
+    lastName: '',
+    investmentExperience: '',
+    riskTolerance: ''
   });
 
   // Redirect if already authenticated
@@ -94,14 +94,13 @@ const ManagerAuth = () => {
     }
 
     const metadata = {
-      is_manager: true,
-      company_name: signupData.companyName,
-      manager_name: signupData.managerName,
-      website: signupData.website,
-      description: signupData.description
+      first_name: signupData.firstName,
+      last_name: signupData.lastName,
+      investment_experience: signupData.investmentExperience,
+      risk_tolerance: signupData.riskTolerance
     };
 
-    const { error } = await signUp(signupData.email, signupData.password, 'manager', metadata);
+    const { error } = await signUp(signupData.email, signupData.password, 'investor', metadata);
     
     if (error) {
       if (error.message.includes('already registered')) {
@@ -131,15 +130,15 @@ const ManagerAuth = () => {
         email: '',
         password: '',
         confirmPassword: '',
-        companyName: '',
-        managerName: '',
-        website: '',
-        description: ''
+        firstName: '',
+        lastName: '',
+        investmentExperience: '',
+        riskTolerance: ''
       });
       setError(null);
       
       toast.success("Registration Successful! 🎉", {
-        description: "Your manager account has been created. Please check your email to confirm your account and complete the registration process."
+        description: "Your investor account has been created. Please check your email to confirm your account."
       });
     }
     
@@ -150,9 +149,9 @@ const ManagerAuth = () => {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Manager Portal</CardTitle>
+          <CardTitle className="text-2xl font-bold">Investor Portal</CardTitle>
           <CardDescription>
-            Access your investment management dashboard
+            Join thousands of investors exploring top investment opportunities
           </CardDescription>
         </CardHeader>
         
@@ -160,7 +159,7 @@ const ManagerAuth = () => {
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="signup">Register</TabsTrigger>
+              <TabsTrigger value="signup">Sign Up</TabsTrigger>
             </TabsList>
             
             <TabsContent value="login">
@@ -170,7 +169,7 @@ const ManagerAuth = () => {
                   <Input
                     id="login-email"
                     type="email"
-                    placeholder="manager@company.com"
+                    placeholder="investor@email.com"
                     value={loginData.email}
                     onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
                     required
@@ -209,12 +208,38 @@ const ManagerAuth = () => {
             
             <TabsContent value="signup">
               <form onSubmit={handleSignup} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="first-name">First Name</Label>
+                    <Input
+                      id="first-name"
+                      type="text"
+                      placeholder="John"
+                      value={signupData.firstName}
+                      onChange={(e) => setSignupData(prev => ({ ...prev, firstName: e.target.value }))}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="last-name">Last Name</Label>
+                    <Input
+                      id="last-name"
+                      type="text"
+                      placeholder="Doe"
+                      value={signupData.lastName}
+                      onChange={(e) => setSignupData(prev => ({ ...prev, lastName: e.target.value }))}
+                      required
+                    />
+                  </div>
+                </div>
+                
                 <div className="space-y-2">
                   <Label htmlFor="signup-email">Email</Label>
                   <Input
                     id="signup-email"
                     type="email"
-                    placeholder="manager@company.com"
+                    placeholder="investor@email.com"
                     value={signupData.email}
                     onChange={(e) => setSignupData(prev => ({ ...prev, email: e.target.value }))}
                     required
@@ -222,49 +247,38 @@ const ManagerAuth = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="manager-name">Manager Name</Label>
-                  <Input
-                    id="manager-name"
-                    type="text"
-                    placeholder="John Doe"
-                    value={signupData.managerName}
-                    onChange={(e) => setSignupData(prev => ({ ...prev, managerName: e.target.value }))}
-                    required
-                  />
+                  <Label htmlFor="investment-experience">Investment Experience</Label>
+                  <Select 
+                    value={signupData.investmentExperience} 
+                    onValueChange={(value) => setSignupData(prev => ({ ...prev, investmentExperience: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your experience level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="beginner">Beginner (0-2 years)</SelectItem>
+                      <SelectItem value="intermediate">Intermediate (2-5 years)</SelectItem>
+                      <SelectItem value="advanced">Advanced (5+ years)</SelectItem>
+                      <SelectItem value="professional">Professional</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="company-name">Company Name</Label>
-                  <Input
-                    id="company-name"
-                    type="text"
-                    placeholder="Investment Management Ltd"
-                    value={signupData.companyName}
-                    onChange={(e) => setSignupData(prev => ({ ...prev, companyName: e.target.value }))}
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="website">Website (Optional)</Label>
-                  <Input
-                    id="website"
-                    type="url"
-                    placeholder="https://company.com"
-                    value={signupData.website}
-                    onChange={(e) => setSignupData(prev => ({ ...prev, website: e.target.value }))}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="description">Company Description (Optional)</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="Brief description of your investment management services..."
-                    value={signupData.description}
-                    onChange={(e) => setSignupData(prev => ({ ...prev, description: e.target.value }))}
-                    rows={3}
-                  />
+                  <Label htmlFor="risk-tolerance">Risk Tolerance</Label>
+                  <Select 
+                    value={signupData.riskTolerance} 
+                    onValueChange={(value) => setSignupData(prev => ({ ...prev, riskTolerance: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your risk tolerance" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="conservative">Conservative</SelectItem>
+                      <SelectItem value="moderate">Moderate</SelectItem>
+                      <SelectItem value="aggressive">Aggressive</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 
                 <div className="space-y-2">
@@ -314,4 +328,4 @@ const ManagerAuth = () => {
   );
 };
 
-export default ManagerAuth;
+export default InvestorAuth;
