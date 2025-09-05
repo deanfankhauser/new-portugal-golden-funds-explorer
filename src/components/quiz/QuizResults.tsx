@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import RecommendationCard from './RecommendationCard';
 import { Fund } from '@/data/types/funds';
 import { Trophy, RotateCcw, Star, TrendingUp, Users, AlertCircle } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
 
 interface QuizResultsProps {
   recommendations: (Fund & { score: number })[];
@@ -16,53 +15,6 @@ interface QuizResultsProps {
 }
 
 const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz, formatCurrency }) => {
-  const { toast } = useToast();
-  const [emailSubmitted, setEmailSubmitted] = useState(false);
-  const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
-
-  const handleEmailSubmit = async (email: string) => {
-    setIsSubmittingEmail(true);
-    try {
-      // Send thank you email using Postmark template
-      const response = await fetch('/api/send-quiz-thank-you', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          userName: email.split('@')[0] // Simple name extraction from email
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const responseData = await response.json();
-      // Thank you email sent successfully
-      
-      // Show success toast
-      toast({
-        title: "Thank You for Your Interest!",
-        description: "Your golden visa journey starts here. Check your email for more information.",
-      });
-      
-      setEmailSubmitted(true);
-    } catch (error) {
-      console.error('Error sending thank you email:', error);
-      toast({
-        title: "Error",
-        description: "There was an error sending the email. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmittingEmail(false);
-    }
-  };
-
-  // Always show results since we've ungated everything
-  // Show results directly
   return (
     <div className="space-y-8">
       <Card className="bg-gradient-to-r from-success/10 to-success/5 border-success/20">
