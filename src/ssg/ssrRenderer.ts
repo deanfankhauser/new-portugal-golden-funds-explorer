@@ -207,6 +207,11 @@ export class SSRRenderer {
                 React.createElement(Route, { path: '/faqs', element: React.createElement(getComponent('FAQs')) }),
                 React.createElement(Route, { path: '/roi-calculator', element: React.createElement(getComponent('ROICalculator')) }),
                 React.createElement(Route, { path: '/fund-quiz', element: React.createElement(getComponent('FundQuiz')) }),
+                
+                // Auth pages
+                React.createElement(Route, { path: '/manager-auth', element: React.createElement(getComponent('ManagerAuth')) }),
+                React.createElement(Route, { path: '/investor-auth', element: React.createElement(getComponent('InvestorAuth')) }),
+                
                 React.createElement(Route, { path: '/compare/:slug', element: React.createElement(getComponent('FundComparison')) }),
                 
                 // Alternatives hub
