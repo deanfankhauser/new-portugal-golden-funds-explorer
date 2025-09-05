@@ -12,15 +12,15 @@ interface PremiumCTAProps {
 
 const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'general' }) => {
   const handleCTAClick = () => {
-    const contactUrl = buildContactUrl(`premium-${variant}-${location}`);
+    const contactUrl = buildContactUrl(`expert-guidance-${variant}-${location}`);
     
     // Track the CTA click with location for analytics
-    analytics.trackCTAClick(location, `premium-${variant}`, contactUrl);
+    analytics.trackCTAClick(location, `expert-guidance-${variant}`, contactUrl);
     
     // Track external link click
-    analytics.trackExternalLink(contactUrl, 'Get Premium Access', `cta-${location}`);
+    analytics.trackExternalLink(contactUrl, 'Get Expert Guidance', `cta-${location}`);
     
-    // Premium CTA clicked tracking
+    // Expert guidance CTA clicked tracking
     openExternalLink(contactUrl);
   };
 

@@ -5,11 +5,7 @@ import PremiumCTA from '../cta/PremiumCTA';
 import LastUpdated from '../common/LastUpdated';
 import { funds } from '../../data/funds';
 
-interface HomepageHeroProps {
-  isAuthenticated: boolean;
-}
-
-const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
+const HomepageHero: React.FC = () => {
   // Calculate the most recent update date from all funds
   const getMostRecentUpdateDate = () => {
     const dates = funds
@@ -69,16 +65,14 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ isAuthenticated }) => {
             </div>
           )}
 
-          {!isAuthenticated && (
-              <div className="mb-10 sm:mb-12" role="complementary" aria-label="Get expert guidance">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-accent/15 to-accent/5 rounded-3xl blur-xl"></div>
-                  <div className="relative">
-                    <PremiumCTA variant="banner" location="homepage-hero" />
-                  </div>
-                </div>
+          <div className="mb-10 sm:mb-12" role="complementary" aria-label="Get expert guidance">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-accent/15 to-accent/5 rounded-3xl blur-xl"></div>
+              <div className="relative">
+                <PremiumCTA variant="banner" location="homepage-hero" />
               </div>
-          )}
+            </div>
+          </div>
         </div>
       </div>
     </header>

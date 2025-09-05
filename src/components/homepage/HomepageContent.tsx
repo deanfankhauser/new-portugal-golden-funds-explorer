@@ -17,7 +17,6 @@ interface HomepageContentProps {
   setSelectedTags: (tags: FundTag[]) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  isAuthenticated: boolean;
   allFunds?: Fund[];
   showOnlyGVEligible: boolean;
   setShowOnlyGVEligible: (show: boolean) => void;
@@ -29,7 +28,6 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
   setSelectedTags,
   searchQuery,
   setSearchQuery,
-  isAuthenticated,
   allFunds = [],
   showOnlyGVEligible,
   setShowOnlyGVEligible
@@ -104,7 +102,6 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
               
               <FundsList
                 filteredFunds={filteredFunds}
-                isAuthenticated={isAuthenticated}
               />
             </>
           )}

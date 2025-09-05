@@ -6,12 +6,10 @@ import PremiumCTA from '../cta/PremiumCTA';
 
 interface FundsListProps {
   filteredFunds: Fund[];
-  isAuthenticated: boolean;
 }
 
 const FundsList: React.FC<FundsListProps> = ({
-  filteredFunds,
-  isAuthenticated
+  filteredFunds
 }) => {
   return (
     <div className="space-y-8">
@@ -22,7 +20,7 @@ const FundsList: React.FC<FundsListProps> = ({
           </div>
           
           {/* Enhanced CTA placement with better styling */}
-          {!isAuthenticated && (index + 1) % 4 === 0 && index < filteredFunds.length - 1 && (
+          {(index + 1) % 4 === 0 && index < filteredFunds.length - 1 && (
             <div className="my-12 relative">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-3xl blur-2xl"></div>
               <div className="relative bg-gradient-to-br from-card to-secondary/30 rounded-3xl p-8 border-2 border-border shadow-lg">

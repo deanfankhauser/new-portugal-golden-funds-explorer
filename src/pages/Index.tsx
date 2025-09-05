@@ -1,6 +1,5 @@
 
 import React, { lazy, Suspense } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import { useFundFiltering } from '../hooks/useFundFiltering';
 import PageSEO from '../components/common/PageSEO';
 import HomepageLayout from '../components/homepage/HomepageLayout';
@@ -12,7 +11,6 @@ import FundListSkeleton from '../components/common/FundListSkeleton';
 const HomepageInfoSections = lazy(() => import('../components/homepage/HomepageInfoSections'));
 
 const IndexPage = () => {
-  const { isAuthenticated } = useAuth();
   const {
     selectedTags,
     setSelectedTags,
@@ -27,7 +25,7 @@ const IndexPage = () => {
     <HomepageLayout>
       <PageSEO pageType="homepage" />
       
-      <HomepageHero isAuthenticated={isAuthenticated} />
+      <HomepageHero />
 
       <HomepageContent
         filteredFunds={filteredFunds}
@@ -35,7 +33,6 @@ const IndexPage = () => {
         setSelectedTags={setSelectedTags}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        isAuthenticated={isAuthenticated}
         showOnlyGVEligible={showOnlyGVEligible}
         setShowOnlyGVEligible={setShowOnlyGVEligible}
       />
