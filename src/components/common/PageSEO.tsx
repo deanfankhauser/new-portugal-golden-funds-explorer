@@ -54,7 +54,7 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
       EnhancedSEOValidationService.autoFixSEOIssues();
       
     } catch (error) {
-      // Silent error handling - no console logging
+      console.error('SEO Error:', error);
     }
   }, [pageType, fundName, managerName, categoryName, tagName, comparisonTitle, comparisonSlug, funds]);
 

@@ -12,6 +12,7 @@ import { Loader2 } from 'lucide-react';
 import { toast } from "sonner";
 
 const InvestorAuth = () => {
+  console.log('🔥 InvestorAuth: Component rendering');
   const { user, signIn, signUp, loading } = useEnhancedAuth();
   const navigate = useNavigate();
   
