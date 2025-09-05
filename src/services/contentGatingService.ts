@@ -2,48 +2,26 @@ export class ContentGatingService {
   
   // Determine if specific fund metrics should be gated
   static shouldGateMetric(metricType: string, isAuthenticated: boolean): boolean {
-    if (isAuthenticated) return false;
-
-    const gatedMetrics = [
-      'managementFee',
-      'performanceFee',
-      'subscriptionFee',
-      'redemptionFee',
-      'totalExpenseRatio',
-      'detailedPerformance',
-      'riskMetrics',
-      'portfolioAllocation',
-      'advancedFilters',
-      'detailedComparison',
-      'roiCalculator',
-      'documents'
-    ];
-
-    return gatedMetrics.includes(metricType);
+    // No gating - all metrics are public
+    return false;
   }
 
   // Determine if fund comparison features should be gated
   static shouldGateComparison(isAuthenticated: boolean): boolean {
-    return !isAuthenticated;
+    // No gating - comparison always available
+    return false;
   }
 
   // Determine if advanced filtering should be gated
   static shouldGateAdvancedFilters(isAuthenticated: boolean): boolean {
-    return !isAuthenticated;
+    // No gating - advanced filters always available
+    return false;
   }
 
   // Determine if specific sorting options should be gated
   static shouldGateSorting(sortField: string, isAuthenticated: boolean): boolean {
-    if (isAuthenticated) return false;
-
-    const gatedSortFields = [
-      'score',
-      'performance', 
-      'fees',
-      'detailedMetrics'
-    ];
-
-    return gatedSortFields.includes(sortField);
+    // No gating - all sorting is available
+    return false;
   }
 
   // Get public metrics that are always visible for SEO
@@ -135,18 +113,8 @@ export class ContentGatingService {
 
   // Determine if table columns should be gated
   static shouldGateTableColumn(columnType: string, isAuthenticated: boolean): boolean {
-    if (isAuthenticated) return false;
-
-    const gatedColumns = [
-      'score',
-      'performance',
-      'managementFee',
-      'performanceFee',
-      'detailedMetrics',
-      'riskScore'
-    ];
-
-    return gatedColumns.includes(columnType);
+    // No gating - all table columns are available
+    return false;
   }
 
   // Get table column gating message

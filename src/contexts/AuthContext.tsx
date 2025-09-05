@@ -12,32 +12,16 @@ const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 const CORRECT_PASSWORD = "MovingtoGlobal2025";
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = React.useState(() => {
-    // Check if we're in a browser environment before accessing localStorage
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('movingto_authenticated') === 'true';
-    }
-    return false;
-  });
+  // Always authenticated - no gating
+  const [isAuthenticated] = React.useState(true);
 
-  const authenticate = (password: string): boolean => {
-    if (password === CORRECT_PASSWORD) {
-      setIsAuthenticated(true);
-      // Only access localStorage in browser environment
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('movingto_authenticated', 'true');
-      }
-      return true;
-    }
-    return false;
+  const authenticate = (): boolean => {
+    // Always return true - no password required
+    return true;
   };
 
   const logout = () => {
-    setIsAuthenticated(false);
-    // Only access localStorage in browser environment
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('movingto_authenticated');
-    }
+    // No-op - users are always authenticated
   };
 
   return (
