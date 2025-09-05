@@ -26,7 +26,6 @@ export class InvestmentFundStructuredDataService {
       "custodian": fund.custodian || "Not specified", 
       "areaServed": "PT",
       "isAccessibleForFree": true,
-      "description": fund.description,
       "provider": {
         "@type": "Organization",
         "name": fund.managerName
