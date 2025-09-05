@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,7 +12,8 @@ import { toast } from "sonner";
 
 const ManagerAuth = () => {
   console.log('🔥 ManagerAuth: Component rendering');
-  const { user, signIn, signUp, loading } = useEnhancedAuth();
+  const [isClient, setIsClient] = useState(false);
+  const [authContext, setAuthContext] = useState<any>(null);
   const navigate = useNavigate();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,15 +35,43 @@ const ManagerAuth = () => {
     website: '',
     description: ''
   });
-
-  // Redirect if already authenticated
+  
+  // Client-side hydration
   useEffect(() => {
-    if (user && !loading) {
+    setIsClient(true);
+    
+    // Dynamically import auth context only on client side
+    const loadAuthContext = async () => {
+      try {
+        const { useEnhancedAuth } = await import('@/contexts/EnhancedAuthContext');
+        setAuthContext({ useEnhancedAuth });
+      } catch (error) {
+        console.error('Failed to load auth context:', error);
+      }
+    };
+    
+    loadAuthContext();
+  }, []);
+
+  // Use auth context if available
+  const authData = authContext ? authContext.useEnhancedAuth() : { 
+    user: null, 
+    signIn: async () => ({ error: null }), 
+    signUp: async () => ({ error: null }), 
+    loading: false 
+  };
+  
+  const { user, signIn, signUp, loading } = authData;
+
+  // Redirect if already authenticated (only on client)
+  useEffect(() => {
+    if (isClient && user && !loading) {
       navigate('/');
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, isClient]);
 
-  if (loading) {
+  // Show loading during SSR or before client hydration
+  if (!isClient || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -51,6 +79,7 @@ const ManagerAuth = () => {
     );
   }
 
+  // Client-side redirect after hydration
   if (user) {
     return <Navigate to="/" replace />;
   }
