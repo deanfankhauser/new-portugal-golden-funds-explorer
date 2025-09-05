@@ -58,8 +58,13 @@ export class PerformanceOptimizationService {
     });
   }
 
-  // Add security and performance headers via meta tags
+  // Add security and performance headers via meta tags (skip if already added by SEO service)
   private static addSecurityHeaders(): void {
+    // Skip if security headers already added by ConsolidatedSEOService
+    if (document.querySelector('meta[name="X-Content-Type-Options"]')) {
+      return;
+    }
+    
     const headers = [
       { name: 'X-Content-Type-Options', content: 'nosniff' },
       { name: 'X-Frame-Options', content: 'DENY' },
