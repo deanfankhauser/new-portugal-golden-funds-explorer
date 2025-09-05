@@ -9,12 +9,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from "sonner";
 
 const ManagerAuth = () => {
   const { user, signIn, signUp, loading } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,14 +63,11 @@ const ManagerAuth = () => {
     
     if (error) {
       setError(error.message);
-      toast({
-        variant: "destructive",
-        title: "Login Failed",
+      toast.error("Login Failed", {
         description: error.message
       });
     } else {
-      toast({
-        title: "Welcome back!",
+      toast.success("Welcome back!", {
         description: "You have been successfully logged in."
       });
     }
@@ -110,30 +106,22 @@ const ManagerAuth = () => {
     if (error) {
       if (error.message.includes('already registered')) {
         setError('This email is already registered. Please try logging in instead.');
-        toast({
-          variant: "destructive",
-          title: "Registration Failed",
+        toast.error("Registration Failed", {
           description: "This email is already registered. Please try logging in instead."
         });
       } else if (error.message.includes('email')) {
         setError('Please enter a valid email address.');
-        toast({
-          variant: "destructive",
-          title: "Invalid Email",
+        toast.error("Invalid Email", {
           description: "Please enter a valid email address."
         });
       } else if (error.message.includes('password')) {
         setError('Password must be at least 6 characters long.');
-        toast({
-          variant: "destructive",
-          title: "Weak Password",
+        toast.error("Weak Password", {
           description: "Password must be at least 6 characters long."
         });
       } else {
         setError(error.message);
-        toast({
-          variant: "destructive",
-          title: "Registration Failed",
+        toast.error("Registration Failed", {
           description: error.message
         });
       }
@@ -150,8 +138,7 @@ const ManagerAuth = () => {
       });
       setError(null);
       
-      toast({
-        title: "Registration Successful! 🎉",
+      toast.success("Registration Successful! 🎉", {
         description: "Your manager account has been created. Please check your email to confirm your account and complete the registration process."
       });
     }
