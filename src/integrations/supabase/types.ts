@@ -14,16 +14,128 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      manager_profiles: {
+        Row: {
+          address: string | null
+          approved_at: string | null
+          approved_by: string | null
+          assets_under_management: number | null
+          city: string | null
+          company_name: string
+          country: string | null
+          created_at: string
+          description: string | null
+          email: string
+          founded_year: number | null
+          id: string
+          license_number: string | null
+          logo_url: string | null
+          manager_name: string
+          phone: string | null
+          registration_number: string | null
+          status: Database["public"]["Enums"]["manager_status"]
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          assets_under_management?: number | null
+          city?: string | null
+          company_name: string
+          country?: string | null
+          created_at?: string
+          description?: string | null
+          email: string
+          founded_year?: number | null
+          id?: string
+          license_number?: string | null
+          logo_url?: string | null
+          manager_name: string
+          phone?: string | null
+          registration_number?: string | null
+          status?: Database["public"]["Enums"]["manager_status"]
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          assets_under_management?: number | null
+          city?: string | null
+          company_name?: string
+          country?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string
+          founded_year?: number | null
+          id?: string
+          license_number?: string | null
+          logo_url?: string | null
+          manager_name?: string
+          phone?: string | null
+          registration_number?: string | null
+          status?: Database["public"]["Enums"]["manager_status"]
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      public_managers: {
+        Row: {
+          assets_under_management: number | null
+          city: string | null
+          company_name: string | null
+          country: string | null
+          created_at: string | null
+          description: string | null
+          founded_year: number | null
+          id: string | null
+          logo_url: string | null
+          manager_name: string | null
+          website: string | null
+        }
+        Insert: {
+          assets_under_management?: number | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          founded_year?: number | null
+          id?: string | null
+          logo_url?: string | null
+          manager_name?: string | null
+          website?: string | null
+        }
+        Update: {
+          assets_under_management?: number | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          founded_year?: number | null
+          id?: string | null
+          logo_url?: string | null
+          manager_name?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      manager_status: "pending" | "approved" | "suspended" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +262,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      manager_status: ["pending", "approved", "suspended", "rejected"],
+    },
   },
 } as const
