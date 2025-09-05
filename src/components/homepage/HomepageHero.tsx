@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import UnifiedAuthButton from '../auth/UnifiedAuthButton';
+// import UnifiedAuthButton from '../auth/UnifiedAuthButton';
 import PremiumCTA from '../cta/PremiumCTA';
 import LastUpdated from '../common/LastUpdated';
 import { funds } from '../../data/funds';
@@ -75,10 +75,10 @@ const HomepageHero: React.FC = () => {
             </div>
           </div>
 
-          {/* Unified Login/Register Button */}
-          <div className="flex justify-center mb-6">
+          {/* Unified Login/Register Button - Temporarily disabled */}
+          {/* <div className="flex justify-center mb-6">
             <UnifiedAuthButton size="lg" className="px-8 py-3 text-lg" />
-          </div>
+          </div> */}
         </div>
       </div>
     </header>
