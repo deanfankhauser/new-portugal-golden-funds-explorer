@@ -19,6 +19,23 @@ if (typeof window !== 'undefined' && !window.React) {
   window.React = React;
 }
 
+// Mock localStorage for SSG environment
+if (typeof global !== 'undefined' && !global.localStorage) {
+  global.localStorage = {
+    getItem: () => null,
+    setItem: () => {},
+    removeItem: () => {},
+    clear: () => {},
+    length: 0,
+    key: () => null,
+  };
+}
+
+// Also mock it for window if in browser-like environment during SSG
+if (typeof window !== 'undefined' && !window.localStorage) {
+  window.localStorage = global.localStorage;
+}
+
 export class SSRRenderer {
   static async renderRoute(route: StaticRoute): Promise<{ html: string; seoData: any }> {
     // Check if we're in development mode safely for SSG environments
