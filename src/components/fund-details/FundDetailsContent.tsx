@@ -32,6 +32,8 @@ import DataFreshnessWarning from '../common/DataFreshnessWarning';
 import { tagToSlug } from '@/lib/utils';
 import { VerifiedReviews } from './reviews/VerifiedReviews';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
+import FundBreadcrumbs from './FundBreadcrumbs';
+import FundDataFreshnessDisplay from './FundDataFreshnessDisplay';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -46,6 +48,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
   );
   return (
     <div className="space-y-6 md:space-y-8">
+      {/* Breadcrumbs */}
+      <FundBreadcrumbs fund={fund} />
+      
       {/* Back to Funds Button */}
       <BackToFundsButton />
       
@@ -67,6 +72,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           {/* Data Quality Indicators - Trust Signals */}
           <FundDataFreshness fund={fund} />
           <DataFreshnessWarning fund={fund} />
+          <FundDataFreshnessDisplay fund={fund} />
           
           {/* Enhanced GV Eligibility Badge */}
           <EnhancedGVEligibilityBadge fund={fund} showDetails={true} />

@@ -5,6 +5,7 @@ import { findBuiltAssets, validateAssetPaths } from './asset-discovery';
 import { processRoute } from './route-processor';
 import { validateGeneratedFile, verifyCriticalPages } from './validation';
 import { generateSitemap } from './sitemap-generator';
+import { generateFundsSitemap } from './sitemap-funds-generator';
 import { generate404Page } from './404-generator';
 
 export async function generateStaticFiles() {
@@ -58,8 +59,9 @@ export async function generateStaticFiles() {
   // Generate 404 page
   await generate404Page(distDir);
   
-  // Generate sitemap only with successful routes
+  // Generate sitemaps only with successful routes
   generateSitemap(successfulRoutes, distDir);
+  generateFundsSitemap(distDir);
   
   // Final report
   if (process.env.NODE_ENV !== 'production') {

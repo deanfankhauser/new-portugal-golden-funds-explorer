@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { FundScore } from '../../services/fundScoringService';
 import { getFundById } from '../../data/funds';
+import { InvestmentFundStructuredDataService } from '../../services/investmentFundStructuredDataService';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import AdvancedFilters from './AdvancedFilters';
 import TablePagination from './TablePagination';
@@ -58,7 +59,24 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
     setCurrentPage(1);
   };
 
-  // Remove component-level schema injection - ConsolidatedSEOService handles page-level schemas
+  // Add structured data for fund index
+  useEffect(() => {
+    const funds = filteredAndSortedScores.map(score => getFundById(score.fundId)).filter(Boolean);
+    const listSchema = InvestmentFundStructuredDataService.generateFundListSchema(funds, "fund-index");
+    
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'fund-index-schema';
+    script.textContent = JSON.stringify(listSchema, null, 2);
+    document.head.appendChild(script);
+    
+    return () => {
+      const existingScript = document.getElementById('fund-index-schema');
+      if (existingScript) {
+        document.head.removeChild(existingScript);
+      }
+    };
+  }, [filteredAndSortedScores]);
 
   return (
     <section 

@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Fund } from '../../data/funds';
 import FundListItem from '../FundListItem';
 import PremiumCTA from '../cta/PremiumCTA';
+import { InvestmentFundStructuredDataService } from '../../services/investmentFundStructuredDataService';
 
 interface FundsListProps {
   filteredFunds: Fund[];
@@ -11,6 +12,24 @@ interface FundsListProps {
 const FundsList: React.FC<FundsListProps> = ({
   filteredFunds
 }) => {
+  // Add structured data for fund list
+  useEffect(() => {
+    const listSchema = InvestmentFundStructuredDataService.generateFundListSchema(filteredFunds, "homepage");
+    
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'funds-list-schema';
+    script.textContent = JSON.stringify(listSchema, null, 2);
+    document.head.appendChild(script);
+    
+    return () => {
+      const existingScript = document.getElementById('funds-list-schema');
+      if (existingScript) {
+        document.head.removeChild(existingScript);
+      }
+    };
+  }, [filteredFunds]);
+
   return (
     <div className="space-y-8">
       {filteredFunds.map((fund, index) => (

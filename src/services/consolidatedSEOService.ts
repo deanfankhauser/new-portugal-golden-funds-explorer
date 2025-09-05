@@ -328,13 +328,9 @@ export class ConsolidatedSEOService {
   }
 
   private static setRobots(robotsDirective?: string): void {
-    // Only set default if no existing robots meta and no directive provided
-    const existingRobots = document.querySelector('meta[name="robots"]');
-    if (!existingRobots && !robotsDirective) {
-      this.setOrUpdateMeta('robots', 'index, follow, max-image-preview:large');
-    } else if (robotsDirective) {
-      this.setOrUpdateMeta('robots', robotsDirective);
-    }
+    // Ensure fund pages are always indexable - never use noindex for funds
+    const robots = robotsDirective === 'noindex, follow' ? 'index, follow' : (robotsDirective || 'index, follow, max-image-preview:large');
+    this.setOrUpdateMeta('robots', robots);
   }
 
   private static setOpenGraph(seoData: SEOData): void {
@@ -447,16 +443,24 @@ export class ConsolidatedSEOService {
   }
 
   private static getFundStructuredData(fund: any): any {
+    const { InvestmentFundStructuredDataService } = require('./investmentFundStructuredDataService');
+    const investmentFundSchema = InvestmentFundStructuredDataService.generateInvestmentFundSchema(fund);
+    
     const baseStructuredData = {
       '@context': 'https://schema.org',
-      '@type': 'FinancialProduct',
-      'name': fund.name,
-      'description': fund.description || `Investment fund managed by ${fund.managerName}`,
-      'provider': {
-        '@type': 'Organization',
-        'name': fund.managerName
-      },
-      'url': URL_CONFIG.buildFundUrl(fund.id)
+      '@type': 'WebPage',
+      'name': `${fund.name} - Fund Details`,
+      'description': fund.description,
+      'dateModified': fund.dateModified || new Date().toISOString(),
+      'url': URL_CONFIG.buildFundUrl(fund.id),
+      'breadcrumb': {
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Fund Index', 'item': URL_CONFIG.buildUrl('/fund-index') },
+          { '@type': 'ListItem', 'position': 3, 'name': fund.name }
+        ]
+      }
     };
 
     // Add review data if available
@@ -466,7 +470,7 @@ export class ConsolidatedSEOService {
       baseStructuredData['review'] = reviewData.review;
     }
 
-    return baseStructuredData;
+    return [investmentFundSchema, baseStructuredData];
   }
 
   private static getCategoryStructuredData(categoryName: string): any {
