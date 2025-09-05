@@ -397,7 +397,7 @@ const AccountSettings = () => {
                               <SelectTrigger>
                                 <SelectValue placeholder="Select experience level" />
                               </SelectTrigger>
-                              <SelectContent>
+                              <SelectContent className="z-[9999]">
                                 <SelectItem value="beginner">Beginner</SelectItem>
                                 <SelectItem value="intermediate">Intermediate</SelectItem>
                                 <SelectItem value="advanced">Advanced</SelectItem>
@@ -414,7 +414,7 @@ const AccountSettings = () => {
                               <SelectTrigger>
                                 <SelectValue placeholder="Select risk tolerance" />
                               </SelectTrigger>
-                              <SelectContent>
+                              <SelectContent className="z-[9999]">
                                 <SelectItem value="conservative">Conservative</SelectItem>
                                 <SelectItem value="moderate">Moderate</SelectItem>
                                 <SelectItem value="aggressive">Aggressive</SelectItem>

@@ -255,7 +255,7 @@ const InvestorAuth = () => {
                     <SelectTrigger>
                       <SelectValue placeholder="Select your experience level" />
                     </SelectTrigger>
-                    <SelectContent>
+                  <SelectContent className="z-[9999]">
                       <SelectItem value="beginner">Beginner (0-2 years)</SelectItem>
                       <SelectItem value="intermediate">Intermediate (2-5 years)</SelectItem>
                       <SelectItem value="advanced">Advanced (5+ years)</SelectItem>
@@ -273,7 +273,7 @@ const InvestorAuth = () => {
                     <SelectTrigger>
                       <SelectValue placeholder="Select your risk tolerance" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[9999]">
                       <SelectItem value="conservative">Conservative</SelectItem>
                       <SelectItem value="moderate">Moderate</SelectItem>
                       <SelectItem value="aggressive">Aggressive</SelectItem>
