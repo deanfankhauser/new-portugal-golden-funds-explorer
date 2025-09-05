@@ -31,7 +31,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
         onClick={handleCTAClick}
       >
         <Crown className="mr-2 h-4 w-4" />
-        Unlock Premium Features
+        Get Expert Guidance
         <ExternalLink className="ml-2 h-4 w-4" />
       </Button>
     );
@@ -73,10 +73,10 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
           
           <div>
             <h3 className="text-2xl font-bold text-foreground mb-2">
-              Unlock Premium Fund Guidance
+              Get Expert Fund Guidance
             </h3>
             <p className="text-muted-foreground text-lg">
-              Get personalized guidance from our Golden Visa experts to maximize your investment success
+              Connect with our Golden Visa experts for personalized investment guidance
             </p>
           </div>
           
@@ -95,9 +95,9 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
             </div>
           </div>
           
-          <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
+           <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
             <p className="text-primary font-medium text-sm">
-              ✨ Premium clients often secure better terms and exclusive fund opportunities not available to the public
+              ✨ Our experts help you secure better terms and access exclusive fund opportunities
             </p>
           </div>
           
@@ -106,7 +106,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
             onClick={handleCTAClick}
           >
             <Crown className="mr-2 h-5 w-5" />
-            Get Premium Access
+            Get Expert Guidance
             <ExternalLink className="ml-2 h-5 w-5" />
           </Button>
         </div>

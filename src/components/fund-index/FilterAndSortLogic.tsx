@@ -2,7 +2,7 @@
 import { useState, useMemo } from 'react';
 import { FundScore } from '../../services/fundScoringService';
 import { getFundById } from '../../data/funds';
-import { ContentGatingService } from '../../services/contentGatingService';
+
 
 export type SortField = 'rank' | 'name' | 'score' | 'performance' | 'fees' | 'minInvestment';
 export type SortDirection = 'asc' | 'desc';
@@ -38,10 +38,6 @@ export const useFilterAndSort = (scores: FundScore[], isAuthenticated: boolean =
         fund.category.toLowerCase().includes(searchLower)
       );
 
-      // Advanced filters - only apply if authenticated
-      if (!isAuthenticated) {
-        return matchesSearch;
-      }
 
       const matchesCategory = filters.category === 'all' || fund.category === filters.category;
       const matchesStatus = filters.fundStatus === 'all' || fund.fundStatus === filters.fundStatus;
@@ -87,34 +83,16 @@ export const useFilterAndSort = (scores: FundScore[], isAuthenticated: boolean =
           valueB = fundB.name;
           break;
         case 'score':
-          // Gate detailed scoring for non-authenticated users
-          if (!isAuthenticated) {
-            valueA = a.rank;
-            valueB = b.rank;
-          } else {
-            valueA = a.movingtoScore;
-            valueB = b.movingtoScore;
-          }
+          valueA = a.movingtoScore;
+          valueB = b.movingtoScore;
           break;
         case 'performance':
-          // Gate performance metrics for non-authenticated users
-          if (!isAuthenticated) {
-            valueA = a.rank;
-            valueB = b.rank;
-          } else {
-            valueA = a.performanceScore;
-            valueB = b.performanceScore;
-          }
+          valueA = a.performanceScore;
+          valueB = b.performanceScore;
           break;
         case 'fees':
-          // Gate fee-based sorting for non-authenticated users
-          if (!isAuthenticated) {
-            valueA = fundA.minimumInvestment;
-            valueB = fundB.minimumInvestment;
-          } else {
-            valueA = fundA.managementFee;
-            valueB = fundB.managementFee;
-          }
+          valueA = fundA.managementFee;
+          valueB = fundB.managementFee;
           break;
         case 'minInvestment':
           valueA = fundA.minimumInvestment;
@@ -140,11 +118,6 @@ export const useFilterAndSort = (scores: FundScore[], isAuthenticated: boolean =
   }, [scores, searchTerm, sortField, sortDirection, filters, isAuthenticated]);
 
   const handleSort = (field: SortField) => {
-    // Restrict certain sorting for non-authenticated users
-    if (!isAuthenticated && ['score', 'performance', 'fees'].includes(field)) {
-      return; // Could trigger auth dialog here if needed
-    }
-
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
@@ -154,16 +127,10 @@ export const useFilterAndSort = (scores: FundScore[], isAuthenticated: boolean =
   };
 
   const handleFiltersChange = (newFilters: FilterOptions) => {
-    if (!isAuthenticated) {
-      return; // Filters are gated in the component
-    }
     setFilters(newFilters);
   };
 
   const handleClearFilters = () => {
-    if (!isAuthenticated) {
-      return; // Filters are gated in the component
-    }
     setFilters({
       category: 'all',
       fundStatus: 'all',
