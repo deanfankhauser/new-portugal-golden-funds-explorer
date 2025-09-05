@@ -110,7 +110,25 @@
       ]
     },
     {
-      "source": "/:file*.:ext(js|css|png|jpg|jpeg|gif|ico|svg)",
+      "source": "/lovable-uploads/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/:file*.:ext(js|css|woff|woff2|ttf|eot)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/:file*.:ext(png|jpg|jpeg|gif|ico|svg|webp)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -123,7 +141,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=3600, s-maxage=86400"
+          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
         }
       ]
     }

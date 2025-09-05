@@ -37,7 +37,14 @@ export default defineConfig(({ mode }) => ({
       terserOptions: {
         compress: {
           drop_console: true,
-          drop_debugger: true
+          drop_debugger: true,
+          // Additional optimizations to reduce unused code
+          dead_code: true,
+          unused: true,
+          pure_funcs: ['console.log', 'console.info', 'console.debug'],
+        },
+        mangle: {
+          safari10: true,
         }
       }
     })
