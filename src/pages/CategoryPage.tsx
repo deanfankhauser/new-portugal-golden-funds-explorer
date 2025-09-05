@@ -46,7 +46,7 @@ const CategoryPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <PageSEO pageType="category" categoryName={category} />
+      <PageSEO pageType="category" categoryName={category} funds={funds} />
       <Header />
       
       <main className="flex-1 py-6 md:py-8">

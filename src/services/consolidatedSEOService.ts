@@ -117,7 +117,7 @@ export class ConsolidatedSEOService {
           title: this.optimizeText(`${params.categoryName} Portugal Golden Visa Investment Funds | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(`Discover ${params.categoryName} Portugal Golden Visa investment funds. Compare minimum investments, returns, fees, and eligibility for residency applications.`, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildCategoryUrl(params.categoryName),
-          structuredData: this.getCategoryStructuredData(params.categoryName)
+          structuredData: this.getCategoryStructuredData(params.categoryName, params.funds || [])
         };
 
       case 'tag':
@@ -125,7 +125,7 @@ export class ConsolidatedSEOService {
           title: this.optimizeText(`${params.tagName} Portugal Golden Visa Investment Funds | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(`Explore ${params.tagName} Portugal Golden Visa investment funds. Compare minimum investments, returns, and Golden Visa eligibility requirements.`, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildTagUrl(params.tagName),
-          structuredData: this.getTagStructuredData(params.tagName)
+          structuredData: this.getTagStructuredData(params.tagName, params.funds || [])
         };
 
       case 'manager':
@@ -334,14 +334,22 @@ export class ConsolidatedSEOService {
   }
 
   private static setOpenGraph(seoData: SEOData): void {
-    // Determine og:type based on URL pattern and structured data
+    // Enhanced og:type detection
     let ogType = 'website';
     if (seoData.url.includes('/compare/') && seoData.url.includes('-vs-')) {
       ogType = 'article';
-    } else if (seoData.structuredData && seoData.structuredData['@type'] === 'FinancialProduct') {
-      ogType = 'product';
-    } else if (seoData.structuredData && seoData.structuredData['@type'] === 'Person') {
-      ogType = 'profile';
+    } else if (seoData.structuredData) {
+      // Check for fund pages (multiple schemas)
+      if (Array.isArray(seoData.structuredData)) {
+        const hasInvestmentFund = seoData.structuredData.some(schema => schema['@type'] === 'InvestmentFund');
+        if (hasInvestmentFund) ogType = 'product';
+      } else if (seoData.structuredData['@type'] === 'InvestmentFund') {
+        ogType = 'product';
+      } else if (seoData.structuredData['@type'] === 'FinancialProduct') {
+        ogType = 'product';
+      } else if (seoData.structuredData['@type'] === 'Person') {
+        ogType = 'profile';
+      }
     }
     
     // DEV-only verification log
@@ -358,7 +366,19 @@ export class ConsolidatedSEOService {
       { property: 'og:site_name', content: 'Movingto' },
     ];
 
-    document.querySelectorAll('meta[property^="og:"]').forEach(tag => tag.remove());
+    // Add article:modified_time for fund pages
+    if (ogType === 'product' && seoData.structuredData) {
+      let modifiedTime = new Date().toISOString();
+      if (Array.isArray(seoData.structuredData)) {
+        const webPageSchema = seoData.structuredData.find(schema => schema['@type'] === 'WebPage');
+        if (webPageSchema && webPageSchema.dateModified) {
+          modifiedTime = webPageSchema.dateModified;
+        }
+      }
+      ogTags.push({ property: 'article:modified_time', content: modifiedTime });
+    }
+
+    document.querySelectorAll('meta[property^="og:"], meta[property^="article:"]').forEach(tag => tag.remove());
     
     ogTags.forEach(tag => {
       const meta = document.createElement('meta');
@@ -456,9 +476,9 @@ export class ConsolidatedSEOService {
       'breadcrumb': {
         '@type': 'BreadcrumbList',
         'itemListElement': [
-          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
-          { '@type': 'ListItem', 'position': 2, 'name': 'Fund Index', 'item': URL_CONFIG.buildUrl('/index') },
-          { '@type': 'ListItem', 'position': 3, 'name': fund.name }
+          { '@type': 'ListItem', 'position': 1, 'name': 'Portugal Golden Visa Funds Home', 'item': URL_CONFIG.BASE_URL },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Complete Portugal Fund Database', 'item': URL_CONFIG.buildUrl('/index') },
+          { '@type': 'ListItem', 'position': 3, 'name': `${fund.name} Details & Analysis` }
         ]
       }
     };
@@ -473,24 +493,56 @@ export class ConsolidatedSEOService {
     return [investmentFundSchema, baseStructuredData];
   }
 
-  private static getCategoryStructuredData(categoryName: string): any {
-    return {
+  private static getCategoryStructuredData(categoryName: string, funds: any[] = []): any {
+    const baseSchema = {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
       'name': `${categoryName} Investment Funds`,
       'description': `Collection of ${categoryName} investment funds in Portugal`,
       'url': URL_CONFIG.buildCategoryUrl(categoryName)
     };
+
+    // Add ItemList schema for SEO
+    const itemListSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      'name': `${categoryName} Portugal Golden Visa Investment Funds`,
+      'numberOfItems': funds.length,
+      'itemListElement': funds.map((fund, index) => ({
+        '@type': 'ListItem',
+        'position': index + 1,
+        'url': URL_CONFIG.buildFundUrl(fund.id),
+        'name': fund.name
+      }))
+    };
+
+    return [baseSchema, itemListSchema];
   }
 
-  private static getTagStructuredData(tagName: string): any {
-    return {
+  private static getTagStructuredData(tagName: string, funds: any[] = []): any {
+    const baseSchema = {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
       'name': `${tagName} Investment Funds`,
       'description': `Investment funds tagged with ${tagName}`,
       'url': URL_CONFIG.buildTagUrl(tagName)
     };
+
+    // Add ItemList schema for SEO
+    const itemListSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      'name': `${tagName} Portugal Golden Visa Investment Funds`,
+      'numberOfItems': funds.length,
+      'itemListElement': funds.map((fund, index) => ({
+        '@type': 'ListItem',
+        'position': index + 1,
+        'url': URL_CONFIG.buildFundUrl(fund.id),
+        'name': fund.name
+      }))
+    };
+
+    return [baseSchema, itemListSchema];
   }
 
   private static getManagerStructuredData(managerName: string): any {

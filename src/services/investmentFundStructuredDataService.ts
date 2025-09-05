@@ -9,10 +9,10 @@ export class InvestmentFundStructuredDataService {
     };
 
     const feesSpec = [
-      fund.managementFee ? `Mgmt: ${cleanFeeString(fund.managementFee)}%` : '',
-      fund.performanceFee ? `Performance: ${cleanFeeString(fund.performanceFee)}%` : '',
-      fund.subscriptionFee ? `Subscription: ${cleanFeeString(fund.subscriptionFee)}%` : '',
-      fund.redemptionFee ? `Redemption: ${cleanFeeString(fund.redemptionFee)}%` : ''
+      fund.managementFee ? `Management Fee: ${cleanFeeString(fund.managementFee)}% annually` : '',
+      fund.performanceFee ? `Performance Fee: ${cleanFeeString(fund.performanceFee)}% on returns` : '',
+      fund.subscriptionFee ? `Subscription Fee: ${cleanFeeString(fund.subscriptionFee)}% on entry` : '',
+      fund.redemptionFee ? `Redemption Fee: ${cleanFeeString(fund.redemptionFee)}% on exit` : ''
     ].filter(Boolean).join('; ');
 
     return {

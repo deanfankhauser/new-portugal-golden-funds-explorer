@@ -18,6 +18,7 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
   tagName,
   comparisonTitle,
   comparisonSlug,
+  funds,
   children 
 }) => {
   useEffect(() => {
@@ -29,7 +30,8 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
         categoryName,
         tagName,
         comparisonTitle,
-        comparisonSlug
+        comparisonSlug,
+        funds
       });
 
       ConsolidatedSEOService.applyMetaTags(seoData);
@@ -54,7 +56,7 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
     } catch (error) {
       // Silent error handling - no console logging
     }
-  }, [pageType, fundName, managerName, categoryName, tagName, comparisonTitle, comparisonSlug]);
+  }, [pageType, fundName, managerName, categoryName, tagName, comparisonTitle, comparisonSlug, funds]);
 
   return (
     <SEOErrorBoundary>
