@@ -80,7 +80,6 @@ const HomepageHero: React.FC = () => {
             <UnifiedAuthButton size="lg" className="px-8 py-3 text-lg" />
           </div>
         </div>
-        </div>
       </div>
     </header>
   );
