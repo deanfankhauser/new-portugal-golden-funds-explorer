@@ -34,8 +34,6 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
         behavior: 'smooth', 
         block: 'start' 
       });
-        }, 800);
-      }
     }
   };
 
@@ -90,11 +88,6 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
           </div>
         </div>
       </div>
-
-      <LazyPasswordDialog 
-        open={showPasswordDialog}
-        onOpenChange={setShowPasswordDialog}
-      />
     </>
   );
 };
