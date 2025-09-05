@@ -457,7 +457,7 @@ export class ConsolidatedSEOService {
         '@type': 'BreadcrumbList',
         'itemListElement': [
           { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
-          { '@type': 'ListItem', 'position': 2, 'name': 'Fund Index', 'item': URL_CONFIG.buildUrl('/fund-index') },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Fund Index', 'item': URL_CONFIG.buildUrl('/index') },
           { '@type': 'ListItem', 'position': 3, 'name': fund.name }
         ]
       }
