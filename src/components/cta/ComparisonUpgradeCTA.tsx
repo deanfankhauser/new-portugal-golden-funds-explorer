@@ -40,7 +40,7 @@ const ComparisonUpgradeCTA: React.FC = () => {
               className="bg-primary hover:bg-primary/90 text-primary-foreground"
               onClick={handleUpgradeClick}
             >
-              Upgrade to Premium
+              Get Expert Guidance
               <ExternalLink className="ml-1 h-3 w-3" />
             </Button>
           </div>

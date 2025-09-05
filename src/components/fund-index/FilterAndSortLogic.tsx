@@ -14,7 +14,7 @@ export interface FilterOptions {
   managementFeeRange: string;
 }
 
-export const useFilterAndSort = (scores: FundScore[], isAuthenticated: boolean = false) => {
+export const useFilterAndSort = (scores: FundScore[]) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<SortField>('rank');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
@@ -115,7 +115,7 @@ export const useFilterAndSort = (scores: FundScore[], isAuthenticated: boolean =
     });
 
     return filtered;
-  }, [scores, searchTerm, sortField, sortDirection, filters, isAuthenticated]);
+  }, [scores, searchTerm, sortField, sortDirection, filters]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
