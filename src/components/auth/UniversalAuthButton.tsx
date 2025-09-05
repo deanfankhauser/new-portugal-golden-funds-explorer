@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { Button } from '@/components/ui/button';
@@ -10,12 +10,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { User, LogOut, Settings, Building, TrendingUp } from 'lucide-react';
 import { toast } from "sonner";
 
 const UniversalAuthButton = () => {
   const { user, userType, profile, signOut, loading } = useEnhancedAuth();
+  const [showDialog, setShowDialog] = useState(false);
 
   const handleSignOut = async () => {
     const { error } = await signOut();
@@ -36,14 +45,55 @@ const UniversalAuthButton = () => {
 
   if (!user) {
     return (
-      <div className="flex gap-2">
-        <Button asChild variant="outline" size="sm">
-          <Link to="/investor-auth">Investor Login</Link>
+      <>
+        <Button 
+          onClick={() => setShowDialog(true)}
+          size="lg" 
+          className="px-8 py-3 text-lg"
+        >
+          Login / Register
         </Button>
-        <Button asChild variant="default" size="sm">
-          <Link to="/manager-auth">Manager Login</Link>
-        </Button>
-      </div>
+        
+        <Dialog open={showDialog} onOpenChange={setShowDialog}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Choose your account type</DialogTitle>
+              <DialogDescription>
+                Select whether you're an investor or a fund manager to continue.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid grid-cols-1 gap-4 mt-4">
+              <Link to="/investor-auth" onClick={() => setShowDialog(false)}>
+                <Card className="cursor-pointer hover:bg-accent/5 transition-colors">
+                  <CardHeader className="text-center">
+                    <div className="flex justify-center mb-2">
+                      <TrendingUp className="h-8 w-8 text-accent" />
+                    </div>
+                    <CardTitle className="text-lg">Investor</CardTitle>
+                    <CardDescription>
+                      Access investment opportunities and manage your portfolio
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
+              
+              <Link to="/manager-auth" onClick={() => setShowDialog(false)}>
+                <Card className="cursor-pointer hover:bg-accent/5 transition-colors">
+                  <CardHeader className="text-center">
+                    <div className="flex justify-center mb-2">
+                      <Building className="h-8 w-8 text-accent" />
+                    </div>
+                    <CardTitle className="text-lg">Fund Manager</CardTitle>
+                    <CardDescription>
+                      Manage your funds and connect with investors
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </>
     );
   }
 
