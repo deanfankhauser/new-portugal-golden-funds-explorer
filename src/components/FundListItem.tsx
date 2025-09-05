@@ -1,17 +1,14 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../data/funds';
 import { isFundGVEligible } from '../data/services/gv-eligibility-service';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GitCompare, PieChart, Globe, Tag, User, Lock, Euro } from 'lucide-react';
+import { GitCompare, PieChart, Globe, Tag, User, Euro } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
-import { useAuth } from '../contexts/AuthContext';
-import { ContentGatingService } from '../services/contentGatingService';
 import IntroductionButton from './fund-details/IntroductionButton';
-import LazyPasswordDialog from './common/LazyPasswordDialog';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 import DataFreshnessIndicator from './common/DataFreshnessIndicator';
@@ -24,8 +21,6 @@ interface FundListItemProps {
 
 const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
   const { addToComparison, removeFromComparison, isInComparison } = useComparison();
-  const { isAuthenticated } = useAuth();
-  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   
   const isSelected = isInComparison(fund.id);
   const isGVEligible = isFundGVEligible(fund);
@@ -33,20 +28,11 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
   const handleCompareClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation to fund details
     
-    if (!isAuthenticated) {
-      setShowPasswordDialog(true);
-      return;
-    }
-    
     if (isSelected) {
       removeFromComparison(fund.id);
     } else {
       addToComparison(fund);
     }
-  };
-
-  const handleUnlockClick = () => {
-    setShowPasswordDialog(true);
   };
 
   // Get the main geographic allocation (first one)
@@ -131,27 +117,16 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 </div>
               </div>
 
-              {/* Gated Financial Information */}
+              {/* Financial Information */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 p-3 bg-muted rounded-lg">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <Euro className="w-4 h-4 mr-2 text-primary" />
                     <span className="text-sm text-muted-foreground">Mgmt Fee:</span>
                   </div>
-                  {isAuthenticated ? (
-                    <span className="font-medium text-sm">
-                      {fund.managementFee}% <span className="text-xs text-muted-foreground">{DATA_AS_OF_LABEL}</span>
-                    </span>
-                  ) : (
-                    <div 
-                      className="flex items-center cursor-pointer hover:bg-secondary rounded px-2 py-1"
-                      onClick={handleUnlockClick}
-                      title={ContentGatingService.getGatedMessage('fees')}
-                    >
-                      <Lock className="h-3 w-3 text-muted-foreground mr-1" />
-                      <span className="text-xs text-muted-foreground">Gated</span>
-                    </div>
-                  )}
+                  <span className="font-medium text-sm">
+                    {fund.managementFee}% <span className="text-xs text-muted-foreground">{DATA_AS_OF_LABEL}</span>
+                  </span>
                 </div>
                 
                 <div className="flex items-center justify-between">
@@ -159,42 +134,11 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                     <Euro className="w-4 h-4 mr-2 text-accent" />
                     <span className="text-sm text-muted-foreground">Perf Fee:</span>
                   </div>
-                  {isAuthenticated ? (
-                    <span className="font-medium text-sm">
-                      {fund.performanceFee}% <span className="text-xs text-muted-foreground">{DATA_AS_OF_LABEL}</span>
-                    </span>
-                  ) : (
-                    <div 
-                      className="flex items-center cursor-pointer hover:bg-secondary rounded px-2 py-1"
-                      onClick={handleUnlockClick}
-                      title={ContentGatingService.getGatedMessage('fees')}
-                    >
-                      <Lock className="h-3 w-3 text-muted-foreground mr-1" />
-                      <span className="text-xs text-muted-foreground">Gated</span>
-                    </div>
-                  )}
+                  <span className="font-medium text-sm">
+                    {fund.performanceFee}% <span className="text-xs text-muted-foreground">{DATA_AS_OF_LABEL}</span>
+                  </span>
                 </div>
               </div>
-
-              {/* Non-authenticated users see gated content notice */}
-              {!isAuthenticated && (
-                <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 mb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Lock className="h-4 w-4 text-primary" />
-                    <span className="text-sm font-medium text-foreground">Premium Data Available</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground mb-2">
-                    Access detailed fee analysis, performance metrics, and comparison tools
-                  </p>
-                  <Button 
-                    size="sm" 
-                    onClick={handleUnlockClick}
-                    className="text-xs px-3 py-1"
-                  >
-                    Unlock Premium Data
-                  </Button>
-                </div>
-              )}
               
               {/* Eligibility basis line - always show */}
               <div className="mt-2">
@@ -222,11 +166,6 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           </div>
         </CardContent>
       </Card>
-
-      <LazyPasswordDialog 
-        open={showPasswordDialog}
-        onOpenChange={setShowPasswordDialog}
-      />
     </>
   );
 };

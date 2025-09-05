@@ -1,14 +1,12 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import { Button } from "@/components/ui/button";
 import { GitCompare, Calculator } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
-import { useAuth } from '../../contexts/AuthContext';
 import { tagToSlug } from '@/lib/utils';
 import IntroductionButton from './IntroductionButton';
-import LazyPasswordDialog from '../common/LazyPasswordDialog';
 import EnhancedGVEligibilityBadge from './EnhancedGVEligibilityBadge';
 
 interface FundHeaderProps {
@@ -18,17 +16,10 @@ interface FundHeaderProps {
 const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
   const navigate = useNavigate();
   const { addToComparison, removeFromComparison, isInComparison } = useComparison();
-  const { isAuthenticated } = useAuth();
-  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   
   const isSelected = isInComparison(fund.id);
   
   const handleCompareClick = () => {
-    if (!isAuthenticated) {
-      setShowPasswordDialog(true);
-      return;
-    }
-    
     if (isSelected) {
       removeFromComparison(fund.id);
     } else {
@@ -43,13 +34,6 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
         behavior: 'smooth', 
         block: 'start' 
       });
-      
-      // If not authenticated, open password dialog after scroll
-      if (!isAuthenticated) {
-        setTimeout(() => {
-          setShowPasswordDialog(true);
-        }, 800);
-      }
     }
   };
 
@@ -104,11 +88,6 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
           </div>
         </div>
       </div>
-
-      <LazyPasswordDialog 
-        open={showPasswordDialog}
-        onOpenChange={setShowPasswordDialog}
-      />
     </>
   );
 };

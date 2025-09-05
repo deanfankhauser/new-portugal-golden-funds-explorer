@@ -39,20 +39,6 @@ const FundAlternatives = () => {
       <div className="min-h-screen flex flex-col bg-gray-50">
         <PageSEO pageType="fund-alternatives" fundName={fund.name} />
         <Header />
-        {/* Add noindex for pages with no alternatives */}
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            if (typeof document !== 'undefined') {
-              let robots = document.querySelector('meta[name="robots"]');
-              if (!robots) {
-                robots = document.createElement('meta');
-                robots.setAttribute('name', 'robots');
-                document.head.appendChild(robots);
-              }
-              robots.setAttribute('content', 'noindex, follow');
-            }
-          `
-        }} />
         <main className="flex-1 py-6 md:py-8">
           <div className="container mx-auto px-4 max-w-4xl">
             <div className="mb-6">

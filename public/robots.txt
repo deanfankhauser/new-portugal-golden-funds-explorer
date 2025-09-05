@@ -5,8 +5,9 @@ Allow: /
 # Fund pages and listings
 Allow: /*
 
-# Sitemap
+# Sitemaps
 Sitemap: https://funds.movingto.com/sitemap.xml
+Sitemap: https://funds.movingto.com/sitemap_funds.xml
 
 # Crawl-delay for specific bots
 User-agent: Googlebot

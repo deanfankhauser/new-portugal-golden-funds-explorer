@@ -1,21 +1,16 @@
-
 import React, { useState, useEffect } from 'react';
 import { Fund } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Calculator, AlertTriangle, Lock, Eye } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import LazyPasswordDialog from '../common/LazyPasswordDialog';
+import { Calculator, AlertTriangle } from 'lucide-react';
 
 interface ROICalculatorProps {
   fund: Fund;
 }
 
 const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
-  const { isAuthenticated } = useAuth();
-  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [investmentAmount, setInvestmentAmount] = useState<number>(fund.minimumInvestment);
   const [holdingPeriod, setHoldingPeriod] = useState<number>(5);
   const [expectedReturn, setExpectedReturn] = useState<number>(0);
@@ -30,14 +25,12 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
     const returnString = fund.returnTarget.toLowerCase();
     let returnRate = 0;
     
-    // Try to extract percentage from various formats
     const percentageMatch = returnString.match(/(\d+(?:\.\d+)?)-?(\d+(?:\.\d+)?)?%/);
     if (percentageMatch) {
       const minReturn = parseFloat(percentageMatch[1]);
       const maxReturn = percentageMatch[2] ? parseFloat(percentageMatch[2]) : minReturn;
-      returnRate = (minReturn + maxReturn) / 2; // Use average if range
+      returnRate = (minReturn + maxReturn) / 2;
     } else {
-      // Try to extract single percentage
       const singleMatch = returnString.match(/(\d+(?:\.\d+)?)%/);
       if (singleMatch) {
         returnRate = parseFloat(singleMatch[1]);
@@ -47,24 +40,16 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
     setExpectedReturn(returnRate);
   }, [fund.returnTarget]);
 
-  const handleUnlockClick = () => {
-    setShowPasswordDialog(true);
-  };
-
   const calculateROI = () => {
-    if (investmentAmount <= 0 || holdingPeriod <= 0 || expectedReturn < 0) {
-      return;
-    }
-
-    const annualReturnRate = expectedReturn / 100;
-    const totalValue = investmentAmount * Math.pow(1 + annualReturnRate, holdingPeriod);
+    const annualReturn = expectedReturn / 100;
+    const totalValue = investmentAmount * Math.pow(1 + annualReturn, holdingPeriod);
     const totalReturn = totalValue - investmentAmount;
-    const annualizedReturn = ((totalValue / investmentAmount) ** (1 / holdingPeriod) - 1) * 100;
+    const annualizedReturn = (totalValue / investmentAmount) ** (1 / holdingPeriod) - 1;
 
     setResults({
       totalValue,
       totalReturn,
-      annualizedReturn
+      annualizedReturn: annualizedReturn * 100
     });
   };
 
@@ -81,117 +66,36 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
     return `${percentage.toFixed(2)}%`;
   };
 
-  // Show gated content for non-authenticated users
-  if (!isAuthenticated) {
-    return (
-      <>
-        <Card id="roi-calculator" className="bg-card border border-border shadow-sm relative overflow-hidden">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Calculator className="w-5 h-5 text-primary" />
-              ROI Calculator for {fund.name}
-              <Lock className="w-5 h-5 text-muted-foreground ml-auto" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="relative">
-            {/* Blurred preview */}
-            <div className="filter blur-sm">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div className="space-y-2">
-                  <Label>Investment Amount (€)</Label>
-                  <Input value="€•••,•••" disabled />
-                </div>
-                <div className="space-y-2">
-                  <Label>Holding Period (years)</Label>
-                  <Input value="• years" disabled />
-                </div>
-                <div className="space-y-2">
-                  <Label>Expected Annual Return (%)</Label>
-                  <Input value="•.•%" disabled />
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-success/10 rounded-lg">
-                  <h4 className="font-medium text-muted-foreground mb-1">Total Value</h4>
-                  <p className="text-2xl font-bold text-success">€•••,•••</p>
-                </div>
-                <div className="text-center p-4 bg-primary/10 rounded-lg">
-                  <h4 className="font-medium text-muted-foreground mb-1">Total Return</h4>
-                  <p className="text-2xl font-bold text-primary">€•••,•••</p>
-                </div>
-                <div className="text-center p-4 bg-accent/10 rounded-lg">
-                  <h4 className="font-medium text-muted-foreground mb-1">Annualized Return</h4>
-                  <p className="text-2xl font-bold text-accent">••.••%</p>
-                </div>
-              </div>
-            </div>
-            
-            {/* Overlay with unlock button */}
-            <div className="absolute inset-0 bg-card/80 backdrop-blur-sm flex items-center justify-center">
-              <div className="text-center">
-                <Calculator className="w-8 h-8 text-primary mx-auto mb-3" />
-                <h3 className="font-semibold text-foreground mb-2">Advanced ROI Calculator</h3>
-                <p className="text-sm text-muted-foreground mb-4 max-w-xs">
-                  Calculate personalized return projections with detailed scenarios and risk analysis
-                </p>
-                <Button 
-                  onClick={handleUnlockClick}
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  <Eye className="w-4 h-4 mr-2" />
-                  Access ROI Calculator
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <LazyPasswordDialog 
-          open={showPasswordDialog}
-          onOpenChange={setShowPasswordDialog}
-        />
-      </>
-    );
-  }
-
-  // Show full content for authenticated users
   return (
-    <Card id="roi-calculator" className="bg-card border border-border shadow-sm">
+    <Card id="roi-calculator" className="border border-border shadow-sm hover:shadow-md transition-all duration-300">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-xl">
-          <Calculator className="w-5 h-5 text-primary" />
+        <CardTitle className="flex items-center gap-2">
+          <Calculator className="h-5 w-5" />
           ROI Calculator for {fund.name}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Input Fields */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="investment-amount">Investment Amount (€)</Label>
+            <Label htmlFor="investment-amount">Investment Amount (EUR)</Label>
             <Input
               id="investment-amount"
               type="number"
               value={investmentAmount}
               onChange={(e) => setInvestmentAmount(Number(e.target.value))}
               min={fund.minimumInvestment}
-              step="1000"
             />
-            <p className="text-xs text-muted-foreground">
-              Minimum: {formatCurrency(fund.minimumInvestment)}
-            </p>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="holding-period">Holding Period (years)</Label>
+            <Label htmlFor="holding-period">Holding Period (Years)</Label>
             <Input
               id="holding-period"
               type="number"
               value={holdingPeriod}
               onChange={(e) => setHoldingPeriod(Number(e.target.value))}
-              min="1"
-              max="30"
-              step="1"
+              min={1}
+              max={20}
             />
           </div>
           
@@ -202,62 +106,40 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
               type="number"
               value={expectedReturn}
               onChange={(e) => setExpectedReturn(Number(e.target.value))}
-              min="0"
-              max="50"
-              step="0.1"
+              step={0.1}
+              min={0}
+              max={50}
             />
-            <p className="text-xs text-muted-foreground">
-              Fund target: {fund.returnTarget}
-            </p>
           </div>
         </div>
-
-        {/* Calculate Button */}
-        <Button 
-          onClick={calculateROI}
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-        >
+        
+        <Button onClick={calculateROI} className="w-full">
           Calculate ROI
         </Button>
-
-        {/* Results */}
+        
         {results && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t">
-            <div className="text-center p-4 bg-success/10 rounded-lg">
-              <h4 className="font-medium text-muted-foreground mb-1">Total Value</h4>
-              <p className="text-2xl font-bold text-success">
-                {formatCurrency(results.totalValue)}
-              </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted rounded-lg">
+            <div className="text-center">
+              <div className="text-sm text-muted-foreground">Total Value</div>
+              <div className="text-xl font-bold text-primary">{formatCurrency(results.totalValue)}</div>
             </div>
-            
-            <div className="text-center p-4 bg-primary/10 rounded-lg">
-              <h4 className="font-medium text-muted-foreground mb-1">Total Return</h4>
-              <p className="text-2xl font-bold text-primary">
-                {formatCurrency(results.totalReturn)}
-              </p>
+            <div className="text-center">
+              <div className="text-sm text-muted-foreground">Total Return</div>
+              <div className="text-xl font-bold text-success">{formatCurrency(results.totalReturn)}</div>
             </div>
-            
-            <div className="text-center p-4 bg-accent/10 rounded-lg">
-              <h4 className="font-medium text-muted-foreground mb-1">Annualized Return</h4>
-              <p className="text-2xl font-bold text-accent">
-                {formatPercentage(results.annualizedReturn)}
-              </p>
+            <div className="text-center">
+              <div className="text-sm text-muted-foreground">Annualized Return</div>
+              <div className="text-xl font-bold text-accent">{formatPercentage(results.annualizedReturn)}</div>
             </div>
           </div>
         )}
-
-        {/* Legal Disclaimer */}
-        <div className="bg-warning/10 border border-warning/20 rounded-lg p-4 flex items-start space-x-3">
-          <AlertTriangle className="text-warning w-5 h-5 mt-0.5 flex-shrink-0" />
+        
+        <div className="flex items-start gap-2 p-4 bg-warning/10 rounded-lg border border-warning/20">
+          <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
           <div className="text-sm text-warning-foreground">
-            <h4 className="font-medium mb-2">Important Legal Disclaimer</h4>
-            <p className="leading-relaxed">
-              This calculator is for illustrative purposes only and does not constitute investment guidance. 
-              Actual returns may vary significantly and are not guaranteed. Past performance does not 
-              predict future results. Investment in funds involves risk, including the possible loss of 
-              principal. Please consult with qualified financial guidance professionals before making investment decisions.
-              The expected returns shown are targets only and may not be achieved.
-            </p>
+            <strong>Investment Risk Disclaimer:</strong> Past performance does not guarantee future results. 
+            This calculation is for illustrative purposes only and actual returns may vary significantly. 
+            Always consult with qualified financial advisors before making investment decisions.
           </div>
         </div>
       </CardContent>

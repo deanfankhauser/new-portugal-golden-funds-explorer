@@ -5,8 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X, ChevronDown, ChevronUp, Search, Filter, Sparkles } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import LazyPasswordDialog from './common/LazyPasswordDialog';
 import { analytics } from '../utils/analytics';
 
 interface FundFilterProps {
@@ -23,8 +21,6 @@ const FundFilter: React.FC<FundFilterProps> = ({
   setSearchQuery 
 }) => {
   const allTags = getAllTags();
-  const { isAuthenticated } = useAuth();
-  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [showAllTags, setShowAllTags] = useState(false);
   const [searchFocus, setSearchFocus] = useState(false);
   
@@ -69,11 +65,6 @@ const FundFilter: React.FC<FundFilterProps> = ({
   };
   
   const toggleTag = (tag: FundTag) => {
-    if (!isAuthenticated) {
-      setShowPasswordDialog(true);
-      return;
-    }
-    
     const newTags = selectedTags.includes(tag) 
       ? selectedTags.filter(t => t !== tag)
       : [...selectedTags, tag];
@@ -83,28 +74,15 @@ const FundFilter: React.FC<FundFilterProps> = ({
     scrollToTop();
   };
 
-  const handleSearchClick = () => {
-    if (!isAuthenticated) {
-      setShowPasswordDialog(true);
-      return;
-    }
-  };
-
   const handleSearchChange = (value: string) => {
-    if (isAuthenticated) {
-      setSearchQuery(value);
-      
-      if (value.trim()) {
-        analytics.trackSearch(value.trim(), 0);
-      }
+    setSearchQuery(value);
+    
+    if (value.trim()) {
+      analytics.trackSearch(value.trim(), 0);
     }
   };
 
   const clearFilters = () => {
-    if (!isAuthenticated) {
-      setShowPasswordDialog(true);
-      return;
-    }
     setSelectedTags([]);
     setSearchQuery('');
     analytics.trackEvent('filters_cleared');
@@ -170,47 +148,43 @@ const FundFilter: React.FC<FundFilterProps> = ({
               <Input
                 id="search"
                 type="text"
-                placeholder={isAuthenticated ? "Search by name, manager, or description..." : "Click to access search"}
-                value={isAuthenticated ? searchQuery : ''}
+                placeholder="Search by name, manager, or description..."
+                value={searchQuery}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                onClick={handleSearchClick}
                 onFocus={() => setSearchFocus(true)}
                 onBlur={() => setSearchFocus(false)}
                 className={`pl-10 h-12 rounded-xl border-2 transition-all duration-200 ${
                   searchFocus 
                     ? 'border-accent ring-2 ring-accent/20' 
                     : 'border-border hover:border-accent'
-                } ${!isAuthenticated ? 'cursor-pointer' : ''}`}
-                readOnly={!isAuthenticated}
+                }`}
               />
             </div>
           </div>
 
           {/* Quick Filters */}
-          {isAuthenticated && (
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-accent" />
-                <label className="text-sm font-semibold text-foreground">Popular Filters</label>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {quickFilters.map(filter => (
-                  <Badge
-                    key={filter.label}
-                    variant={selectedTags.includes(filter.tag) ? "default" : "outline"}
-                    className={`cursor-pointer transition-all duration-200 hover:scale-105 px-3 py-1.5 rounded-full ${
-                      selectedTags.includes(filter.tag)
-                        ? 'bg-accent text-accent-foreground shadow-md'
-                        : 'hover:bg-accent/10 hover:text-accent hover:border-accent'
-                    }`}
-                    onClick={() => toggleTag(filter.tag)}
-                  >
-                    {filter.label}
-                  </Badge>
-                ))}
-              </div>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-accent" />
+              <label className="text-sm font-semibold text-foreground">Popular Filters</label>
             </div>
-          )}
+            <div className="flex flex-wrap gap-2">
+              {quickFilters.map(filter => (
+                <Badge
+                  key={filter.label}
+                  variant={selectedTags.includes(filter.tag) ? "default" : "outline"}
+                  className={`cursor-pointer transition-all duration-200 hover:scale-105 px-3 py-1.5 rounded-full ${
+                    selectedTags.includes(filter.tag)
+                      ? 'bg-accent text-accent-foreground shadow-md'
+                      : 'hover:bg-accent/10 hover:text-accent hover:border-accent'
+                  }`}
+                  onClick={() => toggleTag(filter.tag)}
+                >
+                  {filter.label}
+                </Badge>
+              ))}
+            </div>
+          </div>
 
           {/* Categorized Tag Groups */}
             <div className="space-y-6">
@@ -320,11 +294,6 @@ const FundFilter: React.FC<FundFilterProps> = ({
           )}
         </div>
       </div>
-
-      <LazyPasswordDialog 
-        open={showPasswordDialog}
-        onOpenChange={setShowPasswordDialog}
-      />
     </>
   );
 };

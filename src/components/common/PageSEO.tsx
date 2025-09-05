@@ -34,7 +34,7 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
 
       ConsolidatedSEOService.applyMetaTags(seoData);
       
-      // Ensure 404 pages are not indexed
+      // Only noindex true 404 pages, never fund pages
       if (pageType === '404') {
         let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
         if (!robots) {

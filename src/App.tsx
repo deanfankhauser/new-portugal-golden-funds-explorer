@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from "@/components/ui/sonner";
-import { AuthProvider } from './contexts/AuthContext';
 import { ComparisonProvider } from './contexts/ComparisonContext';
 import { RecentlyViewedProvider } from './contexts/RecentlyViewedContext';
 
@@ -111,8 +110,7 @@ function App() {
   
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ComparisonProvider>
+      <ComparisonProvider>
           <RecentlyViewedProvider>
             <TooltipProvider>
               <Router>
@@ -229,7 +227,6 @@ function App() {
             </TooltipProvider>
           </RecentlyViewedProvider>
         </ComparisonProvider>
-      </AuthProvider>
     </QueryClientProvider>
   );
 }

@@ -8,7 +8,6 @@ import { Helmet } from 'react-helmet';
 import { ConsolidatedSEOService } from '../services/consolidatedSEOService';
 import { StaticRoute } from './routeDiscovery';
 import { loadComponents, TooltipProvider } from './componentLoader';
-import { AuthProvider } from '../contexts/AuthContext';
 import { ComparisonProvider } from '../contexts/ComparisonContext';
 import { RecentlyViewedProvider } from '../contexts/RecentlyViewedContext';
 
@@ -130,55 +129,51 @@ export class SSRRenderer {
       QueryClientProvider,
       { client: queryClient },
       React.createElement(
-        AuthProvider,
+        ComparisonProvider,
         null,
         React.createElement(
-          ComparisonProvider,
+          RecentlyViewedProvider,
           null,
           React.createElement(
-            RecentlyViewedProvider,
+            TooltipProvider,
             null,
             React.createElement(
-              TooltipProvider,
-              null,
+              StaticRouter,
+              { location: route.path },
               React.createElement(
-                StaticRouter,
-                { location: route.path },
-                React.createElement(
-                  Routes,
-                  null,
-                  // Main routes
-                  React.createElement(Route, { path: '/', element: React.createElement(getComponent('Index')) }),
-                  React.createElement(Route, { path: '/index', element: React.createElement(getComponent('FundIndex')) }),
-                  
-                  // Hub pages
-                  React.createElement(Route, { path: '/tags', element: React.createElement(getComponent('TagsHub')) }),
-                  React.createElement(Route, { path: '/tags/:tag', element: React.createElement(getComponent('TagPage')) }),
-                  React.createElement(Route, { path: '/categories', element: React.createElement(getComponent('CategoriesHub')) }),
-                  React.createElement(Route, { path: '/categories/:category', element: React.createElement(getComponent('CategoryPage')) }),
-                  React.createElement(Route, { path: '/managers', element: React.createElement(getComponent('ManagersHub')) }),
-                  React.createElement(Route, { path: '/manager/:name', element: React.createElement(getComponent('FundManager')) }),
-                  
-                  // Static pages
-                  React.createElement(Route, { path: '/about', element: React.createElement(getComponent('About')) }),
-                  React.createElement(Route, { path: '/disclaimer', element: React.createElement(getComponent('Disclaimer')) }),
-                  React.createElement(Route, { path: '/privacy', element: React.createElement(getComponent('Privacy')) }),
-                  React.createElement(Route, { path: '/compare', element: React.createElement(getComponent('ComparisonPage')) }),
-                  React.createElement(Route, { path: '/comparisons', element: React.createElement(getComponent('ComparisonsHub')) }),
-                  React.createElement(Route, { path: '/faqs', element: React.createElement(getComponent('FAQs')) }),
-                  React.createElement(Route, { path: '/roi-calculator', element: React.createElement(getComponent('ROICalculator')) }),
-                  React.createElement(Route, { path: '/fund-quiz', element: React.createElement(getComponent('FundQuiz')) }),
-                  React.createElement(Route, { path: '/compare/:slug', element: React.createElement(getComponent('FundComparison')) }),
-                  
-                  // Alternatives hub
-                  React.createElement(Route, { path: '/alternatives', element: React.createElement(getComponent('AlternativesHub')) }),
-                  
-                  // Fund alternatives routes
-                  React.createElement(Route, { path: '/:id/alternatives', element: React.createElement(getComponent('FundAlternatives')) }),
-                  
-                  // Fund details routes (must be last due to catch-all nature)
-                  React.createElement(Route, { path: '/:id', element: React.createElement(getComponent('FundDetails')) })
-                )
+                Routes,
+                null,
+                // Main routes
+                React.createElement(Route, { path: '/', element: React.createElement(getComponent('Index')) }),
+                React.createElement(Route, { path: '/index', element: React.createElement(getComponent('FundIndex')) }),
+                
+                // Hub pages
+                React.createElement(Route, { path: '/tags', element: React.createElement(getComponent('TagsHub')) }),
+                React.createElement(Route, { path: '/tags/:tag', element: React.createElement(getComponent('TagPage')) }),
+                React.createElement(Route, { path: '/categories', element: React.createElement(getComponent('CategoriesHub')) }),
+                React.createElement(Route, { path: '/categories/:category', element: React.createElement(getComponent('CategoryPage')) }),
+                React.createElement(Route, { path: '/managers', element: React.createElement(getComponent('ManagersHub')) }),
+                React.createElement(Route, { path: '/manager/:name', element: React.createElement(getComponent('FundManager')) }),
+                
+                // Static pages
+                React.createElement(Route, { path: '/about', element: React.createElement(getComponent('About')) }),
+                React.createElement(Route, { path: '/disclaimer', element: React.createElement(getComponent('Disclaimer')) }),
+                React.createElement(Route, { path: '/privacy', element: React.createElement(getComponent('Privacy')) }),
+                React.createElement(Route, { path: '/compare', element: React.createElement(getComponent('ComparisonPage')) }),
+                React.createElement(Route, { path: '/comparisons', element: React.createElement(getComponent('ComparisonsHub')) }),
+                React.createElement(Route, { path: '/faqs', element: React.createElement(getComponent('FAQs')) }),
+                React.createElement(Route, { path: '/roi-calculator', element: React.createElement(getComponent('ROICalculator')) }),
+                React.createElement(Route, { path: '/fund-quiz', element: React.createElement(getComponent('FundQuiz')) }),
+                React.createElement(Route, { path: '/compare/:slug', element: React.createElement(getComponent('FundComparison')) }),
+                
+                // Alternatives hub
+                React.createElement(Route, { path: '/alternatives', element: React.createElement(getComponent('AlternativesHub')) }),
+                
+                // Fund alternatives routes
+                React.createElement(Route, { path: '/:id/alternatives', element: React.createElement(getComponent('FundAlternatives')) }),
+                
+                // Fund details routes (must be last due to catch-all nature)
+                React.createElement(Route, { path: '/:id', element: React.createElement(getComponent('FundDetails')) })
               )
             )
           )
