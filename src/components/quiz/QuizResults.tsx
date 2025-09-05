@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import RecommendationCard from './RecommendationCard';
-import EmailCapture from '../common/EmailCapture';
 import { Fund } from '@/data/types/funds';
 import { Trophy, RotateCcw, Star, TrendingUp, Users, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';

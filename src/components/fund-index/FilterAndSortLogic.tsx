@@ -65,7 +65,7 @@ export const useFilterAndSort = (scores: FundScore[]) => {
       return matchesSearch && matchesCategory && matchesStatus && matchesInvestment && matchesFee;
     });
 
-    // Sorting - restrict some fields for non-authenticated users
+    // Sorting
     filtered.sort((a, b) => {
       const fundA = getFundById(a.fundId);
       const fundB = getFundById(b.fundId);
