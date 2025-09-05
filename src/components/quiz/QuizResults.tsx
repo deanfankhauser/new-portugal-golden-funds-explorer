@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import RecommendationCard from './RecommendationCard';
 import EmailCapture from '../common/EmailCapture';
 import { Fund } from '@/data/types/funds';
-import { useAuth } from '@/contexts/AuthContext';
 import { Trophy, RotateCcw, Star, TrendingUp, Users, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -18,7 +17,6 @@ interface QuizResultsProps {
 }
 
 const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz, formatCurrency }) => {
-  const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
@@ -64,59 +62,8 @@ const QuizResults: React.FC<QuizResultsProps> = ({ recommendations, onResetQuiz,
     }
   };
 
-  // Show email capture if user is not authenticated and hasn't submitted email
-  if (!isAuthenticated && !emailSubmitted) {
-    return (
-      <div className="space-y-8 max-w-2xl mx-auto">
-        <Card className="bg-gradient-to-r from-accent/10 to-accent/5 border-accent/20">
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/20">
-              <Trophy className="h-8 w-8 text-accent" />
-            </div>
-            <CardTitle className="text-2xl">Your Personalized Fund Recommendations Are Ready!</CardTitle>
-            <CardDescription className="text-base">
-              We've analyzed your investment profile and found {recommendations.length} funds that match your preferences perfectly.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center">
-            <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="text-center">
-                <Star className="w-6 h-6 text-warning mx-auto mb-2" />
-                <p className="text-sm font-medium">Personalized</p>
-                <p className="text-xs text-muted-foreground">Matched to your profile</p>
-              </div>
-              <div className="text-center">
-                <TrendingUp className="w-6 h-6 text-success mx-auto mb-2" />
-                <p className="text-sm font-medium">Optimized</p>
-                <p className="text-xs text-muted-foreground">Best returns for your risk</p>
-              </div>
-              <div className="text-center">
-                <Users className="w-6 h-6 text-accent mx-auto mb-2" />
-                <p className="text-sm font-medium">Verified</p>
-                <p className="text-xs text-muted-foreground">Trusted fund managers</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <EmailCapture
-          title="Get Your Fund Recommendations"
-          description="Enter your email to see which Portugal Golden Visa funds match your investment profile."
-          onEmailSubmit={handleEmailSubmit}
-          isSubmitting={isSubmittingEmail}
-        />
-
-        <div className="text-center">
-          <Button onClick={onResetQuiz} variant="outline" className="flex items-center gap-2">
-            <RotateCcw className="w-4 h-4" />
-            Retake Quiz
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // Show results if authenticated or email submitted
+  // Always show results since we've ungated everything
+  // Show results directly
   return (
     <div className="space-y-8">
       <Card className="bg-gradient-to-r from-success/10 to-success/5 border-success/20">

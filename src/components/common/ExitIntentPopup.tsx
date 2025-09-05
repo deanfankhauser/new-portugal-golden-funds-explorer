@@ -3,7 +3,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { X, ExternalLink, Users, Shield, Zap } from 'lucide-react';
 import { analytics } from '@/utils/analytics';
-import { useAuth } from '@/contexts/AuthContext';
 import { buildContactUrl, openExternalLink } from '@/utils/urlHelpers';
 
 interface ExitIntentPopupProps {
@@ -13,7 +12,6 @@ interface ExitIntentPopupProps {
 const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [hasShown, setHasShown] = useState(false);
-  const { isAuthenticated } = useAuth();
 
   // Check if popup was dismissed within the last 14 days
   const wasRecentlyDismissed = () => {
@@ -28,8 +26,8 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) =
   };
 
   useEffect(() => {
-    // Don't show popup if user is already authenticated, popup is disabled, or was recently dismissed
-    if (!isEnabled || hasShown || isAuthenticated || wasRecentlyDismissed()) return;
+    // Don't show popup if popup is disabled, already shown, or was recently dismissed
+    if (!isEnabled || hasShown || wasRecentlyDismissed()) return;
 
     let mouseLeaveTimer: NodeJS.Timeout;
     
@@ -77,7 +75,7 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) =
         clearTimeout(mouseLeaveTimer);
       }
     };
-  }, [isEnabled, hasShown, isAuthenticated]);
+  }, [isEnabled, hasShown]);
 
   const handleContactClick = () => {
     const contactUrl = buildContactUrl('exit-intent-popup');
