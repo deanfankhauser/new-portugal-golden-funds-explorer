@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { buildContactUrl } from "../utils/urlHelpers";
-import UniversalAuthButton from "./auth/UniversalAuthButton";
+import AuthAwareButton from "./auth/AuthAwareButton";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -170,7 +170,7 @@ const Header = () => {
               </a>
             </Button>
 
-            <UniversalAuthButton />
+            <AuthAwareButton />
             <ComparisonIndicator />
           </div>
 
