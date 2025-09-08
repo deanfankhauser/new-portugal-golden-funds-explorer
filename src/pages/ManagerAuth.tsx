@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2 } from 'lucide-react';
 import { toast } from "sonner";
+import { supabase } from '@/integrations/supabase/client';
 
 const ManagerAuth = () => {
   const navigate = useNavigate();
@@ -40,13 +41,16 @@ const ManagerAuth = () => {
     }
     
     try {
-      const { supabase } = await import('@/integrations/supabase/client');
+      console.log('🔐 Starting auth action:', action, 'for email:', email);
       
       if (action === 'signIn') {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        return { error };
+        console.log('🔐 Calling signInWithPassword...');
+        const result = await supabase.auth.signInWithPassword({ email, password });
+        console.log('🔐 signInWithPassword result:', result);
+        return { error: result.error };
       } else {
-        const { error } = await supabase.auth.signUp({
+        console.log('🔐 Calling signUp...');
+        const result = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -54,9 +58,11 @@ const ManagerAuth = () => {
             data: metadata
           }
         });
-        return { error };
+        console.log('🔐 signUp result:', result);
+        return { error: result.error };
       }
     } catch (error) {
+      console.error('🔐 Auth action failed with error:', error);
       return { error: { message: 'Authentication service unavailable' } };
     }
   };
@@ -67,23 +73,44 @@ const ManagerAuth = () => {
     setError(null);
 
     console.log('🔐 Starting manager login process...');
-    const { error } = await handleAuthAction('signIn', loginData.email, loginData.password);
     
-    if (error) {
-      console.error('🔐 Login failed:', error);
-      setError(error.message);
-      toast.error("Login Failed", {
-        description: error.message
+    // Add timeout protection to prevent infinite loading
+    const timeoutId = setTimeout(() => {
+      console.error('🔐 Login timeout after 10 seconds');
+      setIsSubmitting(false);
+      setError('Login timeout. Please try again.');
+      toast.error("Login Timeout", {
+        description: "The login process took too long. Please try again."
       });
-    } else {
-      console.log('🔐 Login successful, redirecting...');
-      toast.success("Welcome back!", {
-        description: "You have been successfully logged in."
+    }, 10000);
+
+    try {
+      const { error } = await handleAuthAction('signIn', loginData.email, loginData.password);
+      clearTimeout(timeoutId);
+      
+      if (error) {
+        console.error('🔐 Login failed:', error);
+        setError(error.message);
+        toast.error("Login Failed", {
+          description: error.message
+        });
+      } else {
+        console.log('🔐 Login successful, redirecting...');
+        toast.success("Welcome back!", {
+          description: "You have been successfully logged in."
+        });
+        // Use navigate instead of window.location for better React Router integration
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      }
+    } catch (error) {
+      clearTimeout(timeoutId);
+      console.error('🔐 Login process failed:', error);
+      setError('Login failed unexpectedly. Please try again.');
+      toast.error("Login Error", {
+        description: "An unexpected error occurred. Please try again."
       });
-      // Use navigate instead of window.location for better React Router integration
-      setTimeout(() => {
-        navigate('/');
-      }, 1000);
     }
     
     setIsSubmitting(false);
