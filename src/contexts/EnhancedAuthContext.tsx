@@ -204,6 +204,8 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (!error) {
+      setUser(null);
+      setSession(null);
       setUserType(null);
       setProfile(null);
     }
