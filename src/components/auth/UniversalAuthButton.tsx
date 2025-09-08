@@ -18,8 +18,8 @@ const UniversalAuthButton = () => {
     <>
       <Button 
         onClick={() => setShowDialog(true)}
-        size="lg" 
-        className="px-8 py-3 text-lg"
+        variant="outline" 
+        className="border-background bg-background text-foreground hover:bg-secondary hover:text-foreground transition-all duration-300"
       >
         Login / Register
       </Button>

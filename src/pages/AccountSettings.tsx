@@ -9,9 +9,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Upload, Loader2, User, Mail, Lock, Camera } from 'lucide-react';
+import { Upload, Loader2, User, Mail, Lock, Camera, Home } from 'lucide-react';
 import { toast } from "sonner";
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 
 const AccountSettings = () => {
   const { user, userType, profile, updateProfile, uploadAvatar, loading } = useEnhancedAuth();
@@ -189,10 +189,20 @@ const AccountSettings = () => {
       <div className="container mx-auto py-8 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold">Account Settings</h1>
-            <p className="text-muted-foreground">
-              Manage your profile information and account preferences
-            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold">Account Settings</h1>
+                <p className="text-muted-foreground">
+                  Manage your profile information and account preferences
+                </p>
+              </div>
+              <Button asChild variant="outline" className="gap-2">
+                <Link to="/">
+                  <Home className="h-4 w-4" />
+                  Back to Home
+                </Link>
+              </Button>
+            </div>
           </div>
 
           <Tabs defaultValue="profile" className="space-y-6">
