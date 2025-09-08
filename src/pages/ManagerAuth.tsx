@@ -34,6 +34,11 @@ const ManagerAuth = () => {
   
   // Simple auth functions for form handling
   const handleAuthAction = async (action: 'signIn' | 'signUp', email: string, password: string, metadata?: any) => {
+    // Prevent running during SSG/SSR
+    if (typeof window === 'undefined') {
+      return { error: { message: 'Server-side execution not supported' } };
+    }
+    
     try {
       const { supabase } = await import('@/integrations/supabase/client');
       
