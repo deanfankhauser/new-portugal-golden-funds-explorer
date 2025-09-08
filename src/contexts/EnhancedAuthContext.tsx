@@ -137,12 +137,15 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('🔐 Auth state change:', event, session?.user?.email || 'no user');
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
+          console.log('🔐 Fetching profile for user:', session.user.id);
           await fetchProfile(session.user.id);
         } else {
+          console.log('🔐 No user, clearing profile data');
           setUserType(null);
           setProfile(null);
         }
@@ -152,7 +155,12 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session }, error }) => {
+      if (error) {
+        console.error('🔐 Error getting initial session:', error);
+      } else {
+        console.log('🔐 Initial session:', session?.user?.email || 'no user');
+      }
       setSession(session);
       setUser(session?.user ?? null);
       

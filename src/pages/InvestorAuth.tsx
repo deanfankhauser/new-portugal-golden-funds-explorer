@@ -66,20 +66,23 @@ const InvestorAuth = () => {
     setIsSubmitting(true);
     setError(null);
 
+    console.log('🔐 Starting investor login process...');
     const { error } = await handleAuthAction('signIn', loginData.email, loginData.password);
     
     if (error) {
+      console.error('🔐 Login failed:', error);
       setError(error.message);
       toast.error("Login Failed", {
         description: error.message
       });
     } else {
+      console.log('🔐 Login successful, redirecting...');
       toast.success("Welcome back!", {
         description: "You have been successfully logged in."
       });
-      // Redirect to home page after successful login
+      // Use navigate instead of window.location for better React Router integration
       setTimeout(() => {
-        window.location.href = '/';
+        navigate('/');
       }, 1000);
     }
     
