@@ -49,20 +49,9 @@ const InvestorAuth = () => {
     setError(null);
 
     console.log('🔐 Starting investor login process with context...');
-    
-    // Add timeout protection
-    const timeoutId = setTimeout(() => {
-      console.error('🔐 Login timeout after 10 seconds');
-      setIsSubmitting(false);
-      setError('Login timeout. Please try again.');
-      toast.error("Login Timeout", {
-        description: "The login process took too long. Please try again."
-      });
-    }, 10000);
 
     try {
       const { error } = await signIn(loginData.email, loginData.password);
-      clearTimeout(timeoutId);
       
       if (error) {
         console.error('🔐 Login failed:', error);
@@ -72,14 +61,30 @@ const InvestorAuth = () => {
         });
         setIsSubmitting(false);
       } else {
-        console.log('🔐 Login successful, user will be redirected by useEffect');
+        console.log('🔐 Login successful, checking auth state...');
         toast.success("Welcome back!", {
           description: "You have been successfully logged in."
         });
-        // Don't set isSubmitting to false here - let the redirect happen
+        
+        // Wait for auth state to update, then redirect
+        setTimeout(() => {
+          if (user) {
+            console.log('🔐 User detected, redirecting...');
+            navigate('/');
+          } else {
+            console.log('🔐 User not detected yet, waiting longer...');
+            // Wait a bit more for auth state to propagate
+            setTimeout(() => {
+              setIsSubmitting(false);
+              if (!user) {
+                console.log('🔐 Auth state not updated, but login was successful - redirecting anyway');
+                navigate('/');
+              }
+            }, 2000);
+          }
+        }, 1000);
       }
     } catch (error) {
-      clearTimeout(timeoutId);
       console.error('🔐 Login process failed:', error);
       setError('Login failed unexpectedly. Please try again.');
       toast.error("Login Error", {
