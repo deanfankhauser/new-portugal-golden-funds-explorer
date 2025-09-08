@@ -79,7 +79,7 @@ const InvestorAuth = () => {
       });
       // Redirect to home page after successful login
       setTimeout(() => {
-        navigate('/');
+        window.location.href = '/';
       }, 1000);
     }
     
