@@ -10,11 +10,20 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2 } from 'lucide-react';
 import { toast } from "sonner";
 import { supabase } from '@/integrations/supabase/client';
+import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 
 const ManagerAuth = () => {
   const navigate = useNavigate();
+  const { signIn, signUp, loading, user } = useEnhancedAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (user && !loading) {
+      navigate('/');
+    }
+  }, [user, loading, navigate]);
 
   // Login form state
   const [loginData, setLoginData] = useState({
@@ -34,47 +43,14 @@ const ManagerAuth = () => {
   });
   
   // Simple auth functions for form handling
-  const handleAuthAction = async (action: 'signIn' | 'signUp', email: string, password: string, metadata?: any) => {
-    // Prevent running during SSG/SSR
-    if (typeof window === 'undefined') {
-      return { error: { message: 'Server-side execution not supported' } };
-    }
-    
-    try {
-      console.log('🔐 Starting auth action:', action, 'for email:', email);
-      
-      if (action === 'signIn') {
-        console.log('🔐 Calling signInWithPassword...');
-        const result = await supabase.auth.signInWithPassword({ email, password });
-        console.log('🔐 signInWithPassword result:', result);
-        return { error: result.error };
-      } else {
-        console.log('🔐 Calling signUp...');
-        const result = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/`,
-            data: metadata
-          }
-        });
-        console.log('🔐 signUp result:', result);
-        return { error: result.error };
-      }
-    } catch (error) {
-      console.error('🔐 Auth action failed with error:', error);
-      return { error: { message: 'Authentication service unavailable' } };
-    }
-  };
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
 
-    console.log('🔐 Starting manager login process...');
+    console.log('🔐 Starting manager login process with context...');
     
-    // Add timeout protection to prevent infinite loading
+    // Add timeout protection
     const timeoutId = setTimeout(() => {
       console.error('🔐 Login timeout after 10 seconds');
       setIsSubmitting(false);
@@ -85,7 +61,7 @@ const ManagerAuth = () => {
     }, 10000);
 
     try {
-      const { error } = await handleAuthAction('signIn', loginData.email, loginData.password);
+      const { error } = await signIn(loginData.email, loginData.password);
       clearTimeout(timeoutId);
       
       if (error) {
@@ -94,15 +70,13 @@ const ManagerAuth = () => {
         toast.error("Login Failed", {
           description: error.message
         });
+        setIsSubmitting(false);
       } else {
-        console.log('🔐 Login successful, redirecting...');
+        console.log('🔐 Login successful, user will be redirected by useEffect');
         toast.success("Welcome back!", {
           description: "You have been successfully logged in."
         });
-        // Use navigate instead of window.location for better React Router integration
-        setTimeout(() => {
-          navigate('/');
-        }, 1000);
+        // Don't set isSubmitting to false here - let the redirect happen
       }
     } catch (error) {
       clearTimeout(timeoutId);
@@ -111,9 +85,8 @@ const ManagerAuth = () => {
       toast.error("Login Error", {
         description: "An unexpected error occurred. Please try again."
       });
+      setIsSubmitting(false);
     }
-    
-    setIsSubmitting(false);
   };
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -142,10 +115,7 @@ const ManagerAuth = () => {
       description: signupData.description
     };
 
-    const { error } = await handleAuthAction('signUp', signupData.email, signupData.password, {
-      is_manager: true,
-      ...metadata
-    });
+    const { error } = await signUp(signupData.email, signupData.password, 'manager', metadata);
     
     if (error) {
       if (error.message.includes('already registered')) {
