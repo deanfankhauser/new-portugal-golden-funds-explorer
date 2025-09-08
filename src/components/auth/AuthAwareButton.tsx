@@ -14,8 +14,18 @@ import { Link } from 'react-router-dom';
 import UniversalAuthButton from './UniversalAuthButton';
 
 const AuthAwareButton = () => {
-  const { user, profile, userType, signOut, loading } = useEnhancedAuth();
+  // Add error boundary and safe fallback
+  let authState;
+  try {
+    authState = useEnhancedAuth();
+  } catch (error) {
+    console.error('Auth context error:', error);
+    return <UniversalAuthButton />;
+  }
 
+  const { user, profile, userType, signOut, loading } = authState;
+
+  // Show loading state
   if (loading) {
     return (
       <Button variant="ghost" size="sm" disabled>
@@ -24,6 +34,7 @@ const AuthAwareButton = () => {
     );
   }
 
+  // Show login button if no user or profile
   if (!user || !profile) {
     return <UniversalAuthButton />;
   }
