@@ -77,6 +77,10 @@ const InvestorAuth = () => {
       toast.success("Welcome back!", {
         description: "You have been successfully logged in."
       });
+      // Redirect to home page after successful login
+      setTimeout(() => {
+        navigate('/');
+      }, 1000);
     }
     
     setIsSubmitting(false);
