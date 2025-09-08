@@ -148,6 +148,48 @@ export type Database = {
       }
     }
     Views: {
+      managers_public_view: {
+        Row: {
+          assets_under_management: number | null
+          city: string | null
+          company_name: string | null
+          country: string | null
+          created_at: string | null
+          description: string | null
+          founded_year: number | null
+          id: string | null
+          logo_url: string | null
+          manager_name: string | null
+          website: string | null
+        }
+        Insert: {
+          assets_under_management?: number | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          founded_year?: number | null
+          id?: string | null
+          logo_url?: string | null
+          manager_name?: string | null
+          website?: string | null
+        }
+        Update: {
+          assets_under_management?: number | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          founded_year?: number | null
+          id?: string | null
+          logo_url?: string | null
+          manager_name?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       public_managers: {
         Row: {
           assets_under_management: number | null
