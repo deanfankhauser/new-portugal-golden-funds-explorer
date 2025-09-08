@@ -10,6 +10,7 @@ import { StaticRoute } from './routeDiscovery';
 import { loadComponents, TooltipProvider } from './componentLoader';
 import { ComparisonProvider } from '../contexts/ComparisonContext';
 import { RecentlyViewedProvider } from '../contexts/RecentlyViewedContext';
+import { EnhancedAuthProvider } from '../contexts/EnhancedAuthContext';
 
 // Ensure React is available globally for SSR
 if (typeof global !== 'undefined' && !global.React) {
@@ -41,28 +42,8 @@ export class SSRRenderer {
     // Check if we're in development mode safely for SSG environments
     const isDev = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false;
     
-    // Mock Enhanced Auth Provider for SSG
-    const MockEnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-      const mockValue = {
-        user: null,
-        session: null,
-        loading: false,
-        userType: null,
-        profile: null,
-        signUp: async () => ({ error: null }),
-        signIn: async () => ({ error: null }),
-        signOut: async () => ({ error: null }),
-        updateProfile: async () => ({ error: null }),
-        uploadAvatar: async () => ({ error: null }),
-        refreshProfile: async () => {},
-      };
-
-      return React.createElement(
-        React.createContext(mockValue).Provider,
-        { value: mockValue },
-        children
-      );
-    };
+    // For SSG, we need to include the real auth provider but with initial loading state
+    // This ensures proper hydration when JavaScript loads on the client side
     
     if (isDev) {
       console.log(`🔥 SSR: Starting render for route ${route.path} (type: ${route.pageType})`);
@@ -169,7 +150,7 @@ export class SSRRenderer {
       QueryClientProvider,
       { client: queryClient },
       React.createElement(
-        MockEnhancedAuthProvider,
+        EnhancedAuthProvider,
         null,
         React.createElement(
           ComparisonProvider,
