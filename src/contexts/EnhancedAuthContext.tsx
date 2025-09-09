@@ -93,55 +93,18 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   // Ensure proper hydration on client-side
   useEffect(() => {
+    console.log('🔐 Setting hydrated to true');
     setIsHydrated(true);
   }, []);
 
-  const fetchProfile = async (userId: string) => {
-    try {
-      // Try to fetch manager profile first
-      const { data: managerData, error: managerError } = await supabase
-        .from('manager_profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
-
-      if (managerData && !managerError) {
-        setUserType('manager');
-        setProfile(managerData as ManagerProfile);
-        return;
-      }
-
-      // If no manager profile, try investor profile
-      const { data: investorData, error: investorError } = await supabase
-        .from('investor_profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
-
-      if (investorData && !investorError) {
-        setUserType('investor');
-        setProfile(investorData as InvestorProfile);
-        return;
-      }
-
-      // No profile found
-      setUserType(null);
-      setProfile(null);
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      setUserType(null);
-      setProfile(null);
-    }
-  };
-
-  const refreshProfile = async () => {
-    if (user) {
-      await fetchProfile(user.id);
-    }
-  };
-
+  // Only run auth initialization after hydration
   useEffect(() => {
-    console.log('🔐 Auth useEffect starting...');
+    if (!isHydrated) {
+      console.log('🔐 Skipping auth init - not hydrated yet');
+      return;
+    }
+
+    console.log('🔐 Auth useEffect starting after hydration...');
     let subscription: any = null;
     let timeoutId: NodeJS.Timeout;
     
@@ -225,7 +188,52 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         clearTimeout(timeoutId);
       }
     };
-  }, []);
+  }, [isHydrated]);
+
+  const fetchProfile = async (userId: string) => {
+    try {
+      // Try to fetch manager profile first
+      const { data: managerData, error: managerError } = await supabase
+        .from('manager_profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (managerData && !managerError) {
+        setUserType('manager');
+        setProfile(managerData as ManagerProfile);
+        return;
+      }
+
+      // If no manager profile, try investor profile
+      const { data: investorData, error: investorError } = await supabase
+        .from('investor_profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (investorData && !investorError) {
+        setUserType('investor');
+        setProfile(investorData as InvestorProfile);
+        return;
+      }
+
+      // No profile found
+      setUserType(null);
+      setProfile(null);
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      setUserType(null);
+      setProfile(null);
+    }
+  };
+
+  const refreshProfile = async () => {
+    if (user) {
+      await fetchProfile(user.id);
+    }
+  };
+
 
   const signUp = async (email: string, password: string, userType: 'manager' | 'investor', metadata?: any) => {
     const redirectUrl = `${window.location.origin}/`;

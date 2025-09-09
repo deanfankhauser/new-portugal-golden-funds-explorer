@@ -20,8 +20,10 @@ const ManagerAuth = () => {
 
   // Redirect if already authenticated - wait for hydration to complete
   React.useEffect(() => {
+    console.log('🔐 ManagerAuth - Auth state:', { user: !!user, loading, hasUser: !!user });
     // Only redirect if we have a user and we're not loading (fully hydrated)
     if (user && !loading) {
+      console.log('🔐 ManagerAuth - Redirecting to home');
       navigate('/');
     }
   }, [user, loading, navigate]);
