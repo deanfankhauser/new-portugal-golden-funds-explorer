@@ -315,7 +315,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const value = {
     user: isHydrated ? user : null,
     session: isHydrated ? session : null,
-    loading: isHydrated ? loading : true,
+    loading: !isHydrated || loading,
     userType: isHydrated ? userType : null,
     profile: isHydrated ? profile : null,
     signUp,

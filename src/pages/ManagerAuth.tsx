@@ -18,8 +18,9 @@ const ManagerAuth = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated - wait for hydration to complete
   React.useEffect(() => {
+    // Only redirect if we have a user and we're not loading (fully hydrated)
     if (user && !loading) {
       navigate('/');
     }
