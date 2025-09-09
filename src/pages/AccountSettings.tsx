@@ -199,6 +199,13 @@ const AccountSettings = () => {
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!passwordData.currentPassword) {
+      toast.error("Current Password Required", {
+        description: "Please enter your current password."
+      });
+      return;
+    }
+
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       toast.error("Password Mismatch", {
         description: "New passwords don't match."
@@ -219,6 +226,29 @@ const AccountSettings = () => {
       // Import supabase client
       const { supabase } = await import('@/integrations/supabase/client');
       
+      // First verify the current password by trying to sign in
+      if (!user?.email) {
+        toast.error("Authentication Error", {
+          description: "User email not found. Please sign in again."
+        });
+        setIsUpdating(false);
+        return;
+      }
+
+      // Verify current password by attempting sign in
+      const { error: verifyError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: passwordData.currentPassword,
+      });
+
+      if (verifyError) {
+        toast.error("Incorrect Password", {
+          description: "Current password is incorrect."
+        });
+        setIsUpdating(false);
+        return;
+      }
+
       // Update password using Supabase
       const { error } = await supabase.auth.updateUser({
         password: passwordData.newPassword
