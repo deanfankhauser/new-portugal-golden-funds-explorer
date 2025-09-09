@@ -198,34 +198,33 @@ const AccountSettings = () => {
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('🔑 Password change started, setting isUpdating to true');
-    setIsUpdating(true);
     
+    // Validate inputs before setting loading state
+    if (!passwordData.currentPassword) {
+      toast.error("Current Password Required", {
+        description: "Please enter your current password."
+      });
+      return;
+    }
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast.error("Password Mismatch", {
+        description: "New passwords don't match."
+      });
+      return;
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      toast.error("Weak Password", {
+        description: "Password must be at least 6 characters long."
+      });
+      return;
+    }
+
+    // Only set loading state after validations pass
+    setIsUpdating(true);
+
     try {
-      if (!passwordData.currentPassword) {
-        console.log('🔑 No current password provided');
-        toast.error("Current Password Required", {
-          description: "Please enter your current password."
-        });
-        return;
-      }
-
-      if (passwordData.newPassword !== passwordData.confirmPassword) {
-        console.log('🔑 Password mismatch');
-        toast.error("Password Mismatch", {
-          description: "New passwords don't match."
-        });
-        return;
-      }
-
-      if (passwordData.newPassword.length < 6) {
-        console.log('🔑 Password too short');
-        toast.error("Weak Password", {
-          description: "Password must be at least 6 characters long."
-        });
-        return;
-      }
-
       console.log('🔑 Validations passed, proceeding with password change');
 
       // Import supabase client
