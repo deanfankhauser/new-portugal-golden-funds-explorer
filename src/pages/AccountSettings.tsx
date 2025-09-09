@@ -586,6 +586,17 @@ const AccountSettings = () => {
                 <CardContent>
                   <form onSubmit={handlePasswordChange} className="space-y-4">
                     <div className="space-y-2">
+                      <Label htmlFor="current-password">Current Password</Label>
+                      <Input
+                        id="current-password"
+                        type="password"
+                        value={passwordData.currentPassword}
+                        onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))}
+                        placeholder="Enter your current password"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
                       <Label htmlFor="new-password">New Password</Label>
                       <Input
                         id="new-password"
