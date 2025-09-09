@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -53,6 +53,41 @@ const AccountSettings = () => {
       };
     }
   });
+
+  // Update profile data when profile changes
+  useEffect(() => {
+    if (profile) {
+      if (userType === 'manager') {
+        const managerProfile = profile as any;
+        setProfileData({
+          manager_name: managerProfile.manager_name || '',
+          company_name: managerProfile.company_name || '',
+          email: managerProfile.email || '',
+          phone: managerProfile.phone || '',
+          website: managerProfile.website || '',
+          description: managerProfile.description || '',
+          address: managerProfile.address || '',
+          city: managerProfile.city || '',
+          country: managerProfile.country || '',
+        });
+      } else {
+        const investorProfile = profile as any;
+        setProfileData({
+          first_name: investorProfile.first_name || '',
+          last_name: investorProfile.last_name || '',
+          email: investorProfile.email || '',
+          phone: investorProfile.phone || '',
+          address: investorProfile.address || '',
+          city: investorProfile.city || '',
+          country: investorProfile.country || '',
+          investment_experience: investorProfile.investment_experience || '',
+          risk_tolerance: investorProfile.risk_tolerance || '',
+          annual_income_range: investorProfile.annual_income_range || '',
+          net_worth_range: investorProfile.net_worth_range || '',
+        });
+      }
+    }
+  }, [profile, userType]);
 
   // Password change state
   const [passwordData, setPasswordData] = useState({
