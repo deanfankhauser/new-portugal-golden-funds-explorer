@@ -134,11 +134,17 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   useEffect(() => {
+    console.log('🔐 Auth useEffect starting...');
+    let subscription: any = null;
+    let timeoutId: NodeJS.Timeout;
+    
     // For SSG/SSR compatibility, ensure loading is cleared even without sessions
     const initializeAuth = async () => {
       try {
+        console.log('🔐 Initializing auth...');
+        
         // Set up auth state listener FIRST
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        const authListener = supabase.auth.onAuthStateChange(
           async (event, session) => {
             console.log('🔐 Auth state change:', event, session?.user?.email || 'no user');
             setSession(session);
@@ -153,37 +159,65 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
               setProfile(null);
             }
             
+            console.log('🔐 Setting loading to false from auth state change');
             setLoading(false);
           }
         );
 
+        subscription = authListener.data.subscription;
+        console.log('🔐 Auth listener set up');
+
         // THEN check for existing session
+        console.log('🔐 Getting initial session...');
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
           console.error('🔐 Error getting initial session:', error);
         } else {
-          console.log('🔐 Initial session:', session?.user?.email || 'no user');
+          console.log('🔐 Initial session check complete:', session?.user?.email || 'no user');
         }
         
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
+          console.log('🔐 Fetching profile for initial session user:', session.user.id);
           await fetchProfile(session.user.id);
+        } else {
+          console.log('🔐 No initial session user, clearing profile');
+          setUserType(null);
+          setProfile(null);
         }
         
         // Always ensure loading is cleared
+        console.log('🔐 Setting loading to false from initial session check');
         setLoading(false);
 
-        return () => subscription.unsubscribe();
       } catch (error) {
         console.error('🔐 Auth initialization error:', error);
+        console.log('🔐 Setting loading to false due to error');
         setLoading(false);
       }
     };
 
+    // Fallback timeout to ensure loading is never stuck
+    timeoutId = setTimeout(() => {
+      console.log('🔐 Timeout fallback: Setting loading to false');
+      setLoading(false);
+    }, 5000); // 5 second timeout
+
     initializeAuth();
+
+    // Cleanup function
+    return () => {
+      console.log('🔐 Cleaning up auth listener');
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, []);
 
   const signUp = async (email: string, password: string, userType: 'manager' | 'investor', metadata?: any) => {
