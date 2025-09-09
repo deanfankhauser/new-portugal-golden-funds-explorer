@@ -213,10 +213,41 @@ const AccountSettings = () => {
       return;
     }
 
-    // TODO: Implement password change with Supabase
-    toast.info("Feature Coming Soon", {
-      description: "Password change functionality will be available soon."
-    });
+    setIsUpdating(true);
+
+    try {
+      // Import supabase client
+      const { supabase } = await import('@/integrations/supabase/client');
+      
+      // Update password using Supabase
+      const { error } = await supabase.auth.updateUser({
+        password: passwordData.newPassword
+      });
+
+      if (error) {
+        toast.error("Password Update Failed", {
+          description: error.message
+        });
+      } else {
+        toast.success("Password Updated", {
+          description: "Your password has been successfully updated."
+        });
+        
+        // Clear the form
+        setPasswordData({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+      }
+    } catch (error) {
+      console.error('Password update error:', error);
+      toast.error("Update Failed", {
+        description: "An unexpected error occurred. Please try again."
+      });
+    }
+
+    setIsUpdating(false);
   };
 
   return (
@@ -526,22 +557,13 @@ const AccountSettings = () => {
                 <CardContent>
                   <form onSubmit={handlePasswordChange} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="current-password">Current Password</Label>
-                      <Input
-                        id="current-password"
-                        type="password"
-                        value={passwordData.currentPassword}
-                        onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))}
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
                       <Label htmlFor="new-password">New Password</Label>
                       <Input
                         id="new-password"
                         type="password"
                         value={passwordData.newPassword}
                         onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
+                        placeholder="Enter your new password"
                       />
                     </div>
                     
@@ -552,10 +574,20 @@ const AccountSettings = () => {
                         type="password"
                         value={passwordData.confirmPassword}
                         onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                        placeholder="Confirm your new password"
                       />
                     </div>
                     
-                    <Button type="submit">Change Password</Button>
+                    <Button type="submit" disabled={isUpdating}>
+                      {isUpdating ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Updating Password...
+                        </>
+                      ) : (
+                        'Change Password'
+                      )}
+                    </Button>
                   </form>
                 </CardContent>
               </Card>
