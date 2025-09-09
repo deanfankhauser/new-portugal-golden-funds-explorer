@@ -198,10 +198,12 @@ const AccountSettings = () => {
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🔑 Password change started, setting isUpdating to true');
     setIsUpdating(true);
     
     try {
       if (!passwordData.currentPassword) {
+        console.log('🔑 No current password provided');
         toast.error("Current Password Required", {
           description: "Please enter your current password."
         });
@@ -209,6 +211,7 @@ const AccountSettings = () => {
       }
 
       if (passwordData.newPassword !== passwordData.confirmPassword) {
+        console.log('🔑 Password mismatch');
         toast.error("Password Mismatch", {
           description: "New passwords don't match."
         });
@@ -216,23 +219,28 @@ const AccountSettings = () => {
       }
 
       if (passwordData.newPassword.length < 6) {
+        console.log('🔑 Password too short');
         toast.error("Weak Password", {
           description: "Password must be at least 6 characters long."
         });
         return;
       }
 
+      console.log('🔑 Validations passed, proceeding with password change');
+
       // Import supabase client
       const { supabase } = await import('@/integrations/supabase/client');
       
       // First verify the current password by trying to sign in
       if (!user?.email) {
+        console.log('🔑 No user email found');
         toast.error("Authentication Error", {
           description: "User email not found. Please sign in again."
         });
         return;
       }
 
+      console.log('🔑 Verifying current password');
       // Verify current password by attempting sign in
       const { error: verifyError } = await supabase.auth.signInWithPassword({
         email: user.email,
@@ -240,22 +248,26 @@ const AccountSettings = () => {
       });
 
       if (verifyError) {
+        console.log('🔑 Current password verification failed:', verifyError.message);
         toast.error("Incorrect Password", {
           description: "Current password is incorrect."
         });
         return;
       }
 
+      console.log('🔑 Current password verified, updating password');
       // Update password using Supabase
       const { error } = await supabase.auth.updateUser({
         password: passwordData.newPassword
       });
 
       if (error) {
+        console.log('🔑 Password update failed:', error.message);
         toast.error("Password Update Failed", {
           description: error.message
         });
       } else {
+        console.log('🔑 Password updated successfully');
         toast.success("Password Updated", {
           description: "Your password has been successfully updated."
         });
@@ -268,11 +280,12 @@ const AccountSettings = () => {
         });
       }
     } catch (error) {
-      console.error('Password update error:', error);
+      console.error('🔑 Password update error:', error);
       toast.error("Update Failed", {
         description: "An unexpected error occurred. Please try again."
       });
     } finally {
+      console.log('🔑 Password change completed, setting isUpdating to false');
       // Always reset loading state
       setIsUpdating(false);
     }
