@@ -25,17 +25,8 @@ const AuthAwareButton = () => {
 
   const { user, profile, userType, signOut, loading } = authState;
 
-  // Show loading state
-  if (loading) {
-    return (
-      <Button variant="ghost" size="sm" disabled>
-        Loading...
-      </Button>
-    );
-  }
-
-  // Show login button if no user or profile
-  if (!user || !profile) {
+  // Show login button during loading (hydration) or if no user/profile
+  if (loading || !user || !profile) {
     return <UniversalAuthButton />;
   }
 
