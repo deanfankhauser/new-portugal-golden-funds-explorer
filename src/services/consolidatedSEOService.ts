@@ -450,8 +450,27 @@ export class ConsolidatedSEOService {
     const script = document.createElement('script');
     script.type = 'application/ld+json';
     script.setAttribute('data-managed', 'consolidated-seo');
-    script.textContent = JSON.stringify(structuredData, null, 2);
-    document.head.appendChild(script);
+    
+    // Ensure structured data is valid before adding to DOM
+    try {
+      if (structuredData && typeof structuredData === 'object') {
+        // Ensure @context exists and is a string
+        if (Array.isArray(structuredData)) {
+          structuredData.forEach(item => {
+            if (item && typeof item === 'object' && !item['@context']) {
+              item['@context'] = 'https://schema.org';
+            }
+          });
+        } else if (!structuredData['@context']) {
+          structuredData['@context'] = 'https://schema.org';
+        }
+        
+        script.textContent = JSON.stringify(structuredData, null, 2);
+        document.head.appendChild(script);
+      }
+    } catch (error) {
+      console.warn('Failed to add structured data:', error);
+    }
   }
 
   private static addSecurityHeaders(): void {
