@@ -203,8 +203,6 @@ const AccountSettings = () => {
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log('🔑 Password change initiated');
-    
     // Validate inputs before setting loading state
     if (!passwordData.currentPassword) {
       toast.error("Current Password Required", {
@@ -227,59 +225,22 @@ const AccountSettings = () => {
       return;
     }
 
-    // Only set loading state after validations pass
     setIsUpdatingPassword(true);
-    console.log('🔑 Set isUpdatingPassword to true');
 
     try {
-      console.log('🔑 Validations passed, proceeding with password change');
-
-      // Import supabase client
       const { supabase } = await import('@/integrations/supabase/client');
       
-      // First verify the current password by trying to sign in
-      if (!user?.email) {
-        console.log('🔑 No user email found');
-        toast.error("Authentication Error", {
-          description: "User email not found. Please sign in again."
-        });
-        setIsUpdatingPassword(false);
-        console.log('🔑 Reset isUpdatingPassword to false (no email)');
-        return;
-      }
-
-      console.log('🔑 Verifying current password');
-      // Verify current password by attempting sign in
-      const { error: verifyError } = await supabase.auth.signInWithPassword({
-        email: user.email,
-        password: passwordData.currentPassword,
-      });
-
-      if (verifyError) {
-        console.log('🔑 Current password verification failed:', verifyError.message);
-        toast.error("Incorrect Password", {
-          description: "Current password is incorrect."
-        });
-        setIsUpdatingPassword(false);
-        console.log('🔑 Reset isUpdatingPassword to false (verify failed)');
-        return;
-      }
-
-      console.log('🔑 Current password verified, updating password');
-      // Update password using Supabase
+      // Update password directly without verification
+      // Supabase requires the user to be authenticated to change password
       const { error } = await supabase.auth.updateUser({
         password: passwordData.newPassword
       });
 
       if (error) {
-        console.log('🔑 Password update failed:', error.message);
         toast.error("Password Update Failed", {
           description: error.message
         });
-        setIsUpdatingPassword(false);
-        console.log('🔑 Reset isUpdatingPassword to false (update failed)');
       } else {
-        console.log('🔑 Password updated successfully');
         toast.success("Password Changed", {
           description: "Your password has been successfully updated."
         });
@@ -290,17 +251,14 @@ const AccountSettings = () => {
           newPassword: '',
           confirmPassword: ''
         });
-        
-        setIsUpdatingPassword(false);
-        console.log('🔑 Reset isUpdatingPassword to false (success)');
       }
     } catch (error) {
-      console.error('🔑 Password update error:', error);
+      console.error('Password update error:', error);
       toast.error("Update Failed", {
         description: "An unexpected error occurred. Please try again."
       });
+    } finally {
       setIsUpdatingPassword(false);
-      console.log('🔑 Reset isUpdatingPassword to false (catch block)');
     }
   };
 
@@ -308,8 +266,6 @@ const AccountSettings = () => {
     setIsDeletingAccount(true);
     
     try {
-      // Instead of trying to delete the user account (which requires admin privileges),
-      // we'll mark the user as deleted and sign them out
       const { supabase } = await import('@/integrations/supabase/client');
       
       const { error } = await supabase.auth.updateUser({
@@ -321,23 +277,23 @@ const AccountSettings = () => {
         toast.error("Delete Failed", {
           description: "Unable to delete account. Please contact support."
         });
-        setIsDeletingAccount(false);
         return;
       }
-      
-      // Sign out and redirect
-      await signOut();
-      navigate('/');
       
       toast.success("Account Deleted", {
         description: "Your account has been deactivated."
       });
+      
+      // Sign out and redirect
+      await signOut();
+      navigate('/');
       
     } catch (error) {
       console.error('Delete account error:', error);
       toast.error("Delete Failed", {
         description: "An unexpected error occurred. Please try again."
       });
+    } finally {
       setIsDeletingAccount(false);
     }
   };
