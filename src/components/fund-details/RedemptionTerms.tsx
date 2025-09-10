@@ -1,17 +1,17 @@
 
 import React from 'react';
 import { ClockAlert } from 'lucide-react';
-import { RedemptionTerms } from '../../data/types/funds';
+import { RedemptionTerms as RedemptionTermsType } from '../../data/types/funds';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatPercentage } from './utils/formatters';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
 
 interface RedemptionTermsProps {
-  redemptionTerms?: RedemptionTerms;
+  redemptionTerms?: RedemptionTermsType;
 }
 
-const RedemptionTermsComponent: React.FC<RedemptionTermsProps> = ({ redemptionTerms }) => {
+const RedemptionTerms: React.FC<RedemptionTermsProps> = ({ redemptionTerms }) => {
   if (!redemptionTerms) {
     return null;
   }
@@ -110,4 +110,4 @@ const RedemptionTermsComponent: React.FC<RedemptionTermsProps> = ({ redemptionTe
   );
 };
 
-export default RedemptionTermsComponent;
+export default RedemptionTerms;
