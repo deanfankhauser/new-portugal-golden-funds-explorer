@@ -203,6 +203,8 @@ const AccountSettings = () => {
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('🔑 Password change initiated');
+    
     // Validate inputs before setting loading state
     if (!passwordData.currentPassword) {
       toast.error("Current Password Required", {
@@ -227,6 +229,7 @@ const AccountSettings = () => {
 
     // Only set loading state after validations pass
     setIsUpdatingPassword(true);
+    console.log('🔑 Set isUpdatingPassword to true');
 
     try {
       console.log('🔑 Validations passed, proceeding with password change');
@@ -241,6 +244,7 @@ const AccountSettings = () => {
           description: "User email not found. Please sign in again."
         });
         setIsUpdatingPassword(false);
+        console.log('🔑 Reset isUpdatingPassword to false (no email)');
         return;
       }
 
@@ -257,6 +261,7 @@ const AccountSettings = () => {
           description: "Current password is incorrect."
         });
         setIsUpdatingPassword(false);
+        console.log('🔑 Reset isUpdatingPassword to false (verify failed)');
         return;
       }
 
@@ -271,6 +276,8 @@ const AccountSettings = () => {
         toast.error("Password Update Failed", {
           description: error.message
         });
+        setIsUpdatingPassword(false);
+        console.log('🔑 Reset isUpdatingPassword to false (update failed)');
       } else {
         console.log('🔑 Password updated successfully');
         toast.success("Password Changed", {
@@ -283,16 +290,17 @@ const AccountSettings = () => {
           newPassword: '',
           confirmPassword: ''
         });
+        
+        setIsUpdatingPassword(false);
+        console.log('🔑 Reset isUpdatingPassword to false (success)');
       }
     } catch (error) {
       console.error('🔑 Password update error:', error);
       toast.error("Update Failed", {
         description: "An unexpected error occurred. Please try again."
       });
-    } finally {
-      console.log('🔑 Password change completed, setting isUpdating to false');
-      // Always reset loading state
       setIsUpdatingPassword(false);
+      console.log('🔑 Reset isUpdatingPassword to false (catch block)');
     }
   };
 
