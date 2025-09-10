@@ -314,6 +314,7 @@ const AccountSettings = () => {
           toast.error("Delete Failed", {
             description: "Unable to delete account. Please contact support."
           });
+          setIsDeletingAccount(false);
           return;
         }
       }
