@@ -203,6 +203,17 @@ const AccountSettings = () => {
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('🔑 Password change initiated, user:', user?.email, 'loading:', loading);
+    
+    // Check if user is authenticated
+    if (!user) {
+      console.log('🔑 No authenticated user found');
+      toast.error("Authentication Error", {
+        description: "You must be logged in to change your password."
+      });
+      return;
+    }
+    
     // Validate inputs before setting loading state
     if (!passwordData.currentPassword) {
       toast.error("Current Password Required", {
@@ -226,21 +237,23 @@ const AccountSettings = () => {
     }
 
     setIsUpdatingPassword(true);
+    console.log('🔑 Starting password update for user:', user.email);
 
     try {
       const { supabase } = await import('@/integrations/supabase/client');
       
-      // Update password directly without verification
-      // Supabase requires the user to be authenticated to change password
+      console.log('🔑 Calling supabase.auth.updateUser');
       const { error } = await supabase.auth.updateUser({
         password: passwordData.newPassword
       });
 
       if (error) {
+        console.log('🔑 Password update failed:', error.message);
         toast.error("Password Update Failed", {
           description: error.message
         });
       } else {
+        console.log('🔑 Password update successful');
         toast.success("Password Changed", {
           description: "Your password has been successfully updated."
         });
@@ -253,47 +266,64 @@ const AccountSettings = () => {
         });
       }
     } catch (error) {
-      console.error('Password update error:', error);
+      console.error('🔑 Password update error:', error);
       toast.error("Update Failed", {
         description: "An unexpected error occurred. Please try again."
       });
     } finally {
+      console.log('🔑 Setting isUpdatingPassword to false');
       setIsUpdatingPassword(false);
     }
   };
 
   const handleDeleteAccount = async () => {
+    console.log('🗑️ Delete account initiated, user:', user?.email);
+    
+    // Check if user is authenticated
+    if (!user) {
+      console.log('🗑️ No authenticated user found');
+      toast.error("Authentication Error", {
+        description: "You must be logged in to delete your account."
+      });
+      return;
+    }
+    
     setIsDeletingAccount(true);
+    console.log('🗑️ Starting account deletion for user:', user.email);
     
     try {
       const { supabase } = await import('@/integrations/supabase/client');
       
+      console.log('🗑️ Calling supabase.auth.updateUser with deleted flag');
       const { error } = await supabase.auth.updateUser({
         data: { deleted: true }
       });
       
       if (error) {
-        console.error('Delete account error:', error);
+        console.error('🗑️ Delete account error:', error);
         toast.error("Delete Failed", {
           description: "Unable to delete account. Please contact support."
         });
         return;
       }
       
+      console.log('🗑️ Account deletion successful');
       toast.success("Account Deleted", {
         description: "Your account has been deactivated."
       });
       
       // Sign out and redirect
+      console.log('🗑️ Signing out and redirecting');
       await signOut();
       navigate('/');
       
     } catch (error) {
-      console.error('Delete account error:', error);
+      console.error('🗑️ Delete account error:', error);
       toast.error("Delete Failed", {
         description: "An unexpected error occurred. Please try again."
       });
     } finally {
+      console.log('🗑️ Setting isDeletingAccount to false');
       setIsDeletingAccount(false);
     }
   };
