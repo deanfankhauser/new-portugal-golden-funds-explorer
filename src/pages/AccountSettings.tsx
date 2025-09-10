@@ -309,6 +309,7 @@ const AccountSettings = () => {
       });
       
       if (error) {
+        console.error('Delete account error:', error);
         toast.error("Delete Failed", {
           description: "Unable to delete account. Please contact support."
         });
@@ -329,7 +330,6 @@ const AccountSettings = () => {
       toast.error("Delete Failed", {
         description: "An unexpected error occurred. Please try again."
       });
-    } finally {
       setIsDeletingAccount(false);
     }
   };
