@@ -273,7 +273,7 @@ const AccountSettings = () => {
         });
       } else {
         console.log('🔑 Password updated successfully');
-        toast.success("Password Updated", {
+        toast.success("Password Changed", {
           description: "Your password has been successfully updated."
         });
         
