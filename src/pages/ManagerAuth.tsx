@@ -17,6 +17,7 @@ const ManagerAuth = () => {
   const { signIn, signUp, loading, user } = useEnhancedAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
   // Redirect if already authenticated - wait for hydration to complete
   React.useEffect(() => {
@@ -159,6 +160,7 @@ const ManagerAuth = () => {
         description: ''
       });
       setError(null);
+      setRegistrationSuccess(true);
       
       toast.success("Registration Successful! 🎉", {
         description: "Your manager account has been created. Please check your email to confirm your account and complete the registration process."
@@ -167,6 +169,39 @@ const ManagerAuth = () => {
     
     setIsSubmitting(false);
   };
+
+  // Show success message if registration was successful
+  if (registrationSuccess) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold text-green-600">Registration Successful! 🎉</CardTitle>
+            <CardDescription className="text-lg">
+              Your manager account has been created. Please check your email to confirm your account and complete the registration process.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg border border-green-200 dark:border-green-800">
+              <p className="text-green-800 dark:text-green-200">
+                We've sent a confirmation email to <strong>{signupData.email}</strong>
+              </p>
+              <p className="text-sm text-green-700 dark:text-green-300 mt-2">
+                Click the link in the email to activate your account and start managing your funds.
+              </p>
+            </div>
+            <Button 
+              onClick={() => setRegistrationSuccess(false)} 
+              variant="outline" 
+              className="w-full"
+            >
+              Back to Login
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
