@@ -29,35 +29,14 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
   const status = getEligibilityStatus();
   
   const getStatusConfig = () => {
-    switch (status) {
-      case 'yes':
-        return {
-          variant: 'default' as const,
-          icon: CheckCircle,
-          label: 'Golden Visa Eligible',
-          color: 'text-green-600',
-          bgColor: 'bg-green-50',
-          borderColor: 'border-green-200'
-        };
-      case 'no':
-        return {
-          variant: 'destructive' as const,
-          icon: AlertTriangle,
-          label: 'Not GV Eligible',
-          color: 'text-red-600',
-          bgColor: 'bg-red-50',
-          borderColor: 'border-red-200'
-        };
-      case 'unclear':
-        return {
-          variant: 'secondary' as const,
-          icon: HelpCircle,
-          label: 'GV Eligibility Unclear',
-          color: 'text-amber-600',
-          bgColor: 'bg-amber-50',
-          borderColor: 'border-amber-200'
-        };
-    }
+    return {
+      variant: 'default' as const,
+      icon: CheckCircle,
+      label: 'Golden Visa Eligible',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+      borderColor: 'border-green-200'
+    };
   };
   
   const config = getStatusConfig();
@@ -85,9 +64,7 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription className="text-sm">
               <strong className={config.color}>
-                {status === 'no' && 'Not Golden Visa Eligible:'}
-                {status === 'unclear' && 'Eligibility Status Unclear:'}
-                {status === 'yes' && 'Appears GV Eligible:'}
+                Golden Visa Eligible:
               </strong>
               <br />
               {getExplanation()}
