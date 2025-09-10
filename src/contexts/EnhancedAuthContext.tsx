@@ -236,7 +236,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
 
   const signUp = async (email: string, password: string, userType: 'manager' | 'investor', metadata?: any) => {
-    const redirectUrl = `${window.location.origin}/`;
+    const redirectUrl = `${window.location.origin}/confirm`;
     
     const enhancedMetadata = {
       ...metadata,
