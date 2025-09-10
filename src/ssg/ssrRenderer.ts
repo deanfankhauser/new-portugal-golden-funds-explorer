@@ -192,6 +192,7 @@ export class SSRRenderer {
                 // Auth pages
                 React.createElement(Route, { path: '/manager-auth', element: React.createElement(getComponent('ManagerAuth')) }),
                 React.createElement(Route, { path: '/investor-auth', element: React.createElement(getComponent('InvestorAuth')) }),
+                React.createElement(Route, { path: '/account-settings', element: React.createElement(getComponent('AccountSettings')) }),
                 
                 React.createElement(Route, { path: '/compare/:slug', element: React.createElement(getComponent('FundComparison')) }),
                 

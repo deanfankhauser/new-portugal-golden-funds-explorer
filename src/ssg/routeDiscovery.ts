@@ -35,6 +35,7 @@ export class RouteDiscovery {
     // Auth pages
     routes.push({ path: '/manager-auth', pageType: 'manager-auth' });
     routes.push({ path: '/investor-auth', pageType: 'investor-auth' });
+    routes.push({ path: '/account-settings', pageType: 'account-settings' });
     
     routes.push({ path: '/managers', pageType: 'managers-hub' });
     routes.push({ path: '/categories', pageType: 'categories-hub' });
