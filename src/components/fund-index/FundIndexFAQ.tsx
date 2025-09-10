@@ -38,7 +38,7 @@ const FundIndexFAQ: React.FC = () => {
     },
     {
       question: "Can I invest directly through this platform?",
-      answer: "No, we are an independent research and comparison platform. To invest in any fund, you'll need to contact the fund manager directly or work with a qualified financial advisor. We provide detailed contact information for each fund manager."
+      answer: "No, we are an independent research and comparison platform. To invest in any fund, you'll need to contact the fund manager directly or work with a qualified financial professional. We provide detailed contact information for each fund manager."
     },
     {
       question: "How reliable is the data in the Fund Index?",
@@ -46,7 +46,7 @@ const FundIndexFAQ: React.FC = () => {
     },
     {
       question: "What should I consider beyond the index score?",
-      answer: "While our index provides a comprehensive evaluation, you should also consider your personal investment goals, risk tolerance, investment timeline, and tax implications. We recommend consulting with qualified financial and legal advisors before making investment decisions."
+      answer: "While our index provides a comprehensive evaluation, you should also consider your personal investment goals, risk tolerance, investment timeline, and tax implications. We recommend consulting with qualified financial and legal professionals before making investment decisions."
     }
   ];
 

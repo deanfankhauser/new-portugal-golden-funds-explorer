@@ -134,7 +134,7 @@ const ExitIntentPopup: React.FC<ExitIntentPopupProps> = ({ isEnabled = true }) =
           <div className="grid grid-cols-1 gap-3 text-sm">
             <div className="flex items-center gap-3 bg-muted/50 p-3 rounded-lg">
               <Users className="h-4 w-4 text-primary flex-shrink-0" />
-              <span>1-on-1 Expert Consultation</span>
+              <span>1-on-1 Consultation</span>
             </div>
             <div className="flex items-center gap-3 bg-muted/50 p-3 rounded-lg">
               <Shield className="h-4 w-4 text-primary flex-shrink-0" />

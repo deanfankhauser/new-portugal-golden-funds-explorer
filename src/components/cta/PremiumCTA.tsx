@@ -12,15 +12,15 @@ interface PremiumCTAProps {
 
 const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'general' }) => {
   const handleCTAClick = () => {
-    const contactUrl = buildContactUrl(`expert-guidance-${variant}-${location}`);
+    const contactUrl = buildContactUrl(`introduction-${variant}-${location}`);
     
     // Track the CTA click with location for analytics
-    analytics.trackCTAClick(location, `expert-guidance-${variant}`, contactUrl);
+    analytics.trackCTAClick(location, `introduction-${variant}`, contactUrl);
     
     // Track external link click
-    analytics.trackExternalLink(contactUrl, 'Get Expert Guidance', `cta-${location}`);
+    analytics.trackExternalLink(contactUrl, 'Get Introduced', `cta-${location}`);
     
-    // Expert guidance CTA clicked tracking
+    // Introduction CTA clicked tracking
     openExternalLink(contactUrl);
   };
 
@@ -31,7 +31,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
         onClick={handleCTAClick}
       >
         <Crown className="mr-2 h-4 w-4" />
-        Get Expert Guidance
+        Get Introduced
         <ExternalLink className="ml-2 h-4 w-4" />
       </Button>
     );
@@ -44,8 +44,8 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
           <div className="flex items-center gap-3">
             <Crown className="h-5 w-5 text-primary-foreground" />
             <div>
-              <p className="font-semibold text-primary-foreground">Get Expert Fund Guidance</p>
-              <p className="text-sm text-primary-foreground opacity-90">Personal consultation with our Golden Visa specialists</p>
+              <p className="font-semibold text-primary-foreground">Speak with MovingTo</p>
+              <p className="text-sm text-primary-foreground opacity-90">Personal consultation with our specialists</p>
             </div>
           </div>
           <Button 
@@ -73,17 +73,17 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
           
           <div>
             <h3 className="text-2xl font-bold text-foreground mb-2">
-              Get Expert Fund Guidance
+              Speak with MovingTo
             </h3>
             <p className="text-muted-foreground text-lg">
-              Connect with our Golden Visa experts for personalized investment guidance
+              Connect with MovingTo for personalized investment information
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div className="flex items-center gap-2 bg-card p-3 rounded-lg shadow-sm">
               <Users className="h-4 w-4 text-primary" />
-              <span>1-on-1 Expert Consultation</span>
+              <span>1-on-1 Consultation</span>
             </div>
             <div className="flex items-center gap-2 bg-card p-3 rounded-lg shadow-sm">
               <Shield className="h-4 w-4 text-primary" />
@@ -106,7 +106,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
             onClick={handleCTAClick}
           >
             <Crown className="mr-2 h-5 w-5" />
-            Get Expert Guidance
+             Get Introduced
             <ExternalLink className="ml-2 h-5 w-5" />
           </Button>
         </div>

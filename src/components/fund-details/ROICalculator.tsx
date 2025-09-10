@@ -139,7 +139,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
           <div className="text-sm text-warning-foreground">
             <strong>Investment Risk Disclaimer:</strong> Past performance does not guarantee future results. 
             This calculation is for illustrative purposes only and actual returns may vary significantly. 
-            Always consult with qualified financial advisors before making investment decisions.
+            Always consult with qualified financial professionals before making investment decisions.
           </div>
         </div>
       </CardContent>

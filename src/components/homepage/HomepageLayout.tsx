@@ -39,7 +39,7 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
             <div>
               <h2 className="text-xl font-bold text-foreground mb-4">Why Choose MovingTo</h2>
               <ul className="text-sm text-muted-foreground space-y-2">
-                <li>• Expert Golden Visa guidance</li>
+                <li>• Expert Golden Visa information</li>
                 <li>• Comprehensive fund analysis</li>
                 <li>• Due diligence support</li>
                 <li>• Application assistance</li>
