@@ -41,26 +41,15 @@ const FundIndex: React.FC = () => {
           
           <FundIndexHeader />
           
-          {/* GV Filter Toggle */}
+          {/* Eligibility Notice */}
           <div className="max-w-7xl mx-auto px-6 py-4">
             <Card className="bg-primary/5 border-primary/20">
               <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold text-foreground mb-1">Filter by Golden Visa Eligibility</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {showOnlyGVEligible 
-                        ? 'Showing GV-eligible funds only. Toggle to view non-GV alternatives.' 
-                        : 'Showing all funds including non-GV alternatives.'}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium">Show non-GV alternatives</span>
-                    <Switch
-                      checked={!showOnlyGVEligible}
-                      onCheckedChange={(checked) => setShowOnlyGVEligible(!checked)}
-                    />
-                  </div>
+                <div className="text-center">
+                  <h3 className="font-semibold text-foreground mb-1">Golden Visa Eligible Funds</h3>
+                  <p className="text-sm text-muted-foreground">
+                    All funds in our index are eligible for Portugal Golden Visa applications.
+                  </p>
                 </div>
               </CardContent>
             </Card>

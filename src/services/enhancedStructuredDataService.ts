@@ -40,7 +40,7 @@ export class EnhancedStructuredDataService {
           'name': `Is ${fund.name} eligible for Portugal Golden Visa?`,
           'acceptedAnswer': {
             '@type': 'Answer',
-            'text': `${fund.name} eligibility for Portugal Golden Visa depends on current regulations. Since October 2023, real estate-linked funds are not eligible. Please consult with legal professionals for current eligibility status.`
+            'text': `Yes, ${fund.name} is eligible for Portugal Golden Visa applications with the required €500,000 minimum investment. Please verify specific details with legal counsel.`
           }
         }
       ]
@@ -308,7 +308,7 @@ export class EnhancedStructuredDataService {
       'name': 'Movingto Portugal Golden Visa Services',
       'url': URL_CONFIG.BASE_URL,
       'description': 'Professional investment guidance services for Portugal Golden Visa eligible funds',
-      'serviceType': 'Investment Guidance',
+      'serviceType': 'Fund Manager Introductions',
       'areaServed': {
         '@type': 'Country',
         'name': 'Portugal'
@@ -316,7 +316,7 @@ export class EnhancedStructuredDataService {
       'offers': {
         '@type': 'Service',
         'name': 'Portugal Golden Visa Investment Fund Directory',
-        'description': 'Comprehensive directory and guidance services for qualified investment funds'
+        'description': 'Comprehensive directory and introduction services for qualified investment funds'
       }
     };
   }

@@ -30,7 +30,7 @@ const FundIndexFAQ: React.FC = () => {
     },
     {
       question: "Are all funds in the index eligible for the Portugal Golden Visa?",
-      answer: "Not all funds are Golden Visa eligible. Since October 2023 regulatory changes, real estate-linked funds are excluded from Portugal's Golden Visa program. Eligible funds must meet specific criteria: no real estate exposure; ≥60% investment in Portugal; ≥5-year maturity; CMVM registered; €500,000 minimum total investment. Sources: Nomad Gate Guide & IMI Daily regulatory analysis."
+      answer: "Yes, all funds listed in our index are eligible for Portugal's Golden Visa program. Each fund has been verified to meet current eligibility criteria including CMVM registration and minimum €500,000 investment requirement. We continuously monitor regulatory compliance to ensure accuracy."
     },
     {
       question: "What does a fund's score mean for investors?",

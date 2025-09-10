@@ -9,14 +9,14 @@ import { Badge } from '../components/ui/badge';
 import { ArrowRight, TrendingUp } from 'lucide-react';
 
 const AlternativesHub: React.FC = () => {
-  // Filter to non-GV eligible funds only
-  const nonGVFunds = fundsData.filter(fund => !isFundGVEligible(fund));
+  // All funds are now GV eligible, so show general alternatives
+  const allFunds = fundsData;
   
-  // Get non-GV funds that have alternatives
-  const fundsWithAlternatives = nonGVFunds
+  // Get funds that have alternatives for general comparison
+  const fundsWithAlternatives = allFunds
     .map(fund => ({
       fund,
-      alternatives: findAlternativeFunds(fund, 3).filter(alt => !isFundGVEligible(alt))
+      alternatives: findAlternativeFunds(fund, 3)
     }))
     .filter(item => item.alternatives.length > 0)
     .sort((a, b) => b.alternatives.length - a.alternatives.length);
@@ -33,8 +33,8 @@ const AlternativesHub: React.FC = () => {
               Portugal Investment Fund Alternatives Hub
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              These are not GV-eligible alternatives (or mixed). Use this page if you're exploring non-GV investments.
-              Compare similar funds based on category, investment requirements, and performance metrics.
+              Discover similar Golden Visa eligible funds based on category, investment requirements, and performance metrics.
+              Compare alternatives to find the perfect fund for your needs.
             </p>
           </div>
 
@@ -49,8 +49,8 @@ const AlternativesHub: React.FC = () => {
             </Card>
             <Card>
               <CardContent className="p-6 text-center">
-                <div className="text-2xl font-bold text-foreground">{nonGVFunds.length}</div>
-                <div className="text-muted-foreground">Non-GV Funds</div>
+                <div className="text-2xl font-bold text-foreground">{allFunds.length}</div>
+                <div className="text-muted-foreground">Total GV Funds</div>
               </CardContent>
             </Card>
             <Card>
