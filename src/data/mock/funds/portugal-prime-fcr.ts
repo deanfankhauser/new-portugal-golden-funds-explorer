@@ -11,14 +11,26 @@ export const portugalPrimeFCR: Fund = {
   detailedDescription: `Portugal Prime finances and operates hotel businesses (rooms, F&B, events) via operator equity/leases — no direct or indirect real-estate investment — aiming to preserve capital while delivering either a fixed 2% p.a. (citizenship exit) or ~10% IRR (maturity exit). The fund targets low risk (SRI 3/7) within Portugal's resilient tourism sector.
 
 Key Investment Highlights:
+• Award-winning management: Fund Manager of the Year 2024 winner
+• Ultra-low risk profile: Risk level 3/7 vs other GV funds at 6/7
+• Proven track record: 100% success rate for Golden Visa applications
+• Global accessibility: Direct investments from overseas accepted (no Portuguese bank account required)
 • Golden Visa pathway with minimum €100,000 investment requirement
 • Hospitality sector focus on operators, not real estate
 • Two investment tracks: Capital Preservation (2% p.a. fixed) or Upside (~10% target IRR)
 • Ultra-low fee structure: 0.20% management fee
-• Risk indicator 3/7 vs typical funds at 6/7
 • CMVM regulated with Bison Bank as depositary and BDO as auditor
 
-The fund offers a specialized approach to Portugal's tourism sector, focusing on operational excellence rather than property investment, providing a clear Golden Visa pathway with flexible exit options.`,
+Investment Options:
+1. Upside Participation: Targets net annual returns above 10%, requiring investment until maturity (8 years)
+2. Capital Preservation: Capped at 5% annual return net of fees, with exit possible after obtaining permanent residency (5–6 years)
+
+Exclusive Investor Benefits:
+• Investors committing the full €500,000 receive one complimentary week per year in deluxe hotels or serviced apartments
+• Alternative: Two weeks every two years, typically aligned with biometric visits
+• VIP project visits in the Algarve with personalized tours and limo service
+
+The fund offers a specialized approach to Portugal's tourism sector, focusing on operational excellence rather than property investment, providing a clear Golden Visa pathway with flexible exit options and exceptional investor perks.`,
   minimumInvestment: 100000,
   fundSize: 100,
   managementFee: 0.20,
@@ -92,23 +104,23 @@ The fund offers a specialized approach to Portugal's tourism sector, focusing on
   faqs: [
     {
       question: 'What are the two investment tracks available?',
-      answer: 'Capital Preservation offers 2% p.a. fixed return with exit upon citizenship (5-6 years), while Upside targets ~10% IRR with exit at fund maturity (8 years).'
+      answer: 'Upside Participation targets net annual returns above 10% requiring investment until maturity (8 years), while Capital Preservation is capped at 5% annual return net of fees with exit possible after obtaining permanent residency (5–6 years).'
     },
     {
-      question: 'How is this different from real estate funds?',
-      answer: 'Portugal Prime invests in hospitality operators (rooms, F&B, events) via equity/leases, not direct or indirect real estate investment, making it Golden Visa eligible.'
+      question: 'What makes this fund less risky than other Golden Visa options?',
+      answer: 'Portugal Prime has a risk level of only 3 out of 7, significantly lower than other GV funds which typically have a risk level of 6. The fund also has a 100% success rate for Golden Visa applications.'
     },
     {
-      question: 'What makes the fee structure attractive?',
-      answer: 'The fund charges only 0.20% management fee, 0% subscription fee, and 25% performance fee only on returns above 5% hurdle rate.'
+      question: 'Do I need a Portuguese bank account to invest?',
+      answer: 'No, direct investments from overseas are accepted without requiring a Portuguese bank account, making the investment process more accessible for international investors.'
     },
     {
-      question: 'What is the risk profile of this fund?',
-      answer: 'The fund targets low risk with SRI 3/7 rating, significantly lower than typical funds at 6/7, focusing on Portugal\'s resilient tourism sector.'
+      question: 'What exclusive benefits do larger investors receive?',
+      answer: 'Investors committing the full €500,000 receive one complimentary week per year in deluxe hotels or serviced apartments, or two weeks every two years, typically aligned with biometric visits.'
     },
     {
-      question: 'Who are the key service providers?',
-      answer: 'The fund is managed by Biz Capital SGOIC, with Bison Bank as depositary and BDO & Associados as auditor, ensuring institutional-grade oversight.'
+      question: 'What recognition has the fund management received?',
+      answer: 'The fund management team was awarded Fund Manager of the Year 2024, demonstrating their expertise and excellence in the hospitality investment sector.'
     }
   ],
   eligibilityBasis: {
