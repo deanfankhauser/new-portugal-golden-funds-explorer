@@ -236,7 +236,10 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
 
   const signUp = async (email: string, password: string, userType: 'manager' | 'investor', metadata?: any) => {
-    const redirectUrl = `${window.location.origin}/confirm`;
+    // Use the proper preview URL instead of localhost
+    const redirectUrl = window.location.hostname === 'localhost' 
+      ? `${window.location.origin}/confirm`
+      : `https://lovable.dev/projects/bkmvydnfhmkjnuszroim/preview/confirm`;
     
     const enhancedMetadata = {
       ...metadata,
