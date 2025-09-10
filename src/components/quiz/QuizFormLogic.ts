@@ -13,7 +13,7 @@ const quizSchema = z.object({
   investmentHorizon: z.enum(['short', 'medium', 'long'], {
     errorMap: () => ({ message: "Please select your investment timeline to continue" })
   }),
-  ticketSize: z.enum(['under-300k', '300k-500k', 'over-500k'], {
+  ticketSize: z.enum(['fund-minimums', '300k-500k', 'over-500k'], {
     errorMap: () => ({ message: "Please select your investment budget to continue" })
   }),
   citizenship: z.enum(['us', 'uk', 'australia', 'canada', 'china', 'other'], {

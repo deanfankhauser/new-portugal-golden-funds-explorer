@@ -7,7 +7,7 @@ import * as z from 'zod';
 const quizSchema = z.object({
   riskAppetite: z.enum(['low', 'medium', 'high']),
   investmentHorizon: z.enum(['short', 'medium', 'long']),
-  ticketSize: z.enum(['under-300k', '300k-500k', 'over-500k']),
+  ticketSize: z.enum(['fund-minimums', '300k-500k', 'over-500k']),
   citizenship: z.enum(['us', 'uk', 'australia', 'canada', 'china', 'other'])
 });
 
