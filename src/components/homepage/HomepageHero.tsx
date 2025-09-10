@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import UniversalAuthButton from '../auth/UniversalAuthButton';
+
 import PremiumCTA from '../cta/PremiumCTA';
 import LastUpdated from '../common/LastUpdated';
 import { funds } from '../../data/funds';
@@ -75,10 +75,6 @@ const HomepageHero: React.FC = () => {
             </div>
           </div>
 
-          {/* Universal Login/Register Button */}
-          <div className="flex justify-center mb-6">
-            <UniversalAuthButton />
-          </div>
         </div>
       </div>
     </header>
