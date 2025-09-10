@@ -300,24 +300,20 @@ const AccountSettings = () => {
     setIsDeletingAccount(true);
     
     try {
+      // Instead of trying to delete the user account (which requires admin privileges),
+      // we'll mark the user as deleted and sign them out
       const { supabase } = await import('@/integrations/supabase/client');
       
-      // Delete user account (this will cascade delete profile tables due to foreign key constraints)
-      const { error } = await supabase.auth.admin.deleteUser(user!.id);
+      const { error } = await supabase.auth.updateUser({
+        data: { deleted: true }
+      });
       
       if (error) {
-        // If admin delete fails, try the user method
-        const { error: userError } = await supabase.auth.updateUser({
-          data: { deleted: true }
+        toast.error("Delete Failed", {
+          description: "Unable to delete account. Please contact support."
         });
-        
-        if (userError) {
-          toast.error("Delete Failed", {
-            description: "Unable to delete account. Please contact support."
-          });
-          setIsDeletingAccount(false);
-          return;
-        }
+        setIsDeletingAccount(false);
+        return;
       }
       
       // Sign out and redirect
@@ -325,7 +321,7 @@ const AccountSettings = () => {
       navigate('/');
       
       toast.success("Account Deleted", {
-        description: "Your account has been permanently deleted."
+        description: "Your account has been deactivated."
       });
       
     } catch (error) {
