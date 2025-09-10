@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { funds } from '../data/funds';
 import { FundScoringService } from '../services/fundScoringService';
-import { isFundGVEligible } from '../data/services/gv-eligibility-service';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -13,15 +12,11 @@ import MethodologySection from '../components/fund-index/MethodologySection';
 import TrustSignals from '../components/fund-index/TrustSignals';
 import IndexSummaryWidgets from '../components/fund-index/IndexSummaryWidgets';
 import FundIndexFAQ from '../components/fund-index/FundIndexFAQ';
-import { Switch } from '../components/ui/switch';
 import { Card, CardContent } from '../components/ui/card';
 
 const FundIndex: React.FC = () => {
-  const [showOnlyGVEligible, setShowOnlyGVEligible] = useState(true);
-  
-  // Filter funds based on GV eligibility before scoring
-  const filteredFunds = showOnlyGVEligible ? funds.filter(isFundGVEligible) : funds;
-  const allFundScores = FundScoringService.getAllFundScores(filteredFunds);
+  // Calculate scores for all funds
+  const allFundScores = FundScoringService.getAllFundScores(funds);
   const topFiveScores = allFundScores.slice(0, 5);
 
   // Remove component-level schema injection - ConsolidatedSEOService handles page-level schemas

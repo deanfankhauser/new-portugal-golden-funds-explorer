@@ -1,9 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
 import { Fund, FundTag } from '../../data/funds';
-import { getGVEligibleFunds } from '../../data/services/gv-eligibility-service';
 
 interface ResultsHeaderProps {
   filteredFunds: Fund[];
@@ -11,8 +9,6 @@ interface ResultsHeaderProps {
   searchQuery: string;
   setSelectedTags: (tags: FundTag[]) => void;
   setSearchQuery: (query: string) => void;
-  showOnlyGVEligible: boolean;
-  setShowOnlyGVEligible: (show: boolean) => void;
 }
 
 const ResultsHeader: React.FC<ResultsHeaderProps> = ({
@@ -20,11 +16,8 @@ const ResultsHeader: React.FC<ResultsHeaderProps> = ({
   selectedTags,
   searchQuery,
   setSelectedTags,
-  setSearchQuery,
-  showOnlyGVEligible,
-  setShowOnlyGVEligible
+  setSearchQuery
 }) => {
-  const gvEligibleFunds = getGVEligibleFunds(filteredFunds);
   
   return (
     <div className="space-y-4 mb-6">
