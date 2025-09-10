@@ -1,1 +1,6 @@
 project_id = "bkmvydnfhmkjnuszroim"
+
+[auth]
+[auth.email]
+# Email sender name
+site_name = "movingto"
