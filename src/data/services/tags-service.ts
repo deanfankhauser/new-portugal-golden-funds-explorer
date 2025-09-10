@@ -24,10 +24,7 @@ export const getFundsByTag = (tag: FundTag): Fund[] => {
   // Filter funds by tag
   let matchingFunds = funds.filter(fund => fund.tags.includes(tag));
   
-  // For "Golden Visa Eligible" tag, only return GV eligible funds
-  if (tag === 'Golden Visa Eligible') {
-    matchingFunds = getGVEligibleFunds(matchingFunds);
-  }
+  // All funds are now GV eligible, so no additional filtering needed
   
   return matchingFunds;
 };
