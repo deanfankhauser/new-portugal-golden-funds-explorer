@@ -239,6 +239,7 @@ const AccountSettings = () => {
         toast.error("Authentication Error", {
           description: "User email not found. Please sign in again."
         });
+        setIsUpdating(false);
         return;
       }
 
@@ -254,6 +255,7 @@ const AccountSettings = () => {
         toast.error("Incorrect Password", {
           description: "Current password is incorrect."
         });
+        setIsUpdating(false);
         return;
       }
 
