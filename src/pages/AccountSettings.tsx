@@ -9,14 +9,17 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Upload, Loader2, User, Mail, Lock, Camera, Home } from 'lucide-react';
+import { Upload, Loader2, User, Mail, Lock, Camera, Home, Trash2 } from 'lucide-react';
 import { toast } from "sonner";
-import { Navigate, Link } from 'react-router-dom';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 const AccountSettings = () => {
-  const { user, userType, profile, updateProfile, uploadAvatar, loading } = useEnhancedAuth();
+  const { user, userType, profile, updateProfile, uploadAvatar, loading, signOut } = useEnhancedAuth();
+  const navigate = useNavigate();
   const [isUpdating, setIsUpdating] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Profile form state
@@ -287,6 +290,47 @@ const AccountSettings = () => {
       console.log('🔑 Password change completed, setting isUpdating to false');
       // Always reset loading state
       setIsUpdating(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setIsDeletingAccount(true);
+    
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      
+      // Delete user account (this will cascade delete profile tables due to foreign key constraints)
+      const { error } = await supabase.auth.admin.deleteUser(user!.id);
+      
+      if (error) {
+        // If admin delete fails, try the user method
+        const { error: userError } = await supabase.auth.updateUser({
+          data: { deleted: true }
+        });
+        
+        if (userError) {
+          toast.error("Delete Failed", {
+            description: "Unable to delete account. Please contact support."
+          });
+          return;
+        }
+      }
+      
+      // Sign out and redirect
+      await signOut();
+      navigate('/');
+      
+      toast.success("Account Deleted", {
+        description: "Your account has been permanently deleted."
+      });
+      
+    } catch (error) {
+      console.error('Delete account error:', error);
+      toast.error("Delete Failed", {
+        description: "An unexpected error occurred. Please try again."
+      });
+    } finally {
+      setIsDeletingAccount(false);
     }
   };
 
@@ -640,6 +684,81 @@ const AccountSettings = () => {
                       )}
                     </Button>
                   </form>
+                  
+                  <Separator className="my-8" />
+                  
+                  {/* Danger Zone */}
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-semibold text-destructive">Danger Zone</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Irreversible and destructive actions
+                      </p>
+                    </div>
+                    
+                    <Card className="border-destructive/20 bg-destructive/5">
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between">
+                          <div className="space-y-1">
+                            <h4 className="font-medium text-destructive">Delete Account</h4>
+                            <p className="text-sm text-muted-foreground">
+                              Permanently delete your account and all associated data. This action cannot be undone.
+                            </p>
+                          </div>
+                          
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="destructive" size="sm" className="ml-4">
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete Account
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle className="text-destructive">
+                                  Are you absolutely sure?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription className="space-y-2">
+                                  <p>
+                                    This action cannot be undone. This will permanently delete your account and remove all your data from our servers.
+                                  </p>
+                                  <p className="font-medium text-destructive">
+                                    All of the following will be permanently deleted:
+                                  </p>
+                                  <ul className="list-disc list-inside text-sm space-y-1 ml-4">
+                                    <li>Your profile information</li>
+                                    <li>All uploaded photos and documents</li>
+                                    <li>Account preferences and settings</li>
+                                    <li>All associated data</li>
+                                  </ul>
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={handleDeleteAccount}
+                                  disabled={isDeletingAccount}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  {isDeletingAccount ? (
+                                    <>
+                                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                      Deleting...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Trash2 className="mr-2 h-4 w-4" />
+                                      Delete Account Permanently
+                                    </>
+                                  )}
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
