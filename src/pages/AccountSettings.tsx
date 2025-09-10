@@ -18,6 +18,7 @@ const AccountSettings = () => {
   const { user, userType, profile, updateProfile, uploadAvatar, loading, signOut } = useEnhancedAuth();
   const navigate = useNavigate();
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -225,7 +226,7 @@ const AccountSettings = () => {
     }
 
     // Only set loading state after validations pass
-    setIsUpdating(true);
+    setIsUpdatingPassword(true);
 
     try {
       console.log('🔑 Validations passed, proceeding with password change');
@@ -239,7 +240,7 @@ const AccountSettings = () => {
         toast.error("Authentication Error", {
           description: "User email not found. Please sign in again."
         });
-        setIsUpdating(false);
+        setIsUpdatingPassword(false);
         return;
       }
 
@@ -255,7 +256,7 @@ const AccountSettings = () => {
         toast.error("Incorrect Password", {
           description: "Current password is incorrect."
         });
-        setIsUpdating(false);
+        setIsUpdatingPassword(false);
         return;
       }
 
@@ -291,7 +292,7 @@ const AccountSettings = () => {
     } finally {
       console.log('🔑 Password change completed, setting isUpdating to false');
       // Always reset loading state
-      setIsUpdating(false);
+      setIsUpdatingPassword(false);
     }
   };
 
@@ -676,8 +677,8 @@ const AccountSettings = () => {
                       />
                     </div>
                     
-                    <Button type="submit" disabled={isUpdating}>
-                      {isUpdating ? (
+                    <Button type="submit" disabled={isUpdatingPassword}>
+                      {isUpdatingPassword ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           Updating Password...
