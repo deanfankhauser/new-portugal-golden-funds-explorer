@@ -87,7 +87,7 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
                   <SelectTrigger>
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[9999]">
                     <SelectItem value="all">All Categories</SelectItem>
                     <SelectItem value="Venture Capital">Venture Capital</SelectItem>
                     <SelectItem value="Private Equity">Private Equity</SelectItem>
@@ -108,7 +108,7 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
                   <SelectTrigger>
                     <SelectValue placeholder="All Statuses" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[9999]">
                     <SelectItem value="all">All Statuses</SelectItem>
                     <SelectItem value="Open">Open</SelectItem>
                     <SelectItem value="Closed">Closed</SelectItem>
@@ -126,7 +126,7 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
                   <SelectTrigger>
                     <SelectValue placeholder="All Amounts" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[9999]">
                     <SelectItem value="all">All Amounts</SelectItem>
                     <SelectItem value="0-250000">€0 - €250k</SelectItem>
                     <SelectItem value="250000-350000">€250k - €350k (GV still requires €500k total)</SelectItem>
@@ -145,7 +145,7 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
                   <SelectTrigger>
                     <SelectValue placeholder="All Fees" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[9999]">
                     <SelectItem value="all">All Fees</SelectItem>
                     <SelectItem value="0-1">0% - 1%</SelectItem>
                     <SelectItem value="1-1.5">1% - 1.5%</SelectItem>

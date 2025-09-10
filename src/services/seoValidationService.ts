@@ -263,11 +263,16 @@ export class SEOValidationService {
       
       scripts.forEach((script) => {
         try {
-          const data = JSON.parse(script.textContent || '');
-          if (data['@context'] && data['@type']) {
+          const textContent = script.textContent || '';
+          if (!textContent.trim()) return;
+          
+          const data = JSON.parse(textContent);
+          // Add defensive check for @context
+          if (data && typeof data === 'object' && data['@context'] && data['@type']) {
             hasValidStructuredData = true;
           }
-        } catch {
+        } catch (e) {
+          console.warn('Failed to parse structured data:', e);
           errors.push('Invalid JSON-LD structured data');
         }
       });

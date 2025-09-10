@@ -874,3 +874,51 @@ a:focus-visible {
     transform: none !important;
   }
 }
+
+/* CRITICAL: SSG-specific fixes for filters and dropdowns */
+
+/* High z-index for dropdowns in SSG */
+.z-\[9999\] { z-index: 9999 !important; }
+
+/* Ensure dropdowns are not clipped by containers */
+[data-radix-popper-content-wrapper] {
+  z-index: 9999 !important;
+  position: fixed !important;
+  isolation: isolate;
+}
+
+[data-radix-portal] {
+  z-index: 9999 !important;
+}
+
+/* Fix for filter containers to not clip content */
+.filter-container,
+.sticky {
+  overflow: visible !important;
+}
+
+/* Ensure popover backgrounds are solid */
+.bg-popover {
+  background-color: hsl(var(--popover)) !important;
+  backdrop-filter: none;
+}
+
+/* Additional dropdown fixes */
+[role="menu"],
+[role="listbox"] {
+  z-index: 9999 !important;
+  background-color: hsl(var(--popover)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+/* Container overflow fixes */
+.container,
+.mx-auto {
+  overflow: visible !important;
+}
+
+/* SSG specific positioning fixes */
+[data-state="open"] {
+  z-index: 9999 !important;
+}

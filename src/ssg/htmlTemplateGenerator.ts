@@ -189,13 +189,27 @@ export function generateHTMLTemplate(
     return mainEntry ? `  <script type="module" src="/assets/${mainEntry}"></script>` : '';
   })()}
   
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BE3HZBVG9D"></script>
+  <!-- Google tag (gtag.js) - Load only in production -->
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-BE3HZBVG9D');
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      (function() {
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-BE3HZBVG9D';
+        script.onerror = function() {
+          console.warn('Google Analytics failed to load');
+        };
+        document.head.appendChild(script);
+        
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', 'G-BE3HZBVG9D', {
+          transport_type: 'beacon'
+        });
+      })();
+    }
   </script>
 </body>
 </html>`;

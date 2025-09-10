@@ -117,7 +117,7 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
                  target="_blank" 
                  rel="noopener noreferrer"
                >
-                 Get Expert Guidance
+                 Speak with Movingto
                </a>
              </Button>
            </div>

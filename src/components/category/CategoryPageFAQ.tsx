@@ -21,27 +21,7 @@ interface CategoryPageFAQProps {
 const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categorySlug, fundsCount }) => {
   // Generate category-specific FAQs
   const generateCategoryFAQs = (category: string, count: number): FAQItem[] => {
-    // Special handling for Real Estate category (not GV-eligible)
-    if (category === 'Real Estate') {
-      return [
-        {
-          question: `What are ${category} investment funds?`,
-          answer: `${category} investment funds focus on ${category.toLowerCase()} sectors but are NOT eligible for Portugal's Golden Visa program. Since October 2023, Golden Visa funds cannot have direct or indirect real estate exposure. These funds are available for general investment purposes outside the Golden Visa framework.`
-        },
-        {
-          question: `How many ${category} funds are available?`,
-          answer: `Currently, there are ${count} ${category.toLowerCase()} funds available in our directory. Note: These funds are NOT eligible for the Portugal Golden Visa program due to real estate exposure restrictions implemented in October 2023.`
-        },
-        {
-        question: `Why aren't Real Estate funds eligible for Portugal Golden Visa since Oct 2023?`,
-        answer: `Since October 2023, Portugal Golden Visa funds cannot have any direct or indirect real estate exposure due to new regulations. Real estate-linked investments no longer qualify for residency purposes. For current Golden Visa eligible funds, see the main fund index. Sources: Nomad Gate Guide & IMI Daily.`
-      },
-      {
-        question: `What should I invest in instead of Real Estate funds for Golden Visa?`,
-        answer: `For Portugal Golden Visa eligibility, consider investment funds focused on: debt instruments, equity investments, clean energy projects, private equity, or venture capital. These sectors remain eligible as they don't involve real estate exposure. Minimum €500,000 total investment required.`
-        }
-      ];
-    }
+    // All categories are now Golden Visa eligible
 
     // Default FAQs for GV-eligible categories
     return [

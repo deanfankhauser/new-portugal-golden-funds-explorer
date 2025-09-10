@@ -21,69 +21,28 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
     tag.toLowerCase().includes('property')
   );
   
-  // Determine eligibility status
+  // All funds are now Golden Visa eligible
   const getEligibilityStatus = () => {
-    if (hasRealEstate) return 'no';
-    // Check Portugal allocation requirement (≥60%)
-    if (fund.eligibilityBasis?.portugalAllocation && 
-        typeof fund.eligibilityBasis.portugalAllocation === 'number' && 
-        fund.eligibilityBasis.portugalAllocation < 60) {
-      return 'no';
-    }
-    if (isGVEligible) return 'yes';
-    return 'unclear';
+    return 'yes';
   };
   
   const status = getEligibilityStatus();
   
   const getStatusConfig = () => {
-    switch (status) {
-      case 'yes':
-        return {
-          variant: 'default' as const,
-          icon: CheckCircle,
-          label: 'Golden Visa Eligible',
-          color: 'text-green-600',
-          bgColor: 'bg-green-50',
-          borderColor: 'border-green-200'
-        };
-      case 'no':
-        return {
-          variant: 'destructive' as const,
-          icon: AlertTriangle,
-          label: 'Not GV Eligible',
-          color: 'text-red-600',
-          bgColor: 'bg-red-50',
-          borderColor: 'border-red-200'
-        };
-      case 'unclear':
-        return {
-          variant: 'secondary' as const,
-          icon: HelpCircle,
-          label: 'GV Eligibility Unclear',
-          color: 'text-amber-600',
-          bgColor: 'bg-amber-50',
-          borderColor: 'border-amber-200'
-        };
-    }
+    return {
+      variant: 'default' as const,
+      icon: CheckCircle,
+      label: 'Golden Visa Eligible',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+      borderColor: 'border-green-200'
+    };
   };
   
   const config = getStatusConfig();
   const Icon = config.icon;
   
   const getExplanation = () => {
-    if (hasRealEstate) {
-      return "Fund has real estate exposure - not eligible since October 2023.";
-    }
-    // Check for <60% Portugal allocation
-    if (fund.eligibilityBasis?.portugalAllocation && 
-        typeof fund.eligibilityBasis.portugalAllocation === 'number' && 
-        fund.eligibilityBasis.portugalAllocation < 60) {
-      return `Fund has only ${fund.eligibilityBasis.portugalAllocation}% Portugal allocation - requires ≥60% for Golden Visa eligibility.`;
-    }
-    if (status === 'unclear') {
-      return "Eligibility depends on fund structure, allocation rules, and current regulations.";
-    }
     return "Appears GV-eligible based on manager docs; verify with counsel.";
   };
 
@@ -105,9 +64,7 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription className="text-sm">
               <strong className={config.color}>
-                {status === 'no' && 'Not Golden Visa Eligible:'}
-                {status === 'unclear' && 'Eligibility Status Unclear:'}
-                {status === 'yes' && 'Appears GV Eligible:'}
+                Golden Visa Eligible:
               </strong>
               <br />
               {getExplanation()}

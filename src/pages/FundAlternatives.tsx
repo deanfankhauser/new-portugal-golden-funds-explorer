@@ -113,15 +113,15 @@ const FundAlternatives = () => {
           <div className="mb-8">
             <Alert className="mb-4">
               <AlertDescription>
-                These are similar funds; eligibility varies — check the GV badge on each card. Verify with counsel.
+                These are similar Golden Visa eligible funds. Verify specific details with counsel and fund managers.
               </AlertDescription>
             </Alert>
             <h1 className="text-3xl font-bold text-foreground mb-4">
               {fund.name} Alternatives | Portugal Golden Visa Investment Funds
             </h1>
             <p className="text-muted-foreground text-lg">
-              These are similar funds. Eligibility varies — check the badge on each card. 
-              To view non-GV alternatives only, use the Real Estate or other non-GV categories.
+              These are similar Golden Visa eligible funds with comparable investment strategies and requirements.
+              Review each option to find the best match for your investment goals.
             </p>
           </div>
 
@@ -181,13 +181,13 @@ const FundAlternatives = () => {
 
           <div className="mt-12 text-center p-8 bg-card rounded-lg border border-border">
             <h2 className="text-xl font-semibold text-foreground mb-3">
-              Need Portugal Golden Visa Investment Fund Guidance?
+              Need Expert Introductions?
             </h2>
             <p className="text-muted-foreground mb-4">
-              Our fund experts can help you evaluate these alternatives and find the perfect investment match for your goals.
+              We can facilitate introductions to fund managers to help you evaluate these alternatives and find the perfect investment match.
             </p>
             <Button asChild>
-              <Link to="/about">Get Expert Guidance</Link>
+              <Link to="/about">Get Expert Introduction</Link>
             </Button>
           </div>
         </div>

@@ -55,10 +55,10 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                   </h3>
                   <div className="flex items-center gap-2 mt-1">
                     <Badge 
-                      variant={isGVEligible ? "default" : "destructive"} 
+                      variant="default" 
                       className="text-xs"
                     >
-                      {isGVEligible ? "GV Eligible" : "Not GV Eligible"}
+                      GV Eligible
                     </Badge>
                   </div>
                 </div>

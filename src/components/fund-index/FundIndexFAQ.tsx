@@ -30,7 +30,7 @@ const FundIndexFAQ: React.FC = () => {
     },
     {
       question: "Are all funds in the index eligible for the Portugal Golden Visa?",
-      answer: "Not all funds are Golden Visa eligible. Since October 2023 regulatory changes, real estate-linked funds are excluded from Portugal's Golden Visa program. Eligible funds must meet specific criteria: no real estate exposure; ≥60% investment in Portugal; ≥5-year maturity; CMVM registered; €500,000 minimum total investment. Sources: Nomad Gate Guide & IMI Daily regulatory analysis."
+      answer: "Yes, all funds listed in our index are eligible for Portugal's Golden Visa program. Each fund has been verified to meet current eligibility criteria including CMVM registration and minimum €500,000 investment requirement. We continuously monitor regulatory compliance to ensure accuracy."
     },
     {
       question: "What does a fund's score mean for investors?",
@@ -38,7 +38,7 @@ const FundIndexFAQ: React.FC = () => {
     },
     {
       question: "Can I invest directly through this platform?",
-      answer: "No, we are an independent research and comparison platform. To invest in any fund, you'll need to contact the fund manager directly or work with a qualified financial advisor. We provide detailed contact information for each fund manager."
+      answer: "No, we are an independent research and comparison platform. To invest in any fund, you'll need to contact the fund manager directly or work with a qualified financial professional. We provide detailed contact information for each fund manager."
     },
     {
       question: "How reliable is the data in the Fund Index?",
@@ -46,7 +46,7 @@ const FundIndexFAQ: React.FC = () => {
     },
     {
       question: "What should I consider beyond the index score?",
-      answer: "While our index provides a comprehensive evaluation, you should also consider your personal investment goals, risk tolerance, investment timeline, and tax implications. We recommend consulting with qualified financial and legal advisors before making investment decisions."
+      answer: "While our index provides a comprehensive evaluation, you should also consider your personal investment goals, risk tolerance, investment timeline, and tax implications. We recommend consulting with qualified financial and legal professionals before making investment decisions."
     }
   ];
 

@@ -150,7 +150,7 @@ const HomepageInfoSections = () => {
               <ExternalLink className="h-5 w-5 mt-0.5 flex-shrink-0" />
               <div>
                 <div className="font-medium">Best Law Firms</div>
-                <div className="text-sm text-muted-foreground">Top legal advisors</div>
+                <div className="text-sm text-muted-foreground">Top legal professionals</div>
               </div>
             </a>
           </Button>

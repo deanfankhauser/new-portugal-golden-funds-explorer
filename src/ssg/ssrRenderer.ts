@@ -10,6 +10,7 @@ import { StaticRoute } from './routeDiscovery';
 import { loadComponents, TooltipProvider } from './componentLoader';
 import { ComparisonProvider } from '../contexts/ComparisonContext';
 import { RecentlyViewedProvider } from '../contexts/RecentlyViewedContext';
+import { EnhancedAuthProvider } from '../contexts/EnhancedAuthContext';
 
 // Ensure React is available globally for SSR
 if (typeof global !== 'undefined' && !global.React) {
@@ -19,10 +20,30 @@ if (typeof window !== 'undefined' && !window.React) {
   window.React = React;
 }
 
+// Mock localStorage for SSG environment
+if (typeof global !== 'undefined' && !global.localStorage) {
+  global.localStorage = {
+    getItem: () => null,
+    setItem: () => {},
+    removeItem: () => {},
+    clear: () => {},
+    length: 0,
+    key: () => null,
+  };
+}
+
+// Also mock it for window if in browser-like environment during SSG
+if (typeof window !== 'undefined' && !window.localStorage) {
+  window.localStorage = global.localStorage;
+}
+
 export class SSRRenderer {
   static async renderRoute(route: StaticRoute): Promise<{ html: string; seoData: any }> {
     // Check if we're in development mode safely for SSG environments
     const isDev = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false;
+    
+    // For SSG, we need to include the real auth provider but with initial loading state
+    // This ensures proper hydration when JavaScript loads on the client side
     
     if (isDev) {
       console.log(`🔥 SSR: Starting render for route ${route.path} (type: ${route.pageType})`);
@@ -129,14 +150,17 @@ export class SSRRenderer {
       QueryClientProvider,
       { client: queryClient },
       React.createElement(
-        ComparisonProvider,
+        EnhancedAuthProvider,
         null,
         React.createElement(
-          RecentlyViewedProvider,
+          ComparisonProvider,
           null,
           React.createElement(
-            TooltipProvider,
+            RecentlyViewedProvider,
             null,
+            React.createElement(
+              TooltipProvider,
+              null,
             React.createElement(
               StaticRouter,
               { location: route.path },
@@ -164,6 +188,12 @@ export class SSRRenderer {
                 React.createElement(Route, { path: '/faqs', element: React.createElement(getComponent('FAQs')) }),
                 React.createElement(Route, { path: '/roi-calculator', element: React.createElement(getComponent('ROICalculator')) }),
                 React.createElement(Route, { path: '/fund-quiz', element: React.createElement(getComponent('FundQuiz')) }),
+                
+                // Auth pages
+                React.createElement(Route, { path: '/manager-auth', element: React.createElement(getComponent('ManagerAuth')) }),
+                React.createElement(Route, { path: '/investor-auth', element: React.createElement(getComponent('InvestorAuth')) }),
+                React.createElement(Route, { path: '/account-settings', element: React.createElement(getComponent('AccountSettings')) }),
+                
                 React.createElement(Route, { path: '/compare/:slug', element: React.createElement(getComponent('FundComparison')) }),
                 
                 // Alternatives hub
@@ -178,6 +208,7 @@ export class SSRRenderer {
             )
           )
         )
+      )
       )
     );
 

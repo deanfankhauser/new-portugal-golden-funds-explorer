@@ -136,10 +136,10 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
         
         <div className="flex items-start gap-2 p-4 bg-warning/10 rounded-lg border border-warning/20">
           <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-warning-foreground">
+          <div className="text-sm text-black">
             <strong>Investment Risk Disclaimer:</strong> Past performance does not guarantee future results. 
             This calculation is for illustrative purposes only and actual returns may vary significantly. 
-            Always consult with qualified financial advisors before making investment decisions.
+            Always consult with qualified financial professionals before making investment decisions.
           </div>
         </div>
       </CardContent>

@@ -2,7 +2,8 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { buildContactUrl } from "../utils/urlHelpers";
+
+import AuthAwareButton from "./auth/AuthAwareButton";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -14,7 +15,7 @@ import {
 import ComparisonIndicator from "./ComparisonIndicator";
 import MobileNavigation from "./MobileNavigation";
 import DisclaimerBanner from "./common/DisclaimerBanner";
-import { ArrowLeft, Mail, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3, FileText, GitCompareArrows } from "lucide-react";
+import { ArrowLeft, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3, GitCompareArrows } from "lucide-react";
 import { FundIndexWidget, ComparisonWidget } from "./navigation/IndexWidgets";
 
 const Header = () => {
@@ -29,7 +30,7 @@ const Header = () => {
             <Link to="/" className="flex items-center">
               <img 
                 src="/lovable-uploads/ab17d046-1cb9-44fd-aa6d-c4d338e11090.png" 
-                alt="MovingTo Logo" 
+                alt="Movingto Logo" 
                 className="h-6"
               />
             </Link>
@@ -147,28 +148,9 @@ const Header = () => {
             </NavigationMenu>
 
             {/* Direct Actions */}
-            <Button 
-              asChild
-              variant="ghost" 
-              className="text-background hover:bg-background/10 hover:text-background transition-all duration-300"
-            >
-              <a href="https://www.movingto.com/contact/submit-fund" target="_blank" rel="noopener noreferrer">
-                <FileText className="h-4 w-4 mr-2" />
-                Submit Fund
-              </a>
-            </Button>
 
-            <Button 
-              asChild
-              variant="outline" 
-              className="border-background bg-background text-foreground hover:bg-secondary hover:text-foreground transition-all duration-300"
-            >
-              <a href={buildContactUrl('header')} target="_blank" rel="noopener noreferrer">
-                <Mail className="h-4 w-4 mr-2" />
-                Get in Touch
-              </a>
-            </Button>
-
+            {/* AuthAwareButton temporarily hidden */}
+            {/* <AuthAwareButton /> */}
             <ComparisonIndicator />
           </div>
 

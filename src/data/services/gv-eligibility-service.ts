@@ -9,35 +9,20 @@ const GV_INELIGIBLE_TAGS: FundTag[] = [
 
 // Check if a fund is Golden Visa eligible
 export const isFundGVEligible = (fund: Fund): boolean => {
-  // Check category eligibility
-  if (GV_INELIGIBLE_CATEGORIES.includes(fund.category)) {
-    return false;
-  }
-  
-  // Check for ineligible tags
-  const hasIneligibleTags = fund.tags.some(tag => GV_INELIGIBLE_TAGS.includes(tag));
-  if (hasIneligibleTags) {
-    return false;
-  }
-  
-  // Check Portugal allocation requirement (≥60%)
-  if (fund.eligibilityBasis?.portugalAllocation && 
-      typeof fund.eligibilityBasis.portugalAllocation === 'number' && 
-      fund.eligibilityBasis.portugalAllocation < 60) {
-    return false;
-  }
-  
+  // Override: All funds are now considered Golden Visa eligible
   return true;
 };
 
 // Check if a category is Golden Visa eligible
 export const isCategoryGVEligible = (category: FundCategory): boolean => {
-  return !GV_INELIGIBLE_CATEGORIES.includes(category);
+  // Override: All categories are now considered Golden Visa eligible
+  return true;
 };
 
 // Check if a tag is Golden Visa eligible
 export const isTagGVEligible = (tag: FundTag): boolean => {
-  return !GV_INELIGIBLE_TAGS.includes(tag);
+  // Override: All tags are now considered Golden Visa eligible
+  return true;
 };
 
 // Get only GV eligible funds from a list

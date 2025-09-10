@@ -182,9 +182,24 @@ export class StructuredDataService {
     
     // If multiple schemas, wrap in array
     const schemaContent = schemas.length === 1 ? schemas[0] : schemas;
-    script.textContent = JSON.stringify(schemaContent, null, 2);
     
-    document.head.appendChild(script);
+    // Ensure all schemas have @context before adding to DOM
+    try {
+      const validatedContent = Array.isArray(schemaContent) 
+        ? schemaContent.map(item => ({
+            '@context': 'https://schema.org',
+            ...item
+          }))
+        : {
+            '@context': 'https://schema.org',
+            ...schemaContent
+          };
+      
+      script.textContent = JSON.stringify(validatedContent, null, 2);
+      document.head.appendChild(script);
+    } catch (error) {
+      console.warn('Failed to add structured data:', error);
+    }
   }
 
   // Remove structured data from page head

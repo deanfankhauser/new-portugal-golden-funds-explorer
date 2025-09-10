@@ -37,9 +37,9 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
             </div>
             
             <div>
-              <h2 className="text-xl font-bold text-foreground mb-4">Why Choose MovingTo</h2>
+              <h2 className="text-xl font-bold text-foreground mb-4">Why Choose Movingto</h2>
               <ul className="text-sm text-muted-foreground space-y-2">
-                <li>• Expert Golden Visa guidance</li>
+                <li>• Expert Golden Visa information</li>
                 <li>• Comprehensive fund analysis</li>
                 <li>• Due diligence support</li>
                 <li>• Application assistance</li>
@@ -82,7 +82,7 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
             <div>
               <h3 className="font-semibold text-foreground mb-2">Can I compare different fund options?</h3>
               <p className="text-sm text-muted-foreground">
-                MovingTo clients get access to comprehensive fund comparison tools, detailed analytics, 
+                Movingto clients get access to comprehensive fund comparison tools, detailed analytics, 
                 and personalized recommendations based on risk tolerance and investment goals.
               </p>
             </div>

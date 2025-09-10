@@ -21,16 +21,16 @@ export const horizonFund: Fund = {
   established: 2023,
   regulatedBy: "Octanova SCR, S.A. (registered with CMVM)",
   eligibilityBasis: {
-    portugalAllocation: 35,
+    portugalAllocation: 60,
     maturityYears: 6,
     realEstateExposure: 'None',
     managerAttestation: true
   },
   location: "Portugal",
-  detailedDescription: "Horizon Fund is the first Golden-Visa-eligible SCR vehicle in Portugal, offering a blended strategy of 65% investment-grade Portuguese corporate bonds and 35% large-cap digital assets (e.g. Bitcoin, Ethereum). As an open-ended fund with monthly subscriptions and redemptions, it provides both liquidity and stability: bond holdings generate steady income while crypto allocations capture growth potential. A robust risk-management framework—including stop-loss triggers, liquidity buffers and independent oversight—helps control volatility. Early redemptions (within 5 years) incur a 2% fee to align investor horizons, after which redemptions are processed daily. Managed by Octanova SCR with seasoned fixed income and blockchain experts, Horizon Fund targets a 15–20% IRR over a six-year term, with full transparency via quarterly reports and annual audited statements.",
+  detailedDescription: "Horizon Fund is the first Golden-Visa-eligible SCR vehicle in Portugal, offering a blended strategy with a minimum allocation of 60% of its net asset value (NAV) in securities of issuers based in Portugal, and up to 40% in large-cap digital assets (e.g. Bitcoin, Ethereum). As an open-ended fund with monthly subscriptions and redemptions, it provides both liquidity and stability: Portuguese bond holdings generate steady income while crypto allocations capture growth potential. A robust risk-management framework—including stop-loss triggers, liquidity buffers and independent oversight—helps control volatility. Early redemptions (within 5 years) incur a 2% fee to align investor horizons, after which redemptions are processed daily. Managed by Octanova SCR with seasoned fixed income and blockchain experts, Horizon Fund targets a 15–20% IRR over a six-year term, with full transparency via quarterly reports and annual audited statements.",
   geographicAllocation: [
-    { region: "Portugal", percentage: 35 },
-    { region: "USA", percentage: 65 }
+    { region: "Portugal", percentage: 60 },
+    { region: "USA", percentage: 40 }
   ],
   team: [
     { 
@@ -90,7 +90,7 @@ export const horizonFund: Fund = {
     },
     {
       question: 'Which asset classes does the Horizon Fund invest in?',
-      answer: 'It allocates 65 % to Portuguese fixed-income instruments and 35 % to large-cap digital assets (e.g., Bitcoin, Ethereum).'
+      answer: 'It maintains a minimum allocation of 60% of its net asset value in securities of issuers based in Portugal, with up to 40% allocated to large-cap digital assets (e.g., Bitcoin, Ethereum).'
     },
     {
       question: 'How is the fixed-income sleeve structured?',

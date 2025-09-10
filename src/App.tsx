@@ -5,6 +5,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from "@/components/ui/sonner";
 import { ComparisonProvider } from './contexts/ComparisonContext';
 import { RecentlyViewedProvider } from './contexts/RecentlyViewedContext';
+import { EnhancedAuthProvider } from './contexts/EnhancedAuthContext';
 
 // Lazy load all pages for optimal performance
 
@@ -39,6 +40,11 @@ const FundQuiz = lazy(() => import('./pages/FundQuiz'));
 const FundComparison = lazy(() => import('./pages/FundComparison'));
 const FundAlternatives = lazy(() => import('./pages/FundAlternatives'));
 const AlternativesHub = lazy(() => import('./pages/AlternativesHub'));
+const ManagerAuth = lazy(() => import('./pages/ManagerAuth'));
+const InvestorAuth = lazy(() => import('./pages/InvestorAuth'));
+const AccountSettings = lazy(() => import('./pages/AccountSettings'));
+const EmailConfirmation = lazy(() => import('./pages/EmailConfirmation'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -113,7 +119,8 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ComparisonProvider>
           <RecentlyViewedProvider>
-            <TooltipProvider>
+            <EnhancedAuthProvider>
+              <TooltipProvider>
               <Router>
                 <SEOProvider>
                   <ScrollToTop />
@@ -200,6 +207,41 @@ function App() {
                           <FundQuiz />
                         </Suspense>
                       } />
+                       
+                       {/* Manager Authentication */}
+                       <Route path="/manager-auth" element={
+                         <Suspense fallback={<PageLoader />}>
+                           <ManagerAuth />
+                         </Suspense>
+                       } />
+                       
+                       {/* Investor Authentication */}
+                       <Route path="/investor-auth" element={
+                         <Suspense fallback={<PageLoader />}>
+                           <InvestorAuth />
+                         </Suspense>
+                       } />
+                      
+                       {/* Account Settings */}
+                       <Route path="/account-settings" element={
+                         <Suspense fallback={<PageLoader />}>
+                           <AccountSettings />
+                         </Suspense>
+                       } />
+                       
+                       {/* Email Confirmation */}
+                       <Route path="/confirm" element={
+                         <Suspense fallback={<PageLoader />}>
+                           <EmailConfirmation />
+                         </Suspense>
+                       } />
+                       
+                       {/* Password Reset */}
+                       <Route path="/reset-password" element={
+                         <Suspense fallback={<PageLoader />}>
+                           <ResetPassword />
+                         </Suspense>
+                       } />
                       
                       {/* Alternatives hub */}
                       <Route path="/alternatives" element={
@@ -227,6 +269,7 @@ function App() {
                 </SEOProvider>
               </Router>
             </TooltipProvider>
+            </EnhancedAuthProvider>
           </RecentlyViewedProvider>
         </ComparisonProvider>
     </QueryClientProvider>

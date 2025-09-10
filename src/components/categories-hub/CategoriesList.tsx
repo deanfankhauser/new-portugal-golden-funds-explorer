@@ -37,12 +37,6 @@ const CategoriesList: React.FC<CategoriesListProps> = ({ categories }) => {
                     <span itemProp="name" className="font-medium text-base sm:text-lg text-foreground block truncate">
                       {category}
                     </span>
-                    {!isGVEligible && (
-                      <div className="flex items-center mt-1">
-                        <AlertTriangle className="w-3 h-3 text-amber-600 mr-1" />
-                        <span className="text-xs text-amber-700">Not GV Eligible</span>
-                      </div>
-                    )}
                   </div>
                 </div>
                 <span className="text-primary ml-2 flex-shrink-0">→</span>

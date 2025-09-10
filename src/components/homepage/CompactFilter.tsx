@@ -93,7 +93,7 @@ const CompactFilter: React.FC<CompactFilterProps> = ({
   const activeFiltersCount = selectedTags.length + (searchQuery ? 1 : 0);
 
   return (
-    <div className="sticky top-4 z-20 bg-background/95 backdrop-blur-sm border border-border rounded-2xl shadow-lg">
+    <div className="sticky top-4 z-30 bg-background/95 backdrop-blur-sm border border-border rounded-2xl shadow-lg filter-container">
       {/* Compact Search and Filter Bar */}
       <div className="p-4">
         <div className="space-y-3">
@@ -138,7 +138,7 @@ const CompactFilter: React.FC<CompactFilterProps> = ({
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 p-0" align="end" sideOffset={8}>
+            <PopoverContent className="w-80 p-0 z-[9999]" align="end" sideOffset={8}>
               <div className="p-6 space-y-6">
                 {/* Quick Filters */}
                 <div className="space-y-3">

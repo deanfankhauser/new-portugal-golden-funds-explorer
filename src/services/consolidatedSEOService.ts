@@ -1,4 +1,3 @@
-
 import { SEOData } from '../types/seo';
 import { URL_CONFIG } from '../utils/urlConfig';
 import { funds } from '../data/funds';
@@ -279,6 +278,24 @@ export class ConsolidatedSEOService {
           structuredData: this.getFundAlternativesStructuredData(altFund)
         };
 
+      case 'manager-auth':
+        return {
+          title: this.optimizeText('Manager Portal | Portugal Golden Visa Investment Funds | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Access your investment management dashboard for Portugal Golden Visa funds. Manage fund information, updates, and investor communications.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('/manager-auth'),
+          robots: 'noindex, nofollow',
+          structuredData: this.getHomepageStructuredData()
+        };
+
+      case 'investor-auth':
+        return {
+          title: this.optimizeText('Investor Portal | Portugal Golden Visa Investment Funds | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Join thousands of investors exploring top Portugal Golden Visa investment opportunities. Access exclusive fund analysis and comparison tools.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('/investor-auth'),
+          robots: 'noindex, nofollow',
+          structuredData: this.getHomepageStructuredData()
+        };
+
       default:
         return this.getSEOData('homepage');
     }
@@ -433,8 +450,27 @@ export class ConsolidatedSEOService {
     const script = document.createElement('script');
     script.type = 'application/ld+json';
     script.setAttribute('data-managed', 'consolidated-seo');
-    script.textContent = JSON.stringify(structuredData, null, 2);
-    document.head.appendChild(script);
+    
+    // Ensure structured data is valid before adding to DOM
+    try {
+      if (structuredData && typeof structuredData === 'object') {
+        // Ensure @context exists and is a string
+        if (Array.isArray(structuredData)) {
+          structuredData.forEach(item => {
+            if (item && typeof item === 'object' && !item['@context']) {
+              item['@context'] = 'https://schema.org';
+            }
+          });
+        } else if (!structuredData['@context']) {
+          structuredData['@context'] = 'https://schema.org';
+        }
+        
+        script.textContent = JSON.stringify(structuredData, null, 2);
+        document.head.appendChild(script);
+      }
+    } catch (error) {
+      console.warn('Failed to add structured data:', error);
+    }
   }
 
   private static addSecurityHeaders(): void {
@@ -506,9 +542,7 @@ export class ConsolidatedSEOService {
   }
 
   private static getFundStructuredData(fund: any): any {
-    const { InvestmentFundStructuredDataService } = require('./investmentFundStructuredDataService');
-    const investmentFundSchema = InvestmentFundStructuredDataService.generateInvestmentFundSchema(fund);
-    
+    // Simple structured data without dynamic imports
     const baseStructuredData = {
       '@context': 'https://schema.org',
       '@type': 'WebPage',
@@ -531,9 +565,9 @@ export class ConsolidatedSEOService {
     if (reviewData) {
       baseStructuredData['aggregateRating'] = reviewData.aggregateRating;
       baseStructuredData['review'] = reviewData.review;
+      
+      return baseStructuredData;
     }
-
-    return [investmentFundSchema, baseStructuredData];
   }
 
   private static getCategoryStructuredData(categoryName: string, funds: any[] = []): any {
@@ -856,10 +890,7 @@ export class ConsolidatedSEOService {
   }
 
   private static getFundAlternativesStructuredData(fund: any): any {
-    // Import the service to get alternatives
-    const { findAlternativeFunds } = require('../data/services/alternative-funds-service');
-    const alternatives = findAlternativeFunds(fund, 6);
-    
+    // Simple structured data without dynamic imports  
     const baseStructuredData = [
       {
         '@context': 'https://schema.org',
@@ -892,31 +923,6 @@ export class ConsolidatedSEOService {
         }
       }
     ];
-
-    // Add ItemList if alternatives exist
-    if (alternatives.length > 0) {
-      baseStructuredData[0]['mainEntity'] = {
-        '@type': 'ItemList',
-        'name': `Alternatives to ${fund.name}`,
-        'description': `Investment funds with similar characteristics to ${fund.name}`,
-        'numberOfItems': alternatives.length,
-        'itemListElement': alternatives.map((alt: any, index: number) => ({
-          '@type': 'ListItem',
-          'position': index + 1,
-          'item': {
-            '@type': 'FinancialProduct',
-            'name': alt.name,
-            'description': alt.description,
-            'url': URL_CONFIG.buildFundUrl(alt.id),
-            'category': alt.category,
-            'provider': {
-              '@type': 'Organization',
-              'name': alt.managerName
-            }
-          }
-        }))
-      };
-    }
 
     return baseStructuredData;
   }
@@ -1004,15 +1010,8 @@ export class ConsolidatedSEOService {
   }
 
   private static getAlternativesHubStructuredData() {
-    const { fundsData } = require('../data/mock/funds');
-    const { findAlternativeFunds } = require('../data/services/alternative-funds-service');
-    
-    const fundsWithAlternatives = fundsData
-      .map((fund: any) => ({
-        fund,
-        alternatives: findAlternativeFunds(fund, 3)
-      }))
-      .filter((item: any) => item.alternatives.length > 0);
+    // Simple structured data without dynamic imports
+    const fundsWithAlternatives = funds.slice(0, 10); // Use static data
 
     return {
       "@context": "https://schema.org",

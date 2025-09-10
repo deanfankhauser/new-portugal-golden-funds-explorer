@@ -28,7 +28,7 @@ const Footer = () => {
             <Link to="/" className="inline-block mb-4">
               <img 
                 src="/lovable-uploads/9bdf45a5-6a2f-466e-8c2d-b8ba65863e8a.png" 
-                alt="MovingTo Logo" 
+                alt="Movingto Logo" 
                 className="h-8"
               />
             </Link>
@@ -183,7 +183,7 @@ const Footer = () => {
         
         <div className="border-t border-border mt-8 pt-6 text-center md:text-left flex flex-col md:flex-row justify-between items-center">
           <p className="text-muted-foreground text-sm">© {currentYear} Moving To Global Pte Ltd. All rights reserved.</p>
-          <p className="text-muted-foreground text-sm mt-2 md:mt-0">This website is for informational purposes only and does not constitute investment guidance.</p>
+          <p className="text-muted-foreground text-sm mt-2 md:mt-0">This website is for informational purposes only and does not constitute investment information.</p>
         </div>
 
         <div className="mt-8 pt-6 border-t border-border">
@@ -194,10 +194,10 @@ const Footer = () => {
                 <strong>Investment involves substantial risk of loss.</strong> All investments in Portugal Golden Visa funds carry significant financial risks, including the potential for total loss of invested capital. Past performance does not guarantee future results.
               </p>
               <p className="text-center">
-                <strong>No Investment Advice:</strong> This website provides general information only and does not constitute financial, legal, tax, or immigration advice. We are not licensed financial advisors or immigration consultants.
+                <strong>No Investment Advice:</strong> This website provides general information only and does not constitute financial, legal, tax, or immigration consultation. We are not licensed financial professionals or immigration consultants.
               </p>
               <p className="text-center">
-                <strong>Professional Consultation Required:</strong> Before making any investment or immigration decisions, you must consult with qualified professionals including licensed financial advisors, immigration lawyers, tax specialists, and Portugal Golden Visa experts.
+                <strong>Professional Consultation Required:</strong> Before making any investment or immigration decisions, you must consult with qualified professionals including licensed financial professionals, immigration lawyers, tax specialists, and Portugal Golden Visa experts.
               </p>
               <p className="text-center">
                 <strong>Data Accuracy:</strong> While we strive for accuracy, fund information may be outdated, incomplete, or contain errors. Always verify all information directly with fund managers and regulatory authorities.

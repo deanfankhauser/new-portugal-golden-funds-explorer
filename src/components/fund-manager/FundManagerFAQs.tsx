@@ -48,8 +48,8 @@ const FundManagerFAQs: React.FC<FundManagerFAQsProps> = ({ fund }) => {
         answer: `${fund.name} is regulated by ${fund.regulatedBy} and is located in ${fund.location}. This ensures compliance with Portuguese and European investment regulations.`
       },
       {
-        question: `How can MovingTo help me invest in ${fund.name}?`,
-        answer: `MovingTo's fund advisory team can provide personalized guidance on ${fund.name}, help you understand if it fits your Golden Visa strategy, assist with the application process, and provide ongoing support throughout your investment journey.`
+        question: `How can Movingto help me invest in ${fund.name}?`,
+        answer: `Movingto's team can provide personalized information on ${fund.name}, help you understand if it fits your Golden Visa strategy, assist with introductions to the fund manager, and provide ongoing support throughout your investment journey.`
       }
     ];
   };
@@ -136,7 +136,7 @@ const FundManagerFAQs: React.FC<FundManagerFAQsProps> = ({ fund }) => {
 
         <div className="mt-6 p-4 bg-muted rounded-lg border border-border">
           <p className="text-sm text-muted-foreground">
-            <strong>Need personalized advice?</strong> Our fund advisory team can help you determine if {fund.name} is right for your Golden Visa investment strategy.
+            <strong>Need personalized information?</strong> Our team can help you determine if {fund.name} is right for your Golden Visa investment strategy.
           </p>
         </div>
       </CardContent>

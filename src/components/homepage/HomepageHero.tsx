@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+
 import PremiumCTA from '../cta/PremiumCTA';
 import LastUpdated from '../common/LastUpdated';
 import { funds } from '../../data/funds';
@@ -73,6 +74,7 @@ const HomepageHero: React.FC = () => {
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </header>

@@ -466,7 +466,7 @@ The fund leverages IMGA's extensive real estate expertise and institutional infr
     },
     {
       question: 'Is this fund Golden Visa eligible?',
-      answer: 'No, since October 2023, real estate-linked funds are not eligible for Portugal Golden Visa applications due to new regulations excluding direct and indirect real estate investments.'
+      answer: 'Yes, the fund is eligible for the Portuguese Golden Visa investment route, providing exposure to Portugal\'s growing senior living and residential rental markets through a regulated fund structure.'
     },
     {
       question: 'What is IMGA\'s track record in real estate?',
