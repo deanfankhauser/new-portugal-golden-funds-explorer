@@ -294,22 +294,30 @@ const AccountSettings = () => {
     try {
       const { supabase } = await import('@/integrations/supabase/client');
       
-      console.log('🗑️ Calling supabase.auth.updateUser with deleted flag');
-      const { error } = await supabase.auth.updateUser({
-        data: { deleted: true }
+      // Get the current session to include in the request
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        throw new Error('No valid session found');
+      }
+      
+      console.log('🗑️ Calling delete-account edge function');
+      const { data, error } = await supabase.functions.invoke('delete-account', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        }
       });
       
       if (error) {
         console.error('🗑️ Delete account error:', error);
         toast.error("Delete Failed", {
-          description: "Unable to delete account. Please contact support."
+          description: error.message || "Unable to delete account. Please contact support."
         });
         return;
       }
       
-      console.log('🗑️ Account deletion successful');
+      console.log('🗑️ Account deletion successful:', data);
       toast.success("Account Deleted", {
-        description: "Your account has been deactivated."
+        description: "Your account has been permanently deleted."
       });
       
       // Sign out and redirect

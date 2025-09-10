@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_deletion_requests: {
+        Row: {
+          created_at: string | null
+          id: string
+          processed_at: string | null
+          requested_at: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          processed_at?: string | null
+          requested_at?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          processed_at?: string | null
+          requested_at?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       investor_profiles: {
         Row: {
           address: string | null
