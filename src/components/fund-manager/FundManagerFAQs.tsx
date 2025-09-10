@@ -48,8 +48,8 @@ const FundManagerFAQs: React.FC<FundManagerFAQsProps> = ({ fund }) => {
         answer: `${fund.name} is regulated by ${fund.regulatedBy} and is located in ${fund.location}. This ensures compliance with Portuguese and European investment regulations.`
       },
       {
-        question: `How can MovingTo help me invest in ${fund.name}?`,
-        answer: `MovingTo's team can provide personalized information on ${fund.name}, help you understand if it fits your Golden Visa strategy, assist with introductions to the fund manager, and provide ongoing support throughout your investment journey.`
+        question: `How can Movingto help me invest in ${fund.name}?`,
+        answer: `Movingto's team can provide personalized information on ${fund.name}, help you understand if it fits your Golden Visa strategy, assist with introductions to the fund manager, and provide ongoing support throughout your investment journey.`
       }
     ];
   };

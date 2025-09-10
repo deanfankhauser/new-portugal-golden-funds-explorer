@@ -171,13 +171,13 @@ const InvestorAuth = () => {
   return (
     <>
       <Helmet>
-        <title>Investor Portal - Login & Register | MovingTo</title>
-        <meta name="description" content="Access your investor account to explore top investment opportunities. Join thousands of investors discovering the best funds with MovingTo's investor portal." />
+        <title>Investor Portal - Login & Register | Movingto</title>
+        <meta name="description" content="Access your investor account to explore top investment opportunities. Join thousands of investors discovering the best funds with Movingto's investor portal." />
         <link rel="canonical" href="https://fundguide.movingto.org/investor-auth" />
         
         {/* Open Graph tags */}
-        <meta property="og:title" content="Investor Portal - Login & Register | MovingTo" />
-        <meta property="og:description" content="Access your investor account to explore top investment opportunities. Join thousands of investors discovering the best funds with MovingTo's investor portal." />
+        <meta property="og:title" content="Investor Portal - Login & Register | Movingto" />
+        <meta property="og:description" content="Access your investor account to explore top investment opportunities. Join thousands of investors discovering the best funds with Movingto's investor portal." />
         <meta property="og:url" content="https://fundguide.movingto.org/investor-auth" />
         <meta property="og:image" content="https://fundguide.movingto.org/lovable-uploads/ab17d046-1cb9-44fd-aa6d-c4d338e11090.png" />
         <meta property="og:type" content="website" />
@@ -188,11 +188,11 @@ const InvestorAuth = () => {
             "@context": "https://schema.org",
             "@type": "WebPage",
             "name": "Investor Portal - Login & Register",
-            "description": "Access your investor account to explore top investment opportunities. Join thousands of investors discovering the best funds with MovingTo's investor portal.",
+            "description": "Access your investor account to explore top investment opportunities. Join thousands of investors discovering the best funds with Movingto's investor portal.",
             "url": "https://fundguide.movingto.org/investor-auth",
             "isPartOf": {
               "@type": "WebSite",
-              "name": "MovingTo Fund Guide",
+              "name": "Movingto Fund Guide",
               "url": "https://fundguide.movingto.org"
             },
             "mainEntity": {
@@ -201,7 +201,7 @@ const InvestorAuth = () => {
               "description": "Secure login and registration portal for investment fund access",
               "provider": {
                 "@type": "Organization",
-                "name": "MovingTo"
+                "name": "Movingto"
               }
             }
           })}

@@ -30,7 +30,7 @@ const Header = () => {
             <Link to="/" className="flex items-center">
               <img 
                 src="/lovable-uploads/ab17d046-1cb9-44fd-aa6d-c4d338e11090.png" 
-                alt="MovingTo Logo" 
+                alt="Movingto Logo" 
                 className="h-6"
               />
             </Link>

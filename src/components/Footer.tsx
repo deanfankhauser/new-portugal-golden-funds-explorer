@@ -28,7 +28,7 @@ const Footer = () => {
             <Link to="/" className="inline-block mb-4">
               <img 
                 src="/lovable-uploads/9bdf45a5-6a2f-466e-8c2d-b8ba65863e8a.png" 
-                alt="MovingTo Logo" 
+                alt="Movingto Logo" 
                 className="h-8"
               />
             </Link>

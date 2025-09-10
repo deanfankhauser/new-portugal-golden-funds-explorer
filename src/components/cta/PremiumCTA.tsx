@@ -44,7 +44,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
           <div className="flex items-center gap-3">
             <Crown className="h-5 w-5 text-primary-foreground" />
             <div>
-              <p className="font-semibold text-primary-foreground">Speak with MovingTo</p>
+              <p className="font-semibold text-primary-foreground">Speak with Movingto</p>
               <p className="text-sm text-primary-foreground opacity-90">Personal consultation with our specialists</p>
             </div>
           </div>
@@ -73,10 +73,10 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
           
           <div>
             <h3 className="text-2xl font-bold text-foreground mb-2">
-              Speak with MovingTo
+              Speak with Movingto
             </h3>
             <p className="text-muted-foreground text-lg">
-              Connect with MovingTo for personalized investment information
+              Connect with Movingto for personalized investment information
             </p>
           </div>
           

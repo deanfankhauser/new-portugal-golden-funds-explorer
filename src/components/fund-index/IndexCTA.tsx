@@ -55,7 +55,7 @@ const IndexCTA: React.FC = () => {
             onClick={() => openExternalLink(buildContactUrl('index-cta'))}
           >
             <Calendar className="h-4 w-4 mr-2" />
-            Speak with MovingTo
+            Speak with Movingto
             <ExternalLink className="h-3 w-3 ml-1" />
           </Button>
         </div>
