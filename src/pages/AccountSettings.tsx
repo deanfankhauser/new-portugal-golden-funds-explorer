@@ -207,6 +207,10 @@ const AccountSettings = () => {
     e.preventDefault();
     
     console.log('🔑 Password change initiated, user:', user?.email, 'loading:', loading);
+
+    // reset status
+    setPasswordChangeStatus('idle');
+    setPasswordChangeMessage('');
     
     // Check if user is authenticated
     if (!user) {
@@ -242,6 +246,15 @@ const AccountSettings = () => {
     setIsUpdatingPassword(true);
     console.log('🔑 Starting password update for user:', user.email);
 
+    // Safety timeout to avoid stuck loading
+    let timeoutId: any = null;
+    timeoutId = setTimeout(() => {
+      console.warn('🔑 Password update timed out');
+      setIsUpdatingPassword(false);
+      setPasswordChangeStatus('error');
+      setPasswordChangeMessage('Request timed out. Please try again.');
+    }, 15000);
+
     try {
       const { supabase } = await import('@/integrations/supabase/client');
       
@@ -249,6 +262,8 @@ const AccountSettings = () => {
       const { error } = await supabase.auth.updateUser({
         password: passwordData.newPassword
       });
+
+      clearTimeout(timeoutId);
 
       if (error) {
         console.log('🔑 Password update failed:', error.message);
@@ -273,7 +288,10 @@ const AccountSettings = () => {
         });
       }
     } catch (error) {
+      clearTimeout(timeoutId);
       console.error('🔑 Password update error:', error);
+      setPasswordChangeStatus('error');
+      setPasswordChangeMessage('An unexpected error occurred. Please try again.');
       toast.error("Update Failed", {
         description: "An unexpected error occurred. Please try again."
       });
