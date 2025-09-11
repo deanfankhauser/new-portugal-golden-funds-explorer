@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { supabase } from '@/integrations/supabase/client';
 
 const AccountSettings = () => {
   const { user, userType, profile, updateProfile, uploadAvatar, loading, signOut } = useEnhancedAuth();
@@ -256,7 +257,7 @@ const AccountSettings = () => {
     }, 15000);
 
     try {
-      const { supabase } = await import('@/integrations/supabase/client');
+      // supabase client statically imported above
       
       console.log('🔑 Calling supabase.auth.updateUser');
       const { error } = await supabase.auth.updateUser({
@@ -317,7 +318,7 @@ const AccountSettings = () => {
     console.log('🗑️ Starting account deletion for user:', user.email);
     
     try {
-      const { supabase } = await import('@/integrations/supabase/client');
+      // supabase client statically imported above
       
       // Get the current session to include in the request
       const { data: { session } } = await supabase.auth.getSession();
