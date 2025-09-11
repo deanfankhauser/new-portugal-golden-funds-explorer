@@ -373,9 +373,25 @@ export type Database = {
         }
         Relationships: []
       }
+      security_status_audit: {
+        Row: {
+          details: string | null
+          last_updated: string | null
+          security_area: string | null
+          status: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      check_sensitive_data_exposure: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          has_sensitive_columns: boolean
+          sensitive_columns: string[]
+          view_name: string
+        }[]
+      }
     }
     Enums: {
       manager_status: "pending" | "approved" | "suspended" | "rejected"
