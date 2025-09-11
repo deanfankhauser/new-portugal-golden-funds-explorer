@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { getEmailRedirectUrl } from '@/utils/authRedirect';
 
 interface AuthContextType {
   user: User | null;
@@ -47,8 +48,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signUp = async (email: string, password: string, metadata?: any) => {
-    // Always use the current origin for redirect URL
-    const redirectUrl = `${window.location.origin}/confirm`;
+    // Use domain-specific redirect URL
+    const redirectUrl = getEmailRedirectUrl();
     
     const { error } = await supabase.auth.signUp({
       email,
