@@ -318,7 +318,6 @@ export type Database = {
       }
       managers_public_view: {
         Row: {
-          assets_under_management: number | null
           city: string | null
           company_name: string | null
           country: string | null
@@ -331,7 +330,6 @@ export type Database = {
           website: string | null
         }
         Insert: {
-          assets_under_management?: number | null
           city?: string | null
           company_name?: string | null
           country?: string | null
@@ -344,7 +342,6 @@ export type Database = {
           website?: string | null
         }
         Update: {
-          assets_under_management?: number | null
           city?: string | null
           company_name?: string | null
           country?: string | null
@@ -360,7 +357,6 @@ export type Database = {
       }
       public_managers: {
         Row: {
-          assets_under_management: number | null
           city: string | null
           company_name: string | null
           country: string | null
@@ -373,7 +369,6 @@ export type Database = {
           website: string | null
         }
         Insert: {
-          assets_under_management?: number | null
           city?: string | null
           company_name?: string | null
           country?: string | null
@@ -386,7 +381,6 @@ export type Database = {
           website?: string | null
         }
         Update: {
-          assets_under_management?: number | null
           city?: string | null
           company_name?: string | null
           country?: string | null
