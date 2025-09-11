@@ -14,20 +14,42 @@ import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 
 const ManagerAuth = () => {
   const navigate = useNavigate();
-  const { signIn, signUp, loading, user } = useEnhancedAuth();
+  const { signIn, signUp, signOut, loading, user } = useEnhancedAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
-  // Redirect if already authenticated - wait for hydration to complete
-  React.useEffect(() => {
-    console.log('🔐 ManagerAuth - Auth state:', { user: !!user, loading, hasUser: !!user });
-    // Only redirect if we have a user and we're not loading (fully hydrated)
-    if (user && !loading) {
-      console.log('🔐 ManagerAuth - Redirecting to home');
-      navigate('/');
-    }
-  }, [user, loading, navigate]);
+  // If already authenticated, show options instead of redirecting
+  if (user && !loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold">You're already signed in</CardTitle>
+            <CardDescription>Use the options below to continue.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Button className="w-full" onClick={() => navigate('/')}>Go to Home</Button>
+            <Button variant="outline" className="w-full" onClick={() => navigate('/account-settings')}>Account Settings</Button>
+            <Button 
+              variant="secondary" 
+              className="w-full" 
+              onClick={async () => { 
+                const { error } = await signOut(); 
+                if (!error) { 
+                  toast.success('Signed out'); 
+                } else { 
+                  toast.error('Sign out failed', { description: error.message }); 
+                }
+              }}
+            >
+              Sign out
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Login form state
   const [loginData, setLoginData] = useState({
