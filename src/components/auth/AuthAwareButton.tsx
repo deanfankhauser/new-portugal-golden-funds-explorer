@@ -27,18 +27,18 @@ const AuthAwareButton = () => {
 
   console.log('🔐 AuthAwareButton state:', { user: !!user, profile: !!profile, loading, userType });
 
-  // Show login button during loading (hydration) or if no user/profile
-  if (loading || !user || !profile) {
-    console.log('🔐 AuthAwareButton showing UniversalAuthButton');
+  // Show login button during loading (hydration) or if no user
+  if (loading || !user) {
     return <UniversalAuthButton />;
   }
 
   const getDisplayName = () => {
-    if (userType === 'manager' && profile.manager_name) {
-      return profile.manager_name;
+    if (userType === 'manager' && profile && 'manager_name' in profile && (profile as any).manager_name) {
+      return (profile as any).manager_name as string;
     }
-    if (userType === 'investor' && profile.first_name) {
-      return `${profile.first_name} ${profile.last_name || ''}`.trim();
+    if (userType === 'investor' && profile && 'first_name' in profile && (profile as any).first_name) {
+      const p: any = profile;
+      return `${p.first_name} ${p.last_name || ''}`.trim();
     }
     return user.email?.split('@')[0] || 'User';
   };
@@ -54,10 +54,14 @@ const AuthAwareButton = () => {
   };
 
   const getAvatarUrl = () => {
-    if (userType === 'manager') {
-      return profile.logo_url;
+    if (!profile) return undefined;
+    if (userType === 'manager' && 'logo_url' in (profile as any)) {
+      return (profile as any).logo_url as string | undefined;
     }
-    return profile.avatar_url;
+    if (userType === 'investor' && 'avatar_url' in (profile as any)) {
+      return (profile as any).avatar_url as string | undefined;
+    }
+    return undefined;
   };
 
   const handleSignOut = async () => {
