@@ -112,6 +112,14 @@ export const loadComponents = async () => {
         console.warn('ComponentLoader: Failed to load AccountSettings:', err.message);
         return null;
       }),
+      ResetPassword: import('../pages/ResetPassword').then(m => m.default).catch(err => {
+        console.warn('ComponentLoader: Failed to load ResetPassword:', err.message);
+        return null;
+      }),
+      EmailConfirmation: import('../pages/EmailConfirmation').then(m => m.default).catch(err => {
+        console.warn('ComponentLoader: Failed to load EmailConfirmation:', err.message);
+        return null;
+      }),
     };
 
     const components = await Promise.all(Object.values(componentPromises));
