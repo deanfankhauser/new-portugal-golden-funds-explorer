@@ -34,6 +34,7 @@ import { VerifiedReviews } from './reviews/VerifiedReviews';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
 import FundBreadcrumbs from './FundBreadcrumbs';
 import FundDataFreshnessDisplay from './FundDataFreshnessDisplay';
+import { FundEditButton } from '../fund-editing/FundEditButton';
 
 interface FundDetailsContentProps {
   fund: Fund;
@@ -59,6 +60,11 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
         <FundHeader fund={fund} />
 
         <div className="p-4 md:p-6 lg:p-10 space-y-6 md:space-y-8 lg:space-y-10">
+          {/* Fund Edit Button - Community Editing */}
+          <div className="flex justify-center">
+            <FundEditButton fund={fund} />
+          </div>
+          
           {/* Main content with tabs - Detailed Information */}
           <FundTabsLazySection fund={fund} />
           

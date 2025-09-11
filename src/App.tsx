@@ -45,6 +45,7 @@ const InvestorAuth = lazy(() => import('./pages/InvestorAuth'));
 const AccountSettings = lazy(() => import('./pages/AccountSettings'));
 const EmailConfirmation = lazy(() => import('./pages/EmailConfirmation'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -236,12 +237,19 @@ function App() {
                          </Suspense>
                        } />
                        
-                       {/* Password Reset */}
-                       <Route path="/reset-password" element={
-                         <Suspense fallback={<PageLoader />}>
-                           <ResetPassword />
-                         </Suspense>
-                       } />
+                        {/* Password Reset */}
+                        <Route path="/reset-password" element={
+                          <Suspense fallback={<PageLoader />}>
+                            <ResetPassword />
+                          </Suspense>
+                        } />
+                        
+                        {/* Admin Panel */}
+                        <Route path="/admin" element={
+                          <Suspense fallback={<PageLoader />}>
+                            <AdminPanel />
+                          </Suspense>
+                        } />
                       
                       {/* Alternatives hub */}
                       <Route path="/alternatives" element={

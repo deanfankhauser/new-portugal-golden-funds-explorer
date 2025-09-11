@@ -41,6 +41,113 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_users: {
+        Row: {
+          created_at: string
+          granted_at: string
+          granted_by: string
+          id: string
+          role: Database["public"]["Enums"]["admin_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          granted_at?: string
+          granted_by: string
+          id?: string
+          role?: Database["public"]["Enums"]["admin_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          granted_at?: string
+          granted_by?: string
+          id?: string
+          role?: Database["public"]["Enums"]["admin_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      fund_edit_history: {
+        Row: {
+          admin_user_id: string
+          applied_at: string
+          changed_by: string
+          changes: Json
+          fund_id: string
+          id: string
+          suggestion_id: string | null
+        }
+        Insert: {
+          admin_user_id: string
+          applied_at?: string
+          changed_by: string
+          changes: Json
+          fund_id: string
+          id?: string
+          suggestion_id?: string | null
+        }
+        Update: {
+          admin_user_id?: string
+          applied_at?: string
+          changed_by?: string
+          changes?: Json
+          fund_id?: string
+          id?: string
+          suggestion_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_edit_history_suggestion_id_fkey"
+            columns: ["suggestion_id"]
+            isOneToOne: false
+            referencedRelation: "fund_edit_suggestions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fund_edit_suggestions: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          current_values: Json
+          fund_id: string
+          id: string
+          rejection_reason: string | null
+          status: Database["public"]["Enums"]["suggestion_status"]
+          suggested_changes: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          current_values: Json
+          fund_id: string
+          id?: string
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["suggestion_status"]
+          suggested_changes: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          current_values?: Json
+          fund_id?: string
+          id?: string
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["suggestion_status"]
+          suggested_changes?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       investor_profiles: {
         Row: {
           address: string | null
@@ -421,9 +528,19 @@ export type Database = {
           view_name: string
         }[]
       }
+      get_user_admin_role: {
+        Args: { check_user_id?: string }
+        Returns: Database["public"]["Enums"]["admin_role"]
+      }
+      is_user_admin: {
+        Args: { check_user_id?: string }
+        Returns: boolean
+      }
     }
     Enums: {
+      admin_role: "super_admin" | "moderator"
       manager_status: "pending" | "approved" | "suspended" | "rejected"
+      suggestion_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -551,7 +668,9 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      admin_role: ["super_admin", "moderator"],
       manager_status: ["pending", "approved", "suspended", "rejected"],
+      suggestion_status: ["pending", "approved", "rejected"],
     },
   },
 } as const

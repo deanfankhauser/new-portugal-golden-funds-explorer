@@ -107,8 +107,17 @@ export class RouteDiscovery {
       });
     });
 
-    console.log(`🔍 RouteDiscovery: Generated ${routes.length} static routes (including ${comparisonSlugs.length} comparisons and ${fundsData.length} alternatives pages)`);
-    return routes;
+    // Filter out admin and dynamic edit routes from SSG
+    const filteredRoutes = routes.filter(route => {
+      // Exclude admin panel routes
+      if (route.path.startsWith('/admin')) return false;
+      // Exclude edit suggestion routes
+      if (route.path.includes('/edit-suggestions')) return false;
+      return true;
+    });
+
+    console.log(`🔍 RouteDiscovery: Generated ${filteredRoutes.length} static routes (filtered from ${routes.length} total, including ${comparisonSlugs.length} comparisons and ${fundsData.length} alternatives pages)`);
+    return filteredRoutes;
   }
 
 }
