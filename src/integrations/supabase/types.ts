@@ -382,6 +382,14 @@ export type Database = {
         }
         Relationships: []
       }
+      security_verification: {
+        Row: {
+          access_level: string | null
+          security_status: string | null
+          view_name: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       check_sensitive_data_exposure: {
