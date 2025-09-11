@@ -211,6 +211,48 @@ export type Database = {
       }
     }
     Views: {
+      managers_business_info: {
+        Row: {
+          assets_under_management: number | null
+          city: string | null
+          company_name: string | null
+          country: string | null
+          created_at: string | null
+          description: string | null
+          founded_year: number | null
+          id: string | null
+          logo_url: string | null
+          manager_name: string | null
+          website: string | null
+        }
+        Insert: {
+          assets_under_management?: number | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          founded_year?: number | null
+          id?: string | null
+          logo_url?: string | null
+          manager_name?: string | null
+          website?: string | null
+        }
+        Update: {
+          assets_under_management?: number | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          founded_year?: number | null
+          id?: string | null
+          logo_url?: string | null
+          manager_name?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       managers_directory: {
         Row: {
           city: string | null
@@ -221,7 +263,6 @@ export type Database = {
           id: string | null
           logo_url: string | null
           manager_name: string | null
-          source_note: string | null
           website: string | null
         }
         Insert: {
@@ -233,7 +274,6 @@ export type Database = {
           id?: string | null
           logo_url?: string | null
           manager_name?: string | null
-          source_note?: never
           website?: string | null
         }
         Update: {
@@ -245,7 +285,6 @@ export type Database = {
           id?: string | null
           logo_url?: string | null
           manager_name?: string | null
-          source_note?: never
           website?: string | null
         }
         Relationships: []
