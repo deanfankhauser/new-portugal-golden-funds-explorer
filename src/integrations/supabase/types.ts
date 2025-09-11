@@ -173,6 +173,42 @@ export type Database = {
         }
         Relationships: []
       }
+      security_audit_log: {
+        Row: {
+          id: string
+          justification: string
+          object_name: string
+          object_type: string
+          reviewed_at: string
+          reviewer: string
+          risk_level: string
+          security_feature: string
+          status: string
+        }
+        Insert: {
+          id?: string
+          justification: string
+          object_name: string
+          object_type: string
+          reviewed_at?: string
+          reviewer?: string
+          risk_level: string
+          security_feature: string
+          status?: string
+        }
+        Update: {
+          id?: string
+          justification?: string
+          object_name?: string
+          object_type?: string
+          reviewed_at?: string
+          reviewer?: string
+          risk_level?: string
+          security_feature?: string
+          status?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       managers_public_view: {
