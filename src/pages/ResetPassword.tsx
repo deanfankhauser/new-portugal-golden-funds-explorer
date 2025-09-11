@@ -16,6 +16,7 @@ export default function ResetPassword() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +45,8 @@ export default function ResetPassword() {
         toast.success('Password Updated', {
           description: 'Your password has been successfully updated!'
         });
-        navigate('/manager-auth');
+        setStatus('success');
+        setPasswords({ newPassword: '', confirmPassword: '' });
       }
     } catch (error) {
       console.error('Password reset error:', error);
@@ -64,41 +66,57 @@ export default function ResetPassword() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
+          {status === 'success' ? (
+            <div className="space-y-4 text-center">
+              <Alert>
+                <AlertDescription>
+                  Your password has been updated successfully. You can now log in with your new password.
+                </AlertDescription>
               </Alert>
-            )}
-
-            <div className="space-y-2">
-              <Label htmlFor="new-password">New Password</Label>
-              <Input
-                id="new-password"
-                type="password"
-                value={passwords.newPassword}
-                onChange={(e) => setPasswords(prev => ({ ...prev, newPassword: e.target.value }))}
-                placeholder="Enter new password"
-                required
-              />
+              <Button className="w-full" onClick={() => navigate('/manager-auth')}>
+                Go to Login
+              </Button>
+              <Button variant="outline" className="w-full" onClick={() => navigate('/')}> 
+                Back to Home
+              </Button>
             </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {error && (
+                <Alert variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
 
-            <div className="space-y-2">
-              <Label htmlFor="confirm-password">Confirm Password</Label>
-              <Input
-                id="confirm-password"
-                type="password"
-                value={passwords.confirmPassword}
-                onChange={(e) => setPasswords(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                placeholder="Confirm new password"
-                required
-              />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="new-password">New Password</Label>
+                <Input
+                  id="new-password"
+                  type="password"
+                  value={passwords.newPassword}
+                  onChange={(e) => setPasswords(prev => ({ ...prev, newPassword: e.target.value }))}
+                  placeholder="Enter new password"
+                  required
+                />
+              </div>
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? 'Updating...' : 'Update Password'}
-            </Button>
-          </form>
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  value={passwords.confirmPassword}
+                  onChange={(e) => setPasswords(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                  placeholder="Confirm new password"
+                  required
+                />
+              </div>
+
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? 'Updating...' : 'Update Password'}
+              </Button>
+            </form>
+          )}
         </CardContent>
       </Card>
     </div>
