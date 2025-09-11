@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,18 +16,6 @@ export default function ResetPassword() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
-
-  // Check if user came from email link with access token
-  useEffect(() => {
-    const handleAuthStateChange = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        setError('Invalid or expired reset link. Please request a new password reset.');
-      }
-    };
-    
-    handleAuthStateChange();
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -113,12 +113,6 @@ export class RouteDiscovery {
       if (route.path.startsWith('/admin')) return false;
       // Exclude edit suggestion routes
       if (route.path.includes('/edit-suggestions')) return false;
-      // Exclude auth routes (not suitable for SSG)
-      if (route.path.includes('/reset-password')) return false;
-      if (route.path.includes('/manager-auth')) return false;
-      if (route.path.includes('/investor-auth')) return false;
-      if (route.path.includes('/confirm')) return false;
-      if (route.path.includes('/account-settings')) return false;
       return true;
     });
 
