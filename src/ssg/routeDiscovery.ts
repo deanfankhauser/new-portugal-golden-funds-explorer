@@ -32,10 +32,7 @@ export class RouteDiscovery {
     routes.push({ path: '/roi-calculator', pageType: 'roi-calculator' });
     routes.push({ path: '/fund-quiz', pageType: 'fund-quiz' });
     
-    // Auth pages
-    routes.push({ path: '/manager-auth', pageType: 'manager-auth' });
-    routes.push({ path: '/investor-auth', pageType: 'investor-auth' });
-    routes.push({ path: '/account-settings', pageType: 'account-settings' });
+    // Note: Auth pages excluded from SSG - they need client-side authentication
     
     routes.push({ path: '/managers', pageType: 'managers-hub' });
     routes.push({ path: '/categories', pageType: 'categories-hub' });
@@ -107,12 +104,14 @@ export class RouteDiscovery {
       });
     });
 
-    // Filter out admin and dynamic edit routes from SSG
+    // Filter out admin and dynamic routes from SSG
     const filteredRoutes = routes.filter(route => {
       // Exclude admin panel routes
       if (route.path.startsWith('/admin')) return false;
       // Exclude edit suggestion routes
       if (route.path.includes('/edit-suggestions')) return false;
+      // Exclude authentication routes (require client-side auth)
+      if (route.path.includes('-auth') || route.path === '/account-settings' || route.path === '/reset-password') return false;
       return true;
     });
 
