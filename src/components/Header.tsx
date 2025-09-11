@@ -149,8 +149,7 @@ const Header = () => {
 
             {/* Direct Actions */}
 
-            {/* AuthAwareButton temporarily hidden */}
-            {/* <AuthAwareButton /> */}
+            <AuthAwareButton />
             <ComparisonIndicator />
           </div>
 

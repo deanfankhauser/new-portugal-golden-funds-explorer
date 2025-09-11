@@ -161,7 +161,7 @@ const InvestorAuth = () => {
       setError(null);
       
       toast.success("Registration Successful! 🎉", {
-        description: "Your investor account has been created. Please check your email to confirm your account."
+        description: "Your investor account has been created. You can now login."
       });
     }
     

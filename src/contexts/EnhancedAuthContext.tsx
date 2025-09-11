@@ -236,22 +236,18 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
 
   const signUp = async (email: string, password: string, userType: 'manager' | 'investor', metadata?: any) => {
-    // Use the proper preview URL instead of localhost
-    const redirectUrl = window.location.hostname === 'localhost' 
-      ? `${window.location.origin}/confirm`
-      : `https://lovable.dev/projects/bkmvydnfhmkjnuszroim/preview/confirm`;
-    
     const enhancedMetadata = {
       ...metadata,
       [userType === 'manager' ? 'is_manager' : 'is_investor']: true
     };
     
+    // Disable email verification for now - sign up without email confirmation
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: redirectUrl,
-        data: enhancedMetadata
+        data: enhancedMetadata,
+        // Remove emailRedirectTo to disable email verification
       }
     });
     return { error };
