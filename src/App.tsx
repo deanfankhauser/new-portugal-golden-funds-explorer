@@ -207,50 +207,50 @@ function App() {
                         <Suspense fallback={<QuizLoader />}>
                           <FundQuiz />
                         </Suspense>
-                      } />
-                       
-                       {/* Manager Authentication */}
-                       <Route path="/manager-auth" element={
-                         <Suspense fallback={<PageLoader />}>
-                           <ManagerAuth />
-                         </Suspense>
                        } />
-                       
-                       {/* Investor Authentication */}
-                       <Route path="/investor-auth" element={
-                         <Suspense fallback={<PageLoader />}>
-                           <InvestorAuth />
-                         </Suspense>
-                       } />
-                      
-                       {/* Account Settings */}
-                       <Route path="/account-settings" element={
-                         <Suspense fallback={<PageLoader />}>
-                           <AccountSettings />
-                         </Suspense>
-                       } />
-                       
-                       {/* Email Confirmation */}
-                       <Route path="/confirm" element={
-                         <Suspense fallback={<PageLoader />}>
-                           <EmailConfirmation />
-                         </Suspense>
-                       } />
-                       
-                        {/* Password Reset */}
-                        <Route path="/reset-password" element={
+                        
+                        {/* Manager Authentication */}
+                        <Route path="/manager-auth" element={
                           <Suspense fallback={<PageLoader />}>
-                            <ResetPassword />
+                            <ManagerAuth />
                           </Suspense>
                         } />
                         
-                        {/* Admin Panel */}
-                        <Route path="/admin" element={
+                        {/* Investor Authentication */}
+                        <Route path="/investor-auth" element={
                           <Suspense fallback={<PageLoader />}>
-                            <AdminPanel />
+                            <InvestorAuth />
                           </Suspense>
                         } />
-                      
+                       
+                        {/* Account Settings */}
+                        <Route path="/account-settings" element={
+                          <Suspense fallback={<PageLoader />}>
+                            <AccountSettings />
+                          </Suspense>
+                        } />
+                        
+                        {/* Email Confirmation */}
+                        <Route path="/confirm" element={
+                          <Suspense fallback={<PageLoader />}>
+                            <EmailConfirmation />
+                          </Suspense>
+                        } />
+                        
+                         {/* Password Reset */}
+                         <Route path="/reset-password" element={
+                           <Suspense fallback={<PageLoader />}>
+                             <ResetPassword />
+                           </Suspense>
+                         } />
+                         
+                         {/* Admin Panel */}
+                         <Route path="/admin" element={
+                           <Suspense fallback={<PageLoader />}>
+                             <AdminPanel />
+                           </Suspense>
+                         } />
+                       
                       {/* Alternatives hub */}
                       <Route path="/alternatives" element={
                         <Suspense fallback={<PageLoader />}>
@@ -263,6 +263,8 @@ function App() {
                           <FundAlternatives />
                         </Suspense>
                       } />
+                      
+                      {/* Direct fund routes - MUST be last before 404 */}
                       <Route path="/:id" element={<DirectFundRoute />} />
                       <Route path="*" element={
                         <Suspense fallback={<PageLoader />}>

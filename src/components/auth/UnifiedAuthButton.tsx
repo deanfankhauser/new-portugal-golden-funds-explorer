@@ -27,6 +27,7 @@ const UnifiedAuthButton: React.FC<UnifiedAuthButtonProps> = ({
   const [open, setOpen] = useState(false);
 
   const handleManagerLogin = () => {
+    console.log('🔐 UnifiedAuthButton: Navigating to manager-auth');
     setOpen(false);
     navigate('/manager-auth');
   };

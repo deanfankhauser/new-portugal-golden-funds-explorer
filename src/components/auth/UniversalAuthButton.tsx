@@ -47,7 +47,10 @@ const UniversalAuthButton = () => {
               </Card>
             </Link>
             
-            <Link to="/manager-auth" onClick={() => setShowDialog(false)}>
+            <Link to="/manager-auth" onClick={() => { 
+              console.log('🔐 UniversalAuthButton: Navigating to manager-auth'); 
+              setShowDialog(false); 
+            }}>
               <Card className="cursor-pointer hover:bg-accent/5 transition-colors">
                 <CardHeader className="text-center">
                   <div className="flex justify-center mb-2">
