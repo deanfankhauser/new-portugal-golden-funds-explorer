@@ -47,13 +47,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signUp = async (email: string, password: string, metadata?: any) => {
-    const redirectUrl = `${window.location.origin}/confirm`;
+    // Get the current domain for email confirmation redirect
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    const port = window.location.port ? `:${window.location.port}` : '';
+    
+    // Use production URL in production, otherwise use current origin
+    const baseUrl = hostname === 'localhost' 
+      ? `${protocol}//${hostname}${port}` 
+      : window.location.origin;
     
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: redirectUrl,
+        emailRedirectTo: `${baseUrl}/confirm`,
         data: metadata || {}
       }
     });

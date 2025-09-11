@@ -241,21 +241,24 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       [userType === 'manager' ? 'is_manager' : 'is_investor']: true
     };
     
-    // Disable email verification for now - sign up without email confirmation
+    // Get the current domain for email confirmation redirect
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    const port = window.location.port ? `:${window.location.port}` : '';
+    
+    // Use production URL in production, otherwise use current origin
+    const baseUrl = hostname === 'localhost' 
+      ? `${protocol}//${hostname}${port}` 
+      : window.location.origin;
+    
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/confirm`,
+        emailRedirectTo: `${baseUrl}/confirm`,
         data: enhancedMetadata
       }
     });
-
-    // For development: auto-confirm email if in development mode
-    if (!error && window.location.hostname === 'localhost') {
-      // In production, this would require email confirmation
-      // For now, we'll let Supabase handle it normally
-    }
 
     return { error };
   };
