@@ -246,10 +246,17 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       email,
       password,
       options: {
-        data: enhancedMetadata,
-        // Remove emailRedirectTo to disable email verification
+        emailRedirectTo: `${window.location.origin}/confirm`,
+        data: enhancedMetadata
       }
     });
+
+    // For development: auto-confirm email if in development mode
+    if (!error && window.location.hostname === 'localhost') {
+      // In production, this would require email confirmation
+      // For now, we'll let Supabase handle it normally
+    }
+
     return { error };
   };
 
