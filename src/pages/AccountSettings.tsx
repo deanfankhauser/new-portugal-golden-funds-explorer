@@ -13,12 +13,15 @@ import { Upload, Loader2, User, Mail, Lock, Camera, Home, Trash2 } from 'lucide-
 import { toast } from "sonner";
 import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const AccountSettings = () => {
   const { user, userType, profile, updateProfile, uploadAvatar, loading, signOut } = useEnhancedAuth();
   const navigate = useNavigate();
   const [isUpdating, setIsUpdating] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+  const [passwordChangeStatus, setPasswordChangeStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [passwordChangeMessage, setPasswordChangeMessage] = useState('');
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -249,11 +252,15 @@ const AccountSettings = () => {
 
       if (error) {
         console.log('🔑 Password update failed:', error.message);
+        setPasswordChangeStatus('error');
+        setPasswordChangeMessage(error.message);
         toast.error("Password Update Failed", {
           description: error.message
         });
       } else {
         console.log('🔑 Password update successful');
+        setPasswordChangeStatus('success');
+        setPasswordChangeMessage('Your password has been successfully updated.');
         toast.success("Password Changed", {
           description: "Your password has been successfully updated."
         });
@@ -686,6 +693,11 @@ const AccountSettings = () => {
                       )}
                     </Button>
                   </form>
+                  {passwordChangeStatus !== 'idle' && (
+                    <Alert variant={passwordChangeStatus === 'error' ? 'destructive' : 'default'} className="mt-2">
+                      <AlertDescription>{passwordChangeMessage}</AlertDescription>
+                    </Alert>
+                  )}
                   
                   <Separator className="my-8" />
                   
