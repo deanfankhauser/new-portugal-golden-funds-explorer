@@ -662,6 +662,10 @@ export type Database = {
           view_name: string
         }[]
       }
+      find_user_by_email: {
+        Args: { user_email: string }
+        Returns: string
+      }
       get_user_admin_role: {
         Args: { check_user_id?: string }
         Returns: Database["public"]["Enums"]["admin_role"]

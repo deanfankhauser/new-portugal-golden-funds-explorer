@@ -112,33 +112,20 @@ export const AdminUserManagement: React.FC = () => {
 
     setAdding(true);
     try {
-      // First, find the user by email in profiles
-      let targetUserId = null;
-      
-      try {
-        const { data: managerProfile, error: managerError } = await supabase
-          .from('manager_profiles' as any)
-          .select('user_id')
-          .eq('email', newUserEmail.trim())
-          .maybeSingle();
+      // Find the user by email across profiles and auth using a secure DB function
+      const { data: targetUserId, error: findUserError } = await (supabase.rpc as any)(
+        'find_user_by_email',
+        { user_email: newUserEmail.trim() }
+      );
 
-        const { data: investorProfile, error: investorError } = await supabase
-          .from('investor_profiles' as any)
-          .select('user_id')
-          .eq('email', newUserEmail.trim())
-          .maybeSingle();
-
-        // Only access user_id if data exists and no error
-        const managerUserId = (!managerError && managerProfile) ? (managerProfile as any).user_id : null;
-        const investorUserId = (!investorError && investorProfile) ? (investorProfile as any).user_id : null;
-        
-        targetUserId = managerUserId || investorUserId;
-      } catch (profileError) {
-        console.error('Error fetching user profiles:', profileError);
+      if (findUserError) {
+        console.error('Error finding user by email:', findUserError);
+        toast.error('Error looking up user. Please try again.');
+        return;
       }
 
       if (!targetUserId) {
-        toast.error('User not found. User must be registered first.');
+        toast.error('User not found. Please ensure the user has signed up.');
         return;
       }
 
