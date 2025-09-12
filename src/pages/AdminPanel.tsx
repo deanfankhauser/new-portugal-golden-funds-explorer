@@ -13,10 +13,12 @@ import { PageLoader } from '@/components/common/LoadingSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { EnhancedSuggestionsTable } from '@/components/admin/EnhancedSuggestionsTable';
 import { AdminActivityLog } from '@/components/admin/AdminActivityLog';
+import UsersManagement from '@/components/admin/UsersManagement';
 
 const AdminPanel = () => {
   const { user, loading, userType } = useEnhancedAuth();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [adminRole, setAdminRole] = useState<'super_admin' | 'admin' | 'moderator' | null>(null);
   const [checkingAdmin, setCheckingAdmin] = useState(true);
   const [stats, setStats] = useState({
     pendingCount: 0,
@@ -42,8 +44,10 @@ const AdminPanel = () => {
         if (error) {
           console.error('Error checking admin status:', error);
           setIsAdmin(false);
+          setAdminRole(null);
         } else {
           setIsAdmin(!!data);
+          setAdminRole(data?.role || null);
         }
       } catch (error) {
         console.error('Error checking admin status:', error);
@@ -195,10 +199,14 @@ const AdminPanel = () => {
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="suggestions" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="suggestions" className="flex items-center gap-2">
                 <Edit3 className="h-4 w-4" />
                 Suggestions
+              </TabsTrigger>
+              <TabsTrigger value="users" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Users
               </TabsTrigger>
               <TabsTrigger value="activity" className="flex items-center gap-2">
                 <Activity className="h-4 w-4" />
@@ -229,6 +237,10 @@ const AdminPanel = () => {
                   fetchStats();
                 }
               }} />
+            </TabsContent>
+
+            <TabsContent value="users">
+              <UsersManagement currentUserRole={adminRole} />
             </TabsContent>
 
             <TabsContent value="activity">

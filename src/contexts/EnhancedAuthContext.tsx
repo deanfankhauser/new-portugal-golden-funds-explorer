@@ -122,13 +122,13 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
             setUser(session?.user ?? null);
             
             if (session?.user) {
-              // Defer Supabase calls to prevent deadlocks
-              setTimeout(() => {
-                console.log('🔐 Fetching profile for user:', session.user?.id);
-                fetchProfile(session.user!.id).catch((err) => {
-                  console.error('🔐 Error fetching profile on auth state change:', err);
-                });
-              }, 0);
+            // Defer Supabase calls to prevent deadlocks
+            setTimeout(() => {
+              console.log('🔐 Fetching profile for user:', session.user?.id);
+              fetchProfile(session.user!.id).catch((err) => {
+                console.error('🔐 Error fetching profile on auth state change:', err);
+              });
+            }, 100);
             } else {
               console.log('🔐 No user, clearing profile data');
               setUserType(null);
@@ -163,7 +163,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
             fetchProfile(session.user!.id).catch((err) => {
               console.error('🔐 Error fetching profile for initial session:', err);
             });
-          }, 0);
+          }, 100);
         } else {
           console.log('🔐 No initial session user, clearing profile');
           setUserType(null);

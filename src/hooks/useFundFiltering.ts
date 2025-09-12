@@ -6,7 +6,7 @@ import { useRealTimeFunds } from './useRealTimeFunds';
 export const useFundFiltering = () => {
   const [selectedTags, setSelectedTags] = useState<FundTag[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const { filterFunds, loading, error } = useRealTimeFunds();
+  const { funds, filterFunds, loading, error } = useRealTimeFunds();
 
   const filteredFunds = useMemo(() => {
     return filterFunds(selectedTags, searchQuery);
@@ -18,6 +18,7 @@ export const useFundFiltering = () => {
     searchQuery,
     setSearchQuery,
     filteredFunds,
+    allFunds: funds,
     loading,
     error
   };
