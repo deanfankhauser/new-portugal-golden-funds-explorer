@@ -89,8 +89,21 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [loading, setLoading] = useState(true);
   const [userType, setUserType] = useState<'manager' | 'investor' | null>(null);
   const [profile, setProfile] = useState<ManagerProfile | InvestorProfile | null>(null);
+  // Add hydration state to prevent hydration mismatches
+  const [isHydrated, setIsHydrated] = useState(false);
 
+  // Ensure proper hydration on client-side
   useEffect(() => {
+    console.log('🔐 Setting hydrated to true');
+    setIsHydrated(true);
+  }, []);
+
+  // Only run auth initialization after hydration
+  useEffect(() => {
+    if (!isHydrated) {
+      console.log('🔐 Skipping auth init - not hydrated yet');
+      return;
+    }
 
     console.log('🔐 Auth useEffect starting after hydration...');
     let subscription: any = null;
@@ -186,7 +199,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         clearTimeout(timeoutId);
       }
     };
-  }, []);
+  }, [isHydrated]);
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -321,11 +334,11 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   const value = {
-    user,
-    session,
-    loading,
-    userType,
-    profile,
+    user: isHydrated ? user : null,
+    session: isHydrated ? session : null,
+    loading: !isHydrated || loading,
+    userType: isHydrated ? userType : null,
+    profile: isHydrated ? profile : null,
     signUp,
     signIn,
     signOut,

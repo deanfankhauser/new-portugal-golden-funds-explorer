@@ -192,96 +192,6 @@ export type Database = {
         }
         Relationships: []
       }
-      funds: {
-        Row: {
-          aum: number | null
-          category: string | null
-          created_at: string | null
-          currency: string | null
-          description: string | null
-          detailed_description: string | null
-          expected_return_max: number | null
-          expected_return_min: number | null
-          faqs: Json | null
-          geographic_allocation: Json | null
-          gv_eligible: boolean | null
-          id: string
-          inception_date: string | null
-          last_modified_by: string | null
-          lock_up_period_months: number | null
-          management_fee: number | null
-          manager_name: string | null
-          minimum_investment: number | null
-          name: string
-          pdf_documents: Json | null
-          performance_fee: number | null
-          risk_level: string | null
-          tags: string[] | null
-          team_members: Json | null
-          updated_at: string | null
-          version: number | null
-          website: string | null
-        }
-        Insert: {
-          aum?: number | null
-          category?: string | null
-          created_at?: string | null
-          currency?: string | null
-          description?: string | null
-          detailed_description?: string | null
-          expected_return_max?: number | null
-          expected_return_min?: number | null
-          faqs?: Json | null
-          geographic_allocation?: Json | null
-          gv_eligible?: boolean | null
-          id: string
-          inception_date?: string | null
-          last_modified_by?: string | null
-          lock_up_period_months?: number | null
-          management_fee?: number | null
-          manager_name?: string | null
-          minimum_investment?: number | null
-          name: string
-          pdf_documents?: Json | null
-          performance_fee?: number | null
-          risk_level?: string | null
-          tags?: string[] | null
-          team_members?: Json | null
-          updated_at?: string | null
-          version?: number | null
-          website?: string | null
-        }
-        Update: {
-          aum?: number | null
-          category?: string | null
-          created_at?: string | null
-          currency?: string | null
-          description?: string | null
-          detailed_description?: string | null
-          expected_return_max?: number | null
-          expected_return_min?: number | null
-          faqs?: Json | null
-          geographic_allocation?: Json | null
-          gv_eligible?: boolean | null
-          id?: string
-          inception_date?: string | null
-          last_modified_by?: string | null
-          lock_up_period_months?: number | null
-          management_fee?: number | null
-          manager_name?: string | null
-          minimum_investment?: number | null
-          name?: string
-          pdf_documents?: Json | null
-          performance_fee?: number | null
-          risk_level?: string | null
-          tags?: string[] | null
-          team_members?: Json | null
-          updated_at?: string | null
-          version?: number | null
-          website?: string | null
-        }
-        Relationships: []
-      }
       investor_profiles: {
         Row: {
           address: string | null
@@ -661,10 +571,6 @@ export type Database = {
           sensitive_columns: string[]
           view_name: string
         }[]
-      }
-      find_user_by_email: {
-        Args: { user_email: string }
-        Returns: string
       }
       get_user_admin_role: {
         Args: { check_user_id?: string }
