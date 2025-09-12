@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,11 +9,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Settings, LogOut, Building, TrendingUp } from 'lucide-react';
+import { User, Settings, LogOut, Building, TrendingUp, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import UniversalAuthButton from './UniversalAuthButton';
+import { supabase } from '@/integrations/supabase/client';
 
 const AuthAwareButton = () => {
+  const [isAdmin, setIsAdmin] = useState(false);
+  
   // Add error boundary and safe fallback
   let authState;
   try {
@@ -26,6 +29,31 @@ const AuthAwareButton = () => {
   const { user, profile, userType, signOut, loading } = authState;
 
   console.log('🔐 AuthAwareButton state:', { user: !!user, profile: !!profile, loading, userType });
+
+  // Check admin status
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (!user) {
+        setIsAdmin(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('admin_users')
+          .select('role')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        setIsAdmin(!!data);
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+        setIsAdmin(false);
+      }
+    };
+
+    checkAdminStatus();
+  }, [user]);
 
   // Show login button during loading (hydration) or if no user
   if (loading || !user) {
@@ -107,6 +135,17 @@ const AuthAwareButton = () => {
             Profile Settings
           </Link>
         </DropdownMenuItem>
+        {isAdmin && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link to="/admin" className="w-full cursor-pointer">
+                <Shield className="mr-2 h-4 w-4" />
+                Admin Panel
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
