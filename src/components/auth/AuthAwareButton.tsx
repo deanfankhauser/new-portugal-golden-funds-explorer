@@ -142,6 +142,14 @@ const AuthAwareButton = () => {
             Profile Settings
           </Link>
         </DropdownMenuItem>
+        {userType === 'manager' && (
+          <DropdownMenuItem asChild>
+            <Link to="/account-settings?tab=my-edits" className="w-full cursor-pointer">
+              <Settings className="mr-2 h-4 w-4" />
+              My Edits
+            </Link>
+          </DropdownMenuItem>
+        )}
         {isAdmin && (
           <>
             <DropdownMenuSeparator />
