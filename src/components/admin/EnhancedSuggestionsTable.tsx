@@ -31,17 +31,39 @@ export const EnhancedSuggestionsTable: React.FC = () => {
 
   const fetchSuggestions = async () => {
     try {
+      console.log('Fetching suggestions...');
+      
+      // First try a simple query to see if we can fetch basic data
+      const { data: basicData, error: basicError } = await supabase
+        .from('fund_edit_suggestions')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (basicError) {
+        console.error('Basic query error:', basicError);
+        throw basicError;
+      }
+
+      console.log('Basic suggestions data:', basicData);
+
+      // If basic query works, try with profile joins
       const { data, error } = await supabase
         .from('fund_edit_suggestions')
         .select(`
           *,
-          investor_profiles!left(first_name, last_name, email),
-          manager_profiles!left(manager_name, company_name, email)
+          investor_profiles(first_name, last_name, email),
+          manager_profiles(manager_name, company_name, email)
         `)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setSuggestions(data || []);
+      if (error) {
+        console.error('Error fetching suggestions with profiles:', error);
+        // Fallback to basic data if profile join fails
+        setSuggestions(basicData || []);
+      } else {
+        console.log('Fetched suggestions with profiles:', data);
+        setSuggestions(data || []);
+      }
     } catch (error) {
       console.error('Error fetching suggestions:', error);
     } finally {
@@ -102,26 +124,29 @@ export const EnhancedSuggestionsTable: React.FC = () => {
   };
 
   const getSubmitterInfo = (suggestion: any) => {
+    console.log('Getting submitter info for:', suggestion);
+    
     const investor = suggestion.investor_profiles?.[0];
     const manager = suggestion.manager_profiles?.[0];
 
     if (manager) {
       return {
-        name: manager.company_name || manager.manager_name,
+        name: manager.company_name || manager.manager_name || 'Manager',
         type: 'Manager',
         icon: <Building className="h-3 w-3" />
       };
     } else if (investor) {
       return {
-        name: `${investor.first_name || ''} ${investor.last_name || ''}`.trim(),
+        name: `${investor.first_name || ''} ${investor.last_name || ''}`.trim() || 'Investor',
         type: 'Investor',
         icon: <User className="h-3 w-3" />
       };
     }
 
+    // Fallback to show something instead of "Unknown"
     return {
-      name: 'Unknown',
-      type: 'Unknown',
+      name: `User ${suggestion.user_id?.slice(-8) || 'Unknown'}`,
+      type: 'User',
       icon: <User className="h-3 w-3" />
     };
   };
@@ -215,7 +240,14 @@ export const EnhancedSuggestionsTable: React.FC = () => {
               {filteredSuggestions.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                    No suggestions found matching your filters.
+                    {loading ? 'Loading suggestions...' : 
+                     suggestions.length === 0 ? 'No suggestions found in database.' :
+                     'No suggestions found matching your filters.'}
+                    {suggestions.length > 0 && filteredSuggestions.length === 0 && (
+                      <div className="mt-2 text-sm">
+                        Total suggestions: {suggestions.length} | Current filters: {JSON.stringify({statusFilter, searchTerm, submitterTypeFilter})}
+                      </div>
+                    )}
                   </TableCell>
                 </TableRow>
               ) : (
