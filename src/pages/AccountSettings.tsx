@@ -320,19 +320,30 @@ const AccountSettings = () => {
     try {
       // supabase client statically imported above
       
+      // Safety timeout to avoid stuck loading
+      let timeoutId: any = setTimeout(() => {
+        console.warn('🗑️ Delete account timed out');
+        setIsDeletingAccount(false);
+        toast.error("Delete Failed", { description: "Request timed out. Please try again." });
+      }, 20000);
+      
       // Get the current session to include in the request
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) {
+        clearTimeout(timeoutId);
         throw new Error('No valid session found');
       }
       
       console.log('🗑️ Calling delete-account edge function');
       const { data, error } = await supabase.functions.invoke('delete-account', {
+        body: {},
         headers: {
           Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
         }
       });
       
+      clearTimeout(timeoutId);
       if (error) {
         console.error('🗑️ Delete account error:', error);
         toast.error("Delete Failed", {
