@@ -33,7 +33,7 @@ const AuthAwareButton = () => {
   // Check admin status
   useEffect(() => {
     const checkAdminStatus = async () => {
-      if (!user) {
+      if (!user?.id) {
         setIsAdmin(false);
         return;
       }
@@ -45,7 +45,14 @@ const AuthAwareButton = () => {
           .eq('user_id', user.id)
           .maybeSingle();
 
-        setIsAdmin(!!data);
+        if (error) {
+          console.error('Error checking admin status:', error);
+          setIsAdmin(false);
+          return;
+        }
+
+        // Only set admin if we actually have a record with a valid role
+        setIsAdmin(data && data.role ? true : false);
       } catch (error) {
         console.error('Error checking admin status:', error);
         setIsAdmin(false);
@@ -53,7 +60,7 @@ const AuthAwareButton = () => {
     };
 
     checkAdminStatus();
-  }, [user]);
+  }, [user?.id]);
 
   // Show login button during loading (hydration) or if no user
   if (loading || !user) {
