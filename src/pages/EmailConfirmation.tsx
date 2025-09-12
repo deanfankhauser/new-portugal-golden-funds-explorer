@@ -16,12 +16,26 @@ export default function EmailConfirmation() {
   useEffect(() => {
     const handleEmailConfirmation = async () => {
       try {
-        const token = searchParams.get('token');
-        const type = searchParams.get('type');
+        // Supabase sends auth data in URL hash, not query params
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const queryParams = searchParams;
         
-        if (!token || !type) {
+        // Try to get token and type from either hash or query params
+        const token = hashParams.get('access_token') || 
+                     hashParams.get('token') || 
+                     queryParams.get('token');
+        const type = hashParams.get('type') || queryParams.get('type') || 'signup';
+        
+        console.log('Confirmation params:', { 
+          hash: window.location.hash, 
+          search: window.location.search,
+          token: token ? 'present' : 'missing',
+          type 
+        });
+        
+        if (!token) {
           setStatus('error');
-          setMessage('Invalid confirmation link. Missing required parameters.');
+          setMessage('Invalid confirmation link. Missing authentication token.');
           return;
         }
 
