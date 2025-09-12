@@ -9,12 +9,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Upload, Loader2, User, Mail, Lock, Camera, Home, Trash2 } from 'lucide-react';
+import { Upload, Loader2, User, Mail, Lock, Camera, Home, Trash2, Edit3 } from 'lucide-react';
 import { toast } from "@/components/ui/sonner";
 import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
+import MyEditsSection from '@/components/manager/MyEditsSection';
 
 const AccountSettings = () => {
   const { user, userType, profile, updateProfile, uploadAvatar, loading, signOut } = useEnhancedAuth();
@@ -400,10 +401,13 @@ const AccountSettings = () => {
           </div>
 
           <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className={`grid w-full ${userType === 'manager' ? 'grid-cols-4' : 'grid-cols-3'}`}>
               <TabsTrigger value="profile">Profile</TabsTrigger>
               <TabsTrigger value="security">Security</TabsTrigger>
               <TabsTrigger value="preferences">Preferences</TabsTrigger>
+              {userType === 'manager' && (
+                <TabsTrigger value="edits">My Edits</TabsTrigger>
+              )}
             </TabsList>
 
             <TabsContent value="profile" className="space-y-6">
@@ -827,6 +831,12 @@ const AccountSettings = () => {
                 </CardContent>
               </Card>
             </TabsContent>
+
+            {userType === 'manager' && (
+              <TabsContent value="edits">
+                <MyEditsSection />
+              </TabsContent>
+            )}
           </Tabs>
         </div>
       </div>

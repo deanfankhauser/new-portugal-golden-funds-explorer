@@ -4,3 +4,6 @@ project_id = "bkmvydnfhmkjnuszroim"
 [auth.email]
 # Email sender name
 site_name = "movingto"
+
+[functions.send-notification-email]
+verify_jwt = false

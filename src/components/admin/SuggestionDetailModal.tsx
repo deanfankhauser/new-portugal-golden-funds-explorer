@@ -76,6 +76,29 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         p_details: { fund_id: suggestion.fund_id }
       });
 
+      // Send email notification
+      try {
+        const { data: userProfile } = await supabase
+          .from('manager_profiles')
+          .select('email, manager_name')
+          .eq('user_id', suggestion.user_id)
+          .single();
+
+        if (userProfile?.email) {
+          await supabase.functions.invoke('send-notification-email', {
+            body: {
+              to: userProfile.email,
+              subject: `Fund Edit Approved - ${suggestion.fund_id}`,
+              fundId: suggestion.fund_id,
+              status: 'approved',
+              managerName: userProfile.manager_name
+            }
+          });
+        }
+      } catch (emailError) {
+        console.warn('Failed to send email notification:', emailError);
+      }
+
       toast({
         title: "Suggestion Approved",
         description: "The suggestion has been approved and published.",
@@ -128,6 +151,30 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
           rejection_reason: rejectionReason
         }
       });
+
+      // Send email notification
+      try {
+        const { data: userProfile } = await supabase
+          .from('manager_profiles')
+          .select('email, manager_name')
+          .eq('user_id', suggestion.user_id)
+          .single();
+
+        if (userProfile?.email) {
+          await supabase.functions.invoke('send-notification-email', {
+            body: {
+              to: userProfile.email,
+              subject: `Fund Edit Rejected - ${suggestion.fund_id}`,
+              fundId: suggestion.fund_id,
+              status: 'rejected',
+              rejectionReason: rejectionReason,
+              managerName: userProfile.manager_name
+            }
+          });
+        }
+      } catch (emailError) {
+        console.warn('Failed to send email notification:', emailError);
+      }
 
       toast({
         title: "Suggestion Rejected",
