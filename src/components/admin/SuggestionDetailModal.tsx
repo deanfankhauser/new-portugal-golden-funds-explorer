@@ -273,7 +273,9 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
                 <Separator />
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="rejection-reason">Rejection Reason (if rejecting)</Label>
+                    <Label htmlFor="rejection-reason">
+                      Rejection Reason <span className="text-red-500">*</span>
+                    </Label>
                     <Textarea
                       id="rejection-reason"
                       placeholder="Provide a clear reason for rejecting this suggestion..."
