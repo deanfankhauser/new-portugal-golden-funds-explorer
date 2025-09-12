@@ -232,7 +232,6 @@ const ManagerAuth = () => {
       setIsSubmitting(false);
     }
   };
-  };
 
   // Show success message if registration was successful
   if (registrationSuccess) {
