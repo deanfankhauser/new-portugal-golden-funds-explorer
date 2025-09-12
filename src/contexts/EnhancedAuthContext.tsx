@@ -116,14 +116,19 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         
         // Set up auth state listener FIRST
         const authListener = supabase.auth.onAuthStateChange(
-          async (event, session) => {
+          (event, session) => {
             console.log('🔐 Auth state change:', event, session?.user?.email || 'no user');
             setSession(session);
             setUser(session?.user ?? null);
             
             if (session?.user) {
-              console.log('🔐 Fetching profile for user:', session.user.id);
-              await fetchProfile(session.user.id);
+              // Defer Supabase calls to prevent deadlocks
+              setTimeout(() => {
+                console.log('🔐 Fetching profile for user:', session.user?.id);
+                fetchProfile(session.user!.id).catch((err) => {
+                  console.error('🔐 Error fetching profile on auth state change:', err);
+                });
+              }, 0);
             } else {
               console.log('🔐 No user, clearing profile data');
               setUserType(null);
@@ -153,7 +158,12 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         
         if (session?.user) {
           console.log('🔐 Fetching profile for initial session user:', session.user.id);
-          await fetchProfile(session.user.id);
+          // Defer Supabase calls to prevent deadlocks
+          setTimeout(() => {
+            fetchProfile(session.user!.id).catch((err) => {
+              console.error('🔐 Error fetching profile for initial session:', err);
+            });
+          }, 0);
         } else {
           console.log('🔐 No initial session user, clearing profile');
           setUserType(null);

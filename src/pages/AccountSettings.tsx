@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Upload, Loader2, User, Mail, Lock, Camera, Home, Trash2 } from 'lucide-react';
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -724,7 +724,7 @@ const AccountSettings = () => {
                     </Button>
                   </form>
                   {passwordChangeStatus !== 'idle' && (
-                    <Alert variant={passwordChangeStatus === 'error' ? 'destructive' : 'default'} className="mt-2">
+                    <Alert variant={passwordChangeStatus === 'error' ? 'destructive' : 'success'} className="mt-2">
                       <AlertDescription>{passwordChangeMessage}</AlertDescription>
                     </Alert>
                   )}
