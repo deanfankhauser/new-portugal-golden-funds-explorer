@@ -18,6 +18,8 @@ const ManagerAuth = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [showResendConfirmation, setShowResendConfirmation] = useState(false);
+  const [lastSignupEmail, setLastSignupEmail] = useState('');
 
   // If already authenticated, show options instead of redirecting
   if (user && !loading) {
@@ -81,10 +83,22 @@ const ManagerAuth = () => {
       
       if (error) {
         console.error('🔐 Login failed:', error);
-        setError(error.message);
-        toast.error("Login Failed", {
-          description: error.message
-        });
+        
+        // Handle specific error types
+        if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
+          setError('Please confirm your email address before logging in.');
+          setShowResendConfirmation(true);
+          setLastSignupEmail(loginData.email);
+          toast.error("Email Not Confirmed", {
+            description: "Please check your email and click the confirmation link."
+          });
+        } else {
+          setError(error.message);
+          setShowResendConfirmation(false);
+          toast.error("Login Failed", {
+            description: error.message
+          });
+        }
         setIsSubmitting(false);
       } else {
         console.log('🔐 Login successful, checking auth state...');
@@ -183,13 +197,41 @@ const ManagerAuth = () => {
       });
       setError(null);
       setRegistrationSuccess(true);
+      setLastSignupEmail(signupData.email);
       
       toast.success("Registration Successful! 🎉", {
-        description: "Your manager account has been created. You can now login."
+        description: "Please check your email to confirm your account before logging in."
       });
     }
     
     setIsSubmitting(false);
+  };
+
+  // Function to resend confirmation email
+  const handleResendConfirmation = async () => {
+    if (!lastSignupEmail) return;
+    
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: lastSignupEmail
+      });
+      
+      if (error) {
+        toast.error("Failed to resend", { description: error.message });
+      } else {
+        toast.success("Email Sent", { 
+          description: "Please check your email for the confirmation link." 
+        });
+        setShowResendConfirmation(false);
+      }
+    } catch (err) {
+      toast.error("Failed to resend confirmation email");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   };
 
   // Show success message if registration was successful
@@ -200,16 +242,16 @@ const ManagerAuth = () => {
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-green-600">Registration Successful! 🎉</CardTitle>
             <CardDescription className="text-lg">
-              Your manager account has been created. You can now login.
+              Please check your email to confirm your account before logging in.
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center space-y-4">
             <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg border border-green-200 dark:border-green-800">
               <p className="text-green-800 dark:text-green-200">
-                Your account <strong>{signupData.email}</strong> has been created successfully!
+                Your account <strong>{lastSignupEmail}</strong> has been created successfully!
               </p>
               <p className="text-sm text-green-700 dark:text-green-300 mt-2">
-                You can now login with your credentials and start managing your funds.
+                Please check your email and click the confirmation link to activate your account.
               </p>
             </div>
             <Button 
@@ -273,6 +315,23 @@ const ManagerAuth = () => {
                   </Alert>
                 )}
 
+                {showResendConfirmation && (
+                  <Alert>
+                    <AlertDescription className="space-y-2">
+                      <p>Haven't received the confirmation email?</p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleResendConfirmation}
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? 'Sending...' : 'Resend Confirmation Email'}
+                      </Button>
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <>
@@ -283,6 +342,17 @@ const ManagerAuth = () => {
                     'Sign In'
                   )}
                 </Button>
+                
+                <div className="text-center">
+                  <Button 
+                    type="button" 
+                    variant="link" 
+                    className="text-sm text-muted-foreground"
+                    onClick={() => navigate('/reset-password')}
+                  >
+                    Forgot your password?
+                  </Button>
+                </div>
               </form>
             </TabsContent>
             

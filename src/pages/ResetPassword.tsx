@@ -10,6 +10,8 @@ import { toast } from 'sonner';
 
 export default function ResetPassword() {
   const navigate = useNavigate();
+  const [step, setStep] = useState<'request' | 'reset'>('request');
+  const [email, setEmail] = useState('');
   const [passwords, setPasswords] = useState({
     newPassword: '',
     confirmPassword: ''
@@ -18,7 +20,55 @@ export default function ResetPassword() {
   const [error, setError] = useState('');
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Check if we have reset tokens in URL on mount
+  React.useEffect(() => {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = hashParams.get('access_token');
+    const refreshToken = hashParams.get('refresh_token');
+    const type = hashParams.get('type');
+    
+    if (accessToken && refreshToken && type === 'recovery') {
+      // User clicked recovery link, set session and go to reset step
+      supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      }).then(({ error }) => {
+        if (!error) {
+          setStep('reset');
+          // Clean URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      });
+    }
+  }, []);
+
+  const handleRequestReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`
+      });
+
+      if (error) {
+        setError(error.message);
+      } else {
+        toast.success('Reset Email Sent', {
+          description: 'Check your email for password reset instructions'
+        });
+        setStatus('success');
+      }
+    } catch (error) {
+      console.error('Password reset request error:', error);
+      setError('An unexpected error occurred');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -60,13 +110,30 @@ export default function ResetPassword() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Reset Password</CardTitle>
+          <CardTitle>
+            {step === 'request' ? 'Reset Password' : 'Set New Password'}
+          </CardTitle>
           <CardDescription>
-            Enter your new password below
+            {step === 'request' 
+              ? 'Enter your email address and we\'ll send you a reset link'
+              : 'Enter your new password below'
+            }
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {status === 'success' ? (
+          {status === 'success' && step === 'request' ? (
+            <div className="space-y-4 text-center">
+              <Alert>
+                <AlertDescription>
+                  We've sent a password reset link to <strong>{email}</strong>. 
+                  Check your email and follow the instructions to reset your password.
+                </AlertDescription>
+              </Alert>
+              <Button variant="outline" className="w-full" onClick={() => navigate('/')}> 
+                Back to Home
+              </Button>
+            </div>
+          ) : status === 'success' && step === 'reset' ? (
             <div className="space-y-4 text-center">
               <Alert>
                 <AlertDescription>
@@ -80,8 +147,43 @@ export default function ResetPassword() {
                 Back to Home
               </Button>
             </div>
+          ) : step === 'request' ? (
+            <form onSubmit={handleRequestReset} className="space-y-4">
+              {error && (
+                <Alert variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email address"
+                  required
+                />
+              </div>
+
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? 'Sending...' : 'Send Reset Link'}
+              </Button>
+              
+              <div className="text-center">
+                <Button 
+                  type="button" 
+                  variant="link" 
+                  className="text-sm"
+                  onClick={() => navigate('/manager-auth')}
+                >
+                  Back to Login
+                </Button>
+              </div>
+            </form>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handlePasswordReset} className="space-y-4">
               {error && (
                 <Alert variant="destructive">
                   <AlertDescription>{error}</AlertDescription>

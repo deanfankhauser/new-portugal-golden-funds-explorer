@@ -18,6 +18,8 @@ const InvestorAuth = () => {
   const { signIn, signUp, signOut, loading, user } = useEnhancedAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showResendConfirmation, setShowResendConfirmation] = useState(false);
+  const [lastSignupEmail, setLastSignupEmail] = useState('');
 
   // If already authenticated, show options instead of redirecting
   if (user && !loading) {
@@ -83,10 +85,22 @@ const InvestorAuth = () => {
       
       if (error) {
         console.error('🔐 Login failed:', error);
-        setError(error.message);
-        toast.error("Login Failed", {
-          description: error.message
-        });
+        
+        // Handle specific error types
+        if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
+          setError('Please confirm your email address before logging in.');
+          setShowResendConfirmation(true);
+          setLastSignupEmail(loginData.email);
+          toast.error("Email Not Confirmed", {
+            description: "Please check your email and click the confirmation link."
+          });
+        } else {
+          setError(error.message);
+          setShowResendConfirmation(false);
+          toast.error("Login Failed", {
+            description: error.message
+          });
+        }
         setIsSubmitting(false);
       } else {
         console.log('🔐 Login successful, checking auth state...');
@@ -183,13 +197,40 @@ const InvestorAuth = () => {
         riskTolerance: ''
       });
       setError(null);
+      setLastSignupEmail(signupData.email);
       
       toast.success("Registration Successful! 🎉", {
-        description: "Your investor account has been created. You can now login."
+        description: "Please check your email to confirm your account before logging in."
       });
     }
     
     setIsSubmitting(false);
+  };
+
+  // Function to resend confirmation email
+  const handleResendConfirmation = async () => {
+    if (!lastSignupEmail) return;
+    
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: lastSignupEmail
+      });
+      
+      if (error) {
+        toast.error("Failed to resend", { description: error.message });
+      } else {
+        toast.success("Email Sent", { 
+          description: "Please check your email for the confirmation link." 
+        });
+        setShowResendConfirmation(false);
+      }
+    } catch (err) {
+      toast.error("Failed to resend confirmation email");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -281,6 +322,23 @@ const InvestorAuth = () => {
                   </Alert>
                 )}
 
+                {showResendConfirmation && (
+                  <Alert>
+                    <AlertDescription className="space-y-2">
+                      <p>Haven't received the confirmation email?</p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleResendConfirmation}
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? 'Sending...' : 'Resend Confirmation Email'}
+                      </Button>
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <>
@@ -291,6 +349,17 @@ const InvestorAuth = () => {
                     'Sign In'
                   )}
                 </Button>
+                
+                <div className="text-center">
+                  <Button 
+                    type="button" 
+                    variant="link" 
+                    className="text-sm text-muted-foreground"
+                    onClick={() => navigate('/reset-password')}
+                  >
+                    Forgot your password?
+                  </Button>
+                </div>
               </form>
             </TabsContent>
             

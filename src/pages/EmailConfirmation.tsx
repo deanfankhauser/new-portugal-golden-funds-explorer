@@ -78,9 +78,9 @@ export default function EmailConfirmation() {
               setTimeout(() => navigate('/reset-password'), 1500);
             } else {
               setStatus('success');
-              setMessage('Email confirmed successfully! You can now log in to your account.');
+              setMessage('Email confirmed successfully! Welcome to your account.');
               toast.success('Email Confirmed', { description: 'Your email has been verified successfully!' });
-              setTimeout(() => navigate('/manager-auth'), 2000);
+              setTimeout(() => navigate('/'), 2000); // Redirect to home page
             }
           }
           return;
@@ -104,9 +104,9 @@ export default function EmailConfirmation() {
               setTimeout(() => navigate('/reset-password'), 1500);
             } else {
               setStatus('success');
-              setMessage('Email confirmed successfully! You can now log in to your account.');
+              setMessage('Email confirmed successfully! Welcome to your account.');
               toast.success('Email Confirmed', { description: 'Your email has been verified successfully!' });
-              setTimeout(() => navigate('/manager-auth'), 2000);
+              setTimeout(() => navigate('/'), 2000); // Redirect to home page
             }
           }
           return;
@@ -157,8 +157,8 @@ export default function EmailConfirmation() {
 
           <div className="flex flex-col gap-2">
             {status === 'success' && (
-              <Button onClick={handleGoToLogin} className="w-full">
-                Go to Login
+              <Button onClick={() => navigate('/')} className="w-full">
+                Go to Home
               </Button>
             )}
             {status === 'error' && (
