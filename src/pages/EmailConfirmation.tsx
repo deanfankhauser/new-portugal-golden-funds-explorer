@@ -39,52 +39,81 @@ export default function EmailConfirmation() {
           return;
         }
 
-        // Handle different types of email confirmations
-        if (type === 'signup') {
-          const { error } = await supabase.auth.verifyOtp({
-            token_hash: token,
-            type: 'email'
-          });
+        // Handle different types and token formats from Supabase
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        const errorCode = hashParams.get('error_code') || queryParams.get('error_code');
+        const errorDescription = hashParams.get('error_description') || queryParams.get('error_description');
 
-          if (error) {
-            console.error('Email confirmation error:', error);
-            setStatus('error');
-            setMessage(error.message || 'Failed to confirm email. The link may have expired.');
-          } else {
-            setStatus('success');
-            setMessage('Email confirmed successfully! You can now log in to your account.');
-            toast.success('Email Confirmed', {
-              description: 'Your email has been verified successfully!'
-            });
-            
-            // Redirect to login after 3 seconds
-            setTimeout(() => {
-              navigate('/manager-auth'); // Default to manager auth, could be improved
-            }, 3000);
-          }
-        } else if (type === 'recovery') {
-          // Handle password recovery
-          const { error } = await supabase.auth.verifyOtp({
-            token_hash: token,
-            type: 'recovery'
-          });
-
-          if (error) {
-            console.error('Password recovery error:', error);
-            setStatus('error');
-            setMessage(error.message || 'Failed to verify recovery link. The link may have expired.');
-          } else {
-            setStatus('success');
-            setMessage('Recovery link verified! You can now reset your password.');
-            // Redirect to password reset page
-            setTimeout(() => {
-              navigate('/reset-password');
-            }, 2000);
-          }
-        } else {
+        // Explicit error returned in URL
+        if (errorCode) {
+          console.error('Confirmation error from URL:', errorCode, errorDescription);
           setStatus('error');
-          setMessage('Unknown confirmation type.');
+          setMessage(
+            errorCode === 'otp_expired'
+              ? 'This confirmation link has expired. Please request a new email.'
+              : errorDescription || 'Failed to confirm email. The link may be invalid or expired.'
+          );
+          return;
         }
+
+        // New flow: access_token + refresh_token in hash → directly set session
+        if (accessToken && refreshToken) {
+          const { error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+
+          if (error) {
+            console.error('setSession error:', error);
+            setStatus('error');
+            setMessage(error.message || 'Failed to establish session from confirmation link.');
+          } else {
+            // Clean URL to remove sensitive tokens
+            try { window.history.replaceState({}, document.title, window.location.pathname); } catch {}
+
+            if (type === 'recovery') {
+              setStatus('success');
+              setMessage('Recovery link verified! You can now reset your password.');
+              setTimeout(() => navigate('/reset-password'), 1500);
+            } else {
+              setStatus('success');
+              setMessage('Email confirmed successfully! You can now log in to your account.');
+              toast.success('Email Confirmed', { description: 'Your email has been verified successfully!' });
+              setTimeout(() => navigate('/manager-auth'), 2000);
+            }
+          }
+          return;
+        }
+
+        // Legacy flow: verify OTP token when provided
+        if (token && (type === 'signup' || type === 'recovery')) {
+          const { error } = await supabase.auth.verifyOtp({
+            token_hash: token,
+            type: type as 'signup' | 'recovery',
+          });
+
+          if (error) {
+            console.error('verifyOtp error:', error);
+            setStatus('error');
+            setMessage(error.message || 'Failed to verify the link. It may have expired.');
+          } else {
+            if (type === 'recovery') {
+              setStatus('success');
+              setMessage('Recovery link verified! You can now reset your password.');
+              setTimeout(() => navigate('/reset-password'), 1500);
+            } else {
+              setStatus('success');
+              setMessage('Email confirmed successfully! You can now log in to your account.');
+              toast.success('Email Confirmed', { description: 'Your email has been verified successfully!' });
+              setTimeout(() => navigate('/manager-auth'), 2000);
+            }
+          }
+          return;
+        }
+
+        setStatus('error');
+        setMessage('Unknown confirmation type or missing parameters.');
       } catch (error) {
         console.error('Confirmation error:', error);
         setStatus('error');
