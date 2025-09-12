@@ -14,7 +14,7 @@ import { Trash2, UserPlus, Crown, Shield, User } from 'lucide-react';
 interface AdminUser {
   id: string;
   user_id: string;
-  role: 'super_admin' | 'admin' | 'moderator';
+  role: string; // Allow any string to handle enum variations
   granted_by: string;
   granted_at: string;
   email?: string;
@@ -22,14 +22,14 @@ interface AdminUser {
 }
 
 interface UsersManagementProps {
-  currentUserRole?: 'super_admin' | 'admin' | 'moderator';
+  currentUserRole?: string;
 }
 
 const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) => {
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [newUserEmail, setNewUserEmail] = useState('');
-  const [newUserRole, setNewUserRole] = useState<'admin' | 'moderator'>('moderator');
+  const [newUserRole, setNewUserRole] = useState('moderator');
   const [adding, setAdding] = useState(false);
 
   const canManageUsers = currentUserRole === 'super_admin';
@@ -142,7 +142,7 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
         .from('admin_users')
         .insert({
           user_id: foundUserId,
-          role: newUserRole,
+          role: newUserRole as any, // Type assertion for enum
           granted_by: (await supabase.auth.getUser()).data.user?.id
         });
 
@@ -211,8 +211,6 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
     switch (role) {
       case 'super_admin':
         return <Crown className="h-4 w-4" />;
-      case 'admin':
-        return <Shield className="h-4 w-4" />;
       case 'moderator':
         return <User className="h-4 w-4" />;
       default:
@@ -224,8 +222,6 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
     switch (role) {
       case 'super_admin':
         return 'destructive';
-      case 'admin':
-        return 'default';
       case 'moderator':
         return 'secondary';
       default:
@@ -272,13 +268,12 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="role">Role</Label>
-                <Select value={newUserRole} onValueChange={(value: 'admin' | 'moderator') => setNewUserRole(value)}>
+                <Select value={newUserRole} onValueChange={setNewUserRole}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="moderator">Moderator</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

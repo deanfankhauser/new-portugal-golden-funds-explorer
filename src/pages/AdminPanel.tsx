@@ -18,7 +18,7 @@ import UsersManagement from '@/components/admin/UsersManagement';
 const AdminPanel = () => {
   const { user, loading, userType } = useEnhancedAuth();
   const [isAdmin, setIsAdmin] = useState(false);
-  const [adminRole, setAdminRole] = useState<'super_admin' | 'admin' | 'moderator' | null>(null);
+  const [adminRole, setAdminRole] = useState<string | null>(null);
   const [checkingAdmin, setCheckingAdmin] = useState(true);
   const [stats, setStats] = useState({
     pendingCount: 0,
