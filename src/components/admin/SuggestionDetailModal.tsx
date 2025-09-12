@@ -39,16 +39,34 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
   const handleApprove = async () => {
     setIsProcessing(true);
     try {
+      const { data: userData } = await supabase.auth.getUser();
+      const adminId = userData.user?.id;
+
       const { error } = await supabase
         .from('fund_edit_suggestions')
         .update({
           status: 'approved',
           approved_at: new Date().toISOString(),
-          approved_by: (await supabase.auth.getUser()).data.user?.id
+          approved_by: adminId
         })
         .eq('id', suggestion.id);
 
       if (error) throw error;
+
+      // Create edit history entry that is publicly readable (drives UI overrides)
+      const { error: historyError } = await supabase
+        .from('fund_edit_history')
+        .insert({
+          admin_user_id: adminId,
+          changed_by: adminId,
+          fund_id: suggestion.fund_id,
+          suggestion_id: suggestion.id,
+          changes: suggestion.suggested_changes
+        });
+
+      if (historyError) {
+        console.error('Error creating fund_edit_history record:', historyError);
+      }
 
       // Log admin activity
       await supabase.rpc('log_admin_activity', {
@@ -60,7 +78,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
 
       toast({
         title: "Suggestion Approved",
-        description: "The suggestion has been approved successfully.",
+        description: "The suggestion has been approved and published.",
       });
 
       onUpdate();
