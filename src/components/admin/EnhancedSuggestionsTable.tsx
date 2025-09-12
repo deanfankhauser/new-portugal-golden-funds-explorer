@@ -9,7 +9,11 @@ import { Eye, Filter, Search, Clock, User, Building, CheckCircle, XCircle } from
 import { supabase } from '@/integrations/supabase/client';
 import { SuggestionDetailModal } from './SuggestionDetailModal';
 
-export const EnhancedSuggestionsTable: React.FC = () => {
+interface EnhancedSuggestionsTableProps {
+  onDataChange?: () => void;
+}
+
+export const EnhancedSuggestionsTable: React.FC<EnhancedSuggestionsTableProps> = ({ onDataChange }) => {
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [filteredSuggestions, setFilteredSuggestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,6 +68,9 @@ export const EnhancedSuggestionsTable: React.FC = () => {
         console.log('Fetched suggestions with profiles:', data);
         setSuggestions(data || []);
       }
+      
+      // Notify parent component of data change
+      onDataChange?.();
     } catch (error) {
       console.error('Error fetching suggestions:', error);
     } finally {
@@ -72,19 +79,24 @@ export const EnhancedSuggestionsTable: React.FC = () => {
   };
 
   const applyFilters = () => {
+    console.log('Applying filters to suggestions:', suggestions);
+    console.log('Current filters:', { statusFilter, searchTerm, submitterTypeFilter });
+    
     let filtered = [...suggestions];
 
     // Status filter
     if (statusFilter !== 'all') {
       filtered = filtered.filter(s => s.status === statusFilter);
+      console.log('After status filter:', filtered);
     }
 
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter(s => 
-        s.fund_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.id.toLowerCase().includes(searchTerm.toLowerCase())
+        s.fund_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.id?.toLowerCase().includes(searchTerm.toLowerCase())
       );
+      console.log('After search filter:', filtered);
     }
 
     // Submitter type filter
@@ -97,8 +109,10 @@ export const EnhancedSuggestionsTable: React.FC = () => {
         }
         return true;
       });
+      console.log('After submitter type filter:', filtered);
     }
 
+    console.log('Final filtered suggestions:', filtered);
     setFilteredSuggestions(filtered);
   };
 
@@ -181,9 +195,14 @@ export const EnhancedSuggestionsTable: React.FC = () => {
     <>
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2">
             <Filter className="h-5 w-5" />
             Fund Edit Suggestions ({filteredSuggestions.length})
+            {suggestions.length > 0 && (
+              <Badge variant="outline" className="ml-2">
+                Total: {suggestions.length}
+              </Badge>
+            )}
           </CardTitle>
           
           {/* Filters */}

@@ -61,11 +61,19 @@ const AdminPanel = () => {
       if (!isAdmin) return;
 
       try {
+        console.log('Fetching admin stats...');
+        
         // Get pending suggestions count
-        const { count: pendingCount } = await supabase
+        const { count: pendingCount, error: pendingError } = await supabase
           .from('fund_edit_suggestions')
           .select('*', { count: 'exact', head: true })
           .eq('status', 'pending');
+
+        if (pendingError) {
+          console.error('Error fetching pending count:', pendingError);
+        } else {
+          console.log('Pending suggestions count:', pendingCount);
+        }
 
         // Get today's approved suggestions
         const today = new Date().toISOString().split('T')[0];
@@ -203,7 +211,24 @@ const AdminPanel = () => {
             </TabsList>
 
             <TabsContent value="suggestions">
-              <EnhancedSuggestionsTable />
+              <EnhancedSuggestionsTable onDataChange={() => {
+                // Refresh stats when suggestions data changes
+                if (isAdmin) {
+                  const fetchStats = async () => {
+                    try {
+                      const { count: pendingCount } = await supabase
+                        .from('fund_edit_suggestions')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('status', 'pending');
+                      
+                      setStats(prev => ({ ...prev, pendingCount: pendingCount || 0 }));
+                    } catch (error) {
+                      console.error('Error refreshing stats:', error);
+                    }
+                  };
+                  fetchStats();
+                }
+              }} />
             </TabsContent>
 
             <TabsContent value="activity">
