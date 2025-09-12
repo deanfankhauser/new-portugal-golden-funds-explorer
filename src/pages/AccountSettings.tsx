@@ -247,55 +247,60 @@ const AccountSettings = () => {
     setIsUpdatingPassword(true);
     console.log('🔑 Starting password update for user:', user.email);
 
-    // Safety timeout to avoid stuck loading
-    let timeoutId: any = null;
-    timeoutId = setTimeout(() => {
-      console.warn('🔑 Password update timed out');
-      setIsUpdatingPassword(false);
-      setPasswordChangeStatus('error');
-      setPasswordChangeMessage('Request timed out. Please try again.');
-    }, 15000);
-
-    try {
-      // supabase client statically imported above
-      
-      console.log('🔑 Calling supabase.auth.updateUser');
-      const { error } = await supabase.auth.updateUser({
-        password: passwordData.newPassword
-      });
-
-      clearTimeout(timeoutId);
-
-      if (error) {
-        console.log('🔑 Password update failed:', error.message);
-        setPasswordChangeStatus('error');
-        setPasswordChangeMessage(error.message);
-        toast.error("Password Update Failed", {
-          description: error.message
-        });
-      } else {
-        console.log('🔑 Password update successful');
+    // Listen for auth events to detect success even if the promise takes long
+    let finished = false;
+    const { data: authSub } = supabase.auth.onAuthStateChange((event) => {
+      console.log('🔑 Auth event during password change:', event);
+      if (!finished && (event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED')) {
+        finished = true;
+        setIsUpdatingPassword(false);
         setPasswordChangeStatus('success');
         setPasswordChangeMessage('Your password has been successfully updated.');
         toast.success("Password Changed", {
           description: "Your password has been successfully updated."
         });
-        
         // Clear the form
-        setPasswordData({
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: ''
-        });
+        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        authSub.subscription.unsubscribe();
+        if (timeoutId) clearTimeout(timeoutId);
+      }
+    });
+
+    // Soft timeout to avoid a stuck spinner, but don't show error
+    let timeoutId: any = setTimeout(() => {
+      if (finished) return;
+      console.warn('🔑 Password update taking longer than expected');
+      setIsUpdatingPassword(false);
+      toast('Still processing… If your password was updated, you may be asked to re-login.');
+    }, 20000);
+
+    try {
+      console.log('🔑 Calling supabase.auth.updateUser');
+      const { error } = await supabase.auth.updateUser({ password: passwordData.newPassword });
+
+      if (finished) return; // already handled by auth event
+      if (timeoutId) clearTimeout(timeoutId);
+      authSub.subscription.unsubscribe();
+
+      if (error) {
+        console.log('🔑 Password update failed:', error.message);
+        setPasswordChangeStatus('error');
+        setPasswordChangeMessage(error.message);
+        toast.error("Password Update Failed", { description: error.message });
+      } else {
+        console.log('🔑 Password update successful (no auth event)');
+        setPasswordChangeStatus('success');
+        setPasswordChangeMessage('Your password has been successfully updated.');
+        toast.success("Password Changed", { description: "Your password has been successfully updated." });
+        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
       }
     } catch (error) {
-      clearTimeout(timeoutId);
+      if (timeoutId) clearTimeout(timeoutId);
+      authSub.subscription.unsubscribe();
       console.error('🔑 Password update error:', error);
       setPasswordChangeStatus('error');
       setPasswordChangeMessage('An unexpected error occurred. Please try again.');
-      toast.error("Update Failed", {
-        description: "An unexpected error occurred. Please try again."
-      });
+      toast.error("Update Failed", { description: "An unexpected error occurred. Please try again." });
     } finally {
       console.log('🔑 Setting isUpdatingPassword to false');
       setIsUpdatingPassword(false);
