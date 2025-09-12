@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -28,20 +28,27 @@ export const FundEditModal: React.FC<FundEditModalProps> = ({
   onOpenChange,
 }) => {
   const { submitFundEditSuggestion, loading } = useFundEditing();
-  const [formData, setFormData] = useState({
-    name: fund.name,
-    description: fund.description,
-    detailedDescription: fund.detailedDescription,
-    managerName: fund.managerName,
-    minimumInvestment: fund.minimumInvestment.toString(),
-    managementFee: fund.managementFee.toString(),
-    performanceFee: fund.performanceFee?.toString() || '',
-    term: fund.term.toString(),
-    category: fund.category,
-    returnTarget: fund.returnTarget,
-    websiteUrl: fund.websiteUrl || '',
-    location: fund.location,
-  });
+const buildFormData = (f: Fund) => ({
+  name: f.name,
+  description: f.description,
+  detailedDescription: f.detailedDescription,
+  managerName: f.managerName,
+  minimumInvestment: f.minimumInvestment.toString(),
+  managementFee: f.managementFee.toString(),
+  performanceFee: f.performanceFee != null ? f.performanceFee.toString() : '',
+  term: f.term.toString(),
+  category: f.category,
+  returnTarget: f.returnTarget,
+  websiteUrl: f.websiteUrl || '',
+  location: f.location,
+});
+const [formData, setFormData] = useState(buildFormData(fund));
+
+useEffect(() => {
+  if (open) {
+    setFormData(buildFormData(fund));
+  }
+}, [open, fund]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
