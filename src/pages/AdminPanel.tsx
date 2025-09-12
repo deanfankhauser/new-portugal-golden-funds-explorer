@@ -13,6 +13,7 @@ import { PageLoader } from '@/components/common/LoadingSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { EnhancedSuggestionsTable } from '@/components/admin/EnhancedSuggestionsTable';
 import { AdminActivityLog } from '@/components/admin/AdminActivityLog';
+import { AdminUserManagement } from '@/components/admin/AdminUserManagement';
 
 const AdminPanel = () => {
   const { user, loading, userType } = useEnhancedAuth();
@@ -195,10 +196,14 @@ const AdminPanel = () => {
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="suggestions" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="suggestions" className="flex items-center gap-2">
                 <Edit3 className="h-4 w-4" />
                 Suggestions
+              </TabsTrigger>
+              <TabsTrigger value="users" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Users
               </TabsTrigger>
               <TabsTrigger value="activity" className="flex items-center gap-2">
                 <Activity className="h-4 w-4" />
@@ -229,6 +234,10 @@ const AdminPanel = () => {
                   fetchStats();
                 }
               }} />
+            </TabsContent>
+
+            <TabsContent value="users">
+              <AdminUserManagement />
             </TabsContent>
 
             <TabsContent value="activity">
