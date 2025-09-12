@@ -27,7 +27,7 @@ export const AdminUserManagement: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [newUserEmail, setNewUserEmail] = useState('');
-  const [newUserRole, setNewUserRole] = useState<'admin' | 'moderator'>('moderator');
+  const [newUserRole, setNewUserRole] = useState<'admin' | 'moderator' | 'super_admin'>('moderator');
   const [adding, setAdding] = useState(false);
 
   useEffect(() => {
@@ -262,13 +262,14 @@ export const AdminUserManagement: React.FC = () => {
                   onChange={(e) => setNewUserEmail(e.target.value)}
                   className="flex-1"
                 />
-                <Select value={newUserRole} onValueChange={(value: 'admin' | 'moderator') => setNewUserRole(value)}>
+                <Select value={newUserRole} onValueChange={(value: 'admin' | 'moderator' | 'super_admin') => setNewUserRole(value)}>
                   <SelectTrigger className="w-40">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="moderator">Moderator</SelectItem>
                     <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="super_admin">Super Admin</SelectItem>
                   </SelectContent>
                 </Select>
                 <Button 
