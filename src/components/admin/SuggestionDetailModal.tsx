@@ -115,7 +115,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
           .single();
 
         if (userProfile?.email) {
-          await supabase.functions.invoke('send-notification-email', {
+          const emailResult = await supabase.functions.invoke('send-notification-email', {
             body: {
               to: userProfile.email,
               subject: `Fund Edit Approved - ${suggestion.fund_id}`,
@@ -124,6 +124,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
               managerName: userProfile.manager_name
             }
           });
+          console.log('Email notification result:', emailResult);
         }
       } catch (emailError) {
         console.warn('Failed to send email notification:', emailError);
@@ -183,7 +184,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
           .single();
 
         if (userProfile?.email) {
-          await supabase.functions.invoke('send-notification-email', {
+          const emailResult = await supabase.functions.invoke('send-notification-email', {
             body: {
               to: userProfile.email,
               subject: `Fund Edit Rejected - ${suggestion.fund_id}`,
@@ -193,6 +194,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
               managerName: userProfile.manager_name
             }
           });
+          console.log('Email notification result:', emailResult);
         }
       } catch (emailError) {
         console.warn('Failed to send email notification:', emailError);
