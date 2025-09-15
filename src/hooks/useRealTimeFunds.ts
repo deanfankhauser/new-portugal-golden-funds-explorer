@@ -73,7 +73,7 @@ const applyEditHistory = (
           const { data: editsData, error: editsError } = await supabase
             .from('fund_edit_history')
             .select('fund_id, changes, applied_at')
-            .order('applied_at', { ascending: false });
+            .order('applied_at', { ascending: true });
 
           if (!editsError && editsData && editsData.length > 0) {
             const finalFunds = applyEditHistory(base, editsData as any);
@@ -154,7 +154,7 @@ const applyEditHistory = (
         const { data: editsData, error: editsError } = await supabase
           .from('fund_edit_history')
           .select('fund_id, changes, applied_at')
-          .order('applied_at', { ascending: false });
+          .order('applied_at', { ascending: true });
 
         if (editsError) {
           console.warn('Could not fetch fund_edit_history, proceeding without overlay:', editsError);
@@ -175,7 +175,7 @@ const applyEditHistory = (
           const { data: editsData, error: editsError } = await supabase
             .from('fund_edit_history')
             .select('fund_id, changes, applied_at')
-            .order('applied_at', { ascending: false });
+            .order('applied_at', { ascending: true });
 
           if (!editsError && editsData && editsData.length > 0) {
             const finalFunds = applyEditHistory(base, editsData as any);
