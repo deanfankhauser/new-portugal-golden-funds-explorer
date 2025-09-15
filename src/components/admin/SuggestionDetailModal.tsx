@@ -193,16 +193,28 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
 
     setIsProcessing(true);
     try {
+      console.log('Starting rejection process for suggestion:', suggestion.id);
+      console.log('Rejection reason:', rejectionReason);
+      
+      const { data: userData } = await supabase.auth.getUser();
+      const adminId = userData.user?.id;
+      console.log('Admin ID:', adminId);
+
       const { error } = await supabase
         .from('fund_edit_suggestions')
         .update({
           status: 'rejected',
           rejection_reason: rejectionReason,
-          approved_by: (await supabase.auth.getUser()).data.user?.id
+          approved_by: adminId
         })
         .eq('id', suggestion.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database error during rejection:', error);
+        throw error;
+      }
+
+      console.log('✅ Suggestion successfully marked as rejected');
 
       // Skip admin activity log to avoid FK/RLS conflicts in current setup
       console.info('Audit log skipped for suggestion rejection', { suggestionId: suggestion.id });
@@ -449,11 +461,20 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
                     <Button
                       variant="destructive"
                       onClick={handleReject}
-                      disabled={isProcessing}
+                      disabled={isProcessing || !rejectionReason.trim()}
                       className="flex items-center gap-2"
                     >
-                      <X className="h-4 w-4" />
-                      Reject
+                      {isProcessing ? (
+                        <>
+                          <Clock className="h-4 w-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          <X className="h-4 w-4" />
+                          Reject
+                        </>
+                      )}
                     </Button>
                     <Button
                       onClick={handleApprove}
