@@ -211,6 +211,8 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
     switch (role) {
       case 'super_admin':
         return <Crown className="h-4 w-4" />;
+      case 'admin':
+        return <Shield className="h-4 w-4" />;
       case 'moderator':
         return <User className="h-4 w-4" />;
       default:
@@ -222,6 +224,8 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
     switch (role) {
       case 'super_admin':
         return 'destructive';
+      case 'admin':
+        return 'default';
       case 'moderator':
         return 'secondary';
       default:
@@ -274,6 +278,8 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="moderator">Moderator</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="super_admin">Super Admin</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
