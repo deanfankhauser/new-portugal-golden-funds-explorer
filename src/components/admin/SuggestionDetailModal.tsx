@@ -68,6 +68,36 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         console.error('Error creating fund_edit_history record:', historyError);
       }
 
+      // Apply approved changes directly to the funds table
+      try {
+        const sc = suggestion.suggested_changes || {};
+        const updatePayload: Record<string, any> = {};
+
+        if (typeof sc.description === 'string') updatePayload.description = sc.description;
+        if (typeof sc.detailedDescription === 'string') updatePayload.detailed_description = sc.detailedDescription;
+        if (typeof sc.managerName === 'string') updatePayload.manager_name = sc.managerName;
+        if (typeof sc.minimumInvestment === 'number') updatePayload.minimum_investment = sc.minimumInvestment;
+        if (typeof sc.managementFee === 'number') updatePayload.management_fee = sc.managementFee;
+        if (typeof sc.performanceFee === 'number') updatePayload.performance_fee = sc.performanceFee;
+        if (typeof sc.term === 'number') updatePayload.lock_up_period_months = Math.round(sc.term * 12);
+        if (typeof sc.category === 'string') updatePayload.category = sc.category;
+        if (typeof sc.websiteUrl === 'string') updatePayload.website = sc.websiteUrl;
+        // Ignore name and unsupported fields on purpose
+
+        if (Object.keys(updatePayload).length > 0) {
+          const { error: fundsUpdateError } = await supabase
+            .from('funds')
+            .update(updatePayload)
+            .eq('id', suggestion.fund_id);
+
+          if (fundsUpdateError) {
+            console.error('Error updating funds table with approved changes:', fundsUpdateError);
+          }
+        }
+      } catch (applyErr) {
+        console.error('Unexpected error applying approved changes to funds:', applyErr);
+      }
+
       // Log admin activity
       await supabase.rpc('log_admin_activity', {
         p_action_type: 'suggestion_approved',
