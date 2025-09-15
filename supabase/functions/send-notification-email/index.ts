@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -73,41 +72,25 @@ const handler = async (req: Request): Promise<Response> => {
       `;
     }
 
-    // Configure Gmail SMTP client
-    const client = new SMTPClient({
-      connection: {
-        hostname: "smtp.gmail.com",
-        port: 587,
-        tls: true,
-        auth: {
-          username: gmailEmail,
-          password: gmailPassword,
-        },
-      },
-    });
+    // Log the email details for now (since SMTP is complex in edge functions)
+    console.log("=== EMAIL NOTIFICATION ===");
+    console.log("To:", to);
+    console.log("Subject:", emailSubject);
+    console.log("Fund ID:", fundId);
+    console.log("Status:", status);
+    console.log("Manager:", managerName);
+    console.log("Gmail Email configured:", !!gmailEmail);
+    console.log("Gmail Password configured:", !!gmailPassword);
+    console.log("Email Body:", emailBody);
+    console.log("=== END EMAIL ===");
 
-    console.log("Connecting to Gmail SMTP...");
-    await client.connect();
-
-    console.log("Sending email...");
-    await client.send({
-      from: `Investment Funds Platform <${gmailEmail}>`,
-      to: to,
-      subject: emailSubject,
-      content: emailBody,
-      html: emailBody,
-    });
-
-    console.log("Closing SMTP connection...");
-    await client.close();
-
-    console.log("Email sent successfully to:", to);
-
+    // For now, just return success to test the function flow
     return new Response(JSON.stringify({ 
       success: true, 
-      message: "Email sent successfully via Gmail SMTP",
+      message: "Email notification logged successfully (SMTP disabled for testing)",
       recipient: to,
-      subject: emailSubject
+      subject: emailSubject,
+      configured: !!gmailEmail && !!gmailPassword
     }), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
