@@ -205,7 +205,16 @@ const applyEditHistory = (
       console.log('🔁 Received funds:refetch event');
       fetchFunds();
     };
+
+    const applyOverlayHandler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { fund_id: string; changes: Record<string, any> };
+      if (!detail?.fund_id || !detail?.changes) return;
+      console.log('🧩 Applying local overlay from event:', detail);
+      setFunds(prev => applyEditHistory(prev, [{ fund_id: detail.fund_id, changes: detail.changes } as any]));
+    };
+
     window.addEventListener('funds:refetch' as any, refetchHandler as any);
+    window.addEventListener('funds:apply-overlay' as any, applyOverlayHandler as any);
 
     // Set up real-time subscription
     const channel = supabase
@@ -245,6 +254,7 @@ const applyEditHistory = (
 
     return () => {
       window.removeEventListener('funds:refetch' as any, refetchHandler as any);
+      window.removeEventListener('funds:apply-overlay' as any, applyOverlayHandler as any);
       supabase.removeChannel(channel);
     };
   }, []);
