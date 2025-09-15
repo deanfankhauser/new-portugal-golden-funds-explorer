@@ -50,24 +50,8 @@ export const EnhancedSuggestionsTable: React.FC<EnhancedSuggestionsTableProps> =
 
       console.log('Basic suggestions data:', basicData);
 
-      // If basic query works, try with profile joins
-      const { data, error } = await supabase
-        .from('fund_edit_suggestions')
-        .select(`
-          *,
-          investor_profiles(first_name, last_name, email),
-          manager_profiles(manager_name, company_name, email)
-        `)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching suggestions with profiles:', error);
-        // Fallback to basic data if profile join fails
-        setSuggestions(basicData || []);
-      } else {
-        console.log('Fetched suggestions with profiles:', data);
-        setSuggestions(data || []);
-      }
+      // Use basic data only to avoid invalid relationship joins causing 400 errors
+      setSuggestions(basicData || []);
       
       // Notify parent component of data change
       onDataChange?.();

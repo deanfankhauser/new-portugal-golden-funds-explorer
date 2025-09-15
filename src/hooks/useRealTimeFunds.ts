@@ -8,7 +8,37 @@ export const useRealTimeFunds = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Function to fetch funds from Supabase
+// Helper to apply approved edit history changes on top of base funds
+const applyEditHistory = (
+  baseFunds: Fund[],
+  edits: { fund_id: string; changes: Record<string, any> }[]
+): Fund[] => {
+  if (!edits || edits.length === 0) return baseFunds;
+  const map: Record<string, Fund> = Object.fromEntries(baseFunds.map(f => [f.id, { ...f }]));
+
+  for (const e of edits) {
+    const f = map[e.fund_id];
+    if (!f) continue;
+    const c = e.changes || {};
+    // Text fields
+    if (typeof c.description === 'string') f.description = c.description;
+    if (typeof c.detailedDescription === 'string') f.detailedDescription = c.detailedDescription;
+    if (typeof c.managerName === 'string') f.managerName = c.managerName;
+    if (typeof c.category === 'string') f.category = c.category as any; // cast to FundCategory
+    if (typeof c.websiteUrl === 'string') f.websiteUrl = c.websiteUrl;
+    if (typeof c.location === 'string') f.location = c.location;
+    if (typeof c.returnTarget === 'string') f.returnTarget = c.returnTarget;
+    // Numeric fields
+    if (typeof c.minimumInvestment === 'number') f.minimumInvestment = c.minimumInvestment;
+    if (typeof c.managementFee === 'number') f.managementFee = c.managementFee;
+    if (typeof c.performanceFee === 'number') f.performanceFee = c.performanceFee;
+    if (typeof c.term === 'number') f.term = c.term; // years
+  }
+
+  return Object.values(map);
+};
+
+// Function to fetch funds from Supabase
   const fetchFunds = async () => {
     try {
       setLoading(true);
