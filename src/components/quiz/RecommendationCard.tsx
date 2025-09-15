@@ -93,7 +93,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ fund, index, fo
                 size="sm"
                 className="w-full"
               >
-                <Link to={`/${fund.id}`}>
+                <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
                   View Details
                   <ExternalLink className="ml-2 h-3 w-3" />
                 </Link>

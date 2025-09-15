@@ -49,7 +49,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1 mr-2">
                   <h3 className="text-lg sm:text-xl font-semibold leading-tight">
-                    <Link to={`/${fund.id}`} className="hover:text-primary transition-colors block">
+                    <Link to={`/${fund.id}`} className="hover:text-primary transition-colors block" onClick={() => window.scrollTo(0, 0)}>
                       {fund.name}
                     </Link>
                   </h3>

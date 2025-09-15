@@ -43,7 +43,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
             <CardTitle className="text-xl">
-              <Link to={`/${fund.id}`} className="hover:text-accent transition-colors">
+              <Link to={`/${fund.id}`} className="hover:text-accent transition-colors" onClick={() => window.scrollTo(0, 0)}>
                 {fund.name}
               </Link>
             </CardTitle>

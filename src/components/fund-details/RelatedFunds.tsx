@@ -40,7 +40,7 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {sameCategoryFunds.map(fund => (
                 <div key={fund.id} className="border border-border rounded-lg p-4 hover:border-accent transition-colors">
-                  <Link to={`/${fund.id}`}>
+                  <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
                     <h4 className="font-semibold text-foreground mb-2 hover:text-accent transition-colors">
                       {fund.name}
                     </h4>
@@ -50,7 +50,7 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
                     <span>Min: €{fund.minimumInvestment.toLocaleString()}</span>
                     <span>Fee: {fund.managementFee}%</span>
                   </div>
-                  <Link to={`/${fund.id}`}>
+                  <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
                     <Button size="sm" variant="outline" className="w-full">
                       <ExternalLink className="h-3 w-3 mr-1" />
                       View Details
@@ -83,7 +83,7 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {similarInvestmentFunds.map(fund => (
                 <div key={fund.id} className="border border-border rounded-lg p-4 hover:border-accent transition-colors">
-                  <Link to={`/${fund.id}`}>
+                  <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
                     <h4 className="font-semibold text-foreground mb-2 hover:text-accent transition-colors">
                       {fund.name}
                     </h4>
@@ -93,7 +93,7 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
                     <span>Min: €{fund.minimumInvestment.toLocaleString()}</span>
                     <span>{fund.category}</span>
                   </div>
-                  <Link to={`/${fund.id}`}>
+                  <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
                     <Button size="sm" variant="outline" className="w-full">
                       <ExternalLink className="h-3 w-3 mr-1" />
                       View Details
