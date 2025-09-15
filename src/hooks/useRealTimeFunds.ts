@@ -119,6 +119,9 @@ export const useRealTimeFunds = () => {
         },
         (payload) => {
           console.log('🔄 Real-time fund update detected:', payload);
+          console.log('Event type:', payload.eventType);
+          console.log('Changed fund ID:', (payload.new as any)?.id || (payload.old as any)?.id);
+          console.log('Changed data:', payload.new);
           // Refetch funds when any change occurs
           fetchFunds();
         }

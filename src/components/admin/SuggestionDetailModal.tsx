@@ -85,6 +85,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         // Ignore name and unsupported fields on purpose
 
         if (Object.keys(updatePayload).length > 0) {
+          console.log('Applying changes to funds table:', updatePayload, 'for fund:', suggestion.fund_id);
           const { error: fundsUpdateError } = await supabase
             .from('funds')
             .update(updatePayload)
@@ -92,7 +93,11 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
 
           if (fundsUpdateError) {
             console.error('Error updating funds table with approved changes:', fundsUpdateError);
+          } else {
+            console.log('✅ Successfully updated funds table');
           }
+        } else {
+          console.log('No valid changes to apply to funds table');
         }
       } catch (applyErr) {
         console.error('Unexpected error applying approved changes to funds:', applyErr);
