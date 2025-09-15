@@ -19,20 +19,33 @@ const applyEditHistory = (
   for (const e of edits) {
     const f = map[e.fund_id];
     if (!f) continue;
+
     const c = e.changes || {};
-    // Text fields
-    if (typeof c.description === 'string') f.description = c.description;
-    if (typeof c.detailedDescription === 'string') f.detailedDescription = c.detailedDescription;
-    if (typeof c.managerName === 'string') f.managerName = c.managerName;
-    if (typeof c.category === 'string') f.category = c.category as any; // cast to FundCategory
-    if (typeof c.websiteUrl === 'string') f.websiteUrl = c.websiteUrl;
-    if (typeof c.location === 'string') f.location = c.location;
-    if (typeof c.returnTarget === 'string') f.returnTarget = c.returnTarget;
-    // Numeric fields
-    if (typeof c.minimumInvestment === 'number') f.minimumInvestment = c.minimumInvestment;
-    if (typeof c.managementFee === 'number') f.managementFee = c.managementFee;
-    if (typeof c.performanceFee === 'number') f.performanceFee = c.performanceFee;
-    if (typeof c.term === 'number') f.term = c.term; // years
+    // Normalize common snake_case fields to camelCase expected by UI
+    const n: Record<string, any> = { ...c };
+    if (c.short_description && typeof c.short_description === 'string') n.description = c.short_description;
+    if (c.shortDescription && typeof c.shortDescription === 'string') n.description = c.shortDescription;
+    if (c.detailed_description && typeof c.detailed_description === 'string') n.detailedDescription = c.detailed_description;
+    if (c.manager_name && typeof c.manager_name === 'string') n.managerName = c.manager_name;
+    if (c.minimum_investment != null) n.minimumInvestment = Number(c.minimum_investment);
+    if (c.management_fee != null) n.managementFee = Number(c.management_fee);
+    if (c.performance_fee != null) n.performanceFee = Number(c.performance_fee);
+    if (c.lock_up_period_months != null) n.term = Math.round(Number(c.lock_up_period_months) / 12);
+    if (c.website && typeof c.website === 'string') n.websiteUrl = c.website;
+    if (c.website_url && typeof c.website_url === 'string') n.websiteUrl = c.website_url;
+
+    // Apply supported fields
+    if (typeof n.description === 'string') f.description = n.description;
+    if (typeof n.detailedDescription === 'string') f.detailedDescription = n.detailedDescription;
+    if (typeof n.managerName === 'string') f.managerName = n.managerName;
+    if (typeof n.category === 'string') f.category = n.category as any; // cast to FundCategory
+    if (typeof n.websiteUrl === 'string') f.websiteUrl = n.websiteUrl;
+    if (typeof n.location === 'string') f.location = n.location;
+    if (typeof n.returnTarget === 'string') f.returnTarget = n.returnTarget;
+    if (typeof n.minimumInvestment === 'number') f.minimumInvestment = n.minimumInvestment;
+    if (typeof n.managementFee === 'number') f.managementFee = n.managementFee;
+    if (typeof n.performanceFee === 'number') f.performanceFee = n.performanceFee;
+    if (typeof n.term === 'number') f.term = n.term; // years
   }
 
   return Object.values(map);
@@ -117,9 +130,23 @@ const applyEditHistory = (
           } : undefined
         }));
 
-        setFunds(transformedFunds);
+        // Also fetch edit history and apply approved changes as an overlay
+        const { data: editsData, error: editsError } = await supabase
+          .from('fund_edit_history')
+          .select('fund_id, changes, applied_at')
+          .order('applied_at', { ascending: false });
+
+        if (editsError) {
+          console.warn('Could not fetch fund_edit_history, proceeding without overlay:', editsError);
+          setFunds(transformedFunds);
+        } else if (editsData && editsData.length > 0) {
+          const finalFunds = applyEditHistory(transformedFunds, editsData as any);
+          setFunds(finalFunds);
+        } else {
+          setFunds(transformedFunds);
+        }
         setError(null);
-        console.log('✅ Successfully loaded funds from Supabase:', transformedFunds.length);
+        console.log('✅ Successfully loaded funds from Supabase:', (supabaseFunds?.length || 0), 'with overlay edits:', (editsData?.length || 0));
       } else {
         // No funds in database, use static funds
         setFunds(staticFunds);
@@ -152,7 +179,18 @@ const applyEditHistory = (
           console.log('Event type:', payload.eventType);
           console.log('Changed fund ID:', (payload.new as any)?.id || (payload.old as any)?.id);
           console.log('Changed data:', payload.new);
-          // Refetch funds when any change occurs
+          fetchFunds();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'fund_edit_history'
+        },
+        (payload) => {
+          console.log('📝 Real-time edit history change detected:', payload);
           fetchFunds();
         }
       )

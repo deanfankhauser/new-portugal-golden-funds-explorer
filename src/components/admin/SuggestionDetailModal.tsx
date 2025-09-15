@@ -103,13 +103,17 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         console.error('Unexpected error applying approved changes to funds:', applyErr);
       }
 
-      // Log admin activity
-      await supabase.rpc('log_admin_activity', {
-        p_action_type: 'suggestion_approved',
-        p_target_type: 'fund_edit_suggestion',
-        p_target_id: suggestion.id,
-        p_details: { fund_id: suggestion.fund_id }
-      });
+      // Log admin activity (non-blocking)
+      try {
+        await supabase.rpc('log_admin_activity', {
+          p_action_type: 'suggestion_approved',
+          p_target_type: 'fund_edit_suggestion',
+          p_target_id: suggestion.id,
+          p_details: { fund_id: suggestion.fund_id }
+        });
+      } catch (auditErr) {
+        console.warn('Admin activity log failed (non-blocking):', auditErr);
+      }
 
       // Send email notification
       try {
