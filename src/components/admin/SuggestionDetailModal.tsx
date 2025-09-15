@@ -74,6 +74,8 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         const updatePayload: Record<string, any> = {};
 
         if (typeof sc.description === 'string') updatePayload.description = sc.description;
+        if (typeof sc.shortDescription === 'string') updatePayload.description = sc.shortDescription;
+        if (typeof sc.short_description === 'string') updatePayload.description = sc.short_description;
         if (typeof sc.detailedDescription === 'string') updatePayload.detailed_description = sc.detailedDescription;
         if (typeof sc.managerName === 'string') updatePayload.manager_name = sc.managerName;
         if (typeof sc.minimumInvestment === 'number') updatePayload.minimum_investment = sc.minimumInvestment;
@@ -86,6 +88,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
 
         if (Object.keys(updatePayload).length > 0) {
           console.log('Applying changes to funds table:', updatePayload, 'for fund:', suggestion.fund_id);
+          console.log('Original suggested changes:', sc);
           const { error: fundsUpdateError } = await supabase
             .from('funds')
             .update(updatePayload)
@@ -95,9 +98,12 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
             console.error('Error updating funds table with approved changes:', fundsUpdateError);
           } else {
             console.log('✅ Successfully updated funds table');
+            console.log('Updated fields:', Object.keys(updatePayload));
           }
         } else {
           console.log('No valid changes to apply to funds table');
+          console.log('Available suggestion fields:', Object.keys(sc));
+          console.log('Suggestion changes:', sc);
         }
       } catch (applyErr) {
         console.error('Unexpected error applying approved changes to funds:', applyErr);

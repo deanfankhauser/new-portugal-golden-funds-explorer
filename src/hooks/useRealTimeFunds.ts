@@ -36,7 +36,11 @@ const applyEditHistory = (
     if (c.website_url && typeof c.website_url === 'string') n.websiteUrl = c.website_url;
 
     // Apply supported fields
-    if (typeof n.description === 'string') f.description = n.description;
+    console.log(`Applying overlay for fund ${f.id}:`, n);
+    if (typeof n.description === 'string') {
+      console.log(`Updating description from "${f.description}" to "${n.description}"`);
+      f.description = n.description;
+    }
     if (typeof n.detailedDescription === 'string') f.detailedDescription = n.detailedDescription;
     if (typeof n.managerName === 'string') f.managerName = n.managerName;
     if (typeof n.category === 'string') f.category = n.category as any; // cast to FundCategory
@@ -163,6 +167,7 @@ const applyEditHistory = (
         }
         setError(null);
         console.log('✅ Successfully loaded funds from Supabase:', (supabaseFunds?.length || 0), 'with overlay edits:', (editsData?.length || 0));
+        console.log('Applied edit history changes:', editsData?.map(e => ({ fund_id: e.fund_id, changes: Object.keys(e.changes || {}) })));
       } else {
         // No funds in database, use static funds but overlay any approved edit history
         try {
@@ -211,6 +216,7 @@ const applyEditHistory = (
           console.log('Event type:', payload.eventType);
           console.log('Changed fund ID:', (payload.new as any)?.id || (payload.old as any)?.id);
           console.log('Changed data:', payload.new);
+          console.log('Triggering funds refetch due to funds table change...');
           fetchFunds();
         }
       )
@@ -223,6 +229,9 @@ const applyEditHistory = (
         },
         (payload) => {
           console.log('📝 Real-time edit history change detected:', payload);
+          console.log('Edit history event type:', payload.eventType);
+          console.log('Edit data:', payload.new);
+          console.log('Triggering funds refetch due to edit history change...');
           fetchFunds();
         }
       )
