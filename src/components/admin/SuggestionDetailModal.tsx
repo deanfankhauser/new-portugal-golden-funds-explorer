@@ -108,13 +108,17 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
 
       // Send email notification
       try {
+        console.log('Fetching user profile for email notification...');
         const { data: userProfile } = await supabase
           .from('manager_profiles')
           .select('email, manager_name')
           .eq('user_id', suggestion.user_id)
           .single();
 
+        console.log('User profile found:', userProfile);
+
         if (userProfile?.email) {
+          console.log('Sending email notification to:', userProfile.email);
           const emailResult = await supabase.functions.invoke('send-notification-email', {
             body: {
               to: userProfile.email,
@@ -125,9 +129,27 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
             }
           });
           console.log('Email notification result:', emailResult);
+          
+          if (emailResult.error) {
+            console.error('Email function returned error:', emailResult.error);
+            toast({
+              title: "Email Warning",
+              description: "Suggestion approved but email notification failed. Please check logs.",
+              variant: "destructive"
+            });
+          } else {
+            console.log('Email sent successfully');
+          }
+        } else {
+          console.log('No email address found for user');
         }
       } catch (emailError) {
-        console.warn('Failed to send email notification:', emailError);
+        console.error('Failed to send email notification:', emailError);
+        toast({
+          title: "Email Error",
+          description: "Suggestion approved but email notification failed.",
+          variant: "destructive"
+        });
       }
 
       toast({
@@ -177,13 +199,17 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
 
       // Send email notification
       try {
+        console.log('Fetching user profile for email notification...');
         const { data: userProfile } = await supabase
           .from('manager_profiles')
           .select('email, manager_name')
           .eq('user_id', suggestion.user_id)
           .single();
 
+        console.log('User profile found:', userProfile);
+
         if (userProfile?.email) {
+          console.log('Sending rejection email notification to:', userProfile.email);
           const emailResult = await supabase.functions.invoke('send-notification-email', {
             body: {
               to: userProfile.email,
@@ -195,9 +221,27 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
             }
           });
           console.log('Email notification result:', emailResult);
+          
+          if (emailResult.error) {
+            console.error('Email function returned error:', emailResult.error);
+            toast({
+              title: "Email Warning", 
+              description: "Suggestion rejected but email notification failed. Please check logs.",
+              variant: "destructive"
+            });
+          } else {
+            console.log('Rejection email sent successfully');
+          }
+        } else {
+          console.log('No email address found for user');
         }
       } catch (emailError) {
-        console.warn('Failed to send email notification:', emailError);
+        console.error('Failed to send email notification:', emailError);
+        toast({
+          title: "Email Error",
+          description: "Suggestion rejected but email notification failed.",
+          variant: "destructive"
+        });
       }
 
       toast({
