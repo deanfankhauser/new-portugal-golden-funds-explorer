@@ -69,8 +69,23 @@ const ScrollToTop = () => {
   const location = useLocation();
 
   React.useLayoutEffect(() => {
-    // Simple, reliable scroll to top
-    window.scrollTo(0, 0);
+    const scrollNow = () => {
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      } catch (_) {
+        // Fallback for older browsers
+        window.scrollTo(0, 0);
+      }
+      // Also force the document scroll element(s)
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+
+    // Run immediately, then on next frame, then after a tick (covers lazy routes)
+    scrollNow();
+    requestAnimationFrame(scrollNow);
+    const t = setTimeout(scrollNow, 0);
+    return () => clearTimeout(t);
   }, [location.pathname]);
 
   return null;
