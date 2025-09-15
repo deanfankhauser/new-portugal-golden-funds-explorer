@@ -29,7 +29,6 @@ export const FundEditModal: React.FC<FundEditModalProps> = ({
 }) => {
   const { submitFundEditSuggestion, loading } = useFundEditing();
 const buildFormData = (f: Fund) => ({
-  name: f.name,
   description: f.description,
   detailedDescription: f.detailedDescription,
   managerName: f.managerName,
@@ -58,7 +57,6 @@ useEffect(() => {
   };
 
   const getCurrentValues = () => ({
-    name: fund.name,
     description: fund.description,
     detailedDescription: fund.detailedDescription,
     managerName: fund.managerName,
@@ -133,9 +131,11 @@ useEffect(() => {
                   <Label htmlFor="name">Fund Name</Label>
                   <Input
                     id="name"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    value={fund.name}
+                    disabled
+                    className="bg-muted text-muted-foreground"
                   />
+                  <p className="text-xs text-muted-foreground mt-1">Fund name cannot be edited</p>
                 </div>
                 
                 <div>
