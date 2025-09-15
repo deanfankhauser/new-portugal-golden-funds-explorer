@@ -25,6 +25,7 @@ const applyEditHistory = (
     const n: Record<string, any> = { ...c };
     if (c.short_description && typeof c.short_description === 'string') n.description = c.short_description;
     if (c.shortDescription && typeof c.shortDescription === 'string') n.description = c.shortDescription;
+    if (c.description && typeof c.description === 'string') n.description = c.description;
     if (c.detailed_description && typeof c.detailed_description === 'string') n.detailedDescription = c.detailed_description;
     if (c.manager_name && typeof c.manager_name === 'string') n.managerName = c.manager_name;
     if (c.minimum_investment != null) n.minimumInvestment = Number(c.minimum_investment);
@@ -62,8 +63,23 @@ const applyEditHistory = (
 
       if (fetchError) {
         console.error('Error fetching funds from Supabase:', fetchError);
-        // Fall back to static funds if there's an error
-        setFunds(staticFunds);
+        // Fall back to static funds and try to overlay edit history if possible
+        try {
+          const base = staticFunds;
+          const { data: editsData, error: editsError } = await supabase
+            .from('fund_edit_history')
+            .select('fund_id, changes, applied_at')
+            .order('applied_at', { ascending: false });
+
+          if (!editsError && editsData && editsData.length > 0) {
+            const finalFunds = applyEditHistory(base, editsData as any);
+            setFunds(finalFunds);
+          } else {
+            setFunds(base);
+          }
+        } catch (e) {
+          setFunds(staticFunds);
+        }
         setError('Using cached data');
         return;
       }
@@ -148,9 +164,25 @@ const applyEditHistory = (
         setError(null);
         console.log('✅ Successfully loaded funds from Supabase:', (supabaseFunds?.length || 0), 'with overlay edits:', (editsData?.length || 0));
       } else {
-        // No funds in database, use static funds
-        setFunds(staticFunds);
-        console.log('📝 No funds in database, using static data');
+        // No funds in database, use static funds but overlay any approved edit history
+        try {
+          const base = staticFunds;
+          const { data: editsData, error: editsError } = await supabase
+            .from('fund_edit_history')
+            .select('fund_id, changes, applied_at')
+            .order('applied_at', { ascending: false });
+
+          if (!editsError && editsData && editsData.length > 0) {
+            const finalFunds = applyEditHistory(base, editsData as any);
+            setFunds(finalFunds);
+          } else {
+            setFunds(base);
+          }
+          console.log('📝 No funds in database, using static data with overlay count:', (editsData?.length || 0));
+        } catch (overlayErr) {
+          console.warn('Overlay fetch failed, using static funds only:', overlayErr);
+          setFunds(staticFunds);
+        }
       }
     } catch (err) {
       console.error('Error in fetchFunds:', err);
