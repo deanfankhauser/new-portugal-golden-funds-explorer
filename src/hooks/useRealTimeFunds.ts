@@ -201,6 +201,12 @@ const applyEditHistory = (
   useEffect(() => {
     fetchFunds();
 
+    const refetchHandler = () => {
+      console.log('🔁 Received funds:refetch event');
+      fetchFunds();
+    };
+    window.addEventListener('funds:refetch' as any, refetchHandler as any);
+
     // Set up real-time subscription
     const channel = supabase
       .channel('schema-db-changes')
@@ -238,6 +244,7 @@ const applyEditHistory = (
       .subscribe();
 
     return () => {
+      window.removeEventListener('funds:refetch' as any, refetchHandler as any);
       supabase.removeChannel(channel);
     };
   }, []);

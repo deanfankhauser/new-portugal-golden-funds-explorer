@@ -163,6 +163,9 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         description: "The suggestion has been approved and published.",
       });
 
+      // Trigger global refetch for funds overlay
+      window.dispatchEvent(new CustomEvent('funds:refetch'));
+
       onUpdate();
       onClose();
     } catch (error) {
