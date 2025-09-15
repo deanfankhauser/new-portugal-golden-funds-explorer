@@ -461,7 +461,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
                     <Button
                       variant="destructive"
                       onClick={handleReject}
-                      disabled={isProcessing || !rejectionReason.trim()}
+                      disabled={isProcessing}
                       className="flex items-center gap-2"
                     >
                       {isProcessing ? (
