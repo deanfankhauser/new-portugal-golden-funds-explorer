@@ -459,6 +459,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
 
                   <div className="flex gap-2 justify-end">
                     <Button
+                      type="button"
                       variant="destructive"
                       onClick={handleReject}
                       disabled={isProcessing}
@@ -477,6 +478,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
                       )}
                     </Button>
                     <Button
+                      type="button"
                       onClick={handleApprove}
                       disabled={isProcessing}
                       className="flex items-center gap-2"
