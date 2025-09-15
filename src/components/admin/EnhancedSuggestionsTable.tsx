@@ -19,6 +19,7 @@ export const EnhancedSuggestionsTable: React.FC<EnhancedSuggestionsTableProps> =
   const [loading, setLoading] = useState(true);
   const [selectedSuggestion, setSelectedSuggestion] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userProfiles, setUserProfiles] = useState<Record<string, any>>({});
   
   // Filters
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -37,7 +38,7 @@ export const EnhancedSuggestionsTable: React.FC<EnhancedSuggestionsTableProps> =
     try {
       console.log('Fetching suggestions...');
       
-      // First try a simple query to see if we can fetch basic data
+      // First fetch basic suggestions data
       const { data: basicData, error: basicError } = await supabase
         .from('fund_edit_suggestions')
         .select('*')
@@ -49,9 +50,13 @@ export const EnhancedSuggestionsTable: React.FC<EnhancedSuggestionsTableProps> =
       }
 
       console.log('Basic suggestions data:', basicData);
-
-      // Use basic data only to avoid invalid relationship joins causing 400 errors
       setSuggestions(basicData || []);
+
+      // Fetch user profiles for all unique user_ids
+      if (basicData && basicData.length > 0) {
+        const uniqueUserIds = [...new Set(basicData.map(s => s.user_id))];
+        await fetchUserProfiles(uniqueUserIds);
+      }
       
       // Notify parent component of data change
       onDataChange?.();
@@ -59,6 +64,50 @@ export const EnhancedSuggestionsTable: React.FC<EnhancedSuggestionsTableProps> =
       console.error('Error fetching suggestions:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchUserProfiles = async (userIds: string[]) => {
+    try {
+      const profiles: Record<string, any> = {};
+
+      // Fetch manager profiles
+      const { data: managerProfiles, error: managerError } = await supabase
+        .from('manager_profiles')
+        .select('user_id, company_name, manager_name, email')
+        .in('user_id', userIds);
+
+      if (!managerError && managerProfiles) {
+        managerProfiles.forEach(profile => {
+          profiles[profile.user_id] = {
+            ...profile,
+            type: 'manager'
+          };
+        });
+      }
+
+      // Fetch investor profiles for remaining user_ids
+      const remainingUserIds = userIds.filter(id => !profiles[id]);
+      if (remainingUserIds.length > 0) {
+        const { data: investorProfiles, error: investorError } = await supabase
+          .from('investor_profiles')
+          .select('user_id, first_name, last_name, email')
+          .in('user_id', remainingUserIds);
+
+        if (!investorError && investorProfiles) {
+          investorProfiles.forEach(profile => {
+            profiles[profile.user_id] = {
+              ...profile,
+              type: 'investor'
+            };
+          });
+        }
+      }
+
+      console.log('Fetched user profiles:', profiles);
+      setUserProfiles(profiles);
+    } catch (error) {
+      console.error('Error fetching user profiles:', error);
     }
   };
 
@@ -86,10 +135,11 @@ export const EnhancedSuggestionsTable: React.FC<EnhancedSuggestionsTableProps> =
     // Submitter type filter
     if (submitterTypeFilter !== 'all') {
       filtered = filtered.filter(s => {
+        const profile = userProfiles[s.user_id];
         if (submitterTypeFilter === 'investor') {
-          return s.investor_profiles && s.investor_profiles.length > 0;
+          return profile?.type === 'investor';
         } else if (submitterTypeFilter === 'manager') {
-          return s.manager_profiles && s.manager_profiles.length > 0;
+          return profile?.type === 'manager';
         }
         return true;
       });
@@ -122,26 +172,30 @@ export const EnhancedSuggestionsTable: React.FC<EnhancedSuggestionsTableProps> =
   };
 
   const getSubmitterInfo = (suggestion: any) => {
-    console.log('Getting submitter info for:', suggestion);
+    const profile = userProfiles[suggestion.user_id];
     
-    const investor = suggestion.investor_profiles?.[0];
-    const manager = suggestion.manager_profiles?.[0];
-
-    if (manager) {
+    if (!profile) {
       return {
-        name: manager.company_name || manager.manager_name || 'Manager',
+        name: `User ${suggestion.user_id?.slice(-8) || 'Unknown'}`,
+        type: 'User',
+        icon: <User className="h-3 w-3" />
+      };
+    }
+
+    if (profile.type === 'manager') {
+      return {
+        name: profile.company_name || profile.manager_name || 'Manager',
         type: 'Manager',
         icon: <Building className="h-3 w-3" />
       };
-    } else if (investor) {
+    } else if (profile.type === 'investor') {
       return {
-        name: `${investor.first_name || ''} ${investor.last_name || ''}`.trim() || 'Investor',
+        name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Investor',
         type: 'Investor',
         icon: <User className="h-3 w-3" />
       };
     }
 
-    // Fallback to show something instead of "Unknown"
     return {
       name: `User ${suggestion.user_id?.slice(-8) || 'Unknown'}`,
       type: 'User',
@@ -150,7 +204,13 @@ export const EnhancedSuggestionsTable: React.FC<EnhancedSuggestionsTableProps> =
   };
 
   const handleViewSuggestion = (suggestion: any) => {
-    setSelectedSuggestion(suggestion);
+    // Enrich suggestion with user profile information
+    const profile = userProfiles[suggestion.user_id];
+    const enrichedSuggestion = {
+      ...suggestion,
+      userProfile: profile
+    };
+    setSelectedSuggestion(enrichedSuggestion);
     setIsModalOpen(true);
   };
 

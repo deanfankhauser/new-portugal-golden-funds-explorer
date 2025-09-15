@@ -251,7 +251,41 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
   if (!suggestion) return null;
 
   const changedFields = Object.keys(suggestion.suggested_changes || {});
-  const submitterInfo = suggestion.investor_profiles?.[0] || suggestion.manager_profiles?.[0];
+  
+  // Get submitter info from the enriched user profile
+  const getSubmitterInfo = () => {
+    const profile = suggestion.userProfile;
+    
+    if (!profile) {
+      return {
+        name: `User ${suggestion.user_id?.slice(-8) || 'Unknown'}`,
+        type: 'User'
+      };
+    }
+
+    if (profile.type === 'manager') {
+      return {
+        name: profile.company_name || profile.manager_name || 'Manager',
+        type: 'Manager',
+        company_name: profile.company_name,
+        manager_name: profile.manager_name
+      };
+    } else if (profile.type === 'investor') {
+      return {
+        name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Investor',
+        type: 'Investor',
+        first_name: profile.first_name,
+        last_name: profile.last_name
+      };
+    }
+
+    return {
+      name: `User ${suggestion.user_id?.slice(-8) || 'Unknown'}`,
+      type: 'User'
+    };
+  };
+
+  const submitterInfo = getSubmitterInfo();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -289,9 +323,10 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
                 <div>
                   <Label className="text-sm font-medium">Submitted by</Label>
                   <div className="text-sm text-muted-foreground">
-                    {submitterInfo?.company_name || 
-                     `${submitterInfo?.first_name || ''} ${submitterInfo?.last_name || ''}`.trim() ||
-                     'Unknown User'}
+                    {submitterInfo.name}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {submitterInfo.type}
                   </div>
                 </div>
               </div>
