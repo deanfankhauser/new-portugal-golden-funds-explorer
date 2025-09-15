@@ -15,6 +15,7 @@ import { Separator } from '@/components/ui/separator';
 import { Save, Loader2 } from 'lucide-react';
 import { Fund } from '@/data/funds';
 import { useFundEditing } from '@/hooks/useFundEditing';
+import { toast } from 'sonner';
 
 interface FundEditModalProps {
   fund: Fund;
@@ -93,6 +94,7 @@ useEffect(() => {
       const suggestedChanges = getSuggestedChanges();
       
       if (Object.keys(suggestedChanges).length === 0) {
+        toast.info("No changes detected");
         return;
       }
 
@@ -102,9 +104,11 @@ useEffect(() => {
         getCurrentValues()
       );
       
+      toast.success("Thank you for your edit suggestion! We will review it and notify you by email once it's processed.");
       onOpenChange(false);
     } catch (error) {
       console.error('Error submitting edit suggestion:', error);
+      toast.error("Failed to submit edit suggestion. Please try again.");
     }
   };
 

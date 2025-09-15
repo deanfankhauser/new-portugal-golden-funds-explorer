@@ -69,24 +69,36 @@ const ScrollToTop = () => {
   const location = useLocation();
 
   React.useLayoutEffect(() => {
-    const scrollNow = () => {
-      try {
-        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-      } catch (_) {
-        // Fallback for older browsers
-        window.scrollTo(0, 0);
-      }
-      // Also force the document scroll element(s)
+    // Multiple scroll strategies to ensure it works
+    const scrollToTop = () => {
+      // Strategy 1: Window scroll with instant behavior
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      
+      // Strategy 2: Direct DOM element manipulation
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
+      
+      // Strategy 3: Find any scrollable containers and reset them
+      const scrollableElements = document.querySelectorAll('[data-scroll-container]');
+      scrollableElements.forEach(el => {
+        if (el instanceof HTMLElement) {
+          el.scrollTop = 0;
+        }
+      });
     };
 
-    // Run immediately, then on next frame, then after a tick (covers lazy routes)
-    scrollNow();
-    requestAnimationFrame(scrollNow);
-    const t = setTimeout(scrollNow, 0);
-    return () => clearTimeout(t);
-  }, [location.pathname]);
+    // Execute immediately
+    scrollToTop();
+    
+    // Execute on next animation frame (for lazy loaded content)
+    requestAnimationFrame(() => {
+      scrollToTop();
+      
+      // Execute after a short delay (for async content)
+      setTimeout(scrollToTop, 50);
+      setTimeout(scrollToTop, 200);
+    });
+  }, [location.pathname, location.search, location.hash]);
 
   return null;
 };
