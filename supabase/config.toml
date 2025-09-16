@@ -19,3 +19,6 @@ verify_jwt = false
 
 [functions.copy-to-develop]
 verify_jwt = false
+
+[functions.setup-develop-schema]
+verify_jwt = false
