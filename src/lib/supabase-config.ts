@@ -7,8 +7,7 @@ const SUPABASE_CONFIGS = {
     anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrbXZ5ZG5maG1ram51c3pyb2ltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwNzY0NDYsImV4cCI6MjA3MjY1MjQ0Nn0.eXVPzUY_C8Qi_HGhzk-T6ovY1fqa3czPbxJmJc5ftG8"
   },
   development: {
-    // TODO: Replace with your development Supabase project credentials
-    // Create a new Supabase project for development and update these values
+    // Replace with your actual development Supabase project credentials
     url: "https://YOUR_DEV_PROJECT_ID.supabase.co",
     anonKey: "YOUR_DEV_ANON_KEY"
   }
