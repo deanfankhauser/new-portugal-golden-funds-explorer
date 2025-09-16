@@ -182,19 +182,13 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
   };
 
   const handleReject = async () => {
-    if (!rejectionReason.trim()) {
-      toast({
-        title: "Rejection Reason Required",
-        description: "Please provide a reason for rejecting this suggestion.",
-        variant: "destructive"
-      });
-      return;
-    }
-
+    const finalRejectionReason = rejectionReason.trim() || "The suggested changes do not meet our current guidelines and cannot be approved at this time.";
+    
     setIsProcessing(true);
+
     try {
       console.log('Starting rejection process for suggestion:', suggestion.id);
-      console.log('Rejection reason:', rejectionReason);
+      console.log('Rejection reason:', finalRejectionReason);
       
       const { data: userData } = await supabase.auth.getUser();
       const adminId = userData.user?.id;
@@ -204,7 +198,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         .from('fund_edit_suggestions')
         .update({
           status: 'rejected',
-          rejection_reason: rejectionReason,
+          rejection_reason: finalRejectionReason,
           approved_by: adminId
         })
         .eq('id', suggestion.id);
@@ -238,7 +232,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
               subject: `Fund Edit Rejected - ${suggestion.fund_id}`,
               fundId: suggestion.fund_id,
               status: 'rejected',
-              rejectionReason: rejectionReason,
+              rejectionReason: finalRejectionReason,
               managerName: userProfile.manager_name
             }
           });

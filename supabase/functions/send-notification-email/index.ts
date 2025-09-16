@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@4.0.0";
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -26,23 +26,32 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Processing email notification: ${status} for ${fundId} to ${to}`);
 
-    // We keep these for reply-to convenience, but we DO NOT send via SMTP from Edge
     const gmailEmail = Deno.env.get("GMAIL_EMAIL") || "";
+    const gmailAppPassword = Deno.env.get("GMAIL_APP_PASSWORD") || "";
 
-    const resendApiKey = Deno.env.get("RESEND_API_KEY");
-    if (!resendApiKey) {
-      console.error("RESEND_API_KEY not configured. Cannot send emails from Edge without a provider.");
+    if (!gmailEmail || !gmailAppPassword) {
+      console.error("Gmail credentials not configured. Cannot send emails from Edge without credentials.");
       return new Response(
         JSON.stringify({
           success: false,
-          message: "Email provider not configured (RESEND_API_KEY missing).",
-          hint: "Add RESEND_API_KEY in Supabase Edge Function secrets.",
+          message: "Email provider not configured (Gmail credentials missing).",
+          hint: "Add GMAIL_EMAIL and GMAIL_APP_PASSWORD in Supabase Edge Function secrets.",
         }),
         { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
-    const resend = new Resend(resendApiKey);
+    const client = new SMTPClient({
+      connection: {
+        hostname: "smtp.gmail.com",
+        port: 587,
+        tls: true,
+        auth: {
+          username: gmailEmail,
+          password: gmailAppPassword,
+        },
+      },
+    });
 
     // Create email content based on status
     let emailBody = "";
@@ -81,81 +90,49 @@ const handler = async (req: Request): Promise<Response> => {
       `;
     }
 
-    console.log("=== SENDING EMAIL via Resend ===");
+    console.log("=== SENDING EMAIL via Gmail SMTP ===");
     console.log("To:", to);
     console.log("Subject:", emailSubject);
     console.log("Fund ID:", fundId);
     console.log("Status:", status);
 
-    // Attempt sending with your domain first (if verified), fallback to resend.dev
-    const primaryFrom = "MovingTo <noreply@movingto.com>"; // requires domain verification in Resend
-    const fallbackFrom = "MovingTo <onboarding@resend.dev>"; // works without domain verification
-
     try {
-      const firstAttempt = await resend.emails.send({
-        from: primaryFrom,
-        to: [to],
+      await client.send({
+        from: gmailEmail,
+        to: to,
         subject: emailSubject,
+        content: emailBody,
         html: emailBody,
-        reply_to: gmailEmail || undefined,
       });
 
-      if ((firstAttempt as any)?.error) {
-        throw new Error((firstAttempt as any).error?.message || "Unknown Resend error on primary from");
-      }
-
-      console.log("✅ Email sent successfully via Resend (primary domain)", firstAttempt);
+      console.log("✅ Email sent successfully via Gmail SMTP");
+      await client.close();
+      
       return new Response(
         JSON.stringify({
           success: true,
           message: "Email notification sent successfully",
           recipient: to,
           subject: emailSubject,
-          provider: "Resend",
-          from: primaryFrom,
+          provider: "Gmail SMTP",
+          from: gmailEmail,
         }),
         { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
-    } catch (primaryErr) {
-      console.warn("Primary send failed, attempting fallback sender:", String((primaryErr as any)?.message || primaryErr));
-      try {
-        const secondAttempt = await resend.emails.send({
-          from: fallbackFrom,
-          to: [to],
+    } catch (error) {
+      console.error("Email sending failed:", String((error as any)?.message || error));
+      await client.close();
+      
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: "Email sending failed. Check Edge Function logs for details.",
+          recipient: to,
           subject: emailSubject,
-          html: emailBody,
-          reply_to: gmailEmail || undefined,
-        });
-
-        if ((secondAttempt as any)?.error) {
-          throw new Error((secondAttempt as any).error?.message || "Unknown Resend error on fallback from");
-        }
-
-        console.log("✅ Email sent successfully via Resend (fallback)", secondAttempt);
-        return new Response(
-          JSON.stringify({
-            success: true,
-            message: "Email notification sent successfully (fallback sender)",
-            recipient: to,
-            subject: emailSubject,
-            provider: "Resend",
-            from: fallbackFrom,
-          }),
-          { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
-        );
-      } catch (fallbackErr) {
-        console.error("Email sending failed on both attempts:", String((fallbackErr as any)?.message || fallbackErr));
-        return new Response(
-          JSON.stringify({
-            success: false,
-            message: "Email sending failed. Check Edge Function logs for details.",
-            recipient: to,
-            subject: emailSubject,
-            error: String((fallbackErr as any)?.message || fallbackErr),
-          }),
-          { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
-        );
-      }
+          error: String((error as any)?.message || error),
+        }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
     }
   } catch (error: any) {
     console.error("Error handling request:", error);
