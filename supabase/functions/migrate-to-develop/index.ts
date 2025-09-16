@@ -84,7 +84,16 @@ Deno.serve(async (req) => {
       'fund_edit_suggestions',
       'fund_edit_history',
       'admin_activity_log',
-      'account_deletion_requests'
+      'account_deletion_requests',
+      // Additional business/public directory tables
+      'managers_business_info',
+      'managers_directory',
+      'public_managers',
+      // Security/audit tables (data-only; schema/permissions must exist already)
+      'security_audit_access_log',
+      'security_audit_log',
+      'security_status_audit',
+      'security_verification'
     ];
 
     let totalRecordsCopied = 0;
