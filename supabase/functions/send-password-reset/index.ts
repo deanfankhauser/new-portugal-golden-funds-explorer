@@ -29,29 +29,52 @@ const handler = async (req: Request): Promise<Response> => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     );
 
-    // Generate a secure reset token
+    // Generate a secure reset token (for optional custom flows) and try to build a Supabase recovery link
     const resetToken = crypto.randomUUID();
     const resetExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
 
-    // Store reset token in database (you may need to create this table)
+    let recoveryLink: string | null = null;
+
+    // Best-effort: store custom token if table exists (non-blocking)
     try {
       const { error: tokenError } = await supabase
         .from('password_reset_tokens')
-        .upsert({
-          email: email,
-          token: resetToken,
-          expires_at: resetExpiry.toISOString(),
-          used: false
-        }, { onConflict: 'email' });
+        .upsert(
+          {
+            email: email,
+            token: resetToken,
+            expires_at: resetExpiry.toISOString(),
+            used: false
+          },
+          { onConflict: 'email' }
+        );
 
       if (tokenError) {
         console.log("Token storage error (table may not exist):", tokenError);
-        // If table doesn't exist, we'll use a simpler approach with direct auth
-        return await handleDirectSupabaseReset(email, redirectTo);
       }
     } catch (err) {
-      console.log("Using fallback Supabase auth method");
-      return await handleDirectSupabaseReset(email, redirectTo);
+      console.log("Token storage skipped (table not available). Proceeding without custom token.");
+    }
+
+    // Always try to generate a Supabase recovery link we can email
+    try {
+      const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
+        type: 'recovery',
+        email,
+        options: {
+          redirectTo: redirectTo || `${Deno.env.get('SUPABASE_URL')}/auth/v1/verify`
+        }
+      });
+
+      if (linkError) {
+        console.log("Failed to generate Supabase recovery link:", linkError);
+      } else {
+        // Varies by SDK version
+        recoveryLink = (linkData as any)?.properties?.action_link ?? (linkData as any)?.action_link ?? null;
+        console.log("Generated Supabase recovery link");
+      }
+    } catch (err) {
+      console.log("Error generating Supabase recovery link:", err);
     }
 
     const gmailEmail = Deno.env.get("GMAIL_EMAIL") || "";
@@ -74,9 +97,9 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
 
-    // Create reset URL
+    // Create reset URL - prefer Supabase recovery link if available
     const baseUrl = redirectTo || 'https://funds.movingto.com';
-    const resetUrl = `${baseUrl}/reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
+    const resetUrl = recoveryLink || `${baseUrl}/reset-password`;
 
     const emailSubject = "🔐 Password Reset Request - Investment Funds Platform";
     const emailBody = `
@@ -167,14 +190,10 @@ async function handleDirectSupabaseReset(email: string, redirectTo?: string) {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
   );
 
-  console.log("Using Supabase built-in password reset for:", email);
+  console.log("Using Supabase built-in password reset email for:", email);
 
-  const { error } = await supabase.auth.admin.generateLink({
-    type: 'recovery',
-    email: email,
-    options: {
-      redirectTo: redirectTo || `${Deno.env.get('SUPABASE_URL')}/auth/v1/verify`
-    }
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: redirectTo || `${Deno.env.get('SUPABASE_URL')}/auth/v1/verify`
   });
 
   if (error) {
@@ -192,8 +211,8 @@ async function handleDirectSupabaseReset(email: string, redirectTo?: string) {
   return new Response(
     JSON.stringify({
       success: true,
-      message: "Password reset link generated (check Supabase auth logs)",
-      method: "supabase_builtin"
+      message: "Password reset email triggered via Supabase",
+      method: "supabase_resetPasswordForEmail"
     }),
     { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
   );
