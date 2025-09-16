@@ -54,11 +54,13 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Password reset redirect target:', finalRedirect);
 
-    // Initialize Supabase client with service role key for admin access
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    );
+    // Initialize Supabase client with environment-aware service role key
+    const isDevOrigin =
+      (finalRedirect && finalRedirect.includes('develop.movingto.com')) ||
+      ((req.headers.get('origin') || '').includes('develop.movingto.com'));
+    const supabaseUrl = Deno.env.get(isDevOrigin ? 'FUNDS_DEV_SUPABASE_URL' : 'SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get(isDevOrigin ? 'FUNDS_DEV_SUPABASE_SERVICE_ROLE_KEY' : 'SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Generate a secure reset token (for optional custom flows) and try to build a Supabase recovery link
     const resetToken = crypto.randomUUID();
@@ -113,7 +115,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (!gmailEmail || !gmailAppPassword) {
       console.error("Gmail credentials not configured. Falling back to Supabase auth.");
-      return await handleDirectSupabaseReset(email, finalRedirect);
+      return await handleDirectSupabaseReset(email, finalRedirect, isDevOrigin);
     }
 
     const client = new SMTPClient({
@@ -198,7 +200,7 @@ const handler = async (req: Request): Promise<Response> => {
       await client.close();
       
       // Fallback to Supabase auth
-      return await handleDirectSupabaseReset(email, finalRedirect);
+      return await handleDirectSupabaseReset(email, finalRedirect, isDevOrigin);
     }
   } catch (error: any) {
     console.error("Error handling password reset request:", error);
@@ -214,10 +216,13 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 // Fallback function to use Supabase's built-in auth
-async function handleDirectSupabaseReset(email: string, redirectTo?: string) {
+async function handleDirectSupabaseReset(email: string, redirectTo?: string, isDev?: boolean) {
+  const useDev = typeof isDev === 'boolean' ? isDev : (redirectTo?.includes('develop.movingto.com') ?? false);
+  const supabaseUrl = Deno.env.get(useDev ? 'FUNDS_DEV_SUPABASE_URL' : 'SUPABASE_URL')!;
+  const supabaseServiceKey = Deno.env.get(useDev ? 'FUNDS_DEV_SUPABASE_SERVICE_ROLE_KEY' : 'SUPABASE_SERVICE_ROLE_KEY')!;
   const supabase = createClient(
-    Deno.env.get('SUPABASE_URL')!,
-    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    supabaseUrl,
+    supabaseServiceKey
   );
 
   console.log("Using Supabase built-in password reset email for:", email);
