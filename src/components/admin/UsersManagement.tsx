@@ -42,7 +42,7 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
     try {
       setLoading(true);
       
-      // Get admin users with their profile information
+      // Get admin users
       const { data: adminUsersData, error: adminError } = await supabase
         .from('admin_users')
         .select('*')
@@ -54,46 +54,44 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
         return;
       }
 
-      // Fetch profile information for each admin user
-      const enrichedUsers = await Promise.all(
-        adminUsersData.map(async (admin) => {
-          // Try to get manager profile first
-          const { data: managerProfile } = await supabase
-            .from('manager_profiles')
-            .select('email, manager_name, company_name')
-            .eq('user_id', admin.user_id)
-            .single();
+      if (!adminUsersData || adminUsersData.length === 0) {
+        setAdminUsers([]);
+        return;
+      }
 
-          if (managerProfile) {
-            return {
-              ...admin,
-              email: managerProfile.email,
-              profile_name: `${managerProfile.manager_name} (${managerProfile.company_name})`
-            };
-          }
+      // Extract user IDs for batch lookup
+      const userIds = adminUsersData.map(admin => admin.user_id);
+      
+      // Get user identities using the new function
+      const { data: userIdentities, error: identityError } = await supabase
+        .rpc('get_users_identity', { p_user_ids: userIds });
 
-          // Try investor profile
-          const { data: investorProfile } = await supabase
-            .from('investor_profiles')
-            .select('email, first_name, last_name')
-            .eq('user_id', admin.user_id)
-            .single();
+      if (identityError) {
+        console.error('Error fetching user identities:', identityError);
+        // Fallback to basic display
+        const basicUsers = adminUsersData.map(admin => ({
+          ...admin,
+          email: 'Not available',
+          profile_name: `User ${admin.user_id.slice(0, 8)}`
+        }));
+        setAdminUsers(basicUsers);
+        return;
+      }
 
-          if (investorProfile) {
-            return {
-              ...admin,
-              email: investorProfile.email,
-              profile_name: `${investorProfile.first_name} ${investorProfile.last_name}`
-            };
-          }
-
-          return {
-            ...admin,
-            email: 'Unknown',
-            profile_name: 'Unknown User'
-          };
-        })
+      // Create a map for quick lookup
+      const identityMap = new Map(
+        userIdentities?.map(identity => [identity.user_id, identity]) || []
       );
+
+      // Enrich admin users with identity information
+      const enrichedUsers = adminUsersData.map(admin => {
+        const identity = identityMap.get(admin.user_id);
+        return {
+          ...admin,
+          email: identity?.email || 'Not available',
+          profile_name: identity?.display_name || `User ${admin.user_id.slice(0, 8)}`
+        };
+      });
 
       setAdminUsers(enrichedUsers);
     } catch (error) {
