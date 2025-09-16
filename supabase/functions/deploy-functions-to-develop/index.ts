@@ -53,37 +53,14 @@ serve(async (req) => {
       try {
         console.log(`🔧 Processing function: ${functionName}`);
 
-        // Read the function code
-        let functionCode: string;
-        try {
-          const functionPath = `./supabase/functions/${functionName}/index.ts`;
-          functionCode = await Deno.readTextFile(functionPath);
-        } catch (readError) {
-          console.error(`❌ Could not read function ${functionName}:`, readError);
-          deploymentResults.push({
-            function_name: functionName,
-            status: 'error',
-            details: `Could not read function code: ${readError.message}`
-          });
-          continue;
-        }
-
-        // Create the function deployment payload
-        const deploymentPayload = {
-          name: functionName,
-          source: functionCode,
-          verify_jwt: false // Most functions in config.toml have this set to false
-        };
-
-        // Deploy to development project using Supabase Management API
-        // Note: This would typically require additional API endpoints that might not be available
-        // For now, we'll log the preparation and return instructions
-        
-        console.log(`✅ Prepared function ${functionName} for deployment`);
+        // Edge runtime cannot access other function source files on disk.
+        // We'll record planned deployments and provide CLI commands to deploy from the repo.
+        const functionPath = `supabase/functions/${functionName}/index.ts`;
+        console.log(`✅ Queued function for deployment: ${functionName} (path: ${functionPath})`);
         deploymentResults.push({
           function_name: functionName,
           status: 'success',
-          details: 'Function code prepared and ready for deployment'
+          details: `Function queued for deployment. Ensure the file exists at ${functionPath} and run the CLI commands provided.`
         });
 
       } catch (error) {
