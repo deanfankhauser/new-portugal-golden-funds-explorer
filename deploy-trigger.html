@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Deploy Functions to Develop</title>
+</head>
+<body>
+    <h1>Deploying Edge Functions to Funds_Develop...</h1>
+    <div id="status">Starting deployment...</div>
+    
+    <script>
+        async function deployFunctions() {
+            const statusDiv = document.getElementById('status');
+            
+            try {
+                statusDiv.innerHTML = 'Calling deploy-functions-to-develop...';
+                
+                const response = await fetch('https://bkmvydnfhmkjnuszroim.supabase.co/functions/v1/deploy-functions-to-develop', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrbXZ5ZG5maG1ram51c3pyb2ltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwNzY0NDYsImV4cCI6MjA3MjY1MjQ0Nn0.eXVPzUY_C8Qi_HGhzk-T6ovY1fqa3czPbxJmJc5ftG8'
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                const result = await response.text();
+                statusDiv.innerHTML = `<strong>Deployment Response:</strong><br><pre>${result}</pre>`;
+                
+                if (response.ok) {
+                    statusDiv.innerHTML += '<br><strong style="color: green;">✅ Deployment completed successfully!</strong>';
+                    statusDiv.innerHTML += '<br><br>Your send-password-reset function should now be available in Funds_Develop.';
+                } else {
+                    statusDiv.innerHTML += '<br><strong style="color: red;">❌ Deployment failed</strong>';
+                }
+                
+            } catch (error) {
+                statusDiv.innerHTML = `<strong style="color: red;">Error:</strong> ${error.message}`;
+            }
+        }
+        
+        // Auto-trigger deployment
+        deployFunctions();
+    </script>
+</body>
+</html>
