@@ -44,7 +44,7 @@ const handler = async (req: Request): Promise<Response> => {
     const client = new SMTPClient({
       connection: {
         hostname: "smtp.gmail.com",
-        port: 587,
+        port: 465,
         tls: true,
         auth: {
           username: gmailEmail,
@@ -101,7 +101,6 @@ const handler = async (req: Request): Promise<Response> => {
         from: gmailEmail,
         to: to,
         subject: emailSubject,
-        content: emailBody,
         html: emailBody,
       });
 
