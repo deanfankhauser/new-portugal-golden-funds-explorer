@@ -14,6 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { EnhancedSuggestionsTable } from '@/components/admin/EnhancedSuggestionsTable';
 import { AdminActivityLog } from '@/components/admin/AdminActivityLog';
 import UsersManagement from '@/components/admin/UsersManagement';
+import { DataCopyButton } from '@/components/admin/DataCopyButton';
 
 const AdminPanel = () => {
   const { user, loading, userType } = useEnhancedAuth();
@@ -248,16 +249,19 @@ const AdminPanel = () => {
             </TabsContent>
 
             <TabsContent value="settings">
-              <Card>
-                <CardHeader>
-                  <CardTitle>System Settings</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    Advanced system configuration and user management features will be available soon.
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>System Settings</CardTitle>
+                    <CardDescription>
+                      System configuration and data management tools
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <DataCopyButton />
+                  </CardContent>
+                </Card>
+              </div>
             </TabsContent>
           </Tabs>
         </div>
