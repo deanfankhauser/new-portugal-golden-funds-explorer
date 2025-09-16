@@ -34,57 +34,22 @@ Deno.serve(async (req) => {
       records?: number;
     }> = [];
 
-    // Step 1: Create funds table if missing
-    console.log('📋 Step 1: Ensuring funds table exists in development...');
+    // Step 1: Check if funds table exists, if not skip this step
+    console.log('📋 Step 1: Checking if funds table exists in development...');
     try {
-      const createFundsTableSQL = `
-        CREATE TABLE IF NOT EXISTS public.funds (
-          id text PRIMARY KEY,
-          name text NOT NULL,
-          description text,
-          detailed_description text,
-          website text,
-          tags text[],
-          currency text DEFAULT 'EUR',
-          minimum_investment bigint,
-          expected_return_min numeric,
-          expected_return_max numeric,
-          lock_up_period_months integer,
-          management_fee numeric,
-          performance_fee numeric,
-          aum bigint,
-          inception_date date,
-          geographic_allocation jsonb,
-          team_members jsonb,
-          pdf_documents jsonb,
-          faqs jsonb,
-          gv_eligible boolean DEFAULT false,
-          risk_level text,
-          manager_name text,
-          category text,
-          last_modified_by uuid,
-          version integer DEFAULT 1,
-          created_at timestamptz DEFAULT now(),
-          updated_at timestamptz DEFAULT now()
-        );
-        
-        ALTER TABLE public.funds ENABLE ROW LEVEL SECURITY;
-        
-        DO $$
-        BEGIN
-          IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'funds' AND policyname = 'Public read access to funds') THEN
-            CREATE POLICY "Public read access to funds" ON public.funds FOR SELECT USING (true);
-          END IF;
-          IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'funds' AND policyname = 'Admins can manage funds') THEN
-            CREATE POLICY "Admins can manage funds" ON public.funds FOR ALL USING (is_user_admin());
-          END IF;
-        END $$;
-      `;
-
-      // Execute schema creation using raw SQL
-      const { error: schemaError } = await devSupabase.rpc('execute_sql', { 
-        query: createFundsTableSQL 
-      });
+      // Try to query funds table to see if it exists
+      const { error: tableCheckError } = await devSupabase
+        .from('funds')
+        .select('id')
+        .limit(1);
+      
+      let schemaError = null;
+      if (tableCheckError && tableCheckError.message.includes('does not exist')) {
+        console.log('⚠️ Funds table does not exist in development database');
+        schemaError = { message: 'Funds table missing - please create it manually in the development database' };
+      } else {
+        console.log('✅ Funds table exists in development database');
+      }
 
       if (schemaError) {
         console.warn('⚠️ Schema creation warning (may already exist):', schemaError.message);
