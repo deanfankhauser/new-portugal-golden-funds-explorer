@@ -284,6 +284,13 @@ function App() {
                            {React.createElement(React.lazy(() => import('./pages/InternalMigrateSchema')))}
                          </Suspense>
                        } />
+
+                       {/* Internal: Data migration trigger (temporary) */}
+                       <Route path="/__internal/migrate-data" element={
+                         <Suspense fallback={<PageLoader />}>
+                           {React.createElement(React.lazy(() => import('./pages/InternalMigrateData')))}
+                         </Suspense>
+                       } />
                        
                       {/* Alternatives hub */}
                       <Route path="/alternatives" element={
