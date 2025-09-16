@@ -13,3 +13,6 @@ verify_jwt = false
 
 [functions.migrate-data]
 verify_jwt = false
+
+[functions.migrate-schema]
+verify_jwt = false
