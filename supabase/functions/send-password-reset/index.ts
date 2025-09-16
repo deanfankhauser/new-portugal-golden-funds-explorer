@@ -21,7 +21,38 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { email, redirectTo }: PasswordResetRequest = await req.json();
 
-    console.log(`Processing password reset request for: ${email}`);
+    // Determine a safe redirect target
+    const reqOrigin = req.headers.get('origin') || req.headers.get('referer') || '';
+    let defaultBase = '';
+    try {
+      if (reqOrigin) {
+        const u = new URL(reqOrigin);
+        defaultBase = u.origin;
+      }
+    } catch {
+      defaultBase = reqOrigin && reqOrigin.startsWith('http') ? new URL(reqOrigin).origin : '';
+    }
+    if (!defaultBase) {
+      defaultBase = 'https://funds.movingto.com';
+    }
+    if (defaultBase.includes('develop.movingto.com') || defaultBase.includes('localhost')) {
+      defaultBase = 'https://develop.movingto.com';
+    }
+    const normalize = (url?: string) => {
+      if (!url) return `${defaultBase}/reset-password`;
+      if (!/^https?:\/\//i.test(url)) {
+        url = `https://${url.replace(/^\/+/, '')}`;
+      }
+      try {
+        const u = new URL(url);
+        return u.toString();
+      } catch {
+        return `${defaultBase}/reset-password`;
+      }
+    };
+    const finalRedirect = normalize(redirectTo);
+
+    console.log('Password reset redirect target:', finalRedirect);
 
     // Initialize Supabase client with service role key for admin access
     const supabase = createClient(
@@ -62,7 +93,7 @@ const handler = async (req: Request): Promise<Response> => {
         type: 'recovery',
         email,
         options: {
-          redirectTo: redirectTo || `${Deno.env.get('SUPABASE_URL')}/auth/v1/verify`
+          redirectTo: finalRedirect
         }
       });
 
@@ -82,7 +113,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (!gmailEmail || !gmailAppPassword) {
       console.error("Gmail credentials not configured. Falling back to Supabase auth.");
-      return await handleDirectSupabaseReset(email, redirectTo);
+      return await handleDirectSupabaseReset(email, finalRedirect);
     }
 
     const client = new SMTPClient({
@@ -98,8 +129,7 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     // Create reset URL - prefer Supabase recovery link if available
-    const baseUrl = redirectTo || 'https://funds.movingto.com';
-    const resetUrl = recoveryLink || `${baseUrl}/reset-password`;
+    const resetUrl = recoveryLink || finalRedirect;
 
     const emailSubject = "🔐 Password Reset Request - Investment Funds Platform";
     const emailBody = `
@@ -168,7 +198,7 @@ const handler = async (req: Request): Promise<Response> => {
       await client.close();
       
       // Fallback to Supabase auth
-      return await handleDirectSupabaseReset(email, redirectTo);
+      return await handleDirectSupabaseReset(email, finalRedirect);
     }
   } catch (error: any) {
     console.error("Error handling password reset request:", error);
@@ -193,7 +223,7 @@ async function handleDirectSupabaseReset(email: string, redirectTo?: string) {
   console.log("Using Supabase built-in password reset email for:", email);
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: redirectTo || `${Deno.env.get('SUPABASE_URL')}/auth/v1/verify`
+    redirectTo: redirectTo || 'https://funds.movingto.com/reset-password'
   });
 
   if (error) {
