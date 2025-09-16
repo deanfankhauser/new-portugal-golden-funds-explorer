@@ -10,3 +10,6 @@ verify_jwt = false
 
 [functions.notify-super-admins]
 verify_jwt = false
+
+[functions.migrate-data]
+verify_jwt = false
