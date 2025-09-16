@@ -25,3 +25,6 @@ verify_jwt = false
 
 [functions.migrate-to-develop]
 verify_jwt = false
+
+[functions.deploy-functions-to-develop]
+verify_jwt = false
