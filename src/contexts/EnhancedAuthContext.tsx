@@ -268,11 +268,22 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { error };
+    console.log('🔐 SignIn called with email:', email);
+    
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      console.log('🔐 SignIn response - data:', data);
+      console.log('🔐 SignIn response - error:', error);
+      
+      return { error };
+    } catch (err) {
+      console.error('🔐 SignIn exception:', err);
+      return { error: err };
+    }
   };
 
   const signOut = async () => {
