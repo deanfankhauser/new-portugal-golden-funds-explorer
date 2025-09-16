@@ -7,9 +7,8 @@ const SUPABASE_CONFIGS = {
     anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrbXZ5ZG5maG1ram51c3pyb2ltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwNzY0NDYsImV4cCI6MjA3MjY1MjQ0Nn0.eXVPzUY_C8Qi_HGhzk-T6ovY1fqa3czPbxJmJc5ftG8"
   },
   development: {
-    // Replace with your actual development Supabase project credentials
-    url: "https://YOUR_DEV_PROJECT_ID.supabase.co",
-    anonKey: "YOUR_DEV_ANON_KEY"
+    url: "https://fgwmkjivosjvvslbrvxe.supabase.co",
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZnd21raml2b3NqdnZzbGJydnhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwODAzOTksImV4cCI6MjA3MjY1NjM5OX0.uW9fZu-S4wna3miDpXIUuK4nOgxRIXD7YjpV-jGpl-A"
   }
 } as const;
 
