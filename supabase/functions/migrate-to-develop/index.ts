@@ -172,10 +172,12 @@ Deno.serve(async (req) => {
 
         if (upsertError) {
           console.error(`❌ Error upserting ${tableName}:`, upsertError);
+          const msg = upsertError.message || '';
+          const missing = msg.includes('does not exist') || msg.includes('not exist') || (msg.includes('relation') && msg.includes('does not exist'));
           migrationResults.push({
             step: `Copy ${tableName}`,
-            status: 'error',
-            details: upsertError.message,
+            status: missing ? 'warning' : 'error',
+            details: missing ? 'Destination table/view not present in Funds_Develop - skipped.' : msg,
             records: 0
           });
         } else {
