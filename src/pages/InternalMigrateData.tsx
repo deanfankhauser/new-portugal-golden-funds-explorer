@@ -22,8 +22,25 @@ export default function InternalMigrateData() {
         });
         
         if (error) {
-          console.error('Migration error:', error);
-          setResult({ success: false, error: error.message });
+          console.warn('supabase.functions.invoke failed, falling back to direct fetch:', error.message);
+          // Fallback: direct fetch to Edge Function URL
+          const resp = await fetch('https://bkmvydnfhmkjnuszroim.supabase.co/functions/v1/migrate-data', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrbXZ5ZG5maG1ram51c3pyb2ltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwNzY0NDYsImV4cCI6MjA3MjY1MjQ0Nn0.eXVPzUY_C8Qi_HGhzk-T6ovY1fqa3czPbxJmJc5ftG8',
+              'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrbXZ5ZG5maG1ram51c3pyb2ltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwNzY0NDYsImV4cCI6MjA3MjY1MjQ0Nn0.eXVPzUY_C8Qi_HGhzk-T6ovY1fqa3czPbxJmJc5ftG8'
+            },
+            body: JSON.stringify({})
+          });
+
+          if (!resp.ok) {
+            const text = await resp.text();
+            throw new Error(`HTTP ${resp.status}: ${text}`);
+          }
+
+          const json = await resp.json();
+          setResult({ success: true, ...json });
         } else {
           console.log('Migration completed:', data);
           setResult({ success: true, ...data });
