@@ -14,16 +14,16 @@ Deno.serve(async (req) => {
   try {
     console.log('Starting data migration process...');
 
-    // Production database client
+    // Production database client (service role)
     const prodSupabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     );
 
-    // Development database client
+    // Development database client (service role required to bypass RLS)
     const devSupabase = createClient(
       Deno.env.get('FUNDS_DEV_SUPABASE_URL')!,
-      Deno.env.get('FUNDS_DEV_SUPABASE_ANON_KEY')!
+      Deno.env.get('FUNDS_DEV_SUPABASE_SERVICE_ROLE_KEY')!
     );
 
     console.log('Connected to both databases');
@@ -40,7 +40,13 @@ Deno.serve(async (req) => {
       'account_deletion_requests'
     ];
 
-    const migrationResults = [];
+    const migrationResults: Array<{
+      table: string;
+      status: 'success' | 'error';
+      rowsProcessed: number;
+      message?: string;
+      error?: string;
+    }> = [];
 
     for (const tableName of tablesToMigrate) {
       console.log(`Migrating table: ${tableName}`);
@@ -86,7 +92,7 @@ Deno.serve(async (req) => {
         }
 
         // Insert data into development database
-        const { data: insertedData, error: insertError } = await devSupabase
+        const { error: insertError } = await devSupabase
           .from(tableName)
           .insert(prodData);
 
@@ -107,7 +113,7 @@ Deno.serve(async (req) => {
           });
         }
 
-      } catch (tableError) {
+      } catch (tableError: any) {
         console.error(`Unexpected error with ${tableName}:`, tableError);
         migrationResults.push({
           table: tableName,
@@ -138,7 +144,7 @@ Deno.serve(async (req) => {
       }
     );
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Migration failed:', error);
     
     return new Response(
