@@ -24,7 +24,8 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
   onUpdate
 }) => {
   const [rejectionReason, setRejectionReason] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isApproving, setIsApproving] = useState(false);
+  const [isRejecting, setIsRejecting] = useState(false);
   const { toast } = useToast();
 
   const getStatusColor = (status: string) => {
@@ -37,7 +38,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
   };
 
   const handleApprove = async () => {
-    setIsProcessing(true);
+    setIsApproving(true);
     try {
       const { data: userData } = await supabase.auth.getUser();
       const adminId = userData.user?.id;
@@ -177,14 +178,14 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         variant: "destructive"
       });
     } finally {
-      setIsProcessing(false);
+      setIsApproving(false);
     }
   };
 
   const handleReject = async () => {
     const finalRejectionReason = rejectionReason.trim() || "The suggested changes do not meet our current guidelines and cannot be approved at this time.";
     
-    setIsProcessing(true);
+    setIsRejecting(true);
 
     try {
       console.log('Starting rejection process for suggestion:', suggestion.id);
@@ -275,7 +276,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         variant: "destructive"
       });
     } finally {
-      setIsProcessing(false);
+      setIsRejecting(false);
     }
   };
 
@@ -456,10 +457,10 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
                       type="button"
                       variant="destructive"
                       onClick={handleReject}
-                      disabled={isProcessing}
+                      disabled={isRejecting || isApproving}
                       className="flex items-center gap-2"
                     >
-                      {isProcessing ? (
+                      {isRejecting ? (
                         <>
                           <Clock className="h-4 w-4 animate-spin" />
                           Processing...
@@ -474,11 +475,20 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
                     <Button
                       type="button"
                       onClick={handleApprove}
-                      disabled={isProcessing}
+                      disabled={isApproving || isRejecting}
                       className="flex items-center gap-2"
                     >
-                      <Check className="h-4 w-4" />
-                      Approve
+                      {isApproving ? (
+                        <>
+                          <Clock className="h-4 w-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          <Check className="h-4 w-4" />
+                          Approve
+                        </>
+                      )}
                     </Button>
                   </div>
                 </div>
