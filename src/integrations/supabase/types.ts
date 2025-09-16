@@ -666,6 +666,13 @@ export type Database = {
         Args: { user_email: string }
         Returns: string
       }
+      get_super_admin_emails: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          admin_name: string
+          email: string
+        }[]
+      }
       get_user_admin_role: {
         Args: { check_user_id?: string }
         Returns: Database["public"]["Enums"]["admin_role"]

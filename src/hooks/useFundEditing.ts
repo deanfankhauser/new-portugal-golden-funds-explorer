@@ -54,6 +54,41 @@ export const useFundEditing = () => {
 
       if (error) throw error;
 
+      // Send notification to super admins
+      try {
+        console.log('Sending notification to super admins for new suggestion:', data.id);
+        
+        // Get submitter info for notification
+        const { data: userProfile } = await supabase
+          .from('manager_profiles')
+          .select('manager_name, company_name')
+          .eq('user_id', user.id)
+          .single();
+        
+        const submitterName = userProfile 
+          ? `${userProfile.manager_name} (${userProfile.company_name})`
+          : 'User';
+        
+        const notificationResult = await supabase.functions.invoke('notify-super-admins', {
+          body: {
+            suggestionId: data.id,
+            fundId: fundId,
+            submitterName: submitterName,
+            submitterType: 'Manager',
+            changes: suggestedChanges
+          }
+        });
+        
+        if (notificationResult.error) {
+          console.error('Failed to send admin notification:', notificationResult.error);
+        } else {
+          console.log('✅ Super admin notification sent successfully');
+        }
+      } catch (notificationError) {
+        console.error('Error sending admin notification:', notificationError);
+        // Don't throw here - the suggestion was still created successfully
+      }
+
       toast({
         title: "Suggestion Submitted! 🎉",
         description: "Your fund update suggestion has been submitted for review. We'll notify you once it's approved.",
