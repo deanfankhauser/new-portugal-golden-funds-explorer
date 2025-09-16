@@ -271,12 +271,19 @@ function App() {
                            </Suspense>
                          } />
                          
-                         {/* Admin Panel */}
-                         <Route path="/admin" element={
-                           <Suspense fallback={<PageLoader />}>
-                             <AdminPanel />
-                           </Suspense>
-                         } />
+                       {/* Admin Panel */}
+                       <Route path="/admin" element={
+                         <Suspense fallback={<PageLoader />}>
+                           <AdminPanel />
+                         </Suspense>
+                       } />
+
+                       {/* Internal: Schema migration trigger (temporary) */}
+                       <Route path="/__internal/migrate-schema" element={
+                         <Suspense fallback={<PageLoader />}>
+                           {React.createElement(React.lazy(() => import('./pages/InternalMigrateSchema')))}
+                         </Suspense>
+                       } />
                        
                       {/* Alternatives hub */}
                       <Route path="/alternatives" element={
