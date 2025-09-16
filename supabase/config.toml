@@ -31,3 +31,6 @@ verify_jwt = false
 
 [functions.copy-data-to-develop]
 verify_jwt = false
+
+[functions.send-password-reset]
+verify_jwt = false

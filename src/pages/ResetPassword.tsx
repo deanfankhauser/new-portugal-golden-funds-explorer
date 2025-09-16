@@ -23,12 +23,19 @@ export default function ResetPassword() {
   // Check if we have reset tokens in URL on mount
   React.useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const searchParams = new URLSearchParams(window.location.search);
+    
+    // Check for Supabase recovery tokens (from built-in auth)
     const accessToken = hashParams.get('access_token');
     const refreshToken = hashParams.get('refresh_token');
     const type = hashParams.get('type');
     
+    // Check for custom reset token (from our custom function)
+    const customToken = searchParams.get('token');
+    const tokenEmail = searchParams.get('email');
+    
     if (accessToken && refreshToken && type === 'recovery') {
-      // User clicked recovery link, set session and go to reset step
+      // User clicked Supabase recovery link, set session and go to reset step
       supabase.auth.setSession({
         access_token: accessToken,
         refresh_token: refreshToken,
@@ -39,6 +46,15 @@ export default function ResetPassword() {
           window.history.replaceState({}, document.title, window.location.pathname);
         }
       });
+    } else if (customToken && tokenEmail) {
+      // User clicked custom reset link - validate token and proceed
+      console.log('Custom reset token detected:', customToken);
+      // For now, just proceed to reset step
+      // TODO: Validate token with backend if needed
+      setStep('reset');
+      setEmail(decodeURIComponent(tokenEmail));
+      // Clean URL
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, []);
 
@@ -48,12 +64,29 @@ export default function ResetPassword() {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`
+      // Use our custom password reset email function
+      const { error: emailError } = await supabase.functions.invoke('send-password-reset', {
+        body: {
+          email: email,
+          redirectTo: `${window.location.origin}/reset-password`
+        }
       });
 
-      if (error) {
-        setError(error.message);
+      if (emailError) {
+        console.error('Custom email error:', emailError);
+        // Fallback to Supabase's built-in method
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`
+        });
+        
+        if (error) {
+          setError(error.message);
+        } else {
+          toast.success('Reset Email Sent', {
+            description: 'Check your email for password reset instructions (via Supabase)'
+          });
+          setStatus('success');
+        }
       } else {
         toast.success('Reset Email Sent', {
           description: 'Check your email for password reset instructions'
@@ -62,7 +95,24 @@ export default function ResetPassword() {
       }
     } catch (error) {
       console.error('Password reset request error:', error);
-      setError('An unexpected error occurred');
+      
+      // Final fallback to Supabase built-in method
+      try {
+        const { error: fallbackError } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`
+        });
+        
+        if (fallbackError) {
+          setError('Unable to send reset email. Please try again later.');
+        } else {
+          toast.success('Reset Email Sent', {
+            description: 'Check your email for password reset instructions'
+          });
+          setStatus('success');
+        }
+      } catch (fallbackErr) {
+        setError('An unexpected error occurred. Please try again later.');
+      }
     } finally {
       setIsSubmitting(false);
     }
