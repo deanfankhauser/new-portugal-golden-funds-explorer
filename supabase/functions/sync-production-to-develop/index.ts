@@ -53,8 +53,83 @@ serve(async (req) => {
       timestamp: new Date().toISOString()
     });
 
-    // 2. SYNC TABLE DATA
-    console.log('📊 Step 2: Syncing table data...');
+    // NOTE: Security audit tables (security_audit_log, security_audit_access_log) are 
+    // intentionally NOT synced as they contain sensitive system information and have 
+    // RLS policies set to 'false' (system-only access)
+
+    // 2. SYNC STORAGE BUCKETS
+    console.log('🪣 Step 2: Syncing storage buckets...');
+    
+    try {
+      // Get storage buckets from production
+      const { data: prodBuckets, error: bucketsError } = await prodSupabase.storage.listBuckets();
+      
+      if (bucketsError) {
+        console.error('❌ Error fetching storage buckets:', bucketsError);
+        results.push({
+          operation: 'fetch_storage_buckets',
+          status: 'error',
+          details: `Failed to fetch storage buckets: ${bucketsError.message}`,
+          timestamp: new Date().toISOString()
+        });
+      } else if (prodBuckets && prodBuckets.length > 0) {
+        for (const bucket of prodBuckets) {
+          try {
+            // Create bucket in develop (will ignore if exists)
+            const { error: createError } = await devSupabase.storage.createBucket(bucket.id, {
+              public: bucket.public,
+              allowedMimeTypes: bucket.allowed_mime_types,
+              fileSizeLimit: bucket.file_size_limit
+            });
+            
+            if (createError && !createError.message.includes('already exists')) {
+              console.error(`❌ Error creating bucket ${bucket.id}:`, createError);
+              results.push({
+                operation: `create_bucket_${bucket.id}`,
+                status: 'error',
+                details: `Failed to create bucket: ${createError.message}`,
+                timestamp: new Date().toISOString()
+              });
+            } else {
+              console.log(`✅ Storage bucket ${bucket.id} ready in develop`);
+              results.push({
+                operation: `create_bucket_${bucket.id}`,
+                status: 'success',
+                details: `Storage bucket ${bucket.id} created/verified in develop`,
+                timestamp: new Date().toISOString()
+              });
+            }
+          } catch (error) {
+            console.error(`❌ Error processing bucket ${bucket.id}:`, error);
+            results.push({
+              operation: `create_bucket_${bucket.id}`,
+              status: 'error',
+              details: `Error processing bucket: ${error.message}`,
+              timestamp: new Date().toISOString()
+            });
+          }
+        }
+      } else {
+        console.log('ℹ️  No storage buckets found in production');
+        results.push({
+          operation: 'sync_storage_buckets',
+          status: 'success',
+          details: 'No storage buckets to sync',
+          timestamp: new Date().toISOString()
+        });
+      }
+    } catch (error) {
+      console.error('❌ Error syncing storage buckets:', error);
+      results.push({
+        operation: 'sync_storage_buckets',
+        status: 'error',
+        details: `Error syncing storage buckets: ${error.message}`,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // 3. SYNC TABLE DATA
+    console.log('📊 Step 3: Syncing table data...');
     
     const tablesToSync = [
       'funds',
@@ -142,8 +217,8 @@ serve(async (req) => {
       }
     }
 
-    // 3. DATABASE FUNCTIONS SYNC (manual)
-    console.log('🔧 Step 3: Database functions sync - manual');
+    // 4. DATABASE FUNCTIONS SYNC (manual)
+    console.log('🔧 Step 4: Database functions sync - manual');
     results.push({
       operation: 'sync_database_functions',
       status: 'warning',
@@ -151,8 +226,8 @@ serve(async (req) => {
       timestamp: new Date().toISOString()
     });
 
-    // 4. SYNC EDGE FUNCTIONS
-    console.log('🚀 Step 4: Preparing edge functions sync...');
+    // 5. SYNC EDGE FUNCTIONS
+    console.log('🚀 Step 5: Preparing edge functions sync...');
     
     const edgeFunctions = [
       'delete-account',
@@ -169,8 +244,8 @@ serve(async (req) => {
       timestamp: new Date().toISOString()
     });
 
-    // 5. CONFIG.TOML SYNC INSTRUCTIONS
-    console.log('⚙️  Step 5: Config.toml sync instructions...');
+    // 6. CONFIG.TOML SYNC INSTRUCTIONS
+    console.log('⚙️  Step 6: Config.toml sync instructions...');
     
     results.push({
       operation: 'sync_config_toml',
