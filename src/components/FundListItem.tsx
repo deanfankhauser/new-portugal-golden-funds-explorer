@@ -14,6 +14,7 @@ import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 import DataFreshnessIndicator from './common/DataFreshnessIndicator';
 import EligibilityBasisDisplayLine from './fund-details/EligibilityBasisDisplayLine';
 import { DATA_AS_OF_LABEL } from '../utils/constants';
+import { SaveFundButton } from './common/SaveFundButton';
 
 interface FundListItemProps {
   fund: Fund;
@@ -147,6 +148,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             </div>
             
             <div className="flex flex-col sm:flex-row lg:flex-col gap-2 sm:gap-3 justify-center lg:min-w-[160px]">
+              <SaveFundButton fundId={fund.id} showText size="sm" />
               <IntroductionButton variant="compact" />
               
               <Button 

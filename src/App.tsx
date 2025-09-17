@@ -46,6 +46,7 @@ const AccountSettings = lazy(() => import('./pages/AccountSettings'));
 const EmailConfirmation = lazy(() => import('./pages/EmailConfirmation'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const AdminPanel = lazy(() => import('./pages/AdminPanel'));
+const SavedFunds = lazy(() => import('./pages/SavedFunds'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -266,6 +267,13 @@ function App() {
                        <Route path="/admin" element={
                          <Suspense fallback={<PageLoader />}>
                            <AdminPanel />
+                         </Suspense>
+                       } />
+
+                       {/* Saved Funds */}
+                       <Route path="/saved-funds" element={
+                         <Suspense fallback={<PageLoader />}>
+                           <SavedFunds />
                          </Suspense>
                        } />
 

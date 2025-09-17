@@ -339,7 +339,9 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     const avatarUrl = data.publicUrl;
 
     // Update profile with new avatar URL
-    const { error: updateError } = await updateProfile({ avatar_url: avatarUrl });
+    // Use correct field name based on user type
+    const updateField = userType === 'manager' ? { logo_url: avatarUrl } : { avatar_url: avatarUrl };
+    const { error: updateError } = await updateProfile(updateField);
 
     return { error: updateError, url: avatarUrl };
   };
