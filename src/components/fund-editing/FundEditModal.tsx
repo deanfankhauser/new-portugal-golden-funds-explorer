@@ -31,52 +31,64 @@ export const FundEditModal: React.FC<FundEditModalProps> = ({
   onOpenChange,
 }) => {
   const { submitFundEditSuggestion, loading } = useFundEditing();
-const buildFormData = (f: Fund) => ({
-  // Basic information
-  description: f.description,
-  detailedDescription: f.detailedDescription,
-  managerName: f.managerName,
-  minimumInvestment: f.minimumInvestment.toString(),
-  managementFee: f.managementFee.toString(),
-  performanceFee: f.performanceFee != null ? f.performanceFee.toString() : '',
-  subscriptionFee: f.subscriptionFee != null ? f.subscriptionFee.toString() : '',
-  redemptionFee: f.redemptionFee != null ? f.redemptionFee.toString() : '',
-  term: f.term.toString(),
-  category: f.category,
-  returnTarget: f.returnTarget,
-  websiteUrl: f.websiteUrl || '',
-  location: f.location,
-  fundSize: f.fundSize.toString(),
-  established: f.established.toString(),
-  regulatedBy: f.regulatedBy,
-  // Geographic allocation
-  geographicAllocation: f.geographicAllocation || [],
-  // Team members
-  team: f.team || [],
-  // Documents
-  documents: f.documents || [],
-  // Redemption terms
-  redemptionTerms: f.redemptionTerms ? { ...f.redemptionTerms } : {
-    frequency: 'Not Available' as const,
-    redemptionOpen: false,
-    noticePeriod: undefined,
-    earlyRedemptionFee: undefined,
-    minimumHoldingPeriod: undefined,
-    notes: ''
-  },
-  // Regulatory info
-  cmvmId: f.cmvmId || '',
-  auditor: f.auditor || '',
-  custodian: f.custodian || '',
-  navFrequency: f.navFrequency || '',
-  pficStatus: f.pficStatus || 'Not provided',
-  eligibilityBasis: f.eligibilityBasis ? { ...f.eligibilityBasis } : {
-    portugalAllocation: undefined,
-    maturityYears: undefined,
-    realEstateExposure: 'Not provided' as const,
-    managerAttestation: false
+const buildFormData = (f: Fund) => {
+  const formData: any = {
+    // Basic information - always present
+    description: f.description,
+    detailedDescription: f.detailedDescription,
+    managerName: f.managerName,
+    minimumInvestment: f.minimumInvestment.toString(),
+    managementFee: f.managementFee.toString(),
+    performanceFee: f.performanceFee != null ? f.performanceFee.toString() : '',
+    subscriptionFee: f.subscriptionFee != null ? f.subscriptionFee.toString() : '',
+    redemptionFee: f.redemptionFee != null ? f.redemptionFee.toString() : '',
+    term: f.term.toString(),
+    category: f.category,
+    returnTarget: f.returnTarget,
+    websiteUrl: f.websiteUrl || '',
+    location: f.location,
+    fundSize: f.fundSize.toString(),
+    established: f.established.toString(),
+    regulatedBy: f.regulatedBy,
+    // Geographic allocation - always present as array
+    geographicAllocation: f.geographicAllocation || [],
+    // Team members - always present as array
+    team: f.team || [],
+    // Documents - always present as array
+    documents: f.documents || [],
+  };
+
+  // Only add optional fields if they exist in the fund data
+  if (f.redemptionTerms) {
+    formData.redemptionTerms = { ...f.redemptionTerms };
   }
-});
+
+  if (f.cmvmId !== undefined) {
+    formData.cmvmId = f.cmvmId;
+  }
+
+  if (f.auditor !== undefined) {
+    formData.auditor = f.auditor;
+  }
+
+  if (f.custodian !== undefined) {
+    formData.custodian = f.custodian;
+  }
+
+  if (f.navFrequency !== undefined) {
+    formData.navFrequency = f.navFrequency;
+  }
+
+  if (f.pficStatus !== undefined) {
+    formData.pficStatus = f.pficStatus;
+  }
+
+  if (f.eligibilityBasis) {
+    formData.eligibilityBasis = { ...f.eligibilityBasis };
+  }
+
+  return formData;
+};
 const [formData, setFormData] = useState(buildFormData(fund));
 
 useEffect(() => {
@@ -95,16 +107,24 @@ useEffect(() => {
   const handleNestedChange = (field: string, subField: string, value: any) => {
     setFormData(prev => {
       const fieldValue = prev[field as keyof typeof prev];
-      if (typeof fieldValue === 'object' && fieldValue !== null && !Array.isArray(fieldValue)) {
+      
+      // If the field doesn't exist, create it as an empty object first
+      if (!fieldValue || typeof fieldValue !== 'object' || Array.isArray(fieldValue)) {
         return {
           ...prev,
           [field]: {
-            ...fieldValue,
             [subField]: value
           }
         };
       }
-      return prev;
+      
+      return {
+        ...prev,
+        [field]: {
+          ...fieldValue,
+          [subField]: value
+        }
+      };
     });
   };
 
@@ -171,6 +191,7 @@ useEffect(() => {
       return value;
     };
     
+    // Only check fields that exist in formData (avoiding default-initialized fields)
     Object.keys(formData).forEach(key => {
       const currentValue = normalizeValue(current[key as keyof typeof current]);
       let newValue: any = formData[key as keyof typeof formData];
@@ -192,7 +213,8 @@ useEffect(() => {
         : currentValue !== newValue;
       
       if (hasChanged) {
-        // Only include the change if the new value is not just empty/undefined when current is also empty/undefined
+        // Only include the change if it's a meaningful difference
+        // Skip if both values are effectively empty/undefined
         if (!(currentValue === undefined && newValue === undefined)) {
           changes[key] = newValue;
         }
@@ -502,7 +524,7 @@ useEffect(() => {
                   <div>
                     <Label htmlFor="redemptionFrequency">Redemption Frequency</Label>
                     <Select
-                      value={formData.redemptionTerms.frequency}
+                      value={formData.redemptionTerms?.frequency || 'Not Available'}
                       onValueChange={(value) => handleNestedChange('redemptionTerms', 'frequency', value)}
                     >
                       <SelectTrigger>
@@ -524,7 +546,7 @@ useEffect(() => {
                   <div>
                     <Label htmlFor="redemptionOpen">Redemption Open</Label>
                     <Select
-                      value={formData.redemptionTerms.redemptionOpen ? 'true' : 'false'}
+                      value={formData.redemptionTerms?.redemptionOpen ? 'true' : 'false'}
                       onValueChange={(value) => handleNestedChange('redemptionTerms', 'redemptionOpen', value === 'true')}
                     >
                       <SelectTrigger>
@@ -542,7 +564,7 @@ useEffect(() => {
                     <Input
                       id="noticePeriod"
                       type="number"
-                      value={formData.redemptionTerms.noticePeriod || ''}
+                      value={formData.redemptionTerms?.noticePeriod || ''}
                       onChange={(e) => handleNestedChange('redemptionTerms', 'noticePeriod', parseFloat(e.target.value) || undefined)}
                     />
                   </div>
@@ -553,7 +575,7 @@ useEffect(() => {
                       id="earlyRedemptionFee"
                       type="number"
                       step="0.1"
-                      value={formData.redemptionTerms.earlyRedemptionFee || ''}
+                      value={formData.redemptionTerms?.earlyRedemptionFee || ''}
                       onChange={(e) => handleNestedChange('redemptionTerms', 'earlyRedemptionFee', parseFloat(e.target.value) || undefined)}
                     />
                   </div>
@@ -563,7 +585,7 @@ useEffect(() => {
                     <Input
                       id="minimumHoldingPeriod"
                       type="number"
-                      value={formData.redemptionTerms.minimumHoldingPeriod || ''}
+                      value={formData.redemptionTerms?.minimumHoldingPeriod || ''}
                       onChange={(e) => handleNestedChange('redemptionTerms', 'minimumHoldingPeriod', parseFloat(e.target.value) || undefined)}
                     />
                   </div>
@@ -573,7 +595,7 @@ useEffect(() => {
                   <Label htmlFor="redemptionNotes">Additional Notes</Label>
                   <Textarea
                     id="redemptionNotes"
-                    value={formData.redemptionTerms.notes || ''}
+                    value={formData.redemptionTerms?.notes || ''}
                     onChange={(e) => handleNestedChange('redemptionTerms', 'notes', e.target.value)}
                     rows={3}
                   />
@@ -706,7 +728,7 @@ useEffect(() => {
                     <Label htmlFor="cmvmId">CMVM ID</Label>
                     <Input
                       id="cmvmId"
-                      value={formData.cmvmId}
+                      value={formData.cmvmId || ''}
                       onChange={(e) => handleInputChange('cmvmId', e.target.value)}
                     />
                   </div>
@@ -715,7 +737,7 @@ useEffect(() => {
                     <Label htmlFor="auditor">Auditor</Label>
                     <Input
                       id="auditor"
-                      value={formData.auditor}
+                      value={formData.auditor || ''}
                       onChange={(e) => handleInputChange('auditor', e.target.value)}
                     />
                   </div>
@@ -724,7 +746,7 @@ useEffect(() => {
                     <Label htmlFor="custodian">Custodian</Label>
                     <Input
                       id="custodian"
-                      value={formData.custodian}
+                      value={formData.custodian || ''}
                       onChange={(e) => handleInputChange('custodian', e.target.value)}
                     />
                   </div>
@@ -733,7 +755,7 @@ useEffect(() => {
                     <Label htmlFor="navFrequency">NAV Frequency</Label>
                     <Input
                       id="navFrequency"
-                      value={formData.navFrequency}
+                      value={formData.navFrequency || ''}
                       onChange={(e) => handleInputChange('navFrequency', e.target.value)}
                       placeholder="e.g., Daily, Monthly"
                     />
@@ -742,7 +764,7 @@ useEffect(() => {
                   <div>
                     <Label htmlFor="pficStatus">PFIC Status</Label>
                     <Select
-                      value={formData.pficStatus}
+                      value={formData.pficStatus || 'Not provided'}
                       onValueChange={(value) => handleInputChange('pficStatus', value)}
                     >
                       <SelectTrigger>
@@ -770,7 +792,7 @@ useEffect(() => {
                     <Input
                       id="portugalAllocation"
                       type="number"
-                      value={formData.eligibilityBasis.portugalAllocation || ''}
+                      value={formData.eligibilityBasis?.portugalAllocation || ''}
                       onChange={(e) => handleNestedChange('eligibilityBasis', 'portugalAllocation', parseFloat(e.target.value) || undefined)}
                     />
                   </div>
@@ -780,7 +802,7 @@ useEffect(() => {
                     <Input
                       id="maturityYears"
                       type="number"
-                      value={formData.eligibilityBasis.maturityYears || ''}
+                      value={formData.eligibilityBasis?.maturityYears || ''}
                       onChange={(e) => handleNestedChange('eligibilityBasis', 'maturityYears', parseFloat(e.target.value) || undefined)}
                     />
                   </div>
@@ -788,7 +810,7 @@ useEffect(() => {
                   <div>
                     <Label htmlFor="realEstateExposure">Real Estate Exposure</Label>
                     <Select
-                      value={formData.eligibilityBasis.realEstateExposure}
+                      value={formData.eligibilityBasis?.realEstateExposure || 'Not provided'}
                       onValueChange={(value) => handleNestedChange('eligibilityBasis', 'realEstateExposure', value)}
                     >
                       <SelectTrigger>
@@ -806,7 +828,7 @@ useEffect(() => {
                   <div>
                     <Label htmlFor="managerAttestation">Manager Attestation</Label>
                     <Select
-                      value={formData.eligibilityBasis.managerAttestation ? 'true' : 'false'}
+                      value={formData.eligibilityBasis?.managerAttestation ? 'true' : 'false'}
                       onValueChange={(value) => handleNestedChange('eligibilityBasis', 'managerAttestation', value === 'true')}
                     >
                       <SelectTrigger>
