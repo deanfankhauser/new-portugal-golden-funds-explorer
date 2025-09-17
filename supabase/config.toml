@@ -31,3 +31,6 @@ verify_jwt = false
 
 [functions.send-welcome-email]
 verify_jwt = false
+
+[functions.sync-funds-to-develop]
+verify_jwt = false

@@ -662,9 +662,28 @@ export type Database = {
           view_name: string
         }[]
       }
+      copy_funds_to_develop: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          details: string
+          operation: string
+          record_count: number
+          status: string
+        }[]
+      }
       find_user_by_email: {
         Args: { user_email: string }
         Returns: string
+      }
+      get_database_schema_info: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          column_default: string
+          column_name: string
+          data_type: string
+          is_nullable: string
+          table_name: string
+        }[]
       }
       get_super_admin_emails: {
         Args: Record<PropertyKey, never>
@@ -697,6 +716,14 @@ export type Database = {
           p_target_type: string
         }
         Returns: undefined
+      }
+      sync_database_functions_to_develop: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          function_definition: string
+          function_name: string
+          status: string
+        }[]
       }
     }
     Enums: {

@@ -42,7 +42,8 @@ serve(async (req) => {
       'send-notification-email', 
       'send-password-reset',
       'send-welcome-email',
-      'sync-production-to-develop'
+      'sync-production-to-develop',
+      'sync-funds-to-develop'
     ];
 
     console.log(`📋 Found ${edgeFunctions.length} edge functions to deploy`);
