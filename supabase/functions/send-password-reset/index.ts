@@ -112,8 +112,8 @@ const handler = async (req: Request): Promise<Response> => {
     const gmailEmail = Deno.env.get("GMAIL_EMAIL") || "";
     const gmailAppPassword = Deno.env.get("GMAIL_APP_PASSWORD") || "";
 
-    if (!gmailEmail || !gmailAppPassword) {
-      console.error("Gmail credentials not configured. Falling back to Supabase auth.");
+    if (!gmailEmail || !gmailAppPassword || !recoveryLink) {
+      console.error("SMTP unavailable or recovery link missing. Falling back to Supabase-auth email.");
       return await handleDirectSupabaseReset(email, finalRedirect, isDevOrigin);
     }
 
@@ -129,8 +129,8 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
 
-    // Create reset URL - prefer Supabase recovery link if available
-    const resetUrl = recoveryLink || finalRedirect;
+    // Use Supabase recovery link (contains access and refresh tokens)
+    const resetUrl = recoveryLink as string;
 
     const emailSubject = "🔐 Password Reset Request - Investment Funds Platform";
     const emailBody = `
