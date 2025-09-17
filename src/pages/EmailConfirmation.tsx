@@ -25,7 +25,9 @@ export default function EmailConfirmation() {
                      hashParams.get('token') || 
                      hashParams.get('token_hash') ||
                      queryParams.get('token') ||
-                     queryParams.get('token_hash');
+                     queryParams.get('token_hash') ||
+                     queryParams.get('confirmation_token') ||
+                     queryParams.get('recovery_token');
         const type = hashParams.get('type') || queryParams.get('type') || 'signup';
         
         console.log('Confirmation params:', { 
