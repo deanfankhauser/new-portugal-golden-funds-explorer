@@ -108,6 +108,8 @@ const handler = async (req: Request): Promise<Response> => {
       console.log("Redirect URL:", finalRedirect);
       
       console.log("Final redirect URL being sent to Supabase:", finalRedirect);
+      console.log("Request origin:", req.headers.get('origin'));
+      console.log("Request referer:", req.headers.get('referer'));
       
       const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
         type: 'recovery',
@@ -121,8 +123,9 @@ const handler = async (req: Request): Promise<Response> => {
         console.error("Failed to generate Supabase recovery link:", {
           message: linkError.message,
           code: linkError.code,
-          details: linkError
+          details: JSON.stringify(linkError, null, 2)
         });
+        console.error("The redirect URL being rejected:", finalRedirect);
         
         // If user not found, try to generate an invite link instead
         if (linkError.code === 'user_not_found') {
