@@ -77,6 +77,21 @@ export default function EmailConfirmation() {
               setMessage('Recovery link verified! You can now reset your password.');
               setTimeout(() => navigate('/reset-password'), 1500);
             } else {
+              // Send welcome email for new confirmations
+              try {
+                const { data: session } = await supabase.auth.getSession();
+                if (session?.session?.user?.email) {
+                  await supabase.functions.invoke('send-welcome-email', {
+                    body: {
+                      email: session.session.user.email,
+                      loginUrl: `${window.location.origin}/`
+                    }
+                  });
+                }
+              } catch (welcomeError) {
+                console.log('Welcome email failed (non-critical):', welcomeError);
+              }
+
               setStatus('success');
               setMessage('Email confirmed successfully! Welcome to your account.');
               toast.success('Email Confirmed', { description: 'Your email has been verified successfully!' });

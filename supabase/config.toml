@@ -1,9 +1,15 @@
 project_id = "bkmvydnfhmkjnuszroim"
 
 [auth]
+# Enable custom email templates
+enable_signup = true
+enable_confirmations = true
+
 [auth.email]
 # Email sender name
-site_name = "movingto"
+site_name = "Investment Funds Platform"
+# Custom email templates via webhook
+template = { "invite" = "{{ .SiteURL }}/functions/v1/send-confirmation-email", "confirm" = "{{ .SiteURL }}/functions/v1/send-confirmation-email", "recovery" = "{{ .SiteURL }}/functions/v1/send-confirmation-email" }
 
 [functions.send-notification-email]
 verify_jwt = false
@@ -18,4 +24,10 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.sync-production-to-develop]
+verify_jwt = false
+
+[functions.send-confirmation-email]
+verify_jwt = false
+
+[functions.send-welcome-email]
 verify_jwt = false
