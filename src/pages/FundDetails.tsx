@@ -22,7 +22,6 @@ const FundDetails = () => {
     if (fund) {
       addToRecentlyViewed(fund);
     }
-    window.scrollTo(0, 0);
   }, [fund, addToRecentlyViewed]);
 
   if (!fund) {

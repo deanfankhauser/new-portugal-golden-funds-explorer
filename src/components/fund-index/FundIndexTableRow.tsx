@@ -18,7 +18,6 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
   if (!fund) return null;
 
   const handleRowClick = () => {
-    window.scrollTo(0, 0);
     navigate(`/${fund.id}`);
   };
 
