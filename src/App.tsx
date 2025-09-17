@@ -47,6 +47,7 @@ const EmailConfirmation = lazy(() => import('./pages/EmailConfirmation'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const SavedFunds = lazy(() => import('./pages/SavedFunds'));
+const TempMigrationPage = lazy(() => import('./pages/TempMigrationPage'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -267,6 +268,13 @@ function App() {
                        <Route path="/admin" element={
                          <Suspense fallback={<PageLoader />}>
                            <AdminPanel />
+                         </Suspense>
+                       } />
+
+                       {/* Temporary Migration Page */}
+                       <Route path="/migrate-funds" element={
+                         <Suspense fallback={<PageLoader />}>
+                           <TempMigrationPage />
                          </Suspense>
                        } />
 
