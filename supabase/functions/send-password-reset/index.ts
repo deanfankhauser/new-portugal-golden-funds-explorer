@@ -20,6 +20,7 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const { email, redirectTo }: PasswordResetRequest = await req.json();
+    console.log('Password reset request received:', { email, redirectTo });
 
     // Determine a safe redirect target
     const reqOrigin = req.headers.get('origin') || req.headers.get('referer') || '';
@@ -39,13 +40,25 @@ const handler = async (req: Request): Promise<Response> => {
     // Don't redirect to develop.movingto.com as it may not be the correct app URL
     const normalize = (url?: string) => {
       if (!url) return `${defaultBase}/reset-password`;
+      
+      // If URL doesn't start with protocol, add https://
       if (!/^https?:\/\//i.test(url)) {
+        // Remove any leading slashes and add https://
         url = `https://${url.replace(/^\/+/, '')}`;
       }
+      
       try {
         const u = new URL(url);
+        // Ensure it ends with /reset-password if it doesn't have a path
+        if (u.pathname === '/' || u.pathname === '') {
+          u.pathname = '/reset-password';
+        } else if (!u.pathname.includes('reset-password')) {
+          u.pathname = u.pathname.replace(/\/$/, '') + '/reset-password';
+        }
+        console.log(`Normalized URL: ${url} -> ${u.toString()}`);
         return u.toString();
-      } catch {
+      } catch (err) {
+        console.error(`Failed to normalize URL: ${url}`, err);
         return `${defaultBase}/reset-password`;
       }
     };
