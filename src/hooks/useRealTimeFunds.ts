@@ -34,6 +34,7 @@ const applyEditHistory = (
     if (c.lock_up_period_months != null) n.term = Math.round(Number(c.lock_up_period_months) / 12);
     if (c.website && typeof c.website === 'string') n.websiteUrl = c.website;
     if (c.website_url && typeof c.website_url === 'string') n.websiteUrl = c.website_url;
+    if (c.geographic_allocation && Array.isArray(c.geographic_allocation)) n.geographicAllocation = c.geographic_allocation;
 
     // Apply supported fields
     console.log(`Applying overlay for fund ${f.id}:`, n);
@@ -51,6 +52,7 @@ const applyEditHistory = (
     if (typeof n.managementFee === 'number') f.managementFee = n.managementFee;
     if (typeof n.performanceFee === 'number') f.performanceFee = n.performanceFee;
     if (typeof n.term === 'number') f.term = n.term; // years
+    if (Array.isArray(n.geographicAllocation)) f.geographicAllocation = n.geographicAllocation;
   }
 
   return Object.values(map);
