@@ -37,6 +37,35 @@ const ManagerProfileModal: React.FC<ManagerProfileModalProps> = ({
     }
   }, [user]);
 
+  const cropImageToSquare = (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d')!;
+      const img = new Image();
+      
+      img.onload = () => {
+        const size = Math.min(img.width, img.height);
+        canvas.width = size;
+        canvas.height = size;
+        
+        const offsetX = (img.width - size) / 2;
+        const offsetY = (img.height - size) / 2;
+        
+        ctx.drawImage(img, offsetX, offsetY, size, size, 0, 0, size, size);
+        
+        canvas.toBlob((blob) => {
+          const croppedFile = new File([blob!], file.name, {
+            type: file.type,
+            lastModified: Date.now(),
+          });
+          resolve(croppedFile);
+        }, file.type, 0.9);
+      };
+      
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -53,13 +82,16 @@ const ManagerProfileModal: React.FC<ManagerProfileModalProps> = ({
     setIsUploadingAvatar(true);
 
     try {
+      // Crop image to square
+      const croppedFile = await cropImageToSquare(file);
+      
       const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}.${fileExt}`;
+      const fileName = `${user.id}_${Date.now()}.${fileExt}`;
       const filePath = `avatars/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(filePath, file, { upsert: true });
+        .upload(filePath, croppedFile, { upsert: true });
 
       if (uploadError) throw uploadError;
 
@@ -67,11 +99,13 @@ const ManagerProfileModal: React.FC<ManagerProfileModalProps> = ({
         .from('avatars')
         .getPublicUrl(filePath);
 
-      setAvatarUrl(publicUrl);
+      // Add cache busting parameter
+      const urlWithCacheBust = `${publicUrl}?t=${Date.now()}`;
+      setAvatarUrl(urlWithCacheBust);
       
       toast({
         title: "Avatar Uploaded",
-        description: "Your profile picture has been updated.",
+        description: "Your profile picture has been updated and cropped to square.",
       });
     } catch (error) {
       toast({

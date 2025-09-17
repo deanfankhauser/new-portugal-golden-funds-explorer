@@ -322,7 +322,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
 
     const fileExt = file.name.split('.').pop();
-    const fileName = `${user.id}/avatar.${fileExt}`;
+    const fileName = `${user.id}/avatar_${Date.now()}.${fileExt}`;
 
     const { error: uploadError } = await supabase.storage
       .from('profile-photos')
@@ -336,7 +336,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       .from('profile-photos')
       .getPublicUrl(fileName);
 
-    const avatarUrl = data.publicUrl;
+    const avatarUrl = `${data.publicUrl}?t=${Date.now()}`;
 
     // Update profile with new avatar URL
     // Use correct field name based on user type
