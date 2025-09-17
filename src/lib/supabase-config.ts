@@ -14,13 +14,6 @@ export function getSupabaseConfig() {
     return config;
   }
   
-  // Fall back to hardcoded production values (should not be reached if env vars are set)
-  console.warn('⚠️ VITE environment variables not found, using fallback values');
-  const config = {
-    url: "https://bkmvydnfhmkjnuszroim.supabase.co",
-    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrbXZ5ZG5maG1ram51c3pyb2ltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwNzY0NDYsImV4cCI6MjA3MjY1MjQ0Nn0.eXVPzUY_C8Qi_HGhzk-T6ovY1fqa3czPbxJmJc5ftG8"
-  };
-  
-  console.log(`🔌 Connected to Funds database (fallback):`, config.url);
-  return config;
+  // No fallback values - VITE environment variables are required
+  throw new Error('❌ VITE environment variables (VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY) must be set in .env file');
 }
