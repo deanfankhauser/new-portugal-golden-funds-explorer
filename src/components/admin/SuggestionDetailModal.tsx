@@ -281,7 +281,28 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
   };
 
   const renderValueComparison = (field: string, currentValue: any, suggestedValue: any) => {
-    const isChanged = JSON.stringify(currentValue) !== JSON.stringify(suggestedValue);
+    // Helper function to normalize display values
+    const normalizeForDisplay = (value: any): string => {
+      if (value === null || value === undefined || value === '') {
+        return 'Not set';
+      }
+      if (typeof value === 'object') {
+        return JSON.stringify(value, null, 2);
+      }
+      return String(value);
+    };
+
+    // Helper function to check if values are actually different
+    const normalizeForComparison = (value: any): any => {
+      if (value === '' || value === null || value === undefined) {
+        return undefined;
+      }
+      return value;
+    };
+
+    const normalizedCurrent = normalizeForComparison(currentValue);
+    const normalizedSuggested = normalizeForComparison(suggestedValue);
+    const isChanged = JSON.stringify(normalizedCurrent) !== JSON.stringify(normalizedSuggested);
     
     return (
       <div className="grid grid-cols-2 gap-4 p-4 border rounded-lg">
@@ -289,9 +310,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
           <Label className="text-sm font-medium text-muted-foreground">Current Value</Label>
           <div className={`mt-1 p-2 bg-muted rounded ${isChanged ? 'border-l-4 border-red-400' : ''}`}>
             <pre className="text-sm whitespace-pre-wrap">
-              {typeof currentValue === 'object' 
-                ? JSON.stringify(currentValue, null, 2) 
-                : String(currentValue || 'Not set')}
+              {normalizeForDisplay(currentValue)}
             </pre>
           </div>
         </div>
@@ -299,9 +318,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
           <Label className="text-sm font-medium text-muted-foreground">Suggested Value</Label>
           <div className={`mt-1 p-2 bg-muted rounded ${isChanged ? 'border-l-4 border-green-400' : ''}`}>
             <pre className="text-sm whitespace-pre-wrap">
-              {typeof suggestedValue === 'object' 
-                ? JSON.stringify(suggestedValue, null, 2) 
-                : String(suggestedValue || 'Not set')}
+              {normalizeForDisplay(suggestedValue)}
             </pre>
           </div>
         </div>

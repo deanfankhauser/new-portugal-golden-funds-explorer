@@ -163,8 +163,16 @@ useEffect(() => {
     const current = getCurrentValues();
     const changes: Record<string, any> = {};
     
+    // Helper function to normalize empty values
+    const normalizeValue = (value: any): any => {
+      if (value === '' || value === null || value === undefined) {
+        return undefined;
+      }
+      return value;
+    };
+    
     Object.keys(formData).forEach(key => {
-      const currentValue = current[key as keyof typeof current];
+      const currentValue = normalizeValue(current[key as keyof typeof current]);
       let newValue: any = formData[key as keyof typeof formData];
       
       // Handle numeric fields
@@ -172,11 +180,22 @@ useEffect(() => {
         if (typeof newValue === 'string') {
           newValue = parseFloat(newValue) || 0;
         }
+      } else {
+        // Normalize non-numeric values
+        newValue = normalizeValue(newValue);
       }
       
-      // Deep comparison for objects and arrays
-      if (JSON.stringify(currentValue) !== JSON.stringify(newValue)) {
-        changes[key] = newValue;
+      // Deep comparison for objects and arrays, simple comparison for primitives
+      const hasChanged = Array.isArray(currentValue) || (typeof currentValue === 'object' && currentValue !== null) ||
+                        Array.isArray(newValue) || (typeof newValue === 'object' && newValue !== null)
+        ? JSON.stringify(currentValue) !== JSON.stringify(newValue)
+        : currentValue !== newValue;
+      
+      if (hasChanged) {
+        // Only include the change if the new value is not just empty/undefined when current is also empty/undefined
+        if (!(currentValue === undefined && newValue === undefined)) {
+          changes[key] = newValue;
+        }
       }
     });
     
