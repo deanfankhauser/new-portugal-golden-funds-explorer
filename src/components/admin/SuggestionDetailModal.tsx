@@ -82,10 +82,43 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         if (typeof sc.minimumInvestment === 'number') updatePayload.minimum_investment = sc.minimumInvestment;
         if (typeof sc.managementFee === 'number') updatePayload.management_fee = sc.managementFee;
         if (typeof sc.performanceFee === 'number') updatePayload.performance_fee = sc.performanceFee;
+        if (typeof sc.subscriptionFee === 'number') updatePayload.subscription_fee = sc.subscriptionFee;
+        if (typeof sc.redemptionFee === 'number') updatePayload.redemption_fee = sc.redemptionFee;
         if (typeof sc.term === 'number') updatePayload.lock_up_period_months = Math.round(sc.term * 12);
         if (typeof sc.category === 'string') updatePayload.category = sc.category;
         if (typeof sc.websiteUrl === 'string') updatePayload.website = sc.websiteUrl;
-        // Ignore name and unsupported fields on purpose
+        if (typeof sc.fundSize === 'number') updatePayload.aum = sc.fundSize * 1000000; // Convert millions to actual amount
+        if (typeof sc.established === 'number') updatePayload.inception_date = `${sc.established}-01-01`;
+        if (typeof sc.regulatedBy === 'string') updatePayload.regulated_by = sc.regulatedBy;
+        if (typeof sc.location === 'string') updatePayload.location = sc.location;
+        
+        // Handle complex objects
+        if (sc.geographicAllocation && Array.isArray(sc.geographicAllocation)) {
+          updatePayload.geographic_allocation = sc.geographicAllocation;
+        }
+        if (sc.team && Array.isArray(sc.team)) {
+          updatePayload.team_members = sc.team;
+        }
+        if (sc.documents && Array.isArray(sc.documents)) {
+          updatePayload.pdf_documents = sc.documents;
+        }
+        if (sc.redemptionTerms && typeof sc.redemptionTerms === 'object') {
+          // Store redemption terms in a separate field or merge with existing structure
+          updatePayload.redemption_terms = sc.redemptionTerms;
+        }
+        if (sc.eligibilityBasis && typeof sc.eligibilityBasis === 'object') {
+          updatePayload.eligibility_basis = sc.eligibilityBasis;
+        }
+        if (sc.tags && Array.isArray(sc.tags)) {
+          updatePayload.tags = sc.tags;
+        }
+        
+        // Handle regulatory fields
+        if (typeof sc.cmvmId === 'string') updatePayload.cmvm_id = sc.cmvmId;
+        if (typeof sc.auditor === 'string') updatePayload.auditor = sc.auditor;
+        if (typeof sc.custodian === 'string') updatePayload.custodian = sc.custodian;
+        if (typeof sc.navFrequency === 'string') updatePayload.nav_frequency = sc.navFrequency;
+        if (typeof sc.pficStatus === 'string') updatePayload.pfic_status = sc.pficStatus;
 
         if (Object.keys(updatePayload).length > 0) {
           console.log('Applying changes to funds table:', updatePayload, 'for fund:', suggestion.fund_id);
