@@ -20,18 +20,10 @@ serve(async (req) => {
 
   try {
     console.log('🚀 Starting edge functions deployment to Funds_Develop...');
+    console.log('Request method:', req.method);
+    console.log('Request headers:', Object.fromEntries(req.headers.entries()));
 
-    // Initialize Supabase clients
-    const prodSupabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    );
-
-    const devSupabase = createClient(
-      Deno.env.get('FUNDS_DEV_SUPABASE_URL')!,
-      Deno.env.get('FUNDS_DEV_SUPABASE_SERVICE_ROLE_KEY')!
-    );
-
+    // No authentication required - this is a public function
     const deploymentResults: DeploymentResult[] = [];
 
     // List of edge functions to deploy
@@ -48,13 +40,11 @@ serve(async (req) => {
 
     console.log(`📋 Found ${edgeFunctions.length} edge functions to deploy`);
 
-    // Read the function code from the current project structure
+    // Prepare deployment information without requiring database connections
     for (const functionName of edgeFunctions) {
       try {
         console.log(`🔧 Processing function: ${functionName}`);
-
-        // Edge runtime cannot access other function source files on disk.
-        // We'll record planned deployments and provide CLI commands to deploy from the repo.
+        
         const functionPath = `supabase/functions/${functionName}/index.ts`;
         console.log(`✅ Queued function for deployment: ${functionName} (path: ${functionPath})`);
         deploymentResults.push({

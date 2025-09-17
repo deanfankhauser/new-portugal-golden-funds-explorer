@@ -11,6 +11,9 @@ site_name = "Investment Funds Platform"
 # Use Supabase's built-in email templates
 enable_confirmations = true
 
+[functions.deploy-functions-to-develop]
+verify_jwt = false
+
 [functions.send-notification-email]
 verify_jwt = false
 
