@@ -101,28 +101,13 @@ const ManagerAuth = () => {
         }
         setIsSubmitting(false);
       } else {
-        console.log('🔐 Login successful, checking auth state...');
+        console.log('🔐 Login successful, redirecting to home...');
         toast.success("Welcome back!", {
           description: "You have been successfully logged in."
         });
         
-        // Wait for auth state to update, then redirect
-        setTimeout(() => {
-          if (user) {
-            console.log('🔐 User detected, redirecting...');
-            navigate('/');
-          } else {
-            console.log('🔐 User not detected yet, waiting longer...');
-            // Wait a bit more for auth state to propagate
-            setTimeout(() => {
-              setIsSubmitting(false);
-              if (!user) {
-                console.log('🔐 Auth state not updated, but login was successful - redirecting anyway');
-                navigate('/');
-              }
-            }, 2000);
-          }
-        }, 1000);
+        // Navigate immediately after successful login
+        navigate('/');
       }
     } catch (error) {
       console.error('🔐 Login process failed:', error);
