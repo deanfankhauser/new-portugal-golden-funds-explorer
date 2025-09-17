@@ -35,9 +35,8 @@ const handler = async (req: Request): Promise<Response> => {
     if (!defaultBase) {
       defaultBase = 'https://funds.movingto.com';
     }
-    if (defaultBase.includes('develop.movingto.com') || defaultBase.includes('localhost')) {
-      defaultBase = 'https://develop.movingto.com';
-    }
+    // Keep the actual origin URL for development/preview environments
+    // Don't redirect to develop.movingto.com as it may not be the correct app URL
     const normalize = (url?: string) => {
       if (!url) return `${defaultBase}/reset-password`;
       if (!/^https?:\/\//i.test(url)) {
