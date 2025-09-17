@@ -479,6 +479,48 @@ export type Database = {
       }
     }
     Views: {
+      managers_business_directory: {
+        Row: {
+          assets_under_management: number | null
+          city: string | null
+          company_name: string | null
+          country: string | null
+          created_at: string | null
+          description: string | null
+          founded_year: number | null
+          id: string | null
+          logo_url: string | null
+          manager_name: string | null
+          website: string | null
+        }
+        Insert: {
+          assets_under_management?: number | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          founded_year?: number | null
+          id?: string | null
+          logo_url?: string | null
+          manager_name?: string | null
+          website?: string | null
+        }
+        Update: {
+          assets_under_management?: number | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          founded_year?: number | null
+          id?: string | null
+          logo_url?: string | null
+          manager_name?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       managers_business_info: {
         Row: {
           assets_under_management: number | null
@@ -548,6 +590,45 @@ export type Database = {
           city?: string | null
           company_name?: string | null
           country?: string | null
+          description?: string | null
+          founded_year?: number | null
+          id?: string | null
+          logo_url?: string | null
+          manager_name?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
+      managers_public_directory: {
+        Row: {
+          city: string | null
+          company_name: string | null
+          country: string | null
+          created_at: string | null
+          description: string | null
+          founded_year: number | null
+          id: string | null
+          logo_url: string | null
+          manager_name: string | null
+          website: string | null
+        }
+        Insert: {
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          founded_year?: number | null
+          id?: string | null
+          logo_url?: string | null
+          manager_name?: string | null
+          website?: string | null
+        }
+        Update: {
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
           description?: string | null
           founded_year?: number | null
           id?: string | null
