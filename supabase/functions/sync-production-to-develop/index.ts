@@ -44,93 +44,14 @@ serve(async (req) => {
       timestamp: new Date().toISOString()
     });
 
-    // 1. SYNC DATABASE SCHEMA AND STRUCTURE
-    console.log('📋 Step 1: Syncing database schema...');
-    
-    // Get all tables from production
-    const { data: prodTables, error: prodTablesError } = await prodSupabase
-      .from('information_schema.tables')
-      .select('table_name, table_type')
-      .eq('table_schema', 'public')
-      .neq('table_name', 'spatial_ref_sys'); // Exclude PostGIS system table
-
-    if (prodTablesError) {
-      console.error('❌ Error fetching production tables:', prodTablesError);
-      results.push({
-        operation: 'fetch_production_tables',
-        status: 'error',
-        details: `Failed to fetch production tables: ${prodTablesError.message}`,
-        timestamp: new Date().toISOString()
-      });
-    } else {
-      console.log(`📊 Found ${prodTables?.length || 0} tables in production`);
-      results.push({
-        operation: 'fetch_production_tables',
-        status: 'success',
-        details: `Found ${prodTables?.length || 0} tables in production schema`,
-        timestamp: new Date().toISOString()
-      });
-    }
-
-    // Get table schemas and create them in develop if they don't exist
-    if (prodTables && prodTables.length > 0) {
-      for (const table of prodTables) {
-        try {
-          console.log(`🔧 Processing table: ${table.table_name}`);
-          
-          // Get table structure from production
-          const { data: tableStructure, error: structureError } = await prodSupabase
-            .rpc('get_table_structure', { table_name: table.table_name });
-
-          if (structureError) {
-            console.error(`❌ Error getting structure for ${table.table_name}:`, structureError);
-            results.push({
-              operation: `table_structure_${table.table_name}`,
-              status: 'error',
-              details: `Failed to get table structure: ${structureError.message}`,
-              timestamp: new Date().toISOString()
-            });
-            continue;
-          }
-
-          // Check if table exists in develop
-          const { data: devTableExists } = await devSupabase
-            .from('information_schema.tables')
-            .select('table_name')
-            .eq('table_schema', 'public')
-            .eq('table_name', table.table_name)
-            .single();
-
-          if (!devTableExists) {
-            console.log(`📝 Creating table ${table.table_name} in develop...`);
-            // Create table in develop (this would need actual DDL - simplified here)
-            results.push({
-              operation: `create_table_${table.table_name}`,
-              status: 'warning',
-              details: `Table ${table.table_name} needs manual creation - DDL extraction required`,
-              timestamp: new Date().toISOString()
-            });
-          } else {
-            console.log(`✅ Table ${table.table_name} already exists in develop`);
-            results.push({
-              operation: `check_table_${table.table_name}`,
-              status: 'success',
-              details: `Table ${table.table_name} exists in develop`,
-              timestamp: new Date().toISOString()
-            });
-          }
-
-        } catch (error) {
-          console.error(`❌ Error processing table ${table.table_name}:`, error);
-          results.push({
-            operation: `process_table_${table.table_name}`,
-            status: 'error',
-            details: `Error processing table: ${error.message}`,
-            timestamp: new Date().toISOString()
-          });
-        }
-      }
-    }
+    // 1. SCHEMA/TRIGGERS SYNC (manual due to platform constraints)
+    console.log('📋 Step 1: Schema & triggers sync - manual');
+    results.push({
+      operation: 'schema_sync',
+      status: 'warning',
+      details: 'Schema, tables (create-if-missing), triggers, and RLS policies must be synced via CLI/migrations. information_schema is not exposed via REST.',
+      timestamp: new Date().toISOString()
+    });
 
     // 2. SYNC TABLE DATA
     console.log('📊 Step 2: Syncing table data...');
@@ -221,43 +142,14 @@ serve(async (req) => {
       }
     }
 
-    // 3. SYNC DATABASE FUNCTIONS
-    console.log('🔧 Step 3: Syncing database functions...');
-    
-    try {
-      // Get all functions from production
-      const { data: prodFunctions, error: functionsError } = await prodSupabase
-        .from('information_schema.routines')
-        .select('routine_name, routine_definition')
-        .eq('routine_schema', 'public')
-        .eq('routine_type', 'FUNCTION');
-
-      if (functionsError) {
-        console.error('❌ Error fetching functions:', functionsError);
-        results.push({
-          operation: 'sync_database_functions',
-          status: 'error',
-          details: `Failed to fetch database functions: ${functionsError.message}`,
-          timestamp: new Date().toISOString()
-        });
-      } else {
-        console.log(`📋 Found ${prodFunctions?.length || 0} database functions`);
-        results.push({
-          operation: 'sync_database_functions',
-          status: 'warning',
-          details: `Found ${prodFunctions?.length || 0} database functions - manual deployment needed`,
-          timestamp: new Date().toISOString()
-        });
-      }
-    } catch (error) {
-      console.error('❌ Error syncing database functions:', error);
-      results.push({
-        operation: 'sync_database_functions',
-        status: 'error',
-        details: `Error syncing database functions: ${error.message}`,
-        timestamp: new Date().toISOString()
-      });
-    }
+    // 3. DATABASE FUNCTIONS SYNC (manual)
+    console.log('🔧 Step 3: Database functions sync - manual');
+    results.push({
+      operation: 'sync_database_functions',
+      status: 'warning',
+      details: 'Database functions must be migrated via SQL migrations/CLI. information_schema is not accessible via REST.',
+      timestamp: new Date().toISOString()
+    });
 
     // 4. SYNC EDGE FUNCTIONS
     console.log('🚀 Step 4: Preparing edge functions sync...');
