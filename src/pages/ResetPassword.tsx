@@ -64,16 +64,22 @@ export default function ResetPassword() {
     setIsSubmitting(true);
 
     try {
-      // Use our custom password reset email function
-      const { error: emailError } = await supabase.functions.invoke('send-password-reset', {
-        body: {
-          email: email,
+      // Call the production edge function directly to avoid project ref mismatches
+      const FUNCTION_URL = 'https://bkmvydnfhmkjnuszroim.supabase.co/functions/v1/send-password-reset';
+      const resp = await fetch(FUNCTION_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email,
           redirectTo: `${window.location.origin}/reset-password`
-        }
+        })
       });
 
-      if (emailError) {
-        console.error('Custom email error:', emailError);
+      if (!resp.ok) {
+        const errJson = await resp.json().catch(() => ({}));
+        console.error('Custom email error:', errJson);
         // Fallback to Supabase's built-in method
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/reset-password`
