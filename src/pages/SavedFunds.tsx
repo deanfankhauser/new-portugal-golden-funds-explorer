@@ -20,7 +20,7 @@ const SavedFunds = () => {
 
   // Redirect if not authenticated
   if (!user && !savedLoading) {
-    navigate('/auth');
+    navigate('/investor-auth');
     return null;
   }
 
