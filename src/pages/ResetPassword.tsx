@@ -64,25 +64,34 @@ export default function ResetPassword() {
     setIsSubmitting(true);
 
     try {
-      // Use environment-aware URL to call the correct project's edge function
-      const config = (await import('@/lib/supabase-config')).getSupabaseConfig();
-      const FUNCTION_URL = `${config.url}/functions/v1/send-password-reset`;
-      
-      const resp = await fetch(FUNCTION_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': config.anonKey
-        },
-        body: JSON.stringify({
+      // If the function requires verify_jwt=true, include a valid user JWT.
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        // Unauthenticated users: use Supabase built-in flow instead of hitting the protected edge function
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`
+        });
+        if (error) {
+          setError(error.message);
+          return;
+        }
+        toast.success('Reset Email Sent', {
+          description: 'Check your email for password reset instructions (via Supabase)'
+        });
+        setStatus('success');
+        return;
+      }
+
+      // Authenticated users: call the edge function via the Supabase client (auto adds JWT + apikey)
+      const { data: fnData, error: fnError } = await supabase.functions.invoke('send-password-reset', {
+        body: {
           email,
           redirectTo: `${window.location.origin}/reset-password`
-        })
+        }
       });
 
-      if (!resp.ok) {
-        const errJson = await resp.json().catch(() => ({}));
-        console.error('Custom email error:', errJson);
+      if (fnError) {
+        console.error('Edge function error:', fnError);
         // Fallback to Supabase's built-in method
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/reset-password`
