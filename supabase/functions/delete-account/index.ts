@@ -77,56 +77,33 @@ Deno.serve(async (req) => {
       console.error('❌ Failed to record deletion request:', recordError);
     }
 
-    // Move deletion tasks to background to avoid client timeouts
-    EdgeRuntime.waitUntil((async () => {
-      try {
-        // Delete any profiles associated with the user
-        const { error: profileError } = await supabase
-          .from('investor_profiles')
-          .delete()
-          .eq('user_id', user.id);
+    // Perform deletion operations directly
+    try {
+      // Delete any profiles associated with the user
+      const { error: profileError } = await supabase
+        .from('investor_profiles')
+        .delete()
+        .eq('user_id', user.id);
 
-        if (profileError) {
-          console.log('⚠️ Error deleting investor profile (may not exist):', profileError);
-        }
+      if (profileError) {
+        console.log('⚠️ Error deleting investor profile (may not exist):', profileError);
+      }
 
-        const { error: managerProfileError } = await supabase
-          .from('manager_profiles')
-          .delete()
-          .eq('user_id', user.id);
+      const { error: managerProfileError } = await supabase
+        .from('manager_profiles')
+        .delete()
+        .eq('user_id', user.id);
 
-        if (managerProfileError) {
-          console.log('⚠️ Error deleting manager profile (may not exist):', managerProfileError);
-        }
+      if (managerProfileError) {
+        console.log('⚠️ Error deleting manager profile (may not exist):', managerProfileError);
+      }
 
-        // Delete the user account using admin client
-        const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
+      // Delete the user account using admin client
+      const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
 
-        if (deleteError) {
-          console.error('❌ Failed to delete user account:', deleteError);
-          // Update deletion request status
-          await supabase
-            .from('account_deletion_requests')
-            .update({ 
-              status: 'failed',
-              processed_at: new Date().toISOString()
-            })
-            .eq('user_id', user.id);
-          return;
-        }
-
+      if (deleteError) {
+        console.error('❌ Failed to delete user account:', deleteError);
         // Update deletion request status
-        await supabase
-          .from('account_deletion_requests')
-          .update({ 
-            status: 'processed',
-            processed_at: new Date().toISOString()
-          })
-          .eq('user_id', user.id);
-
-        console.log('✅ Account successfully deleted for user:', user.email);
-      } catch (bgError) {
-        console.error('❌ Unexpected error in background deletion:', bgError);
         await supabase
           .from('account_deletion_requests')
           .update({ 
@@ -134,8 +111,44 @@ Deno.serve(async (req) => {
             processed_at: new Date().toISOString()
           })
           .eq('user_id', user.id);
+
+        return new Response(
+          JSON.stringify({ error: 'Failed to delete account' }),
+          { 
+            status: 500, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        );
       }
-    })());
+
+      // Update deletion request status
+      await supabase
+        .from('account_deletion_requests')
+        .update({ 
+          status: 'processed',
+          processed_at: new Date().toISOString()
+        })
+        .eq('user_id', user.id);
+
+      console.log('✅ Account successfully deleted for user:', user.email);
+    } catch (deletionError) {
+      console.error('❌ Unexpected error during deletion:', deletionError);
+      await supabase
+        .from('account_deletion_requests')
+        .update({ 
+          status: 'failed',
+          processed_at: new Date().toISOString()
+        })
+        .eq('user_id', user.id);
+
+      return new Response(
+        JSON.stringify({ error: 'Account deletion failed' }),
+        { 
+          status: 500, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
 
     // Respond immediately so the UI doesn't hang
     return new Response(
