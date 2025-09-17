@@ -15,6 +15,7 @@ import { EnhancedSuggestionsTable } from '@/components/admin/EnhancedSuggestions
 import { AdminActivityLog } from '@/components/admin/AdminActivityLog';
 import UsersManagement from '@/components/admin/UsersManagement';
 import { DataCopyButton } from '@/components/admin/DataCopyButton';
+import MigrateFundsButton from '@/components/admin/MigrateFundsButton';
 
 const AdminPanel = () => {
   const { user, loading, userType } = useEnhancedAuth();
@@ -250,6 +251,8 @@ const AdminPanel = () => {
 
             <TabsContent value="settings">
               <div className="space-y-6">
+                <MigrateFundsButton />
+                
                 <Card>
                   <CardHeader>
                     <CardTitle>System Settings</CardTitle>
