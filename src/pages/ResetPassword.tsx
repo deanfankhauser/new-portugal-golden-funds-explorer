@@ -71,7 +71,8 @@ export default function ResetPassword() {
       const resp = await fetch(FUNCTION_URL, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'apikey': config.anonKey
         },
         body: JSON.stringify({
           email,
