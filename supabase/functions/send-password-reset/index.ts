@@ -104,6 +104,8 @@ const handler = async (req: Request): Promise<Response> => {
       console.log("Using Supabase URL:", supabaseUrl);
       console.log("Redirect URL:", finalRedirect);
       
+      console.log("Final redirect URL being sent to Supabase:", finalRedirect);
+      
       const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
         type: 'recovery',
         email,
