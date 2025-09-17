@@ -83,7 +83,7 @@ export default function ResetPassword() {
       const { data: fnData, error: fnError } = await supabase.functions.invoke('send-password-reset', {
         body: {
           email,
-          redirectTo: `${window.location.origin}/reset-password`
+          redirectTo: 'https://funds.movingto.com/reset-password'
         }
       });
 
@@ -91,7 +91,7 @@ export default function ResetPassword() {
         console.error('Edge function error:', fnError);
         // Fallback to Supabase's built-in method
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/reset-password`
+          redirectTo: 'https://funds.movingto.com/reset-password'
         });
         
         if (error) {
@@ -114,7 +114,7 @@ export default function ResetPassword() {
       // Final fallback to Supabase built-in method
       try {
         const { error: fallbackError } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/reset-password`
+          redirectTo: 'https://funds.movingto.com/reset-password'
         });
         
         if (fallbackError) {
