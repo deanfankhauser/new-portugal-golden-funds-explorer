@@ -66,9 +66,12 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Password reset redirect target:', finalRedirect);
 
-    // Use production Supabase URL as specified in environment variables
+    // Use the correct Supabase environment variables that match frontend VITE variables
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    
+    console.log('Using Supabase URL from env:', supabaseUrl);
+    
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Generate a secure reset token (for optional custom flows) and try to build a Supabase recovery link
