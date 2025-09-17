@@ -108,6 +108,26 @@ const handler = async (req: Request): Promise<Response> => {
           code: linkError.code,
           details: linkError
         });
+        
+        // If user not found, try to generate an invite link instead
+        if (linkError.code === 'user_not_found') {
+          console.log("User not found in Auth. Attempting to generate invite link...");
+          
+          const { data: inviteData, error: inviteError } = await supabase.auth.admin.generateLink({
+            type: 'signup',
+            email,
+            options: {
+              redirectTo: finalRedirect
+            }
+          });
+          
+          if (inviteError) {
+            console.error("Failed to generate invite link:", inviteError);
+          } else {
+            console.log("Generated invite link successfully");
+            recoveryLink = (inviteData as any)?.properties?.action_link ?? (inviteData as any)?.action_link ?? null;
+          }
+        }
       } else {
         console.log("Raw link data received:", linkData);
         // Varies by SDK version
@@ -161,22 +181,33 @@ const handler = async (req: Request): Promise<Response> => {
     // Use Supabase recovery link (contains access and refresh tokens)
     const resetUrl = recoveryLink as string;
 
-    const emailSubject = "🔐 Password Reset Request - Investment Funds Platform";
+    const emailSubject = recoveryLink.includes('type=signup') 
+      ? "🔐 Complete Your Account Setup - Investment Funds Platform"
+      : "🔐 Password Reset Request - Investment Funds Platform";
+      
+    const isSignup = recoveryLink.includes('type=signup');
+    const actionText = isSignup ? "Complete Account Setup" : "Reset My Password";
+    const greeting = isSignup 
+      ? "We received a request to set up your account for the Investment Funds Platform."
+      : "We received a request to reset your password for your Investment Funds Platform account.";
+    const instruction = isSignup
+      ? "Click the button below to complete your account setup:"
+    
     const emailBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #1f2937; margin: 0;">Password Reset Request</h1>
+          <h1 style="color: #1f2937; margin: 0;">${isSignup ? 'Account Setup' : 'Password Reset Request'}</h1>
         </div>
         
         <div style="background-color: #f8fafc; padding: 25px; border-radius: 8px; border-left: 4px solid #3b82f6;">
           <p style="margin: 0 0 15px 0; font-size: 16px;">Hello,</p>
-          <p style="margin: 0 0 15px 0;">We received a request to reset your password for your Investment Funds Platform account.</p>
-          <p style="margin: 0 0 20px 0;">Click the button below to reset your password:</p>
+          <p style="margin: 0 0 15px 0;">${greeting}</p>
+          <p style="margin: 0 0 20px 0;">${instruction}</p>
           
           <div style="text-align: center; margin: 25px 0;">
             <a href="${resetUrl}" 
                style="background-color: #3b82f6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">
-              Reset My Password
+              ${actionText}
             </a>
           </div>
           
@@ -188,7 +219,7 @@ const handler = async (req: Request): Promise<Response> => {
         
         <div style="margin-top: 30px; padding: 20px; background-color: #fef3c7; border-radius: 8px;">
           <p style="margin: 0; font-size: 14px; color: #92400e;">
-            <strong>Security Notice:</strong> This reset link will expire in 1 hour. If you didn't request this reset, please ignore this email or contact support.
+            <strong>Security Notice:</strong> This ${isSignup ? 'setup' : 'reset'} link will expire in 1 hour. If you didn't request this ${isSignup ? 'account setup' : 'reset'}, please ignore this email or contact support.
           </p>
         </div>
         
