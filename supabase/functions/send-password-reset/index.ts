@@ -53,12 +53,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Password reset redirect target:', finalRedirect);
 
-    // Initialize Supabase client with environment-aware service role key
-    const isDevOrigin =
-      (finalRedirect && finalRedirect.includes('develop.movingto.com')) ||
-      ((req.headers.get('origin') || '').includes('develop.movingto.com'));
-    const supabaseUrl = Deno.env.get(isDevOrigin ? 'FUNDS_DEV_SUPABASE_URL' : 'SUPABASE_URL')!;
-    const supabaseServiceKey = Deno.env.get(isDevOrigin ? 'FUNDS_DEV_SUPABASE_SERVICE_ROLE_KEY' : 'SUPABASE_SERVICE_ROLE_KEY')!;
+    // Use production Supabase URL as specified in environment variables
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Generate a secure reset token (for optional custom flows) and try to build a Supabase recovery link
@@ -163,7 +160,7 @@ const handler = async (req: Request): Promise<Response> => {
         gmail_password: !gmailAppPassword, 
         recovery_link: !recoveryLink
       });
-      return await handleDirectSupabaseReset(email, finalRedirect, isDevOrigin);
+      return await handleDirectSupabaseReset(email, finalRedirect);
     }
 
     const client = new SMTPClient({
@@ -267,7 +264,7 @@ const handler = async (req: Request): Promise<Response> => {
       
       // Fallback to Supabase auth
       console.log("Falling back to Supabase built-in auth...");
-      return await handleDirectSupabaseReset(email, finalRedirect, isDevOrigin);
+      return await handleDirectSupabaseReset(email, finalRedirect);
     }
   } catch (error: any) {
     console.error("Error handling password reset request:", error);
@@ -284,9 +281,8 @@ const handler = async (req: Request): Promise<Response> => {
 
 // Fallback function to use Supabase's built-in auth
 async function handleDirectSupabaseReset(email: string, redirectTo?: string, isDev?: boolean) {
-  const useDev = typeof isDev === 'boolean' ? isDev : (redirectTo?.includes('develop.movingto.com') ?? false);
-  const supabaseUrl = Deno.env.get(useDev ? 'FUNDS_DEV_SUPABASE_URL' : 'SUPABASE_URL')!;
-  const supabaseServiceKey = Deno.env.get(useDev ? 'FUNDS_DEV_SUPABASE_SERVICE_ROLE_KEY' : 'SUPABASE_SERVICE_ROLE_KEY')!;
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+  const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
   const supabase = createClient(
     supabaseUrl,
     supabaseServiceKey
