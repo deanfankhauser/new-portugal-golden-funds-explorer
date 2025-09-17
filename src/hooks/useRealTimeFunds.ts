@@ -65,7 +65,7 @@ const applyEditHistory = (
       const { data: supabaseFunds, error: fetchError } = await supabase
         .from('funds')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: true }); // Order by created_at ascending to preserve original order
 
       if (fetchError) {
         console.error('Error fetching funds from Supabase:', fetchError);

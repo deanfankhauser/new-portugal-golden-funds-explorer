@@ -37,10 +37,10 @@ const MigrateFundsButton: React.FC = () => {
 
       const existingIds = new Set(existingFunds?.map(f => f.id) || []);
 
-      // Prepare funds for insertion
+      // Prepare funds for insertion with display order preserved
       const fundsToInsert = fundsData
         .filter(fund => !existingIds.has(fund.id))
-        .map(fund => ({
+        .map((fund, index) => ({
           id: fund.id,
           name: fund.name,
           description: fund.description,
@@ -63,7 +63,9 @@ const MigrateFundsButton: React.FC = () => {
           team_members: fund.team as any || null,
           pdf_documents: fund.documents as any || null,
           faqs: fund.faqs as any || null,
-          tags: fund.tags || []
+          tags: fund.tags || [],
+          // Add display order based on original static data position
+          created_at: new Date(2024, 0, 1, 0, index).toISOString(), // Use index to preserve order
         }));
 
       console.log(`Preparing to insert ${fundsToInsert.length} funds`);
