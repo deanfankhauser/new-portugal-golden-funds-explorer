@@ -112,8 +112,21 @@ const handler = async (req: Request): Promise<Response> => {
     const gmailEmail = Deno.env.get("GMAIL_EMAIL") || "";
     const gmailAppPassword = Deno.env.get("GMAIL_APP_PASSWORD") || "";
 
+    console.log("Gmail config check:", {
+      hasEmail: !!gmailEmail,
+      hasPassword: !!gmailAppPassword,
+      hasRecoveryLink: !!recoveryLink,
+      emailLength: gmailEmail.length,
+      passwordLength: gmailAppPassword.length
+    });
+
     if (!gmailEmail || !gmailAppPassword || !recoveryLink) {
       console.error("SMTP unavailable or recovery link missing. Falling back to Supabase-auth email.");
+      console.error("Missing:", {
+        gmail_email: !gmailEmail,
+        gmail_password: !gmailAppPassword, 
+        recovery_link: !recoveryLink
+      });
       return await handleDirectSupabaseReset(email, finalRedirect, isDevOrigin);
     }
 
@@ -175,6 +188,8 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Reset URL:", resetUrl);
 
     try {
+      console.log("Attempting to send email via Gmail SMTP...");
+      
       await client.send({
         from: `Investment Funds Platform <${gmailEmail}>`,
         to: email,
@@ -188,17 +203,22 @@ const handler = async (req: Request): Promise<Response> => {
       return new Response(
         JSON.stringify({
           success: true,
-          message: "Password reset email sent successfully",
+          message: "Password reset email sent successfully via Gmail",
           recipient: email,
           expiresIn: "1 hour"
         }),
         { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     } catch (error) {
-      console.error("Email sending failed:", String((error as any)?.message || error));
+      console.error("Gmail SMTP Error Details:", {
+        message: error?.message,
+        code: error?.code,
+        stack: error?.stack
+      });
       await client.close();
       
       // Fallback to Supabase auth
+      console.log("Falling back to Supabase built-in auth...");
       return await handleDirectSupabaseReset(email, finalRedirect, isDevOrigin);
     }
   } catch (error: any) {
