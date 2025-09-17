@@ -43,6 +43,7 @@ serve(async (req) => {
       'migrate-to-develop',
       'notify-super-admins',
       'send-notification-email',
+      'send-password-reset',
       'setup-develop-schema'
     ];
 
