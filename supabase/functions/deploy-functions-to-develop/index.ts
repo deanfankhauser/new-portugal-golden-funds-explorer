@@ -36,15 +36,11 @@ serve(async (req) => {
 
     // List of edge functions to deploy
     const edgeFunctions = [
-      'copy-to-develop',
       'delete-account',
-      'migrate-data',
-      'migrate-schema',
-      'migrate-to-develop',
       'notify-super-admins',
       'send-notification-email',
       'send-password-reset',
-      'setup-develop-schema'
+      'sync-production-to-develop'
     ];
 
     console.log(`📋 Found ${edgeFunctions.length} edge functions to deploy`);

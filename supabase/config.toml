@@ -11,26 +11,11 @@ verify_jwt = false
 [functions.notify-super-admins]
 verify_jwt = false
 
-[functions.migrate-data]
-verify_jwt = false
-
-[functions.migrate-schema]
-verify_jwt = false
-
-[functions.copy-to-develop]
-verify_jwt = false
-
-[functions.setup-develop-schema]
-verify_jwt = false
-
-[functions.migrate-to-develop]
-verify_jwt = false
-
-[functions.deploy-functions-to-develop]
-verify_jwt = false
-
-[functions.copy-data-to-develop]
+[functions.delete-account]
 verify_jwt = false
 
 [functions.send-password-reset]
+verify_jwt = false
+
+[functions.sync-production-to-develop]
 verify_jwt = false
