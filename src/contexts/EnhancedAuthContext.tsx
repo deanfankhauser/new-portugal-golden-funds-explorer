@@ -321,12 +321,46 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       return { error: new Error('Not authenticated') };
     }
 
+    // Helper to crop to centered square using canvas
+    const cropToSquare = (input: File): Promise<File> => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const size = Math.min(img.width, img.height);
+          const sx = (img.width - size) / 2;
+          const sy = (img.height - size) / 2;
+
+          const canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return reject(new Error('Canvas not supported'));
+
+          ctx.drawImage(img, sx, sy, size, size, 0, 0, size, size);
+          canvas.toBlob((blob) => {
+            if (!blob) return reject(new Error('Failed to create blob'));
+            const cropped = new File([blob], input.name, { type: input.type, lastModified: Date.now() });
+            resolve(cropped);
+          }, input.type, 0.9);
+        };
+        img.onerror = reject;
+        img.src = URL.createObjectURL(input);
+      });
+    };
+
+    let fileToUpload: File = file;
+    try {
+      fileToUpload = await cropToSquare(file);
+    } catch (_e) {
+      // If cropping fails, fall back to original file
+    }
+
     const fileExt = file.name.split('.').pop();
     const fileName = `${user.id}/avatar_${Date.now()}.${fileExt}`;
 
     const { error: uploadError } = await supabase.storage
       .from('profile-photos')
-      .upload(fileName, file, { upsert: true });
+      .upload(fileName, fileToUpload, { upsert: true });
 
     if (uploadError) {
       return { error: uploadError };
@@ -339,7 +373,6 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     const avatarUrl = `${data.publicUrl}?t=${Date.now()}`;
 
     // Update profile with new avatar URL
-    // Use correct field name based on user type
     const updateField = userType === 'manager' ? { logo_url: avatarUrl } : { avatar_url: avatarUrl };
     const { error: updateError } = await updateProfile(updateField);
 
