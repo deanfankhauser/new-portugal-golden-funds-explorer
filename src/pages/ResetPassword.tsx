@@ -64,8 +64,10 @@ export default function ResetPassword() {
     setIsSubmitting(true);
 
     try {
-      // Call the production edge function directly to avoid project ref mismatches
-      const FUNCTION_URL = 'https://bkmvydnfhmkjnuszroim.supabase.co/functions/v1/send-password-reset';
+      // Use environment-aware URL to call the correct project's edge function
+      const config = (await import('@/lib/supabase-config')).getSupabaseConfig();
+      const FUNCTION_URL = `${config.url}/functions/v1/send-password-reset`;
+      
       const resp = await fetch(FUNCTION_URL, {
         method: 'POST',
         headers: {
