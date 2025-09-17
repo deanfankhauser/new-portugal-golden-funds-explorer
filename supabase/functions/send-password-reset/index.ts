@@ -200,54 +200,63 @@ const handler = async (req: Request): Promise<Response> => {
     const resetUrl = recoveryLink as string;
 
     const emailSubject = recoveryLink.includes('type=signup') 
-      ? "🔐 Complete Your Account Setup - Investment Funds Platform"
-      : "🔐 Password Reset Request - Investment Funds Platform";
+      ? "Complete Your Account Setup - Investment Funds Platform"
+      : "Password Reset Request - Investment Funds Platform";
       
     const isSignup = recoveryLink.includes('type=signup');
     const actionText = isSignup ? "Create Your Account" : "Reset My Password";
-    const greeting = isSignup 
-      ? "You requested a password reset, but no account exists with this email address. To get started with the Investment Funds Platform, you'll need to create an account first."
+    const headingText = isSignup ? "Account Setup" : "Password Reset Request";
+    const greetingText = isSignup 
+      ? "You requested a password reset, but no account exists with this email address. To get started with the Investment Funds Platform, you need to create an account first."
       : "We received a request to reset your password for your Investment Funds Platform account.";
-    const instruction = isSignup
+    const instructionText = isSignup
       ? "Click the button below to create your account and get started:"
       : "Click the button below to reset your password:";
+    const noticeAction = isSignup ? "account setup" : "reset";
     
-    const emailBody = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    const emailBody = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${emailSubject}</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #1f2937; margin: 0;">${isSignup ? 'Account Setup' : 'Password Reset Request'}</h1>
+            <h1 style="color: #1f2937; margin: 0; font-size: 24px;">${headingText}</h1>
         </div>
         
-        <div style="background-color: #f8fafc; padding: 25px; border-radius: 8px; border-left: 4px solid #3b82f6;">
-          <p style="margin: 0 0 15px 0; font-size: 16px;">Hello,</p>
-          <p style="margin: 0 0 15px 0;">${greeting}</p>
-          <p style="margin: 0 0 20px 0;">${instruction}</p>
-          
-          <div style="text-align: center; margin: 25px 0;">
-            <a href="${resetUrl}" 
-               style="background-color: #3b82f6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">
-              ${actionText}
-            </a>
-          </div>
-          
-          <p style="margin: 15px 0 0 0; font-size: 14px; color: #6b7280;">
-            Or copy and paste this link in your browser:<br>
-            <a href="${resetUrl}" style="color: #3b82f6; word-break: break-all;">${resetUrl}</a>
-          </p>
+        <div style="background-color: #f8fafc; padding: 25px; border-radius: 8px; border-left: 4px solid #3b82f6; margin-bottom: 20px;">
+            <p style="margin: 0 0 15px 0; font-size: 16px; color: #333;">Hello,</p>
+            <p style="margin: 0 0 15px 0; color: #333; line-height: 1.5;">${greetingText}</p>
+            <p style="margin: 0 0 20px 0; color: #333;">${instructionText}</p>
+            
+            <div style="text-align: center; margin: 25px 0;">
+                <a href="${resetUrl}" style="background-color: #3b82f6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block; font-size: 16px;">
+                    ${actionText}
+                </a>
+            </div>
+            
+            <p style="margin: 15px 0 0 0; font-size: 14px; color: #6b7280; line-height: 1.4;">
+                Or copy and paste this link in your browser:<br>
+                <a href="${resetUrl}" style="color: #3b82f6; word-break: break-all; font-size: 12px;">${resetUrl}</a>
+            </p>
         </div>
         
-        <div style="margin-top: 30px; padding: 20px; background-color: #fef3c7; border-radius: 8px;">
-          <p style="margin: 0; font-size: 14px; color: #92400e;">
-            <strong>Security Notice:</strong> This ${isSignup ? 'setup' : 'reset'} link will expire in 1 hour. If you didn't request this ${isSignup ? 'account setup' : 'reset'}, please ignore this email or contact support.
-          </p>
+        <div style="padding: 20px; background-color: #fef3c7; border-radius: 8px; margin-bottom: 20px;">
+            <p style="margin: 0; font-size: 14px; color: #92400e; line-height: 1.4;">
+                <strong>Security Notice:</strong> This ${noticeAction} link will expire in 1 hour. If you did not request this ${noticeAction}, please ignore this email or contact support.
+            </p>
         </div>
         
-        <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #9ca3af;">
-          <p>Investment Funds Platform<br>
-          This email was sent to ${email}</p>
+        <div style="text-align: center; font-size: 12px; color: #9ca3af; border-top: 1px solid #e5e7eb; padding-top: 20px;">
+            <p style="margin: 0;">Investment Funds Platform<br>
+            This email was sent to ${email}</p>
         </div>
-      </div>
-    `;
+    </div>
+</body>
+</html>`;
 
     console.log("=== SENDING PASSWORD RESET EMAIL via Gmail SMTP ===");
     console.log("To:", email);
