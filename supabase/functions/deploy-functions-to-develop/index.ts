@@ -38,8 +38,10 @@ serve(async (req) => {
     const edgeFunctions = [
       'delete-account',
       'notify-super-admins',
-      'send-notification-email',
+      'send-confirmation-email',
+      'send-notification-email', 
       'send-password-reset',
+      'send-welcome-email',
       'sync-production-to-develop'
     ];
 
