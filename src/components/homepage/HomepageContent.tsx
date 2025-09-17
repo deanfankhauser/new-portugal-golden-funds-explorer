@@ -18,6 +18,8 @@ interface HomepageContentProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   allFunds?: Fund[];
+  loading?: boolean;
+  error?: string | null;
 }
 
 const HomepageContent: React.FC<HomepageContentProps> = ({
@@ -26,10 +28,11 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
   setSelectedTags,
   searchQuery,
   setSearchQuery,
-  allFunds = []
+  allFunds = [],
+  loading = false,
+  error = null
 }) => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
-  const [isLoading] = useState(false);
 
   const hasActiveFilters = selectedTags.length > 0 || searchQuery.trim() !== '';
 
@@ -66,9 +69,14 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
         />
         
         <main className="lg:col-span-3 order-1 lg:order-2" id="main-content">
-          {isLoading ? (
+          {loading ? (
             <div role="status" aria-label="Loading funds">
               <FundListSkeleton />
+            </div>
+          ) : error ? (
+            <div className="text-center py-8">
+              <p className="text-destructive">Error loading funds: {error}</p>
+              <p className="text-muted-foreground mt-2">Please try refreshing the page.</p>
             </div>
           ) : filteredFunds.length === 0 ? (
             <EmptyFundsState
