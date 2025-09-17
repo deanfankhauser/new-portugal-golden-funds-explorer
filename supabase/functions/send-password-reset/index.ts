@@ -33,6 +33,7 @@ const handler = async (req: Request): Promise<Response> => {
       defaultBase = reqOrigin && reqOrigin.startsWith('http') ? new URL(reqOrigin).origin : '';
     }
     if (!defaultBase) {
+      // Use the current project URL as default instead of hardcoded domain
       defaultBase = 'https://funds.movingto.com';
     }
     // Keep the actual origin URL for development/preview environments
@@ -54,9 +55,13 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('Password reset redirect target:', finalRedirect);
 
     // Initialize Supabase client with environment-aware service role key
-    const isDevOrigin =
-      (finalRedirect && finalRedirect.includes('develop.movingto.com')) ||
-      ((req.headers.get('origin') || '').includes('develop.movingto.com'));
+    // Detect if this is a development/preview environment vs production
+    const isDevOrigin = 
+      (finalRedirect && (finalRedirect.includes('develop.movingto.com') || finalRedirect.includes('lovable.app'))) ||
+      ((req.headers.get('origin') || '').includes('develop.movingto.com')) ||
+      ((req.headers.get('origin') || '').includes('lovable.app'));
+    
+    // Use production environment by default, dev only for specific domains
     const supabaseUrl = Deno.env.get(isDevOrigin ? 'FUNDS_DEV_SUPABASE_URL' : 'SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get(isDevOrigin ? 'FUNDS_DEV_SUPABASE_SERVICE_ROLE_KEY' : 'SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
