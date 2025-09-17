@@ -117,7 +117,7 @@ const handler = async (req: Request): Promise<Response> => {
             type: 'signup',
             email,
             options: {
-              redirectTo: finalRedirect
+              redirectTo: finalRedirect // Use same redirect as password reset
             }
           });
           
@@ -186,12 +186,12 @@ const handler = async (req: Request): Promise<Response> => {
       : "🔐 Password Reset Request - Investment Funds Platform";
       
     const isSignup = recoveryLink.includes('type=signup');
-    const actionText = isSignup ? "Complete Account Setup" : "Reset My Password";
+    const actionText = isSignup ? "Create Your Account" : "Reset My Password";
     const greeting = isSignup 
-      ? "We received a request to set up your account for the Investment Funds Platform."
+      ? "You requested a password reset, but no account exists with this email address. To get started with the Investment Funds Platform, you'll need to create an account first."
       : "We received a request to reset your password for your Investment Funds Platform account.";
     const instruction = isSignup
-      ? "Click the button below to complete your account setup:"
+      ? "Click the button below to create your account and get started:"
       : "Click the button below to reset your password:";
     
     const emailBody = `
