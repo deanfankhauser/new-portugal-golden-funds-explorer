@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import React from 'npm:react@18.3.1';
 import { renderAsync } from 'npm:@react-email/components@0.0.22';
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
-import { WelcomeEmail } from '../send-confirmation-email/_templates/welcome-email.tsx';
+import { WelcomeEmail } from './_templates/welcome-email.tsx';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
