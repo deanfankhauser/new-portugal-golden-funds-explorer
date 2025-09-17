@@ -90,6 +90,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Always try to generate a Supabase recovery link we can email
     try {
+      console.log("Attempting to generate Supabase recovery link for:", email);
+      console.log("Using Supabase URL:", supabaseUrl);
+      console.log("Redirect URL:", finalRedirect);
+      
       const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
         type: 'recovery',
         email,
@@ -99,14 +103,26 @@ const handler = async (req: Request): Promise<Response> => {
       });
 
       if (linkError) {
-        console.log("Failed to generate Supabase recovery link:", linkError);
+        console.error("Failed to generate Supabase recovery link:", {
+          message: linkError.message,
+          code: linkError.code,
+          details: linkError
+        });
       } else {
+        console.log("Raw link data received:", linkData);
         // Varies by SDK version
         recoveryLink = (linkData as any)?.properties?.action_link ?? (linkData as any)?.action_link ?? null;
-        console.log("Generated Supabase recovery link");
+        console.log("Extracted recovery link:", recoveryLink ? "✅ Success" : "❌ Failed to extract");
+        if (recoveryLink) {
+          console.log("Recovery link preview:", recoveryLink.substring(0, 100) + "...");
+        }
       }
     } catch (err) {
-      console.log("Error generating Supabase recovery link:", err);
+      console.error("Exception generating Supabase recovery link:", {
+        message: err?.message,
+        stack: err?.stack,
+        error: err
+      });
     }
 
     const gmailEmail = Deno.env.get("GMAIL_EMAIL") || "";
