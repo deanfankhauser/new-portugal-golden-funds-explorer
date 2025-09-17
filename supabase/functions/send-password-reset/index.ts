@@ -192,6 +192,7 @@ const handler = async (req: Request): Promise<Response> => {
       : "We received a request to reset your password for your Investment Funds Platform account.";
     const instruction = isSignup
       ? "Click the button below to complete your account setup:"
+      : "Click the button below to reset your password:";
     
     const emailBody = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
