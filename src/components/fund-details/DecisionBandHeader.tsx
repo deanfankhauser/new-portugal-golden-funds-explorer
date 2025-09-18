@@ -11,6 +11,7 @@ import { formatPercentage } from './utils/formatters';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
 import { FundEditButton } from '../fund-editing/FundEditButton';
 import { calculateRiskScore, getRiskLabel, getRiskColor } from '../../utils/riskCalculation';
+import FundLogo from './FundLogo';
 
 interface DecisionBandHeaderProps {
   fund: Fund;
@@ -117,15 +118,15 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
           {/* Left: Fund Name + Thesis */}
           <div className="lg:col-span-1">
             <div className="flex items-start gap-4">
-              {fund.logoUrl && (
-                <Link to={`/manager/${fund.managerName?.toLowerCase().replace(/\s+/g, '-')}`} className="flex-shrink-0">
-                  <img 
-                    src={fund.logoUrl} 
-                    alt={`${fund.managerName} logo`}
-                    className="w-12 h-12 rounded-lg object-contain bg-muted p-1 hover:scale-105 transition-transform duration-200"
-                  />
-                </Link>
-              )}
+              <Link to={`/manager/${fund.managerName?.toLowerCase().replace(/\s+/g, '-')}`} className="flex-shrink-0">
+                <FundLogo 
+                  logoUrl={fund.logoUrl}
+                  fundName={fund.name}
+                  fundId={fund.id}
+                  size="md"
+                  className="hover:scale-105 transition-transform duration-200"
+                />
+              </Link>
               <div className="min-w-0 flex-1">
                 <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 leading-tight">
                   {fund.name}
