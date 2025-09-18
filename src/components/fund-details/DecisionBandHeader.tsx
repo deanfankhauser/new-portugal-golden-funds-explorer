@@ -214,15 +214,6 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                 )}
                 
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="justify-center p-2 text-center flex-1">
-                    <div>
-                      <div className="text-xs text-muted-foreground">Risk</div>
-                      <div className={`font-semibold ${riskColor}`}>
-                        {riskScore}/7
-                      </div>
-                    </div>
-                  </Badge>
-                  <InfoTip content={`${riskLabel} - Scale: 1 (low) to 7 (high)`} iconSize={12} />
                 </div>
               </div>
             

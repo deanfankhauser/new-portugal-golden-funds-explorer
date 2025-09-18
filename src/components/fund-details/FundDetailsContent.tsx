@@ -24,23 +24,17 @@ import ROICalculator from './ROICalculator';
 import AlternativeFunds from './AlternativeFunds';
 import RelatedFunds from './RelatedFunds';
 import FundComparisonSuggestions from './FundComparisonSuggestions';
-import EnhancedGVEligibilityBadge from './EnhancedGVEligibilityBadge';
-import EligibilityBasisInfo from './EligibilityBasisInfo';
 import RegulatoryComplianceInfo from './RegulatoryComplianceInfo';
 import FeeDisclaimer from './FeeDisclaimer';
-import EligibilityBasisDisplayLine from './EligibilityBasisDisplayLine';
 import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
 
 import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
 import { Button } from '@/components/ui/button';
 import { ClipboardCheck, TrendingUp } from 'lucide-react';
-import DataFreshnessWarning from '../common/DataFreshnessWarning';
 import { tagToSlug } from '@/lib/utils';
 import { VerifiedReviews } from './reviews/VerifiedReviews';
-import { DATA_AS_OF_LABEL } from '../../utils/constants';
 import FundBreadcrumbs from './FundBreadcrumbs';
-import FundDataFreshnessDisplay from './FundDataFreshnessDisplay';
 import { FundEditButton } from '../fund-editing/FundEditButton';
 
 interface FundDetailsContentProps {
@@ -91,32 +85,11 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
 
       <div className="bg-card rounded-xl md:rounded-2xl shadow-md border border-border overflow-hidden transition-shadow duration-300 hover:shadow-lg">
         <div className="p-4 md:p-6 lg:p-10 space-y-6 md:space-y-8 lg:space-y-10">
-          {/* Fund Edit Button - Community Editing */}
-          <div className="flex justify-center">
-            <FundEditButton fund={fund} />
-          </div>
-          
           {/* Main content with tabs - Detailed Information */}
           <FundTabsLazySection fund={fund} />
           
-          {/* Fund Edit Button - Community Editing */}
-          <div className="flex justify-center">
-            <FundEditButton fund={fund} />
-          </div>
-          
           {/* Data Quality Indicators - Trust Signals */}
           <FundDataFreshness fund={fund} />
-          <DataFreshnessWarning fund={fund} />
-          <FundDataFreshnessDisplay fund={fund} />
-          
-          {/* Enhanced GV Eligibility Badge */}
-          <EnhancedGVEligibilityBadge fund={fund} showDetails={true} />
-          
-          {/* Eligibility Basis Display Line */}
-          <EligibilityBasisDisplayLine fund={fund} />
-          
-          {/* Eligibility Basis Information */}
-          <EligibilityBasisInfo fund={fund} />
           
           {/* Fee Disclaimer */}
           <FeeDisclaimer />
@@ -124,32 +97,17 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           {/* Regulatory & Compliance Information */}
           <RegulatoryComplianceInfo fund={fund} />
           
+          {/* Fund Edit Button - Community Editing */}
+          <div className="flex justify-center">
+            <FundEditButton fund={fund} />
+          </div>
+          
           {/* Structure description and Report Button */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <FundStructureInfo fund={fund} />
             <ReportButton fundName={fund.name} />
           </div>
           
-          {/* Marketing CTAs - Lower Priority */}
-          <div className="bg-gradient-to-r from-primary/5 to-accent/5 p-4 md:p-6 rounded-lg border border-primary/20">
-            <div className="text-center">
-              <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Portugal Golden Visa Qualified Fund</h3>
-            <p className="text-xs md:text-sm text-muted-foreground mb-4">
-              Appears GV-eligible {DATA_AS_OF_LABEL} based on manager documentation. GV still requires €500,000 total. Always verify with your lawyer and the fund manager.
-            </p>
-              <a 
-                href="https://movingto.com/pt/portugal-golden-visa" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-primary hover:text-primary/80 font-medium text-sm transition-colors duration-200"
-              >
-                Learn about Golden Visa requirements
-                <svg className="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
-            </div>
-          </div>
 
           <div className="bg-gradient-to-r from-success/10 to-success/5 p-4 md:p-6 rounded-lg border border-success/30">
             <div className="text-center">
@@ -176,7 +134,6 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           
           {/* Legal and Administrative - Bottom */}
           <InvestorNotice />
-          <IntroductionButton variant="full" />
           
           {/* Tags Section - Bottom */}
           <div className="border-t border-border pt-6">
