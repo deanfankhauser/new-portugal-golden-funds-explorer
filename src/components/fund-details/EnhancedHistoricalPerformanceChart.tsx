@@ -143,7 +143,7 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
                 return (
                   <div key={index} className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-blue-500" />
+                      <div className="w-3 h-3 rounded-full bg-primary" />
                       <span className="text-sm text-muted-foreground">Monthly Return</span>
                     </div>
                     <span className={`text-sm font-semibold ${entry.value >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
@@ -156,7 +156,7 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
                 return (
                   <div key={index} className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-emerald-500" />
+                      <div className="w-3 h-3 rounded-full bg-accent" />
                       <span className="text-sm text-muted-foreground">Assets Under Management</span>
                     </div>
                     <span className="text-sm font-semibold text-foreground">
@@ -339,14 +339,14 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
             >
               <defs>
                 <linearGradient id="returnsGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="rgb(59, 130, 246)" stopOpacity={0.4}/>
-                  <stop offset="50%" stopColor="rgb(59, 130, 246)" stopOpacity={0.2}/>
-                  <stop offset="100%" stopColor="rgb(59, 130, 246)" stopOpacity={0.05}/>
+                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4}/>
+                  <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity={0.2}/>
+                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.05}/>
                 </linearGradient>
                 <linearGradient id="aumGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="rgb(16, 185, 129)" stopOpacity={0.4}/>
-                  <stop offset="50%" stopColor="rgb(16, 185, 129)" stopOpacity={0.25}/>
-                  <stop offset="100%" stopColor="rgb(16, 185, 129)" stopOpacity={0.08}/>
+                  <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity={0.4}/>
+                  <stop offset="50%" stopColor="hsl(var(--accent))" stopOpacity={0.25}/>
+                  <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity={0.08}/>
                 </linearGradient>
               </defs>
               
@@ -447,18 +447,18 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
                   yAxisId="returns"
                   type="monotone"
                   dataKey="returns"
-                  stroke="rgb(59, 130, 246)"
+                  stroke="hsl(var(--primary))"
                   strokeWidth={3}
                   dot={{ 
-                    fill: 'rgb(59, 130, 246)', 
+                    fill: 'hsl(var(--primary))', 
                     strokeWidth: 2,
-                    stroke: 'white',
+                    stroke: 'hsl(var(--background))',
                     r: 4
                   }}
                   activeDot={{ 
                     r: 6, 
-                    fill: 'rgb(59, 130, 246)',
-                    stroke: 'white',
+                    fill: 'hsl(var(--primary))',
+                    stroke: 'hsl(var(--background))',
                     strokeWidth: 2
                   }}
                   name="Returns (%)"
@@ -471,18 +471,18 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
                   yAxisId="aum"
                   type="monotone"
                   dataKey="aum"
-                  stroke="rgb(16, 185, 129)"
+                  stroke="hsl(var(--accent))"
                   strokeWidth={4}
                   dot={{ 
                     r: 4, 
-                    fill: 'rgb(16, 185, 129)',
-                    stroke: 'white',
+                    fill: 'hsl(var(--accent))',
+                    stroke: 'hsl(var(--background))',
                     strokeWidth: 2
                   }}
                   activeDot={{ 
                     r: 6, 
-                    fill: 'rgb(16, 185, 129)',
-                    stroke: 'white',
+                    fill: 'hsl(var(--accent))',
+                    stroke: 'hsl(var(--background))',
                     strokeWidth: 3
                   }}
                   name="AUM (€M)"
