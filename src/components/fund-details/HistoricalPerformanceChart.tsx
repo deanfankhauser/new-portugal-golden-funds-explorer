@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ComposedChart } from 'recharts';
 import { TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
@@ -16,6 +17,7 @@ interface HistoricalPerformanceChartProps {
 const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({ 
   historicalPerformance 
 }) => {
+  const [selectedPeriod, setSelectedPeriod] = useState('1Y');
   if (!historicalPerformance || Object.keys(historicalPerformance).length === 0) {
     return (
       <Card className="border-0 shadow-sm bg-card/50">
@@ -40,9 +42,10 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
   }
 
   // Convert data to chart format and sort by date
-  const chartData = Object.entries(historicalPerformance)
+  const allChartData = Object.entries(historicalPerformance)
     .map(([dateStr, data]) => ({
       date: dateStr,
+      dateObj: new Date(dateStr),
       returns: data.returns || 0,
       aum: data.aum || 0,
       nav: data.nav || 0,
@@ -51,7 +54,39 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
         year: '2-digit' 
       })
     }))
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
+
+  // Filter data based on selected period
+  const getFilteredData = (period: string) => {
+    const now = new Date();
+    const cutoffDate = new Date();
+    
+    switch (period) {
+      case 'YTD':
+        cutoffDate.setMonth(0, 1); // Start of current year
+        break;
+      case '1Y':
+        cutoffDate.setFullYear(now.getFullYear() - 1);
+        break;
+      case '3Y':
+        cutoffDate.setFullYear(now.getFullYear() - 3);
+        break;
+      case '5Y':
+        cutoffDate.setFullYear(now.getFullYear() - 5);
+        break;
+      default:
+        return allChartData;
+    }
+    
+    return allChartData.filter(item => item.dateObj >= cutoffDate);
+  };
+
+  // Check data availability for each period
+  const hasDataForPeriod = (period: string) => {
+    return getFilteredData(period).length > 0;
+  };
+
+  const chartData = getFilteredData(selectedPeriod);
 
   // Calculate performance metrics
   const latestData = chartData[chartData.length - 1];
@@ -140,7 +175,40 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
       </CardHeader>
       
       <CardContent className="pt-0">
-        <div className="h-80 w-full">
+        <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod} className="mb-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger 
+              value="YTD" 
+              disabled={!hasDataForPeriod('YTD')}
+              className="disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              YTD
+            </TabsTrigger>
+            <TabsTrigger 
+              value="1Y" 
+              disabled={!hasDataForPeriod('1Y')}
+              className="disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              1 Year
+            </TabsTrigger>
+            <TabsTrigger 
+              value="3Y" 
+              disabled={!hasDataForPeriod('3Y')}
+              className="disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              3 Years
+            </TabsTrigger>
+            <TabsTrigger 
+              value="5Y" 
+              disabled={!hasDataForPeriod('5Y')}
+              className="disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              5 Years
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value={selectedPeriod} className="mt-6">
+            <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart
               data={chartData} 
@@ -273,8 +341,10 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                 connectNulls={false}
               />
             </ComposedChart>
-          </ResponsiveContainer>
-        </div>
+            </ResponsiveContainer>
+            </div>
+          </TabsContent>
+        </Tabs>
         
         {/* Performance Disclaimer */}
         <div className="mt-6 p-4 bg-muted/30 rounded-lg border border-border/50">
