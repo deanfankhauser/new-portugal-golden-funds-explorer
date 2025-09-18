@@ -23,7 +23,7 @@ const FloatingTableOfContents: React.FC<FloatingTableOfContentsProps> = ({ fund 
     { id: 'documents-disclosures', title: 'Documents', icon: '📁' },
     { id: 'related-funds', title: 'Similar Funds', icon: '🔗' },
     { id: 'alternatives', title: 'Alternatives', icon: '🔄' },
-    { id: 'reviews', title: 'Reviews', icon: '⭐' },
+    
   ];
 
   // Show TOC only on mobile when user scrolls past header

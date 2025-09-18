@@ -19,7 +19,7 @@ import BackToFundsButton from './BackToFundsButton';
 import { Button } from '@/components/ui/button';
 import { ClipboardCheck, TrendingUp } from 'lucide-react';
 import { tagToSlug } from '@/lib/utils';
-import { VerifiedReviews } from './reviews/VerifiedReviews';
+
 import FundBreadcrumbs from './FundBreadcrumbs';
 import { FundEditButton } from '../fund-editing/FundEditButton';
 import FundSideNavigation from './FundSideNavigation';
@@ -204,8 +204,6 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       {/* ROI Calculator */}
       <ROICalculator fund={fund} />
       
-      {/* Verified Reviews Section */}
-      <VerifiedReviews fund={fund} />
       
       {/* FAQ Section */}
       <FundFAQSection fund={fund} />

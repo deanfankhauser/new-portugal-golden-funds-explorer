@@ -3,7 +3,7 @@ import { URL_CONFIG } from '../utils/urlConfig';
 import { funds } from '../data/funds';
 import { normalizeComparisonSlug } from '../utils/comparisonUtils';
 import { getComparisonBySlug } from '../data/services/comparison-service';
-import { ReviewsService } from '../data/services/reviews-service';
+
 
 export class ConsolidatedSEOService {
   private static readonly DEFAULT_IMAGE = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
@@ -560,14 +560,7 @@ export class ConsolidatedSEOService {
       }
     };
 
-    // Add review data if available
-    const reviewData = ReviewsService.buildReviewStructuredData(fund.id);
-    if (reviewData) {
-      baseStructuredData['aggregateRating'] = reviewData.aggregateRating;
-      baseStructuredData['review'] = reviewData.review;
-      
-      return baseStructuredData;
-    }
+    return baseStructuredData;
   }
 
   private static getCategoryStructuredData(categoryName: string, funds: any[] = []): any {
