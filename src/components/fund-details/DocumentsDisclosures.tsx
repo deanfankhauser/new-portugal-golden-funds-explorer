@@ -135,8 +135,8 @@ const DocumentsDisclosures: React.FC<DocumentsDisclosuresProps> = ({ fund }) => 
                     onClick={() => handleDocumentRequest(doc)}
                     className="ml-3"
                   >
-                    <Download className="w-4 h-4 mr-1" />
-                    Download
+                    <ExternalLink className="w-4 h-4 mr-1" />
+                    Request
                   </Button>
                 </div>
               ))}
