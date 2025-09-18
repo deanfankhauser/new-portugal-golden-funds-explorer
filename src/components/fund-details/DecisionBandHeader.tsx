@@ -136,8 +136,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
 
           {/* Center: Primary KPIs */}
           <div className="lg:col-span-1">
-            <TooltipProvider>
-              <div className="grid grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3">
                 {ytdPerf !== null && (
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -244,7 +243,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                   </TooltipContent>
                 </Tooltip>
               </div>
-            </TooltipProvider>
+            
             
             <div className="text-xs text-muted-foreground mt-3 text-center lg:text-left">
               Last updated: {DATA_AS_OF_LABEL}
