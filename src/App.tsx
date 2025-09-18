@@ -310,7 +310,6 @@ function App() {
                     </Routes>
                   </div>
                   <Toaster />
-                  <LazyExitIntentPopup />
                   <SEODebugger />
                 </SEOProvider>
               </Router>
