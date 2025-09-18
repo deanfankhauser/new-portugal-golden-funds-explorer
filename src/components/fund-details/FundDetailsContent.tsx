@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import DecisionBandHeader from './DecisionBandHeader';
-import PerformanceModule from './PerformanceModule';
+import HistoricalPerformanceChart from './HistoricalPerformanceChart';
 import TrustPracticalityCards from './TrustPracticalityCards';
 import KeyTermsTable from './KeyTermsTable';
 import StrategyPortfolioSection from './StrategyPortfolioSection';
@@ -69,8 +69,8 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
         {/* Above-the-fold Decision Band */}
         <DecisionBandHeader fund={fund} />
         
-        {/* Performance Module - Full Width */}
-        <PerformanceModule fund={fund} />
+        {/* Historical Performance Chart - Full Width */}
+        <HistoricalPerformanceChart historicalPerformance={fund.historicalPerformance} />
         
         {/* Just Below the Fold - Trust + Practicality */}
         <TrustPracticalityCards fund={fund} />
