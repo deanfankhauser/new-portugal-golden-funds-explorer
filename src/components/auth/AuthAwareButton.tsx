@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Settings, LogOut, Building, TrendingUp, Shield } from 'lucide-react';
+import { User, Settings, LogOut, Building, TrendingUp, Shield, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import UniversalAuthButton from './UniversalAuthButton';
 import { supabase } from '@/integrations/supabase/client';
@@ -136,6 +136,12 @@ const AuthAwareButton = () => {
           </div>
         </div>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/saved-funds" className="w-full cursor-pointer">
+            <Heart className="mr-2 h-4 w-4" />
+            Saved Funds
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to="/account-settings" className="w-full cursor-pointer">
             <User className="mr-2 h-4 w-4" />

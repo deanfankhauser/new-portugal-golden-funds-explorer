@@ -15,7 +15,7 @@ import {
 import ComparisonIndicator from "./ComparisonIndicator";
 import MobileNavigation from "./MobileNavigation";
 import DisclaimerBanner from "./common/DisclaimerBanner";
-import { ArrowLeft, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3, GitCompareArrows, Heart } from "lucide-react";
+import { ArrowLeft, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3, GitCompareArrows } from "lucide-react";
 import { FundIndexWidget, ComparisonWidget } from "./navigation/IndexWidgets";
 
 const Header = () => {
@@ -119,15 +119,6 @@ const Header = () => {
                              <div>
                                <div className="font-medium text-foreground">Fund Managers</div>
                                <div className="text-sm text-muted-foreground">Explore managers</div>
-                             </div>
-                           </Link>
-                         </NavigationMenuLink>
-                         <NavigationMenuLink asChild>
-                           <Link to="/saved-funds" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
-                             <Heart className="h-5 w-5 text-primary flex-shrink-0" />
-                             <div>
-                               <div className="font-medium text-foreground">Saved Funds</div>
-                               <div className="text-sm text-muted-foreground">Your favorite funds</div>
                              </div>
                            </Link>
                          </NavigationMenuLink>
