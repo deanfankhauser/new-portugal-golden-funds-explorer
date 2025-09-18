@@ -76,14 +76,14 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
         <TrustPracticalityCards fund={fund} />
         
         {/* Main Content Layout with Side Navigation */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Side Navigation - Desktop Only */}
-          <div className="hidden lg:block">
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+          {/* Side Navigation */}
+          <div className="xl:block">
             <FundSideNavigation />
           </div>
           
           {/* Main Content Area */}
-          <div className="lg:col-span-3">
+          <div className="xl:col-span-3">
             <div className="bg-card rounded-xl md:rounded-2xl shadow-md border border-border overflow-hidden transition-shadow duration-300 hover:shadow-lg">
               <div className="p-4 md:p-6 lg:p-10 space-y-8 md:space-y-12">
                 
@@ -102,7 +102,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                 {/* Key Terms & Strategy Section */}
                 <section id="key-terms-strategy" className="scroll-mt-24">
                   <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Key Terms & Strategy</h2>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
                     <KeyTermsTable fund={fund} />
                     <StrategyPortfolioSection fund={fund} />
                   </div>
@@ -117,7 +117,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                 {/* Financial Details Section */}
                 <section id="financial-details" className="scroll-mt-24">
                   <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Financial Details</h2>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
                     <div className="space-y-6">
                       <FeeStructure fund={fund} formatPercentage={formatPercentage} />
                       <RedemptionTerms redemptionTerms={fund.redemptionTerms} />

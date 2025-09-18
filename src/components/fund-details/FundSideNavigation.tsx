@@ -25,7 +25,7 @@ const FundSideNavigation: React.FC<FundSideNavigationProps> = ({ className = '' 
   ];
 
   return (
-    <div className={`sticky top-24 bg-card border border-border rounded-lg p-4 space-y-2 ${className}`}>
+    <div className={`xl:sticky xl:top-24 bg-card border border-border rounded-lg p-4 space-y-2 mb-6 xl:mb-0 ${className}`}>
       <h3 className="text-sm font-semibold text-foreground mb-3">Quick Navigation</h3>
       {navItems.map((item) => (
         <Button
