@@ -8,6 +8,7 @@ import { useComparison } from '../../contexts/ComparisonContext';
 import { tagToSlug } from '@/lib/utils';
 import IntroductionButton from './IntroductionButton';
 import EnhancedGVEligibilityBadge from './EnhancedGVEligibilityBadge';
+import FundLogo from './FundLogo';
 
 interface FundHeaderProps {
   fund: Fund;
@@ -42,11 +43,18 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
       <div className="bg-gradient-to-r from-secondary to-muted p-4 md:p-8 lg:p-10 border-b border-border">
         <div className="flex flex-col gap-4 mb-4 md:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-            <div className="flex-1">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-foreground tracking-tight leading-tight">
-                {fund.name} | Portugal Investment Fund
-              </h1>
-              <EnhancedGVEligibilityBadge fund={fund} showDetails={false} />
+            <div className="flex items-center gap-4 flex-1">
+              <FundLogo 
+                logoUrl={fund.logoUrl} 
+                fundName={fund.name} 
+                size="xl" 
+              />
+              <div className="min-w-0 flex-1">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-foreground tracking-tight leading-tight">
+                  {fund.name} | Portugal Investment Fund
+                </h1>
+                <EnhancedGVEligibilityBadge fund={fund} showDetails={false} />
+              </div>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
               <Button 

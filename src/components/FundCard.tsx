@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { GitCompare, User, Euro } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { managerToSlug } from '../lib/utils';
+import FundLogo from './fund-details/FundLogo';
 
 interface FundCardProps {
   fund: Fund;
@@ -41,12 +42,19 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
     <>
       <Card className="h-full hover:shadow-lg transition-shadow">
         <CardHeader className="pb-2">
-          <div className="flex justify-between items-start">
-            <CardTitle className="text-xl">
-              <Link to={`/${fund.id}`} className="hover:text-accent transition-colors" onClick={() => window.scrollTo(0, 0)}>
-                {fund.name}
-              </Link>
-            </CardTitle>
+          <div className="flex justify-between items-start gap-3">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <FundLogo 
+                logoUrl={fund.logoUrl} 
+                fundName={fund.name} 
+                size="md" 
+              />
+              <CardTitle className="text-xl min-w-0">
+                <Link to={`/${fund.id}`} className="hover:text-accent transition-colors block" onClick={() => window.scrollTo(0, 0)}>
+                  {fund.name}
+                </Link>
+              </CardTitle>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
