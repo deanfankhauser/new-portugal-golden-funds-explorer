@@ -126,7 +126,7 @@ const StrategyPortfolioSection: React.FC<StrategyPortfolioSectionProps> = ({ fun
       </Card>
 
       {/* Portfolio Allocation */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="space-y-6">
         
         {/* Geographic Allocation */}
         <Card>
@@ -220,7 +220,7 @@ const StrategyPortfolioSection: React.FC<StrategyPortfolioSectionProps> = ({ fun
                   </div>
                 </div>
               ))}
-            </div>
+      </div>
             
             <div className="mt-6 pt-4 border-t border-border">
               <p className="text-xs text-muted-foreground">
