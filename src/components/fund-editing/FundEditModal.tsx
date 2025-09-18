@@ -364,6 +364,7 @@ useEffect(() => {
                       <FundLogo 
                         logoUrl={formData.logoUrl} 
                         fundName={fund.name} 
+                        fundId={fund.id}
                         size="lg" 
                       />
                       <div className="flex flex-col gap-2">

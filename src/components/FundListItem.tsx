@@ -53,6 +53,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                   <FundLogo 
                     logoUrl={fund.logoUrl} 
                     fundName={fund.name} 
+                    fundId={fund.id}
                     size="md" 
                   />
                   <div className="min-w-0 flex-1">

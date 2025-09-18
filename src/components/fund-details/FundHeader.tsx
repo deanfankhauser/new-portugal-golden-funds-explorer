@@ -47,6 +47,7 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
               <FundLogo 
                 logoUrl={fund.logoUrl} 
                 fundName={fund.name} 
+                fundId={fund.id}
                 size="xl" 
               />
               <div className="min-w-0 flex-1">

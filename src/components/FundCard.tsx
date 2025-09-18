@@ -47,6 +47,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
               <FundLogo 
                 logoUrl={fund.logoUrl} 
                 fundName={fund.name} 
+                fundId={fund.id}
                 size="md" 
               />
               <CardTitle className="text-xl min-w-0">

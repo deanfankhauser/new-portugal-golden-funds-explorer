@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+import { useFundEditing } from '@/hooks/useFundEditing';
 
 interface FundLogoProps {
   logoUrl?: string;
   fundName: string;
+  fundId?: string;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
@@ -12,10 +14,16 @@ interface FundLogoProps {
 const FundLogo: React.FC<FundLogoProps> = ({ 
   logoUrl, 
   fundName, 
+  fundId,
   size = 'md', 
   className 
 }) => {
+  const { getPendingChangesForFund } = useFundEditing();
   const [imageError, setImageError] = useState(false);
+  
+  // Check for pending logo changes
+  const pendingChanges = fundId ? getPendingChangesForFund(fundId) : {};
+  const effectiveLogoUrl = pendingChanges.logoUrl !== undefined ? pendingChanges.logoUrl : logoUrl;
 
   // Get fund initials from name
   const getInitials = (name: string) => {
@@ -43,22 +51,29 @@ const FundLogo: React.FC<FundLogoProps> = ({
   };
 
   return (
-    <Avatar className={cn(sizeClasses[size], className)}>
-      {logoUrl && !imageError && (
-        <AvatarImage 
-          src={logoUrl} 
-          alt={`${fundName} logo`}
-          onError={() => setImageError(true)}
-          className="object-contain p-1"
-        />
+    <div className="relative">
+      <Avatar className={cn(sizeClasses[size], className)}>
+        {effectiveLogoUrl && !imageError && (
+          <AvatarImage 
+            src={effectiveLogoUrl} 
+            alt={`${fundName} logo`}
+            onError={() => setImageError(true)}
+            className="object-contain p-1"
+          />
+        )}
+        <AvatarFallback className={cn(
+          "bg-primary/10 text-primary font-semibold border-2 border-primary/20",
+          textSizes[size]
+        )}>
+          {getInitials(fundName)}
+        </AvatarFallback>
+      </Avatar>
+      {/* Show pending indicator if there are changes */}
+      {pendingChanges.logoUrl !== undefined && (
+        <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full border-2 border-background" 
+             title="Logo change pending approval" />
       )}
-      <AvatarFallback className={cn(
-        "bg-primary/10 text-primary font-semibold border-2 border-primary/20",
-        textSizes[size]
-      )}>
-        {getInitials(fundName)}
-      </AvatarFallback>
-    </Avatar>
+    </div>
   );
 };
 

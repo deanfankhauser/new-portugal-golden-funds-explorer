@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { toast } from '@/hooks/use-toast';
@@ -21,6 +21,40 @@ export const useFundEditing = () => {
   const { user, loading: authLoading } = useEnhancedAuth();
   const [loading, setLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [pendingChanges, setPendingChanges] = useState<Record<string, Record<string, any>>>({});
+
+  // Load pending changes from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('fundEditPendingChanges');
+      if (stored) {
+        try {
+          setPendingChanges(JSON.parse(stored));
+        } catch (error) {
+          console.error('Error loading pending changes:', error);
+        }
+      }
+      setIsHydrated(true);
+    }
+  }, []);
+
+  // Save pending changes to localStorage
+  const updatePendingChanges = useCallback((fundId: string, changes: Record<string, any>) => {
+    setPendingChanges(prev => {
+      const updated = { ...prev };
+      if (Object.keys(changes).length === 0) {
+        delete updated[fundId];
+      } else {
+        updated[fundId] = { ...prev[fundId], ...changes };
+      }
+      
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('fundEditPendingChanges', JSON.stringify(updated));
+      }
+      
+      return updated;
+    });
+  }, []);
 
   // SSG compatibility - only enable after hydration
   const checkHydration = useCallback(() => {
@@ -94,6 +128,9 @@ export const useFundEditing = () => {
         description: "Your fund update suggestion has been submitted for review. We'll notify you once it's approved.",
       });
 
+      // Store pending changes locally for immediate UI feedback
+      updatePendingChanges(fundId, suggestedChanges);
+
       return data;
     } catch (error) {
       console.error('Error submitting fund edit suggestion:', error);
@@ -159,5 +196,8 @@ export const useFundEditing = () => {
     getUserSuggestions,
     checkIfUserIsAdmin,
     isAuthenticated: !!user,
+    pendingChanges,
+    updatePendingChanges,
+    getPendingChangesForFund: (fundId: string) => pendingChanges[fundId] || {},
   };
 };
