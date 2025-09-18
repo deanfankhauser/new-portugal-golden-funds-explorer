@@ -149,14 +149,14 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
             >
               <defs>
                 <linearGradient id="returnsGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
-                  <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
-                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                  <stop offset="60%" stopColor="hsl(var(--primary))" stopOpacity={0.18}/>
+                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
                 </linearGradient>
                 <linearGradient id="aumGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.2}/>
-                  <stop offset="50%" stopColor="hsl(var(--chart-2))" stopOpacity={0.05}/>
-                  <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0}/>
+                  <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0}/>
+                  <stop offset="60%" stopColor="hsl(var(--chart-2))" stopOpacity={0.08}/>
+                  <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0}/>
                 </linearGradient>
                 <filter id="lineShadow" x="-50%" y="-50%" width="200%" height="200%">
                   <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="hsl(var(--primary))" floodOpacity="0.25"/>
@@ -245,12 +245,10 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                 dataKey="returns"
                 stroke="hsl(var(--primary))"
                 strokeWidth={3}
-                filter="url(#lineShadow)"
                 dot={{ 
                   fill: 'hsl(var(--primary))', 
                   strokeWidth: 0, 
-                  r: 4,
-                  filter: "url(#lineShadow)"
+                  r: 4
                 }}
                 activeDot={{ 
                   r: 6, 
@@ -269,7 +267,6 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                 stroke="hsl(var(--chart-2))"
                 strokeWidth={2}
                 strokeDasharray="5 5"
-                filter="url(#aumLineShadow)"
                 dot={false}
                 activeDot={false}
                 name="AUM (€M)"
