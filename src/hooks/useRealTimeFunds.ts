@@ -36,6 +36,7 @@ const applyEditHistory = (
     if (c.website_url && typeof c.website_url === 'string') n.websiteUrl = c.website_url;
     if (c.geographic_allocation && Array.isArray(c.geographic_allocation)) n.geographicAllocation = c.geographic_allocation;
     if (c.historicalPerformance && typeof c.historicalPerformance === 'object') n.historicalPerformance = c.historicalPerformance;
+    if (c.historical_performance && typeof c.historical_performance === 'object') n.historicalPerformance = c.historical_performance;
 
     // Apply supported fields
     console.log(`Applying overlay for fund ${f.id}:`, n);
@@ -129,6 +130,8 @@ const applyEditHistory = (
           faqs: Array.isArray(fund.faqs) 
             ? (fund.faqs as unknown as FAQItem[])
             : undefined,
+          historicalPerformance: (fund.historical_performance as Record<string, { returns?: number; aum?: number; nav?: number }>)
+            || (staticFunds.find(s => s.id === fund.id)?.historicalPerformance),
           // Date tracking
           datePublished: fund.created_at || new Date().toISOString(),
           dateModified: fund.updated_at || fund.created_at || new Date().toISOString(),
