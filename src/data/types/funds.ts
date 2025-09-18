@@ -190,9 +190,8 @@ export interface Fund {
   // Performance and branding fields
   historicalPerformance?: Record<string, {
     returns?: number;
-    nav?: number;
     aum?: number;
-    benchmark?: number;
+    nav?: number;
   }>;
   logoUrl?: string;
 }
