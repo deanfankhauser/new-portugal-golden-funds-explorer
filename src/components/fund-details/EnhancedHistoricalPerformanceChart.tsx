@@ -344,9 +344,9 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
                   <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
                 </linearGradient>
                 <linearGradient id="aumGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0}/>
-                  <stop offset="60%" stopColor="hsl(var(--chart-2))" stopOpacity={0.08}/>
-                  <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0}/>
+                  <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0.3}/>
+                  <stop offset="40%" stopColor="hsl(var(--chart-2))" stopOpacity={0.2}/>
+                  <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0.05}/>
                 </linearGradient>
               </defs>
               
@@ -435,7 +435,9 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
                   type="monotone"
                   dataKey="aum"
                   fill="url(#aumGradient)"
-                  stroke="none"
+                  stroke="hsl(var(--chart-2))"
+                  strokeWidth={0.5}
+                  strokeOpacity={0.3}
                   dot={false}
                   activeDot={false}
                 />
