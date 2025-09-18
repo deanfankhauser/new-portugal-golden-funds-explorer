@@ -68,34 +68,34 @@ export const horizonFund: Fund = {
   ],
   historicalPerformance: {
     "2024-09": {
-      returns: 2.4,
+      returns: 3.2,
       aum: 45000000,
-      nav: 1.186
+      nav: 1.156
     },
     "2024-08": {
-      returns: -1.2,
+      returns: -2.8,
       aum: 44000000,
-      nav: 1.158
+      nav: 1.120
     },
     "2024-07": {
-      returns: 3.8,
+      returns: 4.1,
       aum: 43500000,
-      nav: 1.172
+      nav: 1.152
     },
     "2024-06": {
-      returns: 1.9,
+      returns: 1.8,
       aum: 42000000,
-      nav: 1.130
+      nav: 1.107
     },
     "2024-05": {
-      returns: 2.7,
+      returns: -1.5,
       aum: 41000000,
-      nav: 1.109
+      nav: 1.087
     },
     "2024-04": {
-      returns: -0.8,
+      returns: 2.9,
       aum: 40500000,
-      nav: 1.080
+      nav: 1.104
     }
   },
   redemptionTerms: {

@@ -81,34 +81,34 @@ export const growthBlueFund: Fund = {
   ],
   historicalPerformance: {
     "2024-09": {
-      returns: 1.9,
-      aum: 28000000,
-      nav: 1.168
+      returns: 1.5,
+      aum: 35000000,
+      nav: 1.062
     },
     "2024-08": {
-      returns: 0.7,
-      aum: 27500000,
-      nav: 1.147
+      returns: 0.4,
+      aum: 34500000,
+      nav: 1.047
     },
     "2024-07": {
-      returns: 2.4,
-      aum: 27000000,
-      nav: 1.139
+      returns: 2.1,
+      aum: 34000000,
+      nav: 1.043
     },
     "2024-06": {
-      returns: 1.2,
-      aum: 26500000,
-      nav: 1.112
+      returns: 0.8,
+      aum: 33000000,
+      nav: 1.021
     },
     "2024-05": {
-      returns: 1.8,
-      aum: 26000000,
-      nav: 1.099
+      returns: 1.3,
+      aum: 32500000,
+      nav: 1.013
     },
     "2024-04": {
-      returns: 0.9,
-      aum: 25500000,
-      nav: 1.079
+      returns: 0.0,
+      aum: 32000000,
+      nav: 1.000
     }
   },
   redemptionTerms: {

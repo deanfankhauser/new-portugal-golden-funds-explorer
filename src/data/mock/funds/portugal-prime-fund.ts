@@ -69,34 +69,34 @@ The fund offers a streamlined 4-week process from start to Golden Visa applicati
   ],
   historicalPerformance: {
     "2024-09": {
-      returns: 1.2,
+      returns: 0.8,
       aum: 75000000,
-      nav: 1.092
+      nav: 1.042
     },
     "2024-08": {
-      returns: 0.9,
+      returns: 0.6,
       aum: 74500000,
-      nav: 1.079
+      nav: 1.034
     },
     "2024-07": {
-      returns: 1.4,
+      returns: 1.1,
       aum: 74000000,
-      nav: 1.070
+      nav: 1.028
     },
     "2024-06": {
-      returns: 1.1,
+      returns: 0.7,
       aum: 73000000,
-      nav: 1.055
+      nav: 1.017
     },
     "2024-05": {
-      returns: 1.0,
+      returns: 0.9,
       aum: 72500000,
-      nav: 1.044
+      nav: 1.010
     },
     "2024-04": {
-      returns: 1.3,
+      returns: 0.5,
       aum: 72000000,
-      nav: 1.033
+      nav: 1.001
     }
   },
   documents: [

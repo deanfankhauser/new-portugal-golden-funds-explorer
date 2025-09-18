@@ -74,34 +74,34 @@ export const linceGrowthFund: Fund = {
   ],
   historicalPerformance: {
     "2024-09": {
-      returns: 1.6,
-      aum: 32000000,
-      nav: 1.142
+      returns: 1.2,
+      aum: 18500000,
+      nav: 1.048
     },
     "2024-08": {
-      returns: 0.8,
-      aum: 31500000,
-      nav: 1.124
+      returns: 0.6,
+      aum: 18200000,
+      nav: 1.036
     },
     "2024-07": {
-      returns: 2.2,
-      aum: 31000000,
-      nav: 1.115
+      returns: 1.8,
+      aum: 18000000,
+      nav: 1.030
     },
     "2024-06": {
-      returns: 1.4,
-      aum: 30500000,
-      nav: 1.091
+      returns: 0.9,
+      aum: 17500000,
+      nav: 1.012
     },
     "2024-05": {
-      returns: 1.7,
-      aum: 30000000,
-      nav: 1.076
+      returns: 1.4,
+      aum: 17000000,
+      nav: 1.003
     },
     "2024-04": {
-      returns: 1.1,
-      aum: 29500000,
-      nav: 1.058
+      returns: 0.3,
+      aum: 16800000,
+      nav: 0.989
     }
   },
   redemptionTerms: {
