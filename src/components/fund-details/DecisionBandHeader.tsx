@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import { Mail, Calendar, BarChart3, Bookmark, Info } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
 import { useShortlist } from '../../contexts/ShortlistContext';
@@ -149,12 +149,10 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                     </Badge>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="p-1 h-auto min-w-0 hover:bg-muted/50">
-                          <Info className="h-3 w-3 text-muted-foreground" />
-                        </Button>
+                        <Info className="h-3 w-3 text-muted-foreground cursor-pointer" />
                       </TooltipTrigger>
                       <TooltipContent className="text-xs max-w-48">
-                        <p>Performance since start of current year</p>
+                        <p>Since start of year</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -172,12 +170,10 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                     </Badge>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="p-1 h-auto min-w-0 hover:bg-muted/50">
-                          <Info className="h-3 w-3 text-muted-foreground" />
-                        </Button>
+                        <Info className="h-3 w-3 text-muted-foreground cursor-pointer" />
                       </TooltipTrigger>
                       <TooltipContent className="text-xs max-w-48">
-                        <p>Total return over past 12 months</p>
+                        <p>Past 12 months</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -195,12 +191,10 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                     </Badge>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="p-1 h-auto min-w-0 hover:bg-muted/50">
-                          <Info className="h-3 w-3 text-muted-foreground" />
-                        </Button>
+                        <Info className="h-3 w-3 text-muted-foreground cursor-pointer" />
                       </TooltipTrigger>
                       <TooltipContent className="text-xs max-w-48">
-                        <p>Total return since fund launch</p>
+                        <p>Since fund launch</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -218,12 +212,10 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                     </Badge>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="p-1 h-auto min-w-0 hover:bg-muted/50">
-                          <Info className="h-3 w-3 text-muted-foreground" />
-                        </Button>
+                        <Info className="h-3 w-3 text-muted-foreground cursor-pointer" />
                       </TooltipTrigger>
                       <TooltipContent className="text-xs max-w-48">
-                        <p>Largest peak-to-trough decline</p>
+                        <p>Peak-to-trough decline</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -241,12 +233,10 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                     </Badge>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="p-1 h-auto min-w-0 hover:bg-muted/50">
-                          <Info className="h-3 w-3 text-muted-foreground" />
-                        </Button>
+                        <Info className="h-3 w-3 text-muted-foreground cursor-pointer" />
                       </TooltipTrigger>
                       <TooltipContent className="text-xs max-w-48">
-                        <p>How much returns fluctuate</p>
+                        <p>Return fluctuation</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -263,13 +253,11 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                   </Badge>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="sm" className="p-1 h-auto min-w-0 hover:bg-muted/50">
-                        <Info className="h-3 w-3 text-muted-foreground" />
-                      </Button>
+                      <Info className="h-3 w-3 text-muted-foreground cursor-pointer" />
                     </TooltipTrigger>
-                      <TooltipContent className="text-xs max-w-48">
-                        <p>Risk scale: 1 (low) to 7 (high)</p>
-                      </TooltipContent>
+                    <TooltipContent className="text-xs max-w-48">
+                      <p>1 (low) to 7 (high)</p>
+                    </TooltipContent>
                   </Tooltip>
                 </div>
               </div>
