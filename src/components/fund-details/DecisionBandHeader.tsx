@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+import { InfoTip } from '../ui/info-tip';
 import { Mail, Calendar, BarChart3, Bookmark, Info } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
 import { useShortlist } from '../../contexts/ShortlistContext';
@@ -147,14 +147,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                         </div>
                       </div>
                     </Badge>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-3 w-3 text-muted-foreground cursor-pointer" />
-                      </TooltipTrigger>
-                      <TooltipContent className="text-xs max-w-48">
-                        <p>Since start of year</p>
-                      </TooltipContent>
-                    </Tooltip>
+                    <InfoTip content="Since start of year" iconSize={12} />
                   </div>
                 )}
                 
@@ -168,14 +161,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                         </div>
                       </div>
                     </Badge>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-3 w-3 text-muted-foreground cursor-pointer" />
-                      </TooltipTrigger>
-                      <TooltipContent className="text-xs max-w-48">
-                        <p>Past 12 months</p>
-                      </TooltipContent>
-                    </Tooltip>
+                    <InfoTip content="Past 12 months" iconSize={12} />
                   </div>
                 )}
                 
@@ -189,14 +175,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                         </div>
                       </div>
                     </Badge>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-3 w-3 text-muted-foreground cursor-pointer" />
-                      </TooltipTrigger>
-                      <TooltipContent className="text-xs max-w-48">
-                        <p>Since fund launch</p>
-                      </TooltipContent>
-                    </Tooltip>
+                    <InfoTip content="Since fund launch" iconSize={12} />
                   </div>
                 )}
                 
@@ -210,14 +189,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                         </div>
                       </div>
                     </Badge>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-3 w-3 text-muted-foreground cursor-pointer" />
-                      </TooltipTrigger>
-                      <TooltipContent className="text-xs max-w-48">
-                        <p>Peak-to-trough decline</p>
-                      </TooltipContent>
-                    </Tooltip>
+                    <InfoTip content="Peak-to-trough decline" iconSize={12} />
                   </div>
                 )}
                 
@@ -231,14 +203,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                         </div>
                       </div>
                     </Badge>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-3 w-3 text-muted-foreground cursor-pointer" />
-                      </TooltipTrigger>
-                      <TooltipContent className="text-xs max-w-48">
-                        <p>Return fluctuation</p>
-                      </TooltipContent>
-                    </Tooltip>
+                    <InfoTip content="Return fluctuation" iconSize={12} />
                   </div>
                 )}
                 
@@ -251,14 +216,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                       </div>
                     </div>
                   </Badge>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3 w-3 text-muted-foreground cursor-pointer" />
-                    </TooltipTrigger>
-                    <TooltipContent className="text-xs max-w-48">
-                      <p>1 (low) to 7 (high)</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  <InfoTip content="1 (low) to 7 (high)" iconSize={12} />
                 </div>
               </div>
             
