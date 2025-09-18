@@ -56,6 +56,8 @@ const buildFormData = (f: Fund) => {
     team: f.team || [],
     // Documents - always present as array
     documents: f.documents || [],
+    // Historical performance - always present as object
+    historicalPerformance: f.historicalPerformance || {},
   };
 
   // Only add optional fields if they exist in the fund data
@@ -177,6 +179,7 @@ useEffect(() => {
     navFrequency: fund.navFrequency,
     pficStatus: fund.pficStatus,
     eligibilityBasis: fund.eligibilityBasis,
+    historicalPerformance: fund.historicalPerformance,
   });
 
   const getSuggestedChanges = () => {
@@ -261,9 +264,10 @@ useEffect(() => {
         
         <ScrollArea className="max-h-[60vh] pr-4">
           <Tabs defaultValue="basic" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="basic">Basic</TabsTrigger>
               <TabsTrigger value="structure">Structure</TabsTrigger>
+              <TabsTrigger value="performance">Performance</TabsTrigger>
               <TabsTrigger value="team">Team</TabsTrigger>
               <TabsTrigger value="documents">Documents</TabsTrigger>
               <TabsTrigger value="regulatory">Regulatory</TabsTrigger>
@@ -600,6 +604,111 @@ useEffect(() => {
                     rows={3}
                   />
                 </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="performance" className="space-y-6 mt-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">Historical Performance</h3>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const currentYear = new Date().getFullYear();
+                      const newYear = currentYear.toString();
+                      handleNestedChange('historicalPerformance', newYear, { returns: 0, nav: 1.0 });
+                    }}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Year
+                  </Button>
+                </div>
+                
+                <div className="text-sm text-muted-foreground mb-4">
+                  Add historical performance data for different years. Returns should be in percentage format.
+                </div>
+                
+                {Object.entries(formData.historicalPerformance || {}).map(([year, performance]: [string, any]) => (
+                  <div key={year} className="p-4 border rounded-lg space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium">Year {year}</h4>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => {
+                          const updatedPerformance = { ...formData.historicalPerformance };
+                          delete updatedPerformance[year];
+                          handleInputChange('historicalPerformance', updatedPerformance);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <Label>Year</Label>
+                        <Input
+                          type="number"
+                          value={year}
+                          onChange={(e) => {
+                            const newYear = e.target.value;
+                            if (newYear !== year) {
+                              const updatedPerformance = { ...formData.historicalPerformance };
+                              updatedPerformance[newYear] = performance;
+                              delete updatedPerformance[year];
+                              handleInputChange('historicalPerformance', updatedPerformance);
+                            }
+                          }}
+                          placeholder="e.g., 2023"
+                        />
+                      </div>
+                      <div>
+                        <Label>Returns (%)</Label>
+                        <Input
+                          type="number"
+                          step="0.1"
+                          value={performance.returns || ''}
+                          onChange={(e) => {
+                            const updatedPerformance = { ...formData.historicalPerformance };
+                            updatedPerformance[year] = {
+                              ...performance,
+                              returns: parseFloat(e.target.value) || 0
+                            };
+                            handleInputChange('historicalPerformance', updatedPerformance);
+                          }}
+                          placeholder="e.g., 8.5"
+                        />
+                      </div>
+                      <div>
+                        <Label>NAV</Label>
+                        <Input
+                          type="number"
+                          step="0.001"
+                          value={performance.nav || ''}
+                          onChange={(e) => {
+                            const updatedPerformance = { ...formData.historicalPerformance };
+                            updatedPerformance[year] = {
+                              ...performance,
+                              nav: parseFloat(e.target.value) || 1.0
+                            };
+                            handleInputChange('historicalPerformance', updatedPerformance);
+                          }}
+                          placeholder="e.g., 1.085"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                {Object.keys(formData.historicalPerformance || {}).length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No historical performance data. Click "Add Year" to start adding data.
+                  </div>
+                )}
               </div>
             </TabsContent>
 
