@@ -186,28 +186,6 @@ const Footer = () => {
           <p className="text-muted-foreground text-sm mt-2 md:mt-0">This website is for informational purposes only and does not constitute investment information.</p>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-border">
-          <div className="bg-destructive/10 border border-destructive/20 p-6 rounded-lg">
-            <h4 className="text-destructive font-semibold text-sm mb-3 text-center">⚠️ IMPORTANT RISK DISCLAIMER</h4>
-            <div className="space-y-3 text-xs text-muted-foreground">
-              <p className="text-center">
-                <strong>Investment involves substantial risk of loss.</strong> All investments in Portugal Golden Visa funds carry significant financial risks, including the potential for total loss of invested capital. Past performance does not guarantee future results.
-              </p>
-              <p className="text-center">
-                <strong>No Investment Advice:</strong> This website provides general information only and does not constitute financial, legal, tax, or immigration consultation. We are not licensed financial professionals or immigration consultants.
-              </p>
-              <p className="text-center">
-                <strong>Professional Consultation Required:</strong> Before making any investment or immigration decisions, you must consult with qualified professionals including licensed financial professionals, immigration lawyers, tax specialists, and Portugal Golden Visa experts.
-              </p>
-              <p className="text-center">
-                <strong>Data Accuracy:</strong> While we strive for accuracy, fund information may be outdated, incomplete, or contain errors. Always verify all information directly with fund managers and regulatory authorities.
-              </p>
-              <p className="text-center">
-                <strong>Regulatory Compliance:</strong> Ensure all investments comply with regulations in your jurisdiction and Portugal. Moving To Global Pte Ltd disclaims all liability for investment decisions or outcomes.
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </footer>
   );
