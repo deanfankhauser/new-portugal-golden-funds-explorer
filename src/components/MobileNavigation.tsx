@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { buildContactUrl } from "../utils/urlHelpers";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
-import { Menu, Calculator, ClipboardCheck, Mail, ExternalLink, Users, FileText } from 'lucide-react';
+import { Menu, Calculator, ClipboardCheck, Mail, ExternalLink, Users, FileText, Heart } from 'lucide-react';
 
 const MobileNavigation = () => {
   const [open, setOpen] = React.useState(false);
@@ -62,6 +62,12 @@ const MobileNavigation = () => {
                 <Button variant="ghost" className="w-full justify-start gap-3 h-12">
                   <Users className="h-5 w-5" />
                   <span>Fund Managers</span>
+                </Button>
+              </Link>
+              <Link to="/saved-funds" onClick={closeMenu}>
+                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
+                  <Heart className="h-5 w-5" />
+                  <span>Saved Funds</span>
                 </Button>
               </Link>
               <Link to="/categories" onClick={closeMenu}>
