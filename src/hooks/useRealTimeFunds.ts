@@ -55,7 +55,9 @@ const applyEditHistory = (
     if (typeof n.performanceFee === 'number') f.performanceFee = n.performanceFee;
     if (typeof n.term === 'number') f.term = n.term; // years
     if (Array.isArray(n.geographicAllocation)) f.geographicAllocation = n.geographicAllocation;
-    if (typeof n.historicalPerformance === 'object' && n.historicalPerformance) f.historicalPerformance = n.historicalPerformance;
+    if (typeof n.historicalPerformance === 'object' && n.historicalPerformance && Object.keys(n.historicalPerformance).length > 0) {
+      f.historicalPerformance = n.historicalPerformance;
+    }
   }
 
   return Object.values(map);
@@ -130,8 +132,11 @@ const applyEditHistory = (
           faqs: Array.isArray(fund.faqs) 
             ? (fund.faqs as unknown as FAQItem[])
             : undefined,
-          historicalPerformance: (fund.historical_performance as Record<string, { returns?: number; aum?: number; nav?: number }>)
-            || (staticFunds.find(s => s.id === fund.id)?.historicalPerformance),
+          historicalPerformance: (() => {
+            const hp = fund.historical_performance as Record<string, { returns?: number; aum?: number; nav?: number }> | null;
+            if (hp && typeof hp === 'object' && Object.keys(hp).length > 0) return hp;
+            return staticFunds.find(s => s.id === fund.id)?.historicalPerformance;
+          })(),
           // Date tracking
           datePublished: fund.created_at || new Date().toISOString(),
           dateModified: fund.updated_at || fund.created_at || new Date().toISOString(),
