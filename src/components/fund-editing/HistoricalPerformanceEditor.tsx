@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, X, TrendingUp, CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -26,35 +27,64 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
   onChange
 }) => {
   const [performanceData, setPerformanceData] = useState<Record<string, MonthlyPerformanceData>>(value);
-  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [selectedYear, setSelectedYear] = useState<string>('');
+  const [selectedMonth, setSelectedMonth] = useState<string>('');
 
   useEffect(() => {
     setPerformanceData(value || {});
   }, [value]);
 
-  const addMonthFromDate = (date: Date) => {
-    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    if (!performanceData[monthKey]) {
-      const newData = {
-        ...performanceData,
-        [monthKey]: { returns: 0, aum: 0, nav: 1.0 }
-      };
-      setPerformanceData(newData);
-      onChange(newData);
-      setSelectedDate(undefined); // Reset the date picker
+  // Generate year options (last 3 years)
+  const generateYearOptions = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let i = 0; i < 3; i++) {
+      years.push((currentYear - i).toString());
+    }
+    return years;
+  };
+
+  // Generate month options
+  const monthOptions = [
+    { value: '01', label: 'January' },
+    { value: '02', label: 'February' },
+    { value: '03', label: 'March' },
+    { value: '04', label: 'April' },
+    { value: '05', label: 'May' },
+    { value: '06', label: 'June' },
+    { value: '07', label: 'July' },
+    { value: '08', label: 'August' },
+    { value: '09', label: 'September' },
+    { value: '10', label: 'October' },
+    { value: '11', label: 'November' },
+    { value: '12', label: 'December' },
+  ];
+
+  const yearOptions = generateYearOptions();
+
+  const addMonthFromSelection = () => {
+    if (selectedYear && selectedMonth) {
+      const monthKey = `${selectedYear}-${selectedMonth}`;
+      if (!performanceData[monthKey]) {
+        const newData = {
+          ...performanceData,
+          [monthKey]: { returns: 0, aum: 0, nav: 1.0 }
+        };
+        setPerformanceData(newData);
+        onChange(newData);
+        setSelectedYear('');
+        setSelectedMonth('');
+      }
     }
   };
 
-  // Check if a date is already added or outside the 3-year range
-  const isDateDisabled = (date: Date) => {
-    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+  // Check if a month is already added or outside valid range
+  const isMonthAvailable = (year: string, month: string) => {
+    const monthKey = `${year}-${month}`;
     const currentDate = new Date();
-    const threeYearsAgo = new Date(currentDate.getFullYear() - 3, currentDate.getMonth(), 1);
+    const selectedDate = new Date(parseInt(year), parseInt(month) - 1);
     
-    // Disable if already added or outside 3-year range
-    return performanceData[monthKey] !== undefined || 
-           date > currentDate || 
-           date < threeYearsAgo;
+    return !performanceData[monthKey] && selectedDate <= currentDate;
   };
 
   const existingMonths = Object.keys(performanceData).sort().reverse();
@@ -96,43 +126,49 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Add new month with calendar */}
-        <div className="flex gap-2 items-end">
-          <div className="flex-1">
-            <Label>Add Month</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !selectedDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {selectedDate ? format(selectedDate, "MMMM yyyy") : "Select a month"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={(date) => {
-                    if (date) {
-                      setSelectedDate(date);
-                      addMonthFromDate(date);
-                    }
-                  }}
-                  disabled={isDateDisabled}
-                  initialFocus
-                  className={cn("p-3 pointer-events-auto")}
-                  captionLayout="dropdown-buttons"
-                  fromYear={new Date().getFullYear() - 3}
-                  toYear={new Date().getFullYear()}
-                  showOutsideDays={false}
-                />
-              </PopoverContent>
-            </Popover>
+        {/* Add new month with year/month selectors */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+          <div>
+            <Label>Select Year</Label>
+            <Select value={selectedYear} onValueChange={setSelectedYear}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choose year" />
+              </SelectTrigger>
+              <SelectContent>
+                {yearOptions.map((year) => (
+                  <SelectItem key={year} value={year}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label>Select Month</Label>
+            <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choose month" />
+              </SelectTrigger>
+              <SelectContent>
+                {monthOptions
+                  .filter(month => selectedYear ? isMonthAvailable(selectedYear, month.value) : true)
+                  .map((month) => (
+                    <SelectItem key={month.value} value={month.value}>
+                      {month.label}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Button 
+              onClick={addMonthFromSelection}
+              disabled={!selectedYear || !selectedMonth}
+              className="w-full"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Month
+            </Button>
           </div>
         </div>
 
