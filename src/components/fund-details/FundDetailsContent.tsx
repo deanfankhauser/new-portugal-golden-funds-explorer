@@ -7,6 +7,9 @@ import PerformanceModule from './PerformanceModule';
 import TrustPracticalityCards from './TrustPracticalityCards';
 import KeyTermsTable from './KeyTermsTable';
 import StrategyPortfolioSection from './StrategyPortfolioSection';
+import RiskAssessmentSection from './RiskAssessmentSection';
+import DocumentsDisclosures from './DocumentsDisclosures';
+import StickyNavigation from './StickyNavigation';
 import FundTabsLazySection from './FundTabsLazySection';
 import IntroductionButton from './IntroductionButton';
 import { formatCurrency } from './utils/formatters';
@@ -51,29 +54,39 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
     tag !== 'Golden Visa Eligible' || isGVEligible
   );
   return (
-    <div className="space-y-6 md:space-y-8">
-      {/* Breadcrumbs */}
-      <FundBreadcrumbs fund={fund} />
+    <>
+      {/* Sticky Navigation */}
+      <StickyNavigation fund={fund} />
       
-      {/* Back to Funds Button */}
-      <BackToFundsButton />
-      
-      {/* Above-the-fold Decision Band */}
-      <DecisionBandHeader fund={fund} />
-      
-      {/* Performance Module - Full Width */}
-      <PerformanceModule fund={fund} />
-      
-      {/* Just Below the Fold - Trust + Practicality */}
-      <TrustPracticalityCards fund={fund} />
-      
-      {/* Mid-page Details */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <KeyTermsTable fund={fund} />
-        <div>
-          <StrategyPortfolioSection fund={fund} />
+      <div className="space-y-6 md:space-y-8 pb-20 md:pb-8">
+        {/* Breadcrumbs */}
+        <FundBreadcrumbs fund={fund} />
+        
+        {/* Back to Funds Button */}
+        <BackToFundsButton />
+        
+        {/* Above-the-fold Decision Band */}
+        <DecisionBandHeader fund={fund} />
+        
+        {/* Performance Module - Full Width */}
+        <PerformanceModule fund={fund} />
+        
+        {/* Just Below the Fold - Trust + Practicality */}
+        <TrustPracticalityCards fund={fund} />
+        
+        {/* Mid-page Details */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <KeyTermsTable fund={fund} />
+          <div>
+            <StrategyPortfolioSection fund={fund} />
+          </div>
         </div>
-      </div>
+        
+        {/* Risk Assessment Section */}
+        <RiskAssessmentSection fund={fund} />
+        
+        {/* Documents & Disclosures */}
+        <DocumentsDisclosures fund={fund} />
 
       <div className="bg-card rounded-xl md:rounded-2xl shadow-md border border-border overflow-hidden transition-shadow duration-300 hover:shadow-lg">
         <div className="p-4 md:p-6 lg:p-10 space-y-6 md:space-y-8 lg:space-y-10">
@@ -197,9 +210,10 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       {/* Verified Reviews Section */}
       <VerifiedReviews fund={fund} />
       
-      {/* FAQ Section */}
-      <FundFAQSection fund={fund} />
-    </div>
+        {/* FAQ Section */}
+        <FundFAQSection fund={fund} />
+      </div>
+    </>
   );
 };
 
