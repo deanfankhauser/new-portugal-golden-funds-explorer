@@ -98,7 +98,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                 {/* Key Terms & Strategy Section */}
                 <section id="key-terms-strategy" className="scroll-mt-24">
                   <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Key Terms & Strategy</h2>
-                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                  <div className="space-y-8">
                     <KeyTermsTable fund={fund} />
                     <StrategyPortfolioSection fund={fund} />
                   </div>
