@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ComposedChart } from 'recharts';
 import { TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
 interface MonthlyPerformanceData {
@@ -142,20 +142,28 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
       <CardContent className="pt-0">
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart 
+            <ComposedChart
               data={chartData} 
               margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
               style={{ fontSize: '12px' }}
             >
               <defs>
                 <linearGradient id="returnsGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
+                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                  <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
                   <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
                 </linearGradient>
                 <linearGradient id="aumGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.1}/>
+                  <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.2}/>
+                  <stop offset="50%" stopColor="hsl(var(--chart-2))" stopOpacity={0.05}/>
                   <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0}/>
                 </linearGradient>
+                <filter id="lineShadow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="hsl(var(--primary))" floodOpacity="0.25"/>
+                </filter>
+                <filter id="aumLineShadow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="hsl(var(--chart-2))" floodOpacity="0.15"/>
+                </filter>
               </defs>
               
               <CartesianGrid 
@@ -205,6 +213,26 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                 dx={5}
               />
               
+              {/* Area fills for shadow effect */}
+              <Area
+                yAxisId="returns"
+                type="monotone"
+                dataKey="returns"
+                fill="url(#returnsGradient)"
+                stroke="none"
+                strokeWidth={0}
+              />
+              
+              <Area
+                yAxisId="aum"
+                type="monotone"
+                dataKey="aum"
+                fill="url(#aumGradient)"
+                stroke="none"
+                strokeWidth={0}
+              />
+              
+              {/* Main lines with shadow */}
               <Tooltip content={<CustomTooltip />} />
               
               <Line
@@ -213,11 +241,12 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                 dataKey="returns"
                 stroke="hsl(var(--primary))"
                 strokeWidth={3}
+                filter="url(#lineShadow)"
                 dot={{ 
                   fill: 'hsl(var(--primary))', 
                   strokeWidth: 0, 
                   r: 4,
-                  strokeDasharray: "0"
+                  filter: "url(#lineShadow)"
                 }}
                 activeDot={{ 
                   r: 6, 
@@ -236,10 +265,12 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                 stroke="hsl(var(--chart-2))"
                 strokeWidth={2}
                 strokeDasharray="5 5"
+                filter="url(#aumLineShadow)"
                 dot={{ 
                   fill: 'hsl(var(--chart-2))', 
                   strokeWidth: 0, 
-                  r: 3
+                  r: 3,
+                  filter: "url(#aumLineShadow)"
                 }}
                 activeDot={{ 
                   r: 5, 
@@ -250,7 +281,7 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                 name="AUM (€M)"
                 connectNulls={false}
               />
-            </LineChart>
+            </ComposedChart>
           </ResponsiveContainer>
         </div>
         
