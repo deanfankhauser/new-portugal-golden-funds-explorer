@@ -5,18 +5,9 @@ import { Fund } from '../../data/funds';
 import DecisionBandHeader from './DecisionBandHeader';
 import HistoricalPerformanceChart from './HistoricalPerformanceChart';
 import TrustPracticalityCards from './TrustPracticalityCards';
-import KeyTermsTable from './KeyTermsTable';
-import StrategyPortfolioSection from './StrategyPortfolioSection';
-import RiskAssessmentSection from './RiskAssessmentSection';
-import DocumentsDisclosures from './DocumentsDisclosures';
 import StickyNavigation from './StickyNavigation';
 import FloatingTableOfContents from './FloatingTableOfContents';
 import FundTabsLazySection from './FundTabsLazySection';
-import IntroductionButton from './IntroductionButton';
-import { formatCurrency } from './utils/formatters';
-import FundStructureInfo from './FundStructureInfo';
-import ReportButton from './ReportButton';
-import FundSizeFormatter from './FundSizeFormatter';
 import InvestorNotice from './InvestorNotice';
 import FundFAQSection from './FundFAQSection';
 import PremiumCTA from '../cta/PremiumCTA';
@@ -24,11 +15,7 @@ import ROICalculator from './ROICalculator';
 import AlternativeFunds from './AlternativeFunds';
 import RelatedFunds from './RelatedFunds';
 import FundComparisonSuggestions from './FundComparisonSuggestions';
-import RegulatoryComplianceInfo from './RegulatoryComplianceInfo';
-import FeeDisclaimer from './FeeDisclaimer';
 import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
-
-import FundDataFreshness from './FundDataFreshness';
 import BackToFundsButton from './BackToFundsButton';
 import { Button } from '@/components/ui/button';
 import { ClipboardCheck, TrendingUp } from 'lucide-react';
@@ -75,20 +62,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
             {/* Main content with tabs - Detailed Information */}
             <FundTabsLazySection fund={fund} />
             
-            {/* Data Quality Indicators - Trust Signals */}
-            <FundDataFreshness fund={fund} />
-            
-            {/* Fee Disclaimer */}
-            <FeeDisclaimer />
-            
-            {/* Structure description and Report Button */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <FundStructureInfo fund={fund} />
-              <ReportButton fundName={fund.name} />
-            </div>
-          
-
-          <div className="bg-gradient-to-r from-success/10 to-success/5 p-4 md:p-6 rounded-lg border border-success/30">
+            <div className="bg-gradient-to-r from-success/10 to-success/5 p-4 md:p-6 rounded-lg border border-success/30">
             <div className="text-center">
               <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Want to see how this fund compares to others?</h3>
               <p className="text-xs md:text-sm text-muted-foreground mb-4">Take our quiz to get personalized recommendations based on your investment profile</p>
