@@ -221,6 +221,8 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                 fill="url(#returnsGradient)"
                 stroke="none"
                 strokeWidth={0}
+                dot={false}
+                activeDot={false}
               />
               
               <Area
@@ -230,6 +232,8 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                 fill="url(#aumGradient)"
                 stroke="none"
                 strokeWidth={0}
+                dot={false}
+                activeDot={false}
               />
               
               {/* Main lines with shadow */}
