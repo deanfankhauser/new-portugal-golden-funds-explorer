@@ -5,7 +5,7 @@ import FundCategory from '../FundCategory';
 import FeeStructure from '../FeeStructure';
 import GeographicAllocation from '../GeographicAllocation';
 import RedemptionTerms from '../RedemptionTerms';
-import HistoricalPerformanceChart from '../HistoricalPerformanceChart';
+import EnhancedHistoricalPerformanceChart from '../EnhancedHistoricalPerformanceChart';
 import { formatPercentage } from '../utils/formatters';
 
 interface FundStructureTabProps {
@@ -36,9 +36,9 @@ const FundStructureTab: React.FC<FundStructureTabProps> = ({ fund }) => {
         </div>
       </div>
       
-      {/* Historical Performance Section - Full Width */}
+      {/* Enhanced Historical Performance Section - Full Width */}
       <div className="mt-8">
-        <HistoricalPerformanceChart historicalPerformance={fund.historicalPerformance} />
+        <EnhancedHistoricalPerformanceChart historicalPerformance={fund.historicalPerformance} />
       </div>
     </div>
   );
