@@ -79,6 +79,38 @@ export const growthBlueFund: Fund = {
       position: 'Financial Assistant'
     }
   ],
+  historicalPerformance: {
+    "2024-09": {
+      returns: 1.9,
+      aum: 28000000,
+      nav: 1.168
+    },
+    "2024-08": {
+      returns: 0.7,
+      aum: 27500000,
+      nav: 1.147
+    },
+    "2024-07": {
+      returns: 2.4,
+      aum: 27000000,
+      nav: 1.139
+    },
+    "2024-06": {
+      returns: 1.2,
+      aum: 26500000,
+      nav: 1.112
+    },
+    "2024-05": {
+      returns: 1.8,
+      aum: 26000000,
+      nav: 1.099
+    },
+    "2024-04": {
+      returns: 0.9,
+      aum: 25500000,
+      nav: 1.079
+    }
+  },
   redemptionTerms: {
     frequency: 'End of Term',
     redemptionOpen: false,

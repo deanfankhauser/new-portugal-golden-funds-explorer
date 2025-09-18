@@ -67,6 +67,38 @@ The fund is managed by IMGA, one of Portugal's largest investment management com
       bio: 'Experienced fixed income professionals with decades of expertise in Portuguese corporate credit markets and rigorous credit analysis'
     }
   ],
+  historicalPerformance: {
+    "2024-09": {
+      returns: 0.8,
+      aum: 156000000,
+      nav: 1.078
+    },
+    "2024-08": {
+      returns: 0.6,
+      aum: 155500000,
+      nav: 1.070
+    },
+    "2024-07": {
+      returns: 0.9,
+      aum: 155000000,
+      nav: 1.064
+    },
+    "2024-06": {
+      returns: 0.7,
+      aum: 154000000,
+      nav: 1.055
+    },
+    "2024-05": {
+      returns: 0.8,
+      aum: 153500000,
+      nav: 1.048
+    },
+    "2024-04": {
+      returns: 0.6,
+      aum: 153000000,
+      nav: 1.040
+    }
+  },
   documents: [
     {
       title: 'Fund Prospectus',
