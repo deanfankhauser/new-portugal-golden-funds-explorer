@@ -19,5 +19,9 @@ export const formatCurrency = (amount: number): string => {
  * Format a number as a percentage
  */
 export const formatPercentage = (value: number): string => {
-  return `${value}%`;
+  if (value === null || value === undefined || isNaN(value)) return 'N/A';
+  
+  // Round to 2 decimal places and remove unnecessary trailing zeros
+  const rounded = Math.round(value * 100) / 100;
+  return `${rounded.toFixed(2).replace(/\.?0+$/, '')}%`;
 };

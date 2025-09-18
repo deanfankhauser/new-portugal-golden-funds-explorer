@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { Mail, Calendar, BarChart3, Bookmark } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
 import { useShortlist } from '../../contexts/ShortlistContext';
@@ -135,71 +136,115 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
 
           {/* Center: Primary KPIs */}
           <div className="lg:col-span-1">
-            <div className="grid grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3">
-              {ytdPerf !== null && (
-                <Badge variant="outline" className="justify-center p-2 text-center">
-                  <div>
-                    <div className="text-xs text-muted-foreground">YTD</div>
-                    <div className={`font-semibold ${ytdPerf >= 0 ? 'text-success' : 'text-destructive'}`}>
-                      {formatPercentage(ytdPerf)}
-                    </div>
-                  </div>
-                </Badge>
-              )}
-              
-              {oneYearPerf !== null && (
-                <Badge variant="outline" className="justify-center p-2 text-center">
-                  <div>
-                    <div className="text-xs text-muted-foreground">1Y</div>
-                    <div className={`font-semibold ${oneYearPerf >= 0 ? 'text-success' : 'text-destructive'}`}>
-                      {formatPercentage(oneYearPerf)}
-                    </div>
-                  </div>
-                </Badge>
-              )}
-              
-              {sinceInceptionPerf !== null && (
-                <Badge variant="outline" className="justify-center p-2 text-center">
-                  <div>
-                    <div className="text-xs text-muted-foreground">Since Inception</div>
-                    <div className={`font-semibold ${sinceInceptionPerf >= 0 ? 'text-success' : 'text-destructive'}`}>
-                      {formatPercentage(sinceInceptionPerf)}
-                    </div>
-                  </div>
-                </Badge>
-              )}
-              
-              {maxDD !== null && (
-                <Badge variant="outline" className="justify-center p-2 text-center">
-                  <div>
-                    <div className="text-xs text-muted-foreground">Max DD</div>
-                    <div className="font-semibold text-destructive">
-                      -{formatPercentage(maxDD)}
-                    </div>
-                  </div>
-                </Badge>
-              )}
-              
-              {volatility !== null && (
-                <Badge variant="outline" className="justify-center p-2 text-center">
-                  <div>
-                    <div className="text-xs text-muted-foreground">Volatility</div>
-                    <div className="font-semibold text-muted-foreground">
-                      {formatPercentage(volatility)}
-                    </div>
-                  </div>
-                </Badge>
-              )}
-              
-              <Badge variant="outline" className="justify-center p-2 text-center">
-                <div>
-                  <div className="text-xs text-muted-foreground">Risk</div>
-                  <div className="font-semibold text-muted-foreground">
-                    Medium/7
-                  </div>
-                </div>
-              </Badge>
-            </div>
+            <TooltipProvider>
+              <div className="grid grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3">
+                {ytdPerf !== null && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge variant="outline" className="justify-center p-2 text-center cursor-help">
+                        <div>
+                          <div className="text-xs text-muted-foreground">YTD</div>
+                          <div className={`font-semibold ${ytdPerf >= 0 ? 'text-success' : 'text-destructive'}`}>
+                            {formatPercentage(ytdPerf)}
+                          </div>
+                        </div>
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Year-to-Date performance shows how much the fund has gained or lost since the beginning of the current year.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+                
+                {oneYearPerf !== null && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge variant="outline" className="justify-center p-2 text-center cursor-help">
+                        <div>
+                          <div className="text-xs text-muted-foreground">1Y</div>
+                          <div className={`font-semibold ${oneYearPerf >= 0 ? 'text-success' : 'text-destructive'}`}>
+                            {formatPercentage(oneYearPerf)}
+                          </div>
+                        </div>
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>1-Year performance shows the total return over the past 12 months.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+                
+                {sinceInceptionPerf !== null && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge variant="outline" className="justify-center p-2 text-center cursor-help">
+                        <div>
+                          <div className="text-xs text-muted-foreground">Since Inception</div>
+                          <div className={`font-semibold ${sinceInceptionPerf >= 0 ? 'text-success' : 'text-destructive'}`}>
+                            {formatPercentage(sinceInceptionPerf)}
+                          </div>
+                        </div>
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Total performance since the fund was launched. This shows the cumulative return from the fund's start date.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+                
+                {maxDD !== null && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge variant="outline" className="justify-center p-2 text-center cursor-help">
+                        <div>
+                          <div className="text-xs text-muted-foreground">Max DD</div>
+                          <div className="font-semibold text-destructive">
+                            -{formatPercentage(maxDD)}
+                          </div>
+                        </div>
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Maximum Drawdown is the largest peak-to-trough decline. It shows the worst loss an investor would have experienced during any period.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+                
+                {volatility !== null && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge variant="outline" className="justify-center p-2 text-center cursor-help">
+                        <div>
+                          <div className="text-xs text-muted-foreground">Volatility</div>
+                          <div className="font-semibold text-muted-foreground">
+                            {formatPercentage(volatility)}
+                          </div>
+                        </div>
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Volatility measures how much the fund's returns fluctuate. Higher volatility means more unpredictable returns.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+                
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Badge variant="outline" className="justify-center p-2 text-center cursor-help">
+                      <div>
+                        <div className="text-xs text-muted-foreground">Risk</div>
+                        <div className="font-semibold text-muted-foreground">
+                          Medium/7
+                        </div>
+                      </div>
+                    </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Risk level assessment on a scale of 1-7, where 1 is very low risk and 7 is very high risk. Based on fund characteristics and historical performance.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </TooltipProvider>
             
             <div className="text-xs text-muted-foreground mt-3 text-center lg:text-left">
               Last updated: {DATA_AS_OF_LABEL}
