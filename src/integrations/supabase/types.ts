@@ -205,10 +205,12 @@ export type Database = {
           faqs: Json | null
           geographic_allocation: Json | null
           gv_eligible: boolean | null
+          historical_performance: Json | null
           id: string
           inception_date: string | null
           last_modified_by: string | null
           lock_up_period_months: number | null
+          logo_url: string | null
           management_fee: number | null
           manager_name: string | null
           minimum_investment: number | null
@@ -234,10 +236,12 @@ export type Database = {
           faqs?: Json | null
           geographic_allocation?: Json | null
           gv_eligible?: boolean | null
+          historical_performance?: Json | null
           id: string
           inception_date?: string | null
           last_modified_by?: string | null
           lock_up_period_months?: number | null
+          logo_url?: string | null
           management_fee?: number | null
           manager_name?: string | null
           minimum_investment?: number | null
@@ -263,10 +267,12 @@ export type Database = {
           faqs?: Json | null
           geographic_allocation?: Json | null
           gv_eligible?: boolean | null
+          historical_performance?: Json | null
           id?: string
           inception_date?: string | null
           last_modified_by?: string | null
           lock_up_period_months?: number | null
+          logo_url?: string | null
           management_fee?: number | null
           manager_name?: string | null
           minimum_investment?: number | null
@@ -576,6 +582,10 @@ export type Database = {
           function_name: string
           status: string
         }[]
+      }
+      validate_historical_performance: {
+        Args: { performance_data: Json }
+        Returns: boolean
       }
     }
     Enums: {
