@@ -97,11 +97,6 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           {/* Regulatory & Compliance Information */}
           <RegulatoryComplianceInfo fund={fund} />
           
-          {/* Fund Edit Button - Community Editing */}
-          <div className="flex justify-center">
-            <FundEditButton fund={fund} />
-          </div>
-          
           {/* Structure description and Report Button */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <FundStructureInfo fund={fund} />

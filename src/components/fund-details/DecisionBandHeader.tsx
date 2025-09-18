@@ -9,6 +9,7 @@ import { useComparison } from '../../contexts/ComparisonContext';
 import { useShortlist } from '../../contexts/ShortlistContext';
 import { formatPercentage } from './utils/formatters';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
+import { FundEditButton } from '../fund-editing/FundEditButton';
 import { calculateRiskScore, getRiskLabel, getRiskColor } from '../../utils/riskCalculation';
 
 interface DecisionBandHeaderProps {
@@ -107,6 +108,10 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
     <div className="bg-card border-b border-border">
       {/* Header Strip */}
       <div className="container mx-auto px-4 py-6">
+        {/* Top row with Edit button */}
+        <div className="flex justify-end mb-6">
+          <FundEditButton fund={fund} />
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
           
           {/* Left: Fund Name + Thesis */}
