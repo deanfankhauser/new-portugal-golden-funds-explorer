@@ -58,6 +58,23 @@ export const optimizeGoldenOpportunities: Fund = {
     minimumHoldingPeriod: 60, // 5 years in months (for Golden Visa)
     notes: "No lock-up, no penalties, full liquidity subject to business-day processing. The minimum investment must be maintained for five years to satisfy Golden Visa requirements."
   },
+  historicalPerformance: {
+    "2024-09": {
+      returns: 1.8,
+      aum: 125000000,
+      nav: 1.124
+    },
+    "2024-08": {
+      returns: -0.5,
+      aum: 123000000,
+      nav: 1.104
+    },
+    "2024-07": {
+      returns: 2.1,
+      aum: 121000000,
+      nav: 1.110
+    }
+  },
   faqs: [
     {
       question: 'What is the Portugal Golden Opportunities Fund?',
