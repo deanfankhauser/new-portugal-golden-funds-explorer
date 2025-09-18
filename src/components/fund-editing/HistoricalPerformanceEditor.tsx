@@ -126,6 +126,10 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
                   disabled={isDateDisabled}
                   initialFocus
                   className={cn("p-3 pointer-events-auto")}
+                  captionLayout="dropdown-buttons"
+                  fromYear={new Date().getFullYear() - 3}
+                  toYear={new Date().getFullYear()}
+                  showOutsideDays={false}
                 />
               </PopoverContent>
             </Popover>
