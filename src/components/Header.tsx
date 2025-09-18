@@ -13,6 +13,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import ComparisonIndicator from "./ComparisonIndicator";
+import ShortlistIndicator from "./ShortlistIndicator";
 import MobileNavigation from "./MobileNavigation";
 import DisclaimerBanner from "./common/DisclaimerBanner";
 import { ArrowLeft, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3, GitCompareArrows } from "lucide-react";
@@ -150,11 +151,13 @@ const Header = () => {
             {/* Direct Actions */}
 
             <AuthAwareButton />
+            <ShortlistIndicator />
             <ComparisonIndicator />
           </div>
 
           {/* Mobile Navigation and Comparison */}
           <div className="flex md:hidden items-center gap-2">
+            <ShortlistIndicator />
             <ComparisonIndicator />
             <MobileNavigation />
           </div>

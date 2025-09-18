@@ -5,6 +5,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from "@/components/ui/sonner";
 import { ComparisonProvider } from './contexts/ComparisonContext';
 import { RecentlyViewedProvider } from './contexts/RecentlyViewedContext';
+import { ShortlistProvider } from './contexts/ShortlistContext';
 import { EnhancedAuthProvider } from './contexts/EnhancedAuthContext';
 
 // Lazy load all pages for optimal performance
@@ -139,6 +140,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ComparisonProvider>
+        <ShortlistProvider>
           <RecentlyViewedProvider>
             <EnhancedAuthProvider>
               <TooltipProvider>
@@ -315,7 +317,8 @@ function App() {
             </TooltipProvider>
             </EnhancedAuthProvider>
           </RecentlyViewedProvider>
-        </ComparisonProvider>
+        </ShortlistProvider>
+      </ComparisonProvider>
     </QueryClientProvider>
   );
 }

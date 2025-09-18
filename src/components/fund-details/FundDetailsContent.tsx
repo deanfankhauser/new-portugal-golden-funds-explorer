@@ -10,6 +10,7 @@ import StrategyPortfolioSection from './StrategyPortfolioSection';
 import RiskAssessmentSection from './RiskAssessmentSection';
 import DocumentsDisclosures from './DocumentsDisclosures';
 import StickyNavigation from './StickyNavigation';
+import FloatingTableOfContents from './FloatingTableOfContents';
 import FundTabsLazySection from './FundTabsLazySection';
 import IntroductionButton from './IntroductionButton';
 import { formatCurrency } from './utils/formatters';
@@ -213,6 +214,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
         {/* FAQ Section */}
         <FundFAQSection fund={fund} />
       </div>
+      
+      {/* Floating TOC (Mobile only) */}
+      <FloatingTableOfContents fund={fund} />
     </>
   );
 };

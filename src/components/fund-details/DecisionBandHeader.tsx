@@ -5,6 +5,7 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Mail, Calendar, BarChart3, Bookmark } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
+import { useShortlist } from '../../contexts/ShortlistContext';
 import { formatPercentage } from './utils/formatters';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
 
@@ -14,13 +15,23 @@ interface DecisionBandHeaderProps {
 
 const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
   const { isInComparison, addToComparison, removeFromComparison } = useComparison();
+  const { isInShortlist, addToShortlist, removeFromShortlist } = useShortlist();
   const isCompared = isInComparison(fund.id);
+  const isShortlisted = isInShortlist(fund.id);
 
   const handleCompareClick = () => {
     if (isCompared) {
       removeFromComparison(fund.id);
     } else {
       addToComparison(fund);
+    }
+  };
+
+  const handleShortlistClick = () => {
+    if (isShortlisted) {
+      removeFromShortlist(fund.id);
+    } else {
+      addToShortlist(fund);
     }
   };
 
@@ -221,9 +232,14 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                   <BarChart3 className="mr-2 h-4 w-4" />
                   {isCompared ? "Remove" : "Compare"}
                 </Button>
-                <Button variant="ghost" size="sm">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={handleShortlistClick}
+                  className={isShortlisted ? "bg-accent text-accent-foreground" : ""}
+                >
                   <Bookmark className="mr-2 h-4 w-4" />
-                  Shortlist
+                  {isShortlisted ? "Shortlisted" : "Shortlist"}
                 </Button>
               </div>
             </div>

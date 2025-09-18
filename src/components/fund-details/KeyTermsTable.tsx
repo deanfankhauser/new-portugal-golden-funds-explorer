@@ -1,12 +1,83 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Fund } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { formatCurrency } from './utils/formatters';
 
 interface KeyTermsTableProps {
   fund: Fund;
 }
+
+// Mobile component for collapsible key terms
+const MobileKeyTermsTable: React.FC<{
+  keyTerms: Array<{ label: string; value: string; type: string }>;
+  renderValue: (term: any) => React.ReactNode;
+}> = ({ keyTerms, renderValue }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const previewCount = 4;
+  const showToggle = keyTerms.length > previewCount;
+
+  return (
+    <div className="md:hidden">
+      <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
+        {/* Always visible terms */}
+        <div className="space-y-3">
+          {keyTerms.slice(0, previewCount).map((term, index) => (
+            <div key={index} className="bg-muted/30 rounded-lg p-3">
+              <div className="text-xs text-muted-foreground font-medium mb-1">
+                {term.label}
+              </div>
+              <div>
+                {renderValue(term)}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Collapsible additional terms */}
+        {showToggle && (
+          <>
+            <CollapsibleContent className="space-y-3 mt-3">
+              {keyTerms.slice(previewCount).map((term, index) => (
+                <div key={index + previewCount} className="bg-muted/30 rounded-lg p-3">
+                  <div className="text-xs text-muted-foreground font-medium mb-1">
+                    {term.label}
+                  </div>
+                  <div>
+                    {renderValue(term)}
+                  </div>
+                </div>
+              ))}
+            </CollapsibleContent>
+
+            <CollapsibleTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full mt-3 text-primary hover:text-primary/80"
+              >
+                {isExpanded ? (
+                  <>
+                    <ChevronUp className="h-4 w-4 mr-1" />
+                    Show Less
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="h-4 w-4 mr-1" />
+                    Show {keyTerms.length - previewCount} More Terms
+                  </>
+                )}
+              </Button>
+            </CollapsibleTrigger>
+          </>
+        )}
+      </Collapsible>
+    </div>
+  );
+};
 
 const KeyTermsTable: React.FC<KeyTermsTableProps> = ({ fund }) => {
   
@@ -117,19 +188,8 @@ const KeyTermsTable: React.FC<KeyTermsTableProps> = ({ fund }) => {
           </div>
         </div>
 
-        {/* Mobile: Card layout */}
-        <div className="md:hidden space-y-3">
-          {keyTerms.map((term, index) => (
-            <div key={index} className="bg-muted/30 rounded-lg p-3">
-              <div className="text-xs text-muted-foreground font-medium mb-1">
-                {term.label}
-              </div>
-              <div>
-                {renderValue(term)}
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Mobile: Collapsible layout */}
+        <MobileKeyTermsTable keyTerms={keyTerms} renderValue={renderValue} />
 
         {/* Additional Information */}
         <div className="mt-6 pt-6 border-t border-border">
