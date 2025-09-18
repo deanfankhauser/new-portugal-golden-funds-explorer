@@ -381,6 +381,10 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
                     fontWeight: 500
                   }}
                   tickFormatter={(value) => `${value}%`}
+                  domain={[
+                    (min: number) => min - 1,
+                    (max: number) => max + 1
+                  ]}
                   dx={-5}
                 />
               )}
@@ -397,6 +401,10 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
                     fontWeight: 500
                   }}
                   tickFormatter={(value) => `€${(value / 1000000).toFixed(0)}M`}
+                  domain={[
+                    (min: number) => min * 0.98,
+                    (max: number) => max * 1.02
+                  ]}
                   dx={5}
                 />
               )}
@@ -463,10 +471,9 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
                   type="monotone"
                   dataKey="aum"
                   stroke="hsl(var(--chart-2))"
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  dot={false}
-                  activeDot={false}
+                  strokeWidth={3}
+                  dot={{ r: 3, fill: 'hsl(var(--chart-2))' }}
+                  activeDot={{ r: 4, fill: 'hsl(var(--chart-2))' }}
                   name="AUM (€M)"
                   connectNulls={false}
                 />
