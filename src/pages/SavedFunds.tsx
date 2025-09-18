@@ -14,12 +14,12 @@ import { PageLoader } from '../components/common/LoadingSkeleton';
 
 const SavedFunds = () => {
   const navigate = useNavigate();
-  const { user } = useEnhancedAuth();
+  const { user, loading: authLoading } = useEnhancedAuth();
   const { savedFunds, loading: savedLoading } = useSavedFunds();
   const { getFundById, loading: fundsLoading } = useRealTimeFunds();
 
-  // Redirect if not authenticated
-  if (!user && !savedLoading) {
+  // Redirect if not authenticated (wait for auth to finish)
+  if (!authLoading && !user) {
     navigate('/investor-auth');
     return null;
   }

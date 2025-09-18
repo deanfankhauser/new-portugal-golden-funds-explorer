@@ -26,6 +26,7 @@ export const useSavedFunds = () => {
       const { data, error } = await supabase
         .from('saved_funds')
         .select('*')
+        .eq('user_id', user.id)
         .order('saved_at', { ascending: false });
 
       if (error) {
