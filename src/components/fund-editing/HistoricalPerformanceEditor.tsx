@@ -4,8 +4,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, X, TrendingUp } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Plus, X, TrendingUp, CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 interface MonthlyPerformanceData {
   returns?: number;
@@ -23,30 +26,14 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
   onChange
 }) => {
   const [performanceData, setPerformanceData] = useState<Record<string, MonthlyPerformanceData>>(value);
+  const [selectedDate, setSelectedDate] = useState<Date>();
 
   useEffect(() => {
     setPerformanceData(value || {});
   }, [value]);
 
-  // Generate list of months for the last 3 years
-  const generateMonthOptions = () => {
-    const months = [];
-    const currentDate = new Date();
-    
-    for (let i = 0; i < 36; i++) { // 3 years = 36 months
-      const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
-      const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-      const displayName = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-      months.push({ value: yearMonth, label: displayName });
-    }
-    
-    return months;
-  };
-
-  const monthOptions = generateMonthOptions();
-  const existingMonths = Object.keys(performanceData).sort().reverse();
-
-  const addMonth = (monthKey: string) => {
+  const addMonthFromDate = (date: Date) => {
+    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     if (!performanceData[monthKey]) {
       const newData = {
         ...performanceData,
@@ -54,8 +41,23 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
       };
       setPerformanceData(newData);
       onChange(newData);
+      setSelectedDate(undefined); // Reset the date picker
     }
   };
+
+  // Check if a date is already added or outside the 3-year range
+  const isDateDisabled = (date: Date) => {
+    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    const currentDate = new Date();
+    const threeYearsAgo = new Date(currentDate.getFullYear() - 3, currentDate.getMonth(), 1);
+    
+    // Disable if already added or outside 3-year range
+    return performanceData[monthKey] !== undefined || 
+           date > currentDate || 
+           date < threeYearsAgo;
+  };
+
+  const existingMonths = Object.keys(performanceData).sort().reverse();
 
   const removeMonth = (monthKey: string) => {
     const newData = { ...performanceData };
@@ -82,8 +84,6 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
     return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   };
 
-  const availableMonths = monthOptions.filter(month => !performanceData[month.value]);
-
   return (
     <Card>
       <CardHeader>
@@ -96,22 +96,39 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Add new month */}
+        {/* Add new month with calendar */}
         <div className="flex gap-2 items-end">
           <div className="flex-1">
             <Label>Add Month</Label>
-            <Select onValueChange={addMonth}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a month to add" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableMonths.map((month) => (
-                  <SelectItem key={month.value} value={month.value}>
-                    {month.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !selectedDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {selectedDate ? format(selectedDate, "MMMM yyyy") : "Select a month"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(date) => {
+                    if (date) {
+                      setSelectedDate(date);
+                      addMonthFromDate(date);
+                    }
+                  }}
+                  disabled={isDateDisabled}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 
