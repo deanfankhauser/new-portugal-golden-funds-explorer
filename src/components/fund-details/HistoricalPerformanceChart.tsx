@@ -270,18 +270,8 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                 strokeWidth={2}
                 strokeDasharray="5 5"
                 filter="url(#aumLineShadow)"
-                dot={{ 
-                  fill: 'hsl(var(--chart-2))', 
-                  strokeWidth: 0, 
-                  r: 3,
-                  filter: "url(#aumLineShadow)"
-                }}
-                activeDot={{ 
-                  r: 5, 
-                  fill: 'hsl(var(--chart-2))',
-                  stroke: 'hsl(var(--background))',
-                  strokeWidth: 2
-                }}
+                dot={false}
+                activeDot={false}
                 name="AUM (€M)"
                 connectNulls={false}
               />
