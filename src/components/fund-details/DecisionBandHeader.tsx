@@ -149,12 +149,12 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                     </Badge>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="p-1 h-auto">
+                        <Button variant="ghost" size="sm" className="p-1 h-auto min-w-0 hover:bg-muted/50">
                           <Info className="h-3 w-3 text-muted-foreground" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Year-to-Date performance shows how much the fund has gained or lost since the beginning of the current year.</p>
+                      <TooltipContent className="text-xs max-w-48">
+                        <p>Performance since start of current year</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -172,12 +172,12 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                     </Badge>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="p-1 h-auto">
+                        <Button variant="ghost" size="sm" className="p-1 h-auto min-w-0 hover:bg-muted/50">
                           <Info className="h-3 w-3 text-muted-foreground" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>
-                        <p>1-Year performance shows the total return over the past 12 months.</p>
+                      <TooltipContent className="text-xs max-w-48">
+                        <p>Total return over past 12 months</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -195,12 +195,12 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                     </Badge>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="p-1 h-auto">
+                        <Button variant="ghost" size="sm" className="p-1 h-auto min-w-0 hover:bg-muted/50">
                           <Info className="h-3 w-3 text-muted-foreground" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Total performance since the fund was launched. This shows the cumulative return from the fund's start date.</p>
+                      <TooltipContent className="text-xs max-w-48">
+                        <p>Total return since fund launch</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -218,12 +218,12 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                     </Badge>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="p-1 h-auto">
+                        <Button variant="ghost" size="sm" className="p-1 h-auto min-w-0 hover:bg-muted/50">
                           <Info className="h-3 w-3 text-muted-foreground" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Maximum Drawdown is the largest peak-to-trough decline. It shows the worst loss an investor would have experienced during any period.</p>
+                      <TooltipContent className="text-xs max-w-48">
+                        <p>Largest peak-to-trough decline</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -241,12 +241,12 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                     </Badge>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="ghost" size="sm" className="p-1 h-auto">
+                        <Button variant="ghost" size="sm" className="p-1 h-auto min-w-0 hover:bg-muted/50">
                           <Info className="h-3 w-3 text-muted-foreground" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Volatility measures how much the fund's returns fluctuate. Higher volatility means more unpredictable returns.</p>
+                      <TooltipContent className="text-xs max-w-48">
+                        <p>How much returns fluctuate</p>
                       </TooltipContent>
                     </Tooltip>
                   </div>
@@ -263,13 +263,13 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                   </Badge>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="sm" className="p-1 h-auto">
+                      <Button variant="ghost" size="sm" className="p-1 h-auto min-w-0 hover:bg-muted/50">
                         <Info className="h-3 w-3 text-muted-foreground" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Risk level assessment on a scale of 1-7, where 1 is very low risk and 7 is very high risk. Based on fund characteristics and historical performance.</p>
-                    </TooltipContent>
+                      <TooltipContent className="text-xs max-w-48">
+                        <p>Risk scale: 1 (low) to 7 (high)</p>
+                      </TooltipContent>
                   </Tooltip>
                 </div>
               </div>
