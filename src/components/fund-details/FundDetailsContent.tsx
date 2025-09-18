@@ -2,8 +2,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
-import FundHeader from './FundHeader';
-import FundMetrics from './FundMetrics';
+import DecisionBandHeader from './DecisionBandHeader';
+import PerformanceModule from './PerformanceModule';
+import TrustPracticalityCards from './TrustPracticalityCards';
+import KeyTermsTable from './KeyTermsTable';
+import StrategyPortfolioSection from './StrategyPortfolioSection';
 import FundTabsLazySection from './FundTabsLazySection';
 import IntroductionButton from './IntroductionButton';
 import { formatCurrency } from './utils/formatters';
@@ -55,10 +58,24 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       {/* Back to Funds Button */}
       <BackToFundsButton />
       
-      <div className="bg-card rounded-xl md:rounded-2xl shadow-md border border-border overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-        {/* Fund Header Section with built-in CTA */}
-        <FundHeader fund={fund} />
+      {/* Above-the-fold Decision Band */}
+      <DecisionBandHeader fund={fund} />
+      
+      {/* Performance Module - Full Width */}
+      <PerformanceModule fund={fund} />
+      
+      {/* Just Below the Fold - Trust + Practicality */}
+      <TrustPracticalityCards fund={fund} />
+      
+      {/* Mid-page Details */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <KeyTermsTable fund={fund} />
+        <div>
+          <StrategyPortfolioSection fund={fund} />
+        </div>
+      </div>
 
+      <div className="bg-card rounded-xl md:rounded-2xl shadow-md border border-border overflow-hidden transition-shadow duration-300 hover:shadow-lg">
         <div className="p-4 md:p-6 lg:p-10 space-y-6 md:space-y-8 lg:space-y-10">
           {/* Fund Edit Button - Community Editing */}
           <div className="flex justify-center">
@@ -68,12 +85,10 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           {/* Main content with tabs - Detailed Information */}
           <FundTabsLazySection fund={fund} />
           
-          {/* Key Financial Metrics - Most Important */}
-          <FundMetrics 
-            fund={fund} 
-            formatCurrency={formatCurrency} 
-            formatFundSize={() => <FundSizeFormatter fund={fund} />} 
-          />
+          {/* Fund Edit Button - Community Editing */}
+          <div className="flex justify-center">
+            <FundEditButton fund={fund} />
+          </div>
           
           {/* Data Quality Indicators - Trust Signals */}
           <FundDataFreshness fund={fund} />
