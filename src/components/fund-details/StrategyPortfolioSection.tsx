@@ -3,6 +3,7 @@ import { Fund } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { Building, DollarSign, PieChart as PieChartIcon } from 'lucide-react';
 
 interface StrategyPortfolioSectionProps {
   fund: Fund;
@@ -195,32 +196,36 @@ const StrategyPortfolioSection: React.FC<StrategyPortfolioSectionProps> = ({ fun
             </p>
           </CardHeader>
           <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={sectorData} layout="horizontal">
-                  <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                  <XAxis 
-                    type="number" 
-                    tick={{ fontSize: 12 }}
-                    tickFormatter={(value) => `${value}%`}
-                  />
-                  <YAxis 
-                    type="category" 
-                    dataKey="name" 
-                    tick={{ fontSize: 12 }}
-                    width={100}
-                  />
-                  <Tooltip 
-                    formatter={(value) => [`${value}%`, 'Allocation']}
-                    labelStyle={{ color: 'hsl(var(--foreground))' }}
-                  />
-                  <Bar 
-                    dataKey="value" 
-                    fill="hsl(var(--accent))"
-                    radius={[0, 4, 4, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+            <div className="space-y-4">
+              {sectorData.map((sector, index) => (
+                <div key={index} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
+                        {sector.name === 'Real Estate' && <Building className="w-4 h-4 text-primary" />}
+                        {sector.name === 'Technology' && <div className="w-4 h-4 bg-primary rounded-sm" />}
+                        {sector.name === 'Healthcare' && <div className="w-4 h-4 bg-primary rounded-full" />}
+                        {sector.name === 'Financial Services' && <DollarSign className="w-4 h-4 text-primary" />}
+                        {sector.name === 'Other' && <PieChartIcon className="w-4 h-4 text-primary" />}
+                      </div>
+                      <span className="font-medium text-foreground">{sector.name}</span>
+                    </div>
+                    <span className="font-semibold text-foreground">{sector.value}%</span>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div 
+                      className="bg-primary h-2 rounded-full transition-all duration-300" 
+                      style={{ width: `${sector.value}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-6 pt-4 border-t border-border">
+              <p className="text-xs text-muted-foreground">
+                Sector allocation is indicative and may change based on market opportunities and fund strategy.
+              </p>
             </div>
           </CardContent>
         </Card>

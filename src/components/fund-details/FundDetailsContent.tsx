@@ -32,7 +32,7 @@ import IntroductionButton from './IntroductionButton';
 import RegulatoryIdentifiers from './RegulatoryIdentifiers';
 import KeyTermsTable from './KeyTermsTable';
 import StrategyPortfolioSection from './StrategyPortfolioSection';
-import RiskAssessmentSection from './RiskAssessmentSection';
+
 import FundCategory from './FundCategory';
 import FeeStructure from './FeeStructure';
 import GeographicAllocation from './GeographicAllocation';
@@ -108,11 +108,6 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                   </div>
                 </section>
 
-                {/* Risk Assessment Section */}
-                <section id="risk-assessment" className="scroll-mt-24">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Risk Assessment</h2>
-                  <RiskAssessmentSection fund={fund} />
-                </section>
 
                 {/* Financial Details Section */}
                 <section id="financial-details" className="scroll-mt-24">

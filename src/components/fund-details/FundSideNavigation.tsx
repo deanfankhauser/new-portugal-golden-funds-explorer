@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, PieChart, Users, Target, Shield, DollarSign, Building } from 'lucide-react';
+import { FileText, PieChart, Users, Target, DollarSign, Building } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface FundSideNavigationProps {
@@ -17,7 +17,6 @@ const FundSideNavigation: React.FC<FundSideNavigationProps> = ({ className = '' 
   const navItems = [
     { id: 'fund-overview', label: 'Overview', icon: FileText },
     { id: 'key-terms-strategy', label: 'Key Terms & Strategy', icon: Target },
-    { id: 'risk-assessment', label: 'Risk Assessment', icon: Shield },
     { id: 'financial-details', label: 'Financial Details', icon: DollarSign },
     { id: 'fund-structure', label: 'Fund Structure', icon: PieChart },
     { id: 'team-information', label: 'Team', icon: Users },
