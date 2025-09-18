@@ -14,10 +14,12 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Save, Loader2, Plus, Trash2 } from 'lucide-react';
+import { Save, Loader2, Plus, Trash2, Upload } from 'lucide-react';
 import { Fund, GeographicAllocation, TeamMember, PdfDocument, RedemptionTerms } from '@/data/types/funds';
 import { useFundEditing } from '@/hooks/useFundEditing';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import FundLogo from '@/components/fund-details/FundLogo';
 
 interface FundEditModalProps {
   fund: Fund;
@@ -31,6 +33,7 @@ export const FundEditModal: React.FC<FundEditModalProps> = ({
   onOpenChange,
 }) => {
   const { submitFundEditSuggestion, loading } = useFundEditing();
+  const [logoUploading, setLogoUploading] = useState(false);
 const buildFormData = (f: Fund) => {
   const formData: any = {
     // Basic information - always present
@@ -58,6 +61,8 @@ const buildFormData = (f: Fund) => {
     documents: f.documents || [],
     // Historical performance - always present as object
     historicalPerformance: f.historicalPerformance || {},
+    // Logo URL
+    logoUrl: f.logoUrl || '',
   };
 
   // Only add optional fields if they exist in the fund data
@@ -138,6 +143,78 @@ useEffect(() => {
     });
   };
 
+  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('File size must be less than 5MB');
+      return;
+    }
+
+    setLogoUploading(true);
+    try {
+      // Create unique filename
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${fund.id}-${Date.now()}.${fileExt}`;
+
+      // Upload to Supabase storage
+      const { data, error } = await supabase.storage
+        .from('fund-logos')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (error) throw error;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('fund-logos')
+        .getPublicUrl(fileName);
+
+      // Update form data
+      handleInputChange('logoUrl', publicUrl);
+      
+      toast.success('Logo uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading logo:', error);
+      toast.error('Failed to upload logo');
+    } finally {
+      setLogoUploading(false);
+    }
+  };
+
+  const handleLogoRemove = async () => {
+    if (formData.logoUrl) {
+      try {
+        // Extract filename from URL
+        const urlParts = formData.logoUrl.split('/');
+        const fileName = urlParts[urlParts.length - 1];
+        
+        // Remove from storage
+        await supabase.storage
+          .from('fund-logos')
+          .remove([fileName]);
+        
+        // Update form data
+        handleInputChange('logoUrl', '');
+        
+        toast.success('Logo removed successfully');
+      } catch (error) {
+        console.error('Error removing logo:', error);
+        toast.error('Failed to remove logo');
+      }
+    }
+  };
+
   const addArrayItem = (field: string, newItem: any) => {
     setFormData(prev => ({
       ...prev,
@@ -180,6 +257,7 @@ useEffect(() => {
     pficStatus: fund.pficStatus,
     eligibilityBasis: fund.eligibilityBasis,
     historicalPerformance: fund.historicalPerformance,
+    logoUrl: fund.logoUrl,
   });
 
   const getSuggestedChanges = () => {
@@ -279,6 +357,55 @@ useEffect(() => {
                 <h3 className="text-lg font-semibold">Basic Information</h3>
                 
                 <div className="grid grid-cols-1 gap-4">
+                  {/* Fund Logo Section */}
+                  <div className="space-y-3">
+                    <Label>Fund Logo</Label>
+                    <div className="flex items-center gap-4">
+                      <FundLogo 
+                        logoUrl={formData.logoUrl} 
+                        fundName={fund.name} 
+                        size="lg" 
+                      />
+                      <div className="flex flex-col gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => document.getElementById('logo-upload')?.click()}
+                          disabled={logoUploading}
+                          className="gap-2"
+                        >
+                          {logoUploading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Upload className="h-4 w-4" />
+                          )}
+                          {formData.logoUrl ? 'Change Logo' : 'Upload Logo'}
+                        </Button>
+                        {formData.logoUrl && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={handleLogoRemove}
+                          >
+                            Remove Logo
+                          </Button>
+                        )}
+                        <input
+                          id="logo-upload"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleLogoUpload}
+                          className="hidden"
+                        />
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Upload a logo for the fund. Supported formats: JPG, PNG, WEBP. Max size: 5MB.
+                    </p>
+                  </div>
+                  
                   <div>
                     <Label htmlFor="name">Fund Name</Label>
                     <Input
