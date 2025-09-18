@@ -27,8 +27,6 @@ import FundSideNavigation from './FundSideNavigation';
 // Import tab components directly
 import FundDescription from './FundDescription';
 import FundManager from './FundManager';
-import FundWebsite from './FundWebsite';
-import IntroductionButton from './IntroductionButton';
 import RegulatoryIdentifiers from './RegulatoryIdentifiers';
 import KeyTermsTable from './KeyTermsTable';
 import StrategyPortfolioSection from './StrategyPortfolioSection';
@@ -94,8 +92,6 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                     <FundDescription description={fund.detailedDescription} />
                     <RegulatoryIdentifiers fund={fund} />
                     <FundManager managerName={fund.managerName} managerLogo={fund.managerLogo} />
-                    <FundWebsite websiteUrl={fund.websiteUrl} />
-                    <IntroductionButton variant="compact" />
                   </div>
                 </section>
 
