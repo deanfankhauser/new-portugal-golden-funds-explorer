@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -56,28 +56,39 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
   // Process and filter data based on selected time range
   const processedData = useMemo(() => {
     const chartData = Object.entries(historicalPerformance)
-      .map(([dateStr, data]) => ({
-        date: dateStr,
-        returns: data.returns || 0,
-        aum: data.aum || 0,
-        nav: data.nav || 0,
-        displayDate: new Date(dateStr).toLocaleDateString('en-US', { 
-          month: 'short', 
-          year: '2-digit' 
-        }),
-        fullDate: new Date(dateStr),
-        timestamp: new Date(dateStr).getTime()
-      }))
+      .map(([dateStr, data]) => {
+        // Parse YYYY-MM format correctly
+        const [year, month] = dateStr.split('-').map(Number);
+        const fullDate = new Date(year, month - 1, 1); // month - 1 because Date months are 0-indexed
+        
+        return {
+          date: dateStr,
+          returns: data.returns || 0,
+          aum: data.aum || 0,
+          nav: data.nav || 0,
+          displayDate: fullDate.toLocaleDateString('en-US', { 
+            month: 'short', 
+            year: '2-digit' 
+          }),
+          fullDate,
+          timestamp: fullDate.getTime()
+        };
+      })
       .sort((a, b) => a.timestamp - b.timestamp);
 
-    // Filter based on time range
-    if (selectedRange === 'ALL') return chartData;
+    // Filter based on time range - but only if we have enough data
+    if (selectedRange === 'ALL' || chartData.length <= 3) {
+      return chartData; // Show all data if we don't have much
+    }
     
     const now = new Date();
     const monthsBack = selectedRange === '3M' ? 3 : selectedRange === '6M' ? 6 : 12;
     const cutoffDate = new Date(now.getFullYear(), now.getMonth() - monthsBack, 1);
     
-    return chartData.filter(item => item.fullDate >= cutoffDate);
+    const filteredData = chartData.filter(item => item.fullDate >= cutoffDate);
+    
+    // If filtering results in no data, return all data
+    return filteredData.length > 0 ? filteredData : chartData;
   }, [historicalPerformance, selectedRange]);
 
   // Calculate performance metrics
@@ -171,12 +182,23 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
     return null;
   };
 
-  const timeRanges: { key: TimeRange; label: string }[] = [
-    { key: '3M', label: '3M' },
-    { key: '6M', label: '6M' },
-    { key: '1Y', label: '1Y' },
+  const timeRanges: { key: TimeRange; label: string; disabled?: boolean }[] = [
+    { key: '3M', label: '3M', disabled: processedData.length < 3 },
+    { key: '6M', label: '6M', disabled: processedData.length < 6 },
+    { key: '1Y', label: '1Y', disabled: processedData.length < 12 },
     { key: 'ALL', label: 'All' }
   ];
+
+  // Auto-select appropriate range based on available data
+  React.useEffect(() => {
+    const availableMonths = Object.keys(historicalPerformance || {}).length;
+    if (selectedRange !== 'ALL') {
+      const requiredMonths = selectedRange === '3M' ? 3 : selectedRange === '6M' ? 6 : 12;
+      if (availableMonths < requiredMonths) {
+        setSelectedRange('ALL');
+      }
+    }
+  }, [historicalPerformance, selectedRange]);
 
   return (
     <Card className="border-0 shadow-sm bg-card/30 backdrop-blur-sm">
@@ -204,12 +226,16 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
                   key={range.key}
                   variant={selectedRange === range.key ? "default" : "ghost"}
                   size="sm"
+                  disabled={range.disabled}
                   onClick={() => setSelectedRange(range.key)}
                   className={`text-xs px-3 py-1 ${
                     selectedRange === range.key 
                       ? 'bg-primary text-primary-foreground shadow-sm' 
+                      : range.disabled
+                      ? 'text-muted-foreground/50 cursor-not-allowed'
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
+                  title={range.disabled ? 'Not enough data for this time range' : undefined}
                 >
                   {range.label}
                 </Button>
