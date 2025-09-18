@@ -18,6 +18,7 @@ export const optimizeGoldenOpportunities: Fund = {
     'No Lock-Up',
     'Open Ended'
   ],
+  logoUrl: "/lovable-uploads/ab17d046-1cb9-44fd-aa6d-c4d338e11090.png",
   minimumInvestment: 500000,
   fundSize: 0, // N/A in the provided data
   managementFee: 0, // N/A in the provided data
