@@ -9,6 +9,7 @@ import { useComparison } from '../../contexts/ComparisonContext';
 import { useShortlist } from '../../contexts/ShortlistContext';
 import { formatPercentage } from './utils/formatters';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
+import { calculateRiskScore, getRiskLabel, getRiskColor } from '../../utils/riskCalculation';
 
 interface DecisionBandHeaderProps {
   fund: Fund;
@@ -96,6 +97,11 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
   const sinceInceptionPerf = getSinceInceptionPerformance();
   const maxDD = getMaxDrawdown();
   const volatility = getVolatility();
+  
+  // Calculate actual risk score
+  const riskScore = calculateRiskScore(fund);
+  const riskLabel = getRiskLabel(riskScore);
+  const riskColor = getRiskColor(riskScore);
 
   return (
     <div className="bg-card border-b border-border">
@@ -211,12 +217,12 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                   <Badge variant="outline" className="justify-center p-2 text-center flex-1">
                     <div>
                       <div className="text-xs text-muted-foreground">Risk</div>
-                      <div className="font-semibold text-muted-foreground">
-                        Medium/7
+                      <div className={`font-semibold ${riskColor}`}>
+                        {riskScore}/7
                       </div>
                     </div>
                   </Badge>
-                  <InfoTip content="1 (low) to 7 (high)" iconSize={12} />
+                  <InfoTip content={`${riskLabel} - Scale: 1 (low) to 7 (high)`} iconSize={12} />
                 </div>
               </div>
             

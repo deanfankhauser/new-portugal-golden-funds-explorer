@@ -4,29 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { Fund } from '../../data/types/funds';
+import { calculateRiskScore } from '../../utils/riskCalculation';
 
 interface RiskAssessmentSectionProps {
   fund: Fund;
 }
 
 const RiskAssessmentSection: React.FC<RiskAssessmentSectionProps> = ({ fund }) => {
-  // Calculate risk score based on fund characteristics
-  const calculateRiskScore = (fund: Fund): number => {
-    let score = 4; // Default medium risk
-    
-    // High risk factors
-    if (fund.tags.includes('Venture Capital') || fund.tags.includes('Crypto')) score += 2;
-    if (fund.performanceFee >= 20) score += 1;
-    if (fund.minimumInvestment >= 250000) score += 1;
-    
-    // Low risk factors  
-    if (fund.tags.includes('Bonds') || fund.tags.includes('UCITS')) score -= 2;
-    if (fund.category === 'Infrastructure' || fund.category === 'Balanced') score -= 1;
-    if (fund.managementFee <= 1.5) score -= 1;
-    
-    return Math.max(1, Math.min(7, score));
-  };
-
   const riskScore = calculateRiskScore(fund);
   
   const riskLabels = {
