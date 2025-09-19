@@ -124,9 +124,91 @@ Investment Funds Platform Team
 </body>
 </html>`;
 
-    // Create sample PDF content for fund brief
-    const pdfContent = `
-Fund Brief: ${fundName}
+    // Create a proper PDF document using a simple PDF format
+    const createSimplePDF = (content: string): string => {
+      const lines = content.split('\n');
+      const pageHeight = 792; // Standard letter size height in points
+      const pageWidth = 612;  // Standard letter size width in points
+      const margin = 72;      // 1 inch margin
+      const lineHeight = 14;
+      
+      let pdfContent = `%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+
+5 0 obj
+<< /Length 6 0 R >>
+stream
+BT
+/${margin} ${pageHeight - margin} Td
+/F1 12 Tf
+`;
+
+      let yPosition = pageHeight - margin;
+      
+      for (const line of lines) {
+        if (yPosition < margin + lineHeight) {
+          // Simple page break (for this basic implementation, we'll just continue)
+          break;
+        }
+        
+        const escapedLine = line.replace(/\(/g, '\\(').replace(/\)/g, '\\)').replace(/\\/g, '\\\\');
+        
+        if (line.includes('=====')) {
+          pdfContent += `/F1 14 Tf\n`;
+        } else if (line.includes('----')) {
+          pdfContent += `/F1 12 Tf\n`;
+        } else {
+          pdfContent += `/F1 10 Tf\n`;
+        }
+        
+        pdfContent += `(${escapedLine}) Tj\n`;
+        pdfContent += `0 -${lineHeight} Td\n`;
+        yPosition -= lineHeight;
+      }
+
+      pdfContent += `ET
+endstream
+endobj
+
+6 0 obj
+${pdfContent.split('stream')[1].split('endstream')[0].length}
+endobj
+
+xref
+0 7
+0000000000 65535 f
+0000000010 00000 n
+0000000053 00000 n
+0000000125 00000 n
+0000000279 00000 n
+0000000364 00000 n
+0000000466 00000 n
+
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+486
+%%EOF`;
+
+      return btoa(pdfContent);
+    };
+
+    // Create fund brief content
+    const fundBriefContent = `Fund Brief: ${fundName}
 
 INVESTMENT SUMMARY
 ==================
@@ -170,13 +252,9 @@ For more information or to schedule a consultation,
 contact us at info@movingto.com
 
 This document is for informational purposes only and does not constitute investment advice.
-Past performance does not guarantee future results.
-    `.trim();
+Past performance does not guarantee future results.`;
 
-    // Convert text to base64 for attachment (simple PDF simulation)
-    const encoder = new TextEncoder();
-    const pdfBytes = encoder.encode(pdfContent);
-    const base64Pdf = btoa(String.fromCharCode(...pdfBytes));
+    const base64Pdf = createSimplePDF(fundBriefContent);
 
     // Send the fund brief with PDF attachment
     await client.send({
