@@ -37,6 +37,8 @@ const applyEditHistory = (
     if (c.geographic_allocation && Array.isArray(c.geographic_allocation)) n.geographicAllocation = c.geographic_allocation;
     if (c.historicalPerformance && typeof c.historicalPerformance === 'object') n.historicalPerformance = c.historicalPerformance;
     if (c.historical_performance && typeof c.historical_performance === 'object') n.historicalPerformance = c.historical_performance;
+    if (c.logo_url && typeof c.logo_url === 'string') n.logoUrl = c.logo_url;
+    if (c.logoUrl && typeof c.logoUrl === 'string') n.logoUrl = c.logoUrl;
 
     // Apply supported fields
     console.log(`Applying overlay for fund ${f.id}:`, n);
@@ -58,6 +60,7 @@ const applyEditHistory = (
     if (typeof n.historicalPerformance === 'object' && n.historicalPerformance && Object.keys(n.historicalPerformance).length > 0) {
       f.historicalPerformance = n.historicalPerformance;
     }
+    if (typeof n.logoUrl === 'string') f.logoUrl = n.logoUrl;
   }
 
   return Object.values(map);
