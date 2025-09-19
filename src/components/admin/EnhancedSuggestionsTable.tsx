@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Eye, Filter, Search, Clock, User, Building, CheckCircle, XCircle } from 'lucide-react';
+import { Eye, Filter, Search, Clock, User, Building, CheckCircle, XCircle, Image as ImageIcon } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { SuggestionDetailModal } from './SuggestionDetailModal';
 
@@ -201,6 +201,35 @@ export const EnhancedSuggestionsTable: React.FC<EnhancedSuggestionsTableProps> =
       type: 'User',
       icon: <User className="h-3 w-3" />
     };
+    };
+  };
+
+  const getChangeIndicators = (suggestedChanges: Record<string, any>) => {
+    const indicators = [];
+    
+    if (suggestedChanges.logoUrl !== undefined) {
+      indicators.push(
+        <div key="logo" className="flex items-center gap-1 text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded" title="Logo change">
+          <ImageIcon className="h-3 w-3" />
+          Logo
+        </div>
+      );
+    }
+    
+    const otherFields = Object.keys(suggestedChanges).filter(key => key !== 'logoUrl').length;
+    if (otherFields > 0) {
+      indicators.push(
+        <div key="other" className="flex items-center gap-1 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded" title={`${otherFields} other field${otherFields > 1 ? 's' : ''}`}>
+          {otherFields} field{otherFields > 1 ? 's' : ''}
+        </div>
+      );
+    }
+    
+    return indicators;
+  };
+
+  const getChangedFieldsCount = (suggestion: any) => {
+    return Object.keys(suggestion.suggested_changes || {}).length;
   };
 
   const handleViewSuggestion = (suggestion: any) => {
@@ -212,10 +241,6 @@ export const EnhancedSuggestionsTable: React.FC<EnhancedSuggestionsTableProps> =
     };
     setSelectedSuggestion(enrichedSuggestion);
     setIsModalOpen(true);
-  };
-
-  const getChangedFieldsCount = (suggestion: any) => {
-    return Object.keys(suggestion.suggested_changes || {}).length;
   };
 
   if (loading) {

@@ -14,7 +14,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Save, Loader2, Plus, Trash2, Upload } from 'lucide-react';
+import { Save, Loader2, Plus, Trash2, Upload, X } from 'lucide-react';
 import { Fund, GeographicAllocation, TeamMember, PdfDocument, RedemptionTerms } from '@/data/types/funds';
 import { useFundEditing } from '@/hooks/useFundEditing';
 import { toast } from 'sonner';
@@ -193,27 +193,10 @@ useEffect(() => {
     }
   };
 
-  const handleLogoRemove = async () => {
-    if (formData.logoUrl) {
-      try {
-        // Extract filename from URL
-        const urlParts = formData.logoUrl.split('/');
-        const fileName = urlParts[urlParts.length - 1];
-        
-        // Remove from storage
-        await supabase.storage
-          .from('fund-logos')
-          .remove([fileName]);
-        
-        // Update form data
-        handleInputChange('logoUrl', '');
-        
-        toast.success('Logo removed successfully');
-      } catch (error) {
-        console.error('Error removing logo:', error);
-        toast.error('Failed to remove logo');
-      }
-    }
+  const handleLogoRemove = () => {
+    // Just clear the logo URL from form data
+    handleInputChange('logoUrl', '');
+    toast.success('Logo removed from form (will be applied when suggestion is approved)');
   };
 
   const addArrayItem = (field: string, newItem: any) => {
@@ -390,7 +373,9 @@ useEffect(() => {
                             variant="outline"
                             size="sm"
                             onClick={handleLogoRemove}
+                            className="gap-2"
                           >
+                            <X className="h-4 w-4" />
                             Remove Logo
                           </Button>
                         )}

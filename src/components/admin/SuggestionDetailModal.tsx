@@ -6,9 +6,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Check, X, Clock, User, Building, Calendar, MessageSquare } from 'lucide-react';
+import { Check, X, Clock, User, Building, Calendar, MessageSquare, Image as ImageIcon } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import FundLogo from '@/components/fund-details/FundLogo';
 
 interface SuggestionDetailModalProps {
   suggestion: any;
@@ -118,7 +119,8 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         if (typeof sc.auditor === 'string') updatePayload.auditor = sc.auditor;
         if (typeof sc.custodian === 'string') updatePayload.custodian = sc.custodian;
         if (typeof sc.navFrequency === 'string') updatePayload.nav_frequency = sc.navFrequency;
-        if (typeof sc.pficStatus === 'string') updatePayload.pfic_status = sc.pficStatus;
+        // Handle logo URL changes
+        if (typeof sc.logoUrl === 'string') updatePayload.logo_url = sc.logoUrl;
 
         if (Object.keys(updatePayload).length > 0) {
           console.log('Applying changes to funds table:', updatePayload, 'for fund:', suggestion.fund_id);
@@ -315,12 +317,27 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
 
   const renderValueComparison = (field: string, currentValue: any, suggestedValue: any) => {
     // Helper function to normalize display values
-    const normalizeForDisplay = (value: any): string => {
+    const normalizeForDisplay = (value: any): React.ReactNode => {
       if (value === null || value === undefined || value === '') {
-        return 'Not set';
+        return <span className="text-muted-foreground">Not set</span>;
       }
+      
+      // Special handling for logo URLs
+      if (field === 'logoUrl' && typeof value === 'string') {
+        return (
+          <div className="flex items-center gap-3">
+            <FundLogo 
+              logoUrl={value} 
+              fundName={suggestion.fund_id || 'Fund'} 
+              size="sm"
+            />
+            <span className="text-xs text-muted-foreground">Logo image</span>
+          </div>
+        );
+      }
+      
       if (typeof value === 'object') {
-        return JSON.stringify(value, null, 2);
+        return <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(value, null, 2)}</pre>;
       }
       return String(value);
     };
@@ -342,17 +359,17 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         <div>
           <Label className="text-sm font-medium text-muted-foreground">Current Value</Label>
           <div className={`mt-1 p-2 bg-muted rounded ${isChanged ? 'border-l-4 border-red-400' : ''}`}>
-            <pre className="text-sm whitespace-pre-wrap">
+            <div className="text-sm">
               {normalizeForDisplay(currentValue)}
-            </pre>
+            </div>
           </div>
         </div>
         <div>
           <Label className="text-sm font-medium text-muted-foreground">Suggested Value</Label>
           <div className={`mt-1 p-2 bg-muted rounded ${isChanged ? 'border-l-4 border-green-400' : ''}`}>
-            <pre className="text-sm whitespace-pre-wrap">
+            <div className="text-sm">
               {normalizeForDisplay(suggestedValue)}
-            </pre>
+            </div>
           </div>
         </div>
       </div>
@@ -461,7 +478,10 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
               
               {changedFields.map((field) => (
                 <div key={field} className="space-y-2">
-                  <h4 className="font-medium capitalize">{field.replace(/_/g, ' ')}</h4>
+                  <div className="flex items-center gap-2">
+                    {field === 'logoUrl' && <ImageIcon className="h-4 w-4" />}
+                    <h4 className="font-medium capitalize">{field.replace(/_/g, ' ')}</h4>
+                  </div>
                   {renderValueComparison(
                     field,
                     suggestion.current_values?.[field],

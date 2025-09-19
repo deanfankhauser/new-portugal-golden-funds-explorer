@@ -7,7 +7,7 @@ export const UTM_PARAMS = {
 };
 
 export const buildContactUrl = (utmContent?: string) => {
-  const baseUrl = 'https://movingto.com/contact/contact-movingto';
+  const baseUrl = 'https://movingto.com/contact';
   const params = new URLSearchParams({
     utm_source: UTM_PARAMS.source,
     utm_medium: UTM_PARAMS.medium,

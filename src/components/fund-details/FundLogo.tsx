@@ -52,13 +52,13 @@ const FundLogo: React.FC<FundLogoProps> = ({
 
   return (
     <div className="relative">
-      <Avatar className={cn(sizeClasses[size], className)}>
+      <Avatar className={cn(sizeClasses[size], "rounded-full overflow-hidden", className)}>
         {effectiveLogoUrl && !imageError && (
           <AvatarImage 
             src={effectiveLogoUrl} 
             alt={`${fundName} logo`}
             onError={() => setImageError(true)}
-            className="object-contain p-1"
+            className="object-cover w-full h-full"
           />
         )}
         <AvatarFallback className={cn(
