@@ -58,16 +58,6 @@ export const analytics = {
     });
   },
 
-  // Track quiz completion
-  trackQuizCompletion: (recommendations: string[], userProfile?: Record<string, any>) => {
-    analytics.trackEvent('quiz_complete', {
-      recommendations_count: recommendations.length,
-      recommended_funds: recommendations.join(','),
-      user_risk_profile: userProfile?.riskTolerance || '',
-      user_investment_amount: userProfile?.investmentAmount || ''
-    });
-  },
-
   // Track fund comparisons
   trackComparison: (fundIds: string[], fundNames: string[]) => {
     analytics.trackEvent('compare_funds', {

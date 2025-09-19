@@ -84,10 +84,6 @@ export const loadComponents = async () => {
         console.warn('ComponentLoader: Failed to load ROICalculator:', err.message);
         return null;
       }),
-      FundQuiz: import('../pages/FundQuiz').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load FundQuiz:', err.message);
-        return null;
-      }),
       FundComparison: import('../pages/FundComparison').then(m => m.default).catch(err => {
         console.warn('ComponentLoader: Failed to load FundComparison:', err.message);
         return null;

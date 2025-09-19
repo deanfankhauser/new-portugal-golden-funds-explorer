@@ -35,12 +35,6 @@ const MobileNavigation = () => {
               Tools
             </h3>
             <div className="space-y-2">
-              <Link to="/fund-quiz" onClick={closeMenu}>
-                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
-                  <ClipboardCheck className="h-5 w-5" />
-                  <span>Fund Quiz</span>
-                </Button>
-              </Link>
               <Link to="/roi-calculator" onClick={closeMenu}>
                 <Button variant="ghost" className="w-full justify-start gap-3 h-12">
                   <Calculator className="h-5 w-5" />

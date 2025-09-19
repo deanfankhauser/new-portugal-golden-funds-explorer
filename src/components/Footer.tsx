@@ -73,9 +73,6 @@ const Footer = () => {
                 <Link to="/index" className="text-muted-foreground hover:text-accent text-sm transition-colors">Fund Index</Link>
               </li>
               <li>
-                <Link to="/fund-quiz" className="text-muted-foreground hover:text-accent text-sm transition-colors">Fund Quiz</Link>
-              </li>
-              <li>
                 <Link to="/about" className="text-muted-foreground hover:text-accent text-sm transition-colors">About</Link>
               </li>
               <li>

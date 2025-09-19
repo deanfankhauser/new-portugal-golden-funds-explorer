@@ -74,15 +74,6 @@ const Header = () => {
                     <div className="w-64 p-4 bg-card">
                       <div className="space-y-2">
                         <NavigationMenuLink asChild>
-                          <Link to="/fund-quiz" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
-                            <ClipboardCheck className="h-5 w-5 text-primary flex-shrink-0" />
-                            <div>
-                              <div className="font-medium text-foreground">Fund Quiz</div>
-                              <div className="text-sm text-muted-foreground">Find your ideal fund</div>
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
                           <Link to="/roi-calculator" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
                             <Calculator className="h-5 w-5 text-primary flex-shrink-0" />
                             <div>

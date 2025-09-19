@@ -8,7 +8,6 @@ import HomepageSidebar from './HomepageSidebar';
 import ResultsHeader from './ResultsHeader';
 import EmptyFundsState from './EmptyFundsState';
 import FundsList from './FundsList';
-import MobileFundQuizCTA from './MobileFundQuizCTA';
 
 
 interface HomepageContentProps {
@@ -103,8 +102,6 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
           )}
         </main>
       </div>
-
-      <MobileFundQuizCTA />
     </div>
   );
 };

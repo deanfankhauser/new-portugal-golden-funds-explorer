@@ -17,7 +17,6 @@ import {
   FundDetailsLoader, 
   FundIndexLoader, 
   ComparisonLoader,
-  QuizLoader,
   ROICalculatorLoader 
 } from './components/common/LoadingSkeleton';
 
@@ -37,7 +36,7 @@ const ComparisonPage = lazy(() => import('./pages/ComparisonPage'));
 const ComparisonsHub = lazy(() => import('./pages/ComparisonsHub'));
 const FAQs = lazy(() => import('./pages/FAQs'));
 const ROICalculator = lazy(() => import('./pages/ROICalculator'));
-const FundQuiz = lazy(() => import('./pages/FundQuiz'));
+
 const FundComparison = lazy(() => import('./pages/FundComparison'));
 const FundAlternatives = lazy(() => import('./pages/FundAlternatives'));
 const AlternativesHub = lazy(() => import('./pages/AlternativesHub'));
@@ -225,11 +224,6 @@ function App() {
                           <ROICalculator />
                         </Suspense>
                       } />
-                      <Route path="/fund-quiz" element={
-                        <Suspense fallback={<QuizLoader />}>
-                          <FundQuiz />
-                        </Suspense>
-                       } />
                         
                         {/* Manager Authentication */}
                         <Route path="/manager-auth" element={

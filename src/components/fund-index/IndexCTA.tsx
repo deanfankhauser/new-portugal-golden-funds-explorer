@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Calendar, GitCompare, Download, ExternalLink, Home, ClipboardCheck } from 'lucide-react';
+import { Calendar, GitCompare, Download, ExternalLink, Home, ClipboardCheck, Calculator } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
@@ -42,10 +42,10 @@ const IndexCTA: React.FC = () => {
             </Button>
           </Link>
           
-          <Link to="/fund-quiz" className="block">
+          <Link to="/roi-calculator" className="block">
             <Button variant="outline" className="w-full">
-              <ClipboardCheck className="h-4 w-4 mr-2" />
-              Find My Ideal Fund
+              <Calculator className="h-4 w-4 mr-2" />
+              Calculate Returns
             </Button>
           </Link>
           

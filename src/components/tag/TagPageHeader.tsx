@@ -21,11 +21,9 @@ const TagPageHeader = ({ tagName }: TagPageHeaderProps) => {
       
       <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-center" itemProp="description">
         Explore {tagName} Golden Visa Investment Funds and compare qualified options. 
-        Use our <Link to="/fund-quiz" className="text-primary hover:text-primary/80 underline">
-          fund finder quiz
-        </Link> to get personalized recommendations or browse all <Link to="/tags" className="text-primary hover:text-primary/80 underline">
-          fund tags
-        </Link> to find funds that match your investment criteria.
+        Use our <Link to="/roi-calculator" className="text-primary hover:text-primary/80 underline">
+          ROI calculator</Link> to estimate potential returns, or browse <Link to="/index" 
+        className="text-primary hover:text-primary/80 underline">all funds</Link> to find the best match for your investment goals.
       </p>
     </div>
   );

@@ -179,14 +179,6 @@ export class ConsolidatedSEOService {
           structuredData: this.getCalculatorStructuredData()
         };
 
-      case 'fund-quiz':
-        return {
-          title: this.optimizeText('Portugal Golden Visa Fund Finder Quiz | Find Your Perfect Investment | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Take our quiz to find the perfect Portugal Golden Visa investment fund for your needs. Personalized Golden Visa fund recommendations.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('fund-quiz'),
-          structuredData: this.getQuizStructuredData()
-        };
-
       case '404':
         return {
           title: this.optimizeText('Page Not Found | Portugal Investment Funds | Movingto', this.MAX_TITLE_LENGTH),
@@ -751,16 +743,6 @@ export class ConsolidatedSEOService {
       'name': 'ROI Calculator',
       'description': 'Calculate potential investment returns',
       'url': URL_CONFIG.buildUrl('roi-calculator')
-    };
-  }
-
-  private static getQuizStructuredData(): any {
-    return {
-      '@context': 'https://schema.org',
-      '@type': 'WebApplication',
-      'name': 'Fund Finder Quiz',
-      'description': 'Find the perfect investment fund',
-      'url': URL_CONFIG.buildUrl('fund-quiz')
     };
   }
 

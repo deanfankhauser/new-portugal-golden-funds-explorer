@@ -17,7 +17,7 @@ import FundComparisonSuggestions from './FundComparisonSuggestions';
 import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
 import BackToFundsButton from './BackToFundsButton';
 import { Button } from '@/components/ui/button';
-import { ClipboardCheck, TrendingUp } from 'lucide-react';
+import { Calculator, TrendingUp } from 'lucide-react';
 import { tagToSlug } from '@/lib/utils';
 
 import FundBreadcrumbs from './FundBreadcrumbs';
@@ -146,13 +146,13 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                 {/* CTA Section */}
                 <div className="bg-gradient-to-r from-success/10 to-success/5 p-4 md:p-6 rounded-lg border border-success/30">
                   <div className="text-center">
-                    <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Want to see how this fund compares to others?</h3>
-                    <p className="text-xs md:text-sm text-muted-foreground mb-4">Take our quiz to get personalized recommendations based on your investment profile</p>
+                    <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Want to calculate your potential returns?</h3>
+                    <p className="text-xs md:text-sm text-muted-foreground mb-4">Use our ROI calculator to estimate potential returns based on historical performance</p>
                     <div className="flex flex-col sm:flex-row gap-2 justify-center">
                       <Button asChild className="bg-success hover:bg-success/90 text-success-foreground">
-                        <Link to="/fund-quiz">
-                          <ClipboardCheck className="mr-2 h-4 w-4" />
-                          Take Fund Quiz
+                        <Link to="/roi-calculator">
+                          <Calculator className="mr-2 h-4 w-4" />
+                          Calculate Returns
                         </Link>
                       </Button>
                       <Button asChild variant="outline" className="border-success text-success hover:bg-success/10">
