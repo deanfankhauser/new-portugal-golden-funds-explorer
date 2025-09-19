@@ -10,6 +10,7 @@ import { useShortlist } from '../../contexts/ShortlistContext';
 import { formatPercentage } from './utils/formatters';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
 import { FundEditButton } from '../fund-editing/FundEditButton';
+import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
 import { calculateRiskScore, getRiskLabel, getRiskColor } from '../../utils/riskCalculation';
 import FundLogo from './FundLogo';
 
@@ -238,7 +239,11 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                   <Mail className="mr-2 h-4 w-4" />
                   Get Fund Brief
                 </Button>
-                <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                <Button 
+                  variant="outline" 
+                  className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                  onClick={() => openExternalLink(buildContactUrl('fund-detail-book-call'))}
+                >
                   <Calendar className="mr-2 h-4 w-4" />
                   Book 15-min Call
                 </Button>
