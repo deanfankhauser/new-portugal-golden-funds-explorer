@@ -194,12 +194,16 @@ export type Database = {
       }
       funds: {
         Row: {
+          auditor: string | null
           aum: number | null
           category: string | null
+          cmvm_id: string | null
           created_at: string | null
           currency: string | null
+          custodian: string | null
           description: string | null
           detailed_description: string | null
+          eligibility_basis: Json | null
           expected_return_max: number | null
           expected_return_min: number | null
           faqs: Json | null
@@ -209,15 +213,22 @@ export type Database = {
           id: string
           inception_date: string | null
           last_modified_by: string | null
+          location: string | null
           lock_up_period_months: number | null
           logo_url: string | null
           management_fee: number | null
           manager_name: string | null
           minimum_investment: number | null
           name: string
+          nav_frequency: string | null
           pdf_documents: Json | null
           performance_fee: number | null
+          pfic_status: string | null
+          redemption_fee: number | null
+          redemption_terms: Json | null
+          regulated_by: string | null
           risk_level: string | null
+          subscription_fee: number | null
           tags: string[] | null
           team_members: Json | null
           updated_at: string | null
@@ -225,12 +236,16 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          auditor?: string | null
           aum?: number | null
           category?: string | null
+          cmvm_id?: string | null
           created_at?: string | null
           currency?: string | null
+          custodian?: string | null
           description?: string | null
           detailed_description?: string | null
+          eligibility_basis?: Json | null
           expected_return_max?: number | null
           expected_return_min?: number | null
           faqs?: Json | null
@@ -240,15 +255,22 @@ export type Database = {
           id: string
           inception_date?: string | null
           last_modified_by?: string | null
+          location?: string | null
           lock_up_period_months?: number | null
           logo_url?: string | null
           management_fee?: number | null
           manager_name?: string | null
           minimum_investment?: number | null
           name: string
+          nav_frequency?: string | null
           pdf_documents?: Json | null
           performance_fee?: number | null
+          pfic_status?: string | null
+          redemption_fee?: number | null
+          redemption_terms?: Json | null
+          regulated_by?: string | null
           risk_level?: string | null
+          subscription_fee?: number | null
           tags?: string[] | null
           team_members?: Json | null
           updated_at?: string | null
@@ -256,12 +278,16 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          auditor?: string | null
           aum?: number | null
           category?: string | null
+          cmvm_id?: string | null
           created_at?: string | null
           currency?: string | null
+          custodian?: string | null
           description?: string | null
           detailed_description?: string | null
+          eligibility_basis?: Json | null
           expected_return_max?: number | null
           expected_return_min?: number | null
           faqs?: Json | null
@@ -271,15 +297,22 @@ export type Database = {
           id?: string
           inception_date?: string | null
           last_modified_by?: string | null
+          location?: string | null
           lock_up_period_months?: number | null
           logo_url?: string | null
           management_fee?: number | null
           manager_name?: string | null
           minimum_investment?: number | null
           name?: string
+          nav_frequency?: string | null
           pdf_documents?: Json | null
           performance_fee?: number | null
+          pfic_status?: string | null
+          redemption_fee?: number | null
+          redemption_terms?: Json | null
+          regulated_by?: string | null
           risk_level?: string | null
+          subscription_fee?: number | null
           tags?: string[] | null
           team_members?: Json | null
           updated_at?: string | null
