@@ -1,8 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
-import { Resend } from "npm:resend@4.0.0";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -50,7 +48,33 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`📅 Sending booking request email for fund: ${fundName} to: ${recipientEmail}`);
 
-    // Send email using Resend
+    const gmailEmail = Deno.env.get("GMAIL_EMAIL");
+    const gmailAppPassword = Deno.env.get("GMAIL_APP_PASSWORD");
+
+    if (!gmailEmail || !gmailAppPassword) {
+      console.error("Gmail credentials not configured");
+      return new Response(
+        JSON.stringify({ 
+          error: "Email service not configured" 
+        }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Set up SMTP client
+    const client = new SMTPClient({
+      connection: {
+        hostname: "smtp.gmail.com",
+        port: 465,
+        tls: true,
+        auth: {
+          username: gmailEmail,
+          password: gmailAppPassword,
+        },
+      },
+    });
+
+    // Send email using Gmail SMTP
     const textContent = `Book Your 15-Minute Call - ${fundName} Discussion
 
 Thank you for your interest in ${fundName}
@@ -68,43 +92,59 @@ Schedule Your Call Now: https://movingto.com/contact?utm_source=funds-app&utm_me
 This email was sent because you requested a consultation for ${fundName}.
 If you have any questions, please contact us at info@movingto.com`;
 
-    const emailResponse = await resend.emails.send({
-      from: "MovingTo Funds <noreply@movingto.com>",
-      to: [recipientEmail],
-      subject: `Book Your Call - ${fundName} Discussion`,
-      text: textContent,
-      html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-<div style="text-align: center; margin-bottom: 30px;">
-<h1 style="color: #2563eb; margin: 0;">Book Your 15-Minute Call</h1>
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Your Call</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+<div style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+<h1 style="margin: 0; font-size: 24px;">Book Your 15-Minute Call</h1>
+<p style="margin: 10px 0 0 0; opacity: 0.9;">${fundName} Discussion</p>
 </div>
-<div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-<h2 style="color: #334155; margin-top: 0;">Thank you for your interest in ${fundName}</h2>
-<p style="color: #64748b; line-height: 1.6;">We're excited to discuss this investment opportunity with you. Our team is ready to answer your questions and provide detailed insights about ${fundName}.</p>
+<div style="background: #f8fafc; padding: 30px; border-radius: 0 0 8px 8px;">
+<h2 style="color: #1e293b; margin-top: 0;">Thank you for your interest in ${fundName}</h2>
+<div style="background: white; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #2563eb;">
+<p style="margin: 0;">We're excited to discuss this investment opportunity with you. Our team is ready to answer your questions and provide detailed insights about ${fundName}.</p>
 </div>
-<div style="margin: 30px 0;">
-<h3 style="color: #334155;">What to expect in your call:</h3>
-<ul style="color: #64748b; line-height: 1.8;">
+<div style="background: white; padding: 20px; border-radius: 6px; margin: 20px 0;">
+<h3 style="margin-top: 0; color: #1e293b;">What to expect in your call:</h3>
+<ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
 <li>Detailed overview of ${fundName}</li>
 <li>Investment strategy and risk assessment</li>
 <li>Performance analysis and projections</li>
 <li>Q&A session tailored to your needs</li>
 </ul>
 </div>
-<div style="text-align: center; margin: 40px 0;">
-<a href="https://movingto.com/contact?utm_source=funds-app&utm_medium=email&utm_campaign=booking-request&fund=${encodeURIComponent(fundName)}" style="background: #2563eb; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Schedule Your Call Now</a>
+<div style="text-align: center; margin: 30px 0;">
+<a href="https://movingto.com/contact?utm_source=funds-app&utm_medium=email&utm_campaign=booking-request&fund=${encodeURIComponent(fundName)}" style="background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: 500;">Schedule Your Call Now</a>
 </div>
-<div style="border-top: 1px solid #e2e8f0; padding-top: 20px; margin-top: 30px;">
-<p style="color: #94a3b8; font-size: 14px; text-align: center;">This email was sent because you requested a consultation for ${fundName}.<br>If you have any questions, please contact us at info@movingto.com</p>
+<div style="text-align: center; padding: 20px 0; border-top: 1px solid #e2e8f0; margin-top: 30px;">
+<p style="margin: 0; color: #64748b; font-size: 14px;">This email was sent because you requested a consultation for ${fundName}.<br>If you have any questions, please contact us at info@movingto.com</p>
 </div>
-</div>`,
+</div>
+</body>
+</html>`;
+
+    // Send the booking request email
+    await client.send({
+      from: `Investment Funds Platform <${gmailEmail}>`,
+      to: recipientEmail,
+      subject: `Book Your Call - ${fundName} Discussion`,
+      html,
+      content: textContent,
     });
 
-    console.log("📧 Booking request email sent successfully:", emailResponse);
+    console.log(`✅ Booking request email sent successfully to:`, recipientEmail);
+    await client.close();
 
     return new Response(JSON.stringify({ 
       success: true, 
       message: "Booking request email sent successfully",
-      emailId: emailResponse.data?.id 
+      recipient: recipientEmail,
+      fundName: fundName,
     }), {
       status: 200,
       headers: {
