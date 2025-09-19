@@ -552,10 +552,8 @@ export type Database = {
           description: string | null
           founded_year: number | null
           id: string | null
-          license_number: string | null
           logo_url: string | null
           manager_name: string | null
-          registration_number: string | null
           status: Database["public"]["Enums"]["manager_status"] | null
           updated_at: string | null
           user_id: string | null
@@ -570,10 +568,8 @@ export type Database = {
           description?: string | null
           founded_year?: number | null
           id?: string | null
-          license_number?: string | null
           logo_url?: string | null
           manager_name?: string | null
-          registration_number?: string | null
           status?: Database["public"]["Enums"]["manager_status"] | null
           updated_at?: string | null
           user_id?: string | null
@@ -588,10 +584,8 @@ export type Database = {
           description?: string | null
           founded_year?: number | null
           id?: string | null
-          license_number?: string | null
           logo_url?: string | null
           manager_name?: string | null
-          registration_number?: string | null
           status?: Database["public"]["Enums"]["manager_status"] | null
           updated_at?: string | null
           user_id?: string | null
