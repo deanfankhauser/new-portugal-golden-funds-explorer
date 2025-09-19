@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Plus, GitCompare, Mail } from 'lucide-react';
-import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
+import { Plus, GitCompare, Mail, Calendar } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
 import { useAuth } from '../../hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -79,6 +78,40 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
     }
   };
 
+  const handleBookCall = async () => {
+    if (!isAuthenticated || !user?.email) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to book a call",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase.functions.invoke('send-booking-request', {
+        body: { 
+          fundName: fund.name,
+          userEmail: user.email 
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Booking Request Sent!",
+        description: `We'll contact you shortly to schedule your call about ${fund.name}.`,
+      });
+    } catch (error) {
+      console.error('Error sending booking request:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send booking request. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (!isVisible) return null;
 
   return (
@@ -128,10 +161,10 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
               
               <Button 
                 size="sm"
-                onClick={() => openExternalLink(buildContactUrl('sticky-header-call'))}
+                onClick={handleBookCall}
               >
                 Book Call
-                <ExternalLink className="w-4 h-4 ml-1" />
+                <Calendar className="w-4 h-4 ml-1" />
               </Button>
             </div>
           </div>
@@ -153,10 +186,10 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
           
           <Button 
             className="flex-1"
-            onClick={() => openExternalLink(buildContactUrl('sticky-mobile-call'))}
+            onClick={handleBookCall}
           >
             Book Call
-            <ExternalLink className="w-4 h-4 ml-1" />
+            <Calendar className="w-4 h-4 ml-1" />
           </Button>
           
           <Button

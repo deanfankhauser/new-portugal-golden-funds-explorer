@@ -94,13 +94,34 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
     }
   };
 
-  const handleBookCall = () => {
+  const handleBookCall = async () => {
     if (!isAuthenticated) {
       setShowAuthModal(true);
       return;
     }
-    
-    openExternalLink(buildContactUrl('fund-detail-book-call'));
+
+    try {
+      const { error } = await supabase.functions.invoke('send-booking-request', {
+        body: { 
+          fundName: fund.name,
+          userEmail: user?.email 
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Booking Request Sent!",
+        description: `We'll contact you shortly to schedule your call about ${fund.name}.`,
+      });
+    } catch (error) {
+      console.error('Error sending booking request:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send booking request. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   // Calculate key metrics
