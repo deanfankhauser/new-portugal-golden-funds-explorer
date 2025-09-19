@@ -34,6 +34,7 @@ const applyEditHistory = (
     if (c.lock_up_period_months != null) n.term = Math.round(Number(c.lock_up_period_months) / 12);
     if (c.website && typeof c.website === 'string') n.websiteUrl = c.website;
     if (c.website_url && typeof c.website_url === 'string') n.websiteUrl = c.website_url;
+    if (c.websiteUrl && typeof c.websiteUrl === 'string') n.websiteUrl = c.websiteUrl;
     if (c.geographic_allocation && Array.isArray(c.geographic_allocation)) n.geographicAllocation = c.geographic_allocation;
     if (c.historicalPerformance && typeof c.historicalPerformance === 'object') n.historicalPerformance = c.historicalPerformance;
     if (c.historical_performance && typeof c.historical_performance === 'object') n.historicalPerformance = c.historical_performance;
@@ -57,8 +58,15 @@ const applyEditHistory = (
     if (typeof n.minimumInvestment === 'number') f.minimumInvestment = n.minimumInvestment;
     if (typeof n.managementFee === 'number') f.managementFee = n.managementFee;
     if (typeof n.performanceFee === 'number') f.performanceFee = n.performanceFee;
+    if (typeof n.subscriptionFee === 'number') f.subscriptionFee = n.subscriptionFee;
+    if (typeof n.redemptionFee === 'number') f.redemptionFee = n.redemptionFee;
     if (typeof n.term === 'number') f.term = n.term; // years
+    if (typeof n.fundSize === 'number') f.fundSize = n.fundSize;
+    if (typeof n.established === 'number') f.established = n.established;
+    if (typeof n.regulatedBy === 'string') f.regulatedBy = n.regulatedBy;
     if (Array.isArray(n.geographicAllocation)) f.geographicAllocation = n.geographicAllocation;
+    if (Array.isArray(n.team)) f.team = n.team;
+    if (Array.isArray(n.documents)) f.documents = n.documents;
     if (typeof n.historicalPerformance === 'object' && n.historicalPerformance && Object.keys(n.historicalPerformance).length > 0) {
       f.historicalPerformance = n.historicalPerformance;
     }

@@ -87,6 +87,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         if (typeof sc.redemptionFee === 'number') updatePayload.redemption_fee = sc.redemptionFee;
         if (typeof sc.term === 'number') updatePayload.lock_up_period_months = Math.round(sc.term * 12);
         if (typeof sc.category === 'string') updatePayload.category = sc.category;
+        if (typeof sc.returnTarget === 'string') updatePayload.expected_return_min = null; // Note: returnTarget is text field, would need parsing for min/max
         if (typeof sc.websiteUrl === 'string') updatePayload.website = sc.websiteUrl;
         if (typeof sc.fundSize === 'number') updatePayload.aum = sc.fundSize * 1000000; // Convert millions to actual amount
         if (typeof sc.established === 'number') updatePayload.inception_date = `${sc.established}-01-01`;
@@ -120,6 +121,12 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         if (typeof sc.custodian === 'string') updatePayload.custodian = sc.custodian;
         if (typeof sc.navFrequency === 'string') updatePayload.nav_frequency = sc.navFrequency;
         if (typeof sc.pficStatus === 'string') updatePayload.pfic_status = sc.pficStatus;
+        
+        // Handle historical performance
+        if (sc.historicalPerformance && typeof sc.historicalPerformance === 'object') {
+          updatePayload.historical_performance = sc.historicalPerformance;
+        }
+        
         // Handle logo URL changes
         if (typeof sc.logoUrl === 'string') updatePayload.logo_url = sc.logoUrl;
         
