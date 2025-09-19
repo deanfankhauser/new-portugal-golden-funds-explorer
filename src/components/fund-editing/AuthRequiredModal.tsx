@@ -39,8 +39,7 @@ export const AuthRequiredModal: React.FC<AuthRequiredModalProps> = ({
             Authentication Required
           </DialogTitle>
           <DialogDescription className="text-center text-base leading-relaxed mt-4">
-            Before you can edit a fund profile page, we need to know who you are. 
-            Please log in or register to continue.
+            Please log in or register to access this feature.
           </DialogDescription>
         </DialogHeader>
         

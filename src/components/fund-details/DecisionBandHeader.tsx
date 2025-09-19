@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import { Button } from '../ui/button';
@@ -12,6 +12,10 @@ import { DATA_AS_OF_LABEL } from '../../utils/constants';
 import { FundEditButton } from '../fund-editing/FundEditButton';
 import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
 import { calculateRiskScore, getRiskLabel, getRiskColor } from '../../utils/riskCalculation';
+import { useAuth } from '../../hooks/useAuth';
+import { AuthRequiredModal } from '../fund-editing/AuthRequiredModal';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import FundLogo from './FundLogo';
 
 interface DecisionBandHeaderProps {
@@ -21,6 +25,10 @@ interface DecisionBandHeaderProps {
 const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
   const { isInComparison, addToComparison, removeFromComparison } = useComparison();
   const { isInShortlist, addToShortlist, removeFromShortlist } = useShortlist();
+  const { user, isAuthenticated } = useAuth();
+  const { toast } = useToast();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isRequestingBrief, setIsRequestingBrief] = useState(false);
   const isCompared = isInComparison(fund.id);
   const isShortlisted = isInShortlist(fund.id);
 
@@ -38,6 +46,61 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
     } else {
       addToShortlist(fund);
     }
+  };
+
+  const handleGetFundBrief = async () => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    if (!user?.email) {
+      toast({
+        title: "Error",
+        description: "User email not found. Please try logging in again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsRequestingBrief(true);
+
+    try {
+      const { error } = await supabase.functions.invoke('send-fund-brief', {
+        body: {
+          userEmail: user.email,
+          fundName: fund.name,
+          fundId: fund.id,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Fund Brief Requested",
+        description: `We'll send the ${fund.name} brief to ${user.email} within 24 hours.`,
+      });
+    } catch (error: any) {
+      console.error('Error requesting fund brief:', error);
+      toast({
+        title: "Error",
+        description: "Failed to request fund brief. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRequestingBrief(false);
+    }
+  };
+
+  const handleBookCall = () => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+    
+    openExternalLink(buildContactUrl('fund-detail-book-call'));
   };
 
   // Calculate key metrics
@@ -235,14 +298,18 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
             <div className="flex flex-col gap-3">
               {/* Primary CTAs */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3">
-                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
+                <Button 
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
+                  onClick={handleGetFundBrief}
+                  disabled={isRequestingBrief}
+                >
                   <Mail className="mr-2 h-4 w-4" />
-                  Get Fund Brief
+                  {isRequestingBrief ? "Requesting..." : "Get Fund Brief"}
                 </Button>
                 <Button 
                   variant="outline" 
                   className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
-                  onClick={() => openExternalLink(buildContactUrl('fund-detail-book-call'))}
+                  onClick={handleBookCall}
                 >
                   <Calendar className="mr-2 h-4 w-4" />
                   Book 15-min Call
@@ -275,6 +342,11 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
 
         </div>
       </div>
+
+      <AuthRequiredModal 
+        open={showAuthModal} 
+        onOpenChange={setShowAuthModal}
+      />
     </div>
   );
 };
