@@ -201,7 +201,6 @@ export const EnhancedSuggestionsTable: React.FC<EnhancedSuggestionsTableProps> =
       type: 'User',
       icon: <User className="h-3 w-3" />
     };
-    };
   };
 
   const getChangeIndicators = (suggestedChanges: Record<string, any>) => {
