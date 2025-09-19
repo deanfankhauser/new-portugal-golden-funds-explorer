@@ -37,6 +37,7 @@ const applyEditHistory = (
     if (c.geographic_allocation && Array.isArray(c.geographic_allocation)) n.geographicAllocation = c.geographic_allocation;
     if (c.historicalPerformance && typeof c.historicalPerformance === 'object') n.historicalPerformance = c.historicalPerformance;
     if (c.historical_performance && typeof c.historical_performance === 'object') n.historicalPerformance = c.historical_performance;
+    if (c.faqs && Array.isArray(c.faqs)) n.faqs = c.faqs;
     if (c.logo_url === null || c.logoUrl === null || c.logo_url === '' || c.logoUrl === '') n.logoUrl = null;
     if (typeof c.logo_url === 'string') n.logoUrl = c.logo_url;
     if (typeof c.logoUrl === 'string') n.logoUrl = c.logoUrl;
@@ -61,6 +62,7 @@ const applyEditHistory = (
     if (typeof n.historicalPerformance === 'object' && n.historicalPerformance && Object.keys(n.historicalPerformance).length > 0) {
       f.historicalPerformance = n.historicalPerformance;
     }
+    if (Array.isArray(n.faqs)) f.faqs = n.faqs;
     if (n.logoUrl === null) { delete (f as any).logoUrl; } else if (typeof n.logoUrl === 'string') { f.logoUrl = n.logoUrl; }
   }
 

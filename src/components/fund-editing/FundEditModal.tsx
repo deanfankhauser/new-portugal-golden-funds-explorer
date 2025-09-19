@@ -15,7 +15,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Save, Loader2, Plus, Trash2, Upload, X } from 'lucide-react';
-import { Fund, GeographicAllocation, TeamMember, PdfDocument, RedemptionTerms } from '@/data/types/funds';
+import { Fund, GeographicAllocation, TeamMember, PdfDocument, RedemptionTerms, FAQItem } from '@/data/types/funds';
 import { useFundEditing } from '@/hooks/useFundEditing';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -62,6 +62,8 @@ const buildFormData = (f: Fund) => {
     documents: f.documents || [],
     // Historical performance - always present as object
     historicalPerformance: f.historicalPerformance || {},
+    // FAQs - always present as array
+    faqs: f.faqs || [],
     // Logo URL
     logoUrl: f.logoUrl || '',
   };
@@ -241,6 +243,7 @@ useEffect(() => {
     pficStatus: fund.pficStatus,
     eligibilityBasis: fund.eligibilityBasis,
     historicalPerformance: fund.historicalPerformance,
+    faqs: fund.faqs,
     logoUrl: fund.logoUrl,
   });
 
@@ -326,12 +329,13 @@ useEffect(() => {
         
         <ScrollArea className="max-h-[60vh] pr-4">
           <Tabs defaultValue="basic" className="w-full">
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-7">
               <TabsTrigger value="basic">Basic</TabsTrigger>
               <TabsTrigger value="structure">Structure</TabsTrigger>
               <TabsTrigger value="performance">Performance</TabsTrigger>
               <TabsTrigger value="team">Team</TabsTrigger>
               <TabsTrigger value="documents">Documents</TabsTrigger>
+              <TabsTrigger value="faqs">FAQs</TabsTrigger>
               <TabsTrigger value="regulatory">Regulatory</TabsTrigger>
             </TabsList>
 
@@ -840,6 +844,65 @@ useEffect(() => {
                     </Button>
                   </div>
                 ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="faqs" className="space-y-6 mt-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">Frequently Asked Questions</h3>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => addArrayItem('faqs', { question: '', answer: '' })}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add FAQ
+                  </Button>
+                </div>
+                
+                {formData.faqs.map((faq: FAQItem, index: number) => (
+                  <div key={index} className="p-4 border rounded-lg space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium">FAQ {index + 1}</h4>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => removeArrayItem('faqs', index)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <Label>Question</Label>
+                        <Input
+                          value={faq.question}
+                          onChange={(e) => handleArrayChange('faqs', index, 'question', e.target.value)}
+                          placeholder="Enter frequently asked question..."
+                        />
+                      </div>
+                      <div>
+                        <Label>Answer</Label>
+                        <Textarea
+                          value={faq.answer}
+                          onChange={(e) => handleArrayChange('faqs', index, 'answer', e.target.value)}
+                          rows={4}
+                          placeholder="Enter detailed answer..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                {formData.faqs.length === 0 && (
+                  <div className="text-center p-8 text-muted-foreground">
+                    <p>No FAQs added yet. Click "Add FAQ" to create the first question and answer.</p>
+                  </div>
+                )}
               </div>
             </TabsContent>
 

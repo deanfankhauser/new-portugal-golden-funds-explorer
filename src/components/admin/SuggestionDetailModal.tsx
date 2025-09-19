@@ -122,6 +122,11 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         if (typeof sc.pficStatus === 'string') updatePayload.pfic_status = sc.pficStatus;
         // Handle logo URL changes
         if (typeof sc.logoUrl === 'string') updatePayload.logo_url = sc.logoUrl;
+        
+        // Handle FAQs
+        if (sc.faqs && Array.isArray(sc.faqs)) {
+          updatePayload.faqs = sc.faqs;
+        }
 
         if (Object.keys(updatePayload).length > 0) {
           console.log('Applying changes to funds table:', updatePayload, 'for fund:', suggestion.fund_id);
