@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Plus, GitCompare } from 'lucide-react';
+import { ExternalLink, Plus, GitCompare, Mail } from 'lucide-react';
 import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
 import { useComparison } from '../../contexts/ComparisonContext';
+import { useAuth } from '../../hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import type { Fund } from '../../data/types/funds';
 
 interface StickyNavigationProps {
@@ -11,7 +14,10 @@ interface StickyNavigationProps {
 
 const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isRequestingBrief, setIsRequestingBrief] = useState(false);
   const { isInComparison, addToComparison, removeFromComparison } = useComparison();
+  const { isAuthenticated, user } = useAuth();
+  const { toast } = useToast();
   const isComparing = isInComparison(fund.id);
 
   useEffect(() => {
@@ -29,6 +35,47 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
       removeFromComparison(fund.id);
     } else {
       addToComparison(fund);
+    }
+  };
+
+  const handleGetFundBrief = async () => {
+    if (!isAuthenticated || !user?.email) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to request fund brief",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsRequestingBrief(true);
+
+    try {
+      const { error } = await supabase.functions.invoke('send-fund-brief', {
+        body: {
+          userEmail: user.email,
+          fundName: fund.name,
+          fundId: fund.id,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Fund Brief Requested",
+        description: `We'll send the ${fund.name} brief to ${user.email} within 24 hours.`,
+      });
+    } catch (error: any) {
+      console.error('Error requesting fund brief:', error);
+      toast({
+        title: "Error",
+        description: "Failed to request fund brief. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRequestingBrief(false);
     }
   };
 
@@ -72,9 +119,11 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => openExternalLink(buildContactUrl('sticky-header-brief'))}
+                onClick={handleGetFundBrief}
+                disabled={isRequestingBrief}
               >
-                Get Fund Brief
+                <Mail className="w-4 h-4 mr-1" />
+                {isRequestingBrief ? "Requesting..." : "Get Fund Brief"}
               </Button>
               
               <Button 
@@ -95,9 +144,11 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
           <Button 
             variant="outline" 
             className="flex-1"
-            onClick={() => openExternalLink(buildContactUrl('sticky-mobile-brief'))}
+            onClick={handleGetFundBrief}
+            disabled={isRequestingBrief}
           >
-            Get Brief
+            <Mail className="w-4 h-4 mr-1" />
+            {isRequestingBrief ? "Requesting..." : "Get Brief"}
           </Button>
           
           <Button 

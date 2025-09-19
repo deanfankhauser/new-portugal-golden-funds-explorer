@@ -1,9 +1,12 @@
-import React from 'react';
-import { FileText, ExternalLink, Lock, Download, Calendar } from 'lucide-react';
+import React, { useState } from 'react';
+import { FileText, ExternalLink, Lock, Download, Calendar, Mail } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
+import { useAuth } from '../../hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import type { Fund } from '../../data/types/funds';
 
 interface DocumentsDisclosuresProps {
@@ -19,6 +22,10 @@ interface DocumentItem {
 }
 
 const DocumentsDisclosures: React.FC<DocumentsDisclosuresProps> = ({ fund }) => {
+  const [isRequestingBrief, setIsRequestingBrief] = useState(false);
+  const { isAuthenticated, user } = useAuth();
+  const { toast } = useToast();
+
   // Mock document structure - in production this would come from fund data
   const documents: DocumentItem[] = [
     {
@@ -91,6 +98,47 @@ const DocumentsDisclosures: React.FC<DocumentsDisclosuresProps> = ({ fund }) => 
     } else {
       // Gated or restricted - request via email
       openExternalLink(buildContactUrl('document-request'));
+    }
+  };
+
+  const handleGetFundBrief = async () => {
+    if (!isAuthenticated || !user?.email) {
+      toast({
+        title: "Authentication Required", 
+        description: "Please log in to request fund brief",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsRequestingBrief(true);
+
+    try {
+      const { error } = await supabase.functions.invoke('send-fund-brief', {
+        body: {
+          userEmail: user.email,
+          fundName: fund.name,
+          fundId: fund.id,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Fund Brief Requested",
+        description: `We'll send the ${fund.name} brief to ${user.email} within 24 hours.`,
+      });
+    } catch (error: any) {
+      console.error('Error requesting fund brief:', error);
+      toast({
+        title: "Error",
+        description: "Failed to request fund brief. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRequestingBrief(false);
     }
   };
 
@@ -232,11 +280,12 @@ const DocumentsDisclosures: React.FC<DocumentsDisclosuresProps> = ({ fund }) => 
               </p>
             </div>
             <Button 
-              onClick={() => openExternalLink(buildContactUrl('documents-complete-pack'))}
+              onClick={handleGetFundBrief}
+              disabled={isRequestingBrief}
               className="ml-4 whitespace-nowrap"
             >
-              Get Fund Brief
-              <ExternalLink className="w-4 h-4 ml-1" />
+              <Mail className="w-4 h-4 mr-1" />
+              {isRequestingBrief ? "Requesting..." : "Get Fund Brief"}
             </Button>
           </div>
         </div>
