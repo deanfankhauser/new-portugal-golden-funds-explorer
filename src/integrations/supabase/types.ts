@@ -542,9 +542,69 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      manager_profiles_public: {
+        Row: {
+          assets_under_management: number | null
+          city: string | null
+          company_name: string | null
+          country: string | null
+          created_at: string | null
+          description: string | null
+          founded_year: number | null
+          id: string | null
+          license_number: string | null
+          logo_url: string | null
+          manager_name: string | null
+          registration_number: string | null
+          status: Database["public"]["Enums"]["manager_status"] | null
+          updated_at: string | null
+          user_id: string | null
+          website: string | null
+        }
+        Insert: {
+          assets_under_management?: number | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          founded_year?: number | null
+          id?: string | null
+          license_number?: string | null
+          logo_url?: string | null
+          manager_name?: string | null
+          registration_number?: string | null
+          status?: Database["public"]["Enums"]["manager_status"] | null
+          updated_at?: string | null
+          user_id?: string | null
+          website?: string | null
+        }
+        Update: {
+          assets_under_management?: number | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          founded_year?: number | null
+          id?: string | null
+          license_number?: string | null
+          logo_url?: string | null
+          manager_name?: string | null
+          registration_number?: string | null
+          status?: Database["public"]["Enums"]["manager_status"] | null
+          updated_at?: string | null
+          user_id?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      can_access_manager_sensitive_data: {
+        Args: { manager_user_id?: string }
+        Returns: boolean
+      }
       check_sensitive_data_exposure: {
         Args: Record<PropertyKey, never>
         Returns: {
