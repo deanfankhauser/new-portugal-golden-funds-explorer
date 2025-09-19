@@ -119,6 +119,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         if (typeof sc.auditor === 'string') updatePayload.auditor = sc.auditor;
         if (typeof sc.custodian === 'string') updatePayload.custodian = sc.custodian;
         if (typeof sc.navFrequency === 'string') updatePayload.nav_frequency = sc.navFrequency;
+        if (typeof sc.pficStatus === 'string') updatePayload.pfic_status = sc.pficStatus;
         // Handle logo URL changes
         if (typeof sc.logoUrl === 'string') updatePayload.logo_url = sc.logoUrl;
 
