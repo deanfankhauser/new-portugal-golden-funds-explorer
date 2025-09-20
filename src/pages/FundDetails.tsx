@@ -1,12 +1,13 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { getFundById } from '../data/funds';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import FundDetailsContent from '../components/fund-details/FundDetailsContent';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
+import type { Fund } from '../data/types/funds';
 
 const FundDetails = () => {
   const { id, potentialFundId } = useParams<{ id?: string; potentialFundId?: string }>();
@@ -14,14 +15,13 @@ const FundDetails = () => {
   
   // Support direct fund routing: /:fundId
   const fundId = id || potentialFundId;
+  const { getFundById } = useRealTimeFunds();
   const fund = fundId ? getFundById(fundId) : null;
   const { addToRecentlyViewed } = useRecentlyViewed();
-
   useEffect(() => {
     if (fund) {
       addToRecentlyViewed(fund);
     }
-    window.scrollTo(0, 0);
   }, [fund, addToRecentlyViewed]);
 
   if (!fund) {

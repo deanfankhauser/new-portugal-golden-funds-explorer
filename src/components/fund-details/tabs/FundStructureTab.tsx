@@ -5,6 +5,10 @@ import FundCategory from '../FundCategory';
 import FeeStructure from '../FeeStructure';
 import GeographicAllocation from '../GeographicAllocation';
 import RedemptionTerms from '../RedemptionTerms';
+import KeyTermsTable from '../KeyTermsTable';
+import StrategyPortfolioSection from '../StrategyPortfolioSection';
+import RiskAssessmentSection from '../RiskAssessmentSection';
+import RegulatoryComplianceInfo from '../RegulatoryComplianceInfo';
 import { formatPercentage } from '../utils/formatters';
 
 interface FundStructureTabProps {
@@ -13,7 +17,19 @@ interface FundStructureTabProps {
 
 const FundStructureTab: React.FC<FundStructureTabProps> = ({ fund }) => {
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in space-y-8">
+      {/* Key Terms and Strategy Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <KeyTermsTable fund={fund} />
+        <div>
+          <StrategyPortfolioSection fund={fund} />
+        </div>
+      </div>
+      
+      {/* Risk Assessment Section */}
+      <RiskAssessmentSection fund={fund} />
+      
+      {/* Fund Category and Fee Structure */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="space-y-8">
           {/* Fund Category Section */}
@@ -34,6 +50,9 @@ const FundStructureTab: React.FC<FundStructureTabProps> = ({ fund }) => {
           />
         </div>
       </div>
+      
+      {/* Regulatory Compliance Information */}
+      <RegulatoryComplianceInfo fund={fund} />
     </div>
   );
 };

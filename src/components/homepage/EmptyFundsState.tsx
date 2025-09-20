@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ClipboardCheck, Search, Lightbulb, ArrowRight, Filter, Sparkles, X } from 'lucide-react';
+import { ClipboardCheck, Search, Lightbulb, ArrowRight, Filter, Sparkles, X, Calculator } from 'lucide-react';
 import { FundTag } from '../../data/funds';
 
 interface EmptyFundsStateProps {
@@ -69,18 +69,18 @@ const EmptyFundsState: React.FC<EmptyFundsStateProps> = ({
 
         {/* Action Buttons */}
         <div className="space-y-4">
-          <Link to="/fund-quiz">
+          <Link to="/roi-calculator">
             <Button className="w-full btn-primary-enhanced text-base h-14 font-semibold text-lg
                              bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary
                              shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-                    aria-label="Take quiz for fund recommendations">
+                    aria-label="Use ROI calculator for investment calculations">
               <div className="flex items-center gap-3">
                  <div className="p-1 bg-primary-foreground/20 rounded-lg">
-                   <ClipboardCheck className="h-6 w-6" aria-hidden="true" />
+                   <Calculator className="h-6 w-6" aria-hidden="true" />
                  </div>
                 <div className="text-left">
-                  <div className="font-bold">Get Personalized Recommendations</div>
-                  <div className="text-sm opacity-90">3-minute smart quiz</div>
+                  <div className="font-bold">Calculate Returns</div>
+                  <div className="text-sm opacity-90">Investment planning tool</div>
                 </div>
               </div>
               <ArrowRight className="h-5 w-5 ml-auto" />

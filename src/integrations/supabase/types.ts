@@ -41,6 +41,286 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_activity_log: {
+        Row: {
+          action_type: string
+          admin_user_id: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          ip_address: unknown | null
+          target_id: string | null
+          target_type: string
+          user_agent: string | null
+        }
+        Insert: {
+          action_type: string
+          admin_user_id: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          target_id?: string | null
+          target_type: string
+          user_agent?: string | null
+        }
+        Update: {
+          action_type?: string
+          admin_user_id?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          target_id?: string | null
+          target_type?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_activity_log_admin_user_id_fkey"
+            columns: ["admin_user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_users: {
+        Row: {
+          created_at: string
+          granted_at: string
+          granted_by: string
+          id: string
+          role: Database["public"]["Enums"]["admin_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          granted_at?: string
+          granted_by: string
+          id?: string
+          role?: Database["public"]["Enums"]["admin_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          granted_at?: string
+          granted_by?: string
+          id?: string
+          role?: Database["public"]["Enums"]["admin_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      fund_edit_history: {
+        Row: {
+          admin_user_id: string
+          applied_at: string
+          changed_by: string
+          changes: Json
+          fund_id: string
+          id: string
+          suggestion_id: string | null
+        }
+        Insert: {
+          admin_user_id: string
+          applied_at?: string
+          changed_by: string
+          changes: Json
+          fund_id: string
+          id?: string
+          suggestion_id?: string | null
+        }
+        Update: {
+          admin_user_id?: string
+          applied_at?: string
+          changed_by?: string
+          changes?: Json
+          fund_id?: string
+          id?: string
+          suggestion_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_edit_history_suggestion_id_fkey"
+            columns: ["suggestion_id"]
+            isOneToOne: false
+            referencedRelation: "fund_edit_suggestions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fund_edit_suggestions: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          current_values: Json
+          fund_id: string
+          id: string
+          rejection_reason: string | null
+          status: Database["public"]["Enums"]["suggestion_status"]
+          suggested_changes: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          current_values: Json
+          fund_id: string
+          id?: string
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["suggestion_status"]
+          suggested_changes: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          current_values?: Json
+          fund_id?: string
+          id?: string
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["suggestion_status"]
+          suggested_changes?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      funds: {
+        Row: {
+          auditor: string | null
+          aum: number | null
+          category: string | null
+          cmvm_id: string | null
+          created_at: string | null
+          currency: string | null
+          custodian: string | null
+          description: string | null
+          detailed_description: string | null
+          eligibility_basis: Json | null
+          expected_return_max: number | null
+          expected_return_min: number | null
+          faqs: Json | null
+          geographic_allocation: Json | null
+          gv_eligible: boolean | null
+          historical_performance: Json | null
+          id: string
+          inception_date: string | null
+          last_modified_by: string | null
+          location: string | null
+          lock_up_period_months: number | null
+          logo_url: string | null
+          management_fee: number | null
+          manager_name: string | null
+          minimum_investment: number | null
+          name: string
+          nav_frequency: string | null
+          pdf_documents: Json | null
+          performance_fee: number | null
+          pfic_status: string | null
+          redemption_fee: number | null
+          redemption_terms: Json | null
+          regulated_by: string | null
+          risk_level: string | null
+          subscription_fee: number | null
+          tags: string[] | null
+          team_members: Json | null
+          updated_at: string | null
+          version: number | null
+          website: string | null
+        }
+        Insert: {
+          auditor?: string | null
+          aum?: number | null
+          category?: string | null
+          cmvm_id?: string | null
+          created_at?: string | null
+          currency?: string | null
+          custodian?: string | null
+          description?: string | null
+          detailed_description?: string | null
+          eligibility_basis?: Json | null
+          expected_return_max?: number | null
+          expected_return_min?: number | null
+          faqs?: Json | null
+          geographic_allocation?: Json | null
+          gv_eligible?: boolean | null
+          historical_performance?: Json | null
+          id: string
+          inception_date?: string | null
+          last_modified_by?: string | null
+          location?: string | null
+          lock_up_period_months?: number | null
+          logo_url?: string | null
+          management_fee?: number | null
+          manager_name?: string | null
+          minimum_investment?: number | null
+          name: string
+          nav_frequency?: string | null
+          pdf_documents?: Json | null
+          performance_fee?: number | null
+          pfic_status?: string | null
+          redemption_fee?: number | null
+          redemption_terms?: Json | null
+          regulated_by?: string | null
+          risk_level?: string | null
+          subscription_fee?: number | null
+          tags?: string[] | null
+          team_members?: Json | null
+          updated_at?: string | null
+          version?: number | null
+          website?: string | null
+        }
+        Update: {
+          auditor?: string | null
+          aum?: number | null
+          category?: string | null
+          cmvm_id?: string | null
+          created_at?: string | null
+          currency?: string | null
+          custodian?: string | null
+          description?: string | null
+          detailed_description?: string | null
+          eligibility_basis?: Json | null
+          expected_return_max?: number | null
+          expected_return_min?: number | null
+          faqs?: Json | null
+          geographic_allocation?: Json | null
+          gv_eligible?: boolean | null
+          historical_performance?: Json | null
+          id?: string
+          inception_date?: string | null
+          last_modified_by?: string | null
+          location?: string | null
+          lock_up_period_months?: number | null
+          logo_url?: string | null
+          management_fee?: number | null
+          manager_name?: string | null
+          minimum_investment?: number | null
+          name?: string
+          nav_frequency?: string | null
+          pdf_documents?: Json | null
+          performance_fee?: number | null
+          pfic_status?: string | null
+          redemption_fee?: number | null
+          redemption_terms?: Json | null
+          regulated_by?: string | null
+          risk_level?: string | null
+          subscription_fee?: number | null
+          tags?: string[] | null
+          team_members?: Json | null
+          updated_at?: string | null
+          version?: number | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       investor_profiles: {
         Row: {
           address: string | null
@@ -173,51 +453,96 @@ export type Database = {
         }
         Relationships: []
       }
-    }
-    Views: {
-      managers_public_view: {
+      saved_funds: {
         Row: {
-          assets_under_management: number | null
-          city: string | null
-          company_name: string | null
-          country: string | null
-          created_at: string | null
-          description: string | null
-          founded_year: number | null
-          id: string | null
-          logo_url: string | null
-          manager_name: string | null
-          website: string | null
+          created_at: string
+          fund_id: string
+          id: string
+          saved_at: string
+          user_id: string
         }
         Insert: {
-          assets_under_management?: number | null
-          city?: string | null
-          company_name?: string | null
-          country?: string | null
-          created_at?: string | null
-          description?: string | null
-          founded_year?: number | null
-          id?: string | null
-          logo_url?: string | null
-          manager_name?: string | null
-          website?: string | null
+          created_at?: string
+          fund_id: string
+          id?: string
+          saved_at?: string
+          user_id: string
         }
         Update: {
-          assets_under_management?: number | null
-          city?: string | null
-          company_name?: string | null
-          country?: string | null
-          created_at?: string | null
-          description?: string | null
-          founded_year?: number | null
-          id?: string | null
-          logo_url?: string | null
-          manager_name?: string | null
-          website?: string | null
+          created_at?: string
+          fund_id?: string
+          id?: string
+          saved_at?: string
+          user_id?: string
         }
         Relationships: []
       }
-      public_managers: {
+      security_audit_access_log: {
+        Row: {
+          access_type: string
+          accessed_at: string | null
+          id: string
+          ip_address: unknown | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          access_type: string
+          accessed_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          access_type?: string
+          accessed_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      security_audit_log: {
+        Row: {
+          id: string
+          justification: string
+          object_name: string
+          object_type: string
+          reviewed_at: string
+          reviewer: string
+          risk_level: string
+          security_feature: string
+          status: string
+        }
+        Insert: {
+          id?: string
+          justification: string
+          object_name: string
+          object_type: string
+          reviewed_at?: string
+          reviewer?: string
+          risk_level: string
+          security_feature: string
+          status?: string
+        }
+        Update: {
+          id?: string
+          justification?: string
+          object_name?: string
+          object_type?: string
+          reviewed_at?: string
+          reviewer?: string
+          risk_level?: string
+          security_feature?: string
+          status?: string
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      manager_profiles_public: {
         Row: {
           assets_under_management: number | null
           city: string | null
@@ -229,6 +554,9 @@ export type Database = {
           id: string | null
           logo_url: string | null
           manager_name: string | null
+          status: Database["public"]["Enums"]["manager_status"] | null
+          updated_at: string | null
+          user_id: string | null
           website: string | null
         }
         Insert: {
@@ -242,6 +570,9 @@ export type Database = {
           id?: string | null
           logo_url?: string | null
           manager_name?: string | null
+          status?: Database["public"]["Enums"]["manager_status"] | null
+          updated_at?: string | null
+          user_id?: string | null
           website?: string | null
         }
         Update: {
@@ -255,16 +586,133 @@ export type Database = {
           id?: string | null
           logo_url?: string | null
           manager_name?: string | null
+          status?: Database["public"]["Enums"]["manager_status"] | null
+          updated_at?: string | null
+          user_id?: string | null
           website?: string | null
         }
         Relationships: []
       }
     }
     Functions: {
-      [_ in never]: never
+      can_access_manager_sensitive_data: {
+        Args: { manager_user_id?: string }
+        Returns: boolean
+      }
+      check_sensitive_data_exposure: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          has_sensitive_columns: boolean
+          sensitive_columns: string[]
+          view_name: string
+        }[]
+      }
+      copy_funds_to_develop: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          details: string
+          operation: string
+          record_count: number
+          status: string
+        }[]
+      }
+      find_user_by_email: {
+        Args: { user_email: string }
+        Returns: string
+      }
+      get_database_schema_info: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          column_default: string
+          column_name: string
+          data_type: string
+          is_nullable: string
+          table_name: string
+        }[]
+      }
+      get_investor_profile_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          active_investors: number
+          recent_signups: number
+          total_investors: number
+        }[]
+      }
+      get_investor_profiles_for_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          address: string
+          annual_income_range: string
+          avatar_url: string
+          city: string
+          country: string
+          created_at: string
+          date_of_birth: string
+          email: string
+          first_name: string
+          id: string
+          investment_experience: string
+          last_name: string
+          net_worth_range: string
+          phone: string
+          risk_tolerance: string
+          updated_at: string
+          user_id: string
+        }[]
+      }
+      get_super_admin_emails: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          admin_name: string
+          email: string
+        }[]
+      }
+      get_user_admin_role: {
+        Args: { check_user_id?: string }
+        Returns: Database["public"]["Enums"]["admin_role"]
+      }
+      get_users_identity: {
+        Args: { p_user_ids: string[] }
+        Returns: {
+          display_name: string
+          email: string
+          user_id: string
+        }[]
+      }
+      is_user_admin: {
+        Args: { check_user_id?: string }
+        Returns: boolean
+      }
+      log_admin_activity: {
+        Args: {
+          p_action_type: string
+          p_details?: Json
+          p_target_id?: string
+          p_target_type: string
+        }
+        Returns: undefined
+      }
+      log_and_allow_investor_profile_access: {
+        Args: { target_user_id?: string }
+        Returns: boolean
+      }
+      sync_database_functions_to_develop: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          function_definition: string
+          function_name: string
+          status: string
+        }[]
+      }
+      validate_historical_performance: {
+        Args: { performance_data: Json }
+        Returns: boolean
+      }
     }
     Enums: {
+      admin_role: "super_admin" | "moderator" | "admin"
       manager_status: "pending" | "approved" | "suspended" | "rejected"
+      suggestion_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -392,7 +840,9 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      admin_role: ["super_admin", "moderator", "admin"],
       manager_status: ["pending", "approved", "suspended", "rejected"],
+      suggestion_status: ["pending", "approved", "rejected"],
     },
   },
 } as const

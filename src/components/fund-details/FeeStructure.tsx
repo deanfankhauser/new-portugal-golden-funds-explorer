@@ -41,16 +41,6 @@ const FeeStructure: React.FC<FeeStructureProps> = ({ fund, formatPercentage }) =
             </div>
           )}
         </div>
-        
-        <div className="mt-6 pt-4 border-t border-border">
-          <div className="bg-success/10 p-4 rounded-lg border border-success/30">
-            <h4 className="font-semibold text-success text-sm mb-2">✅ Analysis</h4>
-            <p className="text-sm text-success-foreground">
-              Total estimated annual cost: <strong>{formatPercentage(fund.managementFee + fund.performanceFee)}</strong> 
-              {fund.subscriptionFee && ` + ${formatPercentage(fund.subscriptionFee)} entry fee`}
-            </p>
-          </div>
-        </div>
       </CardContent>
     </Card>
   );

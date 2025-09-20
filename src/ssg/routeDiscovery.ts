@@ -30,12 +30,13 @@ export class RouteDiscovery {
     routes.push({ path: '/compare', pageType: 'comparison' });
     routes.push({ path: '/comparisons', pageType: 'comparisons-hub' });
     routes.push({ path: '/roi-calculator', pageType: 'roi-calculator' });
-    routes.push({ path: '/fund-quiz', pageType: 'fund-quiz' });
     
-    // Auth pages
+    // Auth pages - generate for SEO but handle auth state gracefully
     routes.push({ path: '/manager-auth', pageType: 'manager-auth' });
     routes.push({ path: '/investor-auth', pageType: 'investor-auth' });
     routes.push({ path: '/account-settings', pageType: 'account-settings' });
+    routes.push({ path: '/reset-password', pageType: 'reset-password' });
+    routes.push({ path: '/confirm', pageType: 'email-confirmation' });
     
     routes.push({ path: '/managers', pageType: 'managers-hub' });
     routes.push({ path: '/categories', pageType: 'categories-hub' });
@@ -107,8 +108,17 @@ export class RouteDiscovery {
       });
     });
 
-    console.log(`🔍 RouteDiscovery: Generated ${routes.length} static routes (including ${comparisonSlugs.length} comparisons and ${fundsData.length} alternatives pages)`);
-    return routes;
+    // Filter out admin and edit suggestion routes from SSG
+    const filteredRoutes = routes.filter(route => {
+      // Exclude admin panel routes
+      if (route.path.startsWith('/admin')) return false;
+      // Exclude edit suggestion routes
+      if (route.path.includes('/edit-suggestions')) return false;
+      return true;
+    });
+
+    console.log(`🔍 RouteDiscovery: Generated ${filteredRoutes.length} static routes (filtered from ${routes.length} total, including ${comparisonSlugs.length} comparisons and ${fundsData.length} alternatives pages)`);
+    return filteredRoutes;
   }
 
 }

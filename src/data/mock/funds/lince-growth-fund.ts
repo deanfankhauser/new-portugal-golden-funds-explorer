@@ -72,6 +72,38 @@ export const linceGrowthFund: Fund = {
       position: 'Head of Innovation Funds'
     }
   ],
+  historicalPerformance: {
+    "2024-09": {
+      returns: 1.2,
+      aum: 18500000,
+      nav: 1.048
+    },
+    "2024-08": {
+      returns: 0.6,
+      aum: 18200000,
+      nav: 1.036
+    },
+    "2024-07": {
+      returns: 1.8,
+      aum: 18000000,
+      nav: 1.030
+    },
+    "2024-06": {
+      returns: 0.9,
+      aum: 17500000,
+      nav: 1.012
+    },
+    "2024-05": {
+      returns: 1.4,
+      aum: 17000000,
+      nav: 1.003
+    },
+    "2024-04": {
+      returns: 0.3,
+      aum: 16800000,
+      nav: 0.989
+    }
+  },
   redemptionTerms: {
     frequency: 'End of Term',
     redemptionOpen: false,

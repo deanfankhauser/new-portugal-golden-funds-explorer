@@ -128,7 +128,6 @@ export class SSRRenderer {
           React.createElement('li', null, React.createElement('a', { href: '/categories' }, 'Categories')),
           React.createElement('li', null, React.createElement('a', { href: '/tags' }, 'Tags')),
           React.createElement('li', null, React.createElement('a', { href: '/managers' }, 'Fund Managers')),
-          React.createElement('li', null, React.createElement('a', { href: '/fund-quiz' }, 'Fund Quiz')),
           React.createElement('li', null, React.createElement('a', { href: '/roi-calculator' }, 'ROI Calculator'))
         )
       )
@@ -187,12 +186,13 @@ export class SSRRenderer {
                 React.createElement(Route, { path: '/comparisons', element: React.createElement(getComponent('ComparisonsHub')) }),
                 React.createElement(Route, { path: '/faqs', element: React.createElement(getComponent('FAQs')) }),
                 React.createElement(Route, { path: '/roi-calculator', element: React.createElement(getComponent('ROICalculator')) }),
-                React.createElement(Route, { path: '/fund-quiz', element: React.createElement(getComponent('FundQuiz')) }),
                 
                 // Auth pages
                 React.createElement(Route, { path: '/manager-auth', element: React.createElement(getComponent('ManagerAuth')) }),
                 React.createElement(Route, { path: '/investor-auth', element: React.createElement(getComponent('InvestorAuth')) }),
                 React.createElement(Route, { path: '/account-settings', element: React.createElement(getComponent('AccountSettings')) }),
+                React.createElement(Route, { path: '/reset-password', element: React.createElement(getComponent('ResetPassword')) }),
+                React.createElement(Route, { path: '/confirm', element: React.createElement(getComponent('EmailConfirmation')) }),
                 
                 React.createElement(Route, { path: '/compare/:slug', element: React.createElement(getComponent('FundComparison')) }),
                 
@@ -318,7 +318,6 @@ export class SSRRenderer {
                 <li><a href="/categories">Categories</a></li>
                 <li><a href="/tags">Tags</a></li>
                 <li><a href="/managers">Fund Managers</a></li>
-                <li><a href="/fund-quiz">Fund Quiz</a></li>
                 <li><a href="/roi-calculator">ROI Calculator</a></li>
               </ul>
             </nav>

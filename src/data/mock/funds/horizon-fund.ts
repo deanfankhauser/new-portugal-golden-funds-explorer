@@ -4,7 +4,7 @@ import { Fund } from '../../types/funds';
 export const horizonFund: Fund = {
   id: "horizon-fund",
   name: "Horizon Fund",
-  description: "Fund investment in Fixed Income and Digital Assets with access to Golden Visa in Portugal",
+  description: "Open Ended Fund investing 65% in Portuguese Fixed Income and 35% in Digital Assets with access to Golden Visa in Portugal",
   category: "Mixed",
   tags: ['Bonds', 'Crypto', 'Liquid', 'Low-risk', 'Regulated', 'Open Ended', 'Bitcoin', 'Ethereum', 'Solana'],
   minimumInvestment: 100000,
@@ -20,6 +20,9 @@ export const horizonFund: Fund = {
   websiteUrl: "https://example.com/horizon-fund",
   established: 2023,
   regulatedBy: "Octanova SCR, S.A. (registered with CMVM)",
+  pficStatus: "Not provided",
+  cmvmId: "2122",
+  navFrequency: "Daily",
   eligibilityBasis: {
     portugalAllocation: 60,
     maturityYears: 6,
@@ -63,6 +66,38 @@ export const horizonFund: Fund = {
     { title: "Investment Strategy", url: "https://example.com/horizon-fund-strategy.pdf" },
     { title: "Risk Management Framework", url: "https://example.com/horizon-fund-risk.pdf" }
   ],
+  historicalPerformance: {
+    "2024-09": {
+      returns: 3.2,
+      aum: 45000000,
+      nav: 1.156
+    },
+    "2024-08": {
+      returns: -2.8,
+      aum: 44000000,
+      nav: 1.120
+    },
+    "2024-07": {
+      returns: 4.1,
+      aum: 43500000,
+      nav: 1.152
+    },
+    "2024-06": {
+      returns: 1.8,
+      aum: 42000000,
+      nav: 1.107
+    },
+    "2024-05": {
+      returns: -1.5,
+      aum: 41000000,
+      nav: 1.087
+    },
+    "2024-04": {
+      returns: 2.9,
+      aum: 40500000,
+      nav: 1.104
+    }
+  },
   redemptionTerms: {
     frequency: "Monthly",
     redemptionOpen: true,

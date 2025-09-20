@@ -186,4 +186,12 @@ export interface Fund {
     realEstateExposure?: 'None' | 'Direct' | 'Indirect' | 'Not provided';
     managerAttestation?: boolean;
   };
+  
+  // Performance and branding fields
+  historicalPerformance?: Record<string, {
+    returns?: number;
+    aum?: number;
+    nav?: number;
+  }>;
+  logoUrl?: string;
 }

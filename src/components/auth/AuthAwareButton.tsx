@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,11 +9,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Settings, LogOut, Building, TrendingUp } from 'lucide-react';
+import { User, Settings, LogOut, Building, TrendingUp, Shield, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import UniversalAuthButton from './UniversalAuthButton';
+import { supabase } from '@/integrations/supabase/client';
 
 const AuthAwareButton = () => {
+  const [isAdmin, setIsAdmin] = useState(false);
+  
   // Add error boundary and safe fallback
   let authState;
   try {
@@ -25,17 +28,52 @@ const AuthAwareButton = () => {
 
   const { user, profile, userType, signOut, loading } = authState;
 
-  // Show login button during loading (hydration) or if no user/profile
-  if (loading || !user || !profile) {
+  console.log('🔐 AuthAwareButton state:', { user: !!user, profile: !!profile, loading, userType });
+
+  // Check admin status
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (!user?.id) {
+        setIsAdmin(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('admin_users')
+          .select('role')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (error) {
+          console.error('Error checking admin status:', error);
+          setIsAdmin(false);
+          return;
+        }
+
+        // Only set admin if we actually have a record with a valid role
+        setIsAdmin(data && data.role ? true : false);
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+        setIsAdmin(false);
+      }
+    };
+
+    checkAdminStatus();
+  }, [user?.id]);
+
+  // Show login button during loading (hydration) or if no user
+  if (loading || !user) {
     return <UniversalAuthButton />;
   }
 
   const getDisplayName = () => {
-    if (userType === 'manager' && profile.manager_name) {
-      return profile.manager_name;
+    if (userType === 'manager' && profile && 'manager_name' in profile && (profile as any).manager_name) {
+      return (profile as any).manager_name as string;
     }
-    if (userType === 'investor' && profile.first_name) {
-      return `${profile.first_name} ${profile.last_name || ''}`.trim();
+    if (userType === 'investor' && profile && 'first_name' in profile && (profile as any).first_name) {
+      const p: any = profile;
+      return `${p.first_name} ${p.last_name || ''}`.trim();
     }
     return user.email?.split('@')[0] || 'User';
   };
@@ -51,10 +89,14 @@ const AuthAwareButton = () => {
   };
 
   const getAvatarUrl = () => {
-    if (userType === 'manager') {
-      return profile.logo_url;
+    if (!profile) return undefined;
+    if (userType === 'manager' && 'logo_url' in (profile as any)) {
+      return (profile as any).logo_url as string | undefined;
     }
-    return profile.avatar_url;
+    if (userType === 'investor' && 'avatar_url' in (profile as any)) {
+      return (profile as any).avatar_url as string | undefined;
+    }
+    return undefined;
   };
 
   const handleSignOut = async () => {
@@ -95,11 +137,36 @@ const AuthAwareButton = () => {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
+          <Link to="/saved-funds" className="w-full cursor-pointer">
+            <Heart className="mr-2 h-4 w-4" />
+            Saved Funds
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <Link to="/account-settings" className="w-full cursor-pointer">
             <User className="mr-2 h-4 w-4" />
             Profile Settings
           </Link>
         </DropdownMenuItem>
+        {userType === 'manager' && (
+          <DropdownMenuItem asChild>
+            <Link to="/account-settings?tab=edits" className="w-full cursor-pointer">
+              <Settings className="mr-2 h-4 w-4" />
+              My Edits
+            </Link>
+          </DropdownMenuItem>
+        )}
+        {isAdmin && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link to="/admin" className="w-full cursor-pointer">
+                <Shield className="mr-2 h-4 w-4" />
+                Admin Panel
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />

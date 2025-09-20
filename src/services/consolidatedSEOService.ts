@@ -3,7 +3,7 @@ import { URL_CONFIG } from '../utils/urlConfig';
 import { funds } from '../data/funds';
 import { normalizeComparisonSlug } from '../utils/comparisonUtils';
 import { getComparisonBySlug } from '../data/services/comparison-service';
-import { ReviewsService } from '../data/services/reviews-service';
+
 
 export class ConsolidatedSEOService {
   private static readonly DEFAULT_IMAGE = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
@@ -177,14 +177,6 @@ export class ConsolidatedSEOService {
           description: this.optimizeText('Calculate potential returns on Portugal Golden Visa investment funds. Compare different funds and investment scenarios for Golden Visa investments.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('roi-calculator'),
           structuredData: this.getCalculatorStructuredData()
-        };
-
-      case 'fund-quiz':
-        return {
-          title: this.optimizeText('Portugal Golden Visa Fund Finder Quiz | Find Your Perfect Investment | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Take our quiz to find the perfect Portugal Golden Visa investment fund for your needs. Personalized Golden Visa fund recommendations.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('fund-quiz'),
-          structuredData: this.getQuizStructuredData()
         };
 
       case '404':
@@ -560,14 +552,7 @@ export class ConsolidatedSEOService {
       }
     };
 
-    // Add review data if available
-    const reviewData = ReviewsService.buildReviewStructuredData(fund.id);
-    if (reviewData) {
-      baseStructuredData['aggregateRating'] = reviewData.aggregateRating;
-      baseStructuredData['review'] = reviewData.review;
-      
-      return baseStructuredData;
-    }
+    return baseStructuredData;
   }
 
   private static getCategoryStructuredData(categoryName: string, funds: any[] = []): any {
@@ -758,16 +743,6 @@ export class ConsolidatedSEOService {
       'name': 'ROI Calculator',
       'description': 'Calculate potential investment returns',
       'url': URL_CONFIG.buildUrl('roi-calculator')
-    };
-  }
-
-  private static getQuizStructuredData(): any {
-    return {
-      '@context': 'https://schema.org',
-      '@type': 'WebApplication',
-      'name': 'Fund Finder Quiz',
-      'description': 'Find the perfect investment fund',
-      'url': URL_CONFIG.buildUrl('fund-quiz')
     };
   }
 

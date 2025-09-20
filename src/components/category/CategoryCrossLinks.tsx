@@ -47,12 +47,12 @@ const CategoryCrossLinks: React.FC<CategoryCrossLinksProps> = ({ categoryName })
             </Button>
           </Link>
 
-          <Link to="/fund-quiz">
+          <Link to="/roi-calculator">
             <Button variant="outline" className="w-full h-auto flex-col items-center gap-2 p-4 hover:border-primary hover:text-primary">
               <Calculator className="h-5 w-5" />
               <div className="text-center">
-                <div className="font-medium">Find My Fund</div>
-                <div className="text-xs text-muted-foreground">Take the quiz</div>
+                <div className="font-medium">ROI Calculator</div>
+                <div className="text-xs text-muted-foreground">Calculate returns</div>
               </div>
             </Button>
           </Link>

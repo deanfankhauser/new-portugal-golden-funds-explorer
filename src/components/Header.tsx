@@ -13,6 +13,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import ComparisonIndicator from "./ComparisonIndicator";
+import ShortlistIndicator from "./ShortlistIndicator";
 import MobileNavigation from "./MobileNavigation";
 import DisclaimerBanner from "./common/DisclaimerBanner";
 import { ArrowLeft, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3, GitCompareArrows } from "lucide-react";
@@ -73,15 +74,6 @@ const Header = () => {
                     <div className="w-64 p-4 bg-card">
                       <div className="space-y-2">
                         <NavigationMenuLink asChild>
-                          <Link to="/fund-quiz" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
-                            <ClipboardCheck className="h-5 w-5 text-primary flex-shrink-0" />
-                            <div>
-                              <div className="font-medium text-foreground">Fund Quiz</div>
-                              <div className="text-sm text-muted-foreground">Find your ideal fund</div>
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
                           <Link to="/roi-calculator" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
                             <Calculator className="h-5 w-5 text-primary flex-shrink-0" />
                             <div>
@@ -113,15 +105,15 @@ const Header = () => {
                   <NavigationMenuContent>
                     <div className="w-64 p-4 bg-card">
                       <div className="space-y-2">
-                        <NavigationMenuLink asChild>
-                          <Link to="/managers" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
-                            <Users className="h-5 w-5 text-primary flex-shrink-0" />
-                            <div>
-                              <div className="font-medium text-foreground">Fund Managers</div>
-                              <div className="text-sm text-muted-foreground">Explore managers</div>
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
+                         <NavigationMenuLink asChild>
+                           <Link to="/managers" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
+                             <Users className="h-5 w-5 text-primary flex-shrink-0" />
+                             <div>
+                               <div className="font-medium text-foreground">Fund Managers</div>
+                               <div className="text-sm text-muted-foreground">Explore managers</div>
+                             </div>
+                           </Link>
+                         </NavigationMenuLink>
                         <NavigationMenuLink asChild>
                           <Link to="/categories" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
                             <ExternalLink className="h-5 w-5 text-primary flex-shrink-0" />
@@ -149,13 +141,14 @@ const Header = () => {
 
             {/* Direct Actions */}
 
-            {/* AuthAwareButton temporarily hidden */}
-            {/* <AuthAwareButton /> */}
+            <AuthAwareButton />
+            <ShortlistIndicator />
             <ComparisonIndicator />
           </div>
 
           {/* Mobile Navigation and Comparison */}
           <div className="flex md:hidden items-center gap-2">
+            <ShortlistIndicator />
             <ComparisonIndicator />
             <MobileNavigation />
           </div>

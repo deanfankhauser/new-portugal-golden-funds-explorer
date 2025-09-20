@@ -9,16 +9,22 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Upload, Loader2, User, Mail, Lock, Camera, Home, Trash2 } from 'lucide-react';
-import { toast } from "sonner";
-import { Navigate, Link, useNavigate } from 'react-router-dom';
+import { Upload, Loader2, User, Mail, Lock, Camera, Home, Trash2, Edit3 } from 'lucide-react';
+import { toast } from "@/components/ui/sonner";
+import { Navigate, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { supabase } from '@/integrations/supabase/client';
+import MyEditsSection from '@/components/manager/MyEditsSection';
 
 const AccountSettings = () => {
   const { user, userType, profile, updateProfile, uploadAvatar, loading, signOut } = useEnhancedAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isUpdating, setIsUpdating] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+  const [passwordChangeStatus, setPasswordChangeStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [passwordChangeMessage, setPasswordChangeMessage] = useState('');
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -204,6 +210,10 @@ const AccountSettings = () => {
     e.preventDefault();
     
     console.log('🔑 Password change initiated, user:', user?.email, 'loading:', loading);
+
+    // reset status
+    setPasswordChangeStatus('idle');
+    setPasswordChangeMessage('');
     
     // Check if user is authenticated
     if (!user) {
@@ -239,37 +249,60 @@ const AccountSettings = () => {
     setIsUpdatingPassword(true);
     console.log('🔑 Starting password update for user:', user.email);
 
-    try {
-      const { supabase } = await import('@/integrations/supabase/client');
-      
-      console.log('🔑 Calling supabase.auth.updateUser');
-      const { error } = await supabase.auth.updateUser({
-        password: passwordData.newPassword
-      });
-
-      if (error) {
-        console.log('🔑 Password update failed:', error.message);
-        toast.error("Password Update Failed", {
-          description: error.message
-        });
-      } else {
-        console.log('🔑 Password update successful');
+    // Listen for auth events to detect success even if the promise takes long
+    let finished = false;
+    const { data: authSub } = supabase.auth.onAuthStateChange((event) => {
+      console.log('🔑 Auth event during password change:', event);
+      if (!finished && (event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED')) {
+        finished = true;
+        setIsUpdatingPassword(false);
+        setPasswordChangeStatus('success');
+        setPasswordChangeMessage('Your password has been successfully updated.');
         toast.success("Password Changed", {
           description: "Your password has been successfully updated."
         });
-        
         // Clear the form
-        setPasswordData({
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: ''
-        });
+        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        authSub.subscription.unsubscribe();
+        if (timeoutId) clearTimeout(timeoutId);
+      }
+    });
+
+    // Soft timeout to avoid a stuck spinner, but don't show error
+    let timeoutId: any = setTimeout(() => {
+      if (finished) return;
+      console.warn('🔑 Password update taking longer than expected');
+      setIsUpdatingPassword(false);
+      toast('Still processing… If your password was updated, you may be asked to re-login.');
+    }, 20000);
+
+    try {
+      console.log('🔑 Calling supabase.auth.updateUser');
+      const { error } = await supabase.auth.updateUser({ password: passwordData.newPassword });
+
+      if (finished) return; // already handled by auth event
+      if (timeoutId) clearTimeout(timeoutId);
+      authSub.subscription.unsubscribe();
+
+      if (error) {
+        console.log('🔑 Password update failed:', error.message);
+        setPasswordChangeStatus('error');
+        setPasswordChangeMessage(error.message);
+        toast.error("Password Update Failed", { description: error.message });
+      } else {
+        console.log('🔑 Password update successful (no auth event)');
+        setPasswordChangeStatus('success');
+        setPasswordChangeMessage('Your password has been successfully updated.');
+        toast.success("Password Changed", { description: "Your password has been successfully updated." });
+        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
       }
     } catch (error) {
+      if (timeoutId) clearTimeout(timeoutId);
+      authSub.subscription.unsubscribe();
       console.error('🔑 Password update error:', error);
-      toast.error("Update Failed", {
-        description: "An unexpected error occurred. Please try again."
-      });
+      setPasswordChangeStatus('error');
+      setPasswordChangeMessage('An unexpected error occurred. Please try again.');
+      toast.error("Update Failed", { description: "An unexpected error occurred. Please try again." });
     } finally {
       console.log('🔑 Setting isUpdatingPassword to false');
       setIsUpdatingPassword(false);
@@ -292,21 +325,32 @@ const AccountSettings = () => {
     console.log('🗑️ Starting account deletion for user:', user.email);
     
     try {
-      const { supabase } = await import('@/integrations/supabase/client');
+      // supabase client statically imported above
+      
+      // Safety timeout to avoid stuck loading
+      let timeoutId: any = setTimeout(() => {
+        console.warn('🗑️ Delete account timed out');
+        setIsDeletingAccount(false);
+        toast.error("Delete Failed", { description: "Request timed out. Please try again." });
+      }, 20000);
       
       // Get the current session to include in the request
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) {
+        clearTimeout(timeoutId);
         throw new Error('No valid session found');
       }
       
       console.log('🗑️ Calling delete-account edge function');
       const { data, error } = await supabase.functions.invoke('delete-account', {
+        body: {},
         headers: {
           Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
         }
       });
       
+      clearTimeout(timeoutId);
       if (error) {
         console.error('🗑️ Delete account error:', error);
         toast.error("Delete Failed", {
@@ -357,11 +401,14 @@ const AccountSettings = () => {
             </div>
           </div>
 
-          <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+          <Tabs defaultValue={searchParams.get('tab') || "profile"} className="space-y-6">
+            <TabsList className={`grid w-full ${userType === 'manager' ? 'grid-cols-4' : 'grid-cols-3'}`}>
               <TabsTrigger value="profile">Profile</TabsTrigger>
               <TabsTrigger value="security">Security</TabsTrigger>
               <TabsTrigger value="preferences">Preferences</TabsTrigger>
+              {userType === 'manager' && (
+                <TabsTrigger value="edits">My Edits</TabsTrigger>
+              )}
             </TabsList>
 
             <TabsContent value="profile" className="space-y-6">
@@ -686,6 +733,11 @@ const AccountSettings = () => {
                       )}
                     </Button>
                   </form>
+                  {passwordChangeStatus !== 'idle' && (
+                    <Alert variant={passwordChangeStatus === 'error' ? 'destructive' : 'success'} className="mt-2">
+                      <AlertDescription>{passwordChangeMessage}</AlertDescription>
+                    </Alert>
+                  )}
                   
                   <Separator className="my-8" />
                   
@@ -780,6 +832,12 @@ const AccountSettings = () => {
                 </CardContent>
               </Card>
             </TabsContent>
+
+            {userType === 'manager' && (
+              <TabsContent value="edits">
+                <MyEditsSection />
+              </TabsContent>
+            )}
           </Tabs>
         </div>
       </div>

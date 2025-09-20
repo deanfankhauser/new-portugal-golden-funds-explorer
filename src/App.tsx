@@ -2,9 +2,10 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toaster";
 import { ComparisonProvider } from './contexts/ComparisonContext';
 import { RecentlyViewedProvider } from './contexts/RecentlyViewedContext';
+import { ShortlistProvider } from './contexts/ShortlistContext';
 import { EnhancedAuthProvider } from './contexts/EnhancedAuthContext';
 
 // Lazy load all pages for optimal performance
@@ -16,7 +17,6 @@ import {
   FundDetailsLoader, 
   FundIndexLoader, 
   ComparisonLoader,
-  QuizLoader,
   ROICalculatorLoader 
 } from './components/common/LoadingSkeleton';
 
@@ -36,7 +36,7 @@ const ComparisonPage = lazy(() => import('./pages/ComparisonPage'));
 const ComparisonsHub = lazy(() => import('./pages/ComparisonsHub'));
 const FAQs = lazy(() => import('./pages/FAQs'));
 const ROICalculator = lazy(() => import('./pages/ROICalculator'));
-const FundQuiz = lazy(() => import('./pages/FundQuiz'));
+
 const FundComparison = lazy(() => import('./pages/FundComparison'));
 const FundAlternatives = lazy(() => import('./pages/FundAlternatives'));
 const AlternativesHub = lazy(() => import('./pages/AlternativesHub'));
@@ -45,6 +45,9 @@ const InvestorAuth = lazy(() => import('./pages/InvestorAuth'));
 const AccountSettings = lazy(() => import('./pages/AccountSettings'));
 const EmailConfirmation = lazy(() => import('./pages/EmailConfirmation'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const AdminPanel = lazy(() => import('./pages/AdminPanel'));
+const SavedFunds = lazy(() => import('./pages/SavedFunds'));
+const TempMigrationPage = lazy(() => import('./pages/TempMigrationPage'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -68,8 +71,26 @@ const ScrollToTop = () => {
   const location = useLocation();
 
   React.useLayoutEffect(() => {
-    // Simple, reliable scroll to top
-    window.scrollTo(0, 0);
+    // Single, reliable scroll strategy with proper timing
+    const scrollToTop = () => {
+      // Strategy 1: Window scroll with instant behavior
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      
+      // Strategy 2: Direct DOM element manipulation as fallback
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+
+    // Execute immediately and then after a brief delay for async content
+    scrollToTop();
+    
+    // Use requestAnimationFrame for smooth timing with async loading
+    requestAnimationFrame(() => {
+      scrollToTop();
+      
+      // Final scroll after component mounting is complete
+      setTimeout(scrollToTop, 100);
+    });
   }, [location.pathname]);
 
   return null;
@@ -118,6 +139,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ComparisonProvider>
+        <ShortlistProvider>
           <RecentlyViewedProvider>
             <EnhancedAuthProvider>
               <TooltipProvider>
@@ -202,47 +224,63 @@ function App() {
                           <ROICalculator />
                         </Suspense>
                       } />
-                      <Route path="/fund-quiz" element={
-                        <Suspense fallback={<QuizLoader />}>
-                          <FundQuiz />
-                        </Suspense>
-                      } />
+                        
+                        {/* Manager Authentication */}
+                        <Route path="/manager-auth" element={
+                          <Suspense fallback={<PageLoader />}>
+                            <ManagerAuth />
+                          </Suspense>
+                        } />
+                        
+                        {/* Investor Authentication */}
+                        <Route path="/investor-auth" element={
+                          <Suspense fallback={<PageLoader />}>
+                            <InvestorAuth />
+                          </Suspense>
+                        } />
                        
-                       {/* Manager Authentication */}
-                       <Route path="/manager-auth" element={
+                        {/* Account Settings */}
+                        <Route path="/account-settings" element={
+                          <Suspense fallback={<PageLoader />}>
+                            <AccountSettings />
+                          </Suspense>
+                        } />
+                        
+                        {/* Email Confirmation */}
+                        <Route path="/confirm" element={
+                          <Suspense fallback={<PageLoader />}>
+                            <EmailConfirmation />
+                          </Suspense>
+                        } />
+                        
+                         {/* Password Reset */}
+                         <Route path="/reset-password" element={
+                           <Suspense fallback={<PageLoader />}>
+                             <ResetPassword />
+                           </Suspense>
+                         } />
+                         
+                       {/* Admin Panel */}
+                       <Route path="/admin" element={
                          <Suspense fallback={<PageLoader />}>
-                           <ManagerAuth />
+                           <AdminPanel />
                          </Suspense>
                        } />
-                       
-                       {/* Investor Authentication */}
-                       <Route path="/investor-auth" element={
+
+                       {/* Temporary Migration Page */}
+                       <Route path="/migrate-funds" element={
                          <Suspense fallback={<PageLoader />}>
-                           <InvestorAuth />
+                           <TempMigrationPage />
                          </Suspense>
                        } />
-                      
-                       {/* Account Settings */}
-                       <Route path="/account-settings" element={
+
+                       {/* Saved Funds */}
+                       <Route path="/saved-funds" element={
                          <Suspense fallback={<PageLoader />}>
-                           <AccountSettings />
+                           <SavedFunds />
                          </Suspense>
                        } />
-                       
-                       {/* Email Confirmation */}
-                       <Route path="/confirm" element={
-                         <Suspense fallback={<PageLoader />}>
-                           <EmailConfirmation />
-                         </Suspense>
-                       } />
-                       
-                       {/* Password Reset */}
-                       <Route path="/reset-password" element={
-                         <Suspense fallback={<PageLoader />}>
-                           <ResetPassword />
-                         </Suspense>
-                       } />
-                      
+
                       {/* Alternatives hub */}
                       <Route path="/alternatives" element={
                         <Suspense fallback={<PageLoader />}>
@@ -255,6 +293,8 @@ function App() {
                           <FundAlternatives />
                         </Suspense>
                       } />
+                      
+                      {/* Direct fund routes - MUST be last before 404 */}
                       <Route path="/:id" element={<DirectFundRoute />} />
                       <Route path="*" element={
                         <Suspense fallback={<PageLoader />}>
@@ -264,14 +304,14 @@ function App() {
                     </Routes>
                   </div>
                   <Toaster />
-                  <LazyExitIntentPopup />
                   <SEODebugger />
                 </SEOProvider>
               </Router>
             </TooltipProvider>
             </EnhancedAuthProvider>
           </RecentlyViewedProvider>
-        </ComparisonProvider>
+        </ShortlistProvider>
+      </ComparisonProvider>
     </QueryClientProvider>
   );
 }

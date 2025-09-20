@@ -1,6 +1,39 @@
 project_id = "bkmvydnfhmkjnuszroim"
 
 [auth]
+# Enable custom email templates
+enable_signup = true
+enable_confirmations = true
+
 [auth.email]
 # Email sender name
-site_name = "movingto"
+site_name = "Investment Funds Platform"
+# Use Supabase's built-in email templates
+enable_confirmations = true
+
+[functions.deploy-functions-to-develop]
+verify_jwt = false
+
+[functions.send-notification-email]
+verify_jwt = false
+
+[functions.notify-super-admins]
+verify_jwt = false
+
+[functions.delete-account]
+verify_jwt = false
+
+[functions.send-password-reset]
+verify_jwt = false
+
+[functions.sync-production-to-develop]
+verify_jwt = false
+
+[functions.send-confirmation-email]
+verify_jwt = false
+
+[functions.send-welcome-email]
+verify_jwt = false
+
+[functions.sync-funds-to-develop]
+verify_jwt = false

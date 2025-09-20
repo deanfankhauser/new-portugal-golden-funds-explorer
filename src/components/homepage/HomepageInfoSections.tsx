@@ -51,16 +51,16 @@ const HomepageInfoSections = () => {
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <ClipboardCheck className="h-5 w-5 text-primary" />
-                Fund Quiz
+                <Calculator className="h-5 w-5 text-primary" />
+                ROI Calculator
               </CardTitle>
               <CardDescription>
-                Answer a few questions to get personalized fund recommendations
+                Calculate potential returns on your Golden Visa investment
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Button asChild className="w-full">
-                <Link to="/fund-quiz">Take Quiz</Link>
+                <Link to="/roi-calculator">Calculate Returns</Link>
               </Button>
             </CardContent>
           </Card>

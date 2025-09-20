@@ -84,10 +84,6 @@ export const loadComponents = async () => {
         console.warn('ComponentLoader: Failed to load ROICalculator:', err.message);
         return null;
       }),
-      FundQuiz: import('../pages/FundQuiz').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load FundQuiz:', err.message);
-        return null;
-      }),
       FundComparison: import('../pages/FundComparison').then(m => m.default).catch(err => {
         console.warn('ComponentLoader: Failed to load FundComparison:', err.message);
         return null;
@@ -110,6 +106,14 @@ export const loadComponents = async () => {
       }),
       AccountSettings: import('../pages/AccountSettings').then(m => m.default).catch(err => {
         console.warn('ComponentLoader: Failed to load AccountSettings:', err.message);
+        return null;
+      }),
+      ResetPassword: import('../pages/ResetPassword').then(m => m.default).catch(err => {
+        console.warn('ComponentLoader: Failed to load ResetPassword:', err.message);
+        return null;
+      }),
+      EmailConfirmation: import('../pages/EmailConfirmation').then(m => m.default).catch(err => {
+        console.warn('ComponentLoader: Failed to load EmailConfirmation:', err.message);
         return null;
       }),
     };

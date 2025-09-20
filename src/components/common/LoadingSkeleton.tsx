@@ -125,25 +125,6 @@ export const PageLoader = () => (
   </div>
 );
 
-export const QuizLoader = () => (
-  <div className="container mx-auto px-4 py-8 animate-fade-in">
-    <div className="max-w-4xl mx-auto space-y-8">
-      <div className="text-center space-y-4">
-        <Skeleton className="h-10 w-80 mx-auto" />
-        <Skeleton className="h-4 w-full max-w-xl mx-auto" />
-      </div>
-      
-      <div className="space-y-6">
-        <Skeleton className="h-6 w-64" />
-        <div className="space-y-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-12 w-full" />
-          ))}
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
 export const ROICalculatorLoader = () => (
   <div className="container mx-auto px-4 py-8 animate-fade-in">

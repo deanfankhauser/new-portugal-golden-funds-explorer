@@ -1,20 +1,11 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { withSecurity, validateUUID } from '../_shared/security.ts';
 
 interface DeleteAccountRequest {
   user_id: string;
 }
 
-Deno.serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
-
+const handler = async (req: Request): Promise<Response> => {
   try {
     // Get the authorization header
     const authHeader = req.headers.get('Authorization');
@@ -24,7 +15,7 @@ Deno.serve(async (req) => {
         JSON.stringify({ error: 'Unauthorized' }),
         { 
           status: 401, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          headers: { 'Content-Type': 'application/json' } 
         }
       );
     }
@@ -58,12 +49,23 @@ Deno.serve(async (req) => {
         JSON.stringify({ error: 'Unauthorized' }),
         { 
           status: 401, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          headers: { 'Content-Type': 'application/json' } 
         }
       );
     }
 
     console.log('🗑️ Deleting account for user:', user.email);
+
+    // Validate user ID
+    if (!validateUUID(user.id)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid user ID' }),
+        { 
+          status: 400, 
+          headers: { 'Content-Type': 'application/json' } 
+        }
+      );
+    }
 
     // Record the deletion request
     const { error: recordError } = await supabase
@@ -77,32 +79,62 @@ Deno.serve(async (req) => {
       console.error('❌ Failed to record deletion request:', recordError);
     }
 
-    // Delete any profiles associated with the user
-    const { error: profileError } = await supabase
-      .from('investor_profiles')
-      .delete()
-      .eq('user_id', user.id);
+    // Perform deletion operations directly
+    try {
+      // Delete any profiles associated with the user
+      const { error: profileError } = await supabase
+        .from('investor_profiles')
+        .delete()
+        .eq('user_id', user.id);
 
-    if (profileError) {
-      console.log('⚠️ Error deleting investor profile (may not exist):', profileError);
-    }
+      if (profileError) {
+        console.log('⚠️ Error deleting investor profile (may not exist):', profileError);
+      }
 
-    const { error: managerProfileError } = await supabase
-      .from('manager_profiles')
-      .delete()
-      .eq('user_id', user.id);
+      const { error: managerProfileError } = await supabase
+        .from('manager_profiles')
+        .delete()
+        .eq('user_id', user.id);
 
-    if (managerProfileError) {
-      console.log('⚠️ Error deleting manager profile (may not exist):', managerProfileError);
-    }
+      if (managerProfileError) {
+        console.log('⚠️ Error deleting manager profile (may not exist):', managerProfileError);
+      }
 
-    // Delete the user account using admin client
-    const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
+      // Delete the user account using admin client
+      const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
 
-    if (deleteError) {
-      console.error('❌ Failed to delete user account:', deleteError);
-      
+      if (deleteError) {
+        console.error('❌ Failed to delete user account:', deleteError);
+        // Update deletion request status
+        await supabase
+          .from('account_deletion_requests')
+          .update({ 
+            status: 'failed',
+            processed_at: new Date().toISOString()
+          })
+          .eq('user_id', user.id);
+
+        return new Response(
+          JSON.stringify({ error: 'Failed to delete account' }),
+          { 
+            status: 500, 
+            headers: { 'Content-Type': 'application/json' } 
+          }
+        );
+      }
+
       // Update deletion request status
+      await supabase
+        .from('account_deletion_requests')
+        .update({ 
+          status: 'processed',
+          processed_at: new Date().toISOString()
+        })
+        .eq('user_id', user.id);
+
+      console.log('✅ Account successfully deleted for user:', user.email);
+    } catch (deletionError) {
+      console.error('❌ Unexpected error during deletion:', deletionError);
       await supabase
         .from('account_deletion_requests')
         .update({ 
@@ -112,30 +144,20 @@ Deno.serve(async (req) => {
         .eq('user_id', user.id);
 
       return new Response(
-        JSON.stringify({ error: 'Failed to delete account. Please contact support.' }),
+        JSON.stringify({ error: 'Account deletion failed' }),
         { 
           status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          headers: { 'Content-Type': 'application/json' } 
         }
       );
     }
 
-    // Update deletion request status
-    await supabase
-      .from('account_deletion_requests')
-      .update({ 
-        status: 'processed',
-        processed_at: new Date().toISOString()
-      })
-      .eq('user_id', user.id);
-
-    console.log('✅ Account successfully deleted for user:', user.email);
-
+    // Respond immediately so the UI doesn't hang
     return new Response(
-      JSON.stringify({ message: 'Account deleted successfully' }),
+      JSON.stringify({ message: 'Deletion initiated' }),
       { 
-        status: 200, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        status: 202, 
+        headers: { 'Content-Type': 'application/json' } 
       }
     );
 
@@ -145,8 +167,10 @@ Deno.serve(async (req) => {
       JSON.stringify({ error: 'Internal server error' }),
       { 
         status: 500, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        headers: { 'Content-Type': 'application/json' } 
       }
     );
   }
-});
+};
+
+Deno.serve(withSecurity(handler));

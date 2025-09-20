@@ -89,7 +89,7 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
                 <span className="text-sm text-muted-foreground">
                   Managed by {fund.managerName}
                 </span>
-                <Link to={`/${fund.id}`}>
+                <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
                   <Button variant="outline" size="sm" className="flex items-center gap-2">
                     View Details
                     <ArrowRight className="w-4 h-4" />

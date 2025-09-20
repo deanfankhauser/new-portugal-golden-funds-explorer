@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { getEmailRedirectUrl } from '@/utils/authRedirect';
 
 interface UserProfile {
   id: string;
@@ -115,14 +116,19 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         
         // Set up auth state listener FIRST
         const authListener = supabase.auth.onAuthStateChange(
-          async (event, session) => {
+          (event, session) => {
             console.log('🔐 Auth state change:', event, session?.user?.email || 'no user');
             setSession(session);
             setUser(session?.user ?? null);
             
             if (session?.user) {
-              console.log('🔐 Fetching profile for user:', session.user.id);
-              await fetchProfile(session.user.id);
+            // Defer Supabase calls to prevent deadlocks
+            setTimeout(() => {
+              console.log('🔐 Fetching profile for user:', session.user?.id);
+              fetchProfile(session.user!.id).catch((err) => {
+                console.error('🔐 Error fetching profile on auth state change:', err);
+              });
+            }, 100);
             } else {
               console.log('🔐 No user, clearing profile data');
               setUserType(null);
@@ -152,7 +158,12 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         
         if (session?.user) {
           console.log('🔐 Fetching profile for initial session user:', session.user.id);
-          await fetchProfile(session.user.id);
+          // Defer Supabase calls to prevent deadlocks
+          setTimeout(() => {
+            fetchProfile(session.user!.id).catch((err) => {
+              console.error('🔐 Error fetching profile for initial session:', err);
+            });
+          }, 100);
         } else {
           console.log('🔐 No initial session user, clearing profile');
           setUserType(null);
@@ -236,15 +247,13 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
 
   const signUp = async (email: string, password: string, userType: 'manager' | 'investor', metadata?: any) => {
-    // Use the proper preview URL instead of localhost
-    const redirectUrl = window.location.hostname === 'localhost' 
-      ? `${window.location.origin}/confirm`
-      : `https://lovable.dev/projects/bkmvydnfhmkjnuszroim/preview/confirm`;
-    
     const enhancedMetadata = {
       ...metadata,
       [userType === 'manager' ? 'is_manager' : 'is_investor']: true
     };
+    
+    // Use domain-specific redirect URL
+    const redirectUrl = getEmailRedirectUrl();
     
     const { error } = await supabase.auth.signUp({
       email,
@@ -254,15 +263,27 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         data: enhancedMetadata
       }
     });
+
     return { error };
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { error };
+    console.log('🔐 SignIn called with email:', email);
+    
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      console.log('🔐 SignIn response - data:', data);
+      console.log('🔐 SignIn response - error:', error);
+      
+      return { error };
+    } catch (err) {
+      console.error('🔐 SignIn exception:', err);
+      return { error: err };
+    }
   };
 
   const signOut = async () => {
@@ -300,12 +321,46 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       return { error: new Error('Not authenticated') };
     }
 
+    // Helper to crop to centered square using canvas
+    const cropToSquare = (input: File): Promise<File> => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const size = Math.min(img.width, img.height);
+          const sx = (img.width - size) / 2;
+          const sy = (img.height - size) / 2;
+
+          const canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return reject(new Error('Canvas not supported'));
+
+          ctx.drawImage(img, sx, sy, size, size, 0, 0, size, size);
+          canvas.toBlob((blob) => {
+            if (!blob) return reject(new Error('Failed to create blob'));
+            const cropped = new File([blob], input.name, { type: input.type, lastModified: Date.now() });
+            resolve(cropped);
+          }, input.type, 0.9);
+        };
+        img.onerror = reject;
+        img.src = URL.createObjectURL(input);
+      });
+    };
+
+    let fileToUpload: File = file;
+    try {
+      fileToUpload = await cropToSquare(file);
+    } catch (_e) {
+      // If cropping fails, fall back to original file
+    }
+
     const fileExt = file.name.split('.').pop();
-    const fileName = `${user.id}/avatar.${fileExt}`;
+    const fileName = `${user.id}/avatar_${Date.now()}.${fileExt}`;
 
     const { error: uploadError } = await supabase.storage
       .from('profile-photos')
-      .upload(fileName, file, { upsert: true });
+      .upload(fileName, fileToUpload, { upsert: true });
 
     if (uploadError) {
       return { error: uploadError };
@@ -315,10 +370,11 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       .from('profile-photos')
       .getPublicUrl(fileName);
 
-    const avatarUrl = data.publicUrl;
+    const avatarUrl = `${data.publicUrl}?t=${Date.now()}`;
 
     // Update profile with new avatar URL
-    const { error: updateError } = await updateProfile({ avatar_url: avatarUrl });
+    const updateField = userType === 'manager' ? { logo_url: avatarUrl } : { avatar_url: avatarUrl };
+    const { error: updateError } = await updateProfile(updateField);
 
     return { error: updateError, url: avatarUrl };
   };

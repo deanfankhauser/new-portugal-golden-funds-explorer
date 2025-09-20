@@ -15,19 +15,45 @@ import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 
 const InvestorAuth = () => {
   const navigate = useNavigate();
-  const { signIn, signUp, loading, user } = useEnhancedAuth();
+  const { signIn, signUp, signOut, loading, user } = useEnhancedAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showResendConfirmation, setShowResendConfirmation] = useState(false);
+  const [lastSignupEmail, setLastSignupEmail] = useState('');
 
-  // Redirect if already authenticated - wait for hydration to complete
-  React.useEffect(() => {
-    console.log('🔐 InvestorAuth - Auth state:', { user: !!user, loading, hasUser: !!user });
-    // Only redirect if we have a user and we're not loading (fully hydrated)
-    if (user && !loading) {
-      console.log('🔐 InvestorAuth - Redirecting to home');
-      navigate('/');
-    }
-  }, [user, loading, navigate]);
+  // If already authenticated, show options instead of redirecting
+  if (user && !loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold">
+              <h1>You're already signed in</h1>
+            </CardTitle>
+            <CardDescription>Use the options below to continue.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Button className="w-full" onClick={() => navigate('/')}>Go to Home</Button>
+            <Button variant="outline" className="w-full" onClick={() => navigate('/account-settings')}>Account Settings</Button>
+            <Button 
+              variant="secondary" 
+              className="w-full" 
+              onClick={async () => { 
+                const { error } = await signOut(); 
+                if (!error) { 
+                  toast.success('Signed out'); 
+                } else { 
+                  toast.error('Sign out failed', { description: error.message }); 
+                }
+              }}
+            >
+              Sign out
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Login form state
   const [loginData, setLoginData] = useState({
@@ -59,34 +85,31 @@ const InvestorAuth = () => {
       
       if (error) {
         console.error('🔐 Login failed:', error);
-        setError(error.message);
-        toast.error("Login Failed", {
-          description: error.message
-        });
+        
+        // Handle specific error types
+        if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
+          setError('Please confirm your email address before logging in.');
+          setShowResendConfirmation(true);
+          setLastSignupEmail(loginData.email);
+          toast.error("Email Not Confirmed", {
+            description: "Please check your email and click the confirmation link."
+          });
+        } else {
+          setError(error.message);
+          setShowResendConfirmation(false);
+          toast.error("Login Failed", {
+            description: error.message
+          });
+        }
         setIsSubmitting(false);
       } else {
-        console.log('🔐 Login successful, checking auth state...');
+        console.log('🔐 Login successful, redirecting to home...');
         toast.success("Welcome back!", {
           description: "You have been successfully logged in."
         });
         
-        // Wait for auth state to update, then redirect
-        setTimeout(() => {
-          if (user) {
-            console.log('🔐 User detected, redirecting...');
-            navigate('/');
-          } else {
-            console.log('🔐 User not detected yet, waiting longer...');
-            // Wait a bit more for auth state to propagate
-            setTimeout(() => {
-              setIsSubmitting(false);
-              if (!user) {
-                console.log('🔐 Auth state not updated, but login was successful - redirecting anyway');
-                navigate('/');
-              }
-            }, 2000);
-          }
-        }, 1000);
+        // Navigate immediately after successful login
+        navigate('/');
       }
     } catch (error) {
       console.error('🔐 Login process failed:', error);
@@ -114,6 +137,28 @@ const InvestorAuth = () => {
       setError("Password must be at least 6 characters");
       setIsSubmitting(false);
       return;
+    }
+
+    // Check if email already exists by attempting a password reset
+    // This is a safe way to check email existence without exposing user data
+    try {
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(signupData.email, {
+        redirectTo: `${window.location.origin}/reset-password`
+      });
+      
+      // If no error, the email exists in the system
+      if (!resetError) {
+        setError('This email is already registered. Please try logging in instead.');
+        toast.error("Email Already Exists", {
+          description: "This email is already registered. Please try logging in instead."
+        });
+        setIsSubmitting(false);
+        return;
+      }
+    } catch (emailCheckError) {
+      // If there's an error checking, it might mean the email doesn't exist
+      // We'll proceed with signup and let it handle any actual conflicts
+      console.log('Email check completed, proceeding with signup');
     }
 
     const metadata = {
@@ -159,13 +204,40 @@ const InvestorAuth = () => {
         riskTolerance: ''
       });
       setError(null);
+      setLastSignupEmail(signupData.email);
       
       toast.success("Registration Successful! 🎉", {
-        description: "Your investor account has been created. Please check your email to confirm your account."
+        description: "Please check your email to confirm your account before logging in."
       });
     }
     
     setIsSubmitting(false);
+  };
+
+  // Function to resend confirmation email
+  const handleResendConfirmation = async () => {
+    if (!lastSignupEmail) return;
+    
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: lastSignupEmail
+      });
+      
+      if (error) {
+        toast.error("Failed to resend", { description: error.message });
+      } else {
+        toast.success("Email Sent", { 
+          description: "Please check your email for the confirmation link." 
+        });
+        setShowResendConfirmation(false);
+      }
+    } catch (err) {
+      toast.error("Failed to resend confirmation email");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -257,6 +329,23 @@ const InvestorAuth = () => {
                   </Alert>
                 )}
 
+                {showResendConfirmation && (
+                  <Alert>
+                    <AlertDescription className="space-y-2">
+                      <p>Haven't received the confirmation email?</p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleResendConfirmation}
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? 'Sending...' : 'Resend Confirmation Email'}
+                      </Button>
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <>
@@ -267,6 +356,17 @@ const InvestorAuth = () => {
                     'Sign In'
                   )}
                 </Button>
+                
+                <div className="text-center">
+                  <Button 
+                    type="button" 
+                    variant="link" 
+                    className="text-sm text-muted-foreground"
+                    onClick={() => navigate('/reset-password')}
+                  >
+                    Forgot your password?
+                  </Button>
+                </div>
               </form>
             </TabsContent>
             

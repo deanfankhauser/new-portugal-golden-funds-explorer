@@ -14,6 +14,8 @@ import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 import DataFreshnessIndicator from './common/DataFreshnessIndicator';
 import EligibilityBasisDisplayLine from './fund-details/EligibilityBasisDisplayLine';
 import { DATA_AS_OF_LABEL } from '../utils/constants';
+import { SaveFundButton } from './common/SaveFundButton';
+import FundLogo from './fund-details/FundLogo';
 
 interface FundListItemProps {
   fund: Fund;
@@ -47,19 +49,27 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between mb-2">
-                <div className="flex-1 mr-2">
-                  <h3 className="text-lg sm:text-xl font-semibold leading-tight">
-                    <Link to={`/${fund.id}`} className="hover:text-primary transition-colors block">
-                      {fund.name}
-                    </Link>
-                  </h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Badge 
-                      variant="default" 
-                      className="text-xs"
-                    >
-                      GV Eligible
-                    </Badge>
+                <div className="flex items-center gap-3 flex-1 mr-2 min-w-0">
+                  <FundLogo 
+                    logoUrl={fund.logoUrl} 
+                    fundName={fund.name} 
+                    fundId={fund.id}
+                    size="md" 
+                  />
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-lg sm:text-xl font-semibold leading-tight">
+                      <Link to={`/${fund.id}`} className="hover:text-primary transition-colors block" onClick={() => window.scrollTo(0, 0)}>
+                        {fund.name}
+                      </Link>
+                    </h3>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Badge 
+                        variant="default" 
+                        className="text-xs"
+                      >
+                        GV Eligible
+                      </Badge>
+                    </div>
                   </div>
                 </div>
                 <DataFreshnessIndicator fund={fund} variant="compact" />
@@ -147,6 +157,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             </div>
             
             <div className="flex flex-col sm:flex-row lg:flex-col gap-2 sm:gap-3 justify-center lg:min-w-[160px]">
+              <SaveFundButton fundId={fund.id} showText size="sm" />
               <IntroductionButton variant="compact" />
               
               <Button 

@@ -67,6 +67,38 @@ The fund is managed by IMGA, one of Portugal's largest investment management com
       bio: 'Experienced fixed income professionals with decades of expertise in Portuguese corporate credit markets and rigorous credit analysis'
     }
   ],
+  historicalPerformance: {
+    "2024-09": {
+      returns: 0.4,
+      aum: 156000000,
+      nav: 1.024
+    },
+    "2024-08": {
+      returns: 0.3,
+      aum: 155500000,
+      nav: 1.020
+    },
+    "2024-07": {
+      returns: 0.5,
+      aum: 155000000,
+      nav: 1.017
+    },
+    "2024-06": {
+      returns: 0.2,
+      aum: 154000000,
+      nav: 1.012
+    },
+    "2024-05": {
+      returns: 0.4,
+      aum: 153500000,
+      nav: 1.010
+    },
+    "2024-04": {
+      returns: 0.3,
+      aum: 153000000,
+      nav: 1.006
+    }
+  },
   documents: [
     {
       title: 'Fund Prospectus',
@@ -178,6 +210,38 @@ The fund leverages IMGA's deep knowledge of Portuguese capital markets and exten
       bio: 'Experienced equity professionals with deep knowledge of Portuguese capital markets, fundamental analysis expertise, and long-term track record in Portuguese equity investing'
     }
   ],
+  historicalPerformance: {
+    "2024-09": {
+      returns: 0.4,
+      aum: 156000000,
+      nav: 1.024
+    },
+    "2024-08": {
+      returns: 0.3,
+      aum: 155500000,
+      nav: 1.020
+    },
+    "2024-07": {
+      returns: 0.5,
+      aum: 155000000,
+      nav: 1.017
+    },
+    "2024-06": {
+      returns: 0.2,
+      aum: 154000000,
+      nav: 1.012
+    },
+    "2024-05": {
+      returns: 0.4,
+      aum: 153500000,
+      nav: 1.010
+    },
+    "2024-04": {
+      returns: 0.3,
+      aum: 153000000,
+      nav: 1.006
+    }
+  },
   documents: [
     {
       title: 'Fund Prospectus',
