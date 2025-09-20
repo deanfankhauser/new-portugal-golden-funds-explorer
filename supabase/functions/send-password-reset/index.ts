@@ -1,11 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { withSecurity, validateEmail, sanitizeString } from '../_shared/security.ts';
 
 interface PasswordResetRequest {
   email: string;
@@ -13,14 +9,19 @@ interface PasswordResetRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
-
   try {
     const { email, redirectTo }: PasswordResetRequest = await req.json();
-    console.log('Password reset request received:', { email, redirectTo });
+    
+    // Validate email
+    if (!validateEmail(email)) {
+      return new Response(
+        JSON.stringify({ success: false, message: "Invalid email address" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    
+    const safeRedirectTo = redirectTo ? sanitizeString(redirectTo, 500) : undefined;
+    console.log('Password reset request received:', { email, redirectTo: safeRedirectTo });
 
     // Determine a safe redirect target
     const reqOrigin = req.headers.get('origin') || req.headers.get('referer') || '';
@@ -62,7 +63,7 @@ const handler = async (req: Request): Promise<Response> => {
         return `${defaultBase}/reset-password`;
       }
     };
-    const finalRedirect = normalize(redirectTo);
+    const finalRedirect = normalize(safeRedirectTo);
 
     console.log('Password reset redirect target:', finalRedirect);
 
@@ -282,7 +283,7 @@ const handler = async (req: Request): Promise<Response> => {
           recipient: email,
           expiresIn: "1 hour"
         }),
-        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        { status: 200, headers: { "Content-Type": "application/json" } }
       );
     } catch (error) {
       console.error("Gmail SMTP Error Details:", {
@@ -304,7 +305,7 @@ const handler = async (req: Request): Promise<Response> => {
         message: "Password reset request failed", 
         error: error?.message 
       }),
-      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 };
@@ -332,7 +333,7 @@ async function handleDirectSupabaseReset(email: string, redirectTo?: string, isD
         message: "Password reset failed",
         error: error.message
       }),
-      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 
@@ -342,8 +343,8 @@ async function handleDirectSupabaseReset(email: string, redirectTo?: string, isD
       message: "Password reset email triggered via Supabase",
       method: "supabase_resetPasswordForEmail"
     }),
-    { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+    { status: 200, headers: { "Content-Type": "application/json" } }
   );
 }
 
-serve(handler);
+serve(withSecurity(handler));

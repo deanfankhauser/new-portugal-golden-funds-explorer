@@ -1,20 +1,11 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { withSecurity, validateUUID } from '../_shared/security.ts';
 
 interface DeleteAccountRequest {
   user_id: string;
 }
 
-Deno.serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
-
+const handler = async (req: Request): Promise<Response> => {
   try {
     // Get the authorization header
     const authHeader = req.headers.get('Authorization');
@@ -24,7 +15,7 @@ Deno.serve(async (req) => {
         JSON.stringify({ error: 'Unauthorized' }),
         { 
           status: 401, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          headers: { 'Content-Type': 'application/json' } 
         }
       );
     }
@@ -58,12 +49,23 @@ Deno.serve(async (req) => {
         JSON.stringify({ error: 'Unauthorized' }),
         { 
           status: 401, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          headers: { 'Content-Type': 'application/json' } 
         }
       );
     }
 
     console.log('🗑️ Deleting account for user:', user.email);
+
+    // Validate user ID
+    if (!validateUUID(user.id)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid user ID' }),
+        { 
+          status: 400, 
+          headers: { 'Content-Type': 'application/json' } 
+        }
+      );
+    }
 
     // Record the deletion request
     const { error: recordError } = await supabase
@@ -116,7 +118,7 @@ Deno.serve(async (req) => {
           JSON.stringify({ error: 'Failed to delete account' }),
           { 
             status: 500, 
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+            headers: { 'Content-Type': 'application/json' } 
           }
         );
       }
@@ -145,7 +147,7 @@ Deno.serve(async (req) => {
         JSON.stringify({ error: 'Account deletion failed' }),
         { 
           status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          headers: { 'Content-Type': 'application/json' } 
         }
       );
     }
@@ -155,7 +157,7 @@ Deno.serve(async (req) => {
       JSON.stringify({ message: 'Deletion initiated' }),
       { 
         status: 202, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        headers: { 'Content-Type': 'application/json' } 
       }
     );
 
@@ -165,8 +167,10 @@ Deno.serve(async (req) => {
       JSON.stringify({ error: 'Internal server error' }),
       { 
         status: 500, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        headers: { 'Content-Type': 'application/json' } 
       }
     );
   }
-});
+};
+
+Deno.serve(withSecurity(handler));

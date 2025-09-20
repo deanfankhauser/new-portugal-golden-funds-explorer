@@ -4,18 +4,9 @@ import { Webhook } from 'https://esm.sh/standardwebhooks@1.0.0';
 import { renderAsync } from 'npm:@react-email/components@0.0.22';
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 import { ConfirmationEmail } from './_templates/confirmation-email.tsx';
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { withSecurity, validateEmail } from '../_shared/security.ts';
 
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
-
   try {
     const hookSecret = Deno.env.get('SEND_EMAIL_HOOK_SECRET');
     const gmailEmail = Deno.env.get("GMAIL_EMAIL");
@@ -59,6 +50,14 @@ const handler = async (req: Request): Promise<Response> => {
       user,
       email_data: { token_hash, redirect_to, email_action_type, site_url },
     } = webhookData;
+
+    // Validate email
+    if (!validateEmail(user.email)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid email address" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
 
     console.log('Processing confirmation email:', {
       email: user.email,
@@ -116,7 +115,7 @@ const handler = async (req: Request): Promise<Response> => {
         message: `${isRecovery ? 'Recovery' : 'Confirmation'} email sent successfully`,
         recipient: user.email,
       }),
-      { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      { status: 200, headers: { "Content-Type": "application/json" } }
     );
 
   } catch (error: any) {
@@ -127,9 +126,9 @@ const handler = async (req: Request): Promise<Response> => {
         message: "Failed to send confirmation email", 
         error: error?.message 
       }),
-      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 };
 
-serve(handler);
+serve(withSecurity(handler));

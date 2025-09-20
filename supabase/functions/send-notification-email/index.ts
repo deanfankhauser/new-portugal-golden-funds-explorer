@@ -1,10 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { withSecurity, validateEmail, sanitizeString } from '../_shared/security.ts';
 
 interface EmailRequest {
   to: string;
@@ -16,15 +12,23 @@ interface EmailRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
-
   try {
     const { to, subject, fundId, status, rejectionReason, managerName }: EmailRequest = await req.json();
+    
+    // Validate inputs
+    if (!validateEmail(to)) {
+      return new Response(
+        JSON.stringify({ success: false, message: "Invalid email address" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    
+    const safeFundId = sanitizeString(fundId, 100);
+    const safeSubject = sanitizeString(subject, 200);
+    const safeManagerName = managerName ? sanitizeString(managerName, 100) : undefined;
+    const safeRejectionReason = rejectionReason ? sanitizeString(rejectionReason, 500) : undefined;
 
-    console.log(`Processing email notification: ${status} for ${fundId} to ${to}`);
+    console.log(`Processing email notification: ${status} for ${safeFundId} to ${to}`);
 
     const gmailEmail = Deno.env.get("GMAIL_EMAIL") || "";
     const gmailAppPassword = Deno.env.get("GMAIL_APP_PASSWORD") || "";
@@ -37,7 +41,7 @@ const handler = async (req: Request): Promise<Response> => {
           message: "Email provider not configured (Gmail credentials missing).",
           hint: "Add GMAIL_EMAIL and GMAIL_APP_PASSWORD in Supabase Edge Function secrets.",
         }),
-        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        { status: 200, headers: { "Content-Type": "application/json" } }
       );
     }
 
@@ -55,17 +59,17 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Create email content based on status
     let emailBody = "";
-    let emailSubject = subject;
+    let emailSubject = safeSubject;
 
     if (status === "approved") {
-      emailSubject = `✅ Fund Edit Approved - ${fundId}`;
+      emailSubject = `✅ Fund Edit Approved - ${safeFundId}`;
       emailBody = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #16a34a;">Fund Edit Suggestion Approved ✅</h2>
-          <p>Dear ${managerName || "Fund Manager"},</p>
-          <p>Great news! Your edit suggestion for fund <strong>${fundId}</strong> has been <span style="color: #16a34a; font-weight: bold;">approved</span> and applied to the platform.</p>
+          <p>Dear ${safeManagerName || "Fund Manager"},</p>
+          <p>Great news! Your edit suggestion for fund <strong>${safeFundId}</strong> has been <span style="color: #16a34a; font-weight: bold;">approved</span> and applied to the platform.</p>
           <div style="background-color: #f0f9ff; padding: 15px; border-left: 4px solid #0ea5e9; margin: 20px 0;">
-            <p style="margin: 0;"><strong>Fund ID:</strong> ${fundId}</p>
+            <p style="margin: 0;"><strong>Fund ID:</strong> ${safeFundId}</p>
             <p style="margin: 5px 0 0 0;"><strong>Status:</strong> Approved and Published</p>
           </div>
           <p>Thank you for helping us keep the fund information accurate and up-to-date. Your contributions help investors make better informed decisions.</p>
@@ -73,16 +77,16 @@ const handler = async (req: Request): Promise<Response> => {
         </div>
       `;
     } else {
-      emailSubject = `❌ Fund Edit Rejected - ${fundId}`;
+      emailSubject = `❌ Fund Edit Rejected - ${safeFundId}`;
       emailBody = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #dc2626;">Fund Edit Suggestion Rejected ❌</h2>
-          <p>Dear ${managerName || "Fund Manager"},</p>
-          <p>Unfortunately, your edit suggestion for fund <strong>${fundId}</strong> has been <span style="color: #dc2626; font-weight: bold;">rejected</span>.</p>
+          <p>Dear ${safeManagerName || "Fund Manager"},</p>
+          <p>Unfortunately, your edit suggestion for fund <strong>${safeFundId}</strong> has been <span style="color: #dc2626; font-weight: bold;">rejected</span>.</p>
           <div style="background-color: #fef2f2; padding: 15px; border-left: 4px solid #ef4444; margin: 20px 0;">
-            <p style="margin: 0;"><strong>Fund ID:</strong> ${fundId}</p>
+            <p style="margin: 0;"><strong>Fund ID:</strong> ${safeFundId}</p>
             <p style="margin: 5px 0 0 0;"><strong>Status:</strong> Rejected</p>
-            ${rejectionReason ? `<p style="margin: 10px 0 0 0;"><strong>Reason:</strong> ${rejectionReason}</p>` : ""}
+            ${safeRejectionReason ? `<p style="margin: 10px 0 0 0;"><strong>Reason:</strong> ${safeRejectionReason}</p>` : ""}
           </div>
           <p>You can submit a new suggestion with the requested changes if needed. Please review the feedback provided and feel free to resubmit with the necessary adjustments.</p>
           <p>Best regards,<br>The Investment Funds Team</p>
@@ -93,7 +97,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("=== SENDING EMAIL via Gmail SMTP ===");
     console.log("To:", to);
     console.log("Subject:", emailSubject);
-    console.log("Fund ID:", fundId);
+    console.log("Fund ID:", safeFundId);
     console.log("Status:", status);
 
     try {
@@ -116,7 +120,7 @@ const handler = async (req: Request): Promise<Response> => {
           provider: "Gmail SMTP",
           from: gmailEmail,
         }),
-        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        { status: 200, headers: { "Content-Type": "application/json" } }
       );
     } catch (error) {
       console.error("Email sending failed:", String((error as any)?.message || error));
@@ -130,16 +134,16 @@ const handler = async (req: Request): Promise<Response> => {
           subject: emailSubject,
           error: String((error as any)?.message || error),
         }),
-        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        { status: 200, headers: { "Content-Type": "application/json" } }
       );
     }
   } catch (error: any) {
     console.error("Error handling request:", error);
     return new Response(
       JSON.stringify({ success: false, message: "Invalid request payload", error: error?.message }),
-      { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 };
 
-serve(handler);
+serve(withSecurity(handler));
