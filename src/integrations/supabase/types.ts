@@ -542,6 +542,66 @@ export type Database = {
       }
     }
     Views: {
+      investor_profiles_admin_view: {
+        Row: {
+          address: string | null
+          annual_income_range: string | null
+          avatar_url: string | null
+          city: string | null
+          country: string | null
+          created_at: string | null
+          date_of_birth: string | null
+          email: string | null
+          first_name: string | null
+          id: string | null
+          investment_experience: string | null
+          last_name: string | null
+          net_worth_range: string | null
+          phone: string | null
+          risk_tolerance: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          address?: never
+          annual_income_range?: never
+          avatar_url?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          date_of_birth?: never
+          email?: string | null
+          first_name?: string | null
+          id?: string | null
+          investment_experience?: string | null
+          last_name?: string | null
+          net_worth_range?: never
+          phone?: string | null
+          risk_tolerance?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          address?: never
+          annual_income_range?: never
+          avatar_url?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          date_of_birth?: never
+          email?: string | null
+          first_name?: string | null
+          id?: string | null
+          investment_experience?: string | null
+          last_name?: string | null
+          net_worth_range?: never
+          phone?: string | null
+          risk_tolerance?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       manager_profiles_public: {
         Row: {
           assets_under_management: number | null
@@ -630,6 +690,14 @@ export type Database = {
           table_name: string
         }[]
       }
+      get_investor_profile_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          active_investors: number
+          recent_signups: number
+          total_investors: number
+        }[]
+      }
       get_super_admin_emails: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -661,6 +729,10 @@ export type Database = {
           p_target_type: string
         }
         Returns: undefined
+      }
+      log_and_allow_investor_profile_access: {
+        Args: { target_user_id?: string }
+        Returns: boolean
       }
       sync_database_functions_to_develop: {
         Args: Record<PropertyKey, never>
