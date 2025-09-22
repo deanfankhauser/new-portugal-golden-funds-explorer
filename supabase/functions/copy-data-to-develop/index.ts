@@ -5,68 +5,93 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-interface DatabaseRecord {
-  [key: string]: any;
-}
+type AnyRow = Record<string, any>
 
-// Helper function to check if table exists
-async function tableExists(client: any, tableName: string): Promise<boolean> {
-  try {
-    const { error } = await client.from(tableName).select('*').limit(1);
-    return !error;
-  } catch {
-    return false;
-  }
-}
+// Load dev schema columns using a stable RPC so we don't rely on rows existing
+async function loadDevSchemaColumns(dev: any): Promise<Record<string, string[]>> {
+  const columnsByTable: Record<string, string[]> = {}
 
-// Helper function to get table columns
-async function getTableColumns(client: any, tableName: string): Promise<string[]> {
-  try {
-    const { data, error } = await client.from(tableName).select('*').limit(1);
-    if (error || !data || data.length === 0) {
-      return [];
+  // Preferred: security definer RPC available in this project
+  const { data, error } = await dev.rpc('get_database_schema_info')
+  if (!error && Array.isArray(data)) {
+    for (const row of data as Array<{ table_name: string; column_name: string }>) {
+      const t = row.table_name
+      if (!columnsByTable[t]) columnsByTable[t] = []
+      columnsByTable[t].push(row.column_name)
     }
-    return Object.keys(data[0]);
-  } catch {
-    return [];
+    return columnsByTable
   }
+
+  // Fallback (best-effort): probe known tables
+  const probe = async (table: string) => {
+    try {
+      const { data, error } = await dev.from(table).select('*').limit(1)
+      if (!error && data && data[0]) {
+        columnsByTable[table] = Object.keys(data[0])
+      }
+    } catch (_e) {}
+  }
+  await Promise.all([
+    probe('funds'),
+    probe('manager_profiles'),
+    probe('investor_profiles'),
+    probe('admin_users'),
+    probe('fund_edit_suggestions'),
+    probe('fund_edit_history'),
+    probe('saved_funds'),
+  ])
+  return columnsByTable
 }
 
-// Helper function to filter data based on available columns
-function filterDataByColumns(data: any[], availableColumns: string[]): any[] {
-  return data.map(row => {
-    const filteredRow: any = {};
-    availableColumns.forEach(column => {
-      if (column in row) {
-        filteredRow[column] = row[column];
-      }
-    });
-    return filteredRow;
-  });
+function filterToColumns(rows: AnyRow[], allowed: string[]): AnyRow[] {
+  return rows.map((r) => {
+    const out: AnyRow = {}
+    for (const c of allowed) if (c in r) out[c] = r[c]
+    return out
+  })
+}
+
+function dedupeByKey<T extends AnyRow>(rows: T[], key: string): T[] {
+  const seen = new Set<string>()
+  const result: T[] = []
+  for (const r of rows) {
+    const val = r[key]
+    if (val == null) continue
+    const k = String(val)
+    if (!seen.has(k)) {
+      seen.add(k)
+      result.push(r)
+    }
+  }
+  return result
 }
 
 Deno.serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+  // CORS preflight
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders })
 
   try {
-    console.log('Starting data copy to development database...');
+    const prodUrl = Deno.env.get('SUPABASE_URL') ?? ''
+    const prodKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    const devUrl = Deno.env.get('FUNDS_DEV_SUPABASE_URL') ?? ''
+    const devKey = Deno.env.get('FUNDS_DEV_SUPABASE_SERVICE_ROLE_KEY') ?? ''
 
-    // Initialize production Supabase client
-    const prodSupabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
+    if (!prodUrl || !prodKey || !devUrl || !devKey) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Missing required environment variables',
+          results: { errors: ['Missing SUPABASE_URL/KEY or FUNDS_DEV_SUPABASE_URL/KEY'] },
+          timestamp: new Date().toISOString(),
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
 
-    // Initialize development Supabase client
-    const devSupabase = createClient(
-      Deno.env.get('FUNDS_DEV_SUPABASE_URL') ?? '',
-      Deno.env.get('FUNDS_DEV_SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
+    const prod = createClient(prodUrl, prodKey)
+    const dev = createClient(devUrl, devKey)
 
-    const results = {
+    const results: Record<string, number | string[]> = {
       funds: 0,
       manager_profiles: 0,
       investor_profiles: 0,
@@ -74,140 +99,91 @@ Deno.serve(async (req) => {
       fund_edit_suggestions: 0,
       fund_edit_history: 0,
       saved_funds: 0,
-      errors: [] as string[]
-    };
+      errors: [] as string[],
+    }
 
-    const tablesToCopy = [
-      'funds',
-      'manager_profiles', 
-      'investor_profiles',
-      'admin_users',
-      'fund_edit_suggestions',
-      'fund_edit_history',
-      'saved_funds'
-    ];
+    // Load dev schema columns up-front (works even if tables are empty)
+    const devSchema = await loadDevSchemaColumns(dev)
 
-    for (const tableName of tablesToCopy) {
+    // Generic copy routine per table
+    const copyTable = async (table: string, opts?: { uniqueKey?: string }) => {
       try {
-        console.log(`Processing table: ${tableName}`);
-
-        // Check if destination table exists
-        const destTableExists = await tableExists(devSupabase, tableName);
-        if (!destTableExists) {
-          console.log(`Table ${tableName} does not exist in development database, skipping...`);
-          results.errors.push(`Table '${tableName}' does not exist in development database`);
-          continue;
+        // Ensure destination table exists (in schema map)
+        if (!devSchema[table] || devSchema[table].length === 0) {
+          ;(results.errors as string[]).push(`Table '${table}' missing in development (schema not found)`) // Saved funds case, etc.
+          return
         }
 
-        // Fetch data from production
-        const { data: sourceData, error: fetchError } = await prodSupabase
-          .from(tableName)
-          .select('*');
+        // Fetch from prod
+        const { data: src, error: fetchErr } = await prod.from(table).select('*')
+        if (fetchErr) throw new Error(`fetch failed: ${fetchErr.message}`)
+        if (!src || src.length === 0) return
 
-        if (fetchError) {
-          throw new Error(`Failed to fetch ${tableName}: ${fetchError.message}`);
-        }
+        // Filter to dev columns only (avoids schema cache errors like missing 'auditor')
+        let filtered = filterToColumns(src, devSchema[table])
 
-        if (!sourceData || sourceData.length === 0) {
-          console.log(`No data found in ${tableName}`);
-          continue;
-        }
+        // Optional dedupe by unique key (e.g., manager_profiles.email)
+        if (opts?.uniqueKey) filtered = dedupeByKey(filtered, opts.uniqueKey)
 
-        console.log(`Found ${sourceData.length} records in ${tableName}`);
+        // Attempt to clear destination table (best-effort). If table has 'id', use IS NOT NULL
+        const hasId = devSchema[table].includes('id')
+        const delQuery = dev.from(table).delete()
+        const { error: delErr } = hasId ? delQuery.not('id', 'is', null) : delQuery
+        if (delErr) console.log(`Warning clearing ${table}: ${delErr.message}`)
 
-        // Get available columns in development table
-        const devColumns = await getTableColumns(devSupabase, tableName);
-        if (devColumns.length === 0) {
-          console.log(`Could not determine columns for ${tableName}, skipping...`);
-          results.errors.push(`Could not determine schema for '${tableName}'`);
-          continue;
-        }
-
-        // Filter data to only include columns that exist in development
-        const filteredData = filterDataByColumns(sourceData, devColumns);
-
-        // Clear existing data first (using truncate-like approach)
-        const { error: deleteError } = await devSupabase
-          .from(tableName)
-          .delete()
-          .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all records
-
-        if (deleteError) {
-          console.log(`Warning: Could not clear existing data from ${tableName}: ${deleteError.message}`);
-        }
-
-        // Insert data in batches to handle large datasets
-        const batchSize = 100;
-        let inserted = 0;
-
-        for (let i = 0; i < filteredData.length; i += batchSize) {
-          const batch = filteredData.slice(i, i + batchSize);
-          
-          const { error: insertError } = await devSupabase
-            .from(tableName)
-            .upsert(batch, { 
-              onConflict: 'id',
-              ignoreDuplicates: false 
-            });
-
-          if (insertError) {
-            console.error(`Error inserting batch for ${tableName}:`, insertError);
-            // Try individual inserts for this batch
-            for (const record of batch) {
-              const { error: singleInsertError } = await devSupabase
-                .from(tableName)
-                .upsert(record, { 
-                  onConflict: 'id',
-                  ignoreDuplicates: true 
-                });
-              
-              if (!singleInsertError) {
-                inserted++;
-              }
+        // Upsert in batches; onConflict id when available; ignore duplicates
+        const batchSize = 200
+        let inserted = 0
+        for (let i = 0; i < filtered.length; i += batchSize) {
+          const batch = filtered.slice(i, i + batchSize)
+          const { error: upErr } = await dev
+            .from(table)
+            .upsert(batch, { onConflict: hasId ? 'id' : undefined, ignoreDuplicates: true })
+          if (upErr) {
+            console.log(`Upsert issue on ${table}, fallback row-by-row: ${upErr.message}`)
+            for (const row of batch) {
+              const { error: rowErr } = await dev
+                .from(table)
+                .upsert(row, { onConflict: hasId ? 'id' : undefined, ignoreDuplicates: true })
+              if (!rowErr) inserted++
             }
           } else {
-            inserted += batch.length;
+            inserted += batch.length
           }
         }
 
-        results[tableName] = inserted;
-        console.log(`Successfully copied ${inserted} records for ${tableName}`);
-
-      } catch (error) {
-        console.error(`Error copying ${tableName}:`, error);
-        results.errors.push(`${tableName}: ${error.message}`);
+        results[table] = inserted
+      } catch (e: any) {
+        ;(results.errors as string[]).push(`${table}: ${e.message}`)
       }
     }
 
-    const totalRecords = results.funds + results.manager_profiles + results.investor_profiles + 
-                        results.admin_users + results.fund_edit_suggestions + results.fund_edit_history + 
-                        results.saved_funds;
+    await Promise.all([
+      copyTable('funds'),
+      copyTable('manager_profiles', { uniqueKey: 'email' }),
+      copyTable('investor_profiles'),
+      copyTable('admin_users'),
+      copyTable('fund_edit_suggestions'),
+      copyTable('fund_edit_history'),
+      copyTable('saved_funds'),
+    ])
 
-    console.log(`Data copy completed. Total records copied: ${totalRecords}`);
+    const total = ['funds','manager_profiles','investor_profiles','admin_users','fund_edit_suggestions','fund_edit_history','saved_funds']
+      .reduce((sum, t) => sum + (Number(results[t]) || 0), 0)
 
     return new Response(
       JSON.stringify({
         success: true,
-        message: `Successfully copied ${totalRecords} records to development database`,
+        message: `Successfully copied ${total} records to development database`,
         results,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      },
-    );
-
-  } catch (error) {
-    console.error('Error in copy-data-to-develop function:', error);
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
+  } catch (err: any) {
     return new Response(
-      JSON.stringify({
-        error: error.message,
-        timestamp: new Date().toISOString()
-      }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      },
-    );
+      JSON.stringify({ success: false, message: err.message, results: { errors: [err.message] }, timestamp: new Date().toISOString() }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    )
   }
-});
+})
