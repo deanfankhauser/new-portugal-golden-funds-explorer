@@ -152,12 +152,19 @@ const InvestorAuth = () => {
     const { error } = await signUp(signupData.email, signupData.password, 'investor', metadata);
     
     if (error) {
+      console.error('Signup error:', error.message);
+      
       if (error.message.includes('already registered')) {
         setError('This email is already registered. Please try logging in instead.');
         toast.error("Registration Failed", {
           description: "This email is already registered. Please try logging in instead."
         });
-      } else if (error.message.includes('email')) {
+      } else if (error.message.includes('rate limit') || error.message.includes('429')) {
+        setError('Too many signup attempts. Please wait a few minutes and try again.');
+        toast.error("Rate Limited", {
+          description: "Too many signup attempts. Please wait a few minutes and try again."
+        });
+      } else if (error.message.includes('invalid') && error.message.includes('email')) {
         setError('Please enter a valid email address.');
         toast.error("Invalid Email", {
           description: "Please enter a valid email address."
