@@ -214,7 +214,7 @@ const FundBriefUpload: React.FC<FundBriefUploadProps> = ({
 
           {/* Usage Guidelines */}
           <div className="text-xs text-muted-foreground space-y-1">
-            <p>• Only admin users can upload fund brief documents</p>
+            <p>• All authenticated users can upload and manage fund brief documents</p>
             <p>• The fund brief will be automatically sent when investors request it</p>
             <p>• Make sure the document contains up-to-date fund information</p>
           </div>
