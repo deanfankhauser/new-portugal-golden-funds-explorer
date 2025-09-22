@@ -280,12 +280,16 @@ const DocumentsDisclosures: React.FC<DocumentsDisclosuresProps> = ({ fund }) => 
               </p>
             </div>
             <Button 
-              onClick={handleGetFundBrief}
-              disabled={isRequestingBrief}
-              className="ml-4 whitespace-nowrap"
+              onClick={fund.fundBriefUrl ? handleGetFundBrief : undefined}
+              disabled={isRequestingBrief || !fund.fundBriefUrl}
+              className={`ml-4 whitespace-nowrap ${
+                fund.fundBriefUrl 
+                  ? '' 
+                  : 'bg-muted text-muted-foreground cursor-not-allowed opacity-50'
+              }`}
             >
               <Mail className="w-4 h-4 mr-1" />
-              {isRequestingBrief ? "Requesting..." : "Get Fund Brief"}
+              {isRequestingBrief ? "Requesting..." : fund.fundBriefUrl ? "Get Fund Brief" : "No Brief Available"}
             </Button>
           </div>
         </div>

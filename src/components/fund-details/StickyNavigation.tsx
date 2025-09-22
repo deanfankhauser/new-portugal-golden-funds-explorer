@@ -152,11 +152,12 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={handleGetFundBrief}
-                disabled={isRequestingBrief}
+                onClick={fund.fundBriefUrl ? handleGetFundBrief : undefined}
+                disabled={isRequestingBrief || !fund.fundBriefUrl}
+                className={fund.fundBriefUrl ? '' : 'opacity-50 cursor-not-allowed'}
               >
                 <Mail className="w-4 h-4 mr-1" />
-                {isRequestingBrief ? "Requesting..." : "Get Fund Brief"}
+                {isRequestingBrief ? "Requesting..." : fund.fundBriefUrl ? "Get Fund Brief" : "No Brief Available"}
               </Button>
               
               <Button 
@@ -176,12 +177,12 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
         <div className="flex space-x-3">
           <Button 
             variant="outline" 
-            className="flex-1"
-            onClick={handleGetFundBrief}
-            disabled={isRequestingBrief}
+            className={`flex-1 ${fund.fundBriefUrl ? '' : 'opacity-50 cursor-not-allowed'}`}
+            onClick={fund.fundBriefUrl ? handleGetFundBrief : undefined}
+            disabled={isRequestingBrief || !fund.fundBriefUrl}
           >
             <Mail className="w-4 h-4 mr-1" />
-            {isRequestingBrief ? "Requesting..." : "Get Brief"}
+            {isRequestingBrief ? "Requesting..." : fund.fundBriefUrl ? "Get Brief" : "No Brief"}
           </Button>
           
           <Button 

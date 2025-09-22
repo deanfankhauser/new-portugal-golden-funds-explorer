@@ -320,12 +320,16 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
               {/* Primary CTAs */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3">
                 <Button 
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
-                  onClick={handleGetFundBrief}
-                  disabled={isRequestingBrief}
+                  className={`font-semibold ${
+                    fund.fundBriefUrl 
+                      ? 'bg-primary hover:bg-primary/90 text-primary-foreground' 
+                      : 'bg-muted text-muted-foreground cursor-not-allowed opacity-50'
+                  }`}
+                  onClick={fund.fundBriefUrl ? handleGetFundBrief : undefined}
+                  disabled={isRequestingBrief || !fund.fundBriefUrl}
                 >
                   <Mail className="mr-2 h-4 w-4" />
-                  {isRequestingBrief ? "Requesting..." : "Get Fund Brief"}
+                  {isRequestingBrief ? "Requesting..." : fund.fundBriefUrl ? "Get Fund Brief" : "No Brief Available"}
                 </Button>
                 <Button 
                   variant="outline" 

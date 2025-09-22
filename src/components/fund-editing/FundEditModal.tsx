@@ -21,6 +21,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import FundLogo from '@/components/fund-details/FundLogo';
 import HistoricalPerformanceEditor from './HistoricalPerformanceEditor';
+import FundBriefUpload from './FundBriefUpload';
 
 interface FundEditModalProps {
   fund: Fund;
@@ -66,6 +67,8 @@ const buildFormData = (f: Fund) => {
     faqs: f.faqs || [],
     // Logo URL
     logoUrl: f.logoUrl || '',
+    // Fund Brief URL
+    fundBriefUrl: f.fundBriefUrl || '',
   };
 
   // Only add optional fields if they exist in the fund data
@@ -245,6 +248,7 @@ useEffect(() => {
     historicalPerformance: fund.historicalPerformance,
     faqs: fund.faqs,
     logoUrl: fund.logoUrl,
+    fundBriefUrl: fund.fundBriefUrl,
   });
 
   const getSuggestedChanges = () => {
@@ -329,12 +333,13 @@ useEffect(() => {
         
         <ScrollArea className="max-h-[60vh] pr-4">
           <Tabs defaultValue="basic" className="w-full">
-            <TabsList className="grid w-full grid-cols-7">
+            <TabsList className="grid w-full grid-cols-8">
               <TabsTrigger value="basic">Basic</TabsTrigger>
               <TabsTrigger value="structure">Structure</TabsTrigger>
               <TabsTrigger value="performance">Performance</TabsTrigger>
               <TabsTrigger value="team">Team</TabsTrigger>
               <TabsTrigger value="documents">Documents</TabsTrigger>
+              <TabsTrigger value="brief">Brief</TabsTrigger>
               <TabsTrigger value="faqs">FAQs</TabsTrigger>
               <TabsTrigger value="regulatory">Regulatory</TabsTrigger>
             </TabsList>
@@ -903,6 +908,19 @@ useEffect(() => {
                     <p>No FAQs added yet. Click "Add FAQ" to create the first question and answer.</p>
                   </div>
                 )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="brief" className="space-y-6 mt-4">
+              {/* Fund Brief Upload */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Fund Brief Document</h3>
+                <FundBriefUpload
+                  fundId={fund.id}
+                  fundName={fund.name}
+                  currentBriefUrl={formData.fundBriefUrl}
+                  onBriefUpdate={(briefUrl) => handleInputChange('fundBriefUrl', briefUrl)}
+                />
               </div>
             </TabsContent>
 

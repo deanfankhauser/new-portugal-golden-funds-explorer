@@ -194,4 +194,5 @@ export interface Fund {
     nav?: number;
   }>;
   logoUrl?: string;
+  fundBriefUrl?: string;
 }
