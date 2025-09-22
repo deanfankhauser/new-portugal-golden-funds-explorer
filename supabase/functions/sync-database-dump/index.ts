@@ -106,8 +106,16 @@ Deno.serve(async (req) => {
           continue
         }
 
-        // 2) Compute allowed columns based on dev schema if available; otherwise use keys from first row
-        const allowed = devSchema[table] ?? new Set(Object.keys(prodData[0]))
+        // 2) Check if table exists in dev schema
+        if (!devSchema[table] || devSchema[table].size === 0) {
+          console.warn(`Table ${table} not found in dev schema, skipping`)
+          errors.push(`Table ${table}: not found in development database`)
+          results[table] = 0
+          continue
+        }
+
+        // 3) Filter columns to only those that exist in dev
+        const allowed = devSchema[table]
         const filtered = filterRows(prodData as any[], allowed)
 
         // Ensure primary key column is included if present in dev
