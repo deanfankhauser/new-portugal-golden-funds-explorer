@@ -40,3 +40,6 @@ verify_jwt = false
 
 [functions.copy-data-to-develop]
 verify_jwt = false
+
+[functions.sync-database-dump]
+verify_jwt = false
