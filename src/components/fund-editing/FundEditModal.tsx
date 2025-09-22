@@ -21,7 +21,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import FundLogo from '@/components/fund-details/FundLogo';
 import HistoricalPerformanceEditor from './HistoricalPerformanceEditor';
-import FundBriefUpload from './FundBriefUpload';
+import FundBriefSubmission from './FundBriefSubmission';
 
 interface FundEditModalProps {
   fund: Fund;
@@ -931,11 +931,10 @@ useEffect(() => {
               {/* Fund Brief Upload */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Fund Brief Document</h3>
-                <FundBriefUpload
+                <FundBriefSubmission
                   fundId={fund.id}
                   fundName={fund.name}
                   currentBriefUrl={formData.fundBriefUrl}
-                  onBriefUpdate={(briefUrl) => handleInputChange('fundBriefUrl', briefUrl)}
                 />
               </div>
             </TabsContent>

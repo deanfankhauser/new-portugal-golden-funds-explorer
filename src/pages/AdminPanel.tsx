@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, Edit3, Clock, CheckCircle, XCircle, Activity, Settings, Database } from 'lucide-react';
+import { Users, Edit3, Clock, CheckCircle, XCircle, Activity, Settings, Database, FileText } from 'lucide-react';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { EnhancedSuggestionsTable } from '@/components/admin/EnhancedSuggestionsTable';
@@ -16,6 +16,7 @@ import { AdminActivityLog } from '@/components/admin/AdminActivityLog';
 import UsersManagement from '@/components/admin/UsersManagement';
 import { DataCopyButton } from '@/components/admin/DataCopyButton';
 import MigrateFundsButton from '@/components/admin/MigrateFundsButton';
+import FundBriefApproval from '@/components/admin/FundBriefApproval';
 import FundManagement from '@/components/admin/FundManagement';
 
 const AdminPanel = () => {
@@ -202,10 +203,14 @@ const AdminPanel = () => {
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="suggestions" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="suggestions" className="flex items-center gap-2">
                 <Edit3 className="h-4 w-4" />
                 Suggestions
+              </TabsTrigger>
+              <TabsTrigger value="briefs" className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                Briefs
               </TabsTrigger>
               <TabsTrigger value="funds" className="flex items-center gap-2">
                 <Database className="h-4 w-4" />
@@ -244,6 +249,10 @@ const AdminPanel = () => {
                   fetchStats();
                 }
               }} />
+            </TabsContent>
+            
+            <TabsContent value="briefs">
+              <FundBriefApproval />
             </TabsContent>
             
             <TabsContent value="funds">
