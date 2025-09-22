@@ -114,7 +114,7 @@ const DocumentsDisclosures: React.FC<DocumentsDisclosuresProps> = ({ fund }) => 
     setIsRequestingBrief(true);
 
     try {
-      const { error } = await supabase.functions.invoke('send-fund-brief', {
+      const { data, error } = await supabase.functions.invoke('send-fund-brief', {
         body: {
           userEmail: user.email,
           fundName: fund.name,

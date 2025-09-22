@@ -50,7 +50,7 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
     setIsRequestingBrief(true);
 
     try {
-      const { error } = await supabase.functions.invoke('send-fund-brief', {
+      const { data, error } = await supabase.functions.invoke('send-fund-brief', {
         body: {
           userEmail: user.email,
           fundName: fund.name,
@@ -68,9 +68,17 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
       });
     } catch (error: any) {
       console.error('Error requesting fund brief:', error);
+      
+      // Check if it's a specific error about no fund brief being available
+      const errorMessage = error?.message || '';
+      const isNoFundBriefError = errorMessage.includes('No fund brief available') || 
+                                errorMessage.includes('No fund brief URL found');
+      
       toast({
         title: "Error",
-        description: "Failed to request fund brief. Please try again.",
+        description: isNoFundBriefError 
+          ? "This fund doesn't have a brief document available yet." 
+          : "Failed to request fund brief. Please try again.",
         variant: "destructive",
       });
     } finally {
