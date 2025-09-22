@@ -38,15 +38,15 @@ jobs:
           fi
           echo "SUCCESS: Required secrets are configured"
 
-      - name: Create temp directory
+      - name: Create isolated temp directory
         run: |
-          mkdir -p temp-sync
-          cd temp-sync
+          mkdir -p /tmp/db-sync
+          cd /tmp/db-sync
 
       - name: Dump production database
         run: |
           echo "Starting production database dump..."
-          cd temp-sync
+          cd /tmp/db-sync
           supabase db dump \
             --db-url "${PROD_DB_URL}" \
             --data-only=false \
@@ -59,7 +59,7 @@ jobs:
       - name: Backup development database
         run: |
           echo "Creating development backup before restore..."
-          cd temp-sync
+          cd /tmp/db-sync
           BACKUP_FILE="dev_backup_$(date +%Y%m%d_%H%M%S).sql"
           supabase db dump \
             --db-url "${DEV_DB_URL}" \
@@ -72,7 +72,7 @@ jobs:
       - name: Restore to development database
         run: |
           echo "Restoring production data to development..."
-          cd temp-sync
+          cd /tmp/db-sync
           
           echo "Restoring production dump..."
           psql "${DEV_DB_URL}" < production_dump.sql
@@ -93,7 +93,7 @@ jobs:
       - name: Cleanup
         run: |
           echo "Cleaning up temporary files..."
-          rm -rf temp-sync
+          rm -rf /tmp/db-sync
           echo "Cleanup completed"
 
       - name: Summary
