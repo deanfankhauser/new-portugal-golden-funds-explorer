@@ -14,8 +14,9 @@ jobs:
     if: ${{ github.event.inputs.confirm == 'CONFIRM' }}
     
     env:
-      PROD_DB_URL: ${{ secrets.PROD_SUPABASE_DB_URL }}
-      DEV_DB_URL: ${{ secrets.DEVELOP_SUPABASE_DB_URL }}
+      # URLs will be set dynamically to prefer pooler URLs if available
+      PROD_DB_URL: ""
+      DEV_DB_URL: ""
     
     steps:
       - name: Checkout code
@@ -30,6 +31,23 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y postgresql-client dnsutils
+
+      - name: Configure database URLs
+        run: |
+          echo "Configuring database URLs..."
+          
+          # Check for pooler URLs (preferred for external connections)
+          if [ -n "${{ secrets.PROD_DB_POOLER_URL }}" ] && [ -n "${{ secrets.DEVELOP_DB_POOLER_URL }}" ]; then
+            echo "✅ Using pooler URLs (port 6543, IPv4-friendly)"
+            echo "PROD_DB_URL=${{ secrets.PROD_DB_POOLER_URL }}" >> $GITHUB_ENV
+            echo "DEV_DB_URL=${{ secrets.DEVELOP_DB_POOLER_URL }}" >> $GITHUB_ENV
+          else
+            echo "⚠️  Pooler URLs not found, using standard database URLs (port 5432)"
+            echo "PROD_DB_URL=${{ secrets.PROD_SUPABASE_DB_URL }}" >> $GITHUB_ENV
+            echo "DEV_DB_URL=${{ secrets.DEVELOP_SUPABASE_DB_URL }}" >> $GITHUB_ENV
+          fi
+          
+          echo "✅ Database URLs configured"
 
       - name: Verify environment variables
         run: |
@@ -73,12 +91,14 @@ jobs:
         run: |
           echo "Testing connectivity to Supabase databases..."
           
-          # Extract host from URL for testing
+          # Extract host and port from URL for testing
           PROD_HOST=$(echo "${PROD_DB_URL}" | sed -n 's/.*@\([^:]*\):.*/\1/p')
           DEV_HOST=$(echo "${DEV_DB_URL}" | sed -n 's/.*@\([^:]*\):.*/\1/p')
+          PROD_PORT=$(echo "${PROD_DB_URL}" | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
+          DEV_PORT=$(echo "${DEV_DB_URL}" | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
           
-          echo "Production host: ${PROD_HOST}"
-          echo "Development host: ${DEV_HOST}"
+          echo "Production host: ${PROD_HOST}:${PROD_PORT}"
+          echo "Development host: ${DEV_HOST}:${DEV_PORT}"
           
           # Test DNS resolution and connectivity
           echo "Testing DNS resolution..."
@@ -86,8 +106,8 @@ jobs:
           nslookup "${DEV_HOST}" || echo "DNS resolution failed for development"
           
           echo "Testing port connectivity..."
-          timeout 10 bash -c "</dev/tcp/${PROD_HOST}/5432" && echo "Production port 5432 reachable" || echo "Production port 5432 not reachable"
-          timeout 10 bash -c "</dev/tcp/${DEV_HOST}/5432" && echo "Development port 5432 reachable" || echo "Development port 5432 not reachable"
+          timeout 10 bash -c "</dev/tcp/${PROD_HOST}/${PROD_PORT}" && echo "Production port ${PROD_PORT} reachable" || echo "Production port ${PROD_PORT} not reachable"
+          timeout 10 bash -c "</dev/tcp/${DEV_HOST}/${DEV_PORT}" && echo "Development port ${DEV_PORT} reachable" || echo "Development port ${DEV_PORT} not reachable"
 
       - name: Resolve IPv4 addresses
         run: |
