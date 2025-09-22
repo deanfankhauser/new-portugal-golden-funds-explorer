@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -23,6 +24,11 @@ const handler = async (req: Request): Promise<Response> => {
     
     const gmailEmail = Deno.env.get("GMAIL_EMAIL");
     const gmailAppPassword = Deno.env.get("GMAIL_APP_PASSWORD");
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+    // Initialize Supabase client
+    const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
 
     if (!gmailEmail || !gmailAppPassword) {
       console.error("Gmail credentials not configured");
@@ -35,6 +41,64 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log('Sending fund brief for:', fundName, 'to:', userEmail);
+
+    // Get fund data to check for brief URL
+    const { data: fundData, error: fundError } = await supabase
+      .from('funds')
+      .select('fund_brief_url')
+      .eq('id', fundId)
+      .single();
+
+    if (fundError) {
+      console.error('Error fetching fund data:', fundError);
+      return new Response(
+        JSON.stringify({ 
+          error: "Fund not found" 
+        }),
+        { status: 404, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    if (!fundData.fund_brief_url) {
+      console.error('No fund brief URL found for fund:', fundId);
+      return new Response(
+        JSON.stringify({ 
+          error: "No fund brief available for this fund" 
+        }),
+        { status: 404, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Extract filename from fund brief URL
+    const fileName = fundData.fund_brief_url.split('/').pop();
+    if (!fileName) {
+      console.error('Invalid fund brief URL:', fundData.fund_brief_url);
+      return new Response(
+        JSON.stringify({ 
+          error: "Invalid fund brief file" 
+        }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Download the fund brief PDF from storage
+    const { data: fileData, error: downloadError } = await supabase.storage
+      .from('fund-briefs')
+      .download(fileName);
+
+    if (downloadError || !fileData) {
+      console.error('Error downloading fund brief:', downloadError);
+      return new Response(
+        JSON.stringify({ 
+          error: "Failed to retrieve fund brief file" 
+        }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Convert blob to base64
+    const arrayBuffer = await fileData.arrayBuffer();
+    const base64Data = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
 
     // Set up SMTP client
     const client = new SMTPClient({
@@ -49,27 +113,15 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
 
-    // Create fund brief email content with PDF attachments
+    // Create fund brief email content
     const textContent = `
 Fund Brief: ${fundName}
 
 Dear Investor,
 
-Please find attached the comprehensive fund brief for ${fundName}. This document contains:
+Please find attached the official fund brief for ${fundName}. This document contains comprehensive information about the fund including investment strategy, terms, performance data, and all regulatory disclosures.
 
-- Fund overview and investment strategy
-- Performance data and historical returns
-- Key terms and conditions
-- Risk assessment and regulatory information
-- Manager information and team details
-
-Key highlights for ${fundName}:
-• Investment Focus: Diversified portfolio with growth potential
-• Target Returns: Based on historical performance trends
-• Minimum Investment: Please refer to the attached documentation
-• Investment Period: Detailed in the fund brief
-
-If you have any questions about this fund or would like to schedule a consultation, please contact our team.
+If you have any questions about this fund or would like to schedule a consultation with our investment team, please don't hesitate to contact us.
 
 View Online: https://funds.movingto.com/fund/${fundId}
 
@@ -92,27 +144,12 @@ Investment Funds Platform Team
 <div style="background: #f8fafc; padding: 30px; border-radius: 0 0 8px 8px;">
 <h2 style="color: #1e293b; margin-top: 0;">Dear Investor,</h2>
 <div style="background: white; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #3b82f6;">
-<p style="margin: 0;"><strong>Please find attached the comprehensive fund brief for ${fundName}.</strong></p>
-<p style="margin: 10px 0 0 0;">This document contains all the essential information you need to make an informed investment decision.</p>
+<p style="margin: 0;"><strong>Please find attached the official fund brief for ${fundName}.</strong></p>
+<p style="margin: 10px 0 0 0;">This comprehensive document contains all the essential information you need to make an informed investment decision, including fund strategy, terms, performance data, and regulatory disclosures.</p>
 </div>
-<div style="background: white; padding: 20px; border-radius: 6px; margin: 20px 0;">
-<h3 style="margin-top: 0; color: #1e293b;">Document Contents:</h3>
-<ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
-<li>Fund overview and investment strategy</li>
-<li>Performance data and historical returns</li>
-<li>Key terms and conditions</li>
-<li>Risk assessment and regulatory information</li>
-<li>Manager information and team details</li>
-</ul>
-</div>
-<div style="background: white; padding: 20px; border-radius: 6px; margin: 20px 0;">
-<h3 style="margin-top: 0; color: #1e293b;">Key Highlights:</h3>
-<ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
-<li><strong>Investment Focus:</strong> Diversified portfolio with growth potential</li>
-<li><strong>Target Returns:</strong> Based on historical performance trends</li>
-<li><strong>Minimum Investment:</strong> Please refer to the attached documentation</li>
-<li><strong>Investment Period:</strong> Detailed in the fund brief</li>
-</ul>
+<div style="background: white; padding: 20px; border-radius: 6px; margin: 20px 0; text-align: center;">
+<p style="margin: 0; color: #64748b; font-size: 14px;">📎 <strong>Fund Brief Document Attached</strong></p>
+<p style="margin: 5px 0 0 0; color: #64748b; font-size: 12px;">Official PDF document with complete fund information</p>
 </div>
 <div style="text-align: center; margin: 30px 0;">
 <a href="https://funds.movingto.com/fund/${fundId}" style="background: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: 500;">View Fund Details</a>
@@ -124,139 +161,8 @@ Investment Funds Platform Team
 </body>
 </html>`;
 
-    // Create a proper PDF document using a simple PDF format
-    const createSimplePDF = (content: string): string => {
-      const lines = content.split('\n');
-      const pageHeight = 792; // Standard letter size height in points
-      const pageWidth = 612;  // Standard letter size width in points
-      const margin = 72;      // 1 inch margin
-      const lineHeight = 14;
-      
-      let pdfContent = `%PDF-1.4
-1 0 obj
-<< /Type /Catalog /Pages 2 0 R >>
-endobj
 
-2 0 obj
-<< /Type /Pages /Kids [3 0 R] /Count 1 >>
-endobj
-
-3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
-endobj
-
-4 0 obj
-<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
-endobj
-
-5 0 obj
-<< /Length 6 0 R >>
-stream
-BT
-/${margin} ${pageHeight - margin} Td
-/F1 12 Tf
-`;
-
-      let yPosition = pageHeight - margin;
-      
-      for (const line of lines) {
-        if (yPosition < margin + lineHeight) {
-          // Simple page break (for this basic implementation, we'll just continue)
-          break;
-        }
-        
-        const escapedLine = line.replace(/\(/g, '\\(').replace(/\)/g, '\\)').replace(/\\/g, '\\\\');
-        
-        if (line.includes('=====')) {
-          pdfContent += `/F1 14 Tf\n`;
-        } else if (line.includes('----')) {
-          pdfContent += `/F1 12 Tf\n`;
-        } else {
-          pdfContent += `/F1 10 Tf\n`;
-        }
-        
-        pdfContent += `(${escapedLine}) Tj\n`;
-        pdfContent += `0 -${lineHeight} Td\n`;
-        yPosition -= lineHeight;
-      }
-
-      pdfContent += `ET
-endstream
-endobj
-
-6 0 obj
-${pdfContent.split('stream')[1].split('endstream')[0].length}
-endobj
-
-xref
-0 7
-0000000000 65535 f
-0000000010 00000 n
-0000000053 00000 n
-0000000125 00000 n
-0000000279 00000 n
-0000000364 00000 n
-0000000466 00000 n
-
-trailer
-<< /Size 7 /Root 1 0 R >>
-startxref
-486
-%%EOF`;
-
-      return btoa(pdfContent);
-    };
-
-    // Create fund brief content
-    const fundBriefContent = `Fund Brief: ${fundName}
-
-INVESTMENT SUMMARY
-==================
-Fund Name: ${fundName}
-Investment Strategy: Growth-oriented portfolio management
-Target Return: 8-12% annually
-Minimum Investment: €50,000
-Investment Period: 3-5 years
-Risk Level: Medium to High
-
-PERFORMANCE DATA
-================
-Historical Performance (Last 3 Years):
-Year 1: +8.5%
-Year 2: +12.3%
-Year 3: +9.7%
-Average Annual Return: 10.2%
-
-KEY TERMS
-=========
-Management Fee: 2% annually
-Performance Fee: 20% above 8% threshold
-Redemption Terms: Quarterly with 30-day notice
-Liquidity: Semi-annual redemption windows
-
-RISK FACTORS
-============
-- Market volatility may affect returns
-- Currency exposure in international investments
-- Liquidity constraints during market stress
-- Regulatory changes may impact strategy
-
-FUND MANAGER
-============
-Management Company: ${fundName} Management Ltd.
-Years of Experience: 15+ years
-Assets Under Management: €500M+
-Investment Philosophy: Value-driven growth investing
-
-For more information or to schedule a consultation, 
-contact us at info@movingto.com
-
-This document is for informational purposes only and does not constitute investment advice.
-Past performance does not guarantee future results.`;
-
-    const base64Pdf = createSimplePDF(fundBriefContent);
-
-    // Send the fund brief with PDF attachment
+    // Send the fund brief with the actual uploaded PDF attachment
     await client.send({
       from: `Investment Funds Platform <${gmailEmail}>`,
       to: userEmail,
@@ -266,7 +172,7 @@ Past performance does not guarantee future results.`;
       attachments: [
         {
           filename: `${fundName.replace(/[^a-zA-Z0-9]/g, '_')}_Fund_Brief.pdf`,
-          content: base64Pdf,
+          content: base64Data,
           encoding: "base64",
           contentType: "application/pdf",
         },
