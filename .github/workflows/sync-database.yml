@@ -183,12 +183,12 @@ jobs:
           
           echo "Production table counts:"
           if [ -n "${PROD_IPV4}" ]; then export PGHOSTADDR="${PROD_IPV4}"; else unset PGHOSTADDR; fi
-          psql "${PROD_DB_URL_NORM}" -c "SELECT schemaname, tablename, n_tup_ins + n_tup_upd + n_tup_del as total_rows FROM pg_stat_user_tables WHERE schemaname = 'public' ORDER BY tablename;"
+          psql "${PROD_DB_URL_NORM}" -c "SELECT schemaname, relname as table_name, n_tup_ins + n_tup_upd + n_tup_del as total_rows FROM pg_stat_user_tables WHERE schemaname = 'public' ORDER BY relname;"
           
           echo ""
           echo "Development table counts:"
           if [ -n "${DEV_IPV4}" ]; then export PGHOSTADDR="${DEV_IPV4}"; else unset PGHOSTADDR; fi
-          psql "${DEV_DB_URL_NORM}" -c "SELECT schemaname, tablename, n_tup_ins + n_tup_upd + n_tup_del as total_rows FROM pg_stat_user_tables WHERE schemaname = 'public' ORDER BY tablename;"
+          psql "${DEV_DB_URL_NORM}" -c "SELECT schemaname, relname as table_name, n_tup_ins + n_tup_upd + n_tup_del as total_rows FROM pg_stat_user_tables WHERE schemaname = 'public' ORDER BY relname;"
 
       - name: Cleanup
         run: |
