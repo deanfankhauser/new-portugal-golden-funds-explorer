@@ -26,6 +26,11 @@ jobs:
         with:
           version: latest
 
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client dnsutils
+
       - name: Verify environment variables
         run: |
           if [ -z "${PROD_DB_URL}" ]; then
@@ -94,11 +99,9 @@ jobs:
         run: |
           echo "Starting production database dump..."
           cd /tmp/db-sync
-          supabase db dump \
-            --db-url "${PROD_DB_URL_NORM}" \
-            --data-only=false \
-            --use-copy=false \
-            > production_dump.sql
+          echo "Using pg_dump (IPv4-friendly)..."
+          export PGCONNECT_TIMEOUT=15
+          pg_dump --no-owner --no-privileges --format=plain --verbose --dbname="${PROD_DB_URL_NORM}" > production_dump.sql
           
           echo "Production dump completed"
           echo "Dump file size: $(du -h production_dump.sql | cut -f1)"
@@ -108,11 +111,8 @@ jobs:
           echo "Creating development backup before restore..."
           cd /tmp/db-sync
           BACKUP_FILE="dev_backup_$(date +%Y%m%d_%H%M%S).sql"
-          supabase db dump \
-            --db-url "${DEV_DB_URL_NORM}" \
-            --data-only=false \
-            --use-copy=false \
-            > "${BACKUP_FILE}"
+          export PGCONNECT_TIMEOUT=15
+          pg_dump --no-owner --no-privileges --format=plain --dbname="${DEV_DB_URL_NORM}" > "${BACKUP_FILE}"
           
           echo "Development backup completed: ${BACKUP_FILE}"
 
