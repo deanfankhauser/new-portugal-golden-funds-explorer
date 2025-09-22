@@ -332,17 +332,33 @@ useEffect(() => {
         </DialogHeader>
         
         <ScrollArea className="max-h-[60vh] pr-4">
-          <Tabs defaultValue="basic" className="w-full">
-            <TabsList className="grid w-full grid-cols-8">
-              <TabsTrigger value="basic">Basic</TabsTrigger>
-              <TabsTrigger value="structure">Structure</TabsTrigger>
-              <TabsTrigger value="performance">Performance</TabsTrigger>
-              <TabsTrigger value="team">Team</TabsTrigger>
-              <TabsTrigger value="documents">Documents</TabsTrigger>
-              <TabsTrigger value="brief">Brief</TabsTrigger>
-              <TabsTrigger value="faqs">FAQs</TabsTrigger>
-              <TabsTrigger value="regulatory">Regulatory</TabsTrigger>
-            </TabsList>
+        <Tabs defaultValue="basic" className="w-full">
+          <TabsList className="grid w-full grid-cols-8 h-auto p-1 bg-muted/50 rounded-lg">
+            <TabsTrigger value="basic" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              Basic Info
+            </TabsTrigger>
+            <TabsTrigger value="structure" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              Structure
+            </TabsTrigger>
+            <TabsTrigger value="performance" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              Performance
+            </TabsTrigger>
+            <TabsTrigger value="team" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              Team
+            </TabsTrigger>
+            <TabsTrigger value="documents" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              Documents
+            </TabsTrigger>
+            <TabsTrigger value="brief" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              Fund Brief
+            </TabsTrigger>
+            <TabsTrigger value="faqs" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              FAQs
+            </TabsTrigger>
+            <TabsTrigger value="regulatory" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              Regulatory
+            </TabsTrigger>
+          </TabsList>
 
             <TabsContent value="basic" className="space-y-6 mt-4">
               {/* Basic Information */}
