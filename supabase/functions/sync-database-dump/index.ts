@@ -12,16 +12,68 @@ interface SyncResult {
   timestamp: string
 }
 
+// Tables we care about syncing (public data + admin tables used by app)
+const TABLES: string[] = [
+  'account_deletion_requests',
+  'admin_activity_log',
+  'admin_users',
+  'fund_edit_history',
+  'fund_edit_suggestions',
+  'funds',
+  'investor_profiles',
+  'manager_profiles',
+  'saved_funds',
+  'security_audit_access_log',
+  'security_audit_log',
+]
+
+// Helper: chunk an array
+function chunk<T>(arr: T[], size: number): T[][] {
+  const out: T[][] = []
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size))
+  return out
+}
+
+// Try to load the dev schema using a safe RPC (defined in this project); fall back gracefully if unavailable
+async function loadDevSchema(dev: any): Promise<Record<string, Set<string>>> {
+  try {
+    const { data, error } = await dev.rpc('get_database_schema_info')
+    if (error || !Array.isArray(data)) return {}
+    const map: Record<string, Set<string>> = {}
+    for (const row of data as any[]) {
+      const t = String(row.table_name)
+      const c = String(row.column_name)
+      if (!map[t]) map[t] = new Set<string>()
+      map[t].add(c)
+    }
+    return map
+  } catch (_e) {
+    return {}
+  }
+}
+
+// Filter each row to allowed columns only (keeping id when present)
+function filterRows<T extends Record<string, any>>(rows: T[], allowed: Set<string>): T[] {
+  if (!rows.length) return rows
+  const out: T[] = []
+  for (const r of rows) {
+    const o: Record<string, any> = {}
+    for (const k of Object.keys(r)) {
+      if (allowed.has(k)) o[k] = r[k]
+    }
+    out.push(o as T)
+  }
+  return out
+}
+
 Deno.serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    console.log('Starting complete database sync (schema + data)...')
+    console.log('Starting safe data sync (no schema changes)...')
 
-    // Initialize Supabase clients
     const prodUrl = Deno.env.get('SUPABASE_URL')!
     const prodKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     const devUrl = Deno.env.get('FUNDS_DEV_SUPABASE_URL')!
@@ -30,73 +82,22 @@ Deno.serve(async (req) => {
     const prod = createClient(prodUrl, prodKey)
     const dev = createClient(devUrl, devKey)
 
-    console.log('Supabase clients initialized')
+    // Load dev schema to know which columns exist; skip schema creation entirely
+    const devSchema = await loadDevSchema(dev)
+    console.log(`Loaded dev schema for ${Object.keys(devSchema).length} tables (if 0, RPC unavailable)`)
 
-    // Step 1: Get complete schema from production
-    console.log('Fetching database schema from production...')
-    const { data: schemaData, error: schemaError } = await prod.rpc('get_database_schema_info')
-    if (schemaError) throw new Error(`Failed to get schema: ${schemaError.message}`)
-
-    // Group columns by table
-    const tableSchemas: Record<string, any[]> = {}
-    for (const row of schemaData) {
-      if (!tableSchemas[row.table_name]) {
-        tableSchemas[row.table_name] = []
-      }
-      tableSchemas[row.table_name].push(row)
-    }
-
-    console.log(`Found ${Object.keys(tableSchemas).length} tables in production`)
-
-    // Step 2: Drop and recreate tables in development
-    for (const tableName of Object.keys(tableSchemas)) {
-      console.log(`Recreating table: ${tableName}`)
-      
-      // Drop table if exists
-      const { error: dropError } = await dev.rpc('execute_sql', { 
-        query: `DROP TABLE IF EXISTS public.${tableName} CASCADE;` 
-      })
-      if (dropError) console.warn(`Warning dropping table ${tableName}: ${dropError.message}`)
-
-      // Build CREATE TABLE statement
-      const columns = tableSchemas[tableName]
-      const columnDefs = columns.map((col: any) => {
-        let colDef = `${col.column_name} ${col.data_type}`
-        if (col.is_nullable === 'NO') colDef += ' NOT NULL'
-        if (col.column_default) colDef += ` DEFAULT ${col.column_default}`
-        return colDef
-      }).join(',\n  ')
-
-      const createTableSQL = `
-        CREATE TABLE IF NOT EXISTS public.${tableName} (
-          ${columnDefs}
-        );
-      `
-
-      // Create table
-      const { error: createError } = await dev.rpc('execute_sql', { query: createTableSQL })
-      if (createError) {
-        console.error(`Failed to create table ${tableName}: ${createError.message}`)
-        continue
-      }
-      
-      console.log(`Table ${tableName} recreated successfully`)
-    }
-
-    // Step 3: Copy all data
     const results: Record<string, number> = {}
     const errors: string[] = []
 
-    const tablesToSync = Object.keys(tableSchemas)
-    
-    for (const table of tablesToSync) {
+    // Sync each table via UPSERT (no deletion) to avoid duplicate key errors
+    for (const table of TABLES) {
       try {
-        console.log(`Syncing data for table: ${table}`)
+        console.log(`Syncing table: ${table}`)
 
-        // Fetch all data from production
+        // 1) Read production data
         const { data: prodData, error: fetchError } = await prod.from(table).select('*')
         if (fetchError) {
-          errors.push(`Failed to fetch from ${table}: ${fetchError.message}`)
+          errors.push(`Fetch ${table}: ${fetchError.message}`)
           continue
         }
 
@@ -105,77 +106,70 @@ Deno.serve(async (req) => {
           continue
         }
 
-        // Clear development table
-        const { error: deleteError } = await dev.from(table).delete().neq('id', '')
-        if (deleteError) console.warn(`Warning clearing ${table}: ${deleteError.message}`)
+        // 2) Compute allowed columns based on dev schema if available; otherwise use keys from first row
+        const allowed = devSchema[table] ?? new Set(Object.keys(prodData[0]))
+        const filtered = filterRows(prodData as any[], allowed)
 
-        // Insert data in batches
+        // Ensure primary key column is included if present in dev
+        const onConflict = allowed.has('id') ? 'id' : undefined
+
+        // 3) Upsert in batches to avoid duplicates and avoid delete() that caused UUID comparison errors
         const batchSize = 100
-        let totalInserted = 0
-        
-        for (let i = 0; i < prodData.length; i += batchSize) {
-          const batch = prodData.slice(i, i + batchSize)
-          const { error: insertError } = await dev.from(table).insert(batch)
-          
-          if (insertError) {
-            errors.push(`Failed to insert batch in ${table}: ${insertError.message}`)
-            continue
+        let total = 0
+        for (const batch of chunk(filtered, batchSize)) {
+          if (batch.length === 0) continue
+          const query = onConflict
+            ? dev.from(table).upsert(batch, { onConflict })
+            : dev.from(table).upsert(batch)
+          const { error: upsertError } = await query
+          if (upsertError) {
+            // If table is missing in dev, skip with clear error; if columns mismatch, report nicely
+            errors.push(`Upsert ${table}: ${upsertError.message}`)
+            // No retry loop here to keep things predictable and fast
+            total = results[table] ?? total
+            break
           }
-          
-          totalInserted += batch.length
+          total += batch.length
         }
-
-        results[table] = totalInserted
-        console.log(`Synced ${totalInserted} records for ${table}`)
-
-      } catch (error: any) {
-        errors.push(`Error syncing ${table}: ${error.message}`)
-        console.error(`Error syncing ${table}:`, error.message)
+        results[table] = total
+        console.log(`Synced ${total} records for ${table}`)
+      } catch (e: any) {
+        errors.push(`Error ${table}: ${e?.message ?? String(e)}`)
       }
     }
 
-    const totalRecords = Object.values(results).reduce((sum, count) => sum + count, 0)
-    
+    const totalRecords = Object.values(results).reduce((a, b) => a + (b || 0), 0)
+    const success = errors.length === 0
+
     const result: SyncResult = {
-      success: errors.length === 0,
-      message: errors.length === 0 
-        ? `Successfully synchronized complete database: ${totalRecords} records across ${Object.keys(results).length} tables`
+      success,
+      message: success
+        ? `Successfully synchronized data: ${totalRecords} records across ${Object.keys(results).length} tables`
         : `Partial sync completed with ${errors.length} errors: ${totalRecords} records across ${Object.keys(results).length} tables`,
       details: {
-        method: 'schema-recreation + data-copy',
+        method: 'data-only upsert (no schema changes)',
         results,
         errors,
         tablesProcessed: Object.keys(results).length,
-        totalRecords
+        totalRecords,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }
 
-    console.log('Database sync completed')
-
-    return new Response(
-      JSON.stringify(result),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: errors.length === 0 ? 200 : 206
-      }
-    )
-
+    return new Response(JSON.stringify(result), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: success ? 200 : 206,
+    })
   } catch (error: any) {
-    console.error('Database sync failed:', error.message)
-
+    console.error('Database sync failed:', error?.message ?? error)
     const errorResult: SyncResult = {
       success: false,
-      message: `Database sync failed: ${error.message}`,
-      timestamp: new Date().toISOString()
+      message: `Database sync failed: ${error?.message ?? String(error)}`,
+      timestamp: new Date().toISOString(),
     }
-
-    return new Response(
-      JSON.stringify(errorResult),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
-      }
-    )
+    return new Response(JSON.stringify(errorResult), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500,
+    })
   }
 })
