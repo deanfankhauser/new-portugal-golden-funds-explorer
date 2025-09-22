@@ -14,8 +14,8 @@ jobs:
     if: ${{ github.event.inputs.confirm == 'CONFIRM' }}
     
     env:
-      PROD_DB_URL: ${{ secrets.PRODUCTION_DB_URL }}
-      DEV_DB_URL: ${{ secrets.DEV_DB_URL }}
+      PROD_DB_URL: ${{ secrets.PROD_SUPABASE_DB_URL }}
+      DEV_DB_URL: ${{ secrets.DEVELOP_SUPABASE_DB_URL }}
     
     steps:
       - name: Checkout code
@@ -29,11 +29,11 @@ jobs:
       - name: Verify environment variables
         run: |
           if [ -z "${PROD_DB_URL}" ]; then
-            echo "ERROR: PRODUCTION_DB_URL secret is not set"
+            echo "ERROR: PROD_SUPABASE_DB_URL secret is not set"
             exit 1
           fi
           if [ -z "${DEV_DB_URL}" ]; then
-            echo "ERROR: DEV_DB_URL secret is not set"
+            echo "ERROR: DEVELOP_SUPABASE_DB_URL secret is not set"
             exit 1
           fi
           echo "SUCCESS: Required secrets are configured"
