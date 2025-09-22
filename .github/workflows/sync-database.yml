@@ -38,6 +38,32 @@ jobs:
           fi
           echo "SUCCESS: Required secrets are configured"
 
+      - name: Validate and normalize DB URLs
+        run: |
+          normalize() {
+            local url="$1"
+            if [[ "$url" != postgresql://* && "$url" != postgres://* ]]; then
+              echo "ERROR: Connection string must start with postgresql:// or postgres://" >&2
+              echo "Got: (hidden)" >&2
+              exit 1
+            fi
+            # Ensure sslmode=require is present
+            if [[ "$url" != *sslmode=* ]]; then
+              if [[ "$url" == *\?* ]]; then
+                echo "${url}&sslmode=require"
+              else
+                echo "${url}?sslmode=require"
+              fi
+            else
+              echo "$url"
+            fi
+          }
+          PROD_DB_URL_NORM=$(normalize "${PROD_DB_URL}")
+          DEV_DB_URL_NORM=$(normalize "${DEV_DB_URL}")
+          echo "Normalized DB URLs (hidden)."
+          echo "PROD_DB_URL_NORM=${PROD_DB_URL_NORM}" >> $GITHUB_ENV
+          echo "DEV_DB_URL_NORM=${DEV_DB_URL_NORM}" >> $GITHUB_ENV
+
       - name: Create isolated temp directory
         run: |
           mkdir -p /tmp/db-sync
@@ -48,7 +74,7 @@ jobs:
           echo "Starting production database dump..."
           cd /tmp/db-sync
           supabase db dump \
-            --db-url "${PROD_DB_URL}" \
+            --db-url "${PROD_DB_URL_NORM}" \
             --data-only=false \
             --use-copy=false \
             > production_dump.sql
@@ -62,7 +88,7 @@ jobs:
           cd /tmp/db-sync
           BACKUP_FILE="dev_backup_$(date +%Y%m%d_%H%M%S).sql"
           supabase db dump \
-            --db-url "${DEV_DB_URL}" \
+            --db-url "${DEV_DB_URL_NORM}" \
             --data-only=false \
             --use-copy=false \
             > "${BACKUP_FILE}"
@@ -75,7 +101,7 @@ jobs:
           cd /tmp/db-sync
           
           echo "Restoring production dump..."
-          psql "${DEV_DB_URL}" < production_dump.sql
+          psql "${DEV_DB_URL_NORM}" < production_dump.sql
           
           echo "Database sync completed successfully!"
 
@@ -84,11 +110,11 @@ jobs:
           echo "Verifying sync by checking table counts..."
           
           echo "Production table counts:"
-          psql "${PROD_DB_URL}" -c "SELECT schemaname, tablename, n_tup_ins + n_tup_upd + n_tup_del as total_rows FROM pg_stat_user_tables WHERE schemaname = 'public' ORDER BY tablename;"
+          psql "${PROD_DB_URL_NORM}" -c "SELECT schemaname, tablename, n_tup_ins + n_tup_upd + n_tup_del as total_rows FROM pg_stat_user_tables WHERE schemaname = 'public' ORDER BY tablename;"
           
           echo ""
           echo "Development table counts:"
-          psql "${DEV_DB_URL}" -c "SELECT schemaname, tablename, n_tup_ins + n_tup_upd + n_tup_del as total_rows FROM pg_stat_user_tables WHERE schemaname = 'public' ORDER BY tablename;"
+          psql "${DEV_DB_URL_NORM}" -c "SELECT schemaname, tablename, n_tup_ins + n_tup_upd + n_tup_del as total_rows FROM pg_stat_user_tables WHERE schemaname = 'public' ORDER BY tablename;"
 
       - name: Cleanup
         run: |
