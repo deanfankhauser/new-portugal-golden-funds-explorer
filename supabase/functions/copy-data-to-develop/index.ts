@@ -9,6 +9,42 @@ interface DatabaseRecord {
   [key: string]: any;
 }
 
+// Helper function to check if table exists
+async function tableExists(client: any, tableName: string): Promise<boolean> {
+  try {
+    const { error } = await client.from(tableName).select('*').limit(1);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+// Helper function to get table columns
+async function getTableColumns(client: any, tableName: string): Promise<string[]> {
+  try {
+    const { data, error } = await client.from(tableName).select('*').limit(1);
+    if (error || !data || data.length === 0) {
+      return [];
+    }
+    return Object.keys(data[0]);
+  } catch {
+    return [];
+  }
+}
+
+// Helper function to filter data based on available columns
+function filterDataByColumns(data: any[], availableColumns: string[]): any[] {
+  return data.map(row => {
+    const filteredRow: any = {};
+    availableColumns.forEach(column => {
+      if (column in row) {
+        filteredRow[column] = row[column];
+      }
+    });
+    return filteredRow;
+  });
+}
+
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -41,193 +77,106 @@ Deno.serve(async (req) => {
       errors: [] as string[]
     };
 
-    // Copy funds data
-    try {
-      console.log('Copying funds data...');
-      const { data: fundsData, error: fundsError } = await prodSupabase
-        .from('funds')
-        .select('*');
+    const tablesToCopy = [
+      'funds',
+      'manager_profiles', 
+      'investor_profiles',
+      'admin_users',
+      'fund_edit_suggestions',
+      'fund_edit_history',
+      'saved_funds'
+    ];
 
-      if (fundsError) throw fundsError;
+    for (const tableName of tablesToCopy) {
+      try {
+        console.log(`Processing table: ${tableName}`);
 
-      if (fundsData && fundsData.length > 0) {
-        // Clear existing funds in development
-        await devSupabase.from('funds').delete().neq('id', '');
-        
-        // Insert new funds data
-        const { error: insertError } = await devSupabase
-          .from('funds')
-          .insert(fundsData);
+        // Check if destination table exists
+        const destTableExists = await tableExists(devSupabase, tableName);
+        if (!destTableExists) {
+          console.log(`Table ${tableName} does not exist in development database, skipping...`);
+          results.errors.push(`Table '${tableName}' does not exist in development database`);
+          continue;
+        }
 
-        if (insertError) throw insertError;
-        results.funds = fundsData.length;
-        console.log(`Copied ${fundsData.length} funds`);
+        // Fetch data from production
+        const { data: sourceData, error: fetchError } = await prodSupabase
+          .from(tableName)
+          .select('*');
+
+        if (fetchError) {
+          throw new Error(`Failed to fetch ${tableName}: ${fetchError.message}`);
+        }
+
+        if (!sourceData || sourceData.length === 0) {
+          console.log(`No data found in ${tableName}`);
+          continue;
+        }
+
+        console.log(`Found ${sourceData.length} records in ${tableName}`);
+
+        // Get available columns in development table
+        const devColumns = await getTableColumns(devSupabase, tableName);
+        if (devColumns.length === 0) {
+          console.log(`Could not determine columns for ${tableName}, skipping...`);
+          results.errors.push(`Could not determine schema for '${tableName}'`);
+          continue;
+        }
+
+        // Filter data to only include columns that exist in development
+        const filteredData = filterDataByColumns(sourceData, devColumns);
+
+        // Clear existing data first (using truncate-like approach)
+        const { error: deleteError } = await devSupabase
+          .from(tableName)
+          .delete()
+          .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all records
+
+        if (deleteError) {
+          console.log(`Warning: Could not clear existing data from ${tableName}: ${deleteError.message}`);
+        }
+
+        // Insert data in batches to handle large datasets
+        const batchSize = 100;
+        let inserted = 0;
+
+        for (let i = 0; i < filteredData.length; i += batchSize) {
+          const batch = filteredData.slice(i, i + batchSize);
+          
+          const { error: insertError } = await devSupabase
+            .from(tableName)
+            .upsert(batch, { 
+              onConflict: 'id',
+              ignoreDuplicates: false 
+            });
+
+          if (insertError) {
+            console.error(`Error inserting batch for ${tableName}:`, insertError);
+            // Try individual inserts for this batch
+            for (const record of batch) {
+              const { error: singleInsertError } = await devSupabase
+                .from(tableName)
+                .upsert(record, { 
+                  onConflict: 'id',
+                  ignoreDuplicates: true 
+                });
+              
+              if (!singleInsertError) {
+                inserted++;
+              }
+            }
+          } else {
+            inserted += batch.length;
+          }
+        }
+
+        results[tableName] = inserted;
+        console.log(`Successfully copied ${inserted} records for ${tableName}`);
+
+      } catch (error) {
+        console.error(`Error copying ${tableName}:`, error);
+        results.errors.push(`${tableName}: ${error.message}`);
       }
-    } catch (error) {
-      console.error('Error copying funds:', error);
-      results.errors.push(`Funds: ${error.message}`);
-    }
-
-    // Copy manager profiles
-    try {
-      console.log('Copying manager profiles...');
-      const { data: managersData, error: managersError } = await prodSupabase
-        .from('manager_profiles')
-        .select('*');
-
-      if (managersError) throw managersError;
-
-      if (managersData && managersData.length > 0) {
-        // Clear existing manager profiles in development
-        await devSupabase.from('manager_profiles').delete().neq('id', '');
-        
-        // Insert new manager profiles data
-        const { error: insertError } = await devSupabase
-          .from('manager_profiles')
-          .insert(managersData);
-
-        if (insertError) throw insertError;
-        results.manager_profiles = managersData.length;
-        console.log(`Copied ${managersData.length} manager profiles`);
-      }
-    } catch (error) {
-      console.error('Error copying manager profiles:', error);
-      results.errors.push(`Manager profiles: ${error.message}`);
-    }
-
-    // Copy investor profiles
-    try {
-      console.log('Copying investor profiles...');
-      const { data: investorsData, error: investorsError } = await prodSupabase
-        .from('investor_profiles')
-        .select('*');
-
-      if (investorsError) throw investorsError;
-
-      if (investorsData && investorsData.length > 0) {
-        // Clear existing investor profiles in development
-        await devSupabase.from('investor_profiles').delete().neq('id', '');
-        
-        // Insert new investor profiles data
-        const { error: insertError } = await devSupabase
-          .from('investor_profiles')
-          .insert(investorsData);
-
-        if (insertError) throw insertError;
-        results.investor_profiles = investorsData.length;
-        console.log(`Copied ${investorsData.length} investor profiles`);
-      }
-    } catch (error) {
-      console.error('Error copying investor profiles:', error);
-      results.errors.push(`Investor profiles: ${error.message}`);
-    }
-
-    // Copy admin users
-    try {
-      console.log('Copying admin users...');
-      const { data: adminData, error: adminError } = await prodSupabase
-        .from('admin_users')
-        .select('*');
-
-      if (adminError) throw adminError;
-
-      if (adminData && adminData.length > 0) {
-        // Clear existing admin users in development
-        await devSupabase.from('admin_users').delete().neq('id', '');
-        
-        // Insert new admin users data
-        const { error: insertError } = await devSupabase
-          .from('admin_users')
-          .insert(adminData);
-
-        if (insertError) throw insertError;
-        results.admin_users = adminData.length;
-        console.log(`Copied ${adminData.length} admin users`);
-      }
-    } catch (error) {
-      console.error('Error copying admin users:', error);
-      results.errors.push(`Admin users: ${error.message}`);
-    }
-
-    // Copy fund edit suggestions
-    try {
-      console.log('Copying fund edit suggestions...');
-      const { data: suggestionsData, error: suggestionsError } = await prodSupabase
-        .from('fund_edit_suggestions')
-        .select('*');
-
-      if (suggestionsError) throw suggestionsError;
-
-      if (suggestionsData && suggestionsData.length > 0) {
-        // Clear existing suggestions in development
-        await devSupabase.from('fund_edit_suggestions').delete().neq('id', '');
-        
-        // Insert new suggestions data
-        const { error: insertError } = await devSupabase
-          .from('fund_edit_suggestions')
-          .insert(suggestionsData);
-
-        if (insertError) throw insertError;
-        results.fund_edit_suggestions = suggestionsData.length;
-        console.log(`Copied ${suggestionsData.length} fund edit suggestions`);
-      }
-    } catch (error) {
-      console.error('Error copying fund edit suggestions:', error);
-      results.errors.push(`Fund edit suggestions: ${error.message}`);
-    }
-
-    // Copy fund edit history
-    try {
-      console.log('Copying fund edit history...');
-      const { data: historyData, error: historyError } = await prodSupabase
-        .from('fund_edit_history')
-        .select('*');
-
-      if (historyError) throw historyError;
-
-      if (historyData && historyData.length > 0) {
-        // Clear existing history in development
-        await devSupabase.from('fund_edit_history').delete().neq('id', '');
-        
-        // Insert new history data
-        const { error: insertError } = await devSupabase
-          .from('fund_edit_history')
-          .insert(historyData);
-
-        if (insertError) throw insertError;
-        results.fund_edit_history = historyData.length;
-        console.log(`Copied ${historyData.length} fund edit history records`);
-      }
-    } catch (error) {
-      console.error('Error copying fund edit history:', error);
-      results.errors.push(`Fund edit history: ${error.message}`);
-    }
-
-    // Copy saved funds
-    try {
-      console.log('Copying saved funds...');
-      const { data: savedData, error: savedError } = await prodSupabase
-        .from('saved_funds')
-        .select('*');
-
-      if (savedError) throw savedError;
-
-      if (savedData && savedData.length > 0) {
-        // Clear existing saved funds in development
-        await devSupabase.from('saved_funds').delete().neq('id', '');
-        
-        // Insert new saved funds data
-        const { error: insertError } = await devSupabase
-          .from('saved_funds')
-          .insert(savedData);
-
-        if (insertError) throw insertError;
-        results.saved_funds = savedData.length;
-        console.log(`Copied ${savedData.length} saved funds`);
-      }
-    } catch (error) {
-      console.error('Error copying saved funds:', error);
-      results.errors.push(`Saved funds: ${error.message}`);
     }
 
     const totalRecords = results.funds + results.manager_profiles + results.investor_profiles + 
