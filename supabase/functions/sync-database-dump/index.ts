@@ -1,3 +1,5 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -17,100 +19,145 @@ Deno.serve(async (req) => {
   }
 
   try {
-    console.log('Starting database sync with pg_dump/pg_restore...')
+    console.log('Starting complete database sync (schema + data)...')
 
-    // Get database connection strings from environment
-    const prodDbUrl = Deno.env.get('SUPABASE_DB_URL')
-    const devDbUrl = Deno.env.get('FUNDS_DEV_SUPABASE_DB_URL')
+    // Initialize Supabase clients
+    const prodUrl = Deno.env.get('SUPABASE_URL')!
+    const prodKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    const devUrl = Deno.env.get('FUNDS_DEV_SUPABASE_URL')!
+    const devKey = Deno.env.get('FUNDS_DEV_SUPABASE_SERVICE_ROLE_KEY')!
 
-    if (!prodDbUrl || !devDbUrl) {
-      throw new Error('Database connection URLs not configured')
+    const prod = createClient(prodUrl, prodKey)
+    const dev = createClient(devUrl, devKey)
+
+    console.log('Supabase clients initialized')
+
+    // Step 1: Get complete schema from production
+    console.log('Fetching database schema from production...')
+    const { data: schemaData, error: schemaError } = await prod.rpc('get_database_schema_info')
+    if (schemaError) throw new Error(`Failed to get schema: ${schemaError.message}`)
+
+    // Group columns by table
+    const tableSchemas: Record<string, any[]> = {}
+    for (const row of schemaData) {
+      if (!tableSchemas[row.table_name]) {
+        tableSchemas[row.table_name] = []
+      }
+      tableSchemas[row.table_name].push(row)
     }
 
-    console.log('Database URLs found, proceeding with sync...')
+    console.log(`Found ${Object.keys(tableSchemas).length} tables in production`)
 
-    // Create temporary file for the dump
-    const tempDumpFile = `/tmp/database_dump_${Date.now()}.sql`
+    // Step 2: Drop and recreate tables in development
+    for (const tableName of Object.keys(tableSchemas)) {
+      console.log(`Recreating table: ${tableName}`)
+      
+      // Drop table if exists
+      const { error: dropError } = await dev.rpc('execute_sql', { 
+        query: `DROP TABLE IF EXISTS public.${tableName} CASCADE;` 
+      })
+      if (dropError) console.warn(`Warning dropping table ${tableName}: ${dropError.message}`)
 
-    // Step 1: Create database dump from production
-    console.log('Creating database dump from production...')
-    const dumpCommand = new Deno.Command('pg_dump', {
-      args: [
-        prodDbUrl,
-        '--clean',
-        '--if-exists',
-        '--no-owner',
-        '--no-privileges',
-        '--file', tempDumpFile,
-        '--schema', 'public',
-        '--exclude-table', 'auth.*',
-        '--exclude-table', 'storage.*',
-        '--exclude-table', 'realtime.*'
-      ],
-      stdout: 'piped',
-      stderr: 'piped'
-    })
+      // Build CREATE TABLE statement
+      const columns = tableSchemas[tableName]
+      const columnDefs = columns.map((col: any) => {
+        let colDef = `${col.column_name} ${col.data_type}`
+        if (col.is_nullable === 'NO') colDef += ' NOT NULL'
+        if (col.column_default) colDef += ` DEFAULT ${col.column_default}`
+        return colDef
+      }).join(',\n  ')
 
-    const dumpProcess = dumpCommand.spawn()
-    const dumpResult = await dumpProcess.output()
+      const createTableSQL = `
+        CREATE TABLE IF NOT EXISTS public.${tableName} (
+          ${columnDefs}
+        );
+      `
 
-    if (!dumpResult.success) {
-      const errorText = new TextDecoder().decode(dumpResult.stderr)
-      throw new Error(`pg_dump failed: ${errorText}`)
+      // Create table
+      const { error: createError } = await dev.rpc('execute_sql', { query: createTableSQL })
+      if (createError) {
+        console.error(`Failed to create table ${tableName}: ${createError.message}`)
+        continue
+      }
+      
+      console.log(`Table ${tableName} recreated successfully`)
     }
 
-    console.log('Database dump created successfully')
+    // Step 3: Copy all data
+    const results: Record<string, number> = {}
+    const errors: string[] = []
 
-    // Step 2: Restore dump to development database
-    console.log('Restoring dump to development database...')
-    const restoreCommand = new Deno.Command('psql', {
-      args: [
-        devDbUrl,
-        '--file', tempDumpFile,
-        '--single-transaction'
-      ],
-      stdout: 'piped',
-      stderr: 'piped'
-    })
+    const tablesToSync = Object.keys(tableSchemas)
+    
+    for (const table of tablesToSync) {
+      try {
+        console.log(`Syncing data for table: ${table}`)
 
-    const restoreProcess = restoreCommand.spawn()
-    const restoreResult = await restoreProcess.output()
+        // Fetch all data from production
+        const { data: prodData, error: fetchError } = await prod.from(table).select('*')
+        if (fetchError) {
+          errors.push(`Failed to fetch from ${table}: ${fetchError.message}`)
+          continue
+        }
 
-    if (!restoreResult.success) {
-      const errorText = new TextDecoder().decode(restoreResult.stderr)
-      console.warn(`psql warnings/errors: ${errorText}`)
-      // Don't throw here as psql often returns non-zero for warnings
+        if (!prodData || prodData.length === 0) {
+          results[table] = 0
+          continue
+        }
+
+        // Clear development table
+        const { error: deleteError } = await dev.from(table).delete().neq('id', '')
+        if (deleteError) console.warn(`Warning clearing ${table}: ${deleteError.message}`)
+
+        // Insert data in batches
+        const batchSize = 100
+        let totalInserted = 0
+        
+        for (let i = 0; i < prodData.length; i += batchSize) {
+          const batch = prodData.slice(i, i + batchSize)
+          const { error: insertError } = await dev.from(table).insert(batch)
+          
+          if (insertError) {
+            errors.push(`Failed to insert batch in ${table}: ${insertError.message}`)
+            continue
+          }
+          
+          totalInserted += batch.length
+        }
+
+        results[table] = totalInserted
+        console.log(`Synced ${totalInserted} records for ${table}`)
+
+      } catch (error: any) {
+        errors.push(`Error syncing ${table}: ${error.message}`)
+        console.error(`Error syncing ${table}:`, error.message)
+      }
     }
 
-    console.log('Database restore completed')
-
-    // Step 3: Clean up temporary file
-    try {
-      await Deno.remove(tempDumpFile)
-    } catch (e) {
-      console.warn(`Could not remove temp file: ${e.message}`)
-    }
-
-    // Step 4: Get final statistics
+    const totalRecords = Object.values(results).reduce((sum, count) => sum + count, 0)
+    
     const result: SyncResult = {
-      success: true,
-      message: 'Successfully synchronized production database to development using pg_dump/pg_restore',
+      success: errors.length === 0,
+      message: errors.length === 0 
+        ? `Successfully synchronized complete database: ${totalRecords} records across ${Object.keys(results).length} tables`
+        : `Partial sync completed with ${errors.length} errors: ${totalRecords} records across ${Object.keys(results).length} tables`,
       details: {
-        method: 'pg_dump/pg_restore',
-        timestamp: new Date().toISOString(),
-        prodDbUrl: prodDbUrl.split('@')[1], // Hide credentials
-        devDbUrl: devDbUrl.split('@')[1]    // Hide credentials
+        method: 'schema-recreation + data-copy',
+        results,
+        errors,
+        tablesProcessed: Object.keys(results).length,
+        totalRecords
       },
       timestamp: new Date().toISOString()
     }
 
-    console.log('Database sync completed successfully')
+    console.log('Database sync completed')
 
     return new Response(
       JSON.stringify(result),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
+        status: errors.length === 0 ? 200 : 206
       }
     )
 
