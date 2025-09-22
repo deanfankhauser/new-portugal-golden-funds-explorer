@@ -39,7 +39,11 @@ jobs:
           # Install PostgreSQL 17 client tools and utilities
           sudo apt-get install -y postgresql-client-17 dnsutils
           
-          # Verify versions
+          # Ensure PostgreSQL 17 binaries are used first
+          echo "/usr/lib/postgresql/17/bin" >> $GITHUB_PATH
+          export PATH="/usr/lib/postgresql/17/bin:$PATH"
+          
+          # Verify versions (should be 17.x)
           pg_dump --version
           psql --version
 
