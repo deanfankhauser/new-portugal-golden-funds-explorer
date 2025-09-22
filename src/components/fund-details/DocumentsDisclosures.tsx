@@ -7,6 +7,7 @@ import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
 import { useAuth } from '../../hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useFundBrief } from '@/hooks/useFundBrief';
 import type { Fund } from '../../data/types/funds';
 
 interface DocumentsDisclosuresProps {
@@ -23,6 +24,7 @@ interface DocumentItem {
 
 const DocumentsDisclosures: React.FC<DocumentsDisclosuresProps> = ({ fund }) => {
   const [isRequestingBrief, setIsRequestingBrief] = useState(false);
+  const { isRequestingBrief: globalIsRequestingBrief, requestFundBrief } = useFundBrief();
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
 
@@ -281,11 +283,11 @@ const DocumentsDisclosures: React.FC<DocumentsDisclosuresProps> = ({ fund }) => 
             </div>
             <Button 
               onClick={handleGetFundBrief}
-              disabled={isRequestingBrief}
+              disabled={globalIsRequestingBrief}
               className="ml-4 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Mail className="w-4 h-4 mr-1" />
-              {isRequestingBrief ? "Requesting..." : "Get Fund Brief"}
+              {globalIsRequestingBrief ? "Requesting..." : "Get Fund Brief"}
             </Button>
           </div>
         </div>
