@@ -48,10 +48,6 @@ jobs:
             --db-url "${PROD_DB_URL}" \
             --data-only=false \
             --use-copy=false \
-            --exclude-table-data 'auth.*' \
-            --exclude-table-data 'storage.*' \
-            --exclude-table-data 'realtime.*' \
-            --exclude-table-data 'vault.*' \
             > temp-sync/production_dump.sql
           
           echo "Production dump completed"
