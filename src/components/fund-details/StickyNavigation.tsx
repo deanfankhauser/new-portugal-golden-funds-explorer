@@ -5,7 +5,6 @@ import { useComparison } from '../../contexts/ComparisonContext';
 import { useAuth } from '../../hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useFundBrief } from '@/hooks/useFundBrief';
 import type { Fund } from '../../data/types/funds';
 
 interface StickyNavigationProps {
@@ -15,7 +14,6 @@ interface StickyNavigationProps {
 const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isRequestingBrief, setIsRequestingBrief] = useState(false);
-  const { isRequestingBrief: globalIsRequestingBrief, requestFundBrief } = useFundBrief();
   const { isInComparison, addToComparison, removeFromComparison } = useComparison();
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
@@ -40,7 +38,44 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
   };
 
   const handleGetFundBrief = async () => {
-    await requestFundBrief(fund.name, fund.id);
+    if (!isAuthenticated || !user?.email) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to request fund brief",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsRequestingBrief(true);
+
+    try {
+      const { error } = await supabase.functions.invoke('send-fund-brief', {
+        body: {
+          userEmail: user.email,
+          fundName: fund.name,
+          fundId: fund.id,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Fund Brief Requested",
+        description: `We'll send the ${fund.name} brief to ${user.email} within 24 hours.`,
+      });
+    } catch (error: any) {
+      console.error('Error requesting fund brief:', error);
+      toast({
+        title: "Error",
+        description: "Failed to request fund brief. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRequestingBrief(false);
+    }
   };
 
   const handleBookCall = async () => {
@@ -118,11 +153,11 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
                 variant="outline" 
                 size="sm"
                 onClick={handleGetFundBrief}
-                disabled={globalIsRequestingBrief}
+                disabled={isRequestingBrief}
                 className="disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Mail className="w-4 h-4 mr-1" />
-                {globalIsRequestingBrief ? "Requesting..." : "Get Fund Brief"}
+                {isRequestingBrief ? "Requesting..." : "Get Fund Brief"}
               </Button>
               
               <Button 
@@ -144,10 +179,10 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
             variant="outline" 
             className="flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={handleGetFundBrief}
-            disabled={globalIsRequestingBrief}
+            disabled={isRequestingBrief}
           >
             <Mail className="w-4 h-4 mr-1" />
-            {globalIsRequestingBrief ? "Requesting..." : "Get Brief"}
+            {isRequestingBrief ? "Requesting..." : "Get Brief"}
           </Button>
           
           <Button 

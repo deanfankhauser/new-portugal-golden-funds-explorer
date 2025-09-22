@@ -16,7 +16,6 @@ import { useAuth } from '../../hooks/useAuth';
 import { AuthRequiredModal } from '../fund-editing/AuthRequiredModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useFundBrief } from '@/hooks/useFundBrief';
 import FundLogo from './FundLogo';
 
 interface DecisionBandHeaderProps {
@@ -30,7 +29,6 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
   const { toast } = useToast();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isRequestingBrief, setIsRequestingBrief] = useState(false);
-  const { isRequestingBrief: globalIsRequestingBrief, requestFundBrief } = useFundBrief();
   const isCompared = isInComparison(fund.id);
   const isShortlisted = isInShortlist(fund.id);
 
@@ -324,10 +322,10 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                 <Button 
                   className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-primary"
                   onClick={handleGetFundBrief}
-                  disabled={globalIsRequestingBrief}
+                  disabled={isRequestingBrief}
                 >
                   <Mail className="mr-2 h-4 w-4" />
-                  {globalIsRequestingBrief ? "Requesting..." : "Get Fund Brief"}
+                  {isRequestingBrief ? "Requesting..." : "Get Fund Brief"}
                 </Button>
                 <Button 
                   variant="outline" 
