@@ -89,6 +89,20 @@ jobs:
           timeout 10 bash -c "</dev/tcp/${PROD_HOST}/5432" && echo "Production port 5432 reachable" || echo "Production port 5432 not reachable"
           timeout 10 bash -c "</dev/tcp/${DEV_HOST}/5432" && echo "Development port 5432 reachable" || echo "Development port 5432 not reachable"
 
+      - name: Resolve IPv4 addresses
+        run: |
+          echo "Resolving IPv4 addresses for DB hosts..."
+          PROD_HOST=$(echo "${PROD_DB_URL}" | sed -n 's/.*@\([^:]*\):.*/\1/p')
+          DEV_HOST=$(echo "${DEV_DB_URL}" | sed -n 's/.*@\([^:]*\):.*/\1/p')
+          PROD_IPV4=$(getent ahostsv4 "${PROD_HOST}" | awk 'NR==1{print $1}')
+          DEV_IPV4=$(getent ahostsv4 "${DEV_HOST}" | awk 'NR==1{print $1}')
+          if [ -z "${PROD_IPV4}" ]; then PROD_IPV4=$(dig +short A "${PROD_HOST}" | head -n1); fi
+          if [ -z "${DEV_IPV4}" ]; then DEV_IPV4=$(dig +short A "${DEV_HOST}" | head -n1); fi
+          echo "Resolved production IPv4: ${PROD_IPV4:-not found}"
+          echo "Resolved development IPv4: ${DEV_IPV4:-not found}"
+          echo "PROD_IPV4=${PROD_IPV4}" >> $GITHUB_ENV
+          echo "DEV_IPV4=${DEV_IPV4}" >> $GITHUB_ENV
+
       - name: Create isolated temp directory
         run: |
           mkdir -p /tmp/db-sync
@@ -100,6 +114,7 @@ jobs:
           cd /tmp/db-sync
           echo "Using pg_dump (IPv4-friendly)..."
           export PGCONNECT_TIMEOUT=15
+          if [ -n "${PROD_IPV4}" ]; then export PGHOSTADDR="${PROD_IPV4}"; fi
           pg_dump --no-owner --no-privileges --format=plain --verbose --dbname="${PROD_DB_URL_NORM}" > production_dump.sql
           
           echo "Production dump completed"
@@ -111,6 +126,7 @@ jobs:
           cd /tmp/db-sync
           BACKUP_FILE="dev_backup_$(date +%Y%m%d_%H%M%S).sql"
           export PGCONNECT_TIMEOUT=15
+          if [ -n "${DEV_IPV4}" ]; then export PGHOSTADDR="${DEV_IPV4}"; fi
           pg_dump --no-owner --no-privileges --format=plain --dbname="${DEV_DB_URL_NORM}" > "${BACKUP_FILE}"
           
           echo "Development backup completed: ${BACKUP_FILE}"
@@ -121,6 +137,7 @@ jobs:
           cd /tmp/db-sync
           
           echo "Restoring production dump..."
+          if [ -n "${DEV_IPV4}" ]; then export PGHOSTADDR="${DEV_IPV4}"; fi
           psql "${DEV_DB_URL_NORM}" < production_dump.sql
           
           echo "Database sync completed successfully!"
@@ -130,10 +147,12 @@ jobs:
           echo "Verifying sync by checking table counts..."
           
           echo "Production table counts:"
+          if [ -n "${PROD_IPV4}" ]; then export PGHOSTADDR="${PROD_IPV4}"; else unset PGHOSTADDR; fi
           psql "${PROD_DB_URL_NORM}" -c "SELECT schemaname, tablename, n_tup_ins + n_tup_upd + n_tup_del as total_rows FROM pg_stat_user_tables WHERE schemaname = 'public' ORDER BY tablename;"
           
           echo ""
           echo "Development table counts:"
+          if [ -n "${DEV_IPV4}" ]; then export PGHOSTADDR="${DEV_IPV4}"; else unset PGHOSTADDR; fi
           psql "${DEV_DB_URL_NORM}" -c "SELECT schemaname, tablename, n_tup_ins + n_tup_upd + n_tup_del as total_rows FROM pg_stat_user_tables WHERE schemaname = 'public' ORDER BY tablename;"
 
       - name: Cleanup
