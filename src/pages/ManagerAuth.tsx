@@ -137,27 +137,8 @@ const ManagerAuth = () => {
       return;
     }
 
-    // Check if email already exists by attempting a password reset
-    // This is a safe way to check email existence without exposing user data
-    try {
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(signupData.email, {
-        redirectTo: `${window.location.origin}/reset-password`
-      });
-      
-      // If no error, the email exists in the system
-      if (!resetError) {
-        setError('This email is already registered. Please try logging in instead.');
-        toast.error("Email Already Exists", {
-          description: "This email is already registered. Please try logging in instead."
-        });
-        setIsSubmitting(false);
-        return;
-      }
-    } catch (emailCheckError) {
-      // If there's an error checking, it might mean the email doesn't exist
-      // We'll proceed with signup and let it handle any actual conflicts
-      console.log('Email check completed, proceeding with signup');
-    }
+    // Skip email existence check - let Supabase handle it during signup
+    // resetPasswordForEmail always succeeds regardless of email existence for security
 
     const metadata = {
       is_manager: true,
