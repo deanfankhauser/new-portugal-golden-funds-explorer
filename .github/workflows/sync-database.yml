@@ -52,16 +52,15 @@ jobs:
               echo "Got: (hidden)" >&2
               exit 1
             fi
-            # Add IPv4 preference and ensure sslmode=require is present
-            local params="sslmode=require&options=-c%20default_transaction_isolation=read_committed"
+            # Ensure sslmode=require is present (avoid adding other options that can break URI parsing)
             if [[ "$url" == *\?* ]]; then
               if [[ "$url" != *sslmode=* ]]; then
-                echo "${url}&${params}"
+                echo "${url}&sslmode=require"
               else
-                echo "${url}&options=-c%20default_transaction_isolation=read_committed"
+                echo "$url"
               fi
             else
-              echo "${url}?${params}"
+              echo "${url}?sslmode=require"
             fi
           }
           PROD_DB_URL_NORM=$(normalize "${PROD_DB_URL}")
