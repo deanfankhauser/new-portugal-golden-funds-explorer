@@ -282,7 +282,7 @@ const DocumentsDisclosures: React.FC<DocumentsDisclosuresProps> = ({ fund }) => 
             <Button 
               onClick={handleGetFundBrief}
               disabled={isRequestingBrief}
-              className="ml-4 whitespace-nowrap"
+              className="ml-4 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Mail className="w-4 h-4 mr-1" />
               {isRequestingBrief ? "Requesting..." : "Get Fund Brief"}
