@@ -12,6 +12,10 @@ const corsHeaders = {
 };
 
 const handler = async (req: Request): Promise<Response> => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
   try {
     const hookSecret = Deno.env.get('SEND_EMAIL_HOOK_SECRET');
     const gmailEmail = Deno.env.get("GMAIL_EMAIL");
@@ -73,9 +77,9 @@ const handler = async (req: Request): Promise<Response> => {
     // Determine if this is a recovery email
     const isRecovery = email_action_type === 'recovery';
     
-    // Build the confirmation URL
+    // Build the confirmation URL using Supabase verify endpoint with correct token param
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || site_url;
-    const confirmationUrl = `${redirect_to}?token_hash=${token_hash}&type=${email_action_type}`;
+    const confirmationUrl = `${supabaseUrl}/auth/v1/verify?token_hash=${token_hash}&type=${email_action_type}&redirect_to=${encodeURIComponent(redirect_to)}`;
 
     // Render the React email template
     const html = await renderAsync(
