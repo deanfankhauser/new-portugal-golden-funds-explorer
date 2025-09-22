@@ -66,7 +66,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
     setIsRequestingBrief(true);
 
     try {
-      const { error } = await supabase.functions.invoke('send-fund-brief', {
+      const { data, error } = await supabase.functions.invoke('send-fund-brief', {
         body: {
           userEmail: user.email,
           fundName: fund.name,
@@ -84,9 +84,17 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
       });
     } catch (error: any) {
       console.error('Error requesting fund brief:', error);
+      
+      // Check if it's a specific error about no fund brief being available
+      const errorMessage = error?.message || '';
+      const isNoFundBriefError = errorMessage.includes('No fund brief available') || 
+                                errorMessage.includes('No fund brief URL found');
+      
       toast({
         title: "Error",
-        description: "Failed to request fund brief. Please try again.",
+        description: isNoFundBriefError 
+          ? "This fund doesn't have a brief document available yet." 
+          : "Failed to request fund brief. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -320,12 +328,16 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
               {/* Primary CTAs */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3">
                 <Button 
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
-                  onClick={handleGetFundBrief}
-                  disabled={isRequestingBrief}
+                  className={`font-semibold ${
+                    fund.fundBriefUrl 
+                      ? 'bg-primary hover:bg-primary/90 text-primary-foreground' 
+                      : 'bg-muted text-muted-foreground cursor-not-allowed opacity-50'
+                  }`}
+                  onClick={fund.fundBriefUrl ? handleGetFundBrief : undefined}
+                  disabled={isRequestingBrief || !fund.fundBriefUrl}
                 >
                   <Mail className="mr-2 h-4 w-4" />
-                  {isRequestingBrief ? "Requesting..." : "Get Fund Brief"}
+                  {isRequestingBrief ? "Requesting..." : fund.fundBriefUrl ? "Get Fund Brief" : "No Brief Available"}
                 </Button>
                 <Button 
                   variant="outline" 

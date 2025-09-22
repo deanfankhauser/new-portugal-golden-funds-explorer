@@ -50,7 +50,7 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
     setIsRequestingBrief(true);
 
     try {
-      const { error } = await supabase.functions.invoke('send-fund-brief', {
+      const { data, error } = await supabase.functions.invoke('send-fund-brief', {
         body: {
           userEmail: user.email,
           fundName: fund.name,
@@ -68,9 +68,17 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
       });
     } catch (error: any) {
       console.error('Error requesting fund brief:', error);
+      
+      // Check if it's a specific error about no fund brief being available
+      const errorMessage = error?.message || '';
+      const isNoFundBriefError = errorMessage.includes('No fund brief available') || 
+                                errorMessage.includes('No fund brief URL found');
+      
       toast({
         title: "Error",
-        description: "Failed to request fund brief. Please try again.",
+        description: isNoFundBriefError 
+          ? "This fund doesn't have a brief document available yet." 
+          : "Failed to request fund brief. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -152,11 +160,12 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={handleGetFundBrief}
-                disabled={isRequestingBrief}
+                onClick={fund.fundBriefUrl ? handleGetFundBrief : undefined}
+                disabled={isRequestingBrief || !fund.fundBriefUrl}
+                className={fund.fundBriefUrl ? '' : 'opacity-50 cursor-not-allowed'}
               >
                 <Mail className="w-4 h-4 mr-1" />
-                {isRequestingBrief ? "Requesting..." : "Get Fund Brief"}
+                {isRequestingBrief ? "Requesting..." : fund.fundBriefUrl ? "Get Fund Brief" : "No Brief Available"}
               </Button>
               
               <Button 
@@ -176,12 +185,12 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
         <div className="flex space-x-3">
           <Button 
             variant="outline" 
-            className="flex-1"
-            onClick={handleGetFundBrief}
-            disabled={isRequestingBrief}
+            className={`flex-1 ${fund.fundBriefUrl ? '' : 'opacity-50 cursor-not-allowed'}`}
+            onClick={fund.fundBriefUrl ? handleGetFundBrief : undefined}
+            disabled={isRequestingBrief || !fund.fundBriefUrl}
           >
             <Mail className="w-4 h-4 mr-1" />
-            {isRequestingBrief ? "Requesting..." : "Get Brief"}
+            {isRequestingBrief ? "Requesting..." : fund.fundBriefUrl ? "Get Brief" : "No Brief"}
           </Button>
           
           <Button 

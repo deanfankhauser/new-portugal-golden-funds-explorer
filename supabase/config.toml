@@ -37,3 +37,6 @@ verify_jwt = false
 
 [functions.sync-funds-to-develop]
 verify_jwt = false
+
+[functions.copy-data-to-develop]
+verify_jwt = false

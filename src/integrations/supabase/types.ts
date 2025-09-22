@@ -207,6 +207,7 @@ export type Database = {
           expected_return_max: number | null
           expected_return_min: number | null
           faqs: Json | null
+          fund_brief_url: string | null
           geographic_allocation: Json | null
           gv_eligible: boolean | null
           historical_performance: Json | null
@@ -249,6 +250,7 @@ export type Database = {
           expected_return_max?: number | null
           expected_return_min?: number | null
           faqs?: Json | null
+          fund_brief_url?: string | null
           geographic_allocation?: Json | null
           gv_eligible?: boolean | null
           historical_performance?: Json | null
@@ -291,6 +293,7 @@ export type Database = {
           expected_return_max?: number | null
           expected_return_min?: number | null
           faqs?: Json | null
+          fund_brief_url?: string | null
           geographic_allocation?: Json | null
           gv_eligible?: boolean | null
           historical_performance?: Json | null
