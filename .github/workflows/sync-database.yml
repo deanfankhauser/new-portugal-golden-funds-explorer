@@ -47,22 +47,43 @@ jobs:
               echo "Got: (hidden)" >&2
               exit 1
             fi
-            # Ensure sslmode=require is present
-            if [[ "$url" != *sslmode=* ]]; then
-              if [[ "$url" == *\?* ]]; then
-                echo "${url}&sslmode=require"
+            # Add IPv4 preference and ensure sslmode=require is present
+            local params="sslmode=require&options=-c%20default_transaction_isolation=read_committed"
+            if [[ "$url" == *\?* ]]; then
+              if [[ "$url" != *sslmode=* ]]; then
+                echo "${url}&${params}"
               else
-                echo "${url}?sslmode=require"
+                echo "${url}&options=-c%20default_transaction_isolation=read_committed"
               fi
             else
-              echo "$url"
+              echo "${url}?${params}"
             fi
           }
           PROD_DB_URL_NORM=$(normalize "${PROD_DB_URL}")
           DEV_DB_URL_NORM=$(normalize "${DEV_DB_URL}")
-          echo "Normalized DB URLs (hidden)."
+          echo "Normalized DB URLs configured."
           echo "PROD_DB_URL_NORM=${PROD_DB_URL_NORM}" >> $GITHUB_ENV
           echo "DEV_DB_URL_NORM=${DEV_DB_URL_NORM}" >> $GITHUB_ENV
+
+      - name: Test database connectivity
+        run: |
+          echo "Testing connectivity to Supabase databases..."
+          
+          # Extract host from URL for testing
+          PROD_HOST=$(echo "${PROD_DB_URL}" | sed -n 's/.*@\([^:]*\):.*/\1/p')
+          DEV_HOST=$(echo "${DEV_DB_URL}" | sed -n 's/.*@\([^:]*\):.*/\1/p')
+          
+          echo "Production host: ${PROD_HOST}"
+          echo "Development host: ${DEV_HOST}"
+          
+          # Test DNS resolution and connectivity
+          echo "Testing DNS resolution..."
+          nslookup "${PROD_HOST}" || echo "DNS resolution failed for production"
+          nslookup "${DEV_HOST}" || echo "DNS resolution failed for development"
+          
+          echo "Testing port connectivity..."
+          timeout 10 bash -c "</dev/tcp/${PROD_HOST}/5432" && echo "Production port 5432 reachable" || echo "Production port 5432 not reachable"
+          timeout 10 bash -c "</dev/tcp/${DEV_HOST}/5432" && echo "Development port 5432 reachable" || echo "Development port 5432 not reachable"
 
       - name: Create isolated temp directory
         run: |
