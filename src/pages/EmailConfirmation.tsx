@@ -130,6 +130,22 @@ export default function EmailConfirmation() {
           }
           return;
         }
+        // Fallback: handle OAuth/code flow if code param is present
+        const code = queryParams.get('code') || hashParams.get('code');
+        if (code) {
+          const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+          if (error) {
+            console.error('exchangeCodeForSession error:', error);
+            setStatus('error');
+            setMessage(error.message || 'Failed to verify the link. It may have expired.');
+          } else {
+            setStatus('success');
+            setMessage('Email confirmed successfully! Welcome to your account.');
+            toast.success('Email Confirmed', { description: 'Your email has been verified successfully!' });
+            setTimeout(() => navigate('/'), 2000);
+          }
+          return;
+        }
 
         setStatus('error');
         setMessage('Unknown confirmation type or missing parameters.');
