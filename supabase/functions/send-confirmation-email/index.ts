@@ -6,6 +6,11 @@ import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 import { ConfirmationEmail } from './_templates/confirmation-email.tsx';
 import { withSecurity, validateEmail } from '../_shared/security.ts';
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
 const handler = async (req: Request): Promise<Response> => {
   try {
     const hookSecret = Deno.env.get('SEND_EMAIL_HOOK_SECRET');
@@ -70,7 +75,7 @@ const handler = async (req: Request): Promise<Response> => {
     
     // Build the confirmation URL
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || site_url;
-    const confirmationUrl = `${supabaseUrl}/auth/v1/verify?token=${token_hash}&type=${email_action_type}&redirect_to=${encodeURIComponent(redirect_to)}`;
+    const confirmationUrl = `${redirect_to}?token_hash=${token_hash}&type=${email_action_type}`;
 
     // Render the React email template
     const html = await renderAsync(
