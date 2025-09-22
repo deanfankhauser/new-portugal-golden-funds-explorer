@@ -20,14 +20,16 @@ export default function EmailConfirmation() {
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const queryParams = searchParams;
         
-        // Try to get token_hash and type from query params (new format)
-        const tokenHash = queryParams.get('token_hash');
-        const token = hashParams.get('access_token') || 
-                     hashParams.get('token') || 
-                     tokenHash ||
-                     queryParams.get('token') ||
-                     queryParams.get('confirmation_token') ||
-                     queryParams.get('recovery_token');
+        // Try to get token/hash in all supported formats
+        const tokenHash =
+          queryParams.get('token_hash') ||
+          queryParams.get('token') ||
+          queryParams.get('confirmation_token') ||
+          queryParams.get('recovery_token');
+        const token =
+          hashParams.get('access_token') ||
+          hashParams.get('token') ||
+          tokenHash;
         const type = hashParams.get('type') || queryParams.get('type') || 'signup';
         
         console.log('Confirmation params:', { 
