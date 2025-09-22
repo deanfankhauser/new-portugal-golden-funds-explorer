@@ -20,12 +20,12 @@ export default function EmailConfirmation() {
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const queryParams = searchParams;
         
-        // Try to get token (token_hash) and type from either hash or query params
+        // Try to get token_hash and type from query params (new format)
+        const tokenHash = queryParams.get('token_hash');
         const token = hashParams.get('access_token') || 
                      hashParams.get('token') || 
-                     hashParams.get('token_hash') ||
+                     tokenHash ||
                      queryParams.get('token') ||
-                     queryParams.get('token_hash') ||
                      queryParams.get('confirmation_token') ||
                      queryParams.get('recovery_token');
         const type = hashParams.get('type') || queryParams.get('type') || 'signup';
@@ -105,10 +105,10 @@ export default function EmailConfirmation() {
           return;
         }
 
-        // Legacy flow: verify OTP token when provided
-        if (token && (type === 'signup' || type === 'recovery')) {
+        // Handle token_hash verification for new confirmation flow
+        if (tokenHash && (type === 'signup' || type === 'recovery')) {
           const { error } = await supabase.auth.verifyOtp({
-            token_hash: token,
+            token_hash: tokenHash,
             type: type as 'signup' | 'recovery',
           });
 
