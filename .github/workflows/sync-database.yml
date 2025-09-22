@@ -1,0 +1,120 @@
+name: Sync Production to Development Database
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "CONFIRM" to proceed with database sync (this will overwrite development data)'
+        required: true
+        default: ''
+
+jobs:
+  sync-database:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.confirm == 'CONFIRM' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Verify environment variables
+        run: |
+          if [ -z "${{ secrets.SUPABASE_DB_URL }}" ]; then
+            echo "❌ SUPABASE_DB_URL secret is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.FUNDS_DEV_SUPABASE_DB_URL }}" ]; then
+            echo "❌ FUNDS_DEV_SUPABASE_DB_URL secret is not set"
+            exit 1
+          fi
+          echo "✅ Required secrets are configured"
+
+      - name: Create temp directory
+        run: mkdir -p temp-sync
+
+      - name: Dump production database
+        run: |
+          echo "🚀 Starting production database dump..."
+          supabase db dump \
+            --db-url "${{ secrets.SUPABASE_DB_URL }}" \
+            --data-only=false \
+            --use-copy=false \
+            --exclude-table-data 'auth.*' \
+            --exclude-table-data 'storage.*' \
+            --exclude-table-data 'realtime.*' \
+            --exclude-table-data 'supabase_functions.*' \
+            --exclude-table-data 'vault.*' \
+            > temp-sync/production_dump.sql
+          
+          echo "✅ Production dump completed"
+          echo "📊 Dump file size: $(du -h temp-sync/production_dump.sql | cut -f1)"
+
+      - name: Backup development database
+        run: |
+          echo "💾 Creating development backup before restore..."
+          supabase db dump \
+            --db-url "${{ secrets.FUNDS_DEV_SUPABASE_DB_URL }}" \
+            --data-only=false \
+            --use-copy=false \
+            > temp-sync/dev_backup_$(date +%Y%m%d_%H%M%S).sql
+          
+          echo "✅ Development backup completed"
+
+      - name: Restore to development database
+        run: |
+          echo "🔄 Restoring production data to development..."
+          
+          # First, reset the development database schema
+          echo "🧹 Cleaning development database..."
+          supabase db reset --db-url "${{ secrets.FUNDS_DEV_SUPABASE_DB_URL }}" --linked=false
+          
+          # Restore the production dump
+          echo "📥 Restoring production dump..."
+          psql "${{ secrets.FUNDS_DEV_SUPABASE_DB_URL }}" < temp-sync/production_dump.sql
+          
+          echo "✅ Database sync completed successfully!"
+
+      - name: Verify sync
+        run: |
+          echo "🔍 Verifying sync by checking table counts..."
+          
+          # Get table counts from production
+          echo "Production table counts:"
+          psql "${{ secrets.SUPABASE_DB_URL }}" -c "
+            SELECT schemaname, tablename, n_tup_ins + n_tup_upd + n_tup_del as total_rows 
+            FROM pg_stat_user_tables 
+            WHERE schemaname = 'public' 
+            ORDER BY tablename;
+          "
+          
+          echo -e "\nDevelopment table counts:"
+          psql "${{ secrets.FUNDS_DEV_SUPABASE_DB_URL }}" -c "
+            SELECT schemaname, tablename, n_tup_ins + n_tup_upd + n_tup_del as total_rows 
+            FROM pg_stat_user_tables 
+            WHERE schemaname = 'public' 
+            ORDER BY tablename;
+          "
+
+      - name: Cleanup
+        run: |
+          echo "🧹 Cleaning up temporary files..."
+          rm -rf temp-sync
+          echo "✅ Cleanup completed"
+
+      - name: Summary
+        run: |
+          echo "🎉 Database sync completed successfully!"
+          echo ""
+          echo "📋 Summary:"
+          echo "  • Production database dumped"
+          echo "  • Development database backed up"
+          echo "  • Production data restored to development"
+          echo "  • Verification completed"
+          echo ""
+          echo "⚠️  Note: The development database now contains production data."
+          echo "   Make sure to update any environment-specific configurations."

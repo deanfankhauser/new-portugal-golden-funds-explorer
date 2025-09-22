@@ -43,6 +43,45 @@ async function loadDevSchemaColumns(dev: any): Promise<Record<string, string[]>>
   return columnsByTable
 }
 
+// Create missing tables in development
+async function createMissingTable(dev: any, prod: any, tableName: string): Promise<boolean> {
+  try {
+    // Get table structure from production using SQL query
+    const { data: tableInfo, error: tableError } = await prod.rpc('get_database_schema_info')
+    if (tableError || !tableInfo) return false
+    
+    const tableColumns = tableInfo.filter((row: any) => row.table_name === tableName)
+    if (tableColumns.length === 0) return false
+    
+    // Build CREATE TABLE statement
+    const columnDefs = tableColumns.map((col: any) => {
+      let colDef = `${col.column_name} ${col.data_type}`
+      if (col.is_nullable === 'NO') colDef += ' NOT NULL'
+      if (col.column_default) colDef += ` DEFAULT ${col.column_default}`
+      return colDef
+    }).join(',\n  ')
+    
+    const createTableSQL = `
+      CREATE TABLE IF NOT EXISTS public.${tableName} (
+        ${columnDefs}
+      );
+    `
+    
+    // Execute table creation
+    const { error: createError } = await dev.rpc('execute_sql', { query: createTableSQL })
+    if (createError) {
+      console.log(`Failed to create table ${tableName}: ${createError.message}`)
+      return false
+    }
+    
+    console.log(`Successfully created table ${tableName}`)
+    return true
+  } catch (e: any) {
+    console.log(`Error creating table ${tableName}: ${e.message}`)
+    return false
+  }
+}
+
 function filterToColumns(rows: AnyRow[], allowed: string[]): AnyRow[] {
   return rows.map((r) => {
     const out: AnyRow = {}
@@ -110,8 +149,24 @@ Deno.serve(async (req) => {
       try {
         // Ensure destination table exists (in schema map)
         if (!devSchema[table] || devSchema[table].length === 0) {
-          ;(results.errors as string[]).push(`Table '${table}' missing in development (schema not found)`) // Saved funds case, etc.
-          return
+          console.log(`Table '${table}' missing in development, attempting to create...`)
+          
+          // Try to create the missing table
+          const created = await createMissingTable(dev, prod, table)
+          if (created) {
+            // Reload schema to get the new table columns
+            const updatedSchema = await loadDevSchemaColumns(dev)
+            if (updatedSchema[table] && updatedSchema[table].length > 0) {
+              devSchema[table] = updatedSchema[table]
+              console.log(`Table '${table}' created successfully with ${devSchema[table].length} columns`)
+            } else {
+              ;(results.errors as string[]).push(`Table '${table}' created but schema not found`)
+              return
+            }
+          } else {
+            ;(results.errors as string[]).push(`Table '${table}' missing in development and could not be created`)
+            return
+          }
         }
 
         // Fetch from prod

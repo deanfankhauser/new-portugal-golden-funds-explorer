@@ -112,6 +112,51 @@ export type Database = {
         }
         Relationships: []
       }
+      fund_brief_submissions: {
+        Row: {
+          brief_filename: string
+          brief_url: string
+          created_at: string
+          fund_id: string
+          id: string
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          submitted_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          brief_filename: string
+          brief_url: string
+          created_at?: string
+          fund_id: string
+          id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          brief_filename?: string
+          brief_url?: string
+          created_at?: string
+          fund_id?: string
+          id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       fund_edit_history: {
         Row: {
           admin_user_id: string
