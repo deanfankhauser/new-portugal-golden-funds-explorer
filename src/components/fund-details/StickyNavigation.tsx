@@ -154,7 +154,6 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
                 size="sm"
                 onClick={handleGetFundBrief}
                 disabled={isRequestingBrief}
-                className="disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Mail className="w-4 h-4 mr-1" />
                 {isRequestingBrief ? "Requesting..." : "Get Fund Brief"}
@@ -177,7 +176,7 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
         <div className="flex space-x-3">
           <Button 
             variant="outline" 
-            className="flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1"
             onClick={handleGetFundBrief}
             disabled={isRequestingBrief}
           >

@@ -320,7 +320,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
               {/* Primary CTAs */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3">
                 <Button 
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-primary"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
                   onClick={handleGetFundBrief}
                   disabled={isRequestingBrief}
                 >
