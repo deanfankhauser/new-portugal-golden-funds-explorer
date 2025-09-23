@@ -16,149 +16,148 @@ export default function EmailConfirmation() {
   useEffect(() => {
     const handleEmailConfirmation = async () => {
       try {
-        // Supabase sends auth data in URL hash, not query params
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const queryParams = searchParams;
+        console.log('🔐 Email confirmation starting...');
+        console.log('🔐 Current URL:', window.location.href);
+        console.log('🔐 Hash:', window.location.hash);
+        console.log('🔐 Search:', window.location.search);
         
-        // Try to get token/hash in all supported formats
-        const tokenHash =
-          queryParams.get('token_hash') ||
-          queryParams.get('token') ||
-          queryParams.get('confirmation_token') ||
-          queryParams.get('recovery_token');
-        const token =
-          hashParams.get('access_token') ||
-          hashParams.get('token') ||
-          tokenHash;
-        const type = hashParams.get('type') || queryParams.get('type') || 'signup';
+        // Let Supabase automatically handle the auth callback
+        // This will process tokens from both URL fragments and query params
+        const { data, error } = await supabase.auth.getSession();
         
-        console.log('Confirmation params:', { 
-          hash: window.location.hash, 
-          search: window.location.search,
-          token: token ? 'present' : 'missing',
-          type 
+        console.log('🔐 Session after URL processing:', { 
+          hasSession: !!data.session, 
+          hasUser: !!data.session?.user,
+          error: error?.message 
         });
         
-        if (!token) {
-          setStatus('error');
-          setMessage('Invalid confirmation link. Missing authentication token.');
+        // Check if we have an authenticated session
+        if (data.session?.user) {
+          console.log('🔐 User authenticated successfully:', data.session.user.email);
+          
+          // Send welcome email for new confirmations (non-blocking)
+          try {
+            await supabase.functions.invoke('send-welcome-email', {
+              body: {
+                email: data.session.user.email,
+                loginUrl: `${window.location.origin}/`
+              }
+            });
+            console.log('🔐 Welcome email sent successfully');
+          } catch (welcomeError) {
+            console.log('🔐 Welcome email failed (non-critical):', welcomeError);
+          }
+
+          // Clean URL to remove sensitive tokens
+          try { 
+            window.history.replaceState({}, document.title, window.location.pathname); 
+          } catch (e) {
+            console.log('🔐 URL cleanup failed:', e);
+          }
+
+          setStatus('success');
+          setMessage('Email confirmed successfully! Welcome to your account.');
+          toast.success('Email Confirmed', { description: 'Your email has been verified successfully!' });
+          setTimeout(() => navigate('/'), 2000);
           return;
         }
 
-        // Handle different types and token formats from Supabase
-        const accessToken = hashParams.get('access_token');
-        const refreshToken = hashParams.get('refresh_token');
+        // If no session but we're on the confirmation page, check for explicit errors
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const queryParams = searchParams;
+        
         const errorCode = hashParams.get('error_code') || queryParams.get('error_code');
         const errorDescription = hashParams.get('error_description') || queryParams.get('error_description');
+        const error_description = hashParams.get('error') || queryParams.get('error');
 
-        // Explicit error returned in URL
-        if (errorCode) {
-          console.error('Confirmation error from URL:', errorCode, errorDescription);
+        if (errorCode || error_description) {
+          console.log('🔐 Error from URL:', { errorCode, errorDescription, error_description });
           setStatus('error');
           setMessage(
-            errorCode === 'otp_expired'
+            errorCode === 'otp_expired' || error_description?.includes('expired')
               ? 'This confirmation link has expired. Please request a new email.'
-              : errorDescription || 'Failed to confirm email. The link may be invalid or expired.'
+              : errorDescription || error_description || 'Failed to confirm email. The link may be invalid or expired.'
           );
           return;
         }
 
-        // New flow: access_token + refresh_token in hash → directly set session
+        // Check if we have token parameters (for processing)
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        const tokenHash = queryParams.get('token_hash') || queryParams.get('token');
+        const type = hashParams.get('type') || queryParams.get('type') || 'signup';
+
+        console.log('🔐 Available tokens:', {
+          hasAccessToken: !!accessToken,
+          hasRefreshToken: !!refreshToken,
+          hasTokenHash: !!tokenHash,
+          type
+        });
+
+        // If we have access/refresh tokens but no session, try to set session manually
         if (accessToken && refreshToken) {
-          const { error } = await supabase.auth.setSession({
+          console.log('🔐 Setting session manually with tokens...');
+          const { error: sessionError } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken,
           });
 
-          if (error) {
-            console.error('setSession error:', error);
+          if (sessionError) {
+            console.error('🔐 setSession error:', sessionError);
             setStatus('error');
-            setMessage(error.message || 'Failed to establish session from confirmation link.');
-          } else {
-            // Clean URL to remove sensitive tokens
-            try { window.history.replaceState({}, document.title, window.location.pathname); } catch {}
-
-            if (type === 'recovery') {
-              setStatus('success');
-              setMessage('Recovery link verified! You can now reset your password.');
-              setTimeout(() => navigate('/reset-password'), 1500);
-            } else {
-              // Send welcome email for new confirmations
-              try {
-                const { data: session } = await supabase.auth.getSession();
-                if (session?.session?.user?.email) {
-                  await supabase.functions.invoke('send-welcome-email', {
-                    body: {
-                      email: session.session.user.email,
-                      loginUrl: `${window.location.origin}/`
-                    }
-                  });
-                }
-              } catch (welcomeError) {
-                console.log('Welcome email failed (non-critical):', welcomeError);
-              }
-
-              setStatus('success');
-              setMessage('Email confirmed successfully! Welcome to your account.');
-              toast.success('Email Confirmed', { description: 'Your email has been verified successfully!' });
-              setTimeout(() => navigate('/'), 2000); // Redirect to home page
-            }
+            setMessage(sessionError.message || 'Failed to establish session from confirmation link.');
+            return;
           }
-          return;
-        }
 
-        // Handle token_hash verification for new confirmation flow
-        if (tokenHash && (type === 'signup' || type === 'recovery')) {
-          const { error } = await supabase.auth.verifyOtp({
-            token_hash: tokenHash,
-            type: type as 'signup' | 'recovery',
-          });
-
-          if (error) {
-            console.error('verifyOtp error:', error);
-            setStatus('error');
-            setMessage(error.message || 'Failed to verify the link. It may have expired.');
-          } else {
-            if (type === 'recovery') {
-              setStatus('success');
-              setMessage('Recovery link verified! You can now reset your password.');
-              setTimeout(() => navigate('/reset-password'), 1500);
-            } else {
-              setStatus('success');
-              setMessage('Email confirmed successfully! Welcome to your account.');
-              toast.success('Email Confirmed', { description: 'Your email has been verified successfully!' });
-              setTimeout(() => navigate('/'), 2000); // Redirect to home page
-            }
-          }
-          return;
-        }
-        // Fallback: handle OAuth/code flow if code param is present
-        const code = queryParams.get('code') || hashParams.get('code');
-        if (code) {
-          const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
-          if (error) {
-            console.error('exchangeCodeForSession error:', error);
-            setStatus('error');
-            setMessage(error.message || 'Failed to verify the link. It may have expired.');
-          } else {
+          // Recheck session after setting
+          const { data: newSession } = await supabase.auth.getSession();
+          if (newSession.session?.user) {
+            console.log('🔐 Session established successfully');
             setStatus('success');
             setMessage('Email confirmed successfully! Welcome to your account.');
             toast.success('Email Confirmed', { description: 'Your email has been verified successfully!' });
             setTimeout(() => navigate('/'), 2000);
+            return;
           }
+        }
+
+        // If we have a token hash, try OTP verification
+        if (tokenHash && type) {
+          console.log('🔐 Verifying OTP with token hash...');
+          const { error: otpError } = await supabase.auth.verifyOtp({
+            token_hash: tokenHash,
+            type: type as 'signup' | 'recovery',
+          });
+
+          if (otpError) {
+            console.error('🔐 verifyOtp error:', otpError);
+            setStatus('error');
+            setMessage(otpError.message || 'Failed to verify the link. It may have expired.');
+            return;
+          }
+
+          setStatus('success');
+          setMessage('Email confirmed successfully! Welcome to your account.');
+          toast.success('Email Confirmed', { description: 'Your email has been verified successfully!' });
+          setTimeout(() => navigate('/'), 2000);
           return;
         }
 
+        // If we reach here, we likely don't have the required tokens
+        console.log('🔐 No valid tokens found for confirmation');
         setStatus('error');
-        setMessage('Unknown confirmation type or missing parameters.');
+        setMessage('Invalid confirmation link. Missing authentication token.');
+        
       } catch (error) {
-        console.error('Confirmation error:', error);
+        console.error('🔐 Confirmation error:', error);
         setStatus('error');
         setMessage('An unexpected error occurred during confirmation.');
       }
     };
 
-    handleEmailConfirmation();
+    // Small delay to ensure URL has been fully loaded
+    const timer = setTimeout(handleEmailConfirmation, 100);
+    return () => clearTimeout(timer);
   }, [searchParams, navigate]);
 
   const handleReturnHome = () => {
