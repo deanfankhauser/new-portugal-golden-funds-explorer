@@ -247,10 +247,24 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
 
   const signUp = async (email: string, password: string, userType: 'manager' | 'investor', metadata?: any) => {
-    const enhancedMetadata = {
-      ...metadata,
-      [userType === 'manager' ? 'is_manager' : 'is_investor']: true
-    };
+    // In development environments (e.g., develop.movingto.com using funds_develop),
+    // avoid setting is_manager/is_investor flags to prevent auth triggers from firing
+    // which may cause duplicate key errors if seed data already exists.
+    const devEnv = typeof window !== 'undefined' ? window.location.hostname.includes('develop') || window.location.hostname === 'localhost' : false;
+
+    const enhancedMetadata = (() => {
+      const base = { ...(metadata || {}) } as Record<string, any>;
+      if (devEnv) {
+        // Do not include flags that trigger DB-side profile creation in dev
+        delete base.is_manager;
+        delete base.is_investor;
+        return base;
+      }
+      return {
+        ...base,
+        [userType === 'manager' ? 'is_manager' : 'is_investor']: true,
+      };
+    })();
     
     // Use domain-specific redirect URL
     const redirectUrl = getEmailRedirectUrl();
@@ -260,8 +274,8 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: enhancedMetadata
-      }
+        data: enhancedMetadata,
+      },
     });
 
     return { error };

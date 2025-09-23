@@ -13,6 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.confirm == 'CONFIRM' }}
     
+    env:
+      # URLs will be set dynamically to prefer pooler URLs if available
+      PROD_DB_URL: ""
+      DEV_DB_URL: ""
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,86 +27,173 @@ jobs:
         with:
           version: latest
 
+      - name: Install PostgreSQL 17 client
+        run: |
+          # Add PostgreSQL official APT repository
+          sudo apt-get update
+          sudo apt-get install -y wget ca-certificates
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+          echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update
+          
+          # Install PostgreSQL 17 client tools and utilities
+          sudo apt-get install -y postgresql-client-17 dnsutils
+          
+          # Ensure PostgreSQL 17 binaries are used first
+          echo "/usr/lib/postgresql/17/bin" >> $GITHUB_PATH
+          export PATH="/usr/lib/postgresql/17/bin:$PATH"
+          
+          # Verify versions (should be 17.x)
+          pg_dump --version
+          psql --version
+
+      - name: Configure database URLs
+        run: |
+          echo "Configuring database URLs..."
+          
+          # Check for pooler URLs (preferred for external connections)
+          if [ -n "${{ secrets.PROD_DB_POOLER_URL }}" ] && [ -n "${{ secrets.DEVELOP_DB_POOLER_URL }}" ]; then
+            echo "✅ Using pooler URLs (port 6543, IPv4-friendly)"
+            echo "PROD_DB_URL=${{ secrets.PROD_DB_POOLER_URL }}" >> $GITHUB_ENV
+            echo "DEV_DB_URL=${{ secrets.DEVELOP_DB_POOLER_URL }}" >> $GITHUB_ENV
+          else
+            echo "⚠️  Pooler URLs not found, using standard database URLs (port 5432)"
+            echo "PROD_DB_URL=${{ secrets.PROD_SUPABASE_DB_URL }}" >> $GITHUB_ENV
+            echo "DEV_DB_URL=${{ secrets.DEVELOP_SUPABASE_DB_URL }}" >> $GITHUB_ENV
+          fi
+          
+          echo "✅ Database URLs configured"
+
       - name: Verify environment variables
         run: |
-          if [ -z "${{ secrets.SUPABASE_DB_URL }}" ]; then
-            echo "ERROR: SUPABASE_DB_URL secret is not set"
+          if [ -z "${PROD_DB_URL}" ]; then
+            echo "ERROR: PROD_SUPABASE_DB_URL secret is not set"
             exit 1
           fi
-          if [ -z "${{ secrets.FUNDS_DEV_SUPABASE_DB_URL }}" ]; then
-            echo "ERROR: FUNDS_DEV_SUPABASE_DB_URL secret is not set"
+          if [ -z "${DEV_DB_URL}" ]; then
+            echo "ERROR: DEVELOP_SUPABASE_DB_URL secret is not set"
             exit 1
           fi
           echo "SUCCESS: Required secrets are configured"
 
-      - name: Create temp directory
-        run: mkdir -p temp-sync
+      - name: Validate and normalize DB URLs
+        run: |
+          normalize() {
+            local url="$1"
+            if [[ "$url" != postgresql://* && "$url" != postgres://* ]]; then
+              echo "ERROR: Connection string must start with postgresql:// or postgres://" >&2
+              echo "Got: (hidden)" >&2
+              exit 1
+            fi
+            # Ensure sslmode=require is present (avoid adding other options that can break URI parsing)
+            if [[ "$url" == *\?* ]]; then
+              if [[ "$url" != *sslmode=* ]]; then
+                echo "${url}&sslmode=require"
+              else
+                echo "$url"
+              fi
+            else
+              echo "${url}?sslmode=require"
+            fi
+          }
+          PROD_DB_URL_NORM=$(normalize "${PROD_DB_URL}")
+          DEV_DB_URL_NORM=$(normalize "${DEV_DB_URL}")
+          echo "Normalized DB URLs configured."
+          echo "PROD_DB_URL_NORM=${PROD_DB_URL_NORM}" >> $GITHUB_ENV
+          echo "DEV_DB_URL_NORM=${DEV_DB_URL_NORM}" >> $GITHUB_ENV
+
+      - name: Test database connectivity
+        run: |
+          echo "Testing connectivity to Supabase databases..."
+          
+          # Extract host and port from URL for testing
+          PROD_HOST=$(echo "${PROD_DB_URL}" | sed -n 's/.*@\([^:]*\):.*/\1/p')
+          DEV_HOST=$(echo "${DEV_DB_URL}" | sed -n 's/.*@\([^:]*\):.*/\1/p')
+          PROD_PORT=$(echo "${PROD_DB_URL}" | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
+          DEV_PORT=$(echo "${DEV_DB_URL}" | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
+          
+          echo "Production host: ${PROD_HOST}:${PROD_PORT}"
+          echo "Development host: ${DEV_HOST}:${DEV_PORT}"
+          
+          # Test DNS resolution and connectivity
+          echo "Testing DNS resolution..."
+          nslookup "${PROD_HOST}" || echo "DNS resolution failed for production"
+          nslookup "${DEV_HOST}" || echo "DNS resolution failed for development"
+          
+          echo "Testing port connectivity..."
+          timeout 10 bash -c "</dev/tcp/${PROD_HOST}/${PROD_PORT}" && echo "Production port ${PROD_PORT} reachable" || echo "Production port ${PROD_PORT} not reachable"
+          timeout 10 bash -c "</dev/tcp/${DEV_HOST}/${DEV_PORT}" && echo "Development port ${DEV_PORT} reachable" || echo "Development port ${DEV_PORT} not reachable"
+
+      - name: Resolve IPv4 addresses
+        run: |
+          echo "Resolving IPv4 addresses for DB hosts..."
+          PROD_HOST=$(echo "${PROD_DB_URL}" | sed -n 's/.*@\([^:]*\):.*/\1/p')
+          DEV_HOST=$(echo "${DEV_DB_URL}" | sed -n 's/.*@\([^:]*\):.*/\1/p')
+          PROD_IPV4=$(getent ahostsv4 "${PROD_HOST}" | awk 'NR==1{print $1}')
+          DEV_IPV4=$(getent ahostsv4 "${DEV_HOST}" | awk 'NR==1{print $1}')
+          if [ -z "${PROD_IPV4}" ]; then PROD_IPV4=$(dig +short A "${PROD_HOST}" | head -n1); fi
+          if [ -z "${DEV_IPV4}" ]; then DEV_IPV4=$(dig +short A "${DEV_HOST}" | head -n1); fi
+          echo "Resolved production IPv4: ${PROD_IPV4:-not found}"
+          echo "Resolved development IPv4: ${DEV_IPV4:-not found}"
+          echo "PROD_IPV4=${PROD_IPV4}" >> $GITHUB_ENV
+          echo "DEV_IPV4=${DEV_IPV4}" >> $GITHUB_ENV
+
+      - name: Create isolated temp directory
+        run: |
+          mkdir -p /tmp/db-sync
+          cd /tmp/db-sync
 
       - name: Dump production database
-        env:
-          PROD_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
           echo "Starting production database dump..."
-          supabase db dump \
-            --db-url "${PROD_DB_URL}" \
-            --data-only=false \
-            --use-copy=false \
-            --exclude-table-data 'auth.*' \
-            --exclude-table-data 'storage.*' \
-            --exclude-table-data 'realtime.*' \
-            --exclude-table-data 'supabase_functions.*' \
-            --exclude-table-data 'vault.*' \
-            > temp-sync/production_dump.sql
+          cd /tmp/db-sync
+          echo "Using pg_dump (IPv4-friendly)..."
+          export PGCONNECT_TIMEOUT=15
+          if [ -n "${PROD_IPV4}" ]; then export PGHOSTADDR="${PROD_IPV4}"; fi
+          pg_dump --no-owner --no-privileges --format=plain --verbose --schema=public --dbname="${PROD_DB_URL_NORM}" > production_dump.sql
           
           echo "Production dump completed"
-          echo "Dump file size: $(du -h temp-sync/production_dump.sql | cut -f1)"
+          echo "Dump file size: $(du -h production_dump.sql | cut -f1)"
 
       - name: Backup development database
-        env:
-          DEV_DB_URL: ${{ secrets.FUNDS_DEV_SUPABASE_DB_URL }}
         run: |
           echo "Creating development backup before restore..."
-          BACKUP_FILE="temp-sync/dev_backup_$(date +%Y%m%d_%H%M%S).sql"
-          supabase db dump \
-            --db-url "${DEV_DB_URL}" \
-            --data-only=false \
-            --use-copy=false \
-            > "${BACKUP_FILE}"
+          cd /tmp/db-sync
+          BACKUP_FILE="dev_backup_$(date +%Y%m%d_%H%M%S).sql"
+          export PGCONNECT_TIMEOUT=15
+          if [ -n "${DEV_IPV4}" ]; then export PGHOSTADDR="${DEV_IPV4}"; fi
+          pg_dump --no-owner --no-privileges --format=plain --schema=public --dbname="${DEV_DB_URL_NORM}" > "${BACKUP_FILE}"
           
           echo "Development backup completed: ${BACKUP_FILE}"
 
       - name: Restore to development database
-        env:
-          DEV_DB_URL: ${{ secrets.FUNDS_DEV_SUPABASE_DB_URL }}
         run: |
           echo "Restoring production data to development..."
-          
-          echo "Cleaning development database..."
-          supabase db reset --db-url "${DEV_DB_URL}" --linked=false
+          cd /tmp/db-sync
           
           echo "Restoring production dump..."
-          psql "${DEV_DB_URL}" < temp-sync/production_dump.sql
+          if [ -n "${DEV_IPV4}" ]; then export PGHOSTADDR="${DEV_IPV4}"; fi
+          psql "${DEV_DB_URL_NORM}" < production_dump.sql
           
           echo "Database sync completed successfully!"
 
       - name: Verify sync
-        env:
-          PROD_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-          DEV_DB_URL: ${{ secrets.FUNDS_DEV_SUPABASE_DB_URL }}
         run: |
           echo "Verifying sync by checking table counts..."
           
           echo "Production table counts:"
-          psql "${PROD_DB_URL}" -c "SELECT schemaname, tablename, n_tup_ins + n_tup_upd + n_tup_del as total_rows FROM pg_stat_user_tables WHERE schemaname = 'public' ORDER BY tablename;"
+          if [ -n "${PROD_IPV4}" ]; then export PGHOSTADDR="${PROD_IPV4}"; else unset PGHOSTADDR; fi
+          psql "${PROD_DB_URL_NORM}" -c "SELECT schemaname, relname as table_name, n_tup_ins + n_tup_upd + n_tup_del as total_rows FROM pg_stat_user_tables WHERE schemaname = 'public' ORDER BY relname;"
           
           echo ""
           echo "Development table counts:"
-          psql "${DEV_DB_URL}" -c "SELECT schemaname, tablename, n_tup_ins + n_tup_upd + n_tup_del as total_rows FROM pg_stat_user_tables WHERE schemaname = 'public' ORDER BY tablename;"
+          if [ -n "${DEV_IPV4}" ]; then export PGHOSTADDR="${DEV_IPV4}"; else unset PGHOSTADDR; fi
+          psql "${DEV_DB_URL_NORM}" -c "SELECT schemaname, relname as table_name, n_tup_ins + n_tup_upd + n_tup_del as total_rows FROM pg_stat_user_tables WHERE schemaname = 'public' ORDER BY relname;"
 
       - name: Cleanup
         run: |
           echo "Cleaning up temporary files..."
-          rm -rf temp-sync
+          rm -rf /tmp/db-sync
           echo "Cleanup completed"
 
       - name: Summary

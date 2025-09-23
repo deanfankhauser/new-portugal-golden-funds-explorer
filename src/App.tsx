@@ -40,7 +40,7 @@ const ROICalculator = lazy(() => import('./pages/ROICalculator'));
 const FundComparison = lazy(() => import('./pages/FundComparison'));
 const FundAlternatives = lazy(() => import('./pages/FundAlternatives'));
 const AlternativesHub = lazy(() => import('./pages/AlternativesHub'));
-const ManagerAuth = lazy(() => import('./pages/ManagerAuth'));
+import ManagerAuth from './pages/ManagerAuth'; // Make non-lazy for debugging
 const InvestorAuth = lazy(() => import('./pages/InvestorAuth'));
 const AccountSettings = lazy(() => import('./pages/AccountSettings'));
 const EmailConfirmation = lazy(() => import('./pages/EmailConfirmation'));
@@ -226,11 +226,7 @@ function App() {
                       } />
                         
                         {/* Manager Authentication */}
-                        <Route path="/manager-auth" element={
-                          <Suspense fallback={<PageLoader />}>
-                            <ManagerAuth />
-                          </Suspense>
-                        } />
+                        <Route path="/manager-auth" element={<ManagerAuth />} />
                         
                         {/* Investor Authentication */}
                         <Route path="/investor-auth" element={

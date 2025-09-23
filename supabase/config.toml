@@ -43,3 +43,6 @@ verify_jwt = false
 
 [functions.sync-database-dump]
 verify_jwt = false
+
+[functions.full-database-sync]
+verify_jwt = false

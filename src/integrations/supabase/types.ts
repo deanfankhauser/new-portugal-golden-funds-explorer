@@ -744,6 +744,12 @@ export type Database = {
         Args: { target_user_id?: string }
         Returns: boolean
       }
+      query: {
+        Args: { query_text: string }
+        Returns: {
+          result: string
+        }[]
+      }
       sync_database_functions_to_develop: {
         Args: Record<PropertyKey, never>
         Returns: {

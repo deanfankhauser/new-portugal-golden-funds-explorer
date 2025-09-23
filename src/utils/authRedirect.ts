@@ -13,6 +13,9 @@ export function getEmailRedirectUrl(): string {
   // Handle different domains appropriately
   const hostname = new URL(currentOrigin).hostname;
   
+  console.log('🔐 getEmailRedirectUrl - Current hostname:', hostname);
+  console.log('🔐 getEmailRedirectUrl - Current origin:', currentOrigin);
+  
   // Map specific domains to their appropriate redirect URLs
   const domainMappings: Record<string, string> = {
     'develop.com': 'https://develop.com/confirm',
@@ -24,16 +27,21 @@ export function getEmailRedirectUrl(): string {
   
   // Check for exact hostname matches first
   if (domainMappings[hostname]) {
+    console.log('🔐 getEmailRedirectUrl - Using mapped URL:', domainMappings[hostname]);
     return domainMappings[hostname];
   }
   
   // Handle preview URLs (like lovable preview domains)
   if (hostname.includes('lovable') || hostname.includes('preview') || hostname.includes('netlify') || hostname.includes('vercel')) {
-    return `${currentOrigin}/confirm`;
+    const redirectUrl = `${currentOrigin}/confirm`;
+    console.log('🔐 getEmailRedirectUrl - Using preview URL:', redirectUrl);
+    return redirectUrl;
   }
   
   // Default fallback: use current origin
-  return `${currentOrigin}/confirm`;
+  const defaultUrl = `${currentOrigin}/confirm`;
+  console.log('🔐 getEmailRedirectUrl - Using default URL:', defaultUrl);
+  return defaultUrl;
 }
 
 /**
