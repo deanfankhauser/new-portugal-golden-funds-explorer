@@ -150,7 +150,7 @@ jobs:
           echo "Using pg_dump (IPv4-friendly)..."
           export PGCONNECT_TIMEOUT=15
           if [ -n "${PROD_IPV4}" ]; then export PGHOSTADDR="${PROD_IPV4}"; fi
-          pg_dump --no-owner --no-privileges --format=plain --verbose --dbname="${PROD_DB_URL_NORM}" > production_dump.sql
+          pg_dump --no-owner --no-privileges --format=plain --verbose --schema=public --dbname="${PROD_DB_URL_NORM}" > production_dump.sql
           
           echo "Production dump completed"
           echo "Dump file size: $(du -h production_dump.sql | cut -f1)"
@@ -162,7 +162,7 @@ jobs:
           BACKUP_FILE="dev_backup_$(date +%Y%m%d_%H%M%S).sql"
           export PGCONNECT_TIMEOUT=15
           if [ -n "${DEV_IPV4}" ]; then export PGHOSTADDR="${DEV_IPV4}"; fi
-          pg_dump --no-owner --no-privileges --format=plain --dbname="${DEV_DB_URL_NORM}" > "${BACKUP_FILE}"
+          pg_dump --no-owner --no-privileges --format=plain --schema=public --dbname="${DEV_DB_URL_NORM}" > "${BACKUP_FILE}"
           
           echo "Development backup completed: ${BACKUP_FILE}"
 
