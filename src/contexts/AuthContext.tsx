@@ -48,6 +48,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signUp = async (email: string, password: string, metadata?: any) => {
+    // In develop environments, avoid DB-side triggers by stripping flags
+    const devEnv = typeof window !== 'undefined' ? window.location.hostname.includes('develop') || window.location.hostname === 'localhost' : false;
+    const safeMetadata = (() => {
+      const base = { ...(metadata || {}) } as Record<string, any>;
+      if (devEnv) {
+        delete base.is_manager;
+        delete base.is_investor;
+      }
+      return base;
+    })();
+
     // Use domain-specific redirect URL
     const redirectUrl = getEmailRedirectUrl();
     
@@ -56,8 +67,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: metadata || {}
-      }
+        data: safeMetadata,
+      },
     });
     return { error };
   };
