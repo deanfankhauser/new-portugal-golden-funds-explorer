@@ -27,7 +27,9 @@ interface UsersManagementProps {
 
 const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) => {
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
+  const [allUsers, setAllUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [usersLoading, setUsersLoading] = useState(true);
   const [newUserEmail, setNewUserEmail] = useState('');
   const [newUserRole, setNewUserRole] = useState('moderator');
   const [adding, setAdding] = useState(false);
@@ -36,6 +38,7 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
 
   useEffect(() => {
     fetchAdminUsers();
+    fetchAllUsers();
   }, []);
 
   const fetchAdminUsers = async () => {
@@ -170,6 +173,57 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
     }
   };
 
+  const fetchAllUsers = async () => {
+    try {
+      setUsersLoading(true);
+      
+      // Get all investor profiles
+      const { data: investors, error: investorError } = await supabase
+        .from('investor_profiles')
+        .select('id, user_id, first_name, last_name, email, created_at, city, country')
+        .order('created_at', { ascending: false });
+
+      if (investorError) {
+        console.error('Error fetching investors:', investorError);
+      }
+
+      // Get all manager profiles
+      const { data: managers, error: managerError } = await supabase
+        .from('manager_profiles')
+        .select('id, user_id, company_name, manager_name, email, created_at, city, country, status')
+        .order('created_at', { ascending: false });
+
+      if (managerError) {
+        console.error('Error fetching managers:', managerError);
+      }
+
+      // Combine and format the data
+      const formattedInvestors = (investors || []).map(investor => ({
+        ...investor,
+        user_type: 'investor',
+        display_name: `${investor.first_name || ''} ${investor.last_name || ''}`.trim() || 'No name',
+        company_name: null,
+        status: 'active'
+      }));
+
+      const formattedManagers = (managers || []).map(manager => ({
+        ...manager,
+        user_type: 'manager',
+        display_name: manager.manager_name || 'No name',
+        first_name: null,
+        last_name: null
+      }));
+
+      const combinedUsers = [...formattedInvestors, ...formattedManagers];
+      setAllUsers(combinedUsers);
+    } catch (error) {
+      console.error('Error fetching all users:', error);
+      toast.error('Failed to load users');
+    } finally {
+      setUsersLoading(false);
+    }
+  };
+
   const removeAdminUser = async (adminUser: AdminUser) => {
     if (!canManageUsers) return;
 
@@ -231,7 +285,7 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
     }
   };
 
-  if (loading) {
+  if (loading && usersLoading) {
     return (
       <Card>
         <CardContent className="p-6">
@@ -303,74 +357,144 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>User</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Granted</TableHead>
-                {canManageUsers && <TableHead>Actions</TableHead>}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {adminUsers.map((adminUser) => (
-                <TableRow key={adminUser.id}>
-                  <TableCell className="font-medium">
-                    {adminUser.profile_name}
-                  </TableCell>
-                  <TableCell>{adminUser.email}</TableCell>
-                  <TableCell>
-                    <Badge 
-                      variant={getRoleBadgeVariant(adminUser.role)}
-                      className="flex items-center gap-1 w-fit"
-                    >
-                      {getRoleIcon(adminUser.role)}
-                      {adminUser.role.replace('_', ' ')}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {new Date(adminUser.granted_at).toLocaleDateString()}
-                  </TableCell>
-                  {canManageUsers && (
-                    <TableCell>
-                      {adminUser.role !== 'super_admin' && (
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Remove Admin Access</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Are you sure you want to remove admin access from {adminUser.profile_name}? 
-                                This action cannot be undone.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction 
-                                onClick={() => removeAdminUser(adminUser)}
-                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                              >
-                                Remove Access
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      )}
-                    </TableCell>
-                  )}
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>User</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Granted</TableHead>
+                  {canManageUsers && <TableHead>Actions</TableHead>}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {adminUsers.map((adminUser) => (
+                  <TableRow key={adminUser.id}>
+                    <TableCell className="font-medium">
+                      {adminUser.profile_name}
+                    </TableCell>
+                    <TableCell>{adminUser.email}</TableCell>
+                    <TableCell>
+                      <Badge 
+                        variant={getRoleBadgeVariant(adminUser.role)}
+                        className="flex items-center gap-1 w-fit"
+                      >
+                        {getRoleIcon(adminUser.role)}
+                        {adminUser.role.replace('_', ' ')}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {new Date(adminUser.granted_at).toLocaleDateString()}
+                    </TableCell>
+                    {canManageUsers && (
+                      <TableCell>
+                        {adminUser.role !== 'super_admin' && (
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Remove Admin Access</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to remove admin access from {adminUser.profile_name}? 
+                                  This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction 
+                                  onClick={() => removeAdminUser(adminUser)}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  Remove Access
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        )}
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
 
-          {adminUsers.length === 0 && (
+          {!loading && adminUsers.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
               No admin users found
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>All System Users</CardTitle>
+          <CardDescription>
+            View all registered investors and managers
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {usersLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Company/Location</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Joined</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {allUsers.map((user) => (
+                  <TableRow key={`${user.user_type}-${user.id}`}>
+                    <TableCell className="font-medium">
+                      {user.display_name}
+                    </TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      <Badge variant={user.user_type === 'investor' ? 'default' : 'secondary'}>
+                        {user.user_type === 'investor' ? 'Investor' : 'Manager'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {user.user_type === 'manager' ? 
+                        user.company_name || 'No company' : 
+                        [user.city, user.country].filter(Boolean).join(', ') || 'No location'
+                      }
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={user.status === 'approved' ? 'default' : user.status === 'pending' ? 'secondary' : 'destructive'}>
+                        {user.status || 'active'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {new Date(user.created_at).toLocaleDateString()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+
+          {!usersLoading && allUsers.length === 0 && (
+            <div className="text-center py-8 text-muted-foreground">
+              No users found
             </div>
           )}
         </CardContent>
