@@ -102,6 +102,36 @@ export function generateHTMLTemplate(
   
   <!-- Critical CSS Inline for Performance -->
   <style>
+    /* Critical CSS variables - Match index.css exactly */
+    :root {
+      /* Brand Color System - Warm Premium Heritage */
+      --brand-bordeaux: 340 66% 18%;      /* Rich Bordeaux #4B0F23 */
+      --brand-bronze: 20 33% 50%;         /* Matte Bronze #A97155 */
+      --brand-bone: 36 16% 92%;           /* Bone White #EDEAE6 */
+      
+      /* Core Design Tokens */
+      --background: var(--brand-bone);
+      --foreground: 340 20% 16%;
+      --card: 36 15% 97%;
+      --card-foreground: 340 20% 16%;
+      --popover: 36 15% 97%;
+      --popover-foreground: 340 20% 16%;
+      --primary: var(--brand-bordeaux);
+      --primary-foreground: 0 0% 98%;
+      --secondary: 36 12% 96%;
+      --secondary-foreground: 340 20% 20%;
+      --muted: 36 12% 90%;
+      --muted-foreground: 340 15% 45%;
+      --accent: var(--brand-bronze);
+      --accent-foreground: 0 0% 100%;
+      --destructive: 0 84% 60%;
+      --destructive-foreground: 0 0% 100%;
+      --border: 20 10% 80%;
+      --input: 20 10% 80%;
+      --ring: var(--brand-bordeaux);
+      --radius: 0.5rem;
+    }
+    
     /* Critical CSS to prevent FOUC and ensure proper rendering */
     * {
       box-sizing: border-box;
