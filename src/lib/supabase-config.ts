@@ -1,23 +1,19 @@
-// Environment-aware Supabase configuration
+// Database configuration - Using VITE environment variables
 export function getSupabaseConfig() {
-  // Check hostname to determine environment
-  const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
+  // Use VITE environment variables consistently
+  const envUrl = import.meta.env.VITE_SUPABASE_URL;
+  const envAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
   
-  // If this is the develop environment (funds_develop)
-  if (hostname.includes('develop.movingto.com') || hostname.includes('funds-develop')) {
+  // If environment variables are available, use them
+  if (envUrl && envAnonKey) {
     const config = {
-      url: 'https://iedddpjxonqddvbfrtnm.supabase.co',
-      anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllZGRkcGp4b25xZGR2YmZydG5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjcwODg3MTYsImV4cCI6MjA0MjY2NDcxNn0.YhCpWKzG52ZU7LmQfnFZEeEbE0DApS3hAn5L0Zj9n0I'
+      url: envUrl,
+      anonKey: envAnonKey
     };
-    console.log(`🔌 Connected to funds_develop environment:`, config.url);
+    console.log(`🔌 Connected via VITE environment variables:`, config.url);
     return config;
   }
   
-  // Default to production environment
-  const config = {
-    url: 'https://bkmvydnfhmkjnuszroim.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrbXZ5ZG5maG1ram51c3pyb2ltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwNzY0NDYsImV4cCI6MjA3MjY1MjQ0Nn0.eXVPzUY_C8Qi_HGhzk-T6ovY1fqa3czPbxJmJc5ftG8'
-  };
-  console.log(`🔌 Connected to production environment:`, config.url);
-  return config;
+  // No fallback values - VITE environment variables are required
+  throw new Error('❌ VITE environment variables (VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY) must be set in .env file');
 }
