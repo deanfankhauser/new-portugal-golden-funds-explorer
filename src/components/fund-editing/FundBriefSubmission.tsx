@@ -69,17 +69,21 @@ const FundBriefSubmission: React.FC<FundBriefSubmissionProps> = ({
   }, [fundId, user]);
 
   const submitBrief = async (file: File) => {
+    console.log('submitBrief called with file:', file.name, file.type, file.size);
     const validation = validateFile(file);
     if (validation) {
+      console.log('File validation failed:', validation);
       toast.error(validation);
       return;
     }
 
     if (!user) {
+      console.log('User not authenticated:', user);
       toast.error('You must be logged in to submit a fund brief');
       return;
     }
 
+    console.log('Starting upload for user:', user.id, 'fund:', fundId);
     setUploading(true);
     try {
       // Create unique filename with user folder structure
@@ -87,6 +91,7 @@ const FundBriefSubmission: React.FC<FundBriefSubmissionProps> = ({
       const fileName = `${user.id}/${fundId}-fund-brief-${Date.now()}.${fileExt}`;
 
       // Upload to pending bucket
+      console.log('Uploading file:', fileName);
       const { data, error } = await supabase.storage
         .from('fund-briefs-pending')
         .upload(fileName, file, {
@@ -94,7 +99,11 @@ const FundBriefSubmission: React.FC<FundBriefSubmissionProps> = ({
           upsert: false
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Storage upload error:', error);
+        throw error;
+      }
+      console.log('Upload successful:', data);
 
       // Get public URL
       const { data: { publicUrl } } = supabase.storage
@@ -102,6 +111,7 @@ const FundBriefSubmission: React.FC<FundBriefSubmissionProps> = ({
         .getPublicUrl(fileName);
 
       // Create submission record
+      console.log('Creating submission record with:', { fund_id: fundId, user_id: user.id, brief_url: publicUrl, brief_filename: fileName });
       const { error: submissionError } = await supabase
         .from('fund_brief_submissions')
         .insert({
@@ -112,7 +122,11 @@ const FundBriefSubmission: React.FC<FundBriefSubmissionProps> = ({
           status: 'pending'
         });
 
-      if (submissionError) throw submissionError;
+      if (submissionError) {
+        console.error('Submission record error:', submissionError);
+        throw submissionError;
+      }
+      console.log('Submission record created successfully');
 
       toast.success('Fund brief submitted for admin approval');
       fetchSubmissions(); // Refresh the list
