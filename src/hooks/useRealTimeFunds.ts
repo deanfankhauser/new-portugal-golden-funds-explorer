@@ -85,13 +85,22 @@ const applyEditHistory = (
       console.log('🔗 Environment variables check:', {
         hasSupabaseUrl: !!import.meta.env.VITE_SUPABASE_URL,
         hasSupabaseKey: !!import.meta.env.VITE_SUPABASE_ANON_KEY,
-        supabaseUrlPrefix: import.meta.env.VITE_SUPABASE_URL?.substring(0, 30) + '...'
+        supabaseUrlPrefix: import.meta.env.VITE_SUPABASE_URL?.substring(0, 50),
+        anonKeyPrefix: import.meta.env.VITE_SUPABASE_ANON_KEY?.substring(0, 20) + '...'
       });
+      
+      // Test basic connection first
+      const { data: testData, error: testError } = await supabase
+        .from('funds')
+        .select('id, name')
+        .limit(1);
+      
+      console.log('🧪 Basic connection test:', { testData, testError });
       
       const { data: supabaseFunds, error: fetchError } = await supabase
         .from('funds')
         .select('*')
-        .order('created_at', { ascending: true }); // Order by created_at ascending to preserve original order
+        .order('created_at', { ascending: true });
 
       console.log('📊 Supabase response:', { 
         supabaseFunds: supabaseFunds?.length, 
