@@ -576,7 +576,103 @@ console.log('Syncing table data...')
       }
     }
 
-    // 5. Sync storage files
+    // 5. Sync storage policies first
+    console.log('Syncing storage policies...')
+    try {
+      const policiesSQL = `
+        DO $$
+        BEGIN
+          -- Drop existing policies to avoid conflicts
+          DROP POLICY IF EXISTS "Public read fund logos" ON storage.objects;
+          DROP POLICY IF EXISTS "Public read profile photos" ON storage.objects;
+          DROP POLICY IF EXISTS "Users can view own pending fund briefs" ON storage.objects;
+          DROP POLICY IF EXISTS "Users can upload own pending fund briefs" ON storage.objects;
+          DROP POLICY IF EXISTS "Admins can view pending fund briefs" ON storage.objects;
+          DROP POLICY IF EXISTS "Admins can modify pending fund briefs" ON storage.objects;
+          DROP POLICY IF EXISTS "Users can view own fund briefs" ON storage.objects;
+          DROP POLICY IF EXISTS "Admins can view all fund briefs" ON storage.objects;
+          DROP POLICY IF EXISTS "Admins can modify fund briefs" ON storage.objects;
+          DROP POLICY IF EXISTS "Users can upload profile photos" ON storage.objects;
+          DROP POLICY IF EXISTS "Users can update profile photos" ON storage.objects;
+          DROP POLICY IF EXISTS "Admins can upload fund logos" ON storage.objects;
+          DROP POLICY IF EXISTS "Admins can update fund logos" ON storage.objects;
+
+          -- Create all storage policies
+          CREATE POLICY "Public read fund logos"
+          ON storage.objects FOR SELECT
+          USING (bucket_id = 'fund-logos');
+
+          CREATE POLICY "Public read profile photos"
+          ON storage.objects FOR SELECT
+          USING (bucket_id = 'profile-photos');
+
+          CREATE POLICY "Users can view own pending fund briefs"
+          ON storage.objects FOR SELECT
+          USING (
+            bucket_id = 'fund-briefs-pending'
+            AND auth.uid()::text = (storage.foldername(name))[1]
+          );
+
+          CREATE POLICY "Users can upload own pending fund briefs"
+          ON storage.objects FOR INSERT
+          WITH CHECK (
+            bucket_id = 'fund-briefs-pending'
+            AND auth.uid()::text = (storage.foldername(name))[1]
+          );
+
+          CREATE POLICY "Admins can view pending fund briefs"
+          ON storage.objects FOR SELECT
+          USING (bucket_id = 'fund-briefs-pending' AND public.is_user_admin());
+
+          CREATE POLICY "Admins can modify pending fund briefs"
+          ON storage.objects FOR UPDATE
+          USING (bucket_id = 'fund-briefs-pending' AND public.is_user_admin());
+
+          CREATE POLICY "Users can view own fund briefs"
+          ON storage.objects FOR SELECT
+          USING (
+            bucket_id = 'fund-briefs'
+            AND auth.uid()::text = (storage.foldername(name))[1]
+          );
+
+          CREATE POLICY "Admins can view all fund briefs"
+          ON storage.objects FOR SELECT
+          USING (bucket_id = 'fund-briefs' AND public.is_user_admin());
+
+          CREATE POLICY "Admins can modify fund briefs"
+          ON storage.objects FOR UPDATE
+          USING (bucket_id = 'fund-briefs' AND public.is_user_admin());
+
+          CREATE POLICY "Users can upload profile photos"
+          ON storage.objects FOR INSERT
+          WITH CHECK (
+            bucket_id = 'profile-photos'
+            AND auth.uid()::text = (storage.foldername(name))[1]
+          );
+
+          CREATE POLICY "Users can update profile photos"
+          ON storage.objects FOR UPDATE
+          USING (
+            bucket_id = 'profile-photos'
+            AND auth.uid()::text = (storage.foldername(name))[1]
+          );
+
+          CREATE POLICY "Admins can upload fund logos"
+          ON storage.objects FOR INSERT
+          WITH CHECK (bucket_id = 'fund-logos' AND public.is_user_admin());
+
+          CREATE POLICY "Admins can update fund logos"
+          ON storage.objects FOR UPDATE
+          USING (bucket_id = 'fund-logos' AND public.is_user_admin());
+        END $$;
+      `
+      await dev.rpc('query', { query_text: policiesSQL }).single()
+      operations.push({ operation: 'sync_storage_policies', status: 'success', details: 'All storage policies synced' })
+    } catch (e: any) {
+      operations.push({ operation: 'sync_storage_policies', status: 'error', details: e.message })
+    }
+
+    // 6. Sync storage files
     console.log('Syncing storage files...')
     try {
       let totalStorageFiles = 0
