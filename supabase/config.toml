@@ -61,3 +61,6 @@ verify_jwt = false
 
 [functions.create-test-dataset]
 verify_jwt = false
+
+[functions.full-project-sync]
+verify_jwt = false
