@@ -233,7 +233,125 @@ Deno.serve(async (req) => {
       }
     }
 
-    // 5. Verify RLS policies (just report, don't copy as they're complex)
+    // 5. Sync storage files
+    console.log('Syncing storage files...')
+    try {
+      let totalStorageFiles = 0
+      const buckets = ['fund-briefs-pending', 'fund-briefs', 'fund-logos', 'profile-photos']
+      
+      // Helper function to recursively list all files in a folder
+      const listAllFiles = async (client: any, bucketName: string, folder = '', allFiles: any[] = []): Promise<any[]> => {
+        const { data: files, error } = await client.storage
+          .from(bucketName)
+          .list(folder, { limit: 1000, sortBy: { column: 'created_at', order: 'desc' } })
+        
+        if (error) {
+          console.log(`Error listing ${bucketName}/${folder}: ${error.message}`)
+          return allFiles
+        }
+        
+        if (!files) return allFiles
+        
+        for (const file of files) {
+          const fullPath = folder ? `${folder}/${file.name}` : file.name
+          
+          if (file.metadata && file.metadata.size === 0) {
+            // This is a folder, recurse into it
+            await listAllFiles(client, bucketName, fullPath, allFiles)
+          } else {
+            // This is a file
+            allFiles.push({ ...file, fullPath })
+          }
+        }
+        
+        return allFiles
+      }
+      
+      for (const bucketName of buckets) {
+        console.log(`Syncing storage bucket: ${bucketName}`)
+        
+        try {
+          // Get all files recursively from production
+          const files = await listAllFiles(prod, bucketName)
+          
+          if (files.length === 0) {
+            console.log(`No files found in bucket: ${bucketName}`)
+            continue
+          }
+          
+          console.log(`Found ${files.length} files in ${bucketName}`)
+          
+          // Download and upload each file
+          let bucketFiles = 0
+          for (const file of files) {
+            try {
+              // Skip if not a real file
+              if (!file.name.includes('.')) continue
+              
+              const filePath = file.fullPath
+              
+              // Check if file already exists in development
+              const { data: existingFile } = await dev.storage
+                .from(bucketName)
+                .list('', { search: file.name })
+              
+              if (existingFile && existingFile.length > 0) {
+                console.log(`File already exists: ${bucketName}/${filePath}`)
+                bucketFiles++
+                continue
+              }
+              
+              // Download from production
+              const { data: fileData, error: downloadError } = await prod.storage
+                .from(bucketName)
+                .download(filePath)
+              
+              if (downloadError) {
+                console.log(`Failed to download ${bucketName}/${filePath}: ${downloadError.message}`)
+                continue
+              }
+              
+              // Upload to development
+              const { error: uploadError } = await dev.storage
+                .from(bucketName)
+                .upload(filePath, fileData, {
+                  upsert: true,
+                  cacheControl: '3600'
+                })
+              
+              if (uploadError) {
+                console.log(`Failed to upload ${bucketName}/${filePath}: ${uploadError.message}`)
+                continue
+              }
+              
+              bucketFiles++
+              console.log(`Synced: ${bucketName}/${filePath}`)
+            } catch (e: any) {
+              console.log(`Error syncing file ${bucketName}/${file.fullPath}: ${e.message}`)
+            }
+          }
+          
+          totalStorageFiles += bucketFiles
+        } catch (e: any) {
+          console.log(`Error processing bucket ${bucketName}: ${e.message}`)
+        }
+      }
+      
+      operations.push({
+        operation: 'sync_storage_files',
+        status: 'success',
+        details: `Synced ${totalStorageFiles} storage files across all buckets`,
+        recordCount: totalStorageFiles
+      })
+    } catch (e: any) {
+      operations.push({
+        operation: 'sync_storage_files',
+        status: 'error',
+        details: e.message
+      })
+    }
+
+    // 7. Verify RLS policies (just report, don't copy as they're complex)
     console.log('Checking RLS policies...')
     operations.push({
       operation: 'verify_rls_policies',
