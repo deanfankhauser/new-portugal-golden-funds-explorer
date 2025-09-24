@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Upload, FileText, Loader2, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { useAuth } from '@/hooks/useAuth';
+import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 
 interface FundBriefSubmissionProps {
   fundId: string;
@@ -34,7 +34,7 @@ const FundBriefSubmission: React.FC<FundBriefSubmissionProps> = ({
   const [dragOver, setDragOver] = useState(false);
   const [submissions, setSubmissions] = useState<BriefSubmission[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const { user, userType } = useEnhancedAuth();
 
   const validateFile = (file: File): string | null => {
     if (file.type !== 'application/pdf') {
@@ -117,16 +117,22 @@ const FundBriefSubmission: React.FC<FundBriefSubmissionProps> = ({
       const publicUrl = signedUrlData?.signedUrl || '';
 
       // Create submission record
-      console.log('Creating submission record with:', { fund_id: fundId, user_id: user.id, brief_url: publicUrl, brief_filename: fileName });
+      const submissionPayload: any = {
+        fund_id: fundId,
+        user_id: user.id,
+        brief_url: publicUrl,
+        brief_filename: fileName,
+        status: 'pending',
+      };
+      if (userType === 'manager') {
+        submissionPayload.manager_user_id = user.id;
+      } else if (userType === 'investor') {
+        submissionPayload.investor_user_id = user.id;
+      }
+      console.log('Creating submission record with:', submissionPayload);
       const { error: submissionError } = await supabase
         .from('fund_brief_submissions')
-        .insert({
-          fund_id: fundId,
-          user_id: user.id,
-          brief_url: publicUrl,
-          brief_filename: fileName,
-          status: 'pending'
-        });
+        .insert(submissionPayload);
 
       if (submissionError) {
         console.error('Submission record error:', submissionError);

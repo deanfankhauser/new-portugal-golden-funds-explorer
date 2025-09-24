@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { useAuth } from '@/hooks/useAuth';
+import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 
 interface BriefSubmission {
   id: string;
@@ -40,7 +40,7 @@ const FundBriefApproval: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<string | null>(null);
   const [rejectionReason, setRejectionReason] = useState<Record<string, string>>({});
-  const { user } = useAuth();
+  const { user, session } = useEnhancedAuth();
 
   const fetchSubmissions = async () => {
     try {
