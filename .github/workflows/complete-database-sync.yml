@@ -125,7 +125,7 @@ jobs:
           
           echo "✅ Schema sync script prepared"
 
-      - name: Sync Supabase auth and storage via API
+       - name: Sync Supabase auth and storage via API
         run: |
           echo "🔄 Syncing auth and storage via Supabase API..."
           cd /tmp/complete-sync
@@ -139,14 +139,22 @@ jobs:
           echo "Syncing storage buckets and policies..."
           
           # Get storage buckets from production
+          echo "Fetching production buckets..."
           curl -s -H "Authorization: Bearer ${PROD_SERVICE_KEY}" \
                -H "apikey: ${PROD_SERVICE_KEY}" \
                "${PROD_URL}/storage/v1/bucket" > prod_buckets.json
           
+          if [ ! -s prod_buckets.json ]; then
+            echo "❌ Failed to fetch production buckets or empty response"
+            exit 1
+          fi
+          
           echo "Production buckets:"
           cat prod_buckets.json | jq '.'
           
-          # Create buckets in development
+          # Create buckets in development with better error handling
+          set +e  # Disable exit on error for this section
+          
           while IFS= read -r bucket; do
             BUCKET_ID=$(echo "$bucket" | jq -r '.id')
             BUCKET_NAME=$(echo "$bucket" | jq -r '.name')
@@ -154,13 +162,27 @@ jobs:
             
             echo "Creating bucket: $BUCKET_ID (public: $IS_PUBLIC)"
             
-            curl -s -X POST \
+            # Create bucket with proper error handling
+            response=$(curl -s -w "\n%{http_code}" -X POST \
                  -H "Authorization: Bearer ${DEV_SERVICE_KEY}" \
                  -H "apikey: ${DEV_SERVICE_KEY}" \
                  -H "Content-Type: application/json" \
                  -d "{\"id\": \"$BUCKET_ID\", \"name\": \"$BUCKET_NAME\", \"public\": $IS_PUBLIC}" \
-                 "${DEV_URL}/storage/v1/bucket" || echo "Bucket may already exist"
+                 "${DEV_URL}/storage/v1/bucket")
+            
+            http_code=$(echo "$response" | tail -n1)
+            response_body=$(echo "$response" | head -n -1)
+            
+            if [ "$http_code" -eq 200 ] || [ "$http_code" -eq 201 ]; then
+              echo "✅ Bucket $BUCKET_ID created successfully"
+            elif [ "$http_code" -eq 409 ]; then
+              echo "⚠️  Bucket $BUCKET_ID already exists"
+            else
+              echo "❌ Failed to create bucket $BUCKET_ID (HTTP $http_code): $response_body"
+            fi
           done < <(cat prod_buckets.json | jq -c '.[]')
+          
+          set -e  # Re-enable exit on error
 
       - name: Apply complete schema and data sync
         run: |
