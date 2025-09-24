@@ -46,3 +46,6 @@ verify_jwt = false
 
 [functions.full-database-sync]
 verify_jwt = false
+
+[functions.test-funds-develop]
+verify_jwt = false
