@@ -238,20 +238,24 @@ serve(async (req) => {
 
     // 4. Sync Database Tables Data
     console.log('🔄 Syncing database tables...');
-    const tables = [
+    
+    // SAFE TABLES: Only sync non-authentication tables to prevent auth issues
+    const safeTables = [
       'funds',
-      'manager_profiles', 
-      'investor_profiles',
-      'admin_users',
-      'fund_edit_suggestions',
+      'fund_edit_suggestions', 
       'fund_brief_submissions',
       'fund_edit_history',
       'saved_funds',
       'account_deletion_requests',
       'admin_activity_log'
     ];
+    
+    // PROTECTED TABLES: Never sync these as they control authentication
+    const protectedTables = ['admin_users', 'manager_profiles', 'investor_profiles'];
+    console.log(`⚠️ PROTECTION: Excluding auth tables: ${protectedTables.join(', ')}`);
+    console.log(`✅ SYNCING: Safe data tables: ${safeTables.join(', ')}`);
 
-    for (const tableName of tables) {
+    for (const tableName of safeTables) {
       try {
         console.log(`Syncing table: ${tableName}`);
         
@@ -282,8 +286,10 @@ serve(async (req) => {
           continue;
         }
 
-        // Clear existing data in development table (except for critical tables)
-        if (!['admin_users'].includes(tableName)) {
+        // Clear existing data in development table (protect auth-critical tables)
+        const protectedTables = ['admin_users', 'manager_profiles', 'investor_profiles'];
+        if (!protectedTables.includes(tableName)) {
+          console.log(`Clearing existing data from ${tableName}...`);
           const { error: deleteError } = await devSupabase
             .from(tableName)
             .delete()
@@ -291,7 +297,10 @@ serve(async (req) => {
 
           if (deleteError) {
             console.error(`Failed to clear ${tableName}:`, deleteError);
+            // Continue despite clear errors
           }
+        } else {
+          console.log(`🛡️ PROTECTED: Skipping clear for auth-critical table: ${tableName}`);
         }
 
         // Insert production data in batches
