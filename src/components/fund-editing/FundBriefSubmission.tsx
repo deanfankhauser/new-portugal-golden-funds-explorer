@@ -107,10 +107,14 @@ const FundBriefSubmission: React.FC<FundBriefSubmissionProps> = ({
       }
       console.log('Upload successful:', data);
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
+      // Create a signed URL (valid for 7 days) since the bucket is private
+      const { data: signedUrlData, error: signError } = await supabase.storage
         .from('fund-briefs-pending')
-        .getPublicUrl(fileName);
+        .createSignedUrl(fileName, 60 * 60 * 24 * 7);
+      if (signError) {
+        console.error('Signed URL error:', signError);
+      }
+      const publicUrl = signedUrlData?.signedUrl || '';
 
       // Create submission record
       console.log('Creating submission record with:', { fund_id: fundId, user_id: user.id, brief_url: publicUrl, brief_filename: fileName });

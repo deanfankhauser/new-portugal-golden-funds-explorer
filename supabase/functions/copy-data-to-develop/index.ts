@@ -236,15 +236,17 @@ Deno.serve(async (req) => {
           
           if (!files) return allFiles
           
-          for (const file of files) {
-            const fullPath = folder ? `${folder}/${file.name}` : file.name
+          for (const item of files) {
+            const fullPath = folder ? `${folder}/${item.name}` : item.name
             
-            if (file.metadata && file.metadata.size === 0) {
-              // This is a folder, recurse into it
+            // Folders typically have no id and no metadata in Supabase Storage list()
+            const isFolder = !item.id && !item.metadata
+            if (isFolder) {
+              // Recurse into folder
               await listAllFiles(client, bucketName, fullPath, allFiles)
             } else {
               // This is a file
-              allFiles.push({ ...file, fullPath })
+              allFiles.push({ ...item, fullPath })
             }
           }
           
@@ -283,17 +285,39 @@ Deno.serve(async (req) => {
                   continue
                 }
                 
-                // Upload to development
-                const { error: uploadError } = await dev.storage
-                  .from(bucketName)
-                  .upload(filePath, fileData, {
-                    upsert: true,
-                    cacheControl: '3600'
-                  })
+                // Upload to development (create bucket if needed)
+                let uploadError: any = null
+                try {
+                  const { error } = await dev.storage
+                    .from(bucketName)
+                    .upload(filePath, fileData, {
+                      upsert: true,
+                      cacheControl: '3600'
+                    })
+                  uploadError = error
+                } catch (e: any) {
+                  uploadError = e
+                }
                 
                 if (uploadError) {
-                  console.log(`Failed to upload ${bucketName}/${filePath}: ${uploadError.message}`)
-                  continue
+                  const msg = String(uploadError.message || uploadError).toLowerCase()
+                  if (msg.includes('bucket not found')) {
+                    try {
+                      await dev.storage.createBucket(bucketName, {
+                        public: bucketName === 'fund-logos' || bucketName === 'profile-photos'
+                      })
+                      const { error: retryErr } = await dev.storage
+                        .from(bucketName)
+                        .upload(filePath, fileData, { upsert: true, cacheControl: '3600' })
+                      if (retryErr) throw retryErr
+                    } catch (ce: any) {
+                      console.log(`Failed to create bucket or upload ${bucketName}/${filePath}: ${ce.message}`)
+                      continue
+                    }
+                  } else {
+                    console.log(`Failed to upload ${bucketName}/${filePath}: ${uploadError.message || uploadError}`)
+                    continue
+                  }
                 }
                 
                 copiedFiles++
