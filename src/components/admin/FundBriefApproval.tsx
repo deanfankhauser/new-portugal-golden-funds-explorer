@@ -49,8 +49,8 @@ const FundBriefApproval: React.FC = () => {
         .select(`
           *,
           funds!inner(name),
-          manager_profiles(manager_name, email),
-          investor_profiles(first_name, last_name, email)
+          manager_profiles!manager_user_id(manager_name, email),
+          investor_profiles!investor_user_id(first_name, last_name, email)
         `)
         .order('submitted_at', { ascending: false });
 

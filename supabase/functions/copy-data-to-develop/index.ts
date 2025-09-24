@@ -138,6 +138,7 @@ Deno.serve(async (req) => {
       fund_edit_suggestions: 0,
       fund_edit_history: 0,
       saved_funds: 0,
+      storage_files: 0,
       errors: [] as string[],
     }
 
@@ -213,6 +214,131 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Copy storage files
+    const copyStorageFiles = async () => {
+      try {
+        console.log('Starting storage file copy...')
+        let copiedFiles = 0
+        
+        // List of buckets to sync
+        const buckets = ['fund-briefs-pending', 'fund-briefs', 'fund-logos', 'profile-photos']
+        
+        // Helper function to recursively list all files in a folder
+        const listAllFiles = async (client: any, bucketName: string, folder = '', allFiles: any[] = []): Promise<any[]> => {
+          const { data: files, error } = await client.storage
+            .from(bucketName)
+            .list(folder, { limit: 1000, sortBy: { column: 'created_at', order: 'desc' } })
+          
+          if (error) {
+            console.log(`Error listing ${bucketName}/${folder}: ${error.message}`)
+            return allFiles
+          }
+          
+          if (!files) return allFiles
+          
+          for (const item of files) {
+            const fullPath = folder ? `${folder}/${item.name}` : item.name
+            
+            // Folders typically have no id and no metadata in Supabase Storage list()
+            const isFolder = !item.id && !item.metadata
+            if (isFolder) {
+              // Recurse into folder
+              await listAllFiles(client, bucketName, fullPath, allFiles)
+            } else {
+              // This is a file
+              allFiles.push({ ...item, fullPath })
+            }
+          }
+          
+          return allFiles
+        }
+        
+        for (const bucketName of buckets) {
+          console.log(`Copying files from bucket: ${bucketName}`)
+          
+          try {
+            // Get all files recursively
+            const files = await listAllFiles(prod, bucketName)
+            
+            if (files.length === 0) {
+              console.log(`No files found in bucket: ${bucketName}`)
+              continue
+            }
+            
+            console.log(`Found ${files.length} files in ${bucketName}`)
+            
+            // Download and upload each file
+            for (const file of files) {
+              try {
+                // Skip if not a real file
+                if (!file.name.includes('.')) continue
+                
+                const filePath = file.fullPath
+                
+                // Download from production
+                const { data: fileData, error: downloadError } = await prod.storage
+                  .from(bucketName)
+                  .download(filePath)
+                
+                if (downloadError) {
+                  console.log(`Failed to download ${bucketName}/${filePath}: ${downloadError.message}`)
+                  continue
+                }
+                
+                // Upload to development (create bucket if needed)
+                let uploadError: any = null
+                try {
+                  const { error } = await dev.storage
+                    .from(bucketName)
+                    .upload(filePath, fileData, {
+                      upsert: true,
+                      cacheControl: '3600'
+                    })
+                  uploadError = error
+                } catch (e: any) {
+                  uploadError = e
+                }
+                
+                if (uploadError) {
+                  const msg = String(uploadError.message || uploadError).toLowerCase()
+                  if (msg.includes('bucket not found')) {
+                    try {
+                      await dev.storage.createBucket(bucketName, {
+                        public: bucketName === 'fund-logos' || bucketName === 'profile-photos'
+                      })
+                      const { error: retryErr } = await dev.storage
+                        .from(bucketName)
+                        .upload(filePath, fileData, { upsert: true, cacheControl: '3600' })
+                      if (retryErr) throw retryErr
+                    } catch (ce: any) {
+                      console.log(`Failed to create bucket or upload ${bucketName}/${filePath}: ${ce.message}`)
+                      continue
+                    }
+                  } else {
+                    console.log(`Failed to upload ${bucketName}/${filePath}: ${uploadError.message || uploadError}`)
+                    continue
+                  }
+                }
+                
+                copiedFiles++
+                console.log(`Copied: ${bucketName}/${filePath}`)
+              } catch (e: any) {
+                console.log(`Error copying file ${bucketName}/${file.fullPath}: ${e.message}`)
+              }
+            }
+          } catch (e: any) {
+            console.log(`Error processing bucket ${bucketName}: ${e.message}`)
+            ;(results.errors as string[]).push(`Bucket ${bucketName}: ${e.message}`)
+          }
+        }
+        
+        results.storage_files = copiedFiles
+        console.log(`Total storage files copied: ${copiedFiles}`)
+      } catch (e: any) {
+        ;(results.errors as string[]).push(`Storage copy failed: ${e.message}`)
+      }
+    }
+
     await Promise.all([
       copyTable('funds'),
       copyTable('manager_profiles', { uniqueKey: 'email' }),
@@ -221,9 +347,10 @@ Deno.serve(async (req) => {
       copyTable('fund_edit_suggestions'),
       copyTable('fund_edit_history'),
       copyTable('saved_funds'),
+      copyStorageFiles(),
     ])
 
-    const total = ['funds','manager_profiles','investor_profiles','admin_users','fund_edit_suggestions','fund_edit_history','saved_funds']
+    const total = ['funds','manager_profiles','investor_profiles','admin_users','fund_edit_suggestions','fund_edit_history','saved_funds','storage_files']
       .reduce((sum, t) => sum + (Number(results[t]) || 0), 0)
 
     return new Response(

@@ -46,3 +46,18 @@ verify_jwt = false
 
 [functions.full-database-sync]
 verify_jwt = false
+
+[functions.test-funds-develop]
+verify_jwt = false
+
+[functions.fix-funds-develop]
+verify_jwt = false
+
+[functions.update-funds-develop-schema]
+verify_jwt = false
+
+[functions.cleanup-funds-develop]
+verify_jwt = false
+
+[functions.create-test-dataset]
+verify_jwt = false
