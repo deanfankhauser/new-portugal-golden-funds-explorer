@@ -89,7 +89,8 @@ jobs:
           PROD_SERVICE_KEY="${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
           
           call_function() {
-            echo "Calling full-project-sync edge function on PRODUCTION project..."
+            # Log to stderr so JSON on stdout remains clean for parsing
+            echo "Calling full-project-sync edge function on PRODUCTION project..." >&2
             curl -s -w "\n%{http_code}" -X POST \
                  -H "Authorization: Bearer ${PROD_SERVICE_KEY}" \
                  -H "apikey: ${PROD_SERVICE_KEY}" \
