@@ -177,6 +177,13 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
           {
+            foreignKeyName: "fund_brief_submissions_investor_user_fkey"
+            columns: ["investor_user_id"]
+            isOneToOne: false
+            referencedRelation: "investor_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
             foreignKeyName: "fund_brief_submissions_manager_user_fk"
             columns: ["manager_user_id"]
             isOneToOne: false
@@ -185,6 +192,20 @@ export type Database = {
           },
           {
             foreignKeyName: "fund_brief_submissions_manager_user_fk"
+            columns: ["manager_user_id"]
+            isOneToOne: false
+            referencedRelation: "manager_profiles_public"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "fund_brief_submissions_manager_user_fkey"
+            columns: ["manager_user_id"]
+            isOneToOne: false
+            referencedRelation: "manager_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "fund_brief_submissions_manager_user_fkey"
             columns: ["manager_user_id"]
             isOneToOne: false
             referencedRelation: "manager_profiles_public"
