@@ -101,6 +101,11 @@ const applyEditHistory = (
       
       if (fetchError) {
         console.error('❌ Error fetching funds from Supabase:', fetchError);
+        console.error('❌ Full error details:', JSON.stringify(fetchError, null, 2));
+        console.error('❌ Environment check:', {
+          supabaseUrl: import.meta.env.VITE_SUPABASE_URL?.substring(0, 30) + '...',
+          hasAnonKey: !!import.meta.env.VITE_SUPABASE_ANON_KEY
+        });
         // Fall back to static funds and try to overlay edit history if possible
         try {
           const base = staticFunds;
