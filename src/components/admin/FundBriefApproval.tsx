@@ -76,8 +76,9 @@ const FundBriefApproval: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!user) return;
     fetchSubmissions();
-  }, []);
+  }, [user?.id]);
 
   const handleApprove = async (submission: BriefSubmission) => {
     if (!user) return;
@@ -249,11 +250,14 @@ const FundBriefApproval: React.FC = () => {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
+        <CardHeader className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
             Fund Brief Submissions
           </CardTitle>
+          <Button variant="outline" size="sm" onClick={fetchSubmissions}>
+            Refresh
+          </Button>
         </CardHeader>
         <CardContent>
           {submissions.length === 0 ? (
