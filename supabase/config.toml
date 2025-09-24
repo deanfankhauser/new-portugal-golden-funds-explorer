@@ -55,3 +55,6 @@ verify_jwt = false
 
 [functions.update-funds-develop-schema]
 verify_jwt = false
+
+[functions.cleanup-funds-develop]
+verify_jwt = false
