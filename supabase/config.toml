@@ -58,3 +58,6 @@ verify_jwt = false
 
 [functions.cleanup-funds-develop]
 verify_jwt = false
+
+[functions.create-test-dataset]
+verify_jwt = false
