@@ -493,6 +493,56 @@ await ensureCoreRelations(dev, operations)
 // Ensure RLS policies for core profile tables
 await ensureCoreRLSPolicies(dev, operations)
 
+// Sync authentication users and settings to Funds_Develop
+console.log('Syncing authentication data...')
+try {
+  const authUsersSQL = `
+    -- Copy auth.users data (basic user accounts)
+    INSERT INTO auth.users (
+      id, email, encrypted_password, email_confirmed_at, 
+      invited_at, confirmation_token, confirmation_sent_at,
+      recovery_token, recovery_sent_at, email_change_token_new,
+      email_change, email_change_sent_at, last_sign_in_at,
+      raw_app_meta_data, raw_user_meta_data, is_super_admin,
+      created_at, updated_at, phone, phone_confirmed_at,
+      phone_change, phone_change_token, phone_change_sent_at,
+      email_change_token_current, email_change_confirm_status,
+      banned_until, reauthentication_token, reauthentication_sent_at,
+      is_sso_user, deleted_at, is_anonymous
+    )
+    SELECT 
+      id, email, encrypted_password, email_confirmed_at,
+      invited_at, confirmation_token, confirmation_sent_at,
+      recovery_token, recovery_sent_at, email_change_token_new,
+      email_change, email_change_sent_at, last_sign_in_at,
+      raw_app_meta_data, raw_user_meta_data, is_super_admin,
+      created_at, updated_at, phone, phone_confirmed_at,
+      phone_change, phone_change_token, phone_change_sent_at,
+      email_change_token_current, email_change_confirm_status,
+      banned_until, reauthentication_token, reauthentication_sent_at,
+      is_sso_user, deleted_at, is_anonymous
+    FROM auth.users
+    ON CONFLICT (id) DO UPDATE SET
+      email = EXCLUDED.email,
+      encrypted_password = EXCLUDED.encrypted_password,
+      email_confirmed_at = EXCLUDED.email_confirmed_at,
+      raw_app_meta_data = EXCLUDED.raw_app_meta_data,
+      raw_user_meta_data = EXCLUDED.raw_user_meta_data,
+      updated_at = EXCLUDED.updated_at;
+  `
+  
+  // Note: We run this as a query but it may fail due to permissions
+  // This is expected in development environments
+  try {
+    await dev.rpc('query', { query_text: authUsersSQL }).single()
+    operations.push({ operation: 'sync_auth_users', status: 'success', details: 'Auth users synced' })
+  } catch (authError: any) {
+    operations.push({ operation: 'sync_auth_users', status: 'warning', details: `Auth sync may require manual setup: ${authError.message}` })
+  }
+} catch (e: any) {
+  operations.push({ operation: 'sync_auth_users', status: 'error', details: e.message })
+}
+
 // Sync RLS policies from production
 console.log('Syncing RLS policies...')
 try {
@@ -542,9 +592,21 @@ try {
         WHERE au.user_id = auth.uid()
       )
     );
+
+    -- Fix fund_brief_submissions relationships
+    -- Ensure data integrity by setting manager_user_id and investor_user_id 
+    UPDATE public.fund_brief_submissions f
+    SET manager_user_id = f.user_id
+    FROM public.manager_profiles m
+    WHERE f.manager_user_id IS NULL AND m.user_id = f.user_id;
+
+    UPDATE public.fund_brief_submissions f
+    SET investor_user_id = f.user_id
+    FROM public.investor_profiles i
+    WHERE f.investor_user_id IS NULL AND i.user_id = f.user_id;
   `
   await dev.rpc('query', { query_text: policiesSQL }).single()
-  operations.push({ operation: 'sync_rls_policies', status: 'success', details: 'RLS policies synced for development' })
+  operations.push({ operation: 'sync_rls_policies', status: 'success', details: 'RLS policies synced and fund_brief_submissions relationships fixed' })
 } catch (e: any) {
   operations.push({ operation: 'sync_rls_policies', status: 'error', details: e.message })
 }
