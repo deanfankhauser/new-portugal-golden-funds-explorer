@@ -32,9 +32,87 @@ Deno.serve(async (req) => {
     const prod = createClient(prodUrl, prodKey)
     const dev = createClient(devUrl, devKey)
     
-    const operations: SyncOperation[] = []
+const operations: SyncOperation[] = []
 
-    // 1. Sync custom types/enums first
+// Helper: ensure 'funds' table exists in development and has public read policy
+async function ensureFundsTable(dev: any, prod: any, operations: SyncOperation[]) {
+  try {
+    // Check if table exists by attempting a lightweight select
+    let tableExists = true
+    try {
+      await dev.from('funds').select('*').limit(1)
+    } catch (_e) {
+      tableExists = false
+    }
+
+    if (!tableExists) {
+      // Introspect production schema for 'funds' columns
+      const { data: schemaInfo, error: schemaErr } = await prod.rpc('get_database_schema_info')
+      if (schemaErr || !schemaInfo) throw new Error(`Could not read prod schema: ${schemaErr?.message || 'unknown'}`)
+
+      const cols = (schemaInfo as Array<any>).filter((r) => r.table_name === 'funds')
+      if (cols.length === 0) throw new Error('No column info for funds table from prod')
+
+      const columnDefs = cols
+        .map((col: any) => {
+          let def = `${col.column_name} ${col.data_type}`
+          if (col.is_nullable === 'NO') def += ' NOT NULL'
+          if (col.column_default) def += ` DEFAULT ${col.column_default}`
+          return def
+        })
+        .join(',\n  ')
+
+      const createSQL = `
+        CREATE TABLE IF NOT EXISTS public.funds (
+          ${columnDefs}
+        );
+      `
+
+      // Create table in development
+      await dev.rpc('query', { query_text: createSQL }).single()
+
+      operations.push({
+        operation: 'ensure_funds_table',
+        status: 'success',
+        details: 'Created funds table in development'
+      })
+    } else {
+      operations.push({
+        operation: 'ensure_funds_table',
+        status: 'success',
+        details: 'Funds table exists in development'
+      })
+    }
+
+    // Ensure RLS + public read policy exists (idempotent)
+    const rlsSQL = `
+      ALTER TABLE public.funds ENABLE ROW LEVEL SECURITY;
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = 'funds' AND polname = 'Public read access to funds'
+        ) THEN
+          CREATE POLICY "Public read access to funds" ON public.funds FOR SELECT USING (true);
+        END IF;
+      END $$;
+    `
+    await dev.rpc('query', { query_text: rlsSQL }).single()
+
+    operations.push({
+      operation: 'ensure_funds_rls',
+      status: 'success',
+      details: 'RLS enabled with public select policy on funds'
+    })
+  } catch (e: any) {
+    operations.push({
+      operation: 'ensure_funds_table_and_rls',
+      status: 'error',
+      details: e.message
+    })
+  }
+}
+
+// 1. Sync custom types/enums first
     console.log('Syncing custom types...')
     try {
       const { data: types } = await prod.rpc('get_database_schema_info')
@@ -150,8 +228,11 @@ Deno.serve(async (req) => {
       })
     }
 
-    // 4. Sync table data
-    console.log('Syncing table data...')
+// Ensure funds table exists and has public read policy
+await ensureFundsTable(dev, prod, operations)
+
+// 4. Sync table data
+console.log('Syncing table data...')
     const tables = [
       'funds',
       'manager_profiles', 
