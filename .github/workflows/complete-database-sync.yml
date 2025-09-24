@@ -75,6 +75,12 @@ jobs:
           echo "PROD_DB_URL_NORM=${PROD_DB_URL_NORM}" >> $GITHUB_ENV
           echo "DEV_DB_URL_NORM=${DEV_DB_URL_NORM}" >> $GITHUB_ENV
 
+      - name: Wait for function deployment
+        run: |
+          echo "⏳ Waiting for edge function to be deployed..."
+          sleep 30
+          echo "✅ Function should be ready"
+
       - name: Call full project sync edge function
         run: |
           echo "🚀 Initiating full project sync via edge function..."
