@@ -81,13 +81,16 @@ const applyEditHistory = (
   const fetchFunds = async () => {
     try {
       setLoading(true);
+      console.log('🔍 Attempting to fetch funds from Supabase...');
       const { data: supabaseFunds, error: fetchError } = await supabase
         .from('funds')
         .select('*')
         .order('created_at', { ascending: true }); // Order by created_at ascending to preserve original order
 
+      console.log('📊 Supabase response:', { supabaseFunds: supabaseFunds?.length, fetchError });
+      
       if (fetchError) {
-        console.error('Error fetching funds from Supabase:', fetchError);
+        console.error('❌ Error fetching funds from Supabase:', fetchError);
         // Fall back to static funds and try to overlay edit history if possible
         try {
           const base = staticFunds;
