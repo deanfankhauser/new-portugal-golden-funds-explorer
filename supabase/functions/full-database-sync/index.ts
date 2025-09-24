@@ -176,12 +176,40 @@ async function ensureCoreRelations(dev: any, operations: SyncOperation[]) {
           ALTER TABLE public.fund_brief_submissions ADD PRIMARY KEY (id);
         END IF;
 
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.table_constraints 
+          WHERE table_schema='public' AND table_name='manager_profiles' AND constraint_type='PRIMARY KEY'
+        ) THEN
+          ALTER TABLE public.manager_profiles ADD PRIMARY KEY (id);
+        END IF;
+
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.table_constraints 
+          WHERE table_schema='public' AND table_name='investor_profiles' AND constraint_type='PRIMARY KEY'
+        ) THEN
+          ALTER TABLE public.investor_profiles ADD PRIMARY KEY (id);
+        END IF;
+
+        -- Ensure unique user_id on profiles for relationship targets
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.table_constraints
+          WHERE table_schema='public' AND table_name='manager_profiles' AND constraint_type='UNIQUE' AND constraint_name='manager_profiles_user_id_key'
+        ) THEN
+          ALTER TABLE public.manager_profiles ADD CONSTRAINT manager_profiles_user_id_key UNIQUE (user_id);
+        END IF;
+
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.table_constraints
+          WHERE table_schema='public' AND table_name='investor_profiles' AND constraint_type='UNIQUE' AND constraint_name='investor_profiles_user_id_key'
+        ) THEN
+          ALTER TABLE public.investor_profiles ADD CONSTRAINT investor_profiles_user_id_key UNIQUE (user_id);
+        END IF;
+
         -- Foreign key for embed: fund_brief_submissions -> funds
         IF NOT EXISTS (
-          SELECT 1 FROM information_schema.constraint_column_usage 
-          WHERE table_schema='public' AND table_name='fund_brief_submissions' AND column_name='fund_id'
+          SELECT 1 FROM information_schema.table_constraints
+          WHERE table_schema='public' AND table_name='fund_brief_submissions' AND constraint_name='fund_brief_submissions_fund_id_fkey'
         ) THEN
-          -- ensure column exists, then add FK
           IF EXISTS (
             SELECT 1 FROM information_schema.columns 
             WHERE table_schema='public' AND table_name='fund_brief_submissions' AND column_name='fund_id'
@@ -191,8 +219,42 @@ async function ensureCoreRelations(dev: any, operations: SyncOperation[]) {
             FOREIGN KEY (fund_id) REFERENCES public.funds(id) ON DELETE NO ACTION;
           END IF;
         END IF;
-      END $$;
-    `
+
+        -- NOTE: To support PostgREST embeds for both manager_profiles and investor_profiles,
+        -- we create NOT VALID, DEFERRABLE constraints. These enable relationship discovery
+        -- without validating existing rows. New writes should still work in dev; if they fail
+        -- due to missing counterpart, you can temporarily defer them per-transaction.
+
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.table_constraints
+          WHERE table_schema='public' AND table_name='fund_brief_submissions' AND constraint_name='fund_brief_submissions_user_id_manager_fk'
+        ) THEN
+          IF EXISTS (
+            SELECT 1 FROM information_schema.columns 
+            WHERE table_schema='public' AND table_name='fund_brief_submissions' AND column_name='user_id'
+          ) THEN
+            ALTER TABLE public.fund_brief_submissions
+            ADD CONSTRAINT fund_brief_submissions_user_id_manager_fk
+            FOREIGN KEY (user_id) REFERENCES public.manager_profiles(user_id)
+            DEFERRABLE INITIALLY DEFERRED NOT VALID;
+          END IF;
+        END IF;
+
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.table_constraints
+          WHERE table_schema='public' AND table_name='fund_brief_submissions' AND constraint_name='fund_brief_submissions_user_id_investor_fk'
+        ) THEN
+          IF EXISTS (
+            SELECT 1 FROM information_schema.columns 
+            WHERE table_schema='public' AND table_name='fund_brief_submissions' AND column_name='user_id'
+          ) THEN
+            ALTER TABLE public.fund_brief_submissions
+            ADD CONSTRAINT fund_brief_submissions_user_id_investor_fk
+            FOREIGN KEY (user_id) REFERENCES public.investor_profiles(user_id)
+            DEFERRABLE INITIALLY DEFERRED NOT VALID;
+          END IF;
+        END IF;
+      END $$;`
     await dev.rpc('query', { query_text: fkSQL }).single()
     operations.push({ operation: 'ensure_core_relations', status: 'success', details: 'Primary keys and FKs ensured for embeds' })
   } catch (e: any) {
