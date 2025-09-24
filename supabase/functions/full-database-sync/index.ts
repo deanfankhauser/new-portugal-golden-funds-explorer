@@ -493,6 +493,62 @@ await ensureCoreRelations(dev, operations)
 // Ensure RLS policies for core profile tables
 await ensureCoreRLSPolicies(dev, operations)
 
+// Sync RLS policies from production
+console.log('Syncing RLS policies...')
+try {
+  const policiesSQL = `
+    -- Drop existing policies first
+    DROP POLICY IF EXISTS "Regular admins can view basic investor info" ON public.investor_profiles;
+    DROP POLICY IF EXISTS "Super admins can view all investor profiles with logging" ON public.investor_profiles;
+    
+    -- Create simplified admin access policy for development
+    CREATE POLICY "Admins can view investor profiles"
+    ON public.investor_profiles FOR SELECT
+    USING (
+      auth.uid() = user_id OR 
+      EXISTS (
+        SELECT 1 FROM public.admin_users au 
+        WHERE au.user_id = auth.uid()
+      )
+    );
+
+    CREATE POLICY "Admins can update investor profiles"
+    ON public.investor_profiles FOR UPDATE
+    USING (
+      EXISTS (
+        SELECT 1 FROM public.admin_users au 
+        WHERE au.user_id = auth.uid()
+      )
+    );
+
+    CREATE POLICY "Admins can delete investor profiles"
+    ON public.investor_profiles FOR DELETE
+    USING (
+      EXISTS (
+        SELECT 1 FROM public.admin_users au 
+        WHERE au.user_id = auth.uid()
+      )
+    );
+
+    -- Ensure manager_profiles has proper policies too
+    DROP POLICY IF EXISTS "Authenticated users can see business contact info for valid pur" ON public.manager_profiles;
+    
+    CREATE POLICY "Admins and owners can view manager profiles"
+    ON public.manager_profiles FOR SELECT
+    USING (
+      auth.uid() = user_id OR 
+      EXISTS (
+        SELECT 1 FROM public.admin_users au 
+        WHERE au.user_id = auth.uid()
+      )
+    );
+  `
+  await dev.rpc('query', { query_text: policiesSQL }).single()
+  operations.push({ operation: 'sync_rls_policies', status: 'success', details: 'RLS policies synced for development' })
+} catch (e: any) {
+  operations.push({ operation: 'sync_rls_policies', status: 'error', details: e.message })
+}
+
 // 4. Sync table data
 console.log('Syncing table data...')
     const tables = [
