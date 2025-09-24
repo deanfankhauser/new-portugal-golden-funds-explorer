@@ -112,6 +112,94 @@ async function ensureFundsTable(dev: any, prod: any, operations: SyncOperation[]
   }
 }
 
+// Helper: ensure a table exists in development by replicating columns from production
+async function ensureTableExists(dev: any, prod: any, tableName: string, operations: SyncOperation[]) {
+  try {
+    let exists = true
+    try {
+      await dev.from(tableName).select('*').limit(1)
+    } catch (_e) {
+      exists = false
+    }
+
+    if (exists) {
+      operations.push({ operation: `ensure_${tableName}_table`, status: 'success', details: `${tableName} exists in development` })
+      return
+    }
+
+    const { data: schemaInfo, error: schemaErr } = await prod.rpc('get_database_schema_info')
+    if (schemaErr || !schemaInfo) throw new Error(`Could not read prod schema: ${schemaErr?.message || 'unknown'}`)
+
+    const cols = (schemaInfo as Array<any>).filter((r) => r.table_name === tableName)
+    if (cols.length === 0) throw new Error(`No column info for ${tableName} from prod`)
+
+    const columnDefs = cols
+      .map((col: any) => {
+        let def = `${col.column_name} ${col.data_type}`
+        if (col.is_nullable === 'NO') def += ' NOT NULL'
+        if (col.column_default) def += ` DEFAULT ${col.column_default}`
+        return def
+      })
+      .join(',\n  ')
+
+    const createSQL = `
+      CREATE TABLE IF NOT EXISTS public.${tableName} (
+        ${columnDefs}
+      );
+    `
+
+    await dev.rpc('query', { query_text: createSQL }).single()
+    operations.push({ operation: `ensure_${tableName}_table`, status: 'success', details: `Created ${tableName} table in development` })
+  } catch (e: any) {
+    operations.push({ operation: `ensure_${tableName}_table`, status: 'error', details: e.message })
+  }
+}
+
+// Helper: ensure minimum foreign keys for PostgREST embeds
+async function ensureCoreRelations(dev: any, operations: SyncOperation[]) {
+  try {
+    const fkSQL = `
+      DO $$
+      BEGIN
+        -- Primary keys (id) if missing
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.table_constraints 
+          WHERE table_schema='public' AND table_name='funds' AND constraint_type='PRIMARY KEY'
+        ) THEN
+          ALTER TABLE public.funds ADD PRIMARY KEY (id);
+        END IF;
+
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.table_constraints 
+          WHERE table_schema='public' AND table_name='fund_brief_submissions' AND constraint_type='PRIMARY KEY'
+        ) THEN
+          ALTER TABLE public.fund_brief_submissions ADD PRIMARY KEY (id);
+        END IF;
+
+        -- Foreign key for embed: fund_brief_submissions -> funds
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.constraint_column_usage 
+          WHERE table_schema='public' AND table_name='fund_brief_submissions' AND column_name='fund_id'
+        ) THEN
+          -- ensure column exists, then add FK
+          IF EXISTS (
+            SELECT 1 FROM information_schema.columns 
+            WHERE table_schema='public' AND table_name='fund_brief_submissions' AND column_name='fund_id'
+          ) THEN
+            ALTER TABLE public.fund_brief_submissions
+            ADD CONSTRAINT fund_brief_submissions_fund_id_fkey
+            FOREIGN KEY (fund_id) REFERENCES public.funds(id) ON DELETE NO ACTION;
+          END IF;
+        END IF;
+      END $$;
+    `
+    await dev.rpc('query', { query_text: fkSQL }).single()
+    operations.push({ operation: 'ensure_core_relations', status: 'success', details: 'Primary keys and FKs ensured for embeds' })
+  } catch (e: any) {
+    operations.push({ operation: 'ensure_core_relations', status: 'error', details: e.message })
+  }
+}
+
 // 1. Sync custom types/enums first
     console.log('Syncing custom types...')
     try {
@@ -230,6 +318,21 @@ async function ensureFundsTable(dev: any, prod: any, operations: SyncOperation[]
 
 // Ensure funds table exists and has public read policy
 await ensureFundsTable(dev, prod, operations)
+
+// Ensure other core tables exist in development before syncing data
+await Promise.all([
+  ensureTableExists(dev, prod, 'manager_profiles', operations),
+  ensureTableExists(dev, prod, 'investor_profiles', operations),
+  ensureTableExists(dev, prod, 'admin_users', operations),
+  ensureTableExists(dev, prod, 'fund_edit_suggestions', operations),
+  ensureTableExists(dev, prod, 'fund_edit_history', operations),
+  ensureTableExists(dev, prod, 'fund_brief_submissions', operations),
+  ensureTableExists(dev, prod, 'saved_funds', operations),
+  ensureTableExists(dev, prod, 'account_deletion_requests', operations)
+])
+
+// Ensure minimal relations needed for embeds (e.g., fund_brief_submissions -> funds)
+await ensureCoreRelations(dev, operations)
 
 // 4. Sync table data
 console.log('Syncing table data...')
