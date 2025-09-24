@@ -935,6 +935,10 @@ useEffect(() => {
                   fundId={fund.id}
                   fundName={fund.name}
                   currentBriefUrl={formData.fundBriefUrl}
+                  onSubmissionSuccess={() => {
+                    // Mark that a fund brief submission was made
+                    handleInputChange('fundBriefUrl', 'SUBMISSION_PENDING');
+                  }}
                 />
               </div>
             </TabsContent>

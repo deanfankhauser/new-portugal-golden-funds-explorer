@@ -11,6 +11,7 @@ interface FundBriefSubmissionProps {
   fundId: string;
   fundName: string;
   currentBriefUrl?: string;
+  onSubmissionSuccess?: () => void;
 }
 
 interface BriefSubmission {
@@ -27,6 +28,7 @@ const FundBriefSubmission: React.FC<FundBriefSubmissionProps> = ({
   fundId,
   fundName,
   currentBriefUrl,
+  onSubmissionSuccess,
 }) => {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -130,6 +132,7 @@ const FundBriefSubmission: React.FC<FundBriefSubmissionProps> = ({
 
       toast.success('Fund brief submitted for admin approval');
       fetchSubmissions(); // Refresh the list
+      onSubmissionSuccess?.(); // Notify parent component
     } catch (error) {
       console.error('Error submitting fund brief:', error);
       toast.error('Failed to submit fund brief');
