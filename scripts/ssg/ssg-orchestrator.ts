@@ -59,8 +59,9 @@ export async function generateStaticFiles() {
   // Generate 404 page
   await generate404Page(distDir);
   
-  // Generate sitemaps only with successful routes
-  generateSitemap(successfulRoutes, distDir);
+  // Generate sitemaps with all discovered routes (not just successful ones)
+  // This ensures the sitemap includes all intended URLs for SEO, even if SSG fails for some
+  generateSitemap(routes, distDir);
   generateFundsSitemap(distDir);
   
   // Final report
