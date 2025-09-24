@@ -95,7 +95,7 @@ jobs:
                  -H "apikey: ${PROD_SERVICE_KEY}" \
                  -H "Content-Type: application/json" \
                  -d '{}' \
-                 "${PROD_URL}/functions/v1/full-project-sync"
+                 "${PROD_URL}/functions/v1/full-project-sync" 2>/dev/null
           }
           
           response=$(call_function)
