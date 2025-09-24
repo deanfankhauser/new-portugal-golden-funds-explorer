@@ -18,7 +18,7 @@ const FundLogo: React.FC<FundLogoProps> = ({
   size = 'md', 
   className 
 }) => {
-  const { getPendingChangesForFund } = useFundEditing();
+  const { getPendingChangesForFund, updatePendingChanges } = useFundEditing();
   const [imageError, setImageError] = useState(false);
   
   // Check for pending logo changes
@@ -57,7 +57,17 @@ const FundLogo: React.FC<FundLogoProps> = ({
           <AvatarImage 
             src={effectiveLogoUrl} 
             alt={`${fundName} logo`}
-            onError={() => setImageError(true)}
+            onError={() => {
+              setImageError(true);
+              // If this is a pending change and it fails to load, clean it up
+              if (fundId && pendingChanges.logoUrl !== undefined && effectiveLogoUrl === pendingChanges.logoUrl) {
+                console.warn('Cleaning up broken pending logo URL:', effectiveLogoUrl);
+                // Remove the broken logoUrl from pending changes
+                const currentPending = fundId ? getPendingChangesForFund(fundId) : {};
+                const { logoUrl, ...otherChanges } = currentPending;
+                updatePendingChanges(fundId, otherChanges);
+              }
+            }}
             className="object-cover w-full h-full"
           />
         )}

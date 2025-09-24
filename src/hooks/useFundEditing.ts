@@ -187,6 +187,17 @@ export const useFundEditing = () => {
     }
   }, [user]);
 
+  const clearPendingChangesForFund = useCallback((fundId: string) => {
+    updatePendingChanges(fundId, {});
+  }, [updatePendingChanges]);
+
+  const clearAllPendingChanges = useCallback(() => {
+    setPendingChanges({});
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('fundEditPendingChanges');
+    }
+  }, []);
+
   return {
     user,
     loading: authLoading || loading,
@@ -199,5 +210,7 @@ export const useFundEditing = () => {
     pendingChanges,
     updatePendingChanges,
     getPendingChangesForFund: (fundId: string) => pendingChanges[fundId] || {},
+    clearPendingChangesForFund,
+    clearAllPendingChanges,
   };
 };
