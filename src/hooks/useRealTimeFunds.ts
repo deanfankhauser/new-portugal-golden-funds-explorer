@@ -82,12 +82,22 @@ const applyEditHistory = (
     try {
       setLoading(true);
       console.log('🔍 Attempting to fetch funds from Supabase...');
+      console.log('🔗 Environment variables check:', {
+        hasSupabaseUrl: !!import.meta.env.VITE_SUPABASE_URL,
+        hasSupabaseKey: !!import.meta.env.VITE_SUPABASE_ANON_KEY,
+        supabaseUrlPrefix: import.meta.env.VITE_SUPABASE_URL?.substring(0, 30) + '...'
+      });
+      
       const { data: supabaseFunds, error: fetchError } = await supabase
         .from('funds')
         .select('*')
         .order('created_at', { ascending: true }); // Order by created_at ascending to preserve original order
 
-      console.log('📊 Supabase response:', { supabaseFunds: supabaseFunds?.length, fetchError });
+      console.log('📊 Supabase response:', { 
+        supabaseFunds: supabaseFunds?.length, 
+        fetchError,
+        actualData: supabaseFunds?.slice(0, 2) // Show first 2 funds for debugging
+      });
       
       if (fetchError) {
         console.error('❌ Error fetching funds from Supabase:', fetchError);
