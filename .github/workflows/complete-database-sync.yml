@@ -125,7 +125,7 @@ jobs:
           
           echo "✅ Schema sync script prepared"
 
-       - name: Sync Supabase auth and storage via API
+      - name: Sync Supabase auth and storage via API
         run: |
           echo "🔄 Syncing auth and storage via Supabase API..."
           cd /tmp/complete-sync
