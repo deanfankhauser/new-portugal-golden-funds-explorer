@@ -201,6 +201,97 @@ async function ensureCoreRelations(dev: any, operations: SyncOperation[]) {
 }
 
 // 1. Sync custom types/enums first
+// Helper: ensure core RLS policies for manager and investor profiles
+async function ensureCoreRLSPolicies(dev: any, operations: SyncOperation[]) {
+  try {
+    const rlsSQL = `
+      -- Manager profiles RLS and policies
+      ALTER TABLE IF EXISTS public.manager_profiles ENABLE ROW LEVEL SECURITY;
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='manager_profiles' AND polname='Admins can view all manager profiles'
+        ) THEN
+          CREATE POLICY "Admins can view all manager profiles" ON public.manager_profiles
+          FOR SELECT USING (is_user_admin());
+        END IF;
+
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='manager_profiles' AND polname='Managers can create own profile'
+        ) THEN
+          CREATE POLICY "Managers can create own profile" ON public.manager_profiles
+          FOR INSERT WITH CHECK (auth.uid() = user_id);
+        END IF;
+
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='manager_profiles' AND polname='Managers can update own profile'
+        ) THEN
+          CREATE POLICY "Managers can update own profile" ON public.manager_profiles
+          FOR UPDATE USING (auth.uid() = user_id);
+        END IF;
+
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='manager_profiles' AND polname='Managers can view own profile'
+        ) THEN
+          CREATE POLICY "Managers can view own profile" ON public.manager_profiles
+          FOR SELECT USING (auth.uid() = user_id);
+        END IF;
+
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='manager_profiles' AND polname='Authenticated users can see business contact info for valid pur'
+        ) THEN
+          CREATE POLICY "Authenticated users can see business contact info for valid pur" ON public.manager_profiles
+          FOR SELECT USING ((auth.uid() IS NOT NULL) AND (status = 'approved'::manager_status) AND can_access_manager_sensitive_data(user_id));
+        END IF;
+      END $$;
+
+      -- Investor profiles RLS and policies
+      ALTER TABLE IF EXISTS public.investor_profiles ENABLE ROW LEVEL SECURITY;
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='investor_profiles' AND polname='Investors can create own profile'
+        ) THEN
+          CREATE POLICY "Investors can create own profile" ON public.investor_profiles
+          FOR INSERT WITH CHECK (auth.uid() = user_id);
+        END IF;
+
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='investor_profiles' AND polname='Investors can update own profile'
+        ) THEN
+          CREATE POLICY "Investors can update own profile" ON public.investor_profiles
+          FOR UPDATE USING (auth.uid() = user_id);
+        END IF;
+
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='investor_profiles' AND polname='Investors can view own profile'
+        ) THEN
+          CREATE POLICY "Investors can view own profile" ON public.investor_profiles
+          FOR SELECT USING (auth.uid() = user_id);
+        END IF;
+
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='investor_profiles' AND polname='Regular admins can view basic investor info'
+        ) THEN
+          CREATE POLICY "Regular admins can view basic investor info" ON public.investor_profiles
+          FOR SELECT USING (is_user_admin() AND (get_user_admin_role() <> 'super_admin'::admin_role) AND log_and_allow_investor_profile_access(user_id));
+        END IF;
+
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='investor_profiles' AND polname='Super admins can view all investor profiles with logging'
+        ) THEN
+          CREATE POLICY "Super admins can view all investor profiles with logging" ON public.investor_profiles
+          FOR SELECT USING (log_and_allow_investor_profile_access(user_id));
+        END IF;
+      END $$;`
+
+    await dev.rpc('query', { query_text: rlsSQL }).single()
+    operations.push({ operation: 'ensure_core_rls', status: 'success', details: 'Ensured RLS and core policies for manager_profiles and investor_profiles' })
+  } catch (e: any) {
+    operations.push({ operation: 'ensure_core_rls', status: 'error', details: e.message })
+  }
+}
+
     console.log('Syncing custom types...')
     try {
       const { data: types } = await prod.rpc('get_database_schema_info')
@@ -333,6 +424,9 @@ await Promise.all([
 
 // Ensure minimal relations needed for embeds (e.g., fund_brief_submissions -> funds)
 await ensureCoreRelations(dev, operations)
+
+// Ensure RLS policies for core profile tables
+await ensureCoreRLSPolicies(dev, operations)
 
 // 4. Sync table data
 console.log('Syncing table data...')
