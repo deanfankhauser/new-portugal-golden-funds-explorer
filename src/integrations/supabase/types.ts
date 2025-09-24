@@ -119,6 +119,8 @@ export type Database = {
           created_at: string
           fund_id: string
           id: string
+          investor_user_id: string | null
+          manager_user_id: string | null
           rejection_reason: string | null
           reviewed_at: string | null
           reviewed_by: string | null
@@ -133,6 +135,8 @@ export type Database = {
           created_at?: string
           fund_id: string
           id?: string
+          investor_user_id?: string | null
+          manager_user_id?: string | null
           rejection_reason?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
@@ -147,6 +151,8 @@ export type Database = {
           created_at?: string
           fund_id?: string
           id?: string
+          investor_user_id?: string | null
+          manager_user_id?: string | null
           rejection_reason?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
@@ -155,7 +161,36 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fund_brief_submissions_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "funds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fund_brief_submissions_investor_user_fk"
+            columns: ["investor_user_id"]
+            isOneToOne: false
+            referencedRelation: "investor_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "fund_brief_submissions_manager_user_fk"
+            columns: ["manager_user_id"]
+            isOneToOne: false
+            referencedRelation: "manager_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "fund_brief_submissions_manager_user_fk"
+            columns: ["manager_user_id"]
+            isOneToOne: false
+            referencedRelation: "manager_profiles_public"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
       fund_edit_history: {
         Row: {

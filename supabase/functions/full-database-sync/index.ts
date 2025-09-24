@@ -220,39 +220,42 @@ async function ensureCoreRelations(dev: any, operations: SyncOperation[]) {
           END IF;
         END IF;
 
-        -- NOTE: To support PostgREST embeds for both manager_profiles and investor_profiles,
-        -- we create NOT VALID, DEFERRABLE constraints. These enable relationship discovery
-        -- without validating existing rows. New writes should still work in dev; if they fail
-        -- due to missing counterpart, you can temporarily defer them per-transaction.
+        -- Add manager_user_id and investor_user_id columns for proper PostgREST embeds
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.columns
+          WHERE table_schema='public' AND table_name='fund_brief_submissions' AND column_name='manager_user_id'
+        ) THEN
+          ALTER TABLE public.fund_brief_submissions
+            ADD COLUMN manager_user_id uuid NULL;
+        END IF;
 
         IF NOT EXISTS (
-          SELECT 1 FROM information_schema.table_constraints
-          WHERE table_schema='public' AND table_name='fund_brief_submissions' AND constraint_name='fund_brief_submissions_user_id_manager_fk'
+          SELECT 1 FROM information_schema.columns
+          WHERE table_schema='public' AND table_name='fund_brief_submissions' AND column_name='investor_user_id'
         ) THEN
-          IF EXISTS (
-            SELECT 1 FROM information_schema.columns 
-            WHERE table_schema='public' AND table_name='fund_brief_submissions' AND column_name='user_id'
-          ) THEN
-            ALTER TABLE public.fund_brief_submissions
-            ADD CONSTRAINT fund_brief_submissions_user_id_manager_fk
-            FOREIGN KEY (user_id) REFERENCES public.manager_profiles(user_id)
-            DEFERRABLE INITIALLY DEFERRED NOT VALID;
-          END IF;
+          ALTER TABLE public.fund_brief_submissions
+            ADD COLUMN investor_user_id uuid NULL;
+        END IF;
+
+        -- Create valid FKs on the new columns
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.table_constraints
+          WHERE table_schema='public' AND table_name='fund_brief_submissions' AND constraint_name='fund_brief_submissions_manager_user_fk'
+        ) THEN
+          ALTER TABLE public.fund_brief_submissions
+            ADD CONSTRAINT fund_brief_submissions_manager_user_fk
+            FOREIGN KEY (manager_user_id) REFERENCES public.manager_profiles(user_id)
+            ON UPDATE CASCADE ON DELETE SET NULL;
         END IF;
 
         IF NOT EXISTS (
           SELECT 1 FROM information_schema.table_constraints
-          WHERE table_schema='public' AND table_name='fund_brief_submissions' AND constraint_name='fund_brief_submissions_user_id_investor_fk'
+          WHERE table_schema='public' AND table_name='fund_brief_submissions' AND constraint_name='fund_brief_submissions_investor_user_fk'
         ) THEN
-          IF EXISTS (
-            SELECT 1 FROM information_schema.columns 
-            WHERE table_schema='public' AND table_name='fund_brief_submissions' AND column_name='user_id'
-          ) THEN
-            ALTER TABLE public.fund_brief_submissions
-            ADD CONSTRAINT fund_brief_submissions_user_id_investor_fk
-            FOREIGN KEY (user_id) REFERENCES public.investor_profiles(user_id)
-            DEFERRABLE INITIALLY DEFERRED NOT VALID;
-          END IF;
+          ALTER TABLE public.fund_brief_submissions
+            ADD CONSTRAINT fund_brief_submissions_investor_user_fk
+            FOREIGN KEY (investor_user_id) REFERENCES public.investor_profiles(user_id)
+            ON UPDATE CASCADE ON DELETE SET NULL;
         END IF;
       END $$;`
     await dev.rpc('query', { query_text: fkSQL }).single()
