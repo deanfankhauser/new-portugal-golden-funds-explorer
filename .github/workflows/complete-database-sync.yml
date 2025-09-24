@@ -85,21 +85,31 @@ jobs:
         run: |
           echo "🚀 Initiating full project sync via edge function..."
           
-          DEV_URL="${{ secrets.FUNDS_DEV_SUPABASE_URL }}"
-          DEV_SERVICE_KEY="${{ secrets.FUNDS_DEV_SUPABASE_SERVICE_ROLE_KEY }}"
+          PROD_URL="${{ secrets.SUPABASE_URL }}"
+          PROD_SERVICE_KEY="${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
           
-          # Call the full-project-sync edge function
-          echo "Calling full-project-sync edge function..."
+          call_function() {
+            echo "Calling full-project-sync edge function on PRODUCTION project..."
+            curl -s -w "\n%{http_code}" -X POST \
+                 -H "Authorization: Bearer ${PROD_SERVICE_KEY}" \
+                 -H "apikey: ${PROD_SERVICE_KEY}" \
+                 -H "Content-Type: application/json" \
+                 -d '{}' \
+                 "${PROD_URL}/functions/v1/full-project-sync"
+          }
           
-          response=$(curl -s -w "\n%{http_code}" -X POST \
-               -H "Authorization: Bearer ${DEV_SERVICE_KEY}" \
-               -H "apikey: ${DEV_SERVICE_KEY}" \
-               -H "Content-Type: application/json" \
-               -d '{}' \
-               "${DEV_URL}/functions/v1/full-project-sync")
-          
+          response=$(call_function)
           http_code=$(echo "$response" | tail -n1)
           response_body=$(echo "$response" | head -n -1)
+          
+          # If function is not found, wait and retry once (deployment propagation)
+          if [ "$http_code" -eq 404 ]; then
+            echo "⚠️ Function not found (404). Waiting 20s and retrying..."
+            sleep 20
+            response=$(call_function)
+            http_code=$(echo "$response" | tail -n1)
+            response_body=$(echo "$response" | head -n -1)
+          fi
           
           echo "HTTP Status Code: $http_code"
           echo "Response:"
