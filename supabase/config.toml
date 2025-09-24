@@ -49,3 +49,6 @@ verify_jwt = false
 
 [functions.test-funds-develop]
 verify_jwt = false
+
+[functions.fix-funds-develop]
+verify_jwt = false
