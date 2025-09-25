@@ -45,31 +45,45 @@ const FundBriefApproval: React.FC = () => {
   const fetchSubmissions = async () => {
     console.log('FundBriefApproval: fetchSubmissions called, user:', user?.id);
     try {
-      const { data, error } = await supabase
+      // Primary query with lightweight left joins for names
+      let { data, error } = await supabase
         .from('fund_brief_submissions')
         .select(`
           *,
-          funds!inner(name),
+          funds(name),
           manager_profiles!left!manager_user_id(manager_name, email),
           investor_profiles!left!investor_user_id(first_name, last_name, email)
         `)
         .order('submitted_at', { ascending: false });
 
-      console.log('FundBriefApproval: Query result:', { data, error });
+      console.log('FundBriefApproval: Primary query result:', { count: data?.length, error });
 
       if (error) throw error;
 
-      // Transform the data to flatten joined fields
-      const transformedData = data?.map((item: any) => ({
+      // Fallback: if nothing returned, fetch base rows without joins
+      if (!data || data.length === 0) {
+        const fallback = await supabase
+          .from('fund_brief_submissions')
+          .select('*')
+          .order('submitted_at', { ascending: false });
+        console.log('FundBriefApproval: Fallback query result:', { count: fallback.data?.length, error: fallback.error });
+        if (!fallback.error) {
+          data = fallback.data as any[];
+        }
+      }
+
+      // Transform the data to flatten joined fields (if joins exist)
+      const transformedData = (data || []).map((item: any) => ({
         ...item,
         fund_name: item.funds?.name || 'Unknown Fund',
-        submitter_name: item.manager_profiles?.manager_name || 
-                       `${item.investor_profiles?.first_name || ''} ${item.investor_profiles?.last_name || ''}`.trim() ||
-                       'Unknown User',
+        submitter_name:
+          item.manager_profiles?.manager_name ||
+          `${item.investor_profiles?.first_name || ''} ${item.investor_profiles?.last_name || ''}`.trim() ||
+          'Unknown User',
         submitter_email: item.manager_profiles?.email || item.investor_profiles?.email || ''
       })) as BriefSubmission[];
 
-      console.log('FundBriefApproval: Transformed data:', transformedData);
+      console.log('FundBriefApproval: Transformed data length:', transformedData.length);
       setSubmissions(transformedData || []);
     } catch (error) {
       console.error('Error fetching submissions:', error);
