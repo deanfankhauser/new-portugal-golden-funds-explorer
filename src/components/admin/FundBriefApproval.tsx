@@ -186,6 +186,23 @@ const FundBriefApproval: React.FC = () => {
 
       if (submissionUpdateError) throw submissionUpdateError;
 
+      // Send approval notification email
+      try {
+        await supabase.functions.invoke('notify-brief-decision', {
+          body: {
+            submissionId: submission.id,
+            fundName: submission.fund_name,
+            fundId: submission.fund_id,
+            decision: 'approved',
+            submitterEmail: submission.submitter_email,
+            submitterName: submission.submitter_name
+          }
+        });
+      } catch (emailError) {
+        console.error('Failed to send approval email:', emailError);
+        // Don't throw - email failure shouldn't stop the approval process
+      }
+
       // Delete from pending bucket
       await supabase.storage
         .from('fund-briefs-pending')
@@ -240,6 +257,24 @@ const FundBriefApproval: React.FC = () => {
 
       if (storageError) {
         console.warn('Storage deletion error (non-critical):', storageError);
+      }
+
+      // Send rejection notification email
+      try {
+        await supabase.functions.invoke('notify-brief-decision', {
+          body: {
+            submissionId: submission.id,
+            fundName: submission.fund_name,
+            fundId: submission.fund_id,
+            decision: 'rejected',
+            rejectionReason: reason,
+            submitterEmail: submission.submitter_email,
+            submitterName: submission.submitter_name
+          }
+        });
+      } catch (emailError) {
+        console.error('Failed to send rejection email:', emailError);
+        // Don't throw - email failure shouldn't stop the rejection process
       }
 
       toast.success('Fund brief rejected');
