@@ -20,7 +20,9 @@ export class PerformanceOptimizationService {
     const externalDomains = [
       'https://fonts.googleapis.com',
       'https://fonts.gstatic.com',
-      'https://cdn.jsdelivr.net'
+      'https://cdn.jsdelivr.net',
+      'https://supabase.com',
+      'https://www.google-analytics.com'
     ];
 
     externalDomains.forEach(domain => {
@@ -28,7 +30,7 @@ export class PerformanceOptimizationService {
         const preconnect = document.createElement('link');
         preconnect.rel = 'preconnect';
         preconnect.href = domain;
-        if (domain.includes('fonts')) {
+        if (domain.includes('fonts') || domain.includes('supabase')) {
           preconnect.crossOrigin = 'anonymous';
         }
         document.head.appendChild(preconnect);
@@ -69,7 +71,9 @@ export class PerformanceOptimizationService {
       { name: 'X-Content-Type-Options', content: 'nosniff' },
       { name: 'X-Frame-Options', content: 'DENY' },
       { name: 'X-XSS-Protection', content: '1; mode=block' },
-      { name: 'Referrer-Policy', content: 'strict-origin-when-cross-origin' }
+      { name: 'Referrer-Policy', content: 'strict-origin-when-cross-origin' },
+      { name: 'Permissions-Policy', content: 'geolocation=(), microphone=(), camera=()' },
+      { name: 'Content-Security-Policy', content: "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;" }
     ];
 
     headers.forEach(header => {
@@ -80,6 +84,16 @@ export class PerformanceOptimizationService {
         document.head.appendChild(meta);
       }
     });
+
+    // Add font optimization
+    if (!document.querySelector('link[rel="preload"][as="font"]')) {
+      const fontPreload = document.createElement('link');
+      fontPreload.rel = 'preload';
+      fontPreload.as = 'font';
+      fontPreload.type = 'font/woff2';
+      fontPreload.crossOrigin = 'anonymous';
+      document.head.appendChild(fontPreload);
+    }
   }
 
   // Validate and report performance metrics
