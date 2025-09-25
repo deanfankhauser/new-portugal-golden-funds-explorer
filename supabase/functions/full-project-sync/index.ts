@@ -93,7 +93,7 @@ serve(async (req) => {
       operations.push({
         operation: 'sync_auth_users',
         status: 'error',
-        details: error.message,
+        details: error instanceof Error ? error.message : String(error),
         timestamp: new Date().toISOString()
       });
       overallSuccess = false;

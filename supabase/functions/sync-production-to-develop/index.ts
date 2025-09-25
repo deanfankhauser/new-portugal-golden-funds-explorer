@@ -104,7 +104,7 @@ serve(async (req) => {
             results.push({
               operation: `create_bucket_${bucket.id}`,
               status: 'error',
-              details: `Error processing bucket: ${error.message}`,
+              details: `Error processing bucket: ${error instanceof Error ? error.message : String(error)}`,
               timestamp: new Date().toISOString()
             });
           }
@@ -123,7 +123,7 @@ serve(async (req) => {
       results.push({
         operation: 'sync_storage_buckets',
         status: 'error',
-        details: `Error syncing storage buckets: ${error.message}`,
+        details: `Error syncing storage buckets: ${error instanceof Error ? error.message : String(error)}`,
         timestamp: new Date().toISOString()
       });
     }
@@ -211,7 +211,7 @@ serve(async (req) => {
         results.push({
           operation: `sync_data_${tableName}`,
           status: 'error',
-          details: `Error syncing ${tableName}: ${error.message}`,
+          details: `Error syncing ${tableName}: ${error instanceof Error ? error.message : String(error)}`,
           timestamp: new Date().toISOString()
         });
       }
