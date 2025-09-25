@@ -190,7 +190,7 @@ const FundLogoUpload: React.FC<FundLogoUploadProps> = ({
             size="lg" 
           />
           <div>
-            <p className="font-medium">{currentLogoUrl ? 'Current Logo' : 'No Logo Set'}</p>
+            <p className="font-medium">{currentLogoUrl ? 'Current Logo' : 'No Logo'}</p>
             <p className="text-sm text-muted-foreground">
               {currentLogoUrl ? 'Logo is displayed across the platform' : 'Fund initials will be shown instead'}
             </p>
