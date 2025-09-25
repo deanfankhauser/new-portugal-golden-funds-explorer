@@ -43,6 +43,7 @@ const FundBriefApproval: React.FC = () => {
   const { user, session } = useEnhancedAuth();
 
   const fetchSubmissions = async () => {
+    console.log('FundBriefApproval: fetchSubmissions called, user:', user?.id);
     try {
       const { data, error } = await supabase
         .from('fund_brief_submissions')
@@ -53,6 +54,8 @@ const FundBriefApproval: React.FC = () => {
           investor_profiles!left!investor_user_id(first_name, last_name, email)
         `)
         .order('submitted_at', { ascending: false });
+
+      console.log('FundBriefApproval: Query result:', { data, error });
 
       if (error) throw error;
 
@@ -66,6 +69,7 @@ const FundBriefApproval: React.FC = () => {
         submitter_email: item.manager_profiles?.email || item.investor_profiles?.email || ''
       })) as BriefSubmission[];
 
+      console.log('FundBriefApproval: Transformed data:', transformedData);
       setSubmissions(transformedData || []);
     } catch (error) {
       console.error('Error fetching submissions:', error);
