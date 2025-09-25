@@ -36,12 +36,13 @@ Deno.serve(async (req) => {
 
     console.log('🔗 Using Funds_Develop URL:', fundsDevUrl.substring(0, 30) + '...');
 
-    // Fetch funds using service role key
+    // Fetch funds using service role key with proper headers
     const response = await fetch(`${fundsDevUrl}/rest/v1/funds?select=*&order=created_at.asc`, {
       headers: {
         'Authorization': `Bearer ${fundsDevKey}`,
         'apikey': fundsDevKey,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
       }
     });
 
