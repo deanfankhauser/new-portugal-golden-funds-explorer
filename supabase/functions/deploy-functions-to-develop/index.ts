@@ -78,12 +78,12 @@ serve(async (req) => {
         "Functions have been prepared for deployment",
         "To complete deployment, use the Supabase CLI:",
         "1. Set up CLI with Funds_Develop project",
-        "2. Run: supabase functions deploy --project-ref fgwmkjivosjvvslbrvxe",
+        "2. Run: supabase functions deploy --project-ref [FUNDS_DEV_PROJECT_ID]",
         "3. Update config.toml in Funds_Develop with verify_jwt = false settings"
       ],
       cli_commands: [
         "supabase login",
-        "supabase link --project-ref fgwmkjivosjvvslbrvxe",
+        "supabase link --project-ref [FUNDS_DEV_PROJECT_ID]",
         "supabase functions deploy"
       ]
     };

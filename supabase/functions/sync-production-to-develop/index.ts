@@ -275,7 +275,7 @@ serve(async (req) => {
       ],
       cli_commands: [
         'supabase login',
-        'supabase link --project-ref fgwmkjivosjvvslbrvxe',
+        'supabase link --project-ref [FUNDS_DEV_PROJECT_ID]',
         'supabase functions deploy',
         'supabase db push'
       ]
