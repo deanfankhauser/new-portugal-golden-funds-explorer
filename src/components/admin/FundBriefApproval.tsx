@@ -204,13 +204,12 @@ const FundBriefApproval: React.FC = () => {
   const handleReject = async (submission: BriefSubmission) => {
     if (!user) return;
 
-    const reason = rejectionReason[submission.id];
+    const rawReason = rejectionReason[submission.id];
+    const reason = (rawReason && rawReason.trim()) ? rawReason.trim() : 'Rejected by admin';
     console.log('Reject button clicked for submission:', submission.id, 'reason:', reason);
     
-    if (!reason?.trim()) {
-      toast.error('Please provide a rejection reason');
-      return;
-    }
+    // Proceed even if no explicit reason was provided to avoid blocking the action
+
 
     setProcessing(submission.id);
     try {
