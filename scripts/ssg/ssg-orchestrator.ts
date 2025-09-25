@@ -6,6 +6,7 @@ import { processRoute } from './route-processor';
 import { validateGeneratedFile, verifyCriticalPages } from './validation';
 import { generateSitemap } from './sitemap-generator';
 import { generateFundsSitemap } from './sitemap-funds-generator';
+import { EnhancedSitemapService } from '../../src/services/enhancedSitemapService';
 import { generate404Page } from './404-generator';
 
 export async function generateStaticFiles() {
@@ -59,10 +60,22 @@ export async function generateStaticFiles() {
   // Generate 404 page
   await generate404Page(distDir);
   
-  // Generate sitemaps with all discovered routes (not just successful ones)
+  // Generate enhanced sitemaps with all discovered routes
   // This ensures the sitemap includes all intended URLs for SEO, even if SSG fails for some
   generateSitemap(routes, distDir);
   generateFundsSitemap(distDir);
+  
+  // Generate enhanced sitemap with comparison and alternatives pages
+  const enhancedSitemapXML = EnhancedSitemapService.generateEnhancedSitemapXML();
+  fs.writeFileSync(path.join(distDir, 'sitemap.xml'), enhancedSitemapXML);
+  
+  // Generate sitemap index
+  const sitemapIndex = EnhancedSitemapService.generateSitemapIndex();
+  fs.writeFileSync(path.join(distDir, 'sitemap-index.xml'), sitemapIndex);
+  
+  // Generate robots.txt
+  const robotsTxt = EnhancedSitemapService.generateRobotsTxt();
+  fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsTxt);
   
   // Final report
   if (process.env.NODE_ENV !== 'production') {
@@ -71,7 +84,8 @@ export async function generateStaticFiles() {
     console.log(`   ✅ Successfully generated: ${successCount}/${routes.length} pages`);
     console.log(`   📁 CSS assets linked: ${validCss.length}`);
     console.log(`   📁 JS assets linked: ${validJs.length}`);
-    console.log(`   🗺️  Sitemap generated with ${routes.length} URLs`);
+    console.log(`   🗺️  Enhanced sitemap generated with comprehensive URL coverage`);
+    console.log(`   🗺️  Sitemap index and robots.txt updated`);
     
     if (failedRoutes.length > 0) {
       console.log(`   ❌ Failed routes: ${failedRoutes.join(', ')}`);
