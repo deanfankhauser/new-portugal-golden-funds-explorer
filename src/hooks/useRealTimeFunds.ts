@@ -281,7 +281,8 @@ const applyEditHistory = (
             maturityYears: 'Not provided',
             realEstateExposure: 'Not provided',
             managerAttestation: true
-          } : undefined
+          } : undefined,
+          fundBriefUrl: fund.fund_brief_url || undefined
         }));
 
         // Also fetch edit history and apply approved changes as an overlay
