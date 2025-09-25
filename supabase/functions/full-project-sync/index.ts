@@ -348,7 +348,7 @@ serve(async (req) => {
     try {
       const verificationResults = [];
       
-      for (const tableName of tables) {
+      for (const tableName of safeTables) {
         const { count: devCount } = await devSupabase
           .from(tableName)
           .select('*', { count: 'exact', head: true });
