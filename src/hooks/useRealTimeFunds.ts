@@ -111,10 +111,90 @@ const applyEditHistory = (
       if (fetchError) {
         console.error('❌ Error fetching funds from Supabase:', fetchError);
         console.error('❌ Full error details:', JSON.stringify(fetchError, null, 2));
-        console.error('❌ Environment check:', {
-          supabaseUrl: import.meta.env.VITE_SUPABASE_URL?.substring(0, 30) + '...',
-          hasAnonKey: !!import.meta.env.VITE_SUPABASE_ANON_KEY
-        });
+        
+        // If 401 error, try fetching from Funds_Develop via edge function
+        if (fetchError.code === 'PGRST301' || fetchError.message?.includes('401')) {
+          console.log('🔄 401 error detected, trying Funds_Develop via edge function...');
+          try {
+            const { data: developFunds, error: developError } = await supabase.functions.invoke('get-develop-funds');
+            
+            if (!developError && developFunds?.funds) {
+              console.log('✅ Successfully fetched from Funds_Develop:', developFunds.funds.length, 'funds');
+              
+              // Transform the data to Fund interface
+              const transformedFunds: Fund[] = developFunds.funds.map((fund: any) => ({
+                id: fund.id,
+                name: fund.name,
+                description: fund.description || '',
+                detailedDescription: fund.detailed_description || '',
+                managerName: fund.manager_name || '',
+                minimumInvestment: Number(fund.minimum_investment) || 0,
+                fundSize: Number(fund.aum) / 1000000 || 0,
+                managementFee: Number(fund.management_fee) || 0,
+                performanceFee: Number(fund.performance_fee) || 0,
+                term: Math.round((fund.lock_up_period_months || 0) / 12) || 5,
+                returnTarget: fund.expected_return_min && fund.expected_return_max 
+                  ? `${fund.expected_return_min}-${fund.expected_return_max}% annually`
+                  : 'Target returns not specified',
+                fundStatus: 'Open' as const,
+                established: fund.inception_date 
+                  ? new Date(fund.inception_date).getFullYear() 
+                  : new Date().getFullYear(),
+                regulatedBy: 'CMVM',
+                location: 'Portugal',
+                tags: (fund.tags || []) as FundTag[],
+                category: (fund.category || 'Mixed') as FundCategory,
+                websiteUrl: fund.website || undefined,
+                logoUrl: fund.logo_url || staticFunds.find(s => s.id === fund.id)?.logoUrl,
+                geographicAllocation: Array.isArray(fund.geographic_allocation) 
+                  ? (fund.geographic_allocation as unknown as GeographicAllocation[])
+                  : undefined,
+                team: Array.isArray(fund.team_members) 
+                  ? (fund.team_members as unknown as TeamMember[])
+                  : undefined,
+                documents: Array.isArray(fund.pdf_documents) 
+                  ? (fund.pdf_documents as unknown as PdfDocument[])
+                  : undefined,
+                faqs: Array.isArray(fund.faqs) 
+                  ? (fund.faqs as unknown as FAQItem[])
+                  : undefined,
+                historicalPerformance: (() => {
+                  const hp = fund.historical_performance as Record<string, { returns?: number; aum?: number; nav?: number }> | null;
+                  if (hp && typeof hp === 'object' && Object.keys(hp).length > 0) return hp;
+                  return staticFunds.find(s => s.id === fund.id)?.historicalPerformance;
+                })(),
+                datePublished: fund.created_at || new Date().toISOString(),
+                dateModified: fund.updated_at || fund.created_at || new Date().toISOString(),
+                subscriptionFee: 0,
+                redemptionFee: 0,
+                managerLogo: undefined,
+                redemptionTerms: undefined,
+                dataLastVerified: fund.updated_at || fund.created_at,
+                performanceDataDate: fund.updated_at || fund.created_at,
+                feeLastUpdated: fund.updated_at || fund.created_at,
+                statusLastUpdated: fund.updated_at || fund.created_at,
+                cmvmId: undefined,
+                auditor: undefined,
+                custodian: undefined,
+                navFrequency: undefined,
+                pficStatus: undefined,
+                eligibilityBasis: fund.gv_eligible ? {
+                  portugalAllocation: 'Not provided',
+                  maturityYears: 'Not provided',
+                  realEstateExposure: 'Not provided',
+                  managerAttestation: true
+                } : undefined
+              }));
+              
+              setFunds(transformedFunds);
+              setError(null);
+              return;
+            }
+          } catch (developErr) {
+            console.error('❌ Failed to fetch from Funds_Develop:', developErr);
+          }
+        }
+        
         // Fall back to static funds and try to overlay edit history if possible
         try {
           const base = staticFunds;

@@ -64,3 +64,6 @@ verify_jwt = false
 
 [functions.full-project-sync]
 verify_jwt = false
+
+[functions.get-develop-funds]
+verify_jwt = false
