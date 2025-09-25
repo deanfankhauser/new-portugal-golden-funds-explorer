@@ -12,7 +12,8 @@ import {
   Loader2, 
   FileText,
   User,
-  Calendar 
+  Calendar,
+  Trash2
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -263,6 +264,43 @@ const FundBriefApproval: React.FC = () => {
     }
   };
 
+  const handleDelete = async (submission: BriefSubmission) => {
+    if (!user) return;
+
+    setProcessing(submission.id);
+    try {
+      // Delete from database
+      const { error: deleteError } = await supabase
+        .from('fund_brief_submissions')
+        .delete()
+        .eq('id', submission.id);
+
+      if (deleteError) throw deleteError;
+
+      // Delete file from storage based on status
+      const bucket = submission.status === 'approved' ? 'fund-briefs' : 'fund-briefs-pending';
+      await supabase.storage
+        .from(bucket)
+        .remove([submission.brief_filename]);
+
+      // If approved brief, also remove fund_brief_url from fund
+      if (submission.status === 'approved') {
+        await supabase
+          .from('funds')
+          .update({ fund_brief_url: null })
+          .eq('id', submission.fund_id);
+      }
+
+      toast.success('Fund brief deleted successfully');
+      fetchSubmissions();
+    } catch (error) {
+      console.error('Error deleting submission:', error);
+      toast.error('Failed to delete fund brief');
+    } finally {
+      setProcessing(null);
+    }
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pending':
@@ -428,6 +466,21 @@ const FundBriefApproval: React.FC = () => {
                             </Button>
                           </>
                         )}
+                        
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDelete(submission)}
+                          disabled={processing === submission.id}
+                          className="gap-2"
+                        >
+                          {processing === submission.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="h-4 w-4" />
+                          )}
+                          Delete
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
