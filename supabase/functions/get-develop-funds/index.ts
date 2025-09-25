@@ -17,8 +17,8 @@ Deno.serve(async (req) => {
   try {
     console.log('🔄 Fetching funds from Funds_Develop project...');
     
-    const fundsDevUrl = Deno.env.get('VITE_FUNDS_DEV_SUPABASE_URL');
-    const fundsDevKey = Deno.env.get('VITE_FUNDS_DEV_SUPABASE_SERVICE_ROLE_KEY');
+    const fundsDevUrl = Deno.env.get('FUNDS_DEV_SUPABASE_URL');
+    const fundsDevKey = Deno.env.get('FUNDS_DEV_SUPABASE_SERVICE_ROLE_KEY');
     
     if (!fundsDevUrl || !fundsDevKey) {
       console.error('❌ Missing Funds_Develop credentials');

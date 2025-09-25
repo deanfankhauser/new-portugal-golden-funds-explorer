@@ -24,7 +24,7 @@ const DEVELOPMENT_CONFIG: SecurityConfig = {
 
 // Determine if we're in production
 function isProduction(): boolean {
-  const supabaseUrl = Deno.env.get('VITE_SUPABASE_URL') || '';
+  const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
   return supabaseUrl.includes('.supabase.co') && !supabaseUrl.includes('develop');
 }
 

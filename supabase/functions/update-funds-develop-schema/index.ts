@@ -102,11 +102,11 @@ Deno.serve(async (req) => {
     
     // Copy funds using basic insert
     try {
-      const prodUrl = Deno.env.get('VITE_SUPABASE_URL');
+      const prodUrl = Deno.env.get('SUPABASE_URL');
       const prodResponse = await fetch(`${prodUrl}/rest/v1/funds?select=*`, {
         headers: {
-          'Authorization': `Bearer ${Deno.env.get('VITE_SUPABASE_SERVICE_ROLE_KEY')}`,
-          'apikey': Deno.env.get('VITE_SUPABASE_ANON_KEY')!
+          'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+          'apikey': Deno.env.get('SUPABASE_ANON_KEY')!
         }
       })
       
