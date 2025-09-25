@@ -9,8 +9,17 @@ export const useFundFiltering = () => {
   const { funds, filterFunds, loading, error } = useRealTimeFunds();
 
   const filteredFunds = useMemo(() => {
-    return filterFunds(selectedTags, searchQuery);
-  }, [selectedTags, searchQuery, filterFunds]);
+    const result = filterFunds(selectedTags, searchQuery);
+    console.log('🔍 Filtering debug:', {
+      totalFunds: funds.length,
+      selectedTags,
+      searchQuery,
+      filteredCount: result.length,
+      loading,
+      error
+    });
+    return result;
+  }, [selectedTags, searchQuery, filterFunds, funds.length, loading, error]);
 
   return {
     selectedTags,

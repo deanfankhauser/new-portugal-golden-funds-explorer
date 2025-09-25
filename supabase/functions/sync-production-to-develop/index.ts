@@ -104,7 +104,7 @@ serve(async (req) => {
             results.push({
               operation: `create_bucket_${bucket.id}`,
               status: 'error',
-              details: `Error processing bucket: ${error.message}`,
+              details: `Error processing bucket: ${error instanceof Error ? error.message : String(error)}`,
               timestamp: new Date().toISOString()
             });
           }
@@ -123,7 +123,7 @@ serve(async (req) => {
       results.push({
         operation: 'sync_storage_buckets',
         status: 'error',
-        details: `Error syncing storage buckets: ${error.message}`,
+        details: `Error syncing storage buckets: ${error instanceof Error ? error.message : String(error)}`,
         timestamp: new Date().toISOString()
       });
     }
@@ -211,7 +211,7 @@ serve(async (req) => {
         results.push({
           operation: `sync_data_${tableName}`,
           status: 'error',
-          details: `Error syncing ${tableName}: ${error.message}`,
+          details: `Error syncing ${tableName}: ${error instanceof Error ? error.message : String(error)}`,
           timestamp: new Date().toISOString()
         });
       }
@@ -275,7 +275,7 @@ serve(async (req) => {
       ],
       cli_commands: [
         'supabase login',
-        'supabase link --project-ref fgwmkjivosjvvslbrvxe',
+        'supabase link --project-ref [FUNDS_DEV_PROJECT_ID]',
         'supabase functions deploy',
         'supabase db push'
       ]
@@ -299,7 +299,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         error: 'Sync operation failed', 
-        details: error.message,
+        details: (error instanceof Error ? error.message : String(error)),
         suggestion: 'Check the logs and ensure all environment variables are set correctly'
       }),
       { 

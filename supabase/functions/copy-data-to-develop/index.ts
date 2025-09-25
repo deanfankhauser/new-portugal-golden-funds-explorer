@@ -184,7 +184,7 @@ Deno.serve(async (req) => {
         // Attempt to clear destination table (best-effort). If table has 'id', use IS NOT NULL
         const hasId = devSchema[table].includes('id')
         const delQuery = dev.from(table).delete()
-        const { error: delErr } = hasId ? delQuery.not('id', 'is', null) : delQuery
+        const { error: delErr } = await (hasId ? delQuery.not('id', 'is', null) : delQuery)
         if (delErr) console.log(`Warning clearing ${table}: ${delErr.message}`)
 
         // Upsert in batches; onConflict id when available; ignore duplicates
@@ -362,9 +362,10 @@ Deno.serve(async (req) => {
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
     return new Response(
-      JSON.stringify({ success: false, message: err.message, results: { errors: [err.message] }, timestamp: new Date().toISOString() }),
+      JSON.stringify({ success: false, message: msg, results: { errors: [msg] }, timestamp: new Date().toISOString() }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }

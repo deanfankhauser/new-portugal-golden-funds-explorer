@@ -12,7 +12,8 @@ import {
   Loader2, 
   FileText,
   User,
-  Calendar 
+  Calendar,
+  Trash2
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -43,30 +44,84 @@ const FundBriefApproval: React.FC = () => {
   const { user, session } = useEnhancedAuth();
 
   const fetchSubmissions = async () => {
+    console.log('FundBriefApproval: fetchSubmissions called, user:', user?.id);
     try {
-      const { data, error } = await supabase
+      // 1) Fetch base submissions without any joins (avoids PostgREST relationship issues)
+      const { data: baseRows, error: baseError } = await supabase
         .from('fund_brief_submissions')
-        .select(`
-          *,
-          funds!inner(name),
-          manager_profiles!left!manager_user_id(manager_name, email),
-          investor_profiles!left!investor_user_id(first_name, last_name, email)
-        `)
+        .select('*')
         .order('submitted_at', { ascending: false });
 
-      if (error) throw error;
+      if (baseError) {
+        console.error('FundBriefApproval: base fetch error', baseError);
+        throw baseError;
+      }
 
-      // Transform the data to flatten joined fields
-      const transformedData = data?.map((item: any) => ({
-        ...item,
-        fund_name: item.funds?.name || 'Unknown Fund',
-        submitter_name: item.manager_profiles?.manager_name || 
-                       `${item.investor_profiles?.first_name || ''} ${item.investor_profiles?.last_name || ''}`.trim() ||
-                       'Unknown User',
-        submitter_email: item.manager_profiles?.email || item.investor_profiles?.email || ''
-      })) as BriefSubmission[];
+      const rows = baseRows || [];
+      console.log('FundBriefApproval: base rows count', rows.length);
 
-      setSubmissions(transformedData || []);
+      if (rows.length === 0) {
+        setSubmissions([]);
+        setLoading(false);
+        return;
+      }
+
+      // 2) Collect related IDs
+      const fundIds = Array.from(new Set(rows.map(r => r.fund_id).filter(Boolean)));
+      const managerIds = Array.from(new Set(rows.map(r => r.manager_user_id).filter(Boolean)));
+      const investorIds = Array.from(new Set(rows.map(r => r.investor_user_id).filter(Boolean)));
+
+      // 3) Fetch related data (sequential to satisfy TS types)
+      let fundsRes: any = { data: [], error: null };
+      let managersRes: any = { data: [], error: null };
+      let investorsRes: any = { data: [], error: null };
+
+      if (fundIds.length) {
+        fundsRes = await supabase.from('funds').select('id, name').in('id', fundIds);
+      }
+      if (managerIds.length) {
+        managersRes = await supabase
+          .from('manager_profiles')
+          .select('user_id, manager_name, email')
+          .in('user_id', managerIds);
+      }
+      if (investorIds.length) {
+        investorsRes = await supabase
+          .from('investor_profiles')
+          .select('user_id, first_name, last_name, email')
+          .in('user_id', investorIds);
+      }
+
+      if (fundsRes.error) console.warn('FundBriefApproval: funds fetch error', fundsRes.error);
+      if (managersRes.error) console.warn('FundBriefApproval: managers fetch error', managersRes.error);
+      if (investorsRes.error) console.warn('FundBriefApproval: investors fetch error', investorsRes.error);
+
+      // 4) Build lookup maps
+      const fundMap = new Map<string, string>();
+      (fundsRes.data || []).forEach((f: any) => fundMap.set(f.id, f.name));
+
+      const managerMap = new Map<string, { name: string; email?: string }>();
+      (managersRes.data || []).forEach((m: any) => managerMap.set(m.user_id, { name: m.manager_name, email: m.email }));
+
+      const investorMap = new Map<string, { name: string; email?: string }>();
+      (investorsRes.data || []).forEach((i: any) =>
+        investorMap.set(i.user_id, { name: `${i.first_name || ''} ${i.last_name || ''}`.trim(), email: i.email })
+      );
+
+      // 5) Transform rows for UI
+      const transformed: BriefSubmission[] = rows.map((r: any) => {
+        const manager = r.manager_user_id ? managerMap.get(r.manager_user_id) : undefined;
+        const investor = r.investor_user_id ? investorMap.get(r.investor_user_id) : undefined;
+        return {
+          ...r,
+          fund_name: fundMap.get(r.fund_id) || 'Unknown Fund',
+          submitter_name: manager?.name || investor?.name || 'Unknown User',
+          submitter_email: manager?.email || investor?.email || ''
+        } as BriefSubmission;
+      });
+
+      console.log('FundBriefApproval: transformed rows', transformed.length);
+      setSubmissions(transformed);
     } catch (error) {
       console.error('Error fetching submissions:', error);
       toast.error('Failed to load fund brief submissions');
@@ -76,8 +131,9 @@ const FundBriefApproval: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!user) return;
     fetchSubmissions();
-  }, []);
+  }, [user?.id]);
 
   const handleApprove = async (submission: BriefSubmission) => {
     if (!user) return;
@@ -148,14 +204,17 @@ const FundBriefApproval: React.FC = () => {
   const handleReject = async (submission: BriefSubmission) => {
     if (!user) return;
 
-    const reason = rejectionReason[submission.id];
-    if (!reason?.trim()) {
-      toast.error('Please provide a rejection reason');
-      return;
-    }
+    const rawReason = rejectionReason[submission.id];
+    const reason = (rawReason && rawReason.trim()) ? rawReason.trim() : 'Rejected by admin';
+    console.log('Reject button clicked for submission:', submission.id, 'reason:', reason);
+    
+    // Proceed even if no explicit reason was provided to avoid blocking the action
+
 
     setProcessing(submission.id);
     try {
+      console.log('Starting rejection process for submission:', submission.id);
+      
       // Update submission status
       const { error } = await supabase
         .from('fund_brief_submissions')
@@ -167,12 +226,21 @@ const FundBriefApproval: React.FC = () => {
         })
         .eq('id', submission.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database update error:', error);
+        throw error;
+      }
+
+      console.log('Database updated successfully, now deleting file:', submission.brief_filename);
 
       // Delete from pending bucket
-      await supabase.storage
+      const { error: storageError } = await supabase.storage
         .from('fund-briefs-pending')
         .remove([submission.brief_filename]);
+
+      if (storageError) {
+        console.warn('Storage deletion error (non-critical):', storageError);
+      }
 
       toast.success('Fund brief rejected');
       setRejectionReason(prev => ({ ...prev, [submission.id]: '' }));
@@ -205,6 +273,43 @@ const FundBriefApproval: React.FC = () => {
     } catch (error) {
       console.error('Error downloading file:', error);
       toast.error('Failed to download fund brief');
+    }
+  };
+
+  const handleDelete = async (submission: BriefSubmission) => {
+    if (!user) return;
+
+    setProcessing(submission.id);
+    try {
+      // Delete from database
+      const { error: deleteError } = await supabase
+        .from('fund_brief_submissions')
+        .delete()
+        .eq('id', submission.id);
+
+      if (deleteError) throw deleteError;
+
+      // Delete file from storage based on status
+      const bucket = submission.status === 'approved' ? 'fund-briefs' : 'fund-briefs-pending';
+      await supabase.storage
+        .from(bucket)
+        .remove([submission.brief_filename]);
+
+      // If approved brief, also remove fund_brief_url from fund
+      if (submission.status === 'approved') {
+        await supabase
+          .from('funds')
+          .update({ fund_brief_url: null })
+          .eq('id', submission.fund_id);
+      }
+
+      toast.success('Fund brief deleted successfully');
+      fetchSubmissions();
+    } catch (error) {
+      console.error('Error deleting submission:', error);
+      toast.error('Failed to delete fund brief');
+    } finally {
+      setProcessing(null);
     }
   };
 
@@ -249,11 +354,22 @@ const FundBriefApproval: React.FC = () => {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
+        <CardHeader className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
             Fund Brief Submissions
           </CardTitle>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => {
+              console.log('Refresh button clicked');
+              setLoading(true);
+              fetchSubmissions();
+            }}
+          >
+            Refresh
+          </Button>
         </CardHeader>
         <CardContent>
           {submissions.length === 0 ? (
@@ -362,6 +478,21 @@ const FundBriefApproval: React.FC = () => {
                             </Button>
                           </>
                         )}
+                        
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDelete(submission)}
+                          disabled={processing === submission.id}
+                          className="gap-2"
+                        >
+                          {processing === submission.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="h-4 w-4" />
+                          )}
+                          Delete
+                        </Button>
                       </div>
                     </div>
                   </CardContent>

@@ -75,351 +75,79 @@ jobs:
           echo "PROD_DB_URL_NORM=${PROD_DB_URL_NORM}" >> $GITHUB_ENV
           echo "DEV_DB_URL_NORM=${DEV_DB_URL_NORM}" >> $GITHUB_ENV
 
-      - name: Create temp directory
+      - name: Wait for function deployment
         run: |
-          mkdir -p /tmp/complete-sync
-          cd /tmp/complete-sync
+          echo "⏳ Waiting for edge function to be deployed..."
+          sleep 30
+          echo "✅ Function should be ready"
 
-      - name: Dump complete production database schema and data
+      - name: Call full project sync edge function
         run: |
-          echo "🔄 Dumping complete production database..."
-          cd /tmp/complete-sync
+          echo "🚀 Initiating full project sync via edge function..."
           
-          # Complete dump including schema, data, functions, triggers
-          echo "Creating complete database dump..."
-          pg_dump \
-            --verbose \
-            --no-owner \
-            --no-privileges \
-            --format=plain \
-            --dbname="${PROD_DB_URL_NORM}" \
-            > complete_production_dump.sql
-          
-          echo "✅ Complete production dump created"
-          echo "Dump file size: $(du -h complete_production_dump.sql | cut -f1)"
-
-      - name: Extract and prepare schema components
-        run: |
-          echo "🔄 Extracting schema components..."
-          cd /tmp/complete-sync
-          
-          # Create SQL script to recreate everything in correct order
-          cat > sync_schema.sql << 'EOF'
-          -- ==================================================
-          -- COMPLETE SCHEMA AND DATA SYNC SCRIPT
-          -- ==================================================
-          
-          -- 1. Drop existing objects in correct order
-          DROP SCHEMA IF EXISTS public CASCADE;
-          CREATE SCHEMA public;
-          GRANT ALL ON SCHEMA public TO postgres;
-          GRANT ALL ON SCHEMA public TO public;
-          
-          -- 2. Set search path
-          SET search_path = public;
-          
-          EOF
-          
-          # Append the complete dump
-          cat complete_production_dump.sql >> sync_schema.sql
-          
-          echo "✅ Schema sync script prepared"
-
-      - name: Sync Supabase auth and storage via API
-        run: |
-          echo "🔄 Syncing auth and storage via Supabase API..."
-          cd /tmp/complete-sync
-          
-          # Set up environment variables for API calls
           PROD_URL="${{ secrets.SUPABASE_URL }}"
           PROD_SERVICE_KEY="${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
-          DEV_URL="${{ secrets.FUNDS_DEV_SUPABASE_URL }}"
-          DEV_SERVICE_KEY="${{ secrets.FUNDS_DEV_SUPABASE_SERVICE_ROLE_KEY }}"
           
-          echo "Syncing storage buckets and policies..."
-          
-          # Get storage buckets from production
-          echo "Fetching production buckets..."
-          curl -s -H "Authorization: Bearer ${PROD_SERVICE_KEY}" \
-               -H "apikey: ${PROD_SERVICE_KEY}" \
-               "${PROD_URL}/storage/v1/bucket" > prod_buckets.json
-          
-          if [ ! -s prod_buckets.json ]; then
-            echo "❌ Failed to fetch production buckets or empty response"
-            exit 1
-          fi
-          
-          echo "Production buckets:"
-          cat prod_buckets.json | jq '.'
-          
-          # Create buckets in development with better error handling
-          set +e  # Disable exit on error for this section
-          
-          while IFS= read -r bucket; do
-            BUCKET_ID=$(echo "$bucket" | jq -r '.id')
-            BUCKET_NAME=$(echo "$bucket" | jq -r '.name')
-            IS_PUBLIC=$(echo "$bucket" | jq -r '.public')
-            
-            echo "Creating bucket: $BUCKET_ID (public: $IS_PUBLIC)"
-            
-            # Create bucket with proper error handling
-            response=$(curl -s -w "\n%{http_code}" -X POST \
-                 -H "Authorization: Bearer ${DEV_SERVICE_KEY}" \
-                 -H "apikey: ${DEV_SERVICE_KEY}" \
+          call_function() {
+            # Log to stderr so JSON on stdout remains clean for parsing
+            echo "Calling full-project-sync edge function on PRODUCTION project..." >&2
+            curl -s -w "\n%{http_code}" -X POST \
+                 -H "Authorization: Bearer ${PROD_SERVICE_KEY}" \
+                 -H "apikey: ${PROD_SERVICE_KEY}" \
                  -H "Content-Type: application/json" \
-                 -d "{\"id\": \"$BUCKET_ID\", \"name\": \"$BUCKET_NAME\", \"public\": $IS_PUBLIC}" \
-                 "${DEV_URL}/storage/v1/bucket")
-            
+                 -d '{}' \
+                 "${PROD_URL}/functions/v1/full-project-sync" 2>/dev/null
+          }
+          
+          response=$(call_function)
+          http_code=$(echo "$response" | tail -n1)
+          response_body=$(echo "$response" | head -n -1)
+          
+          # If function is not found, wait and retry once (deployment propagation)
+          if [ "$http_code" -eq 404 ]; then
+            echo "⚠️ Function not found (404). Waiting 20s and retrying..."
+            sleep 20
+            response=$(call_function)
             http_code=$(echo "$response" | tail -n1)
             response_body=$(echo "$response" | head -n -1)
+          fi
+          
+          echo "HTTP Status Code: $http_code"
+          echo "Response:"
+          echo "$response_body"
+          
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Full project sync completed successfully"
             
-            if [ "$http_code" -eq 200 ] || [ "$http_code" -eq 201 ]; then
-              echo "✅ Bucket $BUCKET_ID created successfully"
-            elif [ "$http_code" -eq 409 ]; then
-              echo "⚠️  Bucket $BUCKET_ID already exists"
+            # Parse and display results
+            if command -v jq &> /dev/null; then
+              echo ""
+              echo "=== SYNC SUMMARY ==="
+              echo "$response_body" | jq -r '.message'
+              echo ""
+              echo "Operations completed:"
+              echo "$response_body" | jq -r '.operations[] | "  - \(.operation): \(.status) - \(.details)"'
+              echo ""
+              echo "Overall statistics:"
+              echo "$response_body" | jq -r '.summary | "  - Total operations: \(.total_operations)\n  - Successful: \(.successful_operations)\n  - Failed: \(.failed_operations)\n  - Warnings: \(.warnings)"'
             else
-              echo "❌ Failed to create bucket $BUCKET_ID (HTTP $http_code): $response_body"
+              echo "Response: $response_body"
             fi
-          done < <(cat prod_buckets.json | jq -c '.[]')
-          
-          set -e  # Re-enable exit on error
-
-      - name: Apply complete schema and data sync
-        run: |
-          echo "🔄 Applying complete schema and data sync..."
-          cd /tmp/complete-sync
-          
-          echo "Applying schema sync script..."
-          psql "${DEV_DB_URL_NORM}" < sync_schema.sql
-          
-          echo "✅ Schema and data sync completed"
-
-      - name: Sync storage policies via SQL
-        run: |
-          echo "🔄 Syncing storage policies..."
-          cd /tmp/complete-sync
-          
-          cat > storage_policies.sql << 'EOF'
-          -- ===============================================
-          -- STORAGE POLICIES SYNC
-          -- ===============================================
-          
-          -- Enable RLS on storage.objects
-          ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
-          
-          -- Drop existing policies
-          DROP POLICY IF EXISTS "Public read fund logos" ON storage.objects;
-          DROP POLICY IF EXISTS "Public read profile photos" ON storage.objects;
-          DROP POLICY IF EXISTS "Users can view own pending fund briefs" ON storage.objects;
-          DROP POLICY IF EXISTS "Users can upload own pending fund briefs" ON storage.objects;
-          DROP POLICY IF EXISTS "Admins can view pending fund briefs" ON storage.objects;
-          DROP POLICY IF EXISTS "Admins can modify pending fund briefs" ON storage.objects;
-          DROP POLICY IF EXISTS "Users can view own fund briefs" ON storage.objects;
-          DROP POLICY IF EXISTS "Admins can view all fund briefs" ON storage.objects;
-          DROP POLICY IF EXISTS "Admins can modify fund briefs" ON storage.objects;
-          DROP POLICY IF EXISTS "Users can upload profile photos" ON storage.objects;
-          DROP POLICY IF EXISTS "Users can update profile photos" ON storage.objects;
-          DROP POLICY IF EXISTS "Admins can upload fund logos" ON storage.objects;
-          DROP POLICY IF EXISTS "Admins can update fund logos" ON storage.objects;
-          
-          -- Create all storage policies
-          CREATE POLICY "Public read fund logos"
-          ON storage.objects FOR SELECT
-          USING (bucket_id = 'fund-logos');
-
-          CREATE POLICY "Public read profile photos"
-          ON storage.objects FOR SELECT
-          USING (bucket_id = 'profile-photos');
-
-          CREATE POLICY "Users can view own pending fund briefs"
-          ON storage.objects FOR SELECT
-          USING (
-            bucket_id = 'fund-briefs-pending'
-            AND auth.uid()::text = (storage.foldername(name))[1]
-          );
-
-          CREATE POLICY "Users can upload own pending fund briefs"
-          ON storage.objects FOR INSERT
-          WITH CHECK (
-            bucket_id = 'fund-briefs-pending'
-            AND auth.uid()::text = (storage.foldername(name))[1]
-          );
-
-          CREATE POLICY "Admins can view pending fund briefs"
-          ON storage.objects FOR SELECT
-          USING (bucket_id = 'fund-briefs-pending' AND public.is_user_admin());
-
-          CREATE POLICY "Admins can modify pending fund briefs"
-          ON storage.objects FOR UPDATE
-          USING (bucket_id = 'fund-briefs-pending' AND public.is_user_admin());
-
-          CREATE POLICY "Users can view own fund briefs"
-          ON storage.objects FOR SELECT
-          USING (
-            bucket_id = 'fund-briefs'
-            AND auth.uid()::text = (storage.foldername(name))[1]
-          );
-
-          CREATE POLICY "Admins can view all fund briefs"
-          ON storage.objects FOR SELECT
-          USING (bucket_id = 'fund-briefs' AND public.is_user_admin());
-
-          CREATE POLICY "Admins can modify fund briefs"
-          ON storage.objects FOR UPDATE
-          USING (bucket_id = 'fund-briefs' AND public.is_user_admin());
-
-          CREATE POLICY "Users can upload profile photos"
-          ON storage.objects FOR INSERT
-          WITH CHECK (
-            bucket_id = 'profile-photos'
-            AND auth.uid()::text = (storage.foldername(name))[1]
-          );
-
-          CREATE POLICY "Users can update profile photos"
-          ON storage.objects FOR UPDATE
-          USING (
-            bucket_id = 'profile-photos'
-            AND auth.uid()::text = (storage.foldername(name))[1]
-          );
-
-          CREATE POLICY "Admins can upload fund logos"
-          ON storage.objects FOR INSERT
-          WITH CHECK (bucket_id = 'fund-logos' AND public.is_user_admin());
-
-          CREATE POLICY "Admins can update fund logos"
-          ON storage.objects FOR UPDATE
-          USING (bucket_id = 'fund-logos' AND public.is_user_admin());
-          EOF
-          
-          echo "Applying storage policies..."
-          psql "${DEV_DB_URL_NORM}" < storage_policies.sql
-          
-          echo "✅ Storage policies synced"
-
-      - name: Copy storage files
-        run: |
-          echo "🔄 Copying storage files..."
-          cd /tmp/complete-sync
-          
-          # Use Supabase API to copy files between buckets
-          PROD_URL="${{ secrets.SUPABASE_URL }}"
-          PROD_SERVICE_KEY="${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
-          DEV_URL="${{ secrets.FUNDS_DEV_SUPABASE_URL }}"
-          DEV_SERVICE_KEY="${{ secrets.FUNDS_DEV_SUPABASE_SERVICE_ROLE_KEY }}"
-          
-          for bucket in "fund-logos" "profile-photos" "fund-briefs" "fund-briefs-pending"; do
-            echo "Copying files from bucket: $bucket"
-            
-            # List files in production bucket
-            curl -s -H "Authorization: Bearer ${PROD_SERVICE_KEY}" \
-                 -H "apikey: ${PROD_SERVICE_KEY}" \
-                 "${PROD_URL}/storage/v1/object/list/${bucket}" > "${bucket}_files.json"
-            
-            echo "Found $(cat ${bucket}_files.json | jq '. | length') files in $bucket"
-            
-            # Copy each file (simplified - just log for now due to complexity)
-            echo "Storage file copying would require individual file downloads and uploads"
-            echo "This can be implemented based on specific requirements"
-          done
-
-      - name: Verify complete sync
-        run: |
-          echo "🔍 Verifying complete sync..."
-          
-          echo "=== TABLE COUNTS ==="
-          psql "${DEV_DB_URL_NORM}" -c "
-            SELECT 
-              schemaname, 
-              relname as table_name, 
-              n_tup_ins + n_tup_upd + n_tup_del as total_rows 
-            FROM pg_stat_user_tables 
-            WHERE schemaname = 'public' 
-            ORDER BY relname;
-          "
-          
-          echo ""
-          echo "=== FUNCTIONS ==="
-          psql "${DEV_DB_URL_NORM}" -c "
-            SELECT routine_name, routine_type 
-            FROM information_schema.routines 
-            WHERE routine_schema = 'public'
-            ORDER BY routine_name;
-          "
-          
-          echo ""
-          echo "=== FOREIGN KEYS ==="
-          psql "${DEV_DB_URL_NORM}" -c "
-            SELECT 
-              tc.constraint_name,
-              tc.table_name,
-              kcu.column_name,
-              ccu.table_name AS foreign_table_name,
-              ccu.column_name AS foreign_column_name 
-            FROM information_schema.table_constraints AS tc 
-            JOIN information_schema.key_column_usage AS kcu
-              ON tc.constraint_name = kcu.constraint_name
-            JOIN information_schema.constraint_column_usage AS ccu
-              ON ccu.constraint_name = tc.constraint_name
-            WHERE tc.constraint_type = 'FOREIGN KEY' 
-              AND tc.table_schema = 'public'
-            ORDER BY tc.table_name, tc.constraint_name;
-          "
-          
-          echo ""
-          echo "=== RLS POLICIES ==="
-          psql "${DEV_DB_URL_NORM}" -c "
-            SELECT schemaname, tablename, policyname, cmd 
-            FROM pg_policies 
-            WHERE schemaname = 'public'
-            ORDER BY tablename, policyname;
-          "
-
-      - name: Test fund_brief_submissions query
-        run: |
-          echo "🧪 Testing the problematic query..."
-          
-          # Test the specific query that was failing
-          psql "${DEV_DB_URL_NORM}" -c "
-            SELECT COUNT(*) as fund_count FROM public.funds;
-            SELECT COUNT(*) as submissions_count FROM public.fund_brief_submissions;
-            SELECT COUNT(*) as managers_count FROM public.manager_profiles;
-            SELECT COUNT(*) as investors_count FROM public.investor_profiles;
-          "
-          
-          echo "Testing the embed query structure..."
-          psql "${DEV_DB_URL_NORM}" -c "
-            SELECT 
-              fbs.id,
-              fbs.fund_id,
-              f.name as fund_name,
-              mp.manager_name,
-              ip.first_name,
-              ip.last_name
-            FROM public.fund_brief_submissions fbs
-            LEFT JOIN public.funds f ON f.id = fbs.fund_id
-            LEFT JOIN public.manager_profiles mp ON mp.user_id = fbs.manager_user_id
-            LEFT JOIN public.investor_profiles ip ON ip.user_id = fbs.investor_user_id
-            LIMIT 5;
-          "
-
-      - name: Cleanup
-        run: |
-          echo "🧹 Cleaning up..."
-          rm -rf /tmp/complete-sync
-          echo "✅ Cleanup completed"
+          else
+            echo "❌ Full project sync failed"
+            echo "Error response: $response_body"
+            exit 1
+          fi
 
       - name: Summary
         run: |
-          echo "🎉 Complete database sync finished!"
+          echo "🎉 Complete project sync finished!"
           echo ""
-          echo "What was synced:"
-          echo "  ✅ Complete database schema (tables, columns, constraints)"
-          echo "  ✅ All table data"
-          echo "  ✅ Database functions and triggers"
-          echo "  ✅ Row Level Security (RLS) policies"
-          echo "  ✅ Storage buckets configuration"
-          echo "  ✅ Storage policies"
-          echo "  ✅ Foreign key relationships"
+          echo "What was synced via edge function:"
+          echo "  ✅ All auth users from production to development"
+          echo "  ✅ All storage buckets and files"
+          echo "  ✅ All database tables and data from public schema"
+          echo "  ✅ Database functions, triggers, and RLS policies"
+          echo "  ✅ Complete project replication"
           echo ""
-          echo "The Funds_Develop database should now be fully synchronized"
-          echo "with production and the 400 errors should be resolved."
+          echo "Your development environment is now a complete copy of production!"

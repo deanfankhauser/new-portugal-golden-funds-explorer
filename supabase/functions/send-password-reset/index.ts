@@ -133,7 +133,7 @@ const handler = async (req: Request): Promise<Response> => {
           console.log("User not found in Auth. Attempting to generate invite link...");
           
           const { data: inviteData, error: inviteError } = await supabase.auth.admin.generateLink({
-            type: 'signup',
+            type: 'invite',
             email,
             options: {
               redirectTo: finalRedirect // Use same redirect as password reset
@@ -156,10 +156,10 @@ const handler = async (req: Request): Promise<Response> => {
           console.log("Recovery link preview:", recoveryLink.substring(0, 100) + "...");
         }
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Exception generating Supabase recovery link:", {
-        message: err?.message,
-        stack: err?.stack,
+        message: err instanceof Error ? err.message : String(err),
+        stack: err instanceof Error ? err.stack : undefined,
         error: err
       });
     }
@@ -200,11 +200,11 @@ const handler = async (req: Request): Promise<Response> => {
     // Use Supabase recovery link (contains access and refresh tokens)
     const resetUrl = recoveryLink as string;
 
-    const emailSubject = recoveryLink.includes('type=signup') 
+    const emailSubject = recoveryLink.includes('type=invite') 
       ? "Complete Your Account Setup - Investment Funds Platform"
       : "Password Reset Request - Investment Funds Platform";
       
-    const isSignup = recoveryLink.includes('type=signup');
+    const isSignup = recoveryLink.includes('type=invite');
     const actionText = isSignup ? "Create Your Account" : "Reset My Password";
     const headingText = isSignup ? "Account Setup" : "Password Reset Request";
     const greetingText = isSignup 
@@ -285,11 +285,11 @@ const handler = async (req: Request): Promise<Response> => {
         }),
         { status: 200, headers: { "Content-Type": "application/json" } }
       );
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Gmail SMTP Error Details:", {
-        message: error?.message,
-        code: error?.code,
-        stack: error?.stack
+        message: error instanceof Error ? error.message : String(error),
+        code: (error as any)?.code,
+        stack: error instanceof Error ? error.stack : undefined
       });
       await client.close();
       
