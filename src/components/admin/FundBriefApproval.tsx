@@ -205,6 +205,8 @@ const FundBriefApproval: React.FC = () => {
     if (!user) return;
 
     const reason = rejectionReason[submission.id];
+    console.log('Reject button clicked for submission:', submission.id, 'reason:', reason);
+    
     if (!reason?.trim()) {
       toast.error('Please provide a rejection reason');
       return;
@@ -212,6 +214,8 @@ const FundBriefApproval: React.FC = () => {
 
     setProcessing(submission.id);
     try {
+      console.log('Starting rejection process for submission:', submission.id);
+      
       // Update submission status
       const { error } = await supabase
         .from('fund_brief_submissions')
@@ -223,12 +227,21 @@ const FundBriefApproval: React.FC = () => {
         })
         .eq('id', submission.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database update error:', error);
+        throw error;
+      }
+
+      console.log('Database updated successfully, now deleting file:', submission.brief_filename);
 
       // Delete from pending bucket
-      await supabase.storage
+      const { error: storageError } = await supabase.storage
         .from('fund-briefs-pending')
         .remove([submission.brief_filename]);
+
+      if (storageError) {
+        console.warn('Storage deletion error (non-critical):', storageError);
+      }
 
       toast.success('Fund brief rejected');
       setRejectionReason(prev => ({ ...prev, [submission.id]: '' }));
