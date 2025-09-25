@@ -273,7 +273,14 @@ const FundBriefApproval: React.FC = () => {
             <FileText className="h-5 w-5" />
             Fund Brief Submissions
           </CardTitle>
-          <Button variant="outline" size="sm" onClick={fetchSubmissions}>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => {
+              console.log('Refresh button clicked');
+              fetchSubmissions();
+            }}
+          >
             Refresh
           </Button>
         </CardHeader>
