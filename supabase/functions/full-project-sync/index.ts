@@ -150,7 +150,7 @@ serve(async (req) => {
       operations.push({
         operation: 'sync_storage_buckets',
         status: 'error',
-        details: error.message,
+        details: error instanceof Error ? error.message : String(error),
         timestamp: new Date().toISOString()
       });
       overallSuccess = false;
@@ -230,7 +230,7 @@ serve(async (req) => {
       operations.push({
         operation: 'sync_storage_files',
         status: 'error',
-        details: error.message,
+        details: error instanceof Error ? error.message : String(error),
         timestamp: new Date().toISOString()
       });
       overallSuccess = false;
@@ -336,7 +336,7 @@ serve(async (req) => {
         operations.push({
           operation: `sync_table_${tableName}`,
           status: 'error',
-          details: error.message,
+          details: error instanceof Error ? error.message : String(error),
           timestamp: new Date().toISOString()
         });
         overallSuccess = false;
@@ -368,7 +368,7 @@ serve(async (req) => {
       operations.push({
         operation: 'verification',
         status: 'error',
-        details: error.message,
+        details: error instanceof Error ? error.message : String(error),
         timestamp: new Date().toISOString()
       });
     }
@@ -413,7 +413,7 @@ serve(async (req) => {
       JSON.stringify({
         success: false,
         message: 'Fatal error during full project sync',
-        error: error.message,
+        error: (error instanceof Error ? error.message : String(error)),
         operations,
         timestamp: new Date().toISOString()
       }),

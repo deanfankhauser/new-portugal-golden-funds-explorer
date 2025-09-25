@@ -299,7 +299,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         error: 'Sync operation failed', 
-        details: error.message,
+        details: (error instanceof Error ? error.message : String(error)),
         suggestion: 'Check the logs and ensure all environment variables are set correctly'
       }),
       { 

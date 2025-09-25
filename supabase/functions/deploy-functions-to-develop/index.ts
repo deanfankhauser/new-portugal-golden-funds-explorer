@@ -58,7 +58,7 @@ serve(async (req) => {
         deploymentResults.push({
           function_name: functionName,
           status: 'error',
-          details: error.message
+          details: error instanceof Error ? error.message : String(error)
         });
       }
     }
@@ -106,7 +106,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         error: 'Deployment preparation failed', 
-        details: error.message,
+        details: (error instanceof Error ? error.message : String(error)),
         suggestion: 'Check the logs and ensure all environment variables are set correctly'
       }),
       { 

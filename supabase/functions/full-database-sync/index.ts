@@ -537,7 +537,7 @@ try {
     await dev.rpc('query', { query_text: authUsersSQL }).single()
     operations.push({ operation: 'sync_auth_users', status: 'success', details: 'Auth users synced' })
   } catch (authError: any) {
-    operations.push({ operation: 'sync_auth_users', status: 'warning', details: `Auth sync may require manual setup: ${authError.message}` })
+    operations.push({ operation: 'sync_auth_users', status: 'skipped', details: `Auth sync may require manual setup: ${authError.message}` })
   }
 } catch (e: any) {
   operations.push({ operation: 'sync_auth_users', status: 'error', details: e.message })
