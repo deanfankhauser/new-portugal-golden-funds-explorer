@@ -45,46 +45,82 @@ const FundBriefApproval: React.FC = () => {
   const fetchSubmissions = async () => {
     console.log('FundBriefApproval: fetchSubmissions called, user:', user?.id);
     try {
-      // Primary query with lightweight left joins for names
-      let { data, error } = await supabase
+      // 1) Fetch base submissions without any joins (avoids PostgREST relationship issues)
+      const { data: baseRows, error: baseError } = await supabase
         .from('fund_brief_submissions')
-        .select(`
-          *,
-          funds(name),
-          manager_profiles!left!manager_user_id(manager_name, email),
-          investor_profiles!left!investor_user_id(first_name, last_name, email)
-        `)
+        .select('*')
         .order('submitted_at', { ascending: false });
 
-      console.log('FundBriefApproval: Primary query result:', { count: data?.length, error });
-
-      if (error) throw error;
-
-      // Fallback: if nothing returned, fetch base rows without joins
-      if (!data || data.length === 0) {
-        const fallback = await supabase
-          .from('fund_brief_submissions')
-          .select('*')
-          .order('submitted_at', { ascending: false });
-        console.log('FundBriefApproval: Fallback query result:', { count: fallback.data?.length, error: fallback.error });
-        if (!fallback.error) {
-          data = fallback.data as any[];
-        }
+      if (baseError) {
+        console.error('FundBriefApproval: base fetch error', baseError);
+        throw baseError;
       }
 
-      // Transform the data to flatten joined fields (if joins exist)
-      const transformedData = (data || []).map((item: any) => ({
-        ...item,
-        fund_name: item.funds?.name || 'Unknown Fund',
-        submitter_name:
-          item.manager_profiles?.manager_name ||
-          `${item.investor_profiles?.first_name || ''} ${item.investor_profiles?.last_name || ''}`.trim() ||
-          'Unknown User',
-        submitter_email: item.manager_profiles?.email || item.investor_profiles?.email || ''
-      })) as BriefSubmission[];
+      const rows = baseRows || [];
+      console.log('FundBriefApproval: base rows count', rows.length);
 
-      console.log('FundBriefApproval: Transformed data length:', transformedData.length);
-      setSubmissions(transformedData || []);
+      if (rows.length === 0) {
+        setSubmissions([]);
+        setLoading(false);
+        return;
+      }
+
+      // 2) Collect related IDs
+      const fundIds = Array.from(new Set(rows.map(r => r.fund_id).filter(Boolean)));
+      const managerIds = Array.from(new Set(rows.map(r => r.manager_user_id).filter(Boolean)));
+      const investorIds = Array.from(new Set(rows.map(r => r.investor_user_id).filter(Boolean)));
+
+      // 3) Fetch related data (sequential to satisfy TS types)
+      let fundsRes: any = { data: [], error: null };
+      let managersRes: any = { data: [], error: null };
+      let investorsRes: any = { data: [], error: null };
+
+      if (fundIds.length) {
+        fundsRes = await supabase.from('funds').select('id, name').in('id', fundIds);
+      }
+      if (managerIds.length) {
+        managersRes = await supabase
+          .from('manager_profiles')
+          .select('user_id, manager_name, email')
+          .in('user_id', managerIds);
+      }
+      if (investorIds.length) {
+        investorsRes = await supabase
+          .from('investor_profiles')
+          .select('user_id, first_name, last_name, email')
+          .in('user_id', investorIds);
+      }
+
+      if (fundsRes.error) console.warn('FundBriefApproval: funds fetch error', fundsRes.error);
+      if (managersRes.error) console.warn('FundBriefApproval: managers fetch error', managersRes.error);
+      if (investorsRes.error) console.warn('FundBriefApproval: investors fetch error', investorsRes.error);
+
+      // 4) Build lookup maps
+      const fundMap = new Map<string, string>();
+      (fundsRes.data || []).forEach((f: any) => fundMap.set(f.id, f.name));
+
+      const managerMap = new Map<string, { name: string; email?: string }>();
+      (managersRes.data || []).forEach((m: any) => managerMap.set(m.user_id, { name: m.manager_name, email: m.email }));
+
+      const investorMap = new Map<string, { name: string; email?: string }>();
+      (investorsRes.data || []).forEach((i: any) =>
+        investorMap.set(i.user_id, { name: `${i.first_name || ''} ${i.last_name || ''}`.trim(), email: i.email })
+      );
+
+      // 5) Transform rows for UI
+      const transformed: BriefSubmission[] = rows.map((r: any) => {
+        const manager = r.manager_user_id ? managerMap.get(r.manager_user_id) : undefined;
+        const investor = r.investor_user_id ? investorMap.get(r.investor_user_id) : undefined;
+        return {
+          ...r,
+          fund_name: fundMap.get(r.fund_id) || 'Unknown Fund',
+          submitter_name: manager?.name || investor?.name || 'Unknown User',
+          submitter_email: manager?.email || investor?.email || ''
+        } as BriefSubmission;
+      });
+
+      console.log('FundBriefApproval: transformed rows', transformed.length);
+      setSubmissions(transformed);
     } catch (error) {
       console.error('Error fetching submissions:', error);
       toast.error('Failed to load fund brief submissions');
@@ -278,6 +314,7 @@ const FundBriefApproval: React.FC = () => {
             size="sm" 
             onClick={() => {
               console.log('Refresh button clicked');
+              setLoading(true);
               fetchSubmissions();
             }}
           >
