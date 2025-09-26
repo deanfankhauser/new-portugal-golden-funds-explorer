@@ -105,6 +105,34 @@ export async function generateStaticFiles() {
       }
     }
 
+    // Force include categories and tags from data
+    try {
+      const { getAllCategories } = await import('../../src/data/services/categories-service');
+      const { getAllTags } = await import('../../src/data/services/tags-service');
+      const { categoryToSlug, tagToSlug } = await import('../../src/lib/utils');
+      const today = new Date().toISOString().split('T')[0];
+
+      const cats = getAllCategories();
+      cats.forEach((cat: any) => {
+        const loc = `https://funds.movingto.com/categories/${categoryToSlug(cat as string)}`;
+        urlSet.add(loc);
+        if (!lastmodMap.has(loc)) lastmodMap.set(loc, today);
+        if (!changefreqMap.has(loc)) changefreqMap.set(loc, 'weekly');
+        if (!priorityMap.has(loc)) priorityMap.set(loc, '0.8');
+      });
+
+      const tags = getAllTags();
+      tags.forEach((tag: any) => {
+        const loc = `https://funds.movingto.com/tags/${tagToSlug(tag as string)}`;
+        urlSet.add(loc);
+        if (!lastmodMap.has(loc)) lastmodMap.set(loc, today);
+        if (!changefreqMap.has(loc)) changefreqMap.set(loc, 'weekly');
+        if (!priorityMap.has(loc)) priorityMap.set(loc, '0.7');
+      });
+    } catch (incErr) {
+      console.warn('⚠️  Consolidation: failed to include category/tag URLs directly:', (incErr as any)?.message || incErr);
+    }
+
     const merged = Array.from(urlSet.values()).sort().map(loc => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmodMap.get(loc) || new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>${changefreqMap.get(loc) || 'weekly'}</changefreq>\n    <priority>${priorityMap.get(loc) || '0.7'}</priority>\n  </url>`).join('\n');
 
     const finalSitemap = `<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n${merged}\n</urlset>`;
