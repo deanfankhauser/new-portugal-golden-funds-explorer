@@ -8,6 +8,7 @@ import { generateSitemap } from './sitemap-generator';
 import { generateFundsSitemap } from './sitemap-funds-generator';
 import { EnhancedSitemapService } from '../../src/services/enhancedSitemapService';
 import { generate404Page } from './404-generator';
+import { generateComprehensiveSitemaps } from './comprehensive-sitemap-generator';
 
 export async function generateStaticFiles() {
   if (process.env.NODE_ENV !== 'production') {
@@ -60,188 +61,29 @@ export async function generateStaticFiles() {
   // Generate 404 page
   await generate404Page(distDir);
   
-  // Generate enhanced sitemaps with all discovered routes
-  // This ensures the sitemap includes all intended URLs for SEO, even if SSG fails for some
-  generateSitemap(routes, distDir);
-  generateFundsSitemap(distDir);
-  
-  // Generate enhanced sitemap as a supplemental file (do not overwrite the main routes sitemap)
-  const enhancedSitemapXML = EnhancedSitemapService.generateEnhancedSitemapXML();
-  fs.writeFileSync(path.join(distDir, 'sitemap-enhanced.xml'), enhancedSitemapXML);
-  
-  // Generate sitemap index (include all sitemaps)
-  const sitemapIndex = EnhancedSitemapService.generateSitemapIndex();
-  fs.writeFileSync(path.join(distDir, 'sitemap-index.xml'), sitemapIndex);
-  
-  // Generate robots.txt
-  const robotsTxt = EnhancedSitemapService.generateRobotsTxt();
-  fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsTxt);
-
-  // Consolidate all sitemaps into a single comprehensive sitemap.xml for preview/build_ssg
+  // Use the new comprehensive sitemap generator
   try {
-    const read = (name: string) => {
-      const p = path.join(distDir, name);
-      return fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '';
-    };
-    const base = read('sitemap.xml');
-    const enhanced = read('sitemap-enhanced.xml');
-    const fundsMap = read('sitemap-funds.xml');
-    const xmls = [base, enhanced, fundsMap].filter(Boolean);
-
-    const urlSet = new Set<string>();
-    const lastmodMap = new Map<string, string>();
-    const changefreqMap = new Map<string, string>();
-    const priorityMap = new Map<string, string>();
-
-    const urlRegex = /<url>[\s\S]*?<loc>(.*?)<\/loc>[\s\S]*?<lastmod>(.*?)<\/lastmod>[\s\S]*?<changefreq>(.*?)<\/changefreq>[\s\S]*?<priority>(.*?)<\/priority>[\s\S]*?<\/url>/g;
-    for (const xml of xmls) {
-      let m: RegExpExecArray | null;
-      while ((m = urlRegex.exec(xml))) {
-        const [ , loc, lastmod, changefreq, priority ] = m;
-        urlSet.add(loc);
-        if (!lastmodMap.has(loc) || (lastmod > (lastmodMap.get(loc) || ''))) lastmodMap.set(loc, lastmod);
-        if (!changefreqMap.has(loc)) changefreqMap.set(loc, changefreq);
-        if (!priorityMap.has(loc)) priorityMap.set(loc, priority);
-      }
-    }
-
-    // Always include category and tag routes discovered earlier
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const addRoute = (path: string, priority: string) => {
-        const loc = `https://funds.movingto.com${path}`;
-        urlSet.add(loc);
-        if (!lastmodMap.has(loc)) lastmodMap.set(loc, today);
-        if (!changefreqMap.has(loc)) changefreqMap.set(loc, 'weekly');
-        if (!priorityMap.has(loc)) priorityMap.set(loc, priority);
-      };
-      routes.filter(r => r.pageType === 'category').forEach(r => addRoute(r.path, '0.8'));
-      routes.filter(r => r.pageType === 'tag').forEach(r => addRoute(r.path, '0.7'));
-    } catch {}
-
-    // Force include categories and tags from data
-    try {
-      const { getAllCategories } = await import('../../src/data/services/categories-service');
-      const { getAllTags } = await import('../../src/data/services/tags-service');
-      const { categoryToSlug, tagToSlug } = await import('../../src/lib/utils');
-      const today = new Date().toISOString().split('T')[0];
-
-      const cats = getAllCategories();
-      cats.forEach((cat: any) => {
-        const loc = `https://funds.movingto.com/categories/${categoryToSlug(cat as string)}`;
-        urlSet.add(loc);
-        if (!lastmodMap.has(loc)) lastmodMap.set(loc, today);
-        if (!changefreqMap.has(loc)) changefreqMap.set(loc, 'weekly');
-        if (!priorityMap.has(loc)) priorityMap.set(loc, '0.8');
-      });
-
-      const tags = getAllTags();
-      tags.forEach((tag: any) => {
-        const loc = `https://funds.movingto.com/tags/${tagToSlug(tag as string)}`;
-        urlSet.add(loc);
-        if (!lastmodMap.has(loc)) lastmodMap.set(loc, today);
-        if (!changefreqMap.has(loc)) changefreqMap.set(loc, 'weekly');
-        if (!priorityMap.has(loc)) priorityMap.set(loc, '0.7');
-      });
-    } catch (incErr) {
-      console.warn('⚠️  Consolidation: failed to include category/tag URLs directly:', (incErr as any)?.message || incErr);
-    }
-
-    // Secondary fallback: if categories/tags still missing, derive directly from mock funds
-    try {
-      const hasAnyCategory = Array.from(urlSet.values()).some(u => u.includes('/categories/'));
-      const hasAnyTag = Array.from(urlSet.values()).some(u => u.includes('/tags/'));
-      if (!hasAnyCategory || !hasAnyTag) {
-        const { fundsData } = await import('../../src/data/mock/funds');
-        const { categoryToSlug, tagToSlug } = await import('../../src/lib/utils');
-        const today = new Date().toISOString().split('T')[0];
-
-        if (!hasAnyCategory) {
-          const catSet = new Set<string>();
-          fundsData.forEach((f: any) => catSet.add(f.category));
-          catSet.forEach((cat) => {
-            const loc = `https://funds.movingto.com/categories/${categoryToSlug(cat)}`;
-            urlSet.add(loc);
-            if (!lastmodMap.has(loc)) lastmodMap.set(loc, today);
-            if (!changefreqMap.has(loc)) changefreqMap.set(loc, 'weekly');
-            if (!priorityMap.has(loc)) priorityMap.set(loc, '0.8');
-          });
-          console.log(`🧩 Added ${catSet.size} categories from mock funds as fallback`);
-        }
-
-        if (!hasAnyTag) {
-          const tagSet = new Set<string>();
-          fundsData.forEach((f: any) => (f.tags || []).forEach((t: string) => tagSet.add(t)));
-          tagSet.forEach((tag) => {
-            const loc = `https://funds.movingto.com/tags/${tagToSlug(tag)}`;
-            urlSet.add(loc);
-            if (!lastmodMap.has(loc)) lastmodMap.set(loc, today);
-            if (!changefreqMap.has(loc)) changefreqMap.set(loc, 'weekly');
-            if (!priorityMap.has(loc)) priorityMap.set(loc, '0.7');
-          });
-          console.log(`🧩 Added ${tagSet.size} tags from mock funds as fallback`);
-        }
-      }
-    } catch (fallbackErr2) {
-      console.warn('⚠️  Consolidation: fallback from mock funds failed:', (fallbackErr2 as any)?.message || fallbackErr2);
-    }
-
-    const merged = Array.from(urlSet.values()).sort().map(loc => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmodMap.get(loc) || new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>${changefreqMap.get(loc) || 'weekly'}</changefreq>\n    <priority>${priorityMap.get(loc) || '0.7'}</priority>\n  </url>`).join('\n');
-
-    const finalSitemap = `<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n${merged}\n</urlset>`;
-    fs.writeFileSync(path.join(distDir, 'sitemap.xml'), finalSitemap);
-    console.log(`🗺️  Consolidated sitemap.xml with ${urlSet.size} URLs`);
-
-    // Also write a copy to /public so build_ssg preview serves the consolidated sitemap
-    try {
-      const publicDir = path.join(process.cwd(), 'public');
-      if (fs.existsSync(publicDir)) {
-        fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), finalSitemap);
-        console.log('🗺️  Copied consolidated sitemap.xml to /public');
-      }
-    } catch (copyErr) {
-      console.warn('⚠️  Failed to copy consolidated sitemap to /public:', (copyErr as any)?.message || copyErr);
-    }
-  } catch (e) {
-    console.warn('⚠️  Failed to consolidate sitemaps:', (e as any)?.message || e);
+    generateComprehensiveSitemaps(distDir);
+  } catch (sitemapError) {
+    console.warn('⚠️  Comprehensive sitemap generation failed, falling back to legacy generators');
+    
+    // Fallback to existing generators
+    generateSitemap(routes, distDir);
+    generateFundsSitemap(distDir);
+    
+    // Generate enhanced sitemap as a supplemental file
+    const enhancedSitemapXML = EnhancedSitemapService.generateEnhancedSitemapXML();
+    fs.writeFileSync(path.join(distDir, 'sitemap-enhanced.xml'), enhancedSitemapXML);
+    
+    // Generate sitemap index
+    const sitemapIndex = EnhancedSitemapService.generateSitemapIndex();
+    fs.writeFileSync(path.join(distDir, 'sitemap-index.xml'), sitemapIndex);
+    
+    // Generate robots.txt
+    const robotsTxt = EnhancedSitemapService.generateRobotsTxt();
+    fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsTxt);
   }
 
-
-  // Verify sitemap coverage (routes vs generated XML)
-  try {
-    const sitemapPath = path.join(distDir, 'sitemap.xml');
-    const content = fs.readFileSync(sitemapPath, 'utf8');
-    const count = (pattern: RegExp) => (content.match(pattern) || []).length;
-
-    const staticChecks = [
-      '/', '/index', '/about', '/disclaimer', '/privacy', '/faqs',
-      '/roi-calculator', '/categories', '/tags', '/managers',
-      '/comparisons', '/compare', '/alternatives'
-    ];
-    const missingStatics = staticChecks.filter(p => {
-      const full = `https://funds.movingto.com${p === '/' ? '' : p}`;
-      return !content.includes(full);
-    });
-
-    const categoriesRoutes = routes.filter(r => r.pageType === 'category');
-    const tagsRoutes = routes.filter(r => r.pageType === 'tag');
-    const managersRoutes = routes.filter(r => r.pageType === 'manager');
-    const comparisonsRoutes = routes.filter(r => r.pageType === 'fund-comparison');
-    const alternativesRoutes = routes.filter(r => r.pageType === 'fund-alternatives');
-
-    // Sample check for first 5 of each
-    const sampleCheck = (rs: any[]) => rs.slice(0, 5).map(r => `https://funds.movingto.com${r.path}`).filter(u => !content.includes(u));
-    const missingCategorySamples = sampleCheck(categoriesRoutes);
-    const missingTagSamples = sampleCheck(tagsRoutes);
-
-    console.log(`🧩 Sitemap coverage: categories=${count(/\/categories\//g)} (expected ${categoriesRoutes.length}), tags=${count(/\/tags\//g)} (expected ${tagsRoutes.length}), managers=${count(/\/manager\//g)} (expected ${managersRoutes.length}), comparisons=${count(/\/compare\//g)} (expected ${comparisonsRoutes.length}), alternatives=${count(/\/[a-z0-9-]+\/alternatives/g)} (expected ${alternativesRoutes.length})`);
-    if (missingStatics.length) console.warn('⚠️  Sitemap missing core static pages:', missingStatics.join(', '));
-    if (missingCategorySamples.length) console.warn('⚠️  Sample missing category URLs:', missingCategorySamples.join(', '));
-    if (missingTagSamples.length) console.warn('⚠️  Sample missing tag URLs:', missingTagSamples.join(', '));
-  } catch (e) {
-    console.warn('⚠️  Could not verify sitemap coverage:', (e as any)?.message || e);
-  }
-  
   // Final report
   if (process.env.NODE_ENV !== 'production') {
     console.log('\n🎉 SSG: Static site generation completed!');
@@ -249,8 +91,7 @@ export async function generateStaticFiles() {
     console.log(`   ✅ Successfully generated: ${successCount}/${routes.length} pages`);
     console.log(`   📁 CSS assets linked: ${validCss.length}`);
     console.log(`   📁 JS assets linked: ${validJs.length}`);
-    console.log(`   🗺️  Enhanced sitemap generated with comprehensive URL coverage`);
-    console.log(`   🗺️  Sitemap index and robots.txt updated`);
+    console.log(`   🗺️  Comprehensive sitemap generated with full URL coverage`);
     
     if (failedRoutes.length > 0) {
       console.log(`   ❌ Failed routes: ${failedRoutes.join(', ')}`);
