@@ -23,27 +23,20 @@ const FundStructureTab: React.FC<FundStructureTabProps> = ({ fund }) => {
       {/* Risk Assessment Section */}
       <RiskAssessmentSection fund={fund} />
       
-      {/* Fund Category and Fee Structure */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="space-y-8">
-          {/* Fund Category Section */}
-          <FundCategory category={fund.category} />
+      {/* Fund Category Section */}
+      <FundCategory category={fund.category} />
 
-          {/* Fee Structure Section */}
-          <FeeStructure fund={fund} formatPercentage={formatPercentage} />
-          
-          {/* Redemption Terms Section */}
-          <RedemptionTerms redemptionTerms={fund.redemptionTerms} />
-        </div>
+      {/* Fee Structure Section */}
+      <FeeStructure fund={fund} formatPercentage={formatPercentage} />
+      
+      {/* Redemption Terms Section */}
+      <RedemptionTerms redemptionTerms={fund.redemptionTerms} />
 
-        <div className="space-y-8">
-          {/* Geographic Allocation Section */}
-          <GeographicAllocation 
-            allocations={fund.geographicAllocation} 
-            formatPercentage={formatPercentage} 
-          />
-        </div>
-      </div>
+      {/* Geographic Allocation Section */}
+      <GeographicAllocation 
+        allocations={fund.geographicAllocation} 
+        formatPercentage={formatPercentage} 
+      />
       
       {/* Regulatory Compliance Information */}
       <RegulatoryComplianceInfo fund={fund} />
