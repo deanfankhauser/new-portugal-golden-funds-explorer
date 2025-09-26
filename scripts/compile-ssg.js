@@ -56,6 +56,23 @@ export function compileSSGFiles() {
     } else {
       console.log(`✅ SSG: Generated ${fundPagesGenerated} fund pages successfully`);
     }
+
+    // Also copy enhanced sitemap files from dist to public so /sitemap.xml resolves correctly in dev/preview
+    try {
+      const publicDir = path.join(process.cwd(), 'public');
+      const distDir = path.join(process.cwd(), 'dist');
+      const filesToCopy = ['sitemap.xml', 'sitemap-index.xml', 'sitemap-funds.xml', 'robots.txt'];
+      filesToCopy.forEach((file) => {
+        const src = path.join(distDir, file);
+        if (fs.existsSync(src)) {
+          const dest = path.join(publicDir, file);
+          fs.copyFileSync(src, dest);
+        }
+      });
+      console.log('🗺️  SSG: Copied enhanced sitemaps to /public');
+    } catch (copyErr) {
+      console.warn('⚠️  SSG: Could not copy enhanced sitemap files to /public:', copyErr.message);
+    }
     
   } catch (error) {
     console.warn('⚠️  SSG compilation failed, falling back to basic build');
