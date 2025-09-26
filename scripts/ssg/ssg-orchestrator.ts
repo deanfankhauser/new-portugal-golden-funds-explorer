@@ -77,6 +77,44 @@ export async function generateStaticFiles() {
   const robotsTxt = EnhancedSitemapService.generateRobotsTxt();
   fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsTxt);
 
+  // Consolidate all sitemaps into a single comprehensive sitemap.xml for preview/build_ssg
+  try {
+    const read = (name: string) => {
+      const p = path.join(distDir, name);
+      return fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '';
+    };
+    const base = read('sitemap.xml');
+    const enhanced = read('sitemap-enhanced.xml');
+    const fundsMap = read('sitemap-funds.xml');
+    const xmls = [base, enhanced, fundsMap].filter(Boolean);
+
+    const urlSet = new Set<string>();
+    const lastmodMap = new Map<string, string>();
+    const changefreqMap = new Map<string, string>();
+    const priorityMap = new Map<string, string>();
+
+    const urlRegex = /<url>[\s\S]*?<loc>(.*?)<\/loc>[\s\S]*?<lastmod>(.*?)<\/lastmod>[\s\S]*?<changefreq>(.*?)<\/changefreq>[\s\S]*?<priority>(.*?)<\/priority>[\s\S]*?<\/url>/g;
+    for (const xml of xmls) {
+      let m: RegExpExecArray | null;
+      while ((m = urlRegex.exec(xml))) {
+        const [ , loc, lastmod, changefreq, priority ] = m;
+        urlSet.add(loc);
+        if (!lastmodMap.has(loc) || (lastmod > (lastmodMap.get(loc) || ''))) lastmodMap.set(loc, lastmod);
+        if (!changefreqMap.has(loc)) changefreqMap.set(loc, changefreq);
+        if (!priorityMap.has(loc)) priorityMap.set(loc, priority);
+      }
+    }
+
+    const merged = Array.from(urlSet.values()).sort().map(loc => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmodMap.get(loc) || new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>${changefreqMap.get(loc) || 'weekly'}</changefreq>\n    <priority>${priorityMap.get(loc) || '0.7'}</priority>\n  </url>`).join('\n');
+
+    const finalSitemap = `<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n${merged}\n</urlset>`;
+    fs.writeFileSync(path.join(distDir, 'sitemap.xml'), finalSitemap);
+    console.log(`🗺️  Consolidated sitemap.xml with ${urlSet.size} URLs`);
+  } catch (e) {
+    console.warn('⚠️  Failed to consolidate sitemaps:', (e as any)?.message || e);
+  }
+
+
   // Verify sitemap coverage (routes vs generated XML)
   try {
     const sitemapPath = path.join(distDir, 'sitemap.xml');
