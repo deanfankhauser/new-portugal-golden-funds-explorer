@@ -162,19 +162,19 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
                   className="flex-shrink-0 bg-white/10 backdrop-blur-sm rounded-lg p-2"
                 />
                 <div className="min-w-0 flex-1">
-                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight mb-4">
+                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight mb-4 text-white">
                     {fund.name}
                   </h1>
-                  <p className="text-base md:text-lg text-white/80 leading-relaxed mb-4">
+                  <p className="text-base md:text-lg text-white/90 leading-relaxed mb-4">
                     {fund.description || "Investment opportunity focused on generating sustainable returns through strategic market positioning."}
                   </p>
                   {fund.managerName && (
                     <Link 
                       to={`/manager/${managerToSlug(fund.managerName)}`}
-                      className="inline-flex items-center text-lg text-white/90 hover:text-white font-medium transition-colors"
+                      className="inline-flex items-center text-lg text-white hover:text-accent-foreground font-medium transition-colors"
                     >
                       <span className="mr-2">Managed by</span>
-                      <span className="underline underline-offset-4">{fund.managerName}</span>
+                      <span className="underline underline-offset-4 text-accent-foreground">{fund.managerName}</span>
                       <span className="ml-2">→</span>
                     </Link>
                   )}
@@ -183,11 +183,11 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
 
               {/* Risk Level Badge */}
               <div className="flex items-center gap-4">
-                <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-                  <span className="text-sm font-medium text-white/80">Risk Level:</span>
+                <div className="bg-white/15 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
+                  <span className="text-sm font-medium text-white">Risk Level:</span>
                   <Badge 
                     variant={riskScore <= 3 ? "success" : riskScore <= 6 ? "warning" : "destructive"}
-                    className="ml-2"
+                    className="ml-2 font-semibold"
                   >
                     {riskLabel}
                   </Badge>
@@ -201,7 +201,7 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
                 <Button 
                   size="lg"
                   variant={fund.fundBriefUrl ? "default" : "secondary"}
-                  className={`font-semibold ${!fund.fundBriefUrl ? 'opacity-60 cursor-not-allowed' : ''}`}
+                  className={`font-semibold ${!fund.fundBriefUrl ? 'bg-white/20 text-white/70 cursor-not-allowed hover:bg-white/20' : 'bg-white text-primary hover:bg-white/90'}`}
                   onClick={fund.fundBriefUrl ? handleGetFundBrief : undefined}
                   disabled={isRequestingBrief || !fund.fundBriefUrl}
                 >
@@ -211,7 +211,7 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
                 <Button 
                   size="lg"
                   variant="outline" 
-                  className="border-accent/50 text-accent-foreground hover:bg-accent hover:text-accent-foreground bg-accent/10 backdrop-blur-sm"
+                  className="border-white/40 text-white hover:bg-white hover:text-primary bg-white/10 backdrop-blur-sm font-semibold"
                   onClick={handleBookCall}
                 >
                   <Calendar className="mr-2 h-5 w-5" />
@@ -225,7 +225,7 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
                   variant="ghost" 
                   size="sm"
                   onClick={handleCompareClick}
-                  className={`${isCompared ? "bg-accent/20 text-accent-foreground" : "text-white/80 hover:bg-accent/10 hover:text-accent-foreground"} flex-1`}
+                  className={`${isCompared ? "bg-white/20 text-white font-medium" : "text-white/90 hover:bg-white/15 hover:text-white"} flex-1 border border-white/20`}
                 >
                   <BarChart3 className="mr-2 h-4 w-4" />
                   {isCompared ? "Remove from Compare" : "Add to Compare"}
@@ -234,7 +234,7 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
                   variant="ghost" 
                   size="sm"
                   onClick={handleShortlistClick}
-                  className={`${isShortlisted ? "bg-accent/20 text-accent-foreground" : "text-white/80 hover:bg-accent/10 hover:text-accent-foreground"} flex-1`}
+                  className={`${isShortlisted ? "bg-white/20 text-white font-medium" : "text-white/90 hover:bg-white/15 hover:text-white"} flex-1 border border-white/20`}
                 >
                   <Bookmark className="mr-2 h-4 w-4" />
                   {isShortlisted ? "Shortlisted" : "Add to Shortlist"}
