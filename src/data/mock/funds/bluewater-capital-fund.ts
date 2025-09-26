@@ -4,7 +4,6 @@ export const blueWaterCapitalFund: Fund = {
   id: 'bluewater-capital-fund',
   name: 'BlueWater Capital Fund',
   managerName: 'Insight Venture - Sociedade de Capital de Risco, S.A.',
-  managerLogo: undefined, // No logo provided
   category: 'Venture Capital',
   tags: ['Venture Capital', 'Infrastructure', 'Sustainability', 'Renewable Energy', 'Golden Visa Eligible', 'Portugal', 'Closed Ended'],
   description: 'A closed-end venture capital fund focusing on marine economy and waterfront-related assets with strong sustainable growth prospects, particularly in Portugal\'s coastal regions.',

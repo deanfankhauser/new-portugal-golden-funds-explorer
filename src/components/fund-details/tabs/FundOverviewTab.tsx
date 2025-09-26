@@ -23,7 +23,6 @@ const FundOverviewTab: React.FC<FundOverviewTabProps> = ({ fund }) => {
       {/* Fund Manager Section */}
       <FundManager 
         managerName={fund.managerName} 
-        managerLogo={fund.managerLogo} 
       />
       
       {/* Fund Website */}

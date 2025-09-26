@@ -3,8 +3,8 @@ import { Fund } from '../../types/funds';
 export const imgaPortugueseCorporateDebtFund: Fund = {
   id: 'imga-portuguese-corporate-debt-fund',
   name: 'IMGA Portuguese Corporate Debt Fund',
+  // Remove all managerLogo lines from mock funds
   managerName: 'IM Gestão de Ativos (IMGA)',
-  managerLogo: undefined, // No logo provided
   category: 'Fixed Income & Digital Assets',
   tags: ['Bonds', 'Golden Visa Eligible', 'Portugal', 'Open Ended', 'Liquid', 'Capital Preservation'],
   description: 'An open-end bond investment fund focusing on corporate debt securities issued predominantly by Portuguese companies, targeting stable returns with controlled risk.',

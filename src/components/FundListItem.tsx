@@ -15,7 +15,6 @@ import DataFreshnessIndicator from './common/DataFreshnessIndicator';
 import EligibilityBasisDisplayLine from './fund-details/EligibilityBasisDisplayLine';
 import { DATA_AS_OF_LABEL } from '../utils/constants';
 import { SaveFundButton } from './common/SaveFundButton';
-import FundLogo from './fund-details/FundLogo';
 
 interface FundListItemProps {
   fund: Fund;
@@ -50,12 +49,6 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-3 flex-1 mr-2 min-w-0">
-                  <FundLogo 
-                    logoUrl={fund.logoUrl} 
-                    fundName={fund.name} 
-                    fundId={fund.id}
-                    size="md" 
-                  />
                   <div className="min-w-0 flex-1">
                     <h3 className="text-lg sm:text-xl font-semibold leading-tight">
                       <Link to={`/${fund.id}`} className="hover:text-primary transition-colors block" onClick={() => window.scrollTo(0, 0)}>

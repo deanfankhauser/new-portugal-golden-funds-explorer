@@ -51,7 +51,7 @@ export const getAllFundManagers = (): { name: string; logo?: string; fundsCount:
     if (!managersMap.has(managerKey)) {
       managersMap.set(managerKey, { 
         name: fund.managerName,
-        logo: fund.managerLogo,
+        logo: undefined, // Logo removed
         fundsCount: 0
       });
     }

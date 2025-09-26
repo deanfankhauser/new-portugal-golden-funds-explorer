@@ -4,7 +4,6 @@ export const emeraldGreenFund: Fund = {
   id: 'emerald-green-fund',
   name: 'Emerald Green Fund',
   managerName: 'STAG Fund Management SCR, S.A.',
-  managerLogo: undefined, // No logo provided
   category: 'Private Equity',
   tags: ['Private Equity', 'Tourism', 'Sustainability', 'Golden Visa Eligible', 'Portugal', 'Closed Ended'],
   description: 'A Golden Visa–eligible private equity fund targeting sustainable tourism and hospitality development in Portugal\'s Douro Valley, focusing on a 5-star luxury eco-resort.',

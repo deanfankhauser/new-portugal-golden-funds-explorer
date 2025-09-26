@@ -9,7 +9,6 @@ import { Separator } from '@/components/ui/separator';
 import { Check, X, Clock, User, Building, Calendar, MessageSquare, Image as ImageIcon } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import FundLogo from '@/components/fund-details/FundLogo';
 
 interface SuggestionDetailModalProps {
   suggestion: any;
@@ -335,16 +334,14 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         return <span className="text-muted-foreground">Not set</span>;
       }
       
-      // Special handling for logo URLs
+      // Special handling for logo URLs - simplified display
       if (field === 'logoUrl' && typeof value === 'string') {
         return (
           <div className="flex items-center gap-3">
-            <FundLogo 
-              logoUrl={value} 
-              fundName={suggestion.fund_id || 'Fund'} 
-              size="sm"
-            />
-            <span className="text-xs text-muted-foreground">Logo image</span>
+            <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+              <ImageIcon className="w-4 h-4 text-primary" />
+            </div>
+            <span className="text-xs text-muted-foreground">Logo URL: {value}</span>
           </div>
         );
       }

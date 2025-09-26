@@ -11,7 +11,6 @@ import { useAuth } from '../../hooks/useAuth';
 import { AuthRequiredModal } from '../fund-editing/AuthRequiredModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import FundLogo from './FundLogo';
 import FundSnapshotCard from './FundSnapshotCard';
 import { FundEditButton } from '../fund-editing/FundEditButton';
 import { managerToSlug } from '../../lib/utils';

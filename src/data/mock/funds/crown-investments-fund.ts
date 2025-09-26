@@ -4,7 +4,6 @@ export const crownInvestmentsFund: Fund = {
   id: 'crown-investments-fund',
   name: 'Crown Investments Fund',
   managerName: 'Insight Venture - Sociedade de Capital de Risco, S.A.',
-  managerLogo: undefined, // No logo provided
   category: 'Venture Capital',
   tags: ['Venture Capital', 'SMEs', 'Tourism', 'Technology', 'Golden Visa Eligible', 'Portugal', 'Closed Ended'],
   description: 'A closed-end venture capital fund investing primarily in SMEs with high growth potential, focusing on tourism-related sectors and Portuguese companies.',

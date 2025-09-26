@@ -19,7 +19,6 @@ import { Fund, GeographicAllocation, TeamMember, PdfDocument, RedemptionTerms, F
 import { useFundEditing } from '@/hooks/useFundEditing';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import FundLogo from '@/components/fund-details/FundLogo';
 import HistoricalPerformanceEditor from './HistoricalPerformanceEditor';
 import FundBriefSubmission from './FundBriefSubmission';
 
@@ -65,8 +64,6 @@ const buildFormData = (f: Fund) => {
     historicalPerformance: f.historicalPerformance || {},
     // FAQs - always present as array
     faqs: f.faqs || [],
-    // Logo URL
-    logoUrl: f.logoUrl || '',
     // Fund Brief URL
     fundBriefUrl: f.fundBriefUrl || '',
   };
@@ -247,7 +244,6 @@ useEffect(() => {
     eligibilityBasis: fund.eligibilityBasis,
     historicalPerformance: fund.historicalPerformance,
     faqs: fund.faqs,
-    logoUrl: fund.logoUrl,
     fundBriefUrl: fund.fundBriefUrl,
   });
 
@@ -366,56 +362,14 @@ useEffect(() => {
                 <h3 className="text-lg font-semibold">Basic Information</h3>
                 
                 <div className="grid grid-cols-1 gap-4">
-                  {/* Fund Logo Section */}
+                  {/* Fund Logo Section - Removed */}
                   <div className="space-y-3">
                     <Label>Fund Logo</Label>
-                    <div className="flex items-center gap-4">
-                      <FundLogo 
-                        logoUrl={formData.logoUrl} 
-                        fundName={fund.name} 
-                        fundId={fund.id}
-                        size="lg" 
-                      />
-                      <div className="flex flex-col gap-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => document.getElementById('logo-upload')?.click()}
-                          disabled={logoUploading}
-                          className="gap-2"
-                        >
-                          {logoUploading ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Upload className="h-4 w-4" />
-                          )}
-                          {formData.logoUrl ? 'Change Logo' : 'Upload Logo'}
-                        </Button>
-                        {formData.logoUrl && (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={handleLogoRemove}
-                            className="gap-2"
-                          >
-                            <X className="h-4 w-4" />
-                            Remove Logo
-                          </Button>
-                        )}
-                        <input
-                          id="logo-upload"
-                          type="file"
-                          accept="image/*"
-                          onChange={handleLogoUpload}
-                          className="hidden"
-                        />
-                      </div>
+                    <div className="bg-muted/50 p-4 rounded-lg text-center">
+                      <p className="text-muted-foreground text-sm">
+                        Fund logos have been removed from the platform
+                      </p>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Upload a logo for the fund. Supported formats: JPG, PNG, WEBP. Max size: 5MB.
-                    </p>
                   </div>
                   
                   <div>

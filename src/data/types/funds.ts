@@ -153,7 +153,6 @@ export interface Fund {
   redemptionFee?: number; // percentage
   term: number; // in years
   managerName: string;
-  managerLogo?: string;
   returnTarget: string; // e.g., "8-10% annually"
   fundStatus: 'Open' | 'Closed' | 'Closing Soon';
   websiteUrl?: string;
@@ -193,6 +192,5 @@ export interface Fund {
     aum?: number;
     nav?: number;
   }>;
-  logoUrl?: string;
   fundBriefUrl?: string;
 }

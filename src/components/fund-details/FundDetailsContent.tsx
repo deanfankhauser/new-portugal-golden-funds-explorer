@@ -87,7 +87,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                   <div className="space-y-6">
                     <FundDescription description={fund.detailedDescription} />
                     <RegulatoryIdentifiers fund={fund} />
-                    <FundManager managerName={fund.managerName} managerLogo={fund.managerLogo} />
+                    <FundManager managerName={fund.managerName} />
                   </div>
                 </section>
 
