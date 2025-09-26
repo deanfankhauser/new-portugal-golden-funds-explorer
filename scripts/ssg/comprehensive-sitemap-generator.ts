@@ -32,6 +32,7 @@ export function generateComprehensiveSitemaps(distDir: string): void {
     try {
       const publicDir = path.join(process.cwd(), 'public');
       const { execSync } = require('child_process');
+      const fs = require('fs');
       
       result.sitemapFiles.forEach(filename => {
         const src = path.join(distDir, filename);
@@ -40,7 +41,6 @@ export function generateComprehensiveSitemaps(distDir: string): void {
           execSync(`cp "${src}" "${dest}"`);
         } catch {
           // Fallback for Windows
-          const fs = require('fs');
           if (fs.existsSync(src)) {
             fs.copyFileSync(src, dest);
           }
@@ -53,9 +53,21 @@ export function generateComprehensiveSitemaps(distDir: string): void {
       try {
         execSync(`cp "${robotsSrc}" "${robotsDest}"`);
       } catch {
-        const fs = require('fs');
         if (fs.existsSync(robotsSrc)) {
           fs.copyFileSync(robotsSrc, robotsDest);
+        }
+      }
+      
+      // Verify categories/tags presence in public sitemap; if missing, generate directly into /public
+      const publicSitemapPath = path.join(publicDir, 'sitemap.xml');
+      if (fs.existsSync(publicSitemapPath)) {
+        const content = fs.readFileSync(publicSitemapPath, 'utf8');
+        const hasCategories = content.includes('/categories/');
+        const hasTags = content.includes('/tags/');
+        if (!hasCategories || !hasTags) {
+          console.warn('⚠️  Public sitemap missing categories/tags. Regenerating sitemap directly into /public...');
+          const direct = ComprehensiveSitemapService.generateSitemaps(publicDir);
+          console.log(`✅ Regenerated ${direct.sitemapFiles.length} sitemap file(s) directly in /public with full categories/tags coverage`);
         }
       }
       
