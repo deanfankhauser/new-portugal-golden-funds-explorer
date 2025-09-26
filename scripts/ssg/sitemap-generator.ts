@@ -5,6 +5,9 @@ import { DateManagementService } from '../../src/services/dateManagementService'
 import { funds } from '../../src/data/services/funds-service';
 import { getAllComparisonSlugs } from '../../src/data/services/comparison-service';
 import { EnhancedSitemapService } from '../../src/services/enhancedSitemapService';
+import { getAllCategories } from '../../src/data/services/categories-service';
+import { getAllTags } from '../../src/data/services/tags-service';
+import { categoryToSlug, tagToSlug } from '../../src/lib/utils';
 
 export function generateSitemap(routes: StaticRoute[], distDir: string): void {
   // Build route-derived entries first
