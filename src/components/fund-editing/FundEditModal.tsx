@@ -14,7 +14,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Save, Loader2, Plus, Trash2, X } from 'lucide-react';
+import { Save, Loader2, Plus, Trash2, X, Building2, TrendingUp, FileText, Settings } from 'lucide-react';
 import { Fund, GeographicAllocation, TeamMember, PdfDocument, RedemptionTerms, FAQItem } from '@/data/types/funds';
 import { getAllTags } from '@/data/services/tags-service';
 import { useFundEditing } from '@/hooks/useFundEditing';
@@ -280,38 +280,27 @@ useEffect(() => {
         </DialogHeader>
         
         <ScrollArea className="max-h-[60vh] pr-4">
-        <Tabs defaultValue="basic" className="w-full">
-          <TabsList className="grid w-full grid-cols-9 h-auto p-1 bg-muted/50 rounded-lg">
-            <TabsTrigger value="basic" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              Basic Info
+        <Tabs defaultValue="basics" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 h-auto p-1 bg-muted/50 rounded-lg">
+            <TabsTrigger value="basics" className="flex items-center gap-2 text-sm font-medium py-3 px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <Building2 className="h-4 w-4" />
+              Fund Basics
             </TabsTrigger>
-            <TabsTrigger value="tags" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              Tags
+            <TabsTrigger value="structure" className="flex items-center gap-2 text-sm font-medium py-3 px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <Settings className="h-4 w-4" />
+              Structure & Terms
             </TabsTrigger>
-            <TabsTrigger value="structure" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              Structure
+            <TabsTrigger value="performance" className="flex items-center gap-2 text-sm font-medium py-3 px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <TrendingUp className="h-4 w-4" />
+              Performance & Team
             </TabsTrigger>
-            <TabsTrigger value="performance" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              Performance
-            </TabsTrigger>
-            <TabsTrigger value="team" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              Team
-            </TabsTrigger>
-            <TabsTrigger value="documents" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              Documents
-            </TabsTrigger>
-            <TabsTrigger value="brief" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              Fund Brief
-            </TabsTrigger>
-            <TabsTrigger value="faqs" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              FAQs
-            </TabsTrigger>
-            <TabsTrigger value="regulatory" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              Regulatory
+            <TabsTrigger value="resources" className="flex items-center gap-2 text-sm font-medium py-3 px-4 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <FileText className="h-4 w-4" />
+              Resources
             </TabsTrigger>
           </TabsList>
 
-            <TabsContent value="basic" className="space-y-6 mt-4">
+            <TabsContent value="basics" className="space-y-6 mt-4">
               {/* Basic Information */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Basic Information</h3>
@@ -544,8 +533,8 @@ useEffect(() => {
               </div>
             </TabsContent>
 
-            <TabsContent value="tags" className="space-y-6 mt-4">
-              {/* Tags Selection */}
+            <TabsContent value="structure" className="space-y-6 mt-4">
+              {/* Fund Tags */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Fund Tags</h3>
                 <p className="text-sm text-muted-foreground">
@@ -585,7 +574,7 @@ useEffect(() => {
                 {/* Available Tags */}
                 <div className="space-y-3">
                   <Label className="text-sm font-medium">Available Tags</Label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-96 overflow-y-auto p-3 border rounded-md">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-64 overflow-y-auto p-3 border rounded-md">
                     {getAllTags().map((tag) => {
                       const isSelected = formData.tags?.includes(tag) || false;
                       return (
@@ -617,14 +606,9 @@ useEffect(() => {
                     })}
                   </div>
                 </div>
-                
-                <div className="text-xs text-muted-foreground">
-                  Tip: Tags help investors find your fund through category filters and improve searchability.
-                </div>
               </div>
-            </TabsContent>
 
-            <TabsContent value="structure" className="space-y-6 mt-4">
+              <Separator />
               {/* Geographic Allocation */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -757,17 +741,145 @@ useEffect(() => {
                     rows={3}
                   />
                 </div>
+                {/* Additional Regulatory Information */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Regulatory Information</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="cmvmId">CMVM ID</Label>
+                      <Input
+                        id="cmvmId"
+                        value={formData.cmvmId || ''}
+                        onChange={(e) => handleInputChange('cmvmId', e.target.value)}
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="auditor">Auditor</Label>
+                      <Input
+                        id="auditor"
+                        value={formData.auditor || ''}
+                        onChange={(e) => handleInputChange('auditor', e.target.value)}
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="custodian">Custodian</Label>
+                      <Input
+                        id="custodian"
+                        value={formData.custodian || ''}
+                        onChange={(e) => handleInputChange('custodian', e.target.value)}
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="navFrequency">NAV Frequency</Label>
+                      <Input
+                        id="navFrequency"
+                        value={formData.navFrequency || ''}
+                        onChange={(e) => handleInputChange('navFrequency', e.target.value)}
+                        placeholder="e.g., Daily, Monthly"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="pficStatus">PFIC Status</Label>
+                      <Select
+                        value={formData.pficStatus || 'Not provided'}
+                        onValueChange={(value) => handleInputChange('pficStatus', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="QEF available">QEF available</SelectItem>
+                          <SelectItem value="MTM only">MTM only</SelectItem>
+                          <SelectItem value="Not provided">Not provided</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Golden Visa Eligibility Basis */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Golden Visa Eligibility Basis</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="portugalAllocation">Portugal Allocation (%)</Label>
+                      <Input
+                        id="portugalAllocation"
+                        type="number"
+                        value={formData.eligibilityBasis?.portugalAllocation || ''}
+                        onChange={(e) => handleNestedChange('eligibilityBasis', 'portugalAllocation', e.target.value === '' ? undefined : parseFloat(e.target.value))}
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="maturityYears">Maturity Years</Label>
+                      <Input
+                        id="maturityYears"
+                        type="number"
+                        value={formData.eligibilityBasis?.maturityYears || ''}
+                        onChange={(e) => handleNestedChange('eligibilityBasis', 'maturityYears', e.target.value === '' ? undefined : parseFloat(e.target.value))}
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="realEstateExposure">Real Estate Exposure</Label>
+                      <Select
+                        value={formData.eligibilityBasis?.realEstateExposure || 'Not provided'}
+                        onValueChange={(value) => handleNestedChange('eligibilityBasis', 'realEstateExposure', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="None">None</SelectItem>
+                          <SelectItem value="Direct">Direct</SelectItem>
+                          <SelectItem value="Indirect">Indirect</SelectItem>
+                          <SelectItem value="Not provided">Not provided</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="managerAttestation">Manager Attestation</Label>
+                      <Select
+                        value={formData.eligibilityBasis?.managerAttestation ? 'true' : 'false'}
+                        onValueChange={(value) => handleNestedChange('eligibilityBasis', 'managerAttestation', value === 'true')}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="true">Yes</SelectItem>
+                          <SelectItem value="false">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
               </div>
             </TabsContent>
 
             <TabsContent value="performance" className="space-y-6 mt-4">
-              <HistoricalPerformanceEditor
-                value={formData.historicalPerformance}
-                onChange={(value) => handleInputChange('historicalPerformance', value)}
-              />
-            </TabsContent>
+              {/* Historical Performance */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Historical Performance</h3>
+                <HistoricalPerformanceEditor
+                  value={formData.historicalPerformance}
+                  onChange={(value) => handleInputChange('historicalPerformance', value)}
+                />
+              </div>
 
-            <TabsContent value="team" className="space-y-6 mt-4">
+              <Separator />
+
+              {/* Team Members */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-semibold">Team Members</h3>
@@ -836,7 +948,8 @@ useEffect(() => {
               </div>
             </TabsContent>
 
-            <TabsContent value="documents" className="space-y-6 mt-4">
+            <TabsContent value="resources" className="space-y-6 mt-4">
+              {/* Documents */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-semibold">Documents</h3>
@@ -880,9 +993,25 @@ useEffect(() => {
                   </div>
                 ))}
               </div>
-            </TabsContent>
 
-            <TabsContent value="faqs" className="space-y-6 mt-4">
+              <Separator />
+
+              {/* Fund Brief */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Fund Brief Document</h3>
+                <FundBriefSubmission
+                  fundId={fund.id}
+                  fundName={fund.name}
+                  currentBriefUrl={formData.fundBriefUrl}
+                  onSubmissionSuccess={() => {
+                    handleInputChange('fundBriefUrl', 'SUBMISSION_PENDING');
+                  }}
+                />
+              </div>
+
+              <Separator />
+
+              {/* FAQs */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-semibold">Frequently Asked Questions</h3>
@@ -938,148 +1067,6 @@ useEffect(() => {
                     <p>No FAQs added yet. Click "Add FAQ" to create the first question and answer.</p>
                   </div>
                 )}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="brief" className="space-y-6 mt-4">
-              {/* Fund Brief Upload */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Fund Brief Document</h3>
-                <FundBriefSubmission
-                  fundId={fund.id}
-                  fundName={fund.name}
-                  currentBriefUrl={formData.fundBriefUrl}
-                  onSubmissionSuccess={() => {
-                    // Mark that a fund brief submission was made
-                    handleInputChange('fundBriefUrl', 'SUBMISSION_PENDING');
-                  }}
-                />
-              </div>
-            </TabsContent>
-
-            <TabsContent value="regulatory" className="space-y-6 mt-4">
-              {/* Regulatory Information */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Regulatory Information</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="cmvmId">CMVM ID</Label>
-                    <Input
-                      id="cmvmId"
-                      value={formData.cmvmId || ''}
-                      onChange={(e) => handleInputChange('cmvmId', e.target.value)}
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="auditor">Auditor</Label>
-                    <Input
-                      id="auditor"
-                      value={formData.auditor || ''}
-                      onChange={(e) => handleInputChange('auditor', e.target.value)}
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="custodian">Custodian</Label>
-                    <Input
-                      id="custodian"
-                      value={formData.custodian || ''}
-                      onChange={(e) => handleInputChange('custodian', e.target.value)}
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="navFrequency">NAV Frequency</Label>
-                    <Input
-                      id="navFrequency"
-                      value={formData.navFrequency || ''}
-                      onChange={(e) => handleInputChange('navFrequency', e.target.value)}
-                      placeholder="e.g., Daily, Monthly"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="pficStatus">PFIC Status</Label>
-                    <Select
-                      value={formData.pficStatus || 'Not provided'}
-                      onValueChange={(value) => handleInputChange('pficStatus', value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="QEF available">QEF available</SelectItem>
-                        <SelectItem value="MTM only">MTM only</SelectItem>
-                        <SelectItem value="Not provided">Not provided</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* Eligibility Basis */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Golden Visa Eligibility Basis</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="portugalAllocation">Portugal Allocation (%)</Label>
-                    <Input
-                      id="portugalAllocation"
-                      type="number"
-                      value={formData.eligibilityBasis?.portugalAllocation || ''}
-                      onChange={(e) => handleNestedChange('eligibilityBasis', 'portugalAllocation', e.target.value === '' ? undefined : parseFloat(e.target.value))}
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="maturityYears">Maturity Years</Label>
-                    <Input
-                      id="maturityYears"
-                      type="number"
-                      value={formData.eligibilityBasis?.maturityYears || ''}
-                      onChange={(e) => handleNestedChange('eligibilityBasis', 'maturityYears', e.target.value === '' ? undefined : parseFloat(e.target.value))}
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="realEstateExposure">Real Estate Exposure</Label>
-                    <Select
-                      value={formData.eligibilityBasis?.realEstateExposure || 'Not provided'}
-                      onValueChange={(value) => handleNestedChange('eligibilityBasis', 'realEstateExposure', value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="None">None</SelectItem>
-                        <SelectItem value="Direct">Direct</SelectItem>
-                        <SelectItem value="Indirect">Indirect</SelectItem>
-                        <SelectItem value="Not provided">Not provided</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="managerAttestation">Manager Attestation</Label>
-                    <Select
-                      value={formData.eligibilityBasis?.managerAttestation ? 'true' : 'false'}
-                      onValueChange={(value) => handleNestedChange('eligibilityBasis', 'managerAttestation', value === 'true')}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="true">Yes</SelectItem>
-                        <SelectItem value="false">No</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
               </div>
             </TabsContent>
           </Tabs>
