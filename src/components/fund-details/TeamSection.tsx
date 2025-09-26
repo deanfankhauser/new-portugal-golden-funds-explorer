@@ -20,7 +20,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
         {team.map((member, index) => (
           <div key={member.name || index} className="bg-card p-6 rounded-lg border border-border hover:shadow-md transition-all duration-300">
             <div className="space-y-4">
-              <div className="flex items-start space-x-4">
+                <div className="flex items-start space-x-4">
                 <Avatar className="w-16 h-16">
                   {member.photoUrl ? (
                     <AvatarImage 
@@ -34,10 +34,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Users className="w-4 h-4 text-accent" />
-                    <h3 className="font-semibold text-foreground text-lg">{member.name}</h3>
-                  </div>
+                  <h3 className="font-semibold text-foreground text-lg">{member.name}</h3>
                   <p className="text-sm text-accent font-medium">{member.position}</p>
                 </div>
               </div>
