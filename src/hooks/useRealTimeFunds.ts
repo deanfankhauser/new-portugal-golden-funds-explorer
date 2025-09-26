@@ -21,6 +21,8 @@ const applyEditHistory = (
     if (!f) continue;
 
     const c = e.changes || {};
+    console.log(`🔍 Processing edit history for fund ${e.fund_id}:`, c);
+    
     // Normalize common snake_case fields to camelCase expected by UI
     const n: Record<string, any> = { ...c };
     if (c.short_description && typeof c.short_description === 'string') n.description = c.short_description;
@@ -39,6 +41,16 @@ const applyEditHistory = (
     if (c.historicalPerformance && typeof c.historicalPerformance === 'object') n.historicalPerformance = c.historicalPerformance;
     if (c.historical_performance && typeof c.historical_performance === 'object') n.historicalPerformance = c.historical_performance;
     if (c.faqs && Array.isArray(c.faqs)) n.faqs = c.faqs;
+    
+    // Handle team members from edit history
+    if (c.team && Array.isArray(c.team)) {
+      console.log(`👥 Found team data in edit history for ${e.fund_id}:`, c.team);
+      n.team = c.team;
+    }
+    if (c.team_members && Array.isArray(c.team_members)) {
+      console.log(`👥 Found team_members data in edit history for ${e.fund_id}:`, c.team_members);
+      n.team = c.team_members;
+    }
     
     // Regulatory compliance fields
     if (c.cmvm_id && typeof c.cmvm_id === 'string') n.cmvmId = c.cmvm_id;
@@ -76,7 +88,10 @@ const applyEditHistory = (
     if (typeof n.established === 'number') f.established = n.established;
     if (typeof n.regulatedBy === 'string') f.regulatedBy = n.regulatedBy;
     if (Array.isArray(n.geographicAllocation)) f.geographicAllocation = n.geographicAllocation;
-    if (Array.isArray(n.team)) f.team = n.team;
+    if (Array.isArray(n.team)) {
+      console.log(`✅ Applying team data to fund ${f.id}:`, n.team);
+      f.team = n.team;
+    }
     if (Array.isArray(n.documents)) f.documents = n.documents;
     if (typeof n.historicalPerformance === 'object' && n.historicalPerformance && Object.keys(n.historicalPerformance).length > 0) {
       f.historicalPerformance = n.historicalPerformance;
@@ -276,8 +291,14 @@ const applyEditHistory = (
             ? (fund.geographic_allocation as unknown as GeographicAllocation[])
             : undefined,
           team: Array.isArray(fund.team_members) 
-            ? (fund.team_members as unknown as TeamMember[])
-            : undefined,
+            ? (() => {
+                console.log(`👥 Loading team data for ${fund.id}:`, fund.team_members);
+                return fund.team_members as unknown as TeamMember[];
+              })()
+            : (() => {
+                console.log(`❌ No team_members found for ${fund.id}`);
+                return undefined;
+              })(),
           documents: Array.isArray(fund.pdf_documents) 
             ? (fund.pdf_documents as unknown as PdfDocument[])
             : undefined,
@@ -340,9 +361,17 @@ const applyEditHistory = (
           console.warn('Could not fetch fund_edit_history, proceeding without overlay:', editsError);
           setFunds(transformedFunds);
         } else if (editsData && editsData.length > 0) {
+          console.log('🔍 About to apply edit history overlay data:', editsData.length, 'entries');
           const finalFunds = applyEditHistory(transformedFunds, editsData as any);
+          console.log('🎯 Final funds after edit history applied:', finalFunds.map(f => ({ 
+            id: f.id, 
+            name: f.name, 
+            teamCount: f.team?.length || 0,
+            hasTeam: !!f.team 
+          })));
           setFunds(finalFunds);
         } else {
+          console.log('⚠️ No edit history data to apply');
           setFunds(transformedFunds);
         }
         setError(null);

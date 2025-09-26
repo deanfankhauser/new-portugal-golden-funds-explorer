@@ -9,7 +9,10 @@ interface TeamSectionProps {
 }
 
 const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
+  console.log('👥 TeamSection received team data:', team);
+  
   if (!team || team.length === 0) {
+    console.log('❌ TeamSection: No team data available');
     return null;
   }
 
