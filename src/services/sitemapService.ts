@@ -127,7 +127,7 @@ export class SitemapService {
     return categories.map(category => {
       const contentDates = DateManagementService.getContentDates('category', category);
       return {
-        url: URL_CONFIG.buildCategoryUrl(categoryToSlug(category)),
+        url: URL_CONFIG.buildCategoryUrl(category),
         lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
         changefreq: contentDates.changeFrequency,
         priority: 0.8
@@ -142,7 +142,7 @@ export class SitemapService {
     return tags.map(tag => {
       const contentDates = DateManagementService.getContentDates('tag', tag);
       return {
-        url: URL_CONFIG.buildTagUrl(tagToSlug(tag)),
+        url: URL_CONFIG.buildTagUrl(tag),
         lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
         changefreq: contentDates.changeFrequency,
         priority: 0.7
