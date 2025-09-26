@@ -93,16 +93,21 @@ export async function generateStaticFiles() {
       return !content.includes(full);
     });
 
-    const categoriesCount = routes.filter(r => r.pageType === 'category').length;
-    const tagsCount = routes.filter(r => r.pageType === 'tag').length;
-    const managersCount = routes.filter(r => r.pageType === 'manager').length;
-    const comparisonsCount = routes.filter(r => r.pageType === 'fund-comparison').length;
-    const alternativesCount = routes.filter(r => r.pageType === 'fund-alternatives').length;
+    const categoriesRoutes = routes.filter(r => r.pageType === 'category');
+    const tagsRoutes = routes.filter(r => r.pageType === 'tag');
+    const managersRoutes = routes.filter(r => r.pageType === 'manager');
+    const comparisonsRoutes = routes.filter(r => r.pageType === 'fund-comparison');
+    const alternativesRoutes = routes.filter(r => r.pageType === 'fund-alternatives');
 
-    console.log(`🧩 Sitemap coverage: categories=${count(/\/categories\//g)} (expected ${categoriesCount}), tags=${count(/\/tags\//g)} (expected ${tagsCount}), managers=${count(/\/manager\//g)} (expected ${managersCount}), comparisons=${count(/\/compare\//g)} (expected ${comparisonsCount}), alternatives=${count(/\/[a-z0-9-]+\/alternatives/g)} (expected ${alternativesCount})`);
-    if (missingStatics.length) {
-      console.warn('⚠️  Sitemap missing core static pages:', missingStatics.join(', '));
-    }
+    // Sample check for first 5 of each
+    const sampleCheck = (rs: any[]) => rs.slice(0, 5).map(r => `https://funds.movingto.com${r.path}`).filter(u => !content.includes(u));
+    const missingCategorySamples = sampleCheck(categoriesRoutes);
+    const missingTagSamples = sampleCheck(tagsRoutes);
+
+    console.log(`🧩 Sitemap coverage: categories=${count(/\/categories\//g)} (expected ${categoriesRoutes.length}), tags=${count(/\/tags\//g)} (expected ${tagsRoutes.length}), managers=${count(/\/manager\//g)} (expected ${managersRoutes.length}), comparisons=${count(/\/compare\//g)} (expected ${comparisonsRoutes.length}), alternatives=${count(/\/[a-z0-9-]+\/alternatives/g)} (expected ${alternativesRoutes.length})`);
+    if (missingStatics.length) console.warn('⚠️  Sitemap missing core static pages:', missingStatics.join(', '));
+    if (missingCategorySamples.length) console.warn('⚠️  Sample missing category URLs:', missingCategorySamples.join(', '));
+    if (missingTagSamples.length) console.warn('⚠️  Sample missing tag URLs:', missingTagSamples.join(', '));
   } catch (e) {
     console.warn('⚠️  Could not verify sitemap coverage:', (e as any)?.message || e);
   }
