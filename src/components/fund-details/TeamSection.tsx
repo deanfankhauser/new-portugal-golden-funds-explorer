@@ -1,8 +1,6 @@
 
 import React from 'react';
-import { Users } from 'lucide-react';
 import { TeamMember } from '../../data/types/funds';
-import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface TeamSectionProps {
@@ -20,7 +18,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
         {team.map((member, index) => (
           <div key={member.name || index} className="bg-card p-6 rounded-lg border border-border hover:shadow-md transition-all duration-300">
             <div className="space-y-4">
-                <div className="flex items-start space-x-4">
+              <div className="flex items-start space-x-4">
                 <Avatar className="w-16 h-16">
                   {member.photoUrl ? (
                     <AvatarImage 
