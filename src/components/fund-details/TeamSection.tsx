@@ -3,6 +3,7 @@ import React from 'react';
 import { Users } from 'lucide-react';
 import { TeamMember } from '../../data/types/funds';
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface TeamSectionProps {
   team?: TeamMember[];
@@ -18,12 +19,28 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {team.map((member, index) => (
           <div key={member.name || index} className="bg-card p-6 rounded-lg border border-border hover:shadow-md transition-all duration-300">
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <Users className="w-4 h-4 text-accent" />
-                <h3 className="font-semibold text-foreground text-lg">{member.name}</h3>
+            <div className="space-y-4">
+              <div className="flex items-start space-x-4">
+                <Avatar className="w-16 h-16">
+                  {member.photoUrl ? (
+                    <AvatarImage 
+                      src={member.photoUrl} 
+                      alt={`${member.name} profile picture`}
+                      className="object-cover"
+                    />
+                  ) : null}
+                  <AvatarFallback className="bg-primary/10 text-primary text-lg font-semibold">
+                    {member.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Users className="w-4 h-4 text-accent" />
+                    <h3 className="font-semibold text-foreground text-lg">{member.name}</h3>
+                  </div>
+                  <p className="text-sm text-accent font-medium">{member.position}</p>
+                </div>
               </div>
-              <p className="text-sm text-accent font-medium">{member.position}</p>
               {member.bio && (
                 <p className="text-sm text-muted-foreground leading-relaxed">{member.bio}</p>
               )}

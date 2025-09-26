@@ -19,6 +19,8 @@ import { Fund, GeographicAllocation, TeamMember, PdfDocument, RedemptionTerms, F
 import { getAllTags } from '@/data/services/tags-service';
 import { useFundEditing } from '@/hooks/useFundEditing';
 import { toast } from 'sonner';
+import { uploadTeamMemberPhoto, deleteTeamMemberPhoto } from '../../utils/imageUpload';
+import { useToast } from '../../hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
@@ -37,6 +39,8 @@ export const FundEditModal: React.FC<FundEditModalProps> = ({
   onOpenChange,
 }) => {
   const { submitFundEditSuggestion, loading } = useFundEditing();
+  const { toast } = useToast();
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   
 const buildFormData = (f: Fund) => {
   const formData: any = {
@@ -60,7 +64,7 @@ const buildFormData = (f: Fund) => {
     // Geographic allocation - always present as array
     geographicAllocation: f.geographicAllocation || [],
     // Team members - always present as array
-    team: f.team || [],
+    team: f.team?.map(member => ({ ...member, photoUrl: member.photoUrl || '' })) || [],
     // Documents - always present as array
     documents: f.documents || [],
     // Historical performance - always present as object
@@ -166,6 +170,75 @@ useEffect(() => {
     }));
   };
 
+  const handleProfilePictureUpload = async (event: React.ChangeEvent<HTMLInputElement>, memberIndex: number) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please select an image file.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please select an image smaller than 5MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploadingPhoto(true);
+    try {
+      const teamMember = formData.team[memberIndex];
+      const photoUrl = await uploadTeamMemberPhoto(file, teamMember.name || `member-${memberIndex}`);
+      
+      // Update the team member with the new photo URL
+      handleArrayChange('team', memberIndex, 'photoUrl', photoUrl);
+      
+      toast({
+        title: "Photo uploaded",
+        description: "Profile picture has been uploaded successfully.",
+      });
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast({
+        title: "Upload failed",
+        description: "Failed to upload photo. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
+
+  const handleRemoveProfilePicture = async (memberIndex: number) => {
+    const teamMember = formData.team[memberIndex];
+    if (teamMember.photoUrl) {
+      try {
+        await deleteTeamMemberPhoto(teamMember.photoUrl);
+        handleArrayChange('team', memberIndex, 'photoUrl', '');
+        toast({
+          title: "Photo removed",
+          description: "Profile picture has been removed.",
+        });
+      } catch (error) {
+        console.error('Delete error:', error);
+        toast({
+          title: "Failed to remove photo",
+          description: "Photo removal failed. Please try again.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
   const getCurrentValues = () => ({
     description: fund.description,
     detailedDescription: fund.detailedDescription,
@@ -249,7 +322,10 @@ useEffect(() => {
       const suggestedChanges = getSuggestedChanges();
       
       if (Object.keys(suggestedChanges).length === 0) {
-        toast.info("No changes detected");
+        toast({
+          title: "No changes detected",
+          description: "Please make changes before submitting.",
+        });
         return;
       }
 
@@ -259,11 +335,18 @@ useEffect(() => {
         getCurrentValues()
       );
       
-      toast.success("Thank you for your edit suggestion! We will review it and notify you by email once it's processed.");
+      toast({
+        title: "Suggestion submitted!",
+        description: "Thank you for your edit suggestion! We will review it and notify you by email once it's processed.",
+      });
       onOpenChange(false);
     } catch (error) {
       console.error('Error submitting edit suggestion:', error);
-      toast.error("Failed to submit edit suggestion. Please try again.");
+      toast({
+        title: "Submission failed",
+        description: "Failed to submit edit suggestion. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -886,12 +969,12 @@ useEffect(() => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-semibold">Team Members</h3>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addArrayItem('team', { name: '', position: '', bio: '', linkedinUrl: '' })}
-                  >
+                   <Button
+                     type="button"
+                     variant="outline"
+                     size="sm"
+                     onClick={() => addArrayItem('team', { name: '', position: '', bio: '', linkedinUrl: '', photoUrl: '' })}
+                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Add Team Member
                   </Button>
@@ -936,15 +1019,68 @@ useEffect(() => {
                           placeholder="https://linkedin.com/in/..."
                         />
                       </div>
-                      <div className="md:col-span-2">
-                        <Label>Bio</Label>
-                        <Textarea
-                          value={member.bio || ''}
-                          onChange={(e) => handleArrayChange('team', index, 'bio', e.target.value)}
-                          rows={3}
-                          placeholder="Professional background and experience"
-                        />
-                      </div>
+                       <div className="md:col-span-2">
+                         <Label>Profile Picture</Label>
+                         <div className="space-y-2">
+                           <input
+                             type="file"
+                             accept="image/*"
+                             onChange={(e) => handleProfilePictureUpload(e, index)}
+                             className="hidden"
+                             id={`photo-upload-${index}`}
+                           />
+                           <div className="flex items-center space-x-4">
+                             {member.photoUrl && (
+                               <img 
+                                 src={member.photoUrl} 
+                                 alt={member.name}
+                                 className="w-16 h-16 rounded-full object-cover border"
+                               />
+                             )}
+                             <div className="space-y-2">
+                               <Button
+                                 type="button"
+                                 variant="outline"
+                                 size="sm"
+                                 onClick={() => document.getElementById(`photo-upload-${index}`)?.click()}
+                                 disabled={isUploadingPhoto}
+                               >
+                                 {isUploadingPhoto ? 'Uploading...' : (member.photoUrl ? 'Change Photo' : 'Upload Photo')}
+                               </Button>
+                               {member.photoUrl && (
+                                 <Button
+                                   type="button"
+                                   variant="outline"
+                                   size="sm"
+                                   onClick={() => handleRemoveProfilePicture(index)}
+                                 >
+                                   Remove Photo
+                                 </Button>
+                               )}
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+                       <div className="md:col-span-2">
+                         <div className="flex items-center justify-between">
+                           <Label>Bio</Label>
+                           <span className={`text-xs ${(member.bio || '').length > 120 ? 'text-destructive' : (member.bio || '').length > 100 ? 'text-warning' : 'text-muted-foreground'}`}>
+                             {(member.bio || '').length}/140
+                           </span>
+                         </div>
+                         <Textarea
+                           value={member.bio || ''}
+                           onChange={(e) => {
+                             const value = e.target.value;
+                             if (value.length <= 140) {
+                               handleArrayChange('team', index, 'bio', value);
+                             }
+                           }}
+                           rows={3}
+                           placeholder="Professional background and experience (max 140 characters)"
+                           maxLength={140}
+                         />
+                       </div>
                     </div>
                   </div>
                 ))}
