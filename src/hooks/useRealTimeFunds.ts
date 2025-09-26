@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Fund, FundTag, FundCategory, GeographicAllocation, TeamMember, PdfDocument, FAQItem } from '../data/types/funds';
+import { Fund, FundTag, FundCategory, GeographicAllocation, TeamMember, PdfDocument, FAQItem, RedemptionFrequency } from '../data/types/funds';
 import { funds as staticFunds } from '../data/funds'; // Fallback to static data
 import { supabase } from '../integrations/supabase/client';
 
@@ -50,6 +50,10 @@ const applyEditHistory = (
     if (c.pfic_status && typeof c.pfic_status === 'string') n.pficStatus = c.pfic_status;
     if (c.pficStatus && typeof c.pficStatus === 'string') n.pficStatus = c.pficStatus;
 
+    // Handle redemption terms transformations
+    if (c.redemption_terms && typeof c.redemption_terms === 'object') n.redemptionTerms = c.redemption_terms;
+    if (c.redemptionTerms && typeof c.redemptionTerms === 'object') n.redemptionTerms = c.redemptionTerms;
+
     // Apply supported fields
     console.log(`Applying overlay for fund ${f.id}:`, n);
     if (typeof n.description === 'string') {
@@ -78,6 +82,7 @@ const applyEditHistory = (
       f.historicalPerformance = n.historicalPerformance;
     }
     if (Array.isArray(n.faqs)) f.faqs = n.faqs;
+    if (typeof n.redemptionTerms === 'object' && n.redemptionTerms) f.redemptionTerms = n.redemptionTerms;
     
     // Apply regulatory compliance fields
     if (typeof n.cmvmId === 'string') f.cmvmId = n.cmvmId;
@@ -155,31 +160,46 @@ const applyEditHistory = (
                   : new Date().getFullYear(),
                 regulatedBy: 'CMVM',
                 location: 'Portugal',
-                tags: (fund.tags || []) as FundTag[],
-                category: (fund.category || 'Mixed') as FundCategory,
+                 tags: (fund.tags || []) as FundTag[],
+                 category: (fund.category || 'Mixed') as FundCategory,
           websiteUrl: fund.website || undefined,
-                geographicAllocation: Array.isArray(fund.geographic_allocation) 
-                  ? (fund.geographic_allocation as unknown as GeographicAllocation[])
-                  : undefined,
-                team: Array.isArray(fund.team_members) 
-                  ? (fund.team_members as unknown as TeamMember[])
-                  : undefined,
-                documents: Array.isArray(fund.pdf_documents) 
-                  ? (fund.pdf_documents as unknown as PdfDocument[])
-                  : undefined,
-                faqs: Array.isArray(fund.faqs) 
-                  ? (fund.faqs as unknown as FAQItem[])
-                  : undefined,
-                historicalPerformance: (() => {
-                  const hp = fund.historical_performance as Record<string, { returns?: number; aum?: number; nav?: number }> | null;
-                  if (hp && typeof hp === 'object' && Object.keys(hp).length > 0) return hp;
-                  return staticFunds.find(s => s.id === fund.id)?.historicalPerformance;
-                })(),
-                datePublished: fund.created_at || new Date().toISOString(),
-                dateModified: fund.updated_at || fund.created_at || new Date().toISOString(),
+                 geographicAllocation: Array.isArray(fund.geographic_allocation) 
+                   ? (fund.geographic_allocation as unknown as GeographicAllocation[])
+                   : undefined,
+                 team: Array.isArray(fund.team_members) 
+                   ? (fund.team_members as unknown as TeamMember[])
+                   : undefined,
+                 documents: Array.isArray(fund.pdf_documents) 
+                   ? (fund.pdf_documents as unknown as PdfDocument[])
+                   : undefined,
+                 faqs: Array.isArray(fund.faqs) 
+                   ? (fund.faqs as unknown as FAQItem[])
+                   : undefined,
+                 historicalPerformance: (() => {
+                   const hp = fund.historical_performance as Record<string, { returns?: number; aum?: number; nav?: number }> | null;
+                   if (hp && typeof hp === 'object' && Object.keys(hp).length > 0) return hp;
+                   return staticFunds.find(s => s.id === fund.id)?.historicalPerformance;
+                 })(),
+                 datePublished: fund.created_at || new Date().toISOString(),
+                 dateModified: fund.updated_at || fund.created_at || new Date().toISOString(),
             subscriptionFee: 0,
             redemptionFee: 0,
-            redemptionTerms: undefined,
+                 redemptionTerms: (() => {
+                   const rt = fund.redemption_terms;
+                   if (rt && typeof rt === 'object' && !Array.isArray(rt)) {
+                     // Transform the database object to match RedemptionTerms interface
+                     const rtObj = rt as Record<string, any>;
+                     return {
+                       frequency: rtObj.frequency as RedemptionFrequency || 'Quarterly',
+                       redemptionOpen: Boolean(rtObj.redemptionOpen ?? rtObj.redemption_open ?? true),
+                       noticePeriod: rtObj.noticePeriod ?? rtObj.notice_period,
+                       earlyRedemptionFee: rtObj.earlyRedemptionFee ?? rtObj.early_redemption_fee,
+                       minimumHoldingPeriod: rtObj.minimumHoldingPeriod ?? rtObj.minimum_holding_period,
+                       notes: rtObj.notes
+                     };
+                   }
+                   return staticFunds.find(s => s.id === fund.id)?.redemptionTerms;
+                 })(),
                 dataLastVerified: fund.updated_at || fund.created_at,
                 performanceDataDate: fund.updated_at || fund.created_at,
                 feeLastUpdated: fund.updated_at || fund.created_at,
@@ -275,7 +295,22 @@ const applyEditHistory = (
           // Additional fields with defaults
           subscriptionFee: 0,
           redemptionFee: 0,
-          redemptionTerms: undefined,
+          redemptionTerms: (() => {
+            const rt = fund.redemption_terms;
+            if (rt && typeof rt === 'object' && !Array.isArray(rt)) {
+              // Transform the database object to match RedemptionTerms interface
+              const rtObj = rt as Record<string, any>;
+              return {
+                frequency: rtObj.frequency as RedemptionFrequency || 'Quarterly',
+                redemptionOpen: Boolean(rtObj.redemptionOpen ?? rtObj.redemption_open ?? true),
+                noticePeriod: rtObj.noticePeriod ?? rtObj.notice_period,
+                earlyRedemptionFee: rtObj.earlyRedemptionFee ?? rtObj.early_redemption_fee,
+                minimumHoldingPeriod: rtObj.minimumHoldingPeriod ?? rtObj.minimum_holding_period,
+                notes: rtObj.notes
+              };
+            }
+            return staticFunds.find(s => s.id === fund.id)?.redemptionTerms;
+          })(),
           dataLastVerified: fund.updated_at || fund.created_at,
           performanceDataDate: fund.updated_at || fund.created_at,
           feeLastUpdated: fund.updated_at || fund.created_at,
