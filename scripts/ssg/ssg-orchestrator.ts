@@ -76,6 +76,36 @@ export async function generateStaticFiles() {
   // Generate robots.txt
   const robotsTxt = EnhancedSitemapService.generateRobotsTxt();
   fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsTxt);
+
+  // Verify sitemap coverage (routes vs generated XML)
+  try {
+    const sitemapPath = path.join(distDir, 'sitemap.xml');
+    const content = fs.readFileSync(sitemapPath, 'utf8');
+    const count = (pattern: RegExp) => (content.match(pattern) || []).length;
+
+    const staticChecks = [
+      '/', '/index', '/about', '/disclaimer', '/privacy', '/faqs',
+      '/roi-calculator', '/categories', '/tags', '/managers',
+      '/comparisons', '/compare', '/alternatives'
+    ];
+    const missingStatics = staticChecks.filter(p => {
+      const full = `https://funds.movingto.com${p === '/' ? '' : p}`;
+      return !content.includes(full);
+    });
+
+    const categoriesCount = routes.filter(r => r.pageType === 'category').length;
+    const tagsCount = routes.filter(r => r.pageType === 'tag').length;
+    const managersCount = routes.filter(r => r.pageType === 'manager').length;
+    const comparisonsCount = routes.filter(r => r.pageType === 'fund-comparison').length;
+    const alternativesCount = routes.filter(r => r.pageType === 'fund-alternatives').length;
+
+    console.log(`🧩 Sitemap coverage: categories=${count(/\/categories\//g)} (expected ${categoriesCount}), tags=${count(/\/tags\//g)} (expected ${tagsCount}), managers=${count(/\/manager\//g)} (expected ${managersCount}), comparisons=${count(/\/compare\//g)} (expected ${comparisonsCount}), alternatives=${count(/\/[a-z0-9-]+\/alternatives/g)} (expected ${alternativesCount})`);
+    if (missingStatics.length) {
+      console.warn('⚠️  Sitemap missing core static pages:', missingStatics.join(', '));
+    }
+  } catch (e) {
+    console.warn('⚠️  Could not verify sitemap coverage:', (e as any)?.message || e);
+  }
   
   // Final report
   if (process.env.NODE_ENV !== 'production') {
