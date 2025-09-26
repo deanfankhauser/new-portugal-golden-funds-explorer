@@ -688,7 +688,7 @@ useEffect(() => {
                       id="noticePeriod"
                       type="number"
                       value={formData.redemptionTerms?.noticePeriod || ''}
-                      onChange={(e) => handleNestedChange('redemptionTerms', 'noticePeriod', parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => handleNestedChange('redemptionTerms', 'noticePeriod', e.target.value === '' ? undefined : parseFloat(e.target.value))}
                     />
                   </div>
 
@@ -699,7 +699,7 @@ useEffect(() => {
                       type="number"
                       step="0.1"
                       value={formData.redemptionTerms?.earlyRedemptionFee || ''}
-                      onChange={(e) => handleNestedChange('redemptionTerms', 'earlyRedemptionFee', parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => handleNestedChange('redemptionTerms', 'earlyRedemptionFee', e.target.value === '' ? undefined : parseFloat(e.target.value))}
                     />
                   </div>
 
@@ -709,7 +709,7 @@ useEffect(() => {
                       id="minimumHoldingPeriod"
                       type="number"
                       value={formData.redemptionTerms?.minimumHoldingPeriod || ''}
-                      onChange={(e) => handleNestedChange('redemptionTerms', 'minimumHoldingPeriod', parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => handleNestedChange('redemptionTerms', 'minimumHoldingPeriod', e.target.value === '' ? undefined : parseFloat(e.target.value))}
                     />
                   </div>
                 </div>
@@ -998,7 +998,7 @@ useEffect(() => {
                       id="portugalAllocation"
                       type="number"
                       value={formData.eligibilityBasis?.portugalAllocation || ''}
-                      onChange={(e) => handleNestedChange('eligibilityBasis', 'portugalAllocation', parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => handleNestedChange('eligibilityBasis', 'portugalAllocation', e.target.value === '' ? undefined : parseFloat(e.target.value))}
                     />
                   </div>
 
@@ -1008,7 +1008,7 @@ useEffect(() => {
                       id="maturityYears"
                       type="number"
                       value={formData.eligibilityBasis?.maturityYears || ''}
-                      onChange={(e) => handleNestedChange('eligibilityBasis', 'maturityYears', parseFloat(e.target.value) || undefined)}
+                      onChange={(e) => handleNestedChange('eligibilityBasis', 'maturityYears', e.target.value === '' ? undefined : parseFloat(e.target.value))}
                     />
                   </div>
 
