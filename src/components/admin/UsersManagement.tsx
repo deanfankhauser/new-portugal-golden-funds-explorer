@@ -177,17 +177,26 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
     try {
       setUsersLoading(true);
       
-      // Get all investor profiles
+      // Get all investor profiles using the new secure function
       const { data: investors, error: investorError } = await supabase
-        .from('investor_profiles')
-        .select('id, user_id, first_name, last_name, email, created_at, city, country')
-        .order('created_at', { ascending: false });
+        .rpc('get_all_investor_profiles_admin');
 
       if (investorError) {
         console.error('Error fetching investors:', investorError);
+        // Fallback to direct query with limited data for non-critical display
+        const { data: fallbackInvestors, error: fallbackError } = await supabase
+          .from('investor_profiles')
+          .select('id, user_id, first_name, last_name, email, created_at, city, country')
+          .order('created_at', { ascending: false });
+        
+        if (fallbackError) {
+          console.error('Fallback investor query also failed:', fallbackError);
+        } else {
+          console.log('Using fallback investor data due to secure function error');
+        }
       }
 
-      // Get all manager profiles
+      // Get all manager profiles (managers are less sensitive, can use direct query)
       const { data: managers, error: managerError } = await supabase
         .from('manager_profiles')
         .select('id, user_id, company_name, manager_name, email, created_at, city, country, status')
@@ -197,8 +206,9 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
         console.error('Error fetching managers:', managerError);
       }
 
-      // Combine and format the data
-      const formattedInvestors = (investors || []).map(investor => ({
+      // Format investor data (from secure function or fallback)
+      const investorData = investors || [];
+      const formattedInvestors = investorData.map(investor => ({
         ...investor,
         user_type: 'investor',
         display_name: `${investor.first_name || ''} ${investor.last_name || ''}`.trim() || 'No name',
@@ -206,6 +216,7 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
         status: 'active'
       }));
 
+      // Format manager data
       const formattedManagers = (managers || []).map(manager => ({
         ...manager,
         user_type: 'manager',

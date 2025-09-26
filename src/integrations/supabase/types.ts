@@ -629,28 +629,7 @@ export type Database = {
       }
     }
     Views: {
-      investor_profiles_admin_view: {
-        Row: {
-          address: string | null
-          annual_income_range: string | null
-          avatar_url: string | null
-          city: string | null
-          country: string | null
-          created_at: string | null
-          date_of_birth: string | null
-          email: string | null
-          first_name: string | null
-          id: string | null
-          investment_experience: string | null
-          last_name: string | null
-          net_worth_range: string | null
-          phone: string | null
-          risk_tolerance: string | null
-          updated_at: string | null
-          user_id: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       can_access_manager_sensitive_data: {
@@ -681,6 +660,28 @@ export type Database = {
       get_admin_data_access_level: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      get_all_investor_profiles_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          address: string
+          annual_income_range: string
+          avatar_url: string
+          city: string
+          country: string
+          created_at: string
+          date_of_birth: string
+          email: string
+          first_name: string
+          id: string
+          investment_experience: string
+          last_name: string
+          net_worth_range: string
+          phone: string
+          risk_tolerance: string
+          updated_at: string
+          user_id: string
+        }[]
       }
       get_basic_manager_info: {
         Args: Record<PropertyKey, never>
