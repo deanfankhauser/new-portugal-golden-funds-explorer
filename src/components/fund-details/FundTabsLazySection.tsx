@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 const FundOverviewTab = lazy(() => import('./tabs/FundOverviewTab'));
 const FundStructureTab = lazy(() => import('./tabs/FundStructureTab'));
 const FundTeamTab = lazy(() => import('./tabs/FundTeamTab'));
-const FundDocumentsTab = lazy(() => import('./tabs/FundDocumentsTab'));
+
 
 // Tab content loading skeleton
 const TabContentSkeleton = () => (
@@ -41,7 +41,7 @@ interface FundTabsLazySectionProps {
 const FundTabsLazySection: React.FC<FundTabsLazySectionProps> = ({ fund }) => {
   return (
     <Tabs defaultValue="overview" className="w-full animate-fade-in">
-      <TabsList className="grid w-full grid-cols-4 mb-6 md:mb-8 h-auto">
+      <TabsList className="grid w-full grid-cols-3 mb-6 md:mb-8 h-auto">
         <TabsTrigger value="overview" className="text-xs sm:text-sm md:text-base px-2 py-2 md:py-3">
           <FileText className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
           <span className="hidden sm:inline">Overview</span>
@@ -55,11 +55,6 @@ const FundTabsLazySection: React.FC<FundTabsLazySectionProps> = ({ fund }) => {
         <TabsTrigger value="team" className="text-xs sm:text-sm md:text-base px-2 py-2 md:py-3">
           <Users className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
           Team
-        </TabsTrigger>
-        <TabsTrigger value="documents" className="text-xs sm:text-sm md:text-base px-2 py-2 md:py-3">
-          <FileText className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-          <span className="hidden sm:inline">Documents</span>
-          <span className="sm:hidden">Docs</span>
         </TabsTrigger>
       </TabsList>
       
@@ -78,12 +73,6 @@ const FundTabsLazySection: React.FC<FundTabsLazySectionProps> = ({ fund }) => {
       <TabsContent value="team">
         <Suspense fallback={<TabContentSkeleton />}>
           <FundTeamTab fund={fund} />
-        </Suspense>
-      </TabsContent>
-      
-      <TabsContent value="documents">
-        <Suspense fallback={<TabContentSkeleton />}>
-          <FundDocumentsTab fund={fund} />
         </Suspense>
       </TabsContent>
     </Tabs>

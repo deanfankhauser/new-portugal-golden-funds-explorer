@@ -29,16 +29,12 @@ import FundDescription from './FundDescription';
 import FundManager from './FundManager';
 import RegulatoryIdentifiers from './RegulatoryIdentifiers';
 import KeyTermsTable from './KeyTermsTable';
-import StrategyPortfolioSection from './StrategyPortfolioSection';
-
 import FundCategory from './FundCategory';
 import FeeStructure from './FeeStructure';
 import GeographicAllocation from './GeographicAllocation';
 import RedemptionTerms from './RedemptionTerms';
 import RegulatoryComplianceInfo from './RegulatoryComplianceInfo';
 import TeamSection from './TeamSection';
-import DocumentsSection from './DocumentsSection';
-import DocumentsDisclosures from './DocumentsDisclosures';
 import { formatPercentage } from './utils/formatters';
 
 interface FundDetailsContentProps {
@@ -95,13 +91,10 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                   </div>
                 </section>
 
-                {/* Key Terms & Strategy Section */}
+                {/* Key Terms Section */}
                 <section id="key-terms-strategy" className="scroll-mt-24">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Key Terms & Strategy</h2>
-                  <div className="space-y-8">
-                    <KeyTermsTable fund={fund} />
-                    <StrategyPortfolioSection fund={fund} />
-                  </div>
+                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Key Terms</h2>
+                  <KeyTermsTable fund={fund} />
                 </section>
 
 
@@ -134,14 +127,6 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                   <TeamSection team={fund.team} />
                 </section>
 
-                {/* Documents & Disclosures Section */}
-                <section id="documents-disclosures" className="scroll-mt-24">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Documents & Disclosures</h2>
-                  <div className="space-y-6">
-                    <DocumentsDisclosures fund={fund} />
-                    <DocumentsSection documents={fund.documents} />
-                  </div>
-                </section>
 
                 {/* CTA Section */}
                 <div className="bg-gradient-to-r from-success/10 to-success/5 p-4 md:p-6 rounded-lg border border-success/30">
