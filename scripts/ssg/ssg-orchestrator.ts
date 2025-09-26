@@ -105,6 +105,20 @@ export async function generateStaticFiles() {
       }
     }
 
+    // Always include category and tag routes discovered earlier
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const addRoute = (path: string, priority: string) => {
+        const loc = `https://funds.movingto.com${path}`;
+        urlSet.add(loc);
+        if (!lastmodMap.has(loc)) lastmodMap.set(loc, today);
+        if (!changefreqMap.has(loc)) changefreqMap.set(loc, 'weekly');
+        if (!priorityMap.has(loc)) priorityMap.set(loc, priority);
+      };
+      routes.filter(r => r.pageType === 'category').forEach(r => addRoute(r.path, '0.8'));
+      routes.filter(r => r.pageType === 'tag').forEach(r => addRoute(r.path, '0.7'));
+    } catch {}
+
     // Force include categories and tags from data
     try {
       const { getAllCategories } = await import('../../src/data/services/categories-service');
