@@ -135,7 +135,7 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900 text-white relative overflow-hidden">
+    <div className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900 text-white relative overflow-hidden rounded-[10px]">
       {/* Background pattern */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/10"></div>
       
