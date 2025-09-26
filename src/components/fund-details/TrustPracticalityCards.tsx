@@ -1,23 +1,16 @@
 import React, { useState } from 'react';
 import { Fund } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
 import { Separator } from '../ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
-import { Info, Calculator, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
-import { formatCurrency } from './utils/formatters';
-import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
+import { Info, Calculator, CheckCircle } from 'lucide-react';
 
 interface TrustPracticalityCardsProps {
   fund: Fund;
 }
 
 const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund }) => {
-  const [showFeeCalculator, setShowFeeCalculator] = useState(false);
   const [investmentAmount, setInvestmentAmount] = useState(500000);
-  
-  const isGVEligible = isFundGVEligible(fund);
 
   // Calculate estimated annual fees
   const calculateEstimatedFees = (amount: number) => {
@@ -170,58 +163,6 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
                 </p>
               </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Eligibility Card */}
-      <Card className="h-fit">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            {isGVEligible ? (
-              <CheckCircle className="h-5 w-5 text-success" />
-            ) : (
-              <XCircle className="h-5 w-5 text-muted-foreground" />
-            )}
-            Eligibility
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          
-          {/* Golden Visa Status */}
-          <div>
-            <h4 className="font-semibold text-sm text-foreground mb-2">Golden Visa Eligibility</h4>
-            <div className="flex items-start gap-2 mb-2">
-              {isGVEligible ? (
-                <Badge className="bg-success text-success-foreground">
-                  <CheckCircle className="w-3 h-3 mr-1" />
-                  Eligible
-                </Badge>
-              ) : (
-                <Badge variant="outline" className="text-muted-foreground">
-                  <XCircle className="w-3 h-3 mr-1" />
-                  Not Eligible
-                </Badge>
-              )}
-            </div>
-            
-            {isGVEligible && fund.eligibilityBasis && (
-              <div className="text-sm space-y-1">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Basis:</span>
-                  <span className="font-medium text-right max-w-[150px]">
-                    {fund.eligibilityBasis?.portugalAllocation ? `${fund.eligibilityBasis.portugalAllocation}% Portugal allocation` : 'CMVM registration'}
-                  </span>
-                </div>
-              </div>
-            )}
-            
-            <p className="text-xs text-muted-foreground mt-2">
-              {isGVEligible 
-                ? "Meets Portugal Golden Visa investment criteria. €500K minimum total investment required." 
-                : "Does not meet current Golden Visa fund requirements."
-              }
-            </p>
           </div>
         </CardContent>
       </Card>
