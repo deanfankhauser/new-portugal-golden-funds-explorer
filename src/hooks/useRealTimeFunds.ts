@@ -39,9 +39,6 @@ const applyEditHistory = (
     if (c.historicalPerformance && typeof c.historicalPerformance === 'object') n.historicalPerformance = c.historicalPerformance;
     if (c.historical_performance && typeof c.historical_performance === 'object') n.historicalPerformance = c.historical_performance;
     if (c.faqs && Array.isArray(c.faqs)) n.faqs = c.faqs;
-    if (c.logo_url === null || c.logoUrl === null || c.logo_url === '' || c.logoUrl === '') n.logoUrl = null;
-    if (typeof c.logo_url === 'string') n.logoUrl = c.logo_url;
-    if (typeof c.logoUrl === 'string') n.logoUrl = c.logoUrl;
 
     // Apply supported fields
     console.log(`Applying overlay for fund ${f.id}:`, n);
@@ -261,7 +258,6 @@ const applyEditHistory = (
           // Additional fields with defaults
           subscriptionFee: 0,
           redemptionFee: 0,
-          managerLogo: undefined,
           redemptionTerms: undefined,
           dataLastVerified: fund.updated_at || fund.created_at,
           performanceDataDate: fund.updated_at || fund.created_at,

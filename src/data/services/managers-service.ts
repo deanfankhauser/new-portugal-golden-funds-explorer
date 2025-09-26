@@ -43,15 +43,14 @@ export const getAllApprovedManagers = async (): Promise<PublicManagerData[]> => 
 };
 
 // Function to get all unique fund managers with funds count (legacy from static data)
-export const getAllFundManagers = (): { name: string; logo?: string; fundsCount: number }[] => {
-  const managersMap = new Map<string, { name: string; logo?: string; fundsCount: number }>();
+export const getAllFundManagers = (): { name: string; fundsCount: number }[] => {
+  const managersMap = new Map<string, { name: string; fundsCount: number }>();
   
   fundsData.forEach(fund => {
     const managerKey = fund.managerName.toLowerCase();
     if (!managersMap.has(managerKey)) {
       managersMap.set(managerKey, { 
         name: fund.managerName,
-        logo: undefined, // Logo removed
         fundsCount: 0
       });
     }

@@ -14,7 +14,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Save, Loader2, Plus, Trash2, Upload, X } from 'lucide-react';
+import { Save, Loader2, Plus, Trash2, X } from 'lucide-react';
 import { Fund, GeographicAllocation, TeamMember, PdfDocument, RedemptionTerms, FAQItem } from '@/data/types/funds';
 import { useFundEditing } from '@/hooks/useFundEditing';
 import { toast } from 'sonner';
@@ -34,7 +34,7 @@ export const FundEditModal: React.FC<FundEditModalProps> = ({
   onOpenChange,
 }) => {
   const { submitFundEditSuggestion, loading } = useFundEditing();
-  const [logoUploading, setLogoUploading] = useState(false);
+  
 const buildFormData = (f: Fund) => {
   const formData: any = {
     // Basic information - always present
@@ -146,60 +146,6 @@ useEffect(() => {
     });
   };
 
-  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      toast.error('Please select an image file');
-      return;
-    }
-
-    // Validate file size (5MB limit)
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('File size must be less than 5MB');
-      return;
-    }
-
-    setLogoUploading(true);
-    try {
-      // Create unique filename
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${fund.id}-${Date.now()}.${fileExt}`;
-
-      // Upload to Supabase storage
-      const { data, error } = await supabase.storage
-        .from('fund-logos')
-        .upload(fileName, file, {
-          cacheControl: '3600',
-          upsert: false
-        });
-
-      if (error) throw error;
-
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('fund-logos')
-        .getPublicUrl(fileName);
-
-      // Update form data
-      handleInputChange('logoUrl', publicUrl);
-      
-      toast.success('Logo uploaded successfully');
-    } catch (error) {
-      console.error('Error uploading logo:', error);
-      toast.error('Failed to upload logo');
-    } finally {
-      setLogoUploading(false);
-    }
-  };
-
-  const handleLogoRemove = () => {
-    // Just clear the logo URL from form data
-    handleInputChange('logoUrl', '');
-    toast.success('Logo removed from form (will be applied when suggestion is approved)');
-  };
 
   const addArrayItem = (field: string, newItem: any) => {
     setFormData(prev => ({
@@ -362,15 +308,6 @@ useEffect(() => {
                 <h3 className="text-lg font-semibold">Basic Information</h3>
                 
                 <div className="grid grid-cols-1 gap-4">
-                  {/* Fund Logo Section - Removed */}
-                  <div className="space-y-3">
-                    <Label>Fund Logo</Label>
-                    <div className="bg-muted/50 p-4 rounded-lg text-center">
-                      <p className="text-muted-foreground text-sm">
-                        Fund logos have been removed from the platform
-                      </p>
-                    </div>
-                  </div>
                   
                   <div>
                     <Label htmlFor="name">Fund Name</Label>
