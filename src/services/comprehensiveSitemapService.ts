@@ -248,6 +248,40 @@ ${sitemapElements}
   }
 
   /**
+   * Discover dynamic routes from built dist folder, e.g., /categories/* and /tags/*
+   * This ensures nested or dynamically generated paths are always included.
+   */
+  private static discoverDynamicPathsFromDist(outputDir: string, subdirs: string[]): string[] {
+    const found: string[] = [];
+
+    const hasIndexHtml = (dir: string) => fs.existsSync(path.join(dir, 'index.html'));
+
+    const walk = (baseAbs: string, rel: string) => {
+      // If this folder has an index.html and rel is non-empty, it represents a route
+      if (rel && hasIndexHtml(baseAbs)) {
+        found.push(rel.replace(/\\/g, '/')); // normalize
+      }
+      const entries = fs.existsSync(baseAbs) ? fs.readdirSync(baseAbs, { withFileTypes: true }) : [];
+      for (const entry of entries) {
+        if (entry.isDirectory()) {
+          walk(path.join(baseAbs, entry.name), `${rel ? rel + '/' : ''}${entry.name}`);
+        }
+      }
+    };
+
+    subdirs.forEach((sub) => {
+      const root = path.join(outputDir, sub);
+      if (!fs.existsSync(root)) return;
+      walk(root, '');
+    });
+
+    // Convert discovered relative paths into absolute canonical URLs under BASE_URL
+    const urls = found.map(rel => `${URL_CONFIG.BASE_URL}/${rel.startsWith('categories') || rel.startsWith('tags') ? rel : rel}`);
+
+    return Array.from(new Set(urls));
+  }
+
+  /**
    * Split URLs into chunks for multiple sitemaps
    */
   private static chunkURLs(urls: SitemapURL[]): SitemapURL[][] {
@@ -319,7 +353,19 @@ Allow: /alternatives
 
     // Collect all URLs
     const allURLs = this.collectAllURLs();
-    console.log(`📊 Collected ${allURLs.length} URLs for sitemap generation`);
+
+    // Discover dynamic category/tag paths from built dist to ensure full coverage
+    const discoveredFromDist = this.discoverDynamicPathsFromDist(outputDir, ['categories', 'tags']);
+    discoveredFromDist.forEach(loc => {
+      allURLs.push({
+        loc,
+        lastmod: new Date().toISOString().split('T')[0],
+        changefreq: 'weekly',
+        priority: loc.includes('/categories/') ? 0.8 : 0.7
+      });
+    });
+
+    console.log(`📊 Collected ${allURLs.length} URLs for sitemap generation (including ${discoveredFromDist.length} discovered from dist)`);
 
     // Remove duplicates
     const uniqueURLs = allURLs.filter((url, index, self) => 
