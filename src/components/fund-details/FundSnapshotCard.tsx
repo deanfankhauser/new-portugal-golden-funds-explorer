@@ -54,22 +54,6 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
     return cmvmMatch ? cmvmMatch[0] : 'Not available';
   };
 
-  // Helper function to determine investment profile
-  const getInvestmentProfile = () => {
-    if (fund.category?.toLowerCase().includes('real estate') || fund.category?.toLowerCase().includes('property')) {
-      return 'Real Estate';
-    }
-    if (fund.category?.toLowerCase().includes('equity') || fund.category?.toLowerCase().includes('stock')) {
-      return 'Equity Growth';
-    }
-    if (fund.category?.toLowerCase().includes('debt') || fund.category?.toLowerCase().includes('bond')) {
-      return 'Fixed Income';
-    }
-    if (fund.category?.toLowerCase().includes('mixed') || fund.category?.toLowerCase().includes('balanced')) {
-      return 'Balanced';
-    }
-    return 'Alternative Investment';
-  };
 
   // Helper function to check US citizen eligibility
   const getUSEligibility = () => {
@@ -148,10 +132,6 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
       label: "Fund Type", 
       value: getFundType(),
       icon: isOpenEnded() ? <Check className="w-4 h-4 text-success" /> : undefined
-    },
-    {
-      label: "Investment Profile", 
-      value: getInvestmentProfile()
     },
     {
       label: "Open to US Citizens",
