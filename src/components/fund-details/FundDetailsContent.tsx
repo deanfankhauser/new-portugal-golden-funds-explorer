@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
-import DecisionBandHeader from './DecisionBandHeader';
+import FundHeroSnapshot from './FundHeroSnapshot';
 import HistoricalPerformanceChart from './HistoricalPerformanceChart';
 import TrustPracticalityCards from './TrustPracticalityCards';
 import StickyNavigation from './StickyNavigation';
@@ -60,8 +60,8 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
         {/* Back to Funds Button */}
         <BackToFundsButton />
         
-        {/* Above-the-fold Decision Band */}
-        <DecisionBandHeader fund={fund} />
+        {/* Hero Fund Snapshot */}
+        <FundHeroSnapshot fund={fund} />
         
         {/* Historical Performance Chart - Full Width */}
         <HistoricalPerformanceChart historicalPerformance={fund.historicalPerformance} />
