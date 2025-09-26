@@ -1,14 +1,53 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Fund } from '../../data/funds';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, X } from 'lucide-react';
+import { InvestmentFundStructuredDataService } from '../../services/investmentFundStructuredDataService';
 
 interface FundSnapshotCardProps {
   fund: Fund;
 }
 
 const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
+  // Helper function to format currency amounts
+  const formatCurrency = (amount: number | undefined | null, currency: string = 'EUR'): string => {
+    if (!amount || amount === 0) return 'Contact for details';
+    
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+    
+    return formatter.format(amount);
+  };
+
+  // Add structured data for fund snapshot
+  useEffect(() => {
+    const fundSchema = InvestmentFundStructuredDataService.generateInvestmentFundSchema(fund);
+    
+    // Remove existing fund schema
+    const existingFundSchema = document.querySelector('script[data-schema="fund-snapshot"]');
+    if (existingFundSchema) {
+      existingFundSchema.remove();
+    }
+    
+    // Add new fund schema
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-schema', 'fund-snapshot');
+    script.textContent = JSON.stringify(fundSchema);
+    document.head.appendChild(script);
+    
+    return () => {
+      const schemaScript = document.querySelector('script[data-schema="fund-snapshot"]');
+      if (schemaScript) {
+        schemaScript.remove();
+      }
+    };
+  }, [fund]);
   // Helper function to extract CMVM license number
   const getCMVMLicense = () => {
     const cmvmMatch = fund.cmvmId?.match(/\d+/);
@@ -85,7 +124,7 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
     },
     {
       label: "Minimum Investment",
-      value: fund.minimumInvestment || "Contact for details"
+      value: formatCurrency(fund.minimumInvestment, 'EUR')
     },
     {
       label: "Subscription Deadline",
