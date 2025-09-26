@@ -128,7 +128,7 @@ const DirectFundRoute = () => {
 // Import SEO and performance optimization hook
 // SEO optimization removed - using consolidated service
 import SEOProvider from './components/providers/SEOProvider';
-import LazyExitIntentPopup from './components/common/LazyExitIntentPopup';
+
 import SEOEnhancer from './components/common/SEOEnhancer';
 
 function App() {
@@ -303,7 +303,7 @@ function App() {
                   <Toaster />
                   <SEODebugger />
                   <SEOEnhancer enableMonitoring={import.meta.env.DEV} />
-                  <LazyExitIntentPopup />
+                  
                 </SEOProvider>
               </Router>
             </TooltipProvider>
