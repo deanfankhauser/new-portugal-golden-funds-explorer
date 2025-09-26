@@ -61,7 +61,7 @@ export function compileSSGFiles() {
     try {
       const publicDir = path.join(process.cwd(), 'public');
       const distDir = path.join(process.cwd(), 'dist');
-      const filesToCopy = ['sitemap.xml', 'sitemap-index.xml', 'sitemap-funds.xml', 'robots.txt'];
+      const filesToCopy = ['sitemap.xml', 'sitemap-index.xml', 'sitemap-funds.xml', 'sitemap-enhanced.xml', 'robots.txt'];
       filesToCopy.forEach((file) => {
         const src = path.join(distDir, file);
         if (fs.existsSync(src)) {

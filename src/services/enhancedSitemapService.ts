@@ -139,6 +139,10 @@ ${urlElements}
     <loc>${baseUrl}/sitemap-funds.xml</loc>
     <lastmod>${currentDate}</lastmod>
   </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-enhanced.xml</loc>
+    <lastmod>${currentDate}</lastmod>
+  </sitemap>
 </sitemapindex>`;
   }
 }

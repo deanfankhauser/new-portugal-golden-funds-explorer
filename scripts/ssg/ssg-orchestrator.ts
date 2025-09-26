@@ -65,11 +65,11 @@ export async function generateStaticFiles() {
   generateSitemap(routes, distDir);
   generateFundsSitemap(distDir);
   
-  // Generate enhanced sitemap with comparison and alternatives pages
+  // Generate enhanced sitemap as a supplemental file (do not overwrite the main routes sitemap)
   const enhancedSitemapXML = EnhancedSitemapService.generateEnhancedSitemapXML();
-  fs.writeFileSync(path.join(distDir, 'sitemap.xml'), enhancedSitemapXML);
+  fs.writeFileSync(path.join(distDir, 'sitemap-enhanced.xml'), enhancedSitemapXML);
   
-  // Generate sitemap index
+  // Generate sitemap index (include all sitemaps)
   const sitemapIndex = EnhancedSitemapService.generateSitemapIndex();
   fs.writeFileSync(path.join(distDir, 'sitemap-index.xml'), sitemapIndex);
   
