@@ -339,6 +339,61 @@ Allow: /alternatives
   }
 
   /**
+   * Verify all expected dynamic routes are included
+   */
+  private static verifyAndAddMissingRoutes(allURLs: SitemapURL[]): SitemapURL[] {
+    const currentDate = new Date().toISOString().split('T')[0];
+    const existingURLs = new Set(allURLs.map(url => url.loc));
+    const missingURLs: SitemapURL[] = [];
+
+    // Verify all categories are included
+    try {
+      const categories = getAllCategories();
+      categories.forEach(category => {
+        const expectedURL = URL_CONFIG.buildCategoryUrl(category);
+        if (!existingURLs.has(expectedURL)) {
+          console.warn(`⚠️  Missing category route: ${expectedURL}`);
+          missingURLs.push({
+            loc: expectedURL,
+            lastmod: currentDate,
+            changefreq: 'weekly',
+            priority: 0.8
+          });
+        }
+      });
+    } catch (error) {
+      console.warn('Failed to verify category routes:', error);
+    }
+
+    // Verify all tags are included
+    try {
+      const tags = getAllTags();
+      tags.forEach(tag => {
+        const expectedURL = URL_CONFIG.buildTagUrl(tag);
+        if (!existingURLs.has(expectedURL)) {
+          console.warn(`⚠️  Missing tag route: ${expectedURL}`);
+          missingURLs.push({
+            loc: expectedURL,
+            lastmod: currentDate,
+            changefreq: 'weekly',
+            priority: 0.7
+          });
+        }
+      });
+    } catch (error) {
+      console.warn('Failed to verify tag routes:', error);
+    }
+
+    if (missingURLs.length > 0) {
+      console.log(`🔍 Added ${missingURLs.length} missing dynamic routes to sitemap`);
+      return [...allURLs, ...missingURLs];
+    }
+
+    console.log(`✅ All expected dynamic routes are present in sitemap`);
+    return allURLs;
+  }
+
+  /**
    * Generate comprehensive sitemap(s) and save to directory
    */
   public static generateSitemaps(outputDir: string): {
@@ -352,7 +407,7 @@ Allow: /alternatives
     }
 
     // Collect all URLs
-    const allURLs = this.collectAllURLs();
+    let allURLs = this.collectAllURLs();
 
     // Discover dynamic category/tag paths from built dist to ensure full coverage
     const discoveredFromDist = this.discoverDynamicPathsFromDist(outputDir, ['categories', 'tags']);
@@ -366,6 +421,9 @@ Allow: /alternatives
     });
 
     console.log(`📊 Collected ${allURLs.length} URLs for sitemap generation (including ${discoveredFromDist.length} discovered from dist)`);
+
+    // Verify and add any missing dynamic routes
+    allURLs = this.verifyAndAddMissingRoutes(allURLs);
 
     // Remove duplicates
     const uniqueURLs = allURLs.filter((url, index, self) => 
