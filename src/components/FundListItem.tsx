@@ -12,7 +12,7 @@ import IntroductionButton from './fund-details/IntroductionButton';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 import DataFreshnessIndicator from './common/DataFreshnessIndicator';
-import EligibilityBasisDisplayLine from './fund-details/EligibilityBasisDisplayLine';
+
 import { DATA_AS_OF_LABEL } from '../utils/constants';
 import { SaveFundButton } from './common/SaveFundButton';
 
@@ -143,10 +143,6 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 </div>
               </div>
               
-              {/* Eligibility basis line - always show */}
-              <div className="mt-2">
-                <EligibilityBasisDisplayLine fund={fund} />
-              </div>
             </div>
             
             <div className="flex flex-col sm:flex-row lg:flex-col gap-2 sm:gap-3 justify-center lg:min-w-[160px]">
