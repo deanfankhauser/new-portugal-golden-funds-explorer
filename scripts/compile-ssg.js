@@ -70,6 +70,24 @@ export function compileSSGFiles() {
         }
       });
       console.log('🗺️  SSG: Copied enhanced sitemaps to /public');
+
+      // Fallback: if consolidated sitemap lacks categories/tags, use enhanced sitemap which includes them
+      try {
+        const publicSitemap = path.join(publicDir, 'sitemap.xml');
+        const enhancedPath = path.join(distDir, 'sitemap-enhanced.xml');
+        if (fs.existsSync(publicSitemap)) {
+          const content = fs.readFileSync(publicSitemap, 'utf8');
+          const hasCategories = content.includes('/categories/');
+          const hasTags = content.includes('/tags/');
+          if ((!hasCategories || !hasTags) && fs.existsSync(enhancedPath)) {
+            const enhanced = fs.readFileSync(enhancedPath, 'utf8');
+            fs.writeFileSync(publicSitemap, enhanced);
+            console.log('🗺️  SSG: Replaced /public/sitemap.xml with enhanced sitemap to include categories/tags');
+          }
+        }
+      } catch (fallbackErr) {
+        console.warn('⚠️  SSG: Failed fallback to enhanced sitemap:', fallbackErr.message);
+      }
     } catch (copyErr) {
       console.warn('⚠️  SSG: Could not copy enhanced sitemap files to /public:', copyErr.message);
     }
