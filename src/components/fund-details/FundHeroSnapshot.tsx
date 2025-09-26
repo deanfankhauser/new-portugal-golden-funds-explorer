@@ -152,16 +152,8 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
           {/* Left Side - Fund Identity & Actions */}
           <div className="space-y-8">
             {/* Fund Identity */}
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <FundLogo 
-                  logoUrl={fund.logoUrl}
-                  fundName={fund.name}
-                  fundId={fund.id}
-                  size="lg"
-                  className="flex-shrink-0 bg-white/10 backdrop-blur-sm rounded-lg p-2"
-                />
-                <div className="min-w-0 flex-1">
+              <div className="space-y-6">
+                <div className="min-w-0">
                   <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight mb-4 text-white">
                     {fund.name}
                   </h1>
@@ -179,7 +171,6 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
                     </Link>
                   )}
                 </div>
-              </div>
 
               {/* Risk Level Badge */}
               <div className="flex items-center gap-4">
