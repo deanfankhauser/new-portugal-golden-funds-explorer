@@ -1,8 +1,6 @@
 
 import React from 'react';
-import { Users } from 'lucide-react';
 import { TeamMember } from '../../data/types/funds';
-import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface TeamSectionProps {
@@ -34,10 +32,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Users className="w-4 h-4 text-accent" />
-                    <h3 className="font-semibold text-foreground text-lg">{member.name}</h3>
-                  </div>
+                  <h3 className="font-semibold text-foreground text-lg">{member.name}</h3>
                   <p className="text-sm text-accent font-medium">{member.position}</p>
                 </div>
               </div>

@@ -2,10 +2,16 @@ import { supabase } from '@/integrations/supabase/client';
 
 export const uploadTeamMemberPhoto = async (file: File, teamMemberName: string): Promise<string> => {
   try {
+    // Get current user
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      throw new Error('User must be authenticated to upload photos');
+    }
+
     // Generate a unique filename
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}_${teamMemberName.replace(/\s+/g, '_')}.${fileExt}`;
-    const filePath = `team-members/${fileName}`;
+    const filePath = `${user.id}/team-members/${fileName}`;
 
     // Upload the file
     const { data, error } = await supabase.storage
