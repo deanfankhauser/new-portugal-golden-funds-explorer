@@ -39,6 +39,16 @@ const applyEditHistory = (
     if (c.historicalPerformance && typeof c.historicalPerformance === 'object') n.historicalPerformance = c.historicalPerformance;
     if (c.historical_performance && typeof c.historical_performance === 'object') n.historicalPerformance = c.historical_performance;
     if (c.faqs && Array.isArray(c.faqs)) n.faqs = c.faqs;
+    
+    // Regulatory compliance fields
+    if (c.cmvm_id && typeof c.cmvm_id === 'string') n.cmvmId = c.cmvm_id;
+    if (c.cmvmId && typeof c.cmvmId === 'string') n.cmvmId = c.cmvmId;
+    if (c.auditor && typeof c.auditor === 'string') n.auditor = c.auditor;
+    if (c.custodian && typeof c.custodian === 'string') n.custodian = c.custodian;
+    if (c.nav_frequency && typeof c.nav_frequency === 'string') n.navFrequency = c.nav_frequency;
+    if (c.navFrequency && typeof c.navFrequency === 'string') n.navFrequency = c.navFrequency;
+    if (c.pfic_status && typeof c.pfic_status === 'string') n.pficStatus = c.pfic_status;
+    if (c.pficStatus && typeof c.pficStatus === 'string') n.pficStatus = c.pficStatus;
 
     // Apply supported fields
     console.log(`Applying overlay for fund ${f.id}:`, n);
@@ -68,6 +78,13 @@ const applyEditHistory = (
       f.historicalPerformance = n.historicalPerformance;
     }
     if (Array.isArray(n.faqs)) f.faqs = n.faqs;
+    
+    // Apply regulatory compliance fields
+    if (typeof n.cmvmId === 'string') f.cmvmId = n.cmvmId;
+    if (typeof n.auditor === 'string') f.auditor = n.auditor;
+    if (typeof n.custodian === 'string') f.custodian = n.custodian;
+    if (typeof n.navFrequency === 'string') f.navFrequency = n.navFrequency;
+    if (typeof n.pficStatus === 'string') f.pficStatus = n.pficStatus as 'QEF available' | 'MTM only' | 'Not provided';
   }
 
   return Object.values(map);
@@ -167,11 +184,11 @@ const applyEditHistory = (
                 performanceDataDate: fund.updated_at || fund.created_at,
                 feeLastUpdated: fund.updated_at || fund.created_at,
                 statusLastUpdated: fund.updated_at || fund.created_at,
-                cmvmId: undefined,
-                auditor: undefined,
-                custodian: undefined,
-                navFrequency: undefined,
-                pficStatus: undefined,
+          cmvmId: fund.cmvm_id || undefined,
+          auditor: fund.auditor || undefined,
+          custodian: fund.custodian || undefined,
+          navFrequency: fund.nav_frequency || undefined,
+          pficStatus: fund.pfic_status as 'QEF available' | 'MTM only' | 'Not provided' || undefined,
                 eligibilityBasis: fund.gv_eligible ? {
                   portugalAllocation: 'Not provided',
                   maturityYears: 'Not provided',
@@ -263,11 +280,12 @@ const applyEditHistory = (
           performanceDataDate: fund.updated_at || fund.created_at,
           feeLastUpdated: fund.updated_at || fund.created_at,
           statusLastUpdated: fund.updated_at || fund.created_at,
-          cmvmId: undefined,
-          auditor: undefined,
-          custodian: undefined,
-          navFrequency: undefined,
-          pficStatus: undefined,
+          // Regulatory compliance fields
+          cmvmId: fund.cmvm_id || undefined,
+          auditor: fund.auditor || undefined,
+          custodian: fund.custodian || undefined,
+          navFrequency: fund.nav_frequency || undefined,
+          pficStatus: fund.pfic_status as 'QEF available' | 'MTM only' | 'Not provided' || undefined,
           eligibilityBasis: fund.gv_eligible ? {
             portugalAllocation: 'Not provided',
             maturityYears: 'Not provided',
