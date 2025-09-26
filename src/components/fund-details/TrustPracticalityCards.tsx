@@ -223,39 +223,6 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
               }
             </p>
           </div>
-
-          <Separator />
-
-          {/* Investor Types */}
-          <div>
-            <h4 className="font-semibold text-sm text-foreground mb-2">Investor Types</h4>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-success" />
-                <span className="text-sm">EU Qualified Investors</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-success" />
-                <span className="text-sm">Non-EU High Net Worth</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <AlertCircle className="h-4 w-4 text-warning" />
-                <span className="text-sm">US Taxable (PFIC implications)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-success" />
-                <span className="text-sm">IRA/Pension Plans</span>
-              </div>
-            </div>
-          </div>
-
-
-          <div className="pt-2">
-            <p className="text-xs text-muted-foreground">
-              <AlertCircle className="inline w-3 h-3 mr-1" />
-              Always verify eligibility with fund manager and tax advisor
-            </p>
-          </div>
         </CardContent>
       </Card>
     </div>
