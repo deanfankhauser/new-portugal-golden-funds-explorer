@@ -133,6 +133,45 @@ export async function generateStaticFiles() {
       console.warn('⚠️  Consolidation: failed to include category/tag URLs directly:', (incErr as any)?.message || incErr);
     }
 
+    // Secondary fallback: if categories/tags still missing, derive directly from mock funds
+    try {
+      const hasAnyCategory = Array.from(urlSet.values()).some(u => u.includes('/categories/'));
+      const hasAnyTag = Array.from(urlSet.values()).some(u => u.includes('/tags/'));
+      if (!hasAnyCategory || !hasAnyTag) {
+        const { fundsData } = await import('../../src/data/mock/funds');
+        const { categoryToSlug, tagToSlug } = await import('../../src/lib/utils');
+        const today = new Date().toISOString().split('T')[0];
+
+        if (!hasAnyCategory) {
+          const catSet = new Set<string>();
+          fundsData.forEach((f: any) => catSet.add(f.category));
+          catSet.forEach((cat) => {
+            const loc = `https://funds.movingto.com/categories/${categoryToSlug(cat)}`;
+            urlSet.add(loc);
+            if (!lastmodMap.has(loc)) lastmodMap.set(loc, today);
+            if (!changefreqMap.has(loc)) changefreqMap.set(loc, 'weekly');
+            if (!priorityMap.has(loc)) priorityMap.set(loc, '0.8');
+          });
+          console.log(`🧩 Added ${catSet.size} categories from mock funds as fallback`);
+        }
+
+        if (!hasAnyTag) {
+          const tagSet = new Set<string>();
+          fundsData.forEach((f: any) => (f.tags || []).forEach((t: string) => tagSet.add(t)));
+          tagSet.forEach((tag) => {
+            const loc = `https://funds.movingto.com/tags/${tagToSlug(tag)}`;
+            urlSet.add(loc);
+            if (!lastmodMap.has(loc)) lastmodMap.set(loc, today);
+            if (!changefreqMap.has(loc)) changefreqMap.set(loc, 'weekly');
+            if (!priorityMap.has(loc)) priorityMap.set(loc, '0.7');
+          });
+          console.log(`🧩 Added ${tagSet.size} tags from mock funds as fallback`);
+        }
+      }
+    } catch (fallbackErr2) {
+      console.warn('⚠️  Consolidation: fallback from mock funds failed:', (fallbackErr2 as any)?.message || fallbackErr2);
+    }
+
     const merged = Array.from(urlSet.values()).sort().map(loc => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmodMap.get(loc) || new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>${changefreqMap.get(loc) || 'weekly'}</changefreq>\n    <priority>${priorityMap.get(loc) || '0.7'}</priority>\n  </url>`).join('\n');
 
     const finalSitemap = `<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n${merged}\n</urlset>`;
