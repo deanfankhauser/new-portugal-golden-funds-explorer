@@ -3,7 +3,7 @@ import { Fund } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Separator } from '../ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
-import { Info, Calculator, CheckCircle } from 'lucide-react';
+import { Info, Calculator } from 'lucide-react';
 
 interface TrustPracticalityCardsProps {
   fund: Fund;
@@ -27,54 +27,9 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
 
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      
-      {/* Liquidity & Access Card */}
-      <Card className="h-fit">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <CheckCircle className="h-5 w-5 text-success" />
-            Liquidity & Access
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          
-          {/* Dealing Terms */}
-          <div>
-            <h4 className="font-semibold text-sm text-foreground mb-2">Dealing Terms</h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Subscriptions:</span>
-                <span className="font-medium">
-                  {fund.redemptionTerms?.frequency || 'Monthly'}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Redemptions:</span>
-                <span className="font-medium">
-                  {fund.redemptionTerms?.frequency || 'Monthly'}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Notice Period:</span>
-                <span className="font-medium">
-                  {fund.redemptionTerms?.noticePeriod || '30 days'}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Lock-up:</span>
-                <span className="font-medium">
-                  {fund.term ? `${fund.term * 12} months` : 'None'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-        </CardContent>
-      </Card>
-
+    <div className="grid grid-cols-1 gap-6">
       {/* Fees Card */}
-      <Card className="h-fit md:col-span-2">
+      <Card className="h-fit">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <Calculator className="h-5 w-5 text-accent" />

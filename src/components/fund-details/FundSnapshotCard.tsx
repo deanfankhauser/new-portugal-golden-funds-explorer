@@ -127,8 +127,20 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
       value: formatCurrency(fund.minimumInvestment, 'EUR')
     },
     {
-      label: "Subscription Deadline",
-      value: getSubscriptionDeadline()
+      label: "Subscriptions",
+      value: fund.redemptionTerms?.frequency || 'Monthly'
+    },
+    {
+      label: "Redemptions",
+      value: fund.redemptionTerms?.frequency || 'Monthly'
+    },
+    {
+      label: "Notice Period",
+      value: fund.redemptionTerms?.noticePeriod ? `${fund.redemptionTerms.noticePeriod} days` : '30 days'
+    },
+    {
+      label: "Lock-up",
+      value: fund.term ? `${fund.term * 12} months` : 'None'
     },
     {
       label: "Fund Lifetime",
