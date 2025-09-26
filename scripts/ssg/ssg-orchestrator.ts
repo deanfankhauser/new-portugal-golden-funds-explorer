@@ -138,6 +138,17 @@ export async function generateStaticFiles() {
     const finalSitemap = `<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n${merged}\n</urlset>`;
     fs.writeFileSync(path.join(distDir, 'sitemap.xml'), finalSitemap);
     console.log(`🗺️  Consolidated sitemap.xml with ${urlSet.size} URLs`);
+
+    // Also write a copy to /public so build_ssg preview serves the consolidated sitemap
+    try {
+      const publicDir = path.join(process.cwd(), 'public');
+      if (fs.existsSync(publicDir)) {
+        fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), finalSitemap);
+        console.log('🗺️  Copied consolidated sitemap.xml to /public');
+      }
+    } catch (copyErr) {
+      console.warn('⚠️  Failed to copy consolidated sitemap to /public:', (copyErr as any)?.message || copyErr);
+    }
   } catch (e) {
     console.warn('⚠️  Failed to consolidate sitemaps:', (e as any)?.message || e);
   }
