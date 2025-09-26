@@ -175,22 +175,9 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
                     </Link>
                   )}
                 </div>
-
-              {/* Risk Level Badge */}
-              <div className="flex items-center gap-4">
-                <div className="bg-white/15 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20">
-                  <span className="text-sm font-medium text-white">Risk Level:</span>
-                  <Badge 
-                    variant={riskScore <= 3 ? "success" : riskScore <= 6 ? "warning" : "destructive"}
-                    className="ml-2 font-semibold"
-                  >
-                    {riskLabel}
-                  </Badge>
-                </div>
               </div>
-            </div>
 
-            {/* Primary CTAs */}
+              {/* Primary CTAs */}
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
