@@ -94,6 +94,26 @@ export function generateSitemap(routes: StaticRoute[], distDir: string): void {
     priority: r.pageType === 'category' ? '0.8' : '0.7'
   }));
 
+  // Also force include using direct data (independent of route discovery)
+  try {
+    const categoriesList = getAllCategories();
+    categoriesList.forEach(cat => addIfMissing({
+      url: `https://funds.movingto.com/categories/${categoryToSlug(cat as any)}`,
+      lastmod: now,
+      changefreq: 'weekly',
+      priority: '0.8'
+    }));
+    const tagsList = getAllTags();
+    tagsList.forEach(tag => addIfMissing({
+      url: `https://funds.movingto.com/tags/${tagToSlug(tag as any)}`,
+      lastmod: now,
+      changefreq: 'weekly',
+      priority: '0.7'
+    }));
+  } catch (e) {
+    console.warn('⚠️  Sitemap: category/tag data include failed:', (e as any)?.message || e);
+  }
+
   const urlElements = Array.from(byUrl.entries()).map(([url, meta]) => `  <url>
     <loc>${url}</loc>
     <lastmod>${meta.lastmod}</lastmod>
