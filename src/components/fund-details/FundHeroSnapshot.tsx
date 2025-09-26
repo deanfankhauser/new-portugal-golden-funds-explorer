@@ -143,8 +143,12 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
       <div className="relative container mx-auto px-4 py-12">
         {/* Edit button */}
         <div className="flex justify-end mb-6">
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-1">
-            <FundEditButton fund={fund} />
+          <div className="bg-white/20 backdrop-blur-sm rounded-lg p-1 border border-white/30">
+            <FundEditButton 
+              fund={fund} 
+              variant="ghost"
+              className="text-white hover:bg-white/20 hover:text-white border-white/40"
+            />
           </div>
         </div>
 
