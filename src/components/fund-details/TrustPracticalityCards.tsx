@@ -32,13 +32,6 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
 
   const fees = calculateEstimatedFees(investmentAmount);
 
-  // Subscription process steps
-  const subscriptionSteps = [
-    { step: 1, title: "KYC Verification", description: "Complete investor onboarding and identity verification" },
-    { step: 2, title: "Documentation", description: "Review and sign subscription documents and agreements" },
-    { step: 3, title: "Custodian Setup", description: "Open account with fund custodian for asset safekeeping" },
-    { step: 4, title: "Wire Transfer", description: "Transfer funds to designated custodian account" }
-  ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -84,34 +77,6 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
             </div>
           </div>
 
-          <Separator />
-
-          {/* How to Subscribe */}
-          <div>
-            <h4 className="font-semibold text-sm text-foreground mb-3">How to Subscribe</h4>
-            <div className="space-y-3">
-              {subscriptionSteps.map((item) => (
-                <div key={item.step} className="flex gap-3">
-                  <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold">
-                    {item.step}
-                  </div>
-                  <div className="min-w-0">
-                    <h5 className="font-medium text-sm text-foreground">{item.title}</h5>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="pt-2">
-            <p className="text-xs text-muted-foreground">
-              <AlertCircle className="inline w-3 h-3 mr-1" />
-              Redemptions may be gated in extreme market conditions
-            </p>
-          </div>
         </CardContent>
       </Card>
 
@@ -284,25 +249,6 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
             </div>
           </div>
 
-          <Separator />
-
-          {/* Currency & Hedging */}
-          <div>
-            <h4 className="font-semibold text-sm text-foreground mb-2">Currency & Hedging</h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Base Currency:</span>
-                <span className="font-medium">EUR</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">FX Hedging:</span>
-                <span className="font-medium">Available on request</span>
-              </div>
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Currency hedging available for major currencies. Additional fees may apply.
-            </p>
-          </div>
 
           <div className="pt-2">
             <p className="text-xs text-muted-foreground">

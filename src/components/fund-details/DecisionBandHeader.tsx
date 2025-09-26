@@ -16,7 +16,6 @@ import { useAuth } from '../../hooks/useAuth';
 import { AuthRequiredModal } from '../fund-editing/AuthRequiredModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import FundLogo from './FundLogo';
 
 interface DecisionBandHeaderProps {
   fund: Fund;
@@ -211,15 +210,6 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
           {/* Left: Fund Name + Thesis */}
           <div className="lg:col-span-1">
             <div className="flex items-start gap-4">
-              <Link to={`/manager/${fund.managerName?.toLowerCase().replace(/\s+/g, '-')}`} className="flex-shrink-0">
-                <FundLogo 
-                  logoUrl={fund.logoUrl}
-                  fundName={fund.name}
-                  fundId={fund.id}
-                  size="md"
-                  className="hover:scale-105 transition-transform duration-200"
-                />
-              </Link>
               <div className="min-w-0 flex-1">
                 <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 leading-tight">
                   {fund.name}

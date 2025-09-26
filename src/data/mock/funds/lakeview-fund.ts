@@ -4,7 +4,6 @@ export const lakeviewFund: Fund = {
   id: 'lakeview-fund',
   name: 'Lakeview Fund',
   managerName: 'Visadoro',
-  managerLogo: undefined, // No logo provided
   category: 'Real Estate',
   tags: ['Real Estate', 'Tourism', 'Portugal', 'Closed Ended', '€500k+', '5-10 year lock-up'],
   description: 'Investment opportunity in the development of a 5-star luxury tourist complex in Portugal\'s West Region, near Óbidos, offering attractive projected returns and lifestyle benefits.',

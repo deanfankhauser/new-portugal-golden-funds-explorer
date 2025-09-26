@@ -317,7 +317,6 @@ export type Database = {
           last_modified_by: string | null
           location: string | null
           lock_up_period_months: number | null
-          logo_url: string | null
           management_fee: number | null
           manager_name: string | null
           minimum_investment: number | null
@@ -360,7 +359,6 @@ export type Database = {
           last_modified_by?: string | null
           location?: string | null
           lock_up_period_months?: number | null
-          logo_url?: string | null
           management_fee?: number | null
           manager_name?: string | null
           minimum_investment?: number | null
@@ -403,7 +401,6 @@ export type Database = {
           last_modified_by?: string | null
           location?: string | null
           lock_up_period_months?: number | null
-          logo_url?: string | null
           management_fee?: number | null
           manager_name?: string | null
           minimum_investment?: number | null

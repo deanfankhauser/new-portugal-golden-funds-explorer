@@ -118,16 +118,6 @@ const KeyTermsTable: React.FC<KeyTermsTableProps> = ({ fund }) => {
       type: "text"
     },
     {
-      label: "Currency",
-      value: "EUR",
-      type: "text"
-    },
-    {
-      label: "FX Hedging",
-      value: "Available",
-      type: "text"
-    },
-    {
       label: "Documentation Cadence",
       value: "Monthly",
       type: "text"

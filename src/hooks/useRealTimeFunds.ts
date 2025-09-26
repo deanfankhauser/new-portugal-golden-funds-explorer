@@ -39,9 +39,6 @@ const applyEditHistory = (
     if (c.historicalPerformance && typeof c.historicalPerformance === 'object') n.historicalPerformance = c.historicalPerformance;
     if (c.historical_performance && typeof c.historical_performance === 'object') n.historicalPerformance = c.historical_performance;
     if (c.faqs && Array.isArray(c.faqs)) n.faqs = c.faqs;
-    if (c.logo_url === null || c.logoUrl === null || c.logo_url === '' || c.logoUrl === '') n.logoUrl = null;
-    if (typeof c.logo_url === 'string') n.logoUrl = c.logo_url;
-    if (typeof c.logoUrl === 'string') n.logoUrl = c.logoUrl;
 
     // Apply supported fields
     console.log(`Applying overlay for fund ${f.id}:`, n);
@@ -71,7 +68,6 @@ const applyEditHistory = (
       f.historicalPerformance = n.historicalPerformance;
     }
     if (Array.isArray(n.faqs)) f.faqs = n.faqs;
-    if (n.logoUrl === null) { delete (f as any).logoUrl; } else if (typeof n.logoUrl === 'string') { f.logoUrl = n.logoUrl; }
   }
 
   return Object.values(map);
@@ -144,8 +140,7 @@ const applyEditHistory = (
                 location: 'Portugal',
                 tags: (fund.tags || []) as FundTag[],
                 category: (fund.category || 'Mixed') as FundCategory,
-                websiteUrl: fund.website || undefined,
-                logoUrl: fund.logo_url || staticFunds.find(s => s.id === fund.id)?.logoUrl,
+          websiteUrl: fund.website || undefined,
                 geographicAllocation: Array.isArray(fund.geographic_allocation) 
                   ? (fund.geographic_allocation as unknown as GeographicAllocation[])
                   : undefined,
@@ -165,10 +160,9 @@ const applyEditHistory = (
                 })(),
                 datePublished: fund.created_at || new Date().toISOString(),
                 dateModified: fund.updated_at || fund.created_at || new Date().toISOString(),
-                subscriptionFee: 0,
-                redemptionFee: 0,
-                managerLogo: undefined,
-                redemptionTerms: undefined,
+            subscriptionFee: 0,
+            redemptionFee: 0,
+            redemptionTerms: undefined,
                 dataLastVerified: fund.updated_at || fund.created_at,
                 performanceDataDate: fund.updated_at || fund.created_at,
                 feeLastUpdated: fund.updated_at || fund.created_at,
@@ -241,7 +235,6 @@ const applyEditHistory = (
           tags: (fund.tags || []) as FundTag[],
           category: (fund.category || 'Mixed') as FundCategory,
           websiteUrl: fund.website || undefined,
-          logoUrl: fund.logo_url || staticFunds.find(s => s.id === fund.id)?.logoUrl,
           geographicAllocation: Array.isArray(fund.geographic_allocation) 
             ? (fund.geographic_allocation as unknown as GeographicAllocation[])
             : undefined,
@@ -265,7 +258,6 @@ const applyEditHistory = (
           // Additional fields with defaults
           subscriptionFee: 0,
           redemptionFee: 0,
-          managerLogo: undefined,
           redemptionTerms: undefined,
           dataLastVerified: fund.updated_at || fund.created_at,
           performanceDataDate: fund.updated_at || fund.created_at,

@@ -4,7 +4,6 @@ export const portugalPrimeFCR: Fund = {
   id: 'portugal-prime-fcr',
   name: 'Portugal Prime, FCR',
   managerName: 'Biz Capital SGOIC',
-  managerLogo: undefined,
   category: 'Private Equity',
   tags: ['Private Equity', 'Golden Visa Eligible', 'Low-risk', 'Portugal', 'Closed Ended', 'Tourism'],
   description: 'Closed-end CMVM-regulated private equity fund investing in hospitality operators (non-real-estate) across Portugal\'s tourism sector; offers two tracks — 2% p.a. fixed (Capital Preservation, exit at citizenship) or ~10% target IRR (Upside, exit at maturity); Golden Visa eligible (minimum €100,000).',

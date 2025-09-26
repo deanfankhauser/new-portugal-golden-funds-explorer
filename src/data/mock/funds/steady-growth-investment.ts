@@ -26,7 +26,6 @@ export const steadyGrowthInvestment: Fund = {
   redemptionFee: 0, // N/A
   term: 0, // N/A
   managerName: 'Celtis Venture Partners',
-  managerLogo: undefined,
   returnTarget: 'N/A',
   fundStatus: 'Open', // Default to Open since status was marked as N/A
   websiteUrl: undefined,

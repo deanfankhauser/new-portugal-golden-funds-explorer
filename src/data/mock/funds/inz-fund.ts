@@ -4,7 +4,6 @@ export const inzFund: Fund = {
   id: 'inz-fund',
   name: 'INZ Fund',
   managerName: 'STAG Fund Management SCR, S.A.',
-  managerLogo: undefined, // No logo provided
   category: 'Private Equity',
   tags: ['Private Equity', 'Renewable Energy', 'Solar', 'Golden Visa Eligible', 'Portugal', 'Closed Ended'],
   description: 'A Golden Visa–eligible private equity vehicle investing in companies that finance and operate solar panel projects, focusing on stable returns from long-term lease agreements and power purchase agreements.',

@@ -44,12 +44,10 @@ MINIMUM_HOLD_PERIOD: 5 years`;
 
   // Generate comprehensive text alternatives for visual content
   static generateAccessibilityText(fund: Fund): {
-    logoAlt: string;
     chartAlt: string;
     summaryAlt: string;
   } {
     return {
-      logoAlt: `${fund.managerName} logo - Fund manager for ${fund.name}`,
       chartAlt: `Performance chart for ${fund.name} showing target return of ${fund.returnTarget} with management fee of ${fund.managementFee}%`,
       summaryAlt: `Investment summary: ${fund.name} requires minimum €${fund.minimumInvestment.toLocaleString()} investment, targets ${fund.returnTarget} return, managed by ${fund.managerName}`
     };

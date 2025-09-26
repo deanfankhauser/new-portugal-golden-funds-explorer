@@ -4,7 +4,6 @@ export const pelaTerraIIRegenerateFund: Fund = {
   id: 'pela-terra-ii-regenerate-fund',
   name: 'Pela Terra II Regenerate Fund',
   managerName: 'Pela Terra Capital SGOIC, S.A.',
-  managerLogo: undefined, // No logo provided
   category: 'Private Equity',
   tags: ['Private Equity', 'Sustainability', 'Golden Visa Eligible', 'Portugal', 'Closed Ended', 'Climate'],
   description: 'A CMVM-regulated private equity fund investing in large-scale regenerative agriculture projects in Portugal, focusing on degraded land restoration and sustainable high-value crop production.',

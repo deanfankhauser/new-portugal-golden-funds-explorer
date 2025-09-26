@@ -6,10 +6,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Check, X, Clock, User, Building, Calendar, MessageSquare, Image as ImageIcon } from 'lucide-react';
+import { Check, X, Clock, User, Building, Calendar, MessageSquare } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import FundLogo from '@/components/fund-details/FundLogo';
 
 interface SuggestionDetailModalProps {
   suggestion: any;
@@ -127,8 +126,6 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
           updatePayload.historical_performance = sc.historicalPerformance;
         }
         
-        // Handle logo URL changes
-        if (typeof sc.logoUrl === 'string') updatePayload.logo_url = sc.logoUrl;
         
         // Handle FAQs
         if (sc.faqs && Array.isArray(sc.faqs)) {
@@ -335,19 +332,6 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         return <span className="text-muted-foreground">Not set</span>;
       }
       
-      // Special handling for logo URLs
-      if (field === 'logoUrl' && typeof value === 'string') {
-        return (
-          <div className="flex items-center gap-3">
-            <FundLogo 
-              logoUrl={value} 
-              fundName={suggestion.fund_id || 'Fund'} 
-              size="sm"
-            />
-            <span className="text-xs text-muted-foreground">Logo image</span>
-          </div>
-        );
-      }
       
       if (typeof value === 'object') {
         return <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(value, null, 2)}</pre>;
@@ -492,7 +476,6 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
               {changedFields.map((field) => (
                 <div key={field} className="space-y-2">
                   <div className="flex items-center gap-2">
-                    {field === 'logoUrl' && <ImageIcon className="h-4 w-4" />}
                     <h4 className="font-medium capitalize">{field.replace(/_/g, ' ')}</h4>
                   </div>
                   {renderValueComparison(

@@ -4,7 +4,6 @@ export const digitalInsightFund: Fund = {
   id: 'digital-insight-fund',
   name: 'Digital Insight Fund',
   managerName: 'Insight Venture - Sociedade de Capital de Risco, S.A.',
-  managerLogo: undefined, // No logo provided
   category: 'Venture Capital',
   tags: ['Venture Capital', 'Technology', 'AI-Driven', 'Golden Visa Eligible', 'Portugal', 'Closed Ended'],
   description: 'A closed-end venture capital fund focusing on digital economy and technology-driven businesses with high scalability potential, particularly in Portugal.',

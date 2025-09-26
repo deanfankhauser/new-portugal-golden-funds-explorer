@@ -70,14 +70,7 @@ const ShortlistIndicator = () => {
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
-                        {fund.logoUrl && (
-                          <img 
-                            src={fund.logoUrl} 
-                            alt={fund.managerName}
-                            className="w-6 h-6 rounded object-contain bg-muted p-0.5"
-                          />
-                        )}
-                        <Link 
+                        <Link
                           to={`/${fund.id}`}
                           className="font-semibold text-foreground hover:text-primary transition-colors truncate"
                         >
