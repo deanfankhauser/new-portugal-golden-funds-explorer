@@ -16,11 +16,10 @@ const FundSideNavigation: React.FC<FundSideNavigationProps> = ({ className = '' 
 
   const navItems = [
     { id: 'fund-overview', label: 'Overview', icon: FileText },
-    { id: 'key-terms-strategy', label: 'Key Terms & Strategy', icon: Target },
+    { id: 'key-terms-strategy', label: 'Key Terms', icon: Target },
     { id: 'financial-details', label: 'Financial Details', icon: DollarSign },
     { id: 'fund-structure', label: 'Fund Structure', icon: PieChart },
     { id: 'team-information', label: 'Team', icon: Users },
-    { id: 'documents-disclosures', label: 'Documents', icon: FileText },
   ];
 
   return (
