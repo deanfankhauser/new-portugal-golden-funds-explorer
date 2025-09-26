@@ -54,6 +54,18 @@ export class SitemapService {
         changefreq: 'weekly',
         priority: 0.7
       },
+      {
+        url: `${URL_CONFIG.BASE_URL}/compare`,
+        lastmod: currentDate,
+        changefreq: 'weekly',
+        priority: 0.6
+      },
+      {
+        url: `${URL_CONFIG.BASE_URL}/alternatives`,
+        lastmod: currentDate,
+        changefreq: 'weekly',
+        priority: 0.7
+      },
       // Static Pages
       {
         url: `${URL_CONFIG.BASE_URL}/about`,
