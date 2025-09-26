@@ -81,6 +81,18 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
     return !hasUSRestriction;
   };
 
+  // Helper function to determine if fund is open-ended
+  const isOpenEnded = () => {
+    // Check if it's truly open-ended based on multiple criteria
+    return !fund.term || fund.term === 0 || 
+           (fund.redemptionTerms?.minimumHoldingPeriod === 0 && fund.redemptionTerms?.frequency);
+  };
+
+  // Helper function to get fund type
+  const getFundType = () => {
+    return isOpenEnded() ? 'Open-Ended' : 'Closed-End';
+  };
+
   // Helper function to get fund lifetime
   const getFundLifetime = () => {
     if (fund.term) {
@@ -96,6 +108,25 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
       return termStr;
     }
     return 'Open-ended';
+  };
+
+  // Helper function to get lock-up period
+  const getLockUpPeriod = () => {
+    if (fund.redemptionTerms?.minimumHoldingPeriod !== undefined) {
+      return fund.redemptionTerms.minimumHoldingPeriod === 0 ? 
+        'No Lock-up' : 
+        `${fund.redemptionTerms.minimumHoldingPeriod} months`;
+    }
+    // Fallback to term-based calculation
+    return fund.term ? `${fund.term * 12} months` : 'No Lock-up';
+  };
+
+  // Helper function to get redemption status
+  const getRedemptionStatus = () => {
+    if (fund.redemptionTerms?.frequency) {
+      return fund.redemptionTerms.frequency;
+    }
+    return isOpenEnded() ? 'Available' : 'Restricted';
   };
 
   // Helper function to get subscription deadline
@@ -114,6 +145,11 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
       value: fund.category || "Alternative Investment"
     },
     {
+      label: "Fund Type", 
+      value: getFundType(),
+      icon: isOpenEnded() ? <Check className="w-4 h-4 text-success" /> : undefined
+    },
+    {
       label: "Investment Profile", 
       value: getInvestmentProfile()
     },
@@ -128,19 +164,19 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
     },
     {
       label: "Subscriptions",
-      value: fund.redemptionTerms?.frequency || 'Monthly'
+      value: getSubscriptionDeadline()
     },
     {
       label: "Redemptions",
-      value: fund.redemptionTerms?.frequency || 'Monthly'
+      value: getRedemptionStatus()
     },
     {
       label: "Notice Period",
-      value: fund.redemptionTerms?.noticePeriod ? `${fund.redemptionTerms.noticePeriod} days` : '30 days'
+      value: fund.redemptionTerms?.noticePeriod ? `${fund.redemptionTerms.noticePeriod} days` : (isOpenEnded() ? 'None' : '30 days')
     },
     {
-      label: "Lock-up",
-      value: fund.term ? `${fund.term * 12} months` : 'None'
+      label: "Lock-up Period",
+      value: getLockUpPeriod()
     },
     {
       label: "Fund Lifetime",
