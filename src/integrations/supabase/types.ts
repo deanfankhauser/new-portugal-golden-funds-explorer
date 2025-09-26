@@ -629,7 +629,28 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      investor_profiles_admin_view: {
+        Row: {
+          address: string | null
+          annual_income_range: string | null
+          avatar_url: string | null
+          city: string | null
+          country: string | null
+          created_at: string | null
+          date_of_birth: string | null
+          email: string | null
+          first_name: string | null
+          id: string | null
+          investment_experience: string | null
+          last_name: string | null
+          net_worth_range: string | null
+          phone: string | null
+          risk_tolerance: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       can_access_manager_sensitive_data: {
@@ -657,6 +678,10 @@ export type Database = {
         Args: { user_email: string }
         Returns: string
       }
+      get_admin_data_access_level: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_basic_manager_info: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -678,6 +703,28 @@ export type Database = {
           table_name: string
         }[]
       }
+      get_investor_profile_secure: {
+        Args: { profile_user_id: string }
+        Returns: {
+          address: string
+          annual_income_range: string
+          avatar_url: string
+          city: string
+          country: string
+          created_at: string
+          date_of_birth: string
+          email: string
+          first_name: string
+          id: string
+          investment_experience: string
+          last_name: string
+          net_worth_range: string
+          phone: string
+          risk_tolerance: string
+          updated_at: string
+          user_id: string
+        }[]
+      }
       get_investor_profile_stats: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -688,6 +735,53 @@ export type Database = {
       }
       get_investor_profiles_for_admin: {
         Args: Record<PropertyKey, never>
+        Returns: {
+          address: string
+          annual_income_range: string
+          avatar_url: string
+          city: string
+          country: string
+          created_at: string
+          date_of_birth: string
+          email: string
+          first_name: string
+          id: string
+          investment_experience: string
+          last_name: string
+          net_worth_range: string
+          phone: string
+          risk_tolerance: string
+          updated_at: string
+          user_id: string
+        }[]
+      }
+      get_investor_profiles_for_admin_secure: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          address: string
+          annual_income_range: string
+          avatar_url: string
+          city: string
+          country: string
+          created_at: string
+          date_of_birth: string
+          email: string
+          first_name: string
+          id: string
+          investment_experience: string
+          last_name: string
+          net_worth_range: string
+          phone: string
+          risk_tolerance: string
+          updated_at: string
+          user_id: string
+        }[]
+      }
+      get_masked_investor_data: {
+        Args: {
+          profile_row: Database["public"]["Tables"]["investor_profiles"]["Row"]
+          requesting_user_id?: string
+        }
         Returns: {
           address: string
           annual_income_range: string
@@ -763,11 +857,27 @@ export type Database = {
         Args: { target_user_id?: string }
         Returns: boolean
       }
+      log_sensitive_data_access: {
+        Args: {
+          access_type: string
+          accessed_user_id: string
+          requested_fields?: string[]
+        }
+        Returns: boolean
+      }
       query: {
         Args: { query_text: string }
         Returns: {
           result: string
         }[]
+      }
+      request_sensitive_data_access: {
+        Args: {
+          justification: string
+          requested_fields: string[]
+          target_user_id: string
+        }
+        Returns: string
       }
       sync_database_functions_to_develop: {
         Args: Record<PropertyKey, never>
