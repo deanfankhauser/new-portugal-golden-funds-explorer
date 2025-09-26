@@ -16,9 +16,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Save, Loader2, Plus, Trash2, X } from 'lucide-react';
 import { Fund, GeographicAllocation, TeamMember, PdfDocument, RedemptionTerms, FAQItem } from '@/data/types/funds';
+import { getAllTags } from '@/data/services/tags-service';
 import { useFundEditing } from '@/hooks/useFundEditing';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
 import HistoricalPerformanceEditor from './HistoricalPerformanceEditor';
 import FundBriefSubmission from './FundBriefSubmission';
 
@@ -66,6 +69,8 @@ const buildFormData = (f: Fund) => {
     faqs: f.faqs || [],
     // Fund Brief URL
     fundBriefUrl: f.fundBriefUrl || '',
+    // Tags - always present as array
+    tags: f.tags || [],
   };
 
   // Only add optional fields if they exist in the fund data
@@ -191,6 +196,7 @@ useEffect(() => {
     historicalPerformance: fund.historicalPerformance,
     faqs: fund.faqs,
     fundBriefUrl: fund.fundBriefUrl,
+    tags: fund.tags,
   });
 
   const getSuggestedChanges = () => {
@@ -275,9 +281,12 @@ useEffect(() => {
         
         <ScrollArea className="max-h-[60vh] pr-4">
         <Tabs defaultValue="basic" className="w-full">
-          <TabsList className="grid w-full grid-cols-8 h-auto p-1 bg-muted/50 rounded-lg">
+          <TabsList className="grid w-full grid-cols-9 h-auto p-1 bg-muted/50 rounded-lg">
             <TabsTrigger value="basic" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
               Basic Info
+            </TabsTrigger>
+            <TabsTrigger value="tags" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              Tags
             </TabsTrigger>
             <TabsTrigger value="structure" className="text-xs font-medium py-2.5 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
               Structure
@@ -497,6 +506,86 @@ useEffect(() => {
                       onChange={(e) => handleInputChange('managerName', e.target.value)}
                     />
                   </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="tags" className="space-y-6 mt-4">
+              {/* Tags Selection */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Fund Tags</h3>
+                <p className="text-sm text-muted-foreground">
+                  Select relevant tags that describe this fund's characteristics and investment strategy.
+                </p>
+                
+                {/* Current Selected Tags */}
+                {formData.tags && formData.tags.length > 0 && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Currently Selected ({formData.tags.length} tags)</Label>
+                    <div className="flex flex-wrap gap-2 p-3 bg-muted/30 rounded-md">
+                      {formData.tags.map((tag: string) => (
+                        <Badge 
+                          key={tag} 
+                          variant="secondary" 
+                          className="flex items-center gap-1"
+                        >
+                          {tag}
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-4 w-4 p-0 hover:bg-destructive/20"
+                            onClick={() => {
+                              const updatedTags = formData.tags.filter((t: string) => t !== tag);
+                              handleInputChange('tags', updatedTags);
+                            }}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Available Tags */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Available Tags</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-96 overflow-y-auto p-3 border rounded-md">
+                    {getAllTags().map((tag) => {
+                      const isSelected = formData.tags?.includes(tag) || false;
+                      return (
+                        <div key={tag} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`tag-${tag}`}
+                            checked={isSelected}
+                            onCheckedChange={(checked) => {
+                              const currentTags = formData.tags || [];
+                              let updatedTags;
+                              
+                              if (checked) {
+                                updatedTags = [...currentTags, tag];
+                              } else {
+                                updatedTags = currentTags.filter((t: string) => t !== tag);
+                              }
+                              
+                              handleInputChange('tags', updatedTags);
+                            }}
+                          />
+                          <Label 
+                            htmlFor={`tag-${tag}`}
+                            className="text-sm cursor-pointer hover:text-primary"
+                          >
+                            {tag}
+                          </Label>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                
+                <div className="text-xs text-muted-foreground">
+                  Tip: Tags help investors find your fund through category filters and improve searchability.
                 </div>
               </div>
             </TabsContent>
