@@ -68,7 +68,7 @@ Allow: /
 Crawl-delay: 2
 
 # Sitemap location
-Sitemap: ${URL_CONFIG.BASE_URL}/sitemap.xml
+Sitemap: ${URL_CONFIG.BASE_URL}/sitemap-index.xml
 
 # Disallow admin and auth pages
 Disallow: /admin

@@ -19,6 +19,6 @@ ${funds.map(fund => {
 }).join('\n')}
 </urlset>`;
 
-  fs.writeFileSync(path.join(distDir, 'sitemap_funds.xml'), sitemap);
-  console.log(`✅ Funds Sitemap: Generated sitemap_funds.xml with ${funds.length} fund URLs`);
+  fs.writeFileSync(path.join(distDir, 'sitemap-funds.xml'), sitemap);
+  console.log(`✅ Funds Sitemap: Generated sitemap-funds.xml with ${funds.length} fund URLs`);
 }
