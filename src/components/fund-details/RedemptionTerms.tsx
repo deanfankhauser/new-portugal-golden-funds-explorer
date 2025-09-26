@@ -16,10 +16,6 @@ const RedemptionTerms: React.FC<RedemptionTermsProps> = ({ redemptionTerms }) =>
     return null;
   }
 
-  // Check if the redemption notes indicate a decreasing fee structure
-  const hasDecreasingFees = redemptionTerms.notes?.toLowerCase().includes('taper') || 
-                           redemptionTerms.notes?.toLowerCase().includes('decreases');
-
   // Check if fund is completely locked until maturity
   const isLocked = redemptionTerms.frequency === 'End of Term' && !redemptionTerms.redemptionOpen;
 
@@ -65,30 +61,25 @@ const RedemptionTerms: React.FC<RedemptionTermsProps> = ({ redemptionTerms }) =>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
             {redemptionTerms.earlyRedemptionFee !== undefined && (
-              <div className="bg-secondary p-4 rounded-lg border border-border">
-                <h3 className="font-medium text-muted-foreground text-sm uppercase tracking-wide">
-                  {hasDecreasingFees ? "Redemption Fee (Starting)" : "Early Redemption Fee"}
+              <div className="bg-gradient-to-br from-destructive/5 to-destructive/10 p-5 rounded-xl border border-destructive/20 shadow-sm hover:shadow-md transition-all duration-300">
+                <h3 className="font-semibold text-destructive text-sm uppercase tracking-wide mb-2">
+                  Early Redemption Fee
                 </h3>
-                <p className="text-xl font-bold text-destructive">
+                <p className="text-2xl font-bold text-destructive">
                   {formatPercentage(redemptionTerms.earlyRedemptionFee)}
                 </p>
-                {hasDecreasingFees && (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Decreases over time as specified
-                  </p>
-                )}
               </div>
             )}
 
             {redemptionTerms.minimumHoldingPeriod !== undefined && (
-              <div className="bg-secondary p-4 rounded-lg border border-border">
-                <h3 className="font-medium text-muted-foreground text-sm uppercase tracking-wide">
+              <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-5 rounded-xl border border-primary/20 shadow-sm hover:shadow-md transition-all duration-300">
+                <h3 className="font-semibold text-primary text-sm uppercase tracking-wide mb-2">
                   Minimum Holding Period
                 </h3>
-                <p className="text-xl font-bold">
+                <p className="text-2xl font-bold text-primary">
                   {redemptionTerms.minimumHoldingPeriod} months
                   {redemptionTerms.minimumHoldingPeriod >= 12 && (
-                    <span className="text-sm text-muted-foreground ml-1">
+                    <span className="text-sm text-primary/70 ml-1 block mt-1">
                       ({Math.floor(redemptionTerms.minimumHoldingPeriod / 12)} {Math.floor(redemptionTerms.minimumHoldingPeriod / 12) === 1 ? 'year' : 'years'}
                       {redemptionTerms.minimumHoldingPeriod % 12 > 0 ? `, ${redemptionTerms.minimumHoldingPeriod % 12} months` : ''})
                     </span>
@@ -98,12 +89,6 @@ const RedemptionTerms: React.FC<RedemptionTermsProps> = ({ redemptionTerms }) =>
             )}
           </div>
 
-          {redemptionTerms.notes && (
-            <div className="mt-4 p-4 bg-primary/10 border border-primary/20 rounded-md">
-              <h3 className="font-medium text-primary mb-1">Additional Information</h3>
-              <p className="text-sm text-primary">{redemptionTerms.notes}</p>
-            </div>
-          )}
         </div>
       </CardContent>
     </Card>
