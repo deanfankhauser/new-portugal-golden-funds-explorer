@@ -399,14 +399,17 @@ useEffect(() => {
                   </div>
                   
                   <div>
-                    <Label htmlFor="performanceFee">Performance Fee (%)</Label>
+                    <Label htmlFor="performanceFee">Performance Fee</Label>
                     <Input
                       id="performanceFee"
-                      type="number"
-                      step="0.1"
+                      type="text"
                       value={formData.performanceFee}
                       onChange={(e) => handleInputChange('performanceFee', e.target.value)}
+                      placeholder="e.g., 20% or 20% above 5% net"
                     />
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Enter a percentage (e.g., 20%) or complex structure (e.g., 20% above 5% net)
+                    </p>
                   </div>
 
                   <div>
