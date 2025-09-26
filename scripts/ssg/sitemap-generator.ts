@@ -73,6 +73,24 @@ export function generateSitemap(routes: StaticRoute[], distDir: string): void {
   routeEntries.forEach(addIfMissing);
   enhancedEntries.forEach(addIfMissing);
 
+  // Ensure core hub/static pages are present even if upstream generation misses them
+  const now = DateManagementService.getCurrentISODate();
+  const corePaths = ['/', '/index', '/about', '/disclaimer', '/privacy', '/faqs', '/roi-calculator', '/saved-funds', '/categories', '/tags', '/managers', '/comparisons', '/compare', '/alternatives'];
+  corePaths.forEach(p => addIfMissing({
+    url: `https://funds.movingto.com${p === '/' ? '' : p}`,
+    lastmod: now,
+    changefreq: 'weekly',
+    priority: '0.7'
+  }));
+
+  // Force include all discovered category and tag detail pages
+  routes.filter(r => r.pageType === 'category' || r.pageType === 'tag').forEach(r => addIfMissing({
+    url: `https://funds.movingto.com${r.path}`,
+    lastmod: now,
+    changefreq: 'weekly',
+    priority: r.pageType === 'category' ? '0.8' : '0.7'
+  }));
+
   const urlElements = Array.from(byUrl.entries()).map(([url, meta]) => `  <url>
     <loc>${url}</loc>
     <lastmod>${meta.lastmod}</lastmod>
