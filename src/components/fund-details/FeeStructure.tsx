@@ -24,7 +24,11 @@ const FeeStructure: React.FC<FeeStructureProps> = ({ fund, formatPercentage }) =
           
           <div className="bg-muted p-4 rounded-lg border border-border">
             <h3 className="font-medium text-muted-foreground text-sm uppercase tracking-wide">Performance Fee</h3>
-            <p className="text-2xl font-bold text-primary mt-1">{formatPercentage(fund.performanceFee)}</p>
+            <p className="text-2xl font-bold text-primary mt-1">
+              {typeof fund.performanceFee === 'number' 
+                ? formatPercentage(fund.performanceFee) 
+                : fund.performanceFee || 'Not specified'}
+            </p>
           </div>
           
           {fund.subscriptionFee !== undefined && (
