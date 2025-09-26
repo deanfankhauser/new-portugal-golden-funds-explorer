@@ -68,7 +68,7 @@ Allow: /
 Crawl-delay: 2
 
 # Sitemap location
-Sitemap: ${URL_CONFIG.BASE_URL}/sitemap.xml
+Sitemap: ${URL_CONFIG.BASE_URL}/sitemap-index.xml
 
 # Disallow admin and auth pages
 Disallow: /admin
@@ -137,6 +137,10 @@ ${urlElements}
   </sitemap>
   <sitemap>
     <loc>${baseUrl}/sitemap-funds.xml</loc>
+    <lastmod>${currentDate}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-enhanced.xml</loc>
     <lastmod>${currentDate}</lastmod>
   </sitemap>
 </sitemapindex>`;

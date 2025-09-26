@@ -17,6 +17,23 @@ export async function buildSSG() {
 
     // Step 3: Generate static files
     compileSSGFiles();
+
+    // Step 4: Ensure enhanced sitemap files are also available in /public for local preview/dev servers
+    try {
+      const publicDir = path.join(process.cwd(), 'public');
+      const distDir = path.join(process.cwd(), 'dist');
+      const filesToCopy = ['sitemap.xml', 'sitemap-index.xml', 'sitemap-funds.xml', 'sitemap-enhanced.xml', 'robots.txt'];
+      filesToCopy.forEach((file) => {
+        const src = path.join(distDir, file);
+        if (fs.existsSync(src)) {
+          const dest = path.join(publicDir, file);
+          fs.copyFileSync(src, dest);
+        }
+      });
+      console.log('🗺️  Copied enhanced sitemap files to /public for visibility in build_ssg mode');
+    } catch (copyErr) {
+      console.warn('⚠️  Could not copy enhanced sitemap files to /public:', copyErr.message);
+    }
     
   } catch (error) {
     console.error('\n❌ Build failed:', error.message);

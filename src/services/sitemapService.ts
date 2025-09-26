@@ -54,6 +54,18 @@ export class SitemapService {
         changefreq: 'weekly',
         priority: 0.7
       },
+      {
+        url: `${URL_CONFIG.BASE_URL}/compare`,
+        lastmod: currentDate,
+        changefreq: 'weekly',
+        priority: 0.6
+      },
+      {
+        url: `${URL_CONFIG.BASE_URL}/alternatives`,
+        lastmod: currentDate,
+        changefreq: 'weekly',
+        priority: 0.7
+      },
       // Static Pages
       {
         url: `${URL_CONFIG.BASE_URL}/about`,
@@ -84,6 +96,12 @@ export class SitemapService {
         lastmod: currentDate,
         changefreq: 'monthly',
         priority: 0.6
+      },
+      {
+        url: `${URL_CONFIG.BASE_URL}/saved-funds`,
+        lastmod: currentDate,
+        changefreq: 'weekly',
+        priority: 0.6
       }
     ];
   }
@@ -109,7 +127,7 @@ export class SitemapService {
     return categories.map(category => {
       const contentDates = DateManagementService.getContentDates('category', category);
       return {
-        url: URL_CONFIG.buildCategoryUrl(categoryToSlug(category)),
+        url: URL_CONFIG.buildCategoryUrl(category),
         lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
         changefreq: contentDates.changeFrequency,
         priority: 0.8
@@ -124,7 +142,7 @@ export class SitemapService {
     return tags.map(tag => {
       const contentDates = DateManagementService.getContentDates('tag', tag);
       return {
-        url: URL_CONFIG.buildTagUrl(tagToSlug(tag)),
+        url: URL_CONFIG.buildTagUrl(tag),
         lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
         changefreq: contentDates.changeFrequency,
         priority: 0.7

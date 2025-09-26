@@ -56,6 +56,41 @@ export function compileSSGFiles() {
     } else {
       console.log(`✅ SSG: Generated ${fundPagesGenerated} fund pages successfully`);
     }
+
+    // Also copy enhanced sitemap files from dist to public so /sitemap.xml resolves correctly in dev/preview
+    try {
+      const publicDir = path.join(process.cwd(), 'public');
+      const distDir = path.join(process.cwd(), 'dist');
+      const filesToCopy = ['sitemap.xml', 'sitemap-index.xml', 'sitemap-funds.xml', 'sitemap-enhanced.xml', 'robots.txt'];
+      filesToCopy.forEach((file) => {
+        const src = path.join(distDir, file);
+        if (fs.existsSync(src)) {
+          const dest = path.join(publicDir, file);
+          fs.copyFileSync(src, dest);
+        }
+      });
+      console.log('🗺️  SSG: Copied enhanced sitemaps to /public');
+
+      // Fallback: if consolidated sitemap lacks categories/tags, use enhanced sitemap which includes them
+      try {
+        const publicSitemap = path.join(publicDir, 'sitemap.xml');
+        const enhancedPath = path.join(distDir, 'sitemap-enhanced.xml');
+        if (fs.existsSync(publicSitemap)) {
+          const content = fs.readFileSync(publicSitemap, 'utf8');
+          const hasCategories = content.includes('/categories/');
+          const hasTags = content.includes('/tags/');
+          if ((!hasCategories || !hasTags) && fs.existsSync(enhancedPath)) {
+            const enhanced = fs.readFileSync(enhancedPath, 'utf8');
+            fs.writeFileSync(publicSitemap, enhanced);
+            console.log('🗺️  SSG: Replaced /public/sitemap.xml with enhanced sitemap to include categories/tags');
+          }
+        }
+      } catch (fallbackErr) {
+        console.warn('⚠️  SSG: Failed fallback to enhanced sitemap:', fallbackErr.message);
+      }
+    } catch (copyErr) {
+      console.warn('⚠️  SSG: Could not copy enhanced sitemap files to /public:', copyErr.message);
+    }
     
   } catch (error) {
     console.warn('⚠️  SSG compilation failed, falling back to basic build');
@@ -76,9 +111,11 @@ export function compileSSGFiles() {
   </url>
 </urlset>`;
     
-    fs.writeFileSync(path.join(distDir, 'sitemap.xml'), basicSitemap);
-    
-    // Ensure we have a valid fallback index.html for SPA routing
+    const sitemapOutPath = path.join(distDir, 'sitemap.xml');
+    // Do NOT overwrite an existing sitemap copied from /public
+    if (!fs.existsSync(sitemapOutPath)) {
+      fs.writeFileSync(sitemapOutPath, basicSitemap);
+    }
     const indexPath = path.join(distDir, 'index.html');
     if (!fs.existsSync(indexPath)) {
       // Copy the original Vite-built index.html as fallback

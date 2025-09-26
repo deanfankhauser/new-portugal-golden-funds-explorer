@@ -30,6 +30,7 @@ export class RouteDiscovery {
     routes.push({ path: '/compare', pageType: 'comparison' });
     routes.push({ path: '/comparisons', pageType: 'comparisons-hub' });
     routes.push({ path: '/roi-calculator', pageType: 'roi-calculator' });
+    routes.push({ path: '/saved-funds', pageType: 'saved-funds' });
     
     // Auth pages - generate for SEO but handle auth state gracefully
     routes.push({ path: '/manager-auth', pageType: 'manager-auth' });
