@@ -136,7 +136,7 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden">
+    <div className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900 text-white relative overflow-hidden">
       {/* Background pattern */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/10"></div>
       
@@ -148,7 +148,7 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* Left Side - Fund Identity & Actions */}
           <div className="space-y-8">
             {/* Fund Identity */}
@@ -162,10 +162,10 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
                   className="flex-shrink-0 bg-white/10 backdrop-blur-sm rounded-lg p-2"
                 />
                 <div className="min-w-0 flex-1">
-                  <h1 className="text-4xl lg:text-5xl font-bold leading-tight mb-4">
+                  <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight mb-4">
                     {fund.name}
                   </h1>
-                  <p className="text-xl text-white/80 leading-relaxed mb-4">
+                  <p className="text-base md:text-lg text-white/80 leading-relaxed mb-4">
                     {fund.description || "Investment opportunity focused on generating sustainable returns through strategic market positioning."}
                   </p>
                   {fund.managerName && (
@@ -186,8 +186,8 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
                 <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
                   <span className="text-sm font-medium text-white/80">Risk Level:</span>
                   <Badge 
-                    className={`ml-2 ${riskColor} text-white border-0`}
-                    style={{ backgroundColor: riskColor.replace('text-', 'rgb(var(--') + '))' }}
+                    variant={riskScore <= 3 ? "success" : riskScore <= 6 ? "warning" : "destructive"}
+                    className="ml-2"
                   >
                     {riskLabel}
                   </Badge>
@@ -197,14 +197,11 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
 
             {/* Primary CTAs */}
             <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
                   size="lg"
-                  className={`font-semibold ${
-                    fund.fundBriefUrl 
-                      ? 'bg-white text-slate-900 hover:bg-white/90' 
-                      : 'bg-white/20 text-white/60 cursor-not-allowed'
-                  }`}
+                  variant={fund.fundBriefUrl ? "default" : "secondary"}
+                  className={`font-semibold ${!fund.fundBriefUrl ? 'opacity-60 cursor-not-allowed' : ''}`}
                   onClick={fund.fundBriefUrl ? handleGetFundBrief : undefined}
                   disabled={isRequestingBrief || !fund.fundBriefUrl}
                 >
@@ -214,7 +211,7 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
                 <Button 
                   size="lg"
                   variant="outline" 
-                  className="border-white/30 text-white hover:bg-white hover:text-slate-900 bg-white/10 backdrop-blur-sm"
+                  className="border-accent/50 text-accent-foreground hover:bg-accent hover:text-accent-foreground bg-accent/10 backdrop-blur-sm"
                   onClick={handleBookCall}
                 >
                   <Calendar className="mr-2 h-5 w-5" />
@@ -223,12 +220,12 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
               </div>
               
               {/* Secondary CTAs */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
                   variant="ghost" 
                   size="sm"
                   onClick={handleCompareClick}
-                  className={`${isCompared ? "bg-white/20 text-white" : "text-white/80 hover:bg-white/10 hover:text-white"}`}
+                  className={`${isCompared ? "bg-accent/20 text-accent-foreground" : "text-white/80 hover:bg-accent/10 hover:text-accent-foreground"} flex-1`}
                 >
                   <BarChart3 className="mr-2 h-4 w-4" />
                   {isCompared ? "Remove from Compare" : "Add to Compare"}
@@ -237,7 +234,7 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
                   variant="ghost" 
                   size="sm"
                   onClick={handleShortlistClick}
-                  className={`${isShortlisted ? "bg-white/20 text-white" : "text-white/80 hover:bg-white/10 hover:text-white"}`}
+                  className={`${isShortlisted ? "bg-accent/20 text-accent-foreground" : "text-white/80 hover:bg-accent/10 hover:text-accent-foreground"} flex-1`}
                 >
                   <Bookmark className="mr-2 h-4 w-4" />
                   {isShortlisted ? "Shortlisted" : "Add to Shortlist"}
@@ -247,7 +244,7 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
           </div>
 
           {/* Right Side - Fund Snapshot Card */}
-          <div className="flex justify-center xl:justify-end">
+          <div className="flex justify-center lg:justify-end">
             <div className="w-full max-w-md">
               <FundSnapshotCard fund={fund} />
             </div>
