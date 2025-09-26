@@ -145,7 +145,6 @@ export const imgaAcoesPortugalFund: Fund = {
   id: 'imga-acoes-portugal-fund',
   name: 'IMGA Ações Portugal Fund',
   managerName: 'IM Gestão de Ativos (IMGA)',
-  managerLogo: undefined, // No logo provided
   category: 'Mixed',
   tags: ['Equities', 'Golden Visa Eligible', 'Portugal', 'Open Ended', 'Daily NAV'],
   description: 'An open-end equity fund focused exclusively on equities listed on Euronext Lisbon and other regulated Portuguese markets, seeking to outperform the PSI-20 index.',
@@ -292,7 +291,6 @@ export const imgaFuturumTechFund: Fund = {
   id: 'imga-futurum-tech-fund',
   name: 'IMGA Futurum Tech Fund',
   managerName: 'IM Gestão de Ativos (IMGA)',
-  managerLogo: undefined, // No logo provided
   category: 'Private Equity & Venture Capital',
   tags: ['Venture Capital', 'Private Equity', 'Technology', 'AI-Driven', 'Golden Visa Eligible', 'Portugal', 'Closed Ended'],
   description: 'A venture capital/private equity fund investing in high-growth technology companies with strong innovation potential and scalable business models.',
@@ -419,7 +417,6 @@ export const imgaSilverDomusFund: Fund = {
   id: 'imga-silver-domus-fund',
   name: 'IMGA Silver Domus Fund',
   managerName: 'IM Gestão de Ativos (IMGA)',
-  managerLogo: undefined, // No logo provided
   category: 'Real Estate',
   tags: ['Real Estate', 'Portugal', 'Open Ended', 'Dividends'],
   description: 'An open-end real estate fund specializing in senior living and long-term rental residential assets in Portugal, targeting demographic demand drivers.',

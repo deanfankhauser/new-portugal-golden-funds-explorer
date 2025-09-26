@@ -4,7 +4,6 @@ export const globalEuropeanCinemaFund: Fund = {
   id: 'global-european-cinema-fund',
   name: 'Global European Cinema Fund (GECF)',
   managerName: 'Quadrantis Capital',
-  managerLogo: undefined, // No logo provided
   category: 'Private Equity',
   tags: ['Private Equity', 'Technology', 'Portugal', 'Closed Ended', 'Dividends'],
   description: 'An asset-based, risk-mitigated investment vehicle designed to finance the ongoing production of film and television content with guaranteed worldwide distribution.',

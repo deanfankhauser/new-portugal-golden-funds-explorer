@@ -4,7 +4,6 @@ export const primeInsightFund: Fund = {
   id: 'prime-insight-fund',
   name: 'Prime Insight Fund',
   managerName: 'Insight Venture - Sociedade de Capital de Risco, S.A.',
-  managerLogo: undefined, // No logo provided
   category: 'Venture Capital',
   tags: ['Venture Capital', 'Real Estate', 'Tourism', 'Infrastructure', 'Renewable Energy', 'Golden Visa Eligible', 'Portugal', 'Closed Ended'],
   description: 'A closed-end venture capital fund focused on prime asset-backed opportunities in Portugal\'s real economy, including real estate development, tourism infrastructure, and renewable energy.',

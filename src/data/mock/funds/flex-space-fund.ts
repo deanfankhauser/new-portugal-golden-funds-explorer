@@ -4,7 +4,6 @@ export const flexSpaceFund: Fund = {
   id: 'flex-space-fund',
   name: 'Flex Space Fund',
   managerName: 'Insula Capital SGOIC',
-  managerLogo: undefined, // No logo provided
   category: 'Private Equity',
   tags: ['Private Equity', 'Real Estate', 'Golden Visa Eligible', 'Dividends', 'Portugal', 'Closed Ended'],
   description: 'A CMVM-regulated, closed-end private equity fund investing exclusively in district.space, a Portuguese flex office operator, targeting an underdeveloped market with strong demand and guaranteed exit.',
