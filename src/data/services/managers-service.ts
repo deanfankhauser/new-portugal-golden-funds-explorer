@@ -25,10 +25,7 @@ export interface PublicManagerData {
 // Function to get all approved managers from database (public safe data only)
 export const getAllApprovedManagers = async (): Promise<PublicManagerData[]> => {
   try {
-    const { data, error } = await supabase
-      .from('manager_profiles_public')
-      .select('*')
-      .order('company_name');
+    const { data, error } = await supabase.rpc('get_public_manager_profiles');
     
     if (error) {
       console.error('Error fetching approved managers:', error);

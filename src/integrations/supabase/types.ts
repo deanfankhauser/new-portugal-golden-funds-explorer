@@ -191,24 +191,10 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
           {
-            foreignKeyName: "fund_brief_submissions_manager_user_fk"
-            columns: ["manager_user_id"]
-            isOneToOne: false
-            referencedRelation: "manager_profiles_public"
-            referencedColumns: ["user_id"]
-          },
-          {
             foreignKeyName: "fund_brief_submissions_manager_user_fkey"
             columns: ["manager_user_id"]
             isOneToOne: false
             referencedRelation: "manager_profiles"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "fund_brief_submissions_manager_user_fkey"
-            columns: ["manager_user_id"]
-            isOneToOne: false
-            referencedRelation: "manager_profiles_public"
             referencedColumns: ["user_id"]
           },
         ]
@@ -643,57 +629,7 @@ export type Database = {
       }
     }
     Views: {
-      manager_profiles_public: {
-        Row: {
-          assets_under_management: number | null
-          city: string | null
-          company_name: string | null
-          country: string | null
-          created_at: string | null
-          description: string | null
-          founded_year: number | null
-          id: string | null
-          logo_url: string | null
-          manager_name: string | null
-          status: Database["public"]["Enums"]["manager_status"] | null
-          updated_at: string | null
-          user_id: string | null
-          website: string | null
-        }
-        Insert: {
-          assets_under_management?: number | null
-          city?: string | null
-          company_name?: string | null
-          country?: string | null
-          created_at?: string | null
-          description?: string | null
-          founded_year?: number | null
-          id?: string | null
-          logo_url?: string | null
-          manager_name?: string | null
-          status?: Database["public"]["Enums"]["manager_status"] | null
-          updated_at?: string | null
-          user_id?: string | null
-          website?: string | null
-        }
-        Update: {
-          assets_under_management?: number | null
-          city?: string | null
-          company_name?: string | null
-          country?: string | null
-          created_at?: string | null
-          description?: string | null
-          founded_year?: number | null
-          id?: string | null
-          logo_url?: string | null
-          manager_name?: string | null
-          status?: Database["public"]["Enums"]["manager_status"] | null
-          updated_at?: string | null
-          user_id?: string | null
-          website?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       can_access_manager_sensitive_data: {
@@ -720,6 +656,17 @@ export type Database = {
       find_user_by_email: {
         Args: { user_email: string }
         Returns: string
+      }
+      get_basic_manager_info: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          city: string
+          company_name: string
+          country: string
+          description: string
+          manager_name: string
+          website: string
+        }[]
       }
       get_database_schema_info: {
         Args: Record<PropertyKey, never>
@@ -759,6 +706,25 @@ export type Database = {
           risk_tolerance: string
           updated_at: string
           user_id: string
+        }[]
+      }
+      get_public_manager_profiles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          assets_under_management: number
+          city: string
+          company_name: string
+          country: string
+          created_at: string
+          description: string
+          founded_year: number
+          id: string
+          logo_url: string
+          manager_name: string
+          status: Database["public"]["Enums"]["manager_status"]
+          updated_at: string
+          user_id: string
+          website: string
         }[]
       }
       get_super_admin_emails: {

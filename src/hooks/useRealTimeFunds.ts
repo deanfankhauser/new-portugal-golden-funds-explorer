@@ -21,6 +21,7 @@ const applyEditHistory = (
     if (!f) continue;
 
     const c = e.changes || {};
+    
     // Normalize common snake_case fields to camelCase expected by UI
     const n: Record<string, any> = { ...c };
     if (c.short_description && typeof c.short_description === 'string') n.description = c.short_description;
@@ -39,6 +40,14 @@ const applyEditHistory = (
     if (c.historicalPerformance && typeof c.historicalPerformance === 'object') n.historicalPerformance = c.historicalPerformance;
     if (c.historical_performance && typeof c.historical_performance === 'object') n.historicalPerformance = c.historical_performance;
     if (c.faqs && Array.isArray(c.faqs)) n.faqs = c.faqs;
+    
+    // Handle team members from edit history
+    if (c.team && Array.isArray(c.team)) {
+      n.team = c.team;
+    }
+    if (c.team_members && Array.isArray(c.team_members)) {
+      n.team = c.team_members;
+    }
     
     // Regulatory compliance fields
     if (c.cmvm_id && typeof c.cmvm_id === 'string') n.cmvmId = c.cmvm_id;
@@ -76,7 +85,9 @@ const applyEditHistory = (
     if (typeof n.established === 'number') f.established = n.established;
     if (typeof n.regulatedBy === 'string') f.regulatedBy = n.regulatedBy;
     if (Array.isArray(n.geographicAllocation)) f.geographicAllocation = n.geographicAllocation;
-    if (Array.isArray(n.team)) f.team = n.team;
+    if (Array.isArray(n.team)) {
+      f.team = n.team;
+    }
     if (Array.isArray(n.documents)) f.documents = n.documents;
     if (typeof n.historicalPerformance === 'object' && n.historicalPerformance && Object.keys(n.historicalPerformance).length > 0) {
       f.historicalPerformance = n.historicalPerformance;
@@ -346,8 +357,6 @@ const applyEditHistory = (
           setFunds(transformedFunds);
         }
         setError(null);
-        console.log('✅ Successfully loaded funds from Supabase:', (supabaseFunds?.length || 0), 'with overlay edits:', (editsData?.length || 0));
-        console.log('Applied edit history changes:', editsData?.map(e => ({ fund_id: e.fund_id, changes: Object.keys(e.changes || {}) })));
       } else {
         // No funds in database, use static funds but overlay any approved edit history
         try {
@@ -423,10 +432,6 @@ const applyEditHistory = (
           table: 'fund_edit_history'
         },
         (payload) => {
-          console.log('📝 Real-time edit history change detected:', payload);
-          console.log('Edit history event type:', payload.eventType);
-          console.log('Edit data:', payload.new);
-          console.log('Triggering funds refetch due to edit history change...');
           fetchFunds();
         }
       )
