@@ -21,7 +21,6 @@ const applyEditHistory = (
     if (!f) continue;
 
     const c = e.changes || {};
-    console.log(`🔍 Processing edit history for fund ${e.fund_id}:`, c);
     
     // Normalize common snake_case fields to camelCase expected by UI
     const n: Record<string, any> = { ...c };
@@ -44,11 +43,9 @@ const applyEditHistory = (
     
     // Handle team members from edit history
     if (c.team && Array.isArray(c.team)) {
-      console.log(`👥 Found team data in edit history for ${e.fund_id}:`, c.team);
       n.team = c.team;
     }
     if (c.team_members && Array.isArray(c.team_members)) {
-      console.log(`👥 Found team_members data in edit history for ${e.fund_id}:`, c.team_members);
       n.team = c.team_members;
     }
     
@@ -89,7 +86,6 @@ const applyEditHistory = (
     if (typeof n.regulatedBy === 'string') f.regulatedBy = n.regulatedBy;
     if (Array.isArray(n.geographicAllocation)) f.geographicAllocation = n.geographicAllocation;
     if (Array.isArray(n.team)) {
-      console.log(`✅ Applying team data to fund ${f.id}:`, n.team);
       f.team = n.team;
     }
     if (Array.isArray(n.documents)) f.documents = n.documents;
@@ -291,14 +287,8 @@ const applyEditHistory = (
             ? (fund.geographic_allocation as unknown as GeographicAllocation[])
             : undefined,
           team: Array.isArray(fund.team_members) 
-            ? (() => {
-                console.log(`👥 Loading team data for ${fund.id}:`, fund.team_members);
-                return fund.team_members as unknown as TeamMember[];
-              })()
-            : (() => {
-                console.log(`❌ No team_members found for ${fund.id}`);
-                return undefined;
-              })(),
+            ? (fund.team_members as unknown as TeamMember[])
+            : undefined,
           documents: Array.isArray(fund.pdf_documents) 
             ? (fund.pdf_documents as unknown as PdfDocument[])
             : undefined,
@@ -361,22 +351,12 @@ const applyEditHistory = (
           console.warn('Could not fetch fund_edit_history, proceeding without overlay:', editsError);
           setFunds(transformedFunds);
         } else if (editsData && editsData.length > 0) {
-          console.log('🔍 About to apply edit history overlay data:', editsData.length, 'entries');
           const finalFunds = applyEditHistory(transformedFunds, editsData as any);
-          console.log('🎯 Final funds after edit history applied:', finalFunds.map(f => ({ 
-            id: f.id, 
-            name: f.name, 
-            teamCount: f.team?.length || 0,
-            hasTeam: !!f.team 
-          })));
           setFunds(finalFunds);
         } else {
-          console.log('⚠️ No edit history data to apply');
           setFunds(transformedFunds);
         }
         setError(null);
-        console.log('✅ Successfully loaded funds from Supabase:', (supabaseFunds?.length || 0), 'with overlay edits:', (editsData?.length || 0));
-        console.log('Applied edit history changes:', editsData?.map(e => ({ fund_id: e.fund_id, changes: Object.keys(e.changes || {}) })));
       } else {
         // No funds in database, use static funds but overlay any approved edit history
         try {
@@ -452,10 +432,6 @@ const applyEditHistory = (
           table: 'fund_edit_history'
         },
         (payload) => {
-          console.log('📝 Real-time edit history change detected:', payload);
-          console.log('Edit history event type:', payload.eventType);
-          console.log('Edit data:', payload.new);
-          console.log('Triggering funds refetch due to edit history change...');
           fetchFunds();
         }
       )
