@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, X } from 'lucide-react';
 import { InvestmentFundStructuredDataService } from '../../services/investmentFundStructuredDataService';
+import FundSizeFormatter from './FundSizeFormatter';
 
 interface FundSnapshotCardProps {
   fund: Fund;
@@ -127,6 +128,10 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
     {
       label: "Investment Sector",
       value: fund.category || "Alternative Investment"
+    },
+    {
+      label: "Fund Size",
+      value: <FundSizeFormatter fund={fund} />
     },
     {
       label: "Fund Type", 
