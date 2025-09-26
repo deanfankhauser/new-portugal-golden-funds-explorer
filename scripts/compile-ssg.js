@@ -76,9 +76,11 @@ export function compileSSGFiles() {
   </url>
 </urlset>`;
     
-    fs.writeFileSync(path.join(distDir, 'sitemap.xml'), basicSitemap);
-    
-    // Ensure we have a valid fallback index.html for SPA routing
+    const sitemapOutPath = path.join(distDir, 'sitemap.xml');
+    // Do NOT overwrite an existing sitemap copied from /public
+    if (!fs.existsSync(sitemapOutPath)) {
+      fs.writeFileSync(sitemapOutPath, basicSitemap);
+    }
     const indexPath = path.join(distDir, 'index.html');
     if (!fs.existsSync(indexPath)) {
       // Copy the original Vite-built index.html as fallback
