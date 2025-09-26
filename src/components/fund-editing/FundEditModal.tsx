@@ -452,6 +452,40 @@ useEffect(() => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
+                    <Label htmlFor="fundType">Fund Type</Label>
+                    <Select
+                      value={
+                        formData.tags?.includes('Open Ended' as any) ? 'open-ended' :
+                        formData.tags?.includes('Closed Ended' as any) ? 'closed-ended' : ''
+                      }
+                      onValueChange={(value) => {
+                        const updatedTags = [...(formData.tags || [])];
+                        // Remove existing fund type tags
+                        const filteredTags = updatedTags.filter(tag => 
+                          tag !== 'Open Ended' && tag !== 'Closed Ended'
+                        );
+                        
+                        // Add the selected fund type tag
+                        if (value === 'open-ended') {
+                          filteredTags.push('Open Ended' as any);
+                        } else if (value === 'closed-ended') {
+                          filteredTags.push('Closed Ended' as any);
+                        }
+                        
+                        setFormData(prev => ({ ...prev, tags: filteredTags }));
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select fund type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="open-ended">Open-Ended</SelectItem>
+                        <SelectItem value="closed-ended">Closed-End</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
                     <Label htmlFor="category">Fund Category</Label>
                     <Input
                       id="category"
