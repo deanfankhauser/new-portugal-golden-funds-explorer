@@ -70,76 +70,72 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
               
               <p className="text-muted-foreground mb-4 line-clamp-2 text-sm sm:text-base">{fund.description}</p>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
-                <div className="flex items-center min-w-0">
-                  <Tag className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-xs sm:text-sm text-muted-foreground">Category</p>
-                    <p className="font-medium text-sm sm:text-base truncate">
-                      <Link to={`/categories/${categoryToSlug(fund.category)}`} className="hover:text-primary transition-colors">
-                        {fund.category}
-                      </Link>
-                    </p>
+              {/* Key Investment Metrics - Most Important */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
+                  <div className="flex items-center mb-1">
+                    <Euro className="w-4 h-4 mr-2 text-primary" />
+                    <span className="text-xs text-muted-foreground font-medium">MINIMUM INVESTMENT</span>
+                  </div>
+                  <p className="text-lg font-bold text-primary">
+                    €{fund.minimumInvestment?.toLocaleString() || 'N/A'}
+                  </p>
+                </div>
+                
+                <div className="bg-accent/5 p-4 rounded-lg border border-accent/20">
+                  <div className="flex items-center mb-1">
+                    <PieChart className="w-4 h-4 mr-2 text-accent" />
+                    <span className="text-xs text-muted-foreground font-medium">TARGET RETURN</span>
+                  </div>
+                  <p className="text-lg font-bold text-accent">
+                    {fund.returnTarget}
+                  </p>
+                </div>
+              </div>
+
+              {/* Fund Structure & Liquidity */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">FUND STRUCTURE</p>
+                  <div className="flex items-center gap-2">
+                    <Badge variant={fund.term > 0 ? "secondary" : "default"} className="text-xs">
+                      {fund.term > 0 ? "Closed-ended" : "Open-ended"}
+                    </Badge>
+                    {fund.term > 0 && (
+                      <span className="text-sm text-muted-foreground">({fund.term} years)</span>
+                    )}
                   </div>
                 </div>
                 
-                {mainGeoAllocation && (
-                  <div className="flex items-center min-w-0">
-                    <Globe className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-                    <div className="min-w-0">
-                      <p className="text-xs sm:text-sm text-muted-foreground">Main Region</p>
-                      <p className="font-medium text-sm sm:text-base truncate">
-                        {mainGeoAllocation.region} ({formatPercentage(mainGeoAllocation.percentage)})
-                      </p>
-                    </div>
-                  </div>
-                )}
-                
-                <div className="flex items-center min-w-0">
-                  <PieChart className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-xs sm:text-sm text-muted-foreground">Target Return</p>
-                    <p className="font-medium text-sm sm:text-base truncate">
-                      {fund.returnTarget} <span className="text-xs text-muted-foreground">{DATA_AS_OF_LABEL}</span>
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center min-w-0">
-                  <User className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-xs sm:text-sm text-muted-foreground">Fund Manager</p>
-                    <Link 
-                      to={`/manager/${managerToSlug(fund.managerName)}`} 
-                      className="font-medium hover:text-primary transition-colors text-sm sm:text-base block truncate"
-                      title={fund.managerName}
-                    >
-                      {fund.managerName}
-                    </Link>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">REDEMPTION TERMS</p>
+                  <div className="text-sm">
+                    {fund.redemptionTerms ? (
+                      <div className="space-y-1">
+                        <p className="font-medium">
+                          {fund.redemptionTerms.frequency}
+                          {!fund.redemptionTerms.redemptionOpen && (
+                            <span className="text-destructive ml-1">(Closed)</span>
+                          )}
+                        </p>
+                        {fund.redemptionTerms.noticePeriod && (
+                          <p className="text-muted-foreground text-xs">
+                            {fund.redemptionTerms.noticePeriod} days notice
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-muted-foreground">End of term</p>
+                    )}
                   </div>
                 </div>
               </div>
 
-              {/* Financial Information */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 p-3 bg-muted rounded-lg">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Euro className="w-4 h-4 mr-2 text-primary" />
-                    <span className="text-sm text-muted-foreground">Mgmt Fee:</span>
-                  </div>
-                  <span className="font-medium text-sm">
-                    {fund.managementFee}% <span className="text-xs text-muted-foreground">{DATA_AS_OF_LABEL}</span>
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Euro className="w-4 h-4 mr-2 text-accent" />
-                    <span className="text-sm text-muted-foreground">Perf Fee:</span>
-                  </div>
-                  <span className="font-medium text-sm">
-                    {fund.performanceFee}% <span className="text-xs text-muted-foreground">{DATA_AS_OF_LABEL}</span>
-                  </span>
+              {/* Fees Summary - Compact */}
+              <div className="p-3 bg-muted/50 rounded-lg border">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Management: {fund.managementFee}%</span>
+                  <span className="text-muted-foreground">Performance: {fund.performanceFee}%</span>
                 </div>
               </div>
               
