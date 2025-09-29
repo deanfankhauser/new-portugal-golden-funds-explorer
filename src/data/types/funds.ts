@@ -154,6 +154,8 @@ export interface Fund {
   term: number; // in years
   managerName: string;
   returnTarget: string; // e.g., "8-10% annually"
+  expectedReturnMin?: number; // Direct access to min return percentage
+  expectedReturnMax?: number; // Direct access to max return percentage
   fundStatus: 'Open' | 'Closed' | 'Closing Soon';
   websiteUrl?: string;
   established: number; // year

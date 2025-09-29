@@ -163,8 +163,14 @@ const applyEditHistory = (
                 performanceFee: Number(fund.performance_fee) || 0,
                 term: Math.round((fund.lock_up_period_months || 0) / 12) || 5,
                 returnTarget: fund.expected_return_min && fund.expected_return_max 
-                  ? `${fund.expected_return_min}-${fund.expected_return_max}% annually`
-                  : 'Target returns not specified',
+                  ? (fund.expected_return_min === fund.expected_return_max 
+                      ? `${fund.expected_return_min}% annually` 
+                      : `${fund.expected_return_min}-${fund.expected_return_max}% annually`)
+                  : fund.expected_return_min 
+                    ? `${fund.expected_return_min}% annually`
+                    : 'Target returns not specified',
+                expectedReturnMin: fund.expected_return_min || undefined,
+                expectedReturnMax: fund.expected_return_max || undefined,
                 fundStatus: 'Open' as const,
                 established: fund.inception_date 
                   ? new Date(fund.inception_date).getFullYear() 
@@ -272,8 +278,14 @@ const applyEditHistory = (
           performanceFee: Number(fund.performance_fee) || 0,
           term: Math.round((fund.lock_up_period_months || 0) / 12) || 5, // Convert months to years
           returnTarget: fund.expected_return_min && fund.expected_return_max 
-            ? `${fund.expected_return_min}-${fund.expected_return_max}% annually`
-            : 'Target returns not specified',
+            ? (fund.expected_return_min === fund.expected_return_max 
+                ? `${fund.expected_return_min}% annually` 
+                : `${fund.expected_return_min}-${fund.expected_return_max}% annually`)
+            : fund.expected_return_min 
+              ? `${fund.expected_return_min}% annually`
+              : 'Target returns not specified',
+          expectedReturnMin: fund.expected_return_min || undefined,
+          expectedReturnMax: fund.expected_return_max || undefined,
           fundStatus: 'Open' as const, // Default status
           established: fund.inception_date 
             ? new Date(fund.inception_date).getFullYear() 

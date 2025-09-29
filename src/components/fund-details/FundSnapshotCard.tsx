@@ -130,6 +130,10 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
       value: fund.category || "Alternative Investment"
     },
     {
+      label: "Target Return",
+      value: fund.returnTarget || "Contact for details"
+    },
+    {
       label: "Fund Size",
       value: <FundSizeFormatter fund={fund} />
     },

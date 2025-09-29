@@ -12,7 +12,7 @@ import IntroductionButton from './fund-details/IntroductionButton';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 import DataFreshnessIndicator from './common/DataFreshnessIndicator';
-import EligibilityBasisDisplayLine from './fund-details/EligibilityBasisDisplayLine';
+
 import { DATA_AS_OF_LABEL } from '../utils/constants';
 import { SaveFundButton } from './common/SaveFundButton';
 
@@ -42,135 +42,123 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
     : null;
 
   return (
-    <>
-      <Card className="border rounded-lg hover:border-accent transition-colors bg-card shadow-sm w-full">
-        <CardContent className="p-4 sm:p-6">
-          <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between mb-2">
-                <div className="flex items-center gap-3 flex-1 mr-2 min-w-0">
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-lg sm:text-xl font-semibold leading-tight">
-                      <Link to={`/${fund.id}`} className="hover:text-primary transition-colors block" onClick={() => window.scrollTo(0, 0)}>
-                        {fund.name}
-                      </Link>
-                    </h3>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge 
-                        variant="default" 
-                        className="text-xs"
-                      >
-                        GV Eligible
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-                <DataFreshnessIndicator fund={fund} variant="compact" />
-              </div>
-              
-              <p className="text-muted-foreground mb-4 line-clamp-2 text-sm sm:text-base">{fund.description}</p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
-                <div className="flex items-center min-w-0">
-                  <Tag className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-xs sm:text-sm text-muted-foreground">Category</p>
-                    <p className="font-medium text-sm sm:text-base truncate">
-                      <Link to={`/categories/${categoryToSlug(fund.category)}`} className="hover:text-primary transition-colors">
-                        {fund.category}
-                      </Link>
-                    </p>
-                  </div>
-                </div>
-                
-                {mainGeoAllocation && (
-                  <div className="flex items-center min-w-0">
-                    <Globe className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-                    <div className="min-w-0">
-                      <p className="text-xs sm:text-sm text-muted-foreground">Main Region</p>
-                      <p className="font-medium text-sm sm:text-base truncate">
-                        {mainGeoAllocation.region} ({formatPercentage(mainGeoAllocation.percentage)})
-                      </p>
-                    </div>
-                  </div>
-                )}
-                
-                <div className="flex items-center min-w-0">
-                  <PieChart className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-xs sm:text-sm text-muted-foreground">Target Return</p>
-                    <p className="font-medium text-sm sm:text-base truncate">
-                      {fund.returnTarget} <span className="text-xs text-muted-foreground">{DATA_AS_OF_LABEL}</span>
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center min-w-0">
-                  <User className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-xs sm:text-sm text-muted-foreground">Fund Manager</p>
-                    <Link 
-                      to={`/manager/${managerToSlug(fund.managerName)}`} 
-                      className="font-medium hover:text-primary transition-colors text-sm sm:text-base block truncate"
-                      title={fund.managerName}
-                    >
-                      {fund.managerName}
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* Financial Information */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 p-3 bg-muted rounded-lg">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Euro className="w-4 h-4 mr-2 text-primary" />
-                    <span className="text-sm text-muted-foreground">Mgmt Fee:</span>
-                  </div>
-                  <span className="font-medium text-sm">
-                    {fund.managementFee}% <span className="text-xs text-muted-foreground">{DATA_AS_OF_LABEL}</span>
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Euro className="w-4 h-4 mr-2 text-accent" />
-                    <span className="text-sm text-muted-foreground">Perf Fee:</span>
-                  </div>
-                  <span className="font-medium text-sm">
-                    {fund.performanceFee}% <span className="text-xs text-muted-foreground">{DATA_AS_OF_LABEL}</span>
-                  </span>
-                </div>
-              </div>
-              
-              {/* Eligibility basis line - always show */}
-              <div className="mt-2">
-                <EligibilityBasisDisplayLine fund={fund} />
-              </div>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row lg:flex-col gap-2 sm:gap-3 justify-center lg:min-w-[160px]">
-              <SaveFundButton fundId={fund.id} showText size="sm" />
-              <IntroductionButton variant="compact" />
-              
-              <Button 
-                variant="outline" 
-                size="sm"
-                className={`text-xs sm:text-sm ${
-                  isSelected 
-                    ? 'bg-primary text-primary-foreground' 
-                    : 'border-primary text-primary hover:bg-primary hover:text-primary-foreground'
-                }`}
-                onClick={handleCompareClick}
+    <Card className="border rounded-xl hover:shadow-lg transition-all duration-200 bg-card w-full group">
+      <CardContent className="p-6">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-xl font-bold leading-tight mb-2 group-hover:text-primary transition-colors">
+              <Link to={`/${fund.id}`} className="block" onClick={() => window.scrollTo(0, 0)}>
+                {fund.name}
+              </Link>
+            </h3>
+            <div className="flex items-center gap-2">
+              {isGVEligible && (
+                <Badge variant="default" className="text-xs font-medium">
+                  GV Eligible
+                </Badge>
+              )}
+              <Badge 
+                variant={fund.fundStatus === 'Open' ? 'default' : fund.fundStatus === 'Closing Soon' ? 'destructive' : 'secondary'} 
+                className="text-xs"
               >
-                <GitCompare className="mr-1 h-3 w-3" />
-                {isSelected ? 'Added to Compare' : 'Compare'}
-              </Button>
+                {fund.fundStatus}
+              </Badge>
             </div>
           </div>
-        </CardContent>
-      </Card>
-    </>
+          <DataFreshnessIndicator fund={fund} variant="compact" />
+        </div>
+        
+        {/* Description */}
+        <p className="text-muted-foreground mb-6 line-clamp-2">{fund.description}</p>
+        
+        {/* Key Metrics Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+          {/* Minimum Investment */}
+          <div className="bg-gradient-to-br from-primary/10 to-primary/5 p-4 rounded-xl border border-primary/20">
+            <div className="flex items-center gap-2 mb-2">
+              <Euro className="w-4 h-4 text-primary" />
+              <span className="text-xs font-semibold text-muted-foreground tracking-wide">MINIMUM INVESTMENT</span>
+            </div>
+            <p className="text-2xl font-bold text-primary">
+              €{fund.minimumInvestment?.toLocaleString() || 'Not specified'}
+            </p>
+          </div>
+          
+          {/* Target Return */}
+          <div className="bg-gradient-to-br from-accent/10 to-accent/5 p-4 rounded-xl border border-accent/20">
+            <div className="flex items-center gap-2 mb-2">
+              <PieChart className="w-4 h-4 text-accent" />
+              <span className="text-xs font-semibold text-muted-foreground tracking-wide">TARGET RETURN</span>
+            </div>
+            <p className="text-2xl font-bold text-accent">
+              {fund.returnTarget || <span className="text-base text-muted-foreground">Not specified</span>}
+            </p>
+          </div>
+        </div>
+
+        {/* Structure & Redemption */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div>
+            <h4 className="text-xs font-semibold text-muted-foreground tracking-wide mb-2">FUND STRUCTURE</h4>
+            <div className="flex items-center gap-2">
+              <Badge variant={fund.term > 0 ? "outline" : "secondary"} className="font-medium">
+                {fund.term > 0 ? "Closed-ended" : "Open-ended"}
+              </Badge>
+              {fund.term > 0 && (
+                <span className="text-sm text-muted-foreground">({fund.term} years)</span>
+              )}
+            </div>
+          </div>
+          
+          <div>
+            <h4 className="text-xs font-semibold text-muted-foreground tracking-wide mb-2">REDEMPTION TERMS</h4>
+            {fund.redemptionTerms ? (
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-foreground">{fund.redemptionTerms.frequency}</span>
+                  {!fund.redemptionTerms.redemptionOpen && (
+                    <Badge variant="destructive" className="text-xs">Closed</Badge>
+                  )}
+                </div>
+                {fund.redemptionTerms.noticePeriod && fund.redemptionTerms.noticePeriod > 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    {fund.redemptionTerms.noticePeriod} days notice required
+                  </p>
+                )}
+              </div>
+            ) : (
+              <span className="text-sm text-muted-foreground">End of term only</span>
+            )}
+          </div>
+        </div>
+
+        {/* Footer: Fees & Actions */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-4 border-t border-border/50">
+          {/* Fees */}
+          <div className="text-sm text-muted-foreground">
+            <span>Management: <strong className="text-foreground">{fund.managementFee}%</strong></span>
+            <span className="mx-3">•</span>
+            <span>Performance: <strong className="text-foreground">{fund.performanceFee}%</strong></span>
+          </div>
+          
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2">
+            <SaveFundButton fundId={fund.id} showText={false} size="sm" />
+            <IntroductionButton variant="compact" />
+            <Button 
+              variant={isSelected ? "default" : "outline"}
+              size="sm"
+              className="font-medium"
+              onClick={handleCompareClick}
+            >
+              <GitCompare className="mr-1.5 h-3.5 w-3.5" />
+              {isSelected ? 'Added' : 'Compare'}
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

@@ -20,25 +20,41 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
     annualizedReturn: number;
   } | null>(null);
 
-  // Extract numeric return from fund's returnTarget
+  // Extract numeric return with multiple fallback strategies
   useEffect(() => {
-    const returnString = fund.returnTarget.toLowerCase();
     let returnRate = 0;
     
-    const percentageMatch = returnString.match(/(\d+(?:\.\d+)?)-?(\d+(?:\.\d+)?)?%/);
-    if (percentageMatch) {
-      const minReturn = parseFloat(percentageMatch[1]);
-      const maxReturn = percentageMatch[2] ? parseFloat(percentageMatch[2]) : minReturn;
-      returnRate = (minReturn + maxReturn) / 2;
-    } else {
-      const singleMatch = returnString.match(/(\d+(?:\.\d+)?)%/);
-      if (singleMatch) {
-        returnRate = parseFloat(singleMatch[1]);
+    // First, try direct database fields if available
+    if (fund.expectedReturnMin && fund.expectedReturnMax) {
+      returnRate = (fund.expectedReturnMin + fund.expectedReturnMax) / 2;
+    } else if (fund.expectedReturnMin) {
+      returnRate = fund.expectedReturnMin;
+    } else if (fund.expectedReturnMax) {
+      returnRate = fund.expectedReturnMax;
+    } else if (fund.returnTarget && fund.returnTarget !== 'Target returns not specified') {
+      // Fallback to parsing returnTarget string
+      const returnString = fund.returnTarget.toLowerCase();
+      
+      const percentageMatch = returnString.match(/(\d+(?:\.\d+)?)-?(\d+(?:\.\d+)?)?%/);
+      if (percentageMatch) {
+        const minReturn = parseFloat(percentageMatch[1]);
+        const maxReturn = percentageMatch[2] ? parseFloat(percentageMatch[2]) : minReturn;
+        returnRate = (minReturn + maxReturn) / 2;
+      } else {
+        const singleMatch = returnString.match(/(\d+(?:\.\d+)?)%/);
+        if (singleMatch) {
+          returnRate = parseFloat(singleMatch[1]);
+        }
       }
     }
     
+    // Default fallback to 8% if no valid return rate found
+    if (returnRate === 0) {
+      returnRate = 8;
+    }
+    
     setExpectedReturn(returnRate);
-  }, [fund.returnTarget]);
+  }, [fund.returnTarget, fund.expectedReturnMin, fund.expectedReturnMax]);
 
   const calculateROI = () => {
     const annualReturn = expectedReturn / 100;

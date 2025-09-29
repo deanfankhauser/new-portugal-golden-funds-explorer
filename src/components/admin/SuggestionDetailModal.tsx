@@ -86,7 +86,24 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         if (typeof sc.redemptionFee === 'number') updatePayload.redemption_fee = sc.redemptionFee;
         if (typeof sc.term === 'number') updatePayload.lock_up_period_months = Math.round(sc.term * 12);
         if (typeof sc.category === 'string') updatePayload.category = sc.category;
-        if (typeof sc.returnTarget === 'string') updatePayload.expected_return_min = null; // Note: returnTarget is text field, would need parsing for min/max
+        // Parse returnTarget back to expected_return_min/max fields
+        if (typeof sc.returnTarget === 'string') {
+          const returnTarget = sc.returnTarget.toLowerCase().replace(/[^\d.-]/g, '');
+          const rangeMatch = returnTarget.match(/(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)/);
+          const singleMatch = returnTarget.match(/(\d+(?:\.\d+)?)/);
+          
+          if (rangeMatch) {
+            updatePayload.expected_return_min = parseFloat(rangeMatch[1]);
+            updatePayload.expected_return_max = parseFloat(rangeMatch[2]);
+          } else if (singleMatch) {
+            const value = parseFloat(singleMatch[1]);
+            updatePayload.expected_return_min = value;
+            updatePayload.expected_return_max = value;
+          } else {
+            updatePayload.expected_return_min = null;
+            updatePayload.expected_return_max = null;
+          }
+        }
         if (typeof sc.websiteUrl === 'string') updatePayload.website = sc.websiteUrl;
         if (typeof sc.fundSize === 'number') updatePayload.aum = sc.fundSize * 1000000; // Convert millions to actual amount
         if (typeof sc.established === 'number') updatePayload.inception_date = `${sc.established}-01-01`;
