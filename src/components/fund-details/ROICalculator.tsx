@@ -20,21 +20,30 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
     annualizedReturn: number;
   } | null>(null);
 
-  // Extract numeric return from fund's returnTarget
+  // Extract numeric return from fund's returnTarget with improved fallback logic
   useEffect(() => {
-    const returnString = fund.returnTarget.toLowerCase();
     let returnRate = 0;
     
-    const percentageMatch = returnString.match(/(\d+(?:\.\d+)?)-?(\d+(?:\.\d+)?)?%/);
-    if (percentageMatch) {
-      const minReturn = parseFloat(percentageMatch[1]);
-      const maxReturn = percentageMatch[2] ? parseFloat(percentageMatch[2]) : minReturn;
-      returnRate = (minReturn + maxReturn) / 2;
-    } else {
-      const singleMatch = returnString.match(/(\d+(?:\.\d+)?)%/);
-      if (singleMatch) {
-        returnRate = parseFloat(singleMatch[1]);
+    // Try to extract from returnTarget string
+    if (fund.returnTarget && fund.returnTarget !== 'Target returns not specified') {
+      const returnString = fund.returnTarget.toLowerCase();
+      
+      const percentageMatch = returnString.match(/(\d+(?:\.\d+)?)-?(\d+(?:\.\d+)?)?%/);
+      if (percentageMatch) {
+        const minReturn = parseFloat(percentageMatch[1]);
+        const maxReturn = percentageMatch[2] ? parseFloat(percentageMatch[2]) : minReturn;
+        returnRate = (minReturn + maxReturn) / 2;
+      } else {
+        const singleMatch = returnString.match(/(\d+(?:\.\d+)?)%/);
+        if (singleMatch) {
+          returnRate = parseFloat(singleMatch[1]);
+        }
       }
+    }
+    
+    // Default fallback to 8% if no valid return rate found
+    if (returnRate === 0) {
+      returnRate = 8;
     }
     
     setExpectedReturn(returnRate);

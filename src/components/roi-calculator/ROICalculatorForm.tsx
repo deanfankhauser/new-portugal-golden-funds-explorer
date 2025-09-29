@@ -50,11 +50,10 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
     return returnRate;
   };
 
-  // Update expected return when fund changes
+  // Update expected return and investment amount when selected fund changes
   useEffect(() => {
     if (selectedFund) {
-      const returnRate = extractReturnRate(selectedFund.returnTarget);
-      setExpectedReturn(returnRate);
+      setExpectedReturn(extractReturnRate(selectedFund.returnTarget));
       setInvestmentAmount(selectedFund.minimumInvestment);
     }
   }, [selectedFund]);
