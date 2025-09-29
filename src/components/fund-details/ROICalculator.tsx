@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Calculator, AlertTriangle } from 'lucide-react';
+import { getReturnTargetNumbers } from '../../utils/returnTarget';
 
 interface ROICalculatorProps {
   fund: Fund;
@@ -20,41 +21,26 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
     annualizedReturn: number;
   } | null>(null);
 
-  // Extract numeric return with multiple fallback strategies
+  // Extract numeric return using utility
   useEffect(() => {
-    let returnRate = 0;
-    
-    // First, try direct database fields if available
-    if (fund.expectedReturnMin && fund.expectedReturnMax) {
-      returnRate = (fund.expectedReturnMin + fund.expectedReturnMax) / 2;
-    } else if (fund.expectedReturnMin) {
-      returnRate = fund.expectedReturnMin;
-    } else if (fund.expectedReturnMax) {
-      returnRate = fund.expectedReturnMax;
-    } else if (fund.returnTarget && fund.returnTarget !== 'Target returns not specified') {
-      // Fallback to parsing returnTarget string
-      const returnString = fund.returnTarget.toLowerCase();
-      
-      const percentageMatch = returnString.match(/(\d+(?:\.\d+)?)-?(\d+(?:\.\d+)?)?%/);
-      if (percentageMatch) {
-        const minReturn = parseFloat(percentageMatch[1]);
-        const maxReturn = percentageMatch[2] ? parseFloat(percentageMatch[2]) : minReturn;
-        returnRate = (minReturn + maxReturn) / 2;
-      } else {
-        const singleMatch = returnString.match(/(\d+(?:\.\d+)?)%/);
-        if (singleMatch) {
-          returnRate = parseFloat(singleMatch[1]);
-        }
-      }
-    }
-    
-    // Default fallback to 8% if no valid return rate found
-    if (returnRate === 0) {
-      returnRate = 8;
+    const { min, max } = getReturnTargetNumbers(fund);
+    let returnRate = 8; // default
+
+    if (min != null && max != null) {
+      returnRate = (min + max) / 2;
+      console.log('Fund ROI Calculator - Using return target average:', returnRate);
+    } else if (min != null) {
+      returnRate = min;
+      console.log('Fund ROI Calculator - Using return target min:', returnRate);
+    } else if (max != null) {
+      returnRate = max;
+      console.log('Fund ROI Calculator - Using return target max:', returnRate);
+    } else {
+      console.log('Fund ROI Calculator - No return data found, using default:', returnRate);
     }
     
     setExpectedReturn(returnRate);
-  }, [fund.returnTarget, fund.expectedReturnMin, fund.expectedReturnMax]);
+  }, [fund]);
 
   const calculateROI = () => {
     const annualReturn = expectedReturn / 100;

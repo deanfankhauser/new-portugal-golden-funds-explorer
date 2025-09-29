@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from 'react-router-dom';
 import { ExternalLink, Calendar, MapPin, DollarSign } from 'lucide-react';
 import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
+import { getReturnTargetDisplay } from '../../utils/returnTarget';
 
 interface FundManagerAboutProps {
   fund: Fund;
@@ -56,7 +57,7 @@ const FundManagerAbout: React.FC<FundManagerAboutProps> = ({ fund }) => {
             {fund.fundStatus}
           </Badge>
           <Badge variant="outline">
-            {fund.returnTarget} Target Return
+            {getReturnTargetDisplay(fund)} Target Annual Return
           </Badge>
         </div>
 

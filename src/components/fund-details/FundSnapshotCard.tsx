@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Check, X } from 'lucide-react';
 import { InvestmentFundStructuredDataService } from '../../services/investmentFundStructuredDataService';
 import FundSizeFormatter from './FundSizeFormatter';
+import { getReturnTargetDisplay } from '../../utils/returnTarget';
 
 interface FundSnapshotCardProps {
   fund: Fund;
@@ -130,8 +131,8 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
       value: fund.category || "Alternative Investment"
     },
     {
-      label: "Target Return",
-      value: fund.returnTarget || "Contact for details"
+      label: "Target Annual Return",
+      value: getReturnTargetDisplay(fund)
     },
     {
       label: "Fund Size",

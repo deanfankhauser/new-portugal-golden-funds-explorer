@@ -8,6 +8,7 @@ import GeographicAllocationCell from './table/GeographicAllocationCell';
 import TagsCell from './table/TagsCell';
 import RedemptionTermsRow from './table/RedemptionTermsRow';
 import DataFreshnessIndicator from '../common/DataFreshnessIndicator';
+import { getReturnTargetDisplay } from '../../utils/returnTarget';
 
 interface ComparisonTableProps {
   funds: Fund[];
@@ -50,8 +51,8 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             
             <StandardRow 
               funds={funds}
-              field="returnTarget"
-              label="Target Return"
+              field={(fund) => getReturnTargetDisplay(fund)}
+              label="Target Annual Return"
               allSame={allSame}
             />
 

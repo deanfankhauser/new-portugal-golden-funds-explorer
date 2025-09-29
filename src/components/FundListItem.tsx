@@ -12,6 +12,7 @@ import IntroductionButton from './fund-details/IntroductionButton';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 import DataFreshnessIndicator from './common/DataFreshnessIndicator';
+import { getReturnTargetDisplay } from '../utils/returnTarget';
 
 import { DATA_AS_OF_LABEL } from '../utils/constants';
 import { SaveFundButton } from './common/SaveFundButton';
@@ -89,10 +90,10 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           <div className="bg-gradient-to-br from-accent/10 to-accent/5 p-4 rounded-xl border border-accent/20">
             <div className="flex items-center gap-2 mb-2">
               <PieChart className="w-4 h-4 text-accent" />
-              <span className="text-xs font-semibold text-muted-foreground tracking-wide">TARGET RETURN</span>
+              <span className="text-xs font-semibold text-muted-foreground tracking-wide">TARGET ANNUAL RETURN</span>
             </div>
             <p className="text-2xl font-bold text-accent">
-              {fund.returnTarget || <span className="text-base text-muted-foreground">Not specified</span>}
+              {getReturnTargetDisplay(fund)}
             </p>
           </div>
         </div>

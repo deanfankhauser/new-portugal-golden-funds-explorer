@@ -1,13 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import { funds } from '../../data/funds';
 import { Fund } from '../../data/types/funds';
+import { useRealTimeFunds } from '../../hooks/useRealTimeFunds';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calculator, AlertTriangle, TrendingUp } from 'lucide-react';
+import { getReturnTargetNumbers, getReturnTargetDisplay } from '../../utils/returnTarget';
 
 interface ROICalculatorFormProps {
   onResultsCalculated: (results: {
@@ -24,52 +25,32 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
   selectedFund,
   setSelectedFund
 }) => {
+  const { funds } = useRealTimeFunds();
   const [investmentAmount, setInvestmentAmount] = useState<number>(350000);
   const [holdingPeriod, setHoldingPeriod] = useState<number>(5);
   const [expectedReturn, setExpectedReturn] = useState<number>(0);
 
-  // Enhanced function to extract return rate with multiple fallback strategies
+  // Enhanced function to extract return rate using utility
   const extractReturnRate = (fund: Fund): number => {
-    console.log('🎯 Extracting return rate for fund:', fund.name, { 
-      expectedReturnMin: fund.expectedReturnMin, 
-      expectedReturnMax: fund.expectedReturnMax, 
-      returnTarget: fund.returnTarget 
-    });
+    const { min, max } = getReturnTargetNumbers(fund);
     
-    // First, try direct database fields if available
-    if (fund.expectedReturnMin && fund.expectedReturnMax) {
-      const rate = (fund.expectedReturnMin + fund.expectedReturnMax) / 2;
-      console.log('✅ Using database fields (average):', rate);
+    if (min != null && max != null) {
+      const rate = (min + max) / 2;
+      console.log('ROI Form - Using return target average:', rate);
       return rate;
-    } else if (fund.expectedReturnMin) {
-      console.log('✅ Using database min field:', fund.expectedReturnMin);
-      return fund.expectedReturnMin;
-    } else if (fund.expectedReturnMax) {
-      console.log('✅ Using database max field:', fund.expectedReturnMax);
-      return fund.expectedReturnMax;
-    } else if (fund.returnTarget && fund.returnTarget !== 'Target returns not specified') {
-      // Fallback to parsing returnTarget string
-      const returnString = fund.returnTarget.toLowerCase();
-      
-      const percentageMatch = returnString.match(/(\d+(?:\.\d+)?)-?(\d+(?:\.\d+)?)?%/);
-      if (percentageMatch) {
-        const minReturn = parseFloat(percentageMatch[1]);
-        const maxReturn = percentageMatch[2] ? parseFloat(percentageMatch[2]) : minReturn;
-        const rate = (minReturn + maxReturn) / 2;
-        console.log('✅ Parsed from returnTarget string (range):', rate);
-        return rate;
-      }
-
-      const singleMatch = returnString.match(/(\d+(?:\.\d+)?)%/);
-      if (singleMatch) {
-        const rate = parseFloat(singleMatch[1]);
-        console.log('✅ Parsed from returnTarget string (single):', rate);
-        return rate;
-      }
     }
-
-    // Default fallback to 8% if no valid return rate found
-    console.log('⚠️ Using default fallback rate: 8%');
+    
+    if (min != null) {
+      console.log('ROI Form - Using return target min:', min);
+      return min;
+    }
+    
+    if (max != null) {
+      console.log('ROI Form - Using return target max:', max);
+      return max;
+    }
+    
+    console.log('ROI Form - No parseable return found for fund, using default 8%');
     return 8;
   };
 
@@ -129,7 +110,7 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
             <SelectContent>
               {funds.map((fund) => (
                 <SelectItem key={fund.id} value={fund.id}>
-                  {fund.name} - {fund.returnTarget}
+                  {fund.name} - {getReturnTargetDisplay(fund)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -185,7 +166,7 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
                   step="0.1"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Fund target: {selectedFund.returnTarget}
+                  Fund target: {getReturnTargetDisplay(selectedFund)}
                 </p>
               </div>
             </div>
