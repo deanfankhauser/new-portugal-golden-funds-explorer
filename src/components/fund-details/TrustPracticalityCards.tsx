@@ -13,9 +13,20 @@ interface TrustPracticalityCardsProps {
 const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund }) => {
   const [investmentAmount, setInvestmentAmount] = useState(500000);
   
-  // Get dynamic hurdle rate
-  const { min } = getReturnTargetNumbers(fund);
-  const hurdle = min ?? 8;
+  // Enhanced hurdle rate calculation with priority
+  const getHurdleRate = (fund: Fund): number => {
+    // 1. Explicit hurdle rate (highest priority)
+    if (fund.hurdleRate != null) return fund.hurdleRate;
+    
+    // 2. Derive from target return (current behavior)
+    const { min } = getReturnTargetNumbers(fund);
+    if (min != null) return min;
+    
+    // 3. Default fallback
+    return 8;
+  };
+
+  const hurdle = getHurdleRate(fund);
 
   // Calculate estimated annual fees
   const calculateEstimatedFees = (amount: number) => {
@@ -63,7 +74,7 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
                 <div className="text-xs text-muted-foreground pl-2">
                   • Subject to high-water mark
                   <br />
-                  • {hurdle}% preferred return hurdle
+                   • {hurdle}% preferred return hurdle
                 </div>
               )}
             </div>

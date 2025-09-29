@@ -298,6 +298,7 @@ export type Database = {
           geographic_allocation: Json | null
           gv_eligible: boolean | null
           historical_performance: Json | null
+          hurdle_rate: number | null
           id: string
           inception_date: string | null
           last_modified_by: string | null
@@ -340,6 +341,7 @@ export type Database = {
           geographic_allocation?: Json | null
           gv_eligible?: boolean | null
           historical_performance?: Json | null
+          hurdle_rate?: number | null
           id: string
           inception_date?: string | null
           last_modified_by?: string | null
@@ -382,6 +384,7 @@ export type Database = {
           geographic_allocation?: Json | null
           gv_eligible?: boolean | null
           historical_performance?: Json | null
+          hurdle_rate?: number | null
           id?: string
           inception_date?: string | null
           last_modified_by?: string | null

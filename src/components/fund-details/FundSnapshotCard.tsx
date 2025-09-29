@@ -4,14 +4,28 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, X } from 'lucide-react';
 import { InvestmentFundStructuredDataService } from '../../services/investmentFundStructuredDataService';
+import { getFundType } from '../../utils/fundTypeUtils';
 import FundSizeFormatter from './FundSizeFormatter';
-import { getReturnTargetDisplay } from '../../utils/returnTarget';
+import { getReturnTargetDisplay, getReturnTargetNumbers } from '../../utils/returnTarget';
 
 interface FundSnapshotCardProps {
   fund: Fund;
 }
 
 const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
+  // Enhanced hurdle rate calculation with priority
+  const getHurdleRate = (fund: Fund): string => {
+    // 1. Explicit hurdle rate (highest priority)
+    if (fund.hurdleRate != null) return `${fund.hurdleRate}%`;
+    
+    // 2. Derive from target return (current behavior)
+    const { min } = getReturnTargetNumbers(fund);
+    if (min != null) return `${min}%`;
+    
+    // 3. Default fallback
+    return "8%";
+  };
+
   // Helper function to format currency amounts
   const formatCurrency = (amount: number | undefined | null, currency: string = 'EUR'): string => {
     if (!amount || amount === 0) return 'Contact for details';
@@ -69,14 +83,13 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
 
   // Helper function to determine if fund is open-ended
   const isOpenEnded = () => {
-    // Check if it's truly open-ended based on multiple criteria
-    return !fund.term || fund.term === 0 || 
-           (fund.redemptionTerms?.minimumHoldingPeriod === 0 && fund.redemptionTerms?.frequency);
+    // Use centralized fund type logic that prioritizes tags
+    return getFundType(fund) === 'Open-Ended';
   };
 
   // Helper function to get fund type
-  const getFundType = () => {
-    return isOpenEnded() ? 'Open-Ended' : 'Closed-End';
+  const getFundTypeDisplay = () => {
+    return getFundType(fund);
   };
 
   // Helper function to get fund lifetime
@@ -140,7 +153,7 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
     },
     {
       label: "Fund Type", 
-      value: getFundType(),
+      value: getFundTypeDisplay(),
       icon: isOpenEnded() ? <Check className="w-4 h-4 text-success" /> : undefined
     },
     {
@@ -175,6 +188,10 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
     {
       label: "Fund Manager",
       value: fund.managerName || "Not specified"
+    },
+    {
+      label: "Performance Fee Hurdle",
+      value: getHurdleRate(fund)
     },
     {
       label: "CMVM License Number",

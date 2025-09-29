@@ -2,13 +2,14 @@
 import React from 'react';
 import { Fund } from '../../data/funds';
 import { formatCurrency } from '../fund-details/utils/formatters';
+import { getFundType } from '../../utils/fundTypeUtils';
 import ComparisonTableHeader from './table/ComparisonTableHeader';
 import StandardRow from './table/StandardRow';
 import GeographicAllocationCell from './table/GeographicAllocationCell';
 import TagsCell from './table/TagsCell';
 import RedemptionTermsRow from './table/RedemptionTermsRow';
 import DataFreshnessIndicator from '../common/DataFreshnessIndicator';
-import { getReturnTargetDisplay } from '../../utils/returnTarget';
+import { getReturnTargetDisplay, getReturnTargetNumbers } from '../../utils/returnTarget';
 
 interface ComparisonTableProps {
   funds: Fund[];
@@ -64,7 +65,21 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             />
 
             {/* Full financial details - now always visible */}
+            
             <StandardRow 
+              funds={funds}
+              field={fund => {
+                // Enhanced hurdle rate calculation with priority
+                if (fund.hurdleRate != null) return `${fund.hurdleRate}%`;
+                const { min } = getReturnTargetNumbers(fund);
+                if (min != null) return `${min}%`;
+                return "8%";
+              }}
+              label="Performance Fee Hurdle"
+              allSame={allSame}
+            />
+            
+            <StandardRow
               funds={funds}
               field={(fund) => `${fund.fundSize}M EUR`}
               label="Fund Size"
@@ -136,7 +151,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
 
             <StandardRow 
               funds={funds}
-              field={(fund) => fund.term === 0 ? "Perpetual (open-ended)" : `${fund.term} years`}
+              field={(fund) => getFundType(fund) === 'Open-Ended' ? "Perpetual (open-ended)" : `${fund.term} years`}
               label="Term"
               allSame={allSame}
             />

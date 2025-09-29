@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../data/funds';
 import { isFundGVEligible } from '../data/services/gv-eligibility-service';
+import { getFundType } from '../utils/fundTypeUtils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -103,10 +104,10 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           <div>
             <h4 className="text-xs font-semibold text-muted-foreground tracking-wide mb-2">FUND STRUCTURE</h4>
             <div className="flex items-center gap-2">
-              <Badge variant={fund.term > 0 ? "outline" : "secondary"} className="font-medium">
-                {fund.term > 0 ? "Closed-ended" : "Open-ended"}
+              <Badge variant={getFundType(fund) === 'Closed-End' ? "outline" : "secondary"} className="font-medium">
+                {getFundType(fund) === 'Open-Ended' ? "Open-ended" : "Closed-ended"}
               </Badge>
-              {fund.term > 0 && (
+              {getFundType(fund) === 'Closed-End' && fund.term > 0 && (
                 <span className="text-sm text-muted-foreground">({fund.term} years)</span>
               )}
             </div>

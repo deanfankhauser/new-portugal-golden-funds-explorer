@@ -53,6 +53,7 @@ const buildFormData = (f: Fund) => {
     performanceFee: f.performanceFee != null ? f.performanceFee.toString() : '',
     subscriptionFee: f.subscriptionFee != null ? f.subscriptionFee.toString() : '',
     redemptionFee: f.redemptionFee != null ? f.redemptionFee.toString() : '',
+    hurdleRate: f.hurdleRate != null ? f.hurdleRate.toString() : '',
     term: f.term.toString(),
     category: f.category,
     returnTarget: f.returnTarget,
@@ -248,6 +249,7 @@ useEffect(() => {
     performanceFee: fund.performanceFee,
     subscriptionFee: fund.subscriptionFee,
     redemptionFee: fund.redemptionFee,
+    hurdleRate: fund.hurdleRate,
     term: fund.term,
     category: fund.category,
     returnTarget: fund.returnTarget,
@@ -290,7 +292,7 @@ useEffect(() => {
       let newValue: any = formData[key as keyof typeof formData];
       
       // Handle numeric fields
-      if (['minimumInvestment', 'managementFee', 'performanceFee', 'subscriptionFee', 'redemptionFee', 'term', 'fundSize', 'established'].includes(key)) {
+      if (['minimumInvestment', 'managementFee', 'performanceFee', 'subscriptionFee', 'redemptionFee', 'hurdleRate', 'term', 'fundSize', 'established'].includes(key)) {
         if (typeof newValue === 'string') {
           newValue = parseFloat(newValue) || 0;
         }
@@ -492,6 +494,21 @@ useEffect(() => {
                     />
                     <p className="text-sm text-muted-foreground mt-1">
                       Enter a percentage (e.g., 20%) or complex structure (e.g., 20% above 5% net)
+                    </p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="hurdleRate">Performance Fee Hurdle (%)</Label>
+                    <Input
+                      id="hurdleRate"
+                      type="number"
+                      step="0.1"
+                      value={formData.hurdleRate}
+                      onChange={(e) => handleInputChange('hurdleRate', e.target.value)}
+                      placeholder="e.g., 8.0"
+                    />
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Minimum return required before performance fees apply
                     </p>
                   </div>
 
