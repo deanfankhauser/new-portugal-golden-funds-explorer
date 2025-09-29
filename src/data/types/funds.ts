@@ -195,4 +195,5 @@ export interface Fund {
     nav?: number;
   }>;
   fundBriefUrl?: string;
+  hurdleRate?: number; // Performance fee hurdle rate percentage
 }

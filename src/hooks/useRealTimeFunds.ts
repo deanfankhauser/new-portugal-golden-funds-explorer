@@ -344,6 +344,7 @@ const applyEditHistory = (
           custodian: fund.custodian || undefined,
           navFrequency: fund.nav_frequency || undefined,
           pficStatus: fund.pfic_status as 'QEF available' | 'MTM only' | 'Not provided' || undefined,
+          hurdleRate: fund.hurdle_rate || undefined,
           eligibilityBasis: fund.gv_eligible ? {
             portugalAllocation: 'Not provided',
             maturityYears: 'Not provided',

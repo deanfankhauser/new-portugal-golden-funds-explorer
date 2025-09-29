@@ -8,7 +8,7 @@ import GeographicAllocationCell from './table/GeographicAllocationCell';
 import TagsCell from './table/TagsCell';
 import RedemptionTermsRow from './table/RedemptionTermsRow';
 import DataFreshnessIndicator from '../common/DataFreshnessIndicator';
-import { getReturnTargetDisplay } from '../../utils/returnTarget';
+import { getReturnTargetDisplay, getReturnTargetNumbers } from '../../utils/returnTarget';
 
 interface ComparisonTableProps {
   funds: Fund[];
@@ -64,7 +64,21 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             />
 
             {/* Full financial details - now always visible */}
+            
             <StandardRow 
+              funds={funds}
+              field={fund => {
+                // Enhanced hurdle rate calculation with priority
+                if (fund.hurdleRate != null) return `${fund.hurdleRate}%`;
+                const { min } = getReturnTargetNumbers(fund);
+                if (min != null) return `${min}%`;
+                return "8%";
+              }}
+              label="Performance Fee Hurdle"
+              allSame={allSame}
+            />
+            
+            <StandardRow
               funds={funds}
               field={(fund) => `${fund.fundSize}M EUR`}
               label="Fund Size"

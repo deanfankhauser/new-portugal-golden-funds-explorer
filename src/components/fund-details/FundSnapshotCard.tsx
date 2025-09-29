@@ -5,13 +5,26 @@ import { Badge } from "@/components/ui/badge";
 import { Check, X } from 'lucide-react';
 import { InvestmentFundStructuredDataService } from '../../services/investmentFundStructuredDataService';
 import FundSizeFormatter from './FundSizeFormatter';
-import { getReturnTargetDisplay } from '../../utils/returnTarget';
+import { getReturnTargetDisplay, getReturnTargetNumbers } from '../../utils/returnTarget';
 
 interface FundSnapshotCardProps {
   fund: Fund;
 }
 
 const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
+  // Enhanced hurdle rate calculation with priority
+  const getHurdleRate = (fund: Fund): string => {
+    // 1. Explicit hurdle rate (highest priority)
+    if (fund.hurdleRate != null) return `${fund.hurdleRate}%`;
+    
+    // 2. Derive from target return (current behavior)
+    const { min } = getReturnTargetNumbers(fund);
+    if (min != null) return `${min}%`;
+    
+    // 3. Default fallback
+    return "8%";
+  };
+
   // Helper function to format currency amounts
   const formatCurrency = (amount: number | undefined | null, currency: string = 'EUR'): string => {
     if (!amount || amount === 0) return 'Contact for details';
@@ -175,6 +188,10 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
     {
       label: "Fund Manager",
       value: fund.managerName || "Not specified"
+    },
+    {
+      label: "Performance Fee Hurdle",
+      value: getHurdleRate(fund)
     },
     {
       label: "CMVM License Number",

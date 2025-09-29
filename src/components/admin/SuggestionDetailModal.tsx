@@ -138,11 +138,13 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         if (typeof sc.navFrequency === 'string') updatePayload.nav_frequency = sc.navFrequency;
         if (typeof sc.pficStatus === 'string') updatePayload.pfic_status = sc.pficStatus;
         
-        // Handle historical performance
-        if (sc.historicalPerformance && typeof sc.historicalPerformance === 'object') {
-          updatePayload.historical_performance = sc.historicalPerformance;
-        }
-        
+          // Handle historical performance
+          if (sc.historicalPerformance && typeof sc.historicalPerformance === 'object') {
+            updatePayload.historical_performance = sc.historicalPerformance;
+          }
+          
+          // Handle hurdle rate
+          if (typeof sc.hurdleRate === 'number') updatePayload.hurdle_rate = sc.hurdleRate;
         
         // Handle FAQs
         if (sc.faqs && Array.isArray(sc.faqs)) {
