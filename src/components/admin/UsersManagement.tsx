@@ -177,9 +177,9 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
     try {
       setUsersLoading(true);
       
-      // Get all investor profiles using the new secure function
+      // Get all investor profiles using the secure function that logs once
       const { data: investors, error: investorError } = await supabase
-        .rpc('get_all_investor_profiles_admin');
+        .rpc('get_investor_profiles_for_admin_secure');
 
       if (investorError) {
         console.error('Error fetching investors:', investorError);
