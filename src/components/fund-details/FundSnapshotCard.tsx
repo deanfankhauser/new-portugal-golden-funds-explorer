@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, X } from 'lucide-react';
 import { InvestmentFundStructuredDataService } from '../../services/investmentFundStructuredDataService';
+import { getFundType } from '../../utils/fundTypeUtils';
 import FundSizeFormatter from './FundSizeFormatter';
 import { getReturnTargetDisplay, getReturnTargetNumbers } from '../../utils/returnTarget';
 
@@ -82,14 +83,13 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
 
   // Helper function to determine if fund is open-ended
   const isOpenEnded = () => {
-    // Check if it's truly open-ended based on multiple criteria
-    return !fund.term || fund.term === 0 || 
-           (fund.redemptionTerms?.minimumHoldingPeriod === 0 && fund.redemptionTerms?.frequency);
+    // Use centralized fund type logic that prioritizes tags
+    return getFundType(fund) === 'Open-Ended';
   };
 
   // Helper function to get fund type
-  const getFundType = () => {
-    return isOpenEnded() ? 'Open-Ended' : 'Closed-End';
+  const getFundTypeDisplay = () => {
+    return getFundType(fund);
   };
 
   // Helper function to get fund lifetime
@@ -153,7 +153,7 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
     },
     {
       label: "Fund Type", 
-      value: getFundType(),
+      value: getFundTypeDisplay(),
       icon: isOpenEnded() ? <Check className="w-4 h-4 text-success" /> : undefined
     },
     {
