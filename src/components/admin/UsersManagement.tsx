@@ -177,23 +177,15 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
     try {
       setUsersLoading(true);
       
-      // Get all investor profiles using the secure function that logs once
+      // Get all investor profiles directly with RLS handling access control
       const { data: investors, error: investorError } = await supabase
-        .rpc('get_investor_profiles_for_admin_secure');
+        .from('investor_profiles')
+        .select('id, user_id, first_name, last_name, email, created_at, city, country')
+        .order('created_at', { ascending: false });
 
       if (investorError) {
         console.error('Error fetching investors:', investorError);
-        // Fallback to direct query with limited data for non-critical display
-        const { data: fallbackInvestors, error: fallbackError } = await supabase
-          .from('investor_profiles')
-          .select('id, user_id, first_name, last_name, email, created_at, city, country')
-          .order('created_at', { ascending: false });
-        
-        if (fallbackError) {
-          console.error('Fallback investor query also failed:', fallbackError);
-        } else {
-          console.log('Using fallback investor data due to secure function error');
-        }
+        toast.error('Failed to load investor profiles');
       }
 
       // Get all manager profiles (managers are less sensitive, can use direct query)
