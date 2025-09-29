@@ -20,12 +20,19 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
     annualizedReturn: number;
   } | null>(null);
 
-  // Extract numeric return from fund's returnTarget with improved fallback logic
+  // Extract numeric return with multiple fallback strategies
   useEffect(() => {
     let returnRate = 0;
     
-    // Try to extract from returnTarget string
-    if (fund.returnTarget && fund.returnTarget !== 'Target returns not specified') {
+    // First, try direct database fields if available
+    if (fund.expectedReturnMin && fund.expectedReturnMax) {
+      returnRate = (fund.expectedReturnMin + fund.expectedReturnMax) / 2;
+    } else if (fund.expectedReturnMin) {
+      returnRate = fund.expectedReturnMin;
+    } else if (fund.expectedReturnMax) {
+      returnRate = fund.expectedReturnMax;
+    } else if (fund.returnTarget && fund.returnTarget !== 'Target returns not specified') {
+      // Fallback to parsing returnTarget string
       const returnString = fund.returnTarget.toLowerCase();
       
       const percentageMatch = returnString.match(/(\d+(?:\.\d+)?)-?(\d+(?:\.\d+)?)?%/);
@@ -47,7 +54,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
     }
     
     setExpectedReturn(returnRate);
-  }, [fund.returnTarget]);
+  }, [fund.returnTarget, fund.expectedReturnMin, fund.expectedReturnMax]);
 
   const calculateROI = () => {
     const annualReturn = expectedReturn / 100;

@@ -28,32 +28,55 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
   const [holdingPeriod, setHoldingPeriod] = useState<number>(5);
   const [expectedReturn, setExpectedReturn] = useState<number>(0);
 
-  // Extract numeric return from fund's returnTarget
-  const extractReturnRate = (returnTarget: string): number => {
-    const returnString = returnTarget.toLowerCase();
-    let returnRate = 0;
+  // Enhanced function to extract return rate with multiple fallback strategies
+  const extractReturnRate = (fund: Fund): number => {
+    console.log('🎯 Extracting return rate for fund:', fund.name, { 
+      expectedReturnMin: fund.expectedReturnMin, 
+      expectedReturnMax: fund.expectedReturnMax, 
+      returnTarget: fund.returnTarget 
+    });
     
-    // Try to extract percentage from various formats
-    const percentageMatch = returnString.match(/(\d+(?:\.\d+)?)-?(\d+(?:\.\d+)?)?%/);
-    if (percentageMatch) {
-      const minReturn = parseFloat(percentageMatch[1]);
-      const maxReturn = percentageMatch[2] ? parseFloat(percentageMatch[2]) : minReturn;
-      returnRate = (minReturn + maxReturn) / 2; // Use average if range
-    } else {
-      // Try to extract single percentage
+    // First, try direct database fields if available
+    if (fund.expectedReturnMin && fund.expectedReturnMax) {
+      const rate = (fund.expectedReturnMin + fund.expectedReturnMax) / 2;
+      console.log('✅ Using database fields (average):', rate);
+      return rate;
+    } else if (fund.expectedReturnMin) {
+      console.log('✅ Using database min field:', fund.expectedReturnMin);
+      return fund.expectedReturnMin;
+    } else if (fund.expectedReturnMax) {
+      console.log('✅ Using database max field:', fund.expectedReturnMax);
+      return fund.expectedReturnMax;
+    } else if (fund.returnTarget && fund.returnTarget !== 'Target returns not specified') {
+      // Fallback to parsing returnTarget string
+      const returnString = fund.returnTarget.toLowerCase();
+      
+      const percentageMatch = returnString.match(/(\d+(?:\.\d+)?)-?(\d+(?:\.\d+)?)?%/);
+      if (percentageMatch) {
+        const minReturn = parseFloat(percentageMatch[1]);
+        const maxReturn = percentageMatch[2] ? parseFloat(percentageMatch[2]) : minReturn;
+        const rate = (minReturn + maxReturn) / 2;
+        console.log('✅ Parsed from returnTarget string (range):', rate);
+        return rate;
+      }
+
       const singleMatch = returnString.match(/(\d+(?:\.\d+)?)%/);
       if (singleMatch) {
-        returnRate = parseFloat(singleMatch[1]);
+        const rate = parseFloat(singleMatch[1]);
+        console.log('✅ Parsed from returnTarget string (single):', rate);
+        return rate;
       }
     }
-    
-    return returnRate;
+
+    // Default fallback to 8% if no valid return rate found
+    console.log('⚠️ Using default fallback rate: 8%');
+    return 8;
   };
 
   // Update expected return and investment amount when selected fund changes
   useEffect(() => {
     if (selectedFund) {
-      setExpectedReturn(extractReturnRate(selectedFund.returnTarget));
+      setExpectedReturn(extractReturnRate(selectedFund));
       setInvestmentAmount(selectedFund.minimumInvestment);
     }
   }, [selectedFund]);
