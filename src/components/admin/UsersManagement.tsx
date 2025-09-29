@@ -449,6 +449,55 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
 
       <Card>
         <CardHeader>
+          <CardTitle>Investors</CardTitle>
+          <CardDescription>
+            View all registered investor profiles
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {usersLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Joined</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {allUsers.filter(user => user.user_type === 'investor').map((user) => (
+                  <TableRow key={`investor-${user.id}`}>
+                    <TableCell className="font-medium">
+                      {user.display_name}
+                    </TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      {[user.city, user.country].filter(Boolean).join(', ') || 'No location'}
+                    </TableCell>
+                    <TableCell>
+                      {new Date(user.created_at).toLocaleDateString()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+
+          {!usersLoading && allUsers.filter(user => user.user_type === 'investor').length === 0 && (
+            <div className="text-center py-8 text-muted-foreground">
+              No investors found
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>All System Users</CardTitle>
           <CardDescription>
             View all registered investors and managers
