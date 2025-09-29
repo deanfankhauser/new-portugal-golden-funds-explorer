@@ -1,5 +1,6 @@
 import React from 'react';
 import { Fund } from '../../data/funds';
+import { getFundType } from '../../utils/fundTypeUtils';
 import { Card, CardContent } from "@/components/ui/card";
 import FeeDisclaimer from './FeeDisclaimer';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
@@ -42,7 +43,7 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
     },
     {
       label: "Term",
-      value: fund.term === 0 ? "Perpetual" : `${fund.term} years`,
+      value: getFundType(fund) === 'Open-Ended' ? "Perpetual" : `${fund.term} years`,
     },
     {
       label: "Established",

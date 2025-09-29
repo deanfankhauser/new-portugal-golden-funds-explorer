@@ -2,6 +2,7 @@
 import React from 'react';
 import { Fund } from '../../data/funds';
 import { formatCurrency } from '../fund-details/utils/formatters';
+import { getFundType } from '../../utils/fundTypeUtils';
 import ComparisonTableHeader from './table/ComparisonTableHeader';
 import StandardRow from './table/StandardRow';
 import GeographicAllocationCell from './table/GeographicAllocationCell';
@@ -150,7 +151,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
 
             <StandardRow 
               funds={funds}
-              field={(fund) => fund.term === 0 ? "Perpetual (open-ended)" : `${fund.term} years`}
+              field={(fund) => getFundType(fund) === 'Open-Ended' ? "Perpetual (open-ended)" : `${fund.term} years`}
               label="Term"
               allSame={allSame}
             />

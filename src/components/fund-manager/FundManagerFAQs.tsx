@@ -1,6 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { Fund } from '../../data/funds';
+import { getFundType } from '../../utils/fundTypeUtils';
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Accordion,
@@ -41,7 +42,7 @@ const FundManagerFAQs: React.FC<FundManagerFAQsProps> = ({ fund }) => {
       },
       {
         question: `How long is the investment term for ${fund.name}?`,
-        answer: `${fund.name} has a ${fund.term}-year investment term. ${fund.redemptionTerms?.frequency ? `Redemptions are available ${fund.redemptionTerms.frequency.toLowerCase()}` : 'Please refer to the fund documentation for specific redemption terms'}.`
+        answer: `${fund.name} has a ${getFundType(fund) === 'Open-Ended' ? 'perpetual (open-ended)' : `${fund.term}-year`} investment term. ${fund.redemptionTerms?.frequency ? `Redemptions are available ${fund.redemptionTerms.frequency.toLowerCase()}` : 'Please refer to the fund documentation for specific redemption terms'}.`
       },
       {
         question: `Who regulates ${fund.name} and where is it located?`,
