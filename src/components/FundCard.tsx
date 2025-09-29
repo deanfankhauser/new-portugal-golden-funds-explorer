@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { GitCompare, User, Euro } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { managerToSlug } from '../lib/utils';
+import { getReturnTargetDisplay } from '../utils/returnTarget';
 
 interface FundCardProps {
   fund: Fund;
@@ -61,8 +62,8 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
               <p className="font-medium">{fund.minimumInvestment > 0 ? formatCurrency(fund.minimumInvestment) : 'Not provided'}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Target Return</p>
-              <p className="font-medium">{fund.returnTarget}</p>
+              <p className="text-sm text-muted-foreground">Target Annual Return</p>
+              <p className="font-medium">{getReturnTargetDisplay(fund)}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Fund Size</p>

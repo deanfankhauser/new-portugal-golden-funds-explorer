@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Separator } from '../ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { Info, Calculator } from 'lucide-react';
+import { getReturnTargetNumbers } from '../../utils/returnTarget';
 
 interface TrustPracticalityCardsProps {
   fund: Fund;
@@ -11,6 +12,10 @@ interface TrustPracticalityCardsProps {
 
 const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund }) => {
   const [investmentAmount, setInvestmentAmount] = useState(500000);
+  
+  // Get dynamic hurdle rate
+  const { min } = getReturnTargetNumbers(fund);
+  const hurdle = min ?? 8;
 
   // Calculate estimated annual fees
   const calculateEstimatedFees = (amount: number) => {
@@ -58,7 +63,7 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
                 <div className="text-xs text-muted-foreground pl-2">
                   • Subject to high-water mark
                   <br />
-                  • 8% preferred return hurdle
+                  • {hurdle}% preferred return hurdle
                 </div>
               )}
             </div>

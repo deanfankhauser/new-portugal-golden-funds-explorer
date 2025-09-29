@@ -3,6 +3,7 @@ import { Fund } from '../../data/funds';
 import { Card, CardContent } from "@/components/ui/card";
 import FeeDisclaimer from './FeeDisclaimer';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
+import { getReturnTargetDisplay } from '../../utils/returnTarget';
 
 interface FundMetricsProps {
   fund: Fund;
@@ -24,8 +25,8 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
       subtitle: fund.id === '3cc-golden-income' ? 'Class A (€300,000 for Class D)' : undefined,
     },
     {
-      label: "Target Return", 
-      value: `${fund.returnTarget} ${DATA_AS_OF_LABEL}`,
+      label: "Target Annual Return", 
+      value: `${getReturnTargetDisplay(fund)} ${DATA_AS_OF_LABEL}`,
     },
     {
       label: "Fund Size",

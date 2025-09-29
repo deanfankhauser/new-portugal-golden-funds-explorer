@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, TrendingUp } from 'lucide-react';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
+import { getReturnTargetDisplay } from '../utils/returnTarget';
 
 const RecentlyViewedFunds = () => {
   const { recentlyViewed } = useRecentlyViewed();
@@ -42,10 +43,10 @@ const RecentlyViewedFunds = () => {
                 <span className="font-medium">{formatCurrency(fund.minimumInvestment)}</span>
               </div>
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>Target Return</span>
+                <span>Target Annual Return</span>
                 <span className="font-medium flex items-center gap-1">
                   <TrendingUp size={12} />
-                  {fund.returnTarget}
+                  {getReturnTargetDisplay(fund)}
                 </span>
               </div>
               <div className="text-xs text-muted-foreground mt-2">
