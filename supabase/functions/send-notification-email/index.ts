@@ -77,7 +77,7 @@ const handler = async (req: Request): Promise<Response> => {
         </div>
       `;
     } else {
-      emailSubject = `❌ Fund Edit Rejected - ${safeFundId}`;
+      emailSubject = `Fund Edit Rejected - ${safeFundId}`;
       emailBody = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #dc2626;">Fund Edit Suggestion Rejected ❌</h2>
