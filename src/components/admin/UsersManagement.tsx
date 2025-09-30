@@ -177,23 +177,15 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
     try {
       setUsersLoading(true);
       
-      // Get all investor profiles using the new secure function
+      // Get all investor profiles directly with RLS handling access control
       const { data: investors, error: investorError } = await supabase
-        .rpc('get_all_investor_profiles_admin');
+        .from('investor_profiles')
+        .select('id, user_id, first_name, last_name, email, created_at, city, country')
+        .order('created_at', { ascending: false });
 
       if (investorError) {
         console.error('Error fetching investors:', investorError);
-        // Fallback to direct query with limited data for non-critical display
-        const { data: fallbackInvestors, error: fallbackError } = await supabase
-          .from('investor_profiles')
-          .select('id, user_id, first_name, last_name, email, created_at, city, country')
-          .order('created_at', { ascending: false });
-        
-        if (fallbackError) {
-          console.error('Fallback investor query also failed:', fallbackError);
-        } else {
-          console.log('Using fallback investor data due to secure function error');
-        }
+        toast.error('Failed to load investor profiles');
       }
 
       // Get all manager profiles (managers are less sensitive, can use direct query)
@@ -442,6 +434,55 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
           {!loading && adminUsers.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
               No admin users found
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Investors</CardTitle>
+          <CardDescription>
+            View all registered investor profiles
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {usersLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Joined</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {allUsers.filter(user => user.user_type === 'investor').map((user) => (
+                  <TableRow key={`investor-${user.id}`}>
+                    <TableCell className="font-medium">
+                      {user.display_name}
+                    </TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      {[user.city, user.country].filter(Boolean).join(', ') || 'No location'}
+                    </TableCell>
+                    <TableCell>
+                      {new Date(user.created_at).toLocaleDateString()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+
+          {!usersLoading && allUsers.filter(user => user.user_type === 'investor').length === 0 && (
+            <div className="text-center py-8 text-muted-foreground">
+              No investors found
             </div>
           )}
         </CardContent>

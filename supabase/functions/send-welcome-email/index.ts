@@ -7,65 +7,41 @@ interface WelcomeEmailData {
 }
 
 function generateWelcomeEmailHTML({ userEmail, loginUrl }: WelcomeEmailData): string {
-  return `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Welcome to Investment Funds Platform</title>
-    </head>
-    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif; background-color: #f6f9fc; margin: 0; padding: 0;">
-      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; margin-bottom: 64px;">
-        <div style="padding: 32px 24px; text-align: center;">
-          <h1 style="color: #1f2937; font-size: 24px; font-weight: bold; margin: 0;">
-            Welcome to Investment Funds Platform!
-          </h1>
-        </div>
-        
-        <div style="padding: 0 24px;">
-          <p style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0;">
-            Hello and welcome to the Investment Funds Platform!
-          </p>
-          
-          <p style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0;">
-            Your account has been successfully created. You now have access to our comprehensive database of investment funds, detailed analysis tools, and comparison features.
-          </p>
-
-          <p style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0;">
-            <strong>What you can do:</strong>
-          </p>
-          <ul style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0; padding-left: 20px;">
-            <li>Browse and search our extensive fund database</li>
-            <li>Compare funds side-by-side</li>
-            <li>Save funds to your personal shortlist</li>
-            <li>Access detailed performance analytics</li>
-            <li>Get personalized fund recommendations</li>
-          </ul>
-
-          <div style="text-align: center; margin: 32px 0;">
-            <a href="${loginUrl}" style="background-color: #3b82f6; border-radius: 6px; color: #ffffff; font-size: 16px; font-weight: bold; text-decoration: none; text-align: center; display: inline-block; padding: 12px 24px;">
-              Get Started
-            </a>
-          </div>
-
-          <hr style="border-color: #e5e7eb; margin: 32px 0;" />
-
-          <div style="margin-top: 32px;">
-            <p style="color: #6b7280; font-size: 12px; line-height: 1.4; margin: 8px 0;">
-              If you have any questions or need assistance, please don't hesitate to contact our support team.
-            </p>
-            
-            <p style="color: #6b7280; font-size: 12px; line-height: 1.4; margin: 8px 0;">
-              Investment Funds Platform<br />
-              This email was sent to ${userEmail}
-            </p>
-          </div>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
+  return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to Investment Funds Platform</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif; background-color: #f6f9fc; margin: 0; padding: 0;">
+<div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; margin-bottom: 64px;">
+<div style="padding: 32px 24px; text-align: center;">
+<h1 style="color: #1f2937; font-size: 24px; font-weight: bold; margin: 0;">Welcome to Investment Funds Platform!</h1>
+</div>
+<div style="padding: 0 24px;">
+<p style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0;">Hello and welcome to the Investment Funds Platform!</p>
+<p style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0;">Your account has been successfully created. You now have access to our comprehensive database of investment funds, detailed analysis tools, and comparison features.</p>
+<p style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0;"><strong>What you can do:</strong></p>
+<ul style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0; padding-left: 20px;">
+<li>Browse and search our extensive fund database</li>
+<li>Compare funds side-by-side</li>
+<li>Save funds to your personal shortlist</li>
+<li>Access detailed performance analytics</li>
+<li>Get personalized fund recommendations</li>
+</ul>
+<div style="text-align: center; margin: 32px 0;">
+<a href="${loginUrl}" style="background-color: #3b82f6; border-radius: 6px; color: #ffffff; font-size: 16px; font-weight: bold; text-decoration: none; text-align: center; display: inline-block; padding: 12px 24px;">Get Started</a>
+</div>
+<hr style="border-color: #e5e7eb; margin: 32px 0;" />
+<div style="margin-top: 32px;">
+<p style="color: #6b7280; font-size: 12px; line-height: 1.4; margin: 8px 0;">If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
+<p style="color: #6b7280; font-size: 12px; line-height: 1.4; margin: 8px 0;">Movingto Team<br />This email was sent to ${userEmail}</p>
+</div>
+</div>
+</div>
+</body>
+</html>`;
 }
 
 const corsHeaders = {
