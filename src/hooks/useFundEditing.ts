@@ -92,16 +92,31 @@ export const useFundEditing = () => {
       try {
         console.log('Sending notification to super admins for new suggestion:', data.id);
         
-        // Get submitter info for notification
-        const { data: userProfile } = await supabase
+        // Get submitter info for notification (try manager first, then investor)
+        let submitterName = 'User';
+        let userEmail: string | null = null;
+        
+        const { data: managerProfile } = await supabase
           .from('manager_profiles')
           .select('manager_name, company_name, email')
           .eq('user_id', user.id)
           .single();
         
-        const submitterName = userProfile 
-          ? `${userProfile.manager_name} (${userProfile.company_name})`
-          : 'User';
+        if (managerProfile?.email) {
+          userEmail = managerProfile.email;
+          submitterName = `${managerProfile.manager_name} (${managerProfile.company_name})`;
+        } else {
+          const { data: investorProfile } = await supabase
+            .from('investor_profiles')
+            .select('first_name, last_name, email')
+            .eq('user_id', user.id)
+            .single();
+          
+          if (investorProfile?.email) {
+            userEmail = investorProfile.email;
+            submitterName = `${investorProfile.first_name ?? ''} ${investorProfile.last_name ?? ''}`.trim() || 'User';
+          }
+        }
         
         // Send admin notification
         const notificationResult = await supabase.functions.invoke('notify-super-admins', {
@@ -109,7 +124,7 @@ export const useFundEditing = () => {
             suggestionId: data.id,
             fundId: fundId,
             submitterName: submitterName,
-            submitterType: 'Manager',
+            submitterType: managerProfile?.email ? 'Manager' : 'Investor',
             changes: suggestedChanges
           }
         });
@@ -121,14 +136,14 @@ export const useFundEditing = () => {
         }
 
         // Send thank you email to submitter
-        if (userProfile?.email) {
+        if (userEmail) {
           const thankYouResult = await supabase.functions.invoke('send-notification-email', {
             body: {
-              to: userProfile.email,
+              to: userEmail,
               subject: `Fund Edit Submission Received - ${fundId}`,
               fundId: fundId,
               status: 'submitted',
-              managerName: userProfile.manager_name
+              managerName: submitterName
             }
           });
           
