@@ -123,7 +123,7 @@ const handler = async (req: Request): Promise<Response> => {
         </div>
 
         <p>You can review this suggestion in the admin panel under Fund Edit Suggestions.</p>
-        <p>Best regards,<br>Investment Funds Platform</p>
+        <p>Best regards,<br>Movingto Team</p>
       </div>
     `;
 
@@ -133,7 +133,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailPromises = superAdmins.map(async (admin: any) => {
       try {
         await client.send({
-          from: gmailEmail,
+          from: `Movingto Team <${gmailEmail}>`,
           to: admin.email,
           subject: emailSubject,
           html: emailBody,

@@ -118,7 +118,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     try {
       await client.send({
-        from: gmailEmail,
+        from: `Movingto Team <${gmailEmail}>`,
         to: to,
         subject: emailSubject,
         html: emailBody,

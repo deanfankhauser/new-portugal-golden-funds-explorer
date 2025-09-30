@@ -103,7 +103,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send the welcome email
     await client.send({
-      from: `Investment Funds Platform <${gmailEmail}>`,
+      from: `Movingto Team <${gmailEmail}>`,
       to: email,
       subject: "Welcome to Investment Funds Platform! 🎉",
       html,

@@ -126,7 +126,7 @@ If you have any questions about this fund or would like to schedule a consultati
 View Online: https://funds.movingto.com/${fundId}
 
 Best regards,
-Investment Funds Platform Team
+Movingto Team
     `.trim();
 
     const html = `<!DOCTYPE html>
@@ -155,7 +155,7 @@ Investment Funds Platform Team
 <a href="https://funds.movingto.com/${fundId}" style="background: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: 500;">View Fund Details</a>
 </div>
 <div style="text-align: center; padding: 20px 0; border-top: 1px solid #e2e8f0; margin-top: 30px;">
-<p style="margin: 0; color: #64748b; font-size: 14px;">Best regards,<br><strong>Investment Funds Platform Team</strong></p>
+<p style="margin: 0; color: #64748b; font-size: 14px;">Best regards,<br><strong>Movingto Team</strong></p>
 </div>
 </div>
 </body>
@@ -164,7 +164,7 @@ Investment Funds Platform Team
 
     // Send the fund brief with the actual uploaded PDF attachment
     await client.send({
-      from: `Investment Funds Platform <${gmailEmail}>`,
+      from: `Movingto Team <${gmailEmail}>`,
       to: userEmail,
       subject: `Fund Brief: ${fundName}`,
       html,
