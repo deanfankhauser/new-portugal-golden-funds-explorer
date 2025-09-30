@@ -74,7 +74,7 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
           <p>We'll notify you as soon as our team reviews your submission. Typically, this process takes 1-2 business days.</p>
           <p>Thank you for helping us maintain accurate and up-to-date fund information!</p>
-          <p>Best regards,<br>The Investment Funds Team</p>
+          <p>Best regards,<br>Movingto Team</p>
         </div>
       `;
     } else if (status === "approved") {
@@ -89,7 +89,7 @@ const handler = async (req: Request): Promise<Response> => {
             <p style="margin: 5px 0 0 0;"><strong>Status:</strong> Approved and Published</p>
           </div>
           <p>Thank you for helping us keep the fund information accurate and up-to-date. Your contributions help investors make better informed decisions.</p>
-          <p>Best regards,<br>The Investment Funds Team</p>
+          <p>Best regards,<br>Movingto Team</p>
         </div>
       `;
     } else {
@@ -105,7 +105,7 @@ const handler = async (req: Request): Promise<Response> => {
             ${safeRejectionReason ? `<p style="margin: 10px 0 0 0;"><strong>Reason:</strong> ${safeRejectionReason}</p>` : ""}
           </div>
           <p>You can submit a new suggestion with the requested changes if needed. Please review the feedback provided and feel free to resubmit with the necessary adjustments.</p>
-          <p>Best regards,<br>The Investment Funds Team</p>
+          <p>Best regards,<br>Movingto Team</p>
         </div>
       `;
     }

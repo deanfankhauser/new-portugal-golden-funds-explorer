@@ -36,7 +36,7 @@ function generateWelcomeEmailHTML({ userEmail, loginUrl }: WelcomeEmailData): st
 <hr style="border-color: #e5e7eb; margin: 32px 0;" />
 <div style="margin-top: 32px;">
 <p style="color: #6b7280; font-size: 12px; line-height: 1.4; margin: 8px 0;">If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
-<p style="color: #6b7280; font-size: 12px; line-height: 1.4; margin: 8px 0;">Investment Funds Platform<br />This email was sent to ${userEmail}</p>
+<p style="color: #6b7280; font-size: 12px; line-height: 1.4; margin: 8px 0;">Movingto Team<br />This email was sent to ${userEmail}</p>
 </div>
 </div>
 </div>
