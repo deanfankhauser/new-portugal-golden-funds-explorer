@@ -6,7 +6,7 @@ interface EmailRequest {
   to: string;
   subject: string;
   fundId: string;
-  status: "approved" | "rejected";
+  status: "approved" | "rejected" | "submitted";
   rejectionReason?: string;
   managerName?: string;
 }
@@ -61,7 +61,23 @@ const handler = async (req: Request): Promise<Response> => {
     let emailBody = "";
     let emailSubject = safeSubject;
 
-    if (status === "approved") {
+    if (status === "submitted") {
+      emailSubject = `Fund Edit Submission Received - ${safeFundId}`;
+      emailBody = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #0ea5e9;">Thank You for Your Submission! 📝</h2>
+          <p>Dear ${safeManagerName || "Fund Manager"},</p>
+          <p>Thank you for submitting an edit suggestion for fund <strong>${safeFundId}</strong>. We have received your submission and it's now under review.</p>
+          <div style="background-color: #f0f9ff; padding: 15px; border-left: 4px solid #0ea5e9; margin: 20px 0;">
+            <p style="margin: 0;"><strong>Fund ID:</strong> ${safeFundId}</p>
+            <p style="margin: 5px 0 0 0;"><strong>Status:</strong> Under Review</p>
+          </div>
+          <p>We'll notify you as soon as our team reviews your submission. Typically, this process takes 1-2 business days.</p>
+          <p>Thank you for helping us maintain accurate and up-to-date fund information!</p>
+          <p>Best regards,<br>The Investment Funds Team</p>
+        </div>
+      `;
+    } else if (status === "approved") {
       emailSubject = `✅ Fund Edit Approved - ${safeFundId}`;
       emailBody = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

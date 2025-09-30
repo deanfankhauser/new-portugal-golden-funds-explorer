@@ -88,14 +88,14 @@ export const useFundEditing = () => {
 
       if (error) throw error;
 
-      // Send notification to super admins
+      // Send notification to super admins and thank you email to submitter
       try {
         console.log('Sending notification to super admins for new suggestion:', data.id);
         
         // Get submitter info for notification
         const { data: userProfile } = await supabase
           .from('manager_profiles')
-          .select('manager_name, company_name')
+          .select('manager_name, company_name, email')
           .eq('user_id', user.id)
           .single();
         
@@ -103,6 +103,7 @@ export const useFundEditing = () => {
           ? `${userProfile.manager_name} (${userProfile.company_name})`
           : 'User';
         
+        // Send admin notification
         const notificationResult = await supabase.functions.invoke('notify-super-admins', {
           body: {
             suggestionId: data.id,
@@ -118,8 +119,27 @@ export const useFundEditing = () => {
         } else {
           console.log('✅ Super admin notification sent successfully');
         }
+
+        // Send thank you email to submitter
+        if (userProfile?.email) {
+          const thankYouResult = await supabase.functions.invoke('send-notification-email', {
+            body: {
+              to: userProfile.email,
+              subject: `Fund Edit Submission Received - ${fundId}`,
+              fundId: fundId,
+              status: 'submitted',
+              managerName: userProfile.manager_name
+            }
+          });
+          
+          if (thankYouResult.error) {
+            console.error('Failed to send thank you email:', thankYouResult.error);
+          } else {
+            console.log('✅ Thank you email sent successfully');
+          }
+        }
       } catch (notificationError) {
-        console.error('Error sending admin notification:', notificationError);
+        console.error('Error sending notifications:', notificationError);
         // Don't throw here - the suggestion was still created successfully
       }
 
