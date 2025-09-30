@@ -180,13 +180,35 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
       // Send email notification
       try {
         console.log('Fetching user profile for email notification...');
-        const { data: userProfile } = await supabase
+        
+        // Try to find user in manager_profiles first
+        let userProfile = null;
+        let displayName = '';
+        
+        const { data: managerProfile } = await supabase
           .from('manager_profiles')
           .select('email, manager_name')
           .eq('user_id', suggestion.user_id)
           .single();
-
-        console.log('User profile found:', userProfile);
+        
+        if (managerProfile?.email) {
+          userProfile = managerProfile;
+          displayName = managerProfile.manager_name;
+          console.log('Manager profile found:', managerProfile);
+        } else {
+          // If not found in managers, try investor_profiles
+          const { data: investorProfile } = await supabase
+            .from('investor_profiles')
+            .select('email, first_name, last_name')
+            .eq('user_id', suggestion.user_id)
+            .single();
+          
+          if (investorProfile?.email) {
+            userProfile = { email: investorProfile.email };
+            displayName = `${investorProfile.first_name} ${investorProfile.last_name}`.trim();
+            console.log('Investor profile found:', investorProfile);
+          }
+        }
 
         if (userProfile?.email) {
           console.log('Sending email notification to:', userProfile.email);
@@ -196,7 +218,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
               subject: `Fund Edit Approved - ${suggestion.fund_id}`,
               fundId: suggestion.fund_id,
               status: 'approved',
-              managerName: userProfile.manager_name
+              managerName: displayName || 'User'
             }
           });
           console.log('Email notification result:', emailResult);
@@ -281,13 +303,35 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
       // Send email notification
       try {
         console.log('Fetching user profile for email notification...');
-        const { data: userProfile } = await supabase
+        
+        // Try to find user in manager_profiles first
+        let userProfile = null;
+        let displayName = '';
+        
+        const { data: managerProfile } = await supabase
           .from('manager_profiles')
           .select('email, manager_name')
           .eq('user_id', suggestion.user_id)
           .single();
-
-        console.log('User profile found:', userProfile);
+        
+        if (managerProfile?.email) {
+          userProfile = managerProfile;
+          displayName = managerProfile.manager_name;
+          console.log('Manager profile found:', managerProfile);
+        } else {
+          // If not found in managers, try investor_profiles
+          const { data: investorProfile } = await supabase
+            .from('investor_profiles')
+            .select('email, first_name, last_name')
+            .eq('user_id', suggestion.user_id)
+            .single();
+          
+          if (investorProfile?.email) {
+            userProfile = { email: investorProfile.email };
+            displayName = `${investorProfile.first_name} ${investorProfile.last_name}`.trim();
+            console.log('Investor profile found:', investorProfile);
+          }
+        }
 
         if (userProfile?.email) {
           console.log('Sending rejection email notification to:', userProfile.email);
@@ -298,7 +342,7 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
               fundId: suggestion.fund_id,
               status: 'rejected',
               rejectionReason: finalRejectionReason,
-              managerName: userProfile.manager_name
+              managerName: displayName || 'User'
             }
           });
           console.log('Email notification result:', emailResult);
