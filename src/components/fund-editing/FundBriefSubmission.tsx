@@ -40,8 +40,8 @@ const FundBriefSubmission: React.FC<FundBriefSubmissionProps> = ({
     if (file.type !== 'application/pdf') {
       return 'Only PDF files are allowed for fund briefs';
     }
-    if (file.size > 10 * 1024 * 1024) {
-      return 'File size must be less than 10MB';
+    if (file.size > 25 * 1024 * 1024) {
+      return 'File size must be less than 25MB';
     }
     return null;
   };
@@ -71,49 +71,72 @@ const FundBriefSubmission: React.FC<FundBriefSubmissionProps> = ({
   }, [fundId, user]);
 
   const submitBrief = async (file: File) => {
-    console.log('submitBrief called with file:', file.name, file.type, file.size);
+    console.log('=== Fund Brief Upload Start ===');
+    console.log('File details:', { name: file.name, type: file.type, size: `${(file.size / 1024 / 1024).toFixed(2)}MB` });
+    
     const validation = validateFile(file);
     if (validation) {
-      console.log('File validation failed:', validation);
+      console.log('❌ File validation failed:', validation);
       toast.error(validation);
       return;
     }
 
     if (!user) {
-      console.log('User not authenticated:', user);
+      console.error('❌ User not authenticated');
       toast.error('You must be logged in to submit a fund brief');
       return;
     }
 
-    console.log('Starting upload for user:', user.id, 'fund:', fundId);
+    console.log('✅ Validation passed. User ID:', user.id, 'User Type:', userType);
+    
+    // Verify authentication context
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      console.error('❌ No active session found');
+      toast.error('Session expired. Please log in again.');
+      return;
+    }
+    console.log('✅ Active session confirmed');
+
     setUploading(true);
     try {
       // Create unique filename with user folder structure
       const fileExt = 'pdf';
       const fileName = `${user.id}/${fundId}-fund-brief-${Date.now()}.${fileExt}`;
+      console.log('📁 Upload path:', fileName);
 
       // Upload to pending bucket
-      console.log('Uploading file:', fileName);
-      const { data, error } = await supabase.storage
+      console.log('📤 Starting storage upload...');
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from('fund-briefs-pending')
         .upload(fileName, file, {
           cacheControl: '3600',
           upsert: false
         });
 
-      if (error) {
-        console.error('Storage upload error:', error);
-        throw error;
+      if (uploadError) {
+        console.error('❌ Storage upload failed:', {
+          message: uploadError.message,
+          details: uploadError
+        });
+        toast.error(`Upload failed: ${uploadError.message}`);
+        throw uploadError;
       }
-      console.log('Upload successful:', data);
+      console.log('✅ Upload successful:', uploadData);
 
       // Create a signed URL (valid for 7 days) since the bucket is private
+      console.log('🔗 Creating signed URL...');
       const { data: signedUrlData, error: signError } = await supabase.storage
         .from('fund-briefs-pending')
         .createSignedUrl(fileName, 60 * 60 * 24 * 7);
+      
       if (signError) {
-        console.error('Signed URL error:', signError);
+        console.error('❌ Signed URL creation failed:', signError);
+        toast.error('Failed to create file access URL');
+        throw signError;
       }
+      console.log('✅ Signed URL created');
+
       const publicUrl = signedUrlData?.signedUrl || '';
 
       // Create submission record
@@ -124,28 +147,45 @@ const FundBriefSubmission: React.FC<FundBriefSubmissionProps> = ({
         brief_filename: fileName,
         status: 'pending',
       };
+      
       if (userType === 'manager') {
         submissionPayload.manager_user_id = user.id;
       } else if (userType === 'investor') {
         submissionPayload.investor_user_id = user.id;
       }
-      console.log('Creating submission record with:', submissionPayload);
+      
+      console.log('💾 Creating submission record:', submissionPayload);
       const { error: submissionError } = await supabase
         .from('fund_brief_submissions')
         .insert(submissionPayload);
 
       if (submissionError) {
-        console.error('Submission record error:', submissionError);
+        console.error('❌ Submission record creation failed:', {
+          message: submissionError.message,
+          code: submissionError.code,
+          details: submissionError
+        });
+        toast.error(`Failed to create submission: ${submissionError.message}`);
         throw submissionError;
       }
-      console.log('Submission record created successfully');
+      
+      console.log('✅ Submission record created successfully');
+      console.log('=== Fund Brief Upload Complete ===');
 
       toast.success('Fund brief submitted for admin approval');
       fetchSubmissions(); // Refresh the list
       onSubmissionSuccess?.(); // Notify parent component
-    } catch (error) {
-      console.error('Error submitting fund brief:', error);
-      toast.error('Failed to submit fund brief');
+    } catch (error: any) {
+      console.error('❌ Fund brief submission failed:', error);
+      
+      // Provide more specific error messages
+      if (error?.message?.includes('row-level security')) {
+        toast.error('Permission denied. Please ensure you are properly authenticated.');
+      } else if (error?.message?.includes('duplicate')) {
+        toast.error('A submission with this file already exists.');
+      } else {
+        toast.error(error?.message || 'Failed to submit fund brief. Please try again.');
+      }
     } finally {
       setUploading(false);
     }
@@ -304,7 +344,7 @@ const FundBriefSubmission: React.FC<FundBriefSubmissionProps> = ({
                     </Button>
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    PDF only, max 10MB
+                    PDF only, max 25MB
                   </p>
                 </div>
               </div>

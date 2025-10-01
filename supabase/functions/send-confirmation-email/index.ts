@@ -178,7 +178,7 @@ const handler = async (req: Request): Promise<Response> => {
       : "Confirm Your Email - Investment Funds Platform";
 
     await client.send({
-      from: `Investment Funds Platform <${gmailEmail}>`,
+      from: `Movingto Team <${gmailEmail}>`,
       to: user.email,
       subject,
       html,
