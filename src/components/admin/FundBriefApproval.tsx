@@ -136,22 +136,34 @@ const FundBriefApproval: React.FC = () => {
   }, [user?.id]);
 
   const handleApprove = async (submission: BriefSubmission) => {
-    if (!user) return;
+    if (!user) {
+      toast.error('You must be logged in as admin to approve briefs');
+      return;
+    }
 
+    console.log('🟢 Starting approval process for submission:', submission.id, 'fund:', submission.fund_id);
     setProcessing(submission.id);
+    
     try {
       // Move file from pending to approved bucket
       const fileName = submission.brief_filename.split('/').pop() || submission.brief_filename;
       const approvedFileName = `${submission.fund_id}-fund-brief-approved-${Date.now()}.pdf`;
+      console.log('📁 File names:', { fileName, approvedFileName });
 
       // Download from pending bucket
+      console.log('⬇️ Downloading from pending bucket...');
       const { data: fileData, error: downloadError } = await supabase.storage
         .from('fund-briefs-pending')
         .download(submission.brief_filename);
 
-      if (downloadError) throw downloadError;
+      if (downloadError) {
+        console.error('❌ Download error:', downloadError);
+        throw new Error(`Failed to download file: ${downloadError.message}`);
+      }
+      console.log('✅ File downloaded successfully');
 
       // Upload to approved bucket
+      console.log('⬆️ Uploading to approved bucket...');
       const { error: uploadError } = await supabase.storage
         .from('fund-briefs')
         .upload(approvedFileName, fileData, {
@@ -159,32 +171,49 @@ const FundBriefApproval: React.FC = () => {
           upsert: true
         });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('❌ Upload error:', uploadError);
+        throw new Error(`Failed to upload file: ${uploadError.message}`);
+      }
+      console.log('✅ File uploaded successfully');
 
       // Get the new public URL
       const { data: { publicUrl } } = supabase.storage
         .from('fund-briefs')
         .getPublicUrl(approvedFileName);
+      console.log('🔗 Generated public URL:', publicUrl);
 
-      // Update fund with the new brief URL
-      const { error: fundUpdateError } = await supabase
+      // CRITICAL: Update fund with the new brief URL
+      console.log('💾 Updating fund record with brief URL...');
+      const { data: fundUpdateData, error: fundUpdateError } = await supabase
         .from('funds')
         .update({ fund_brief_url: publicUrl })
-        .eq('id', submission.fund_id);
+        .eq('id', submission.fund_id)
+        .select();
 
-      if (fundUpdateError) throw fundUpdateError;
+      if (fundUpdateError) {
+        console.error('❌ Fund update error:', fundUpdateError);
+        throw new Error(`Failed to update fund: ${fundUpdateError.message}`);
+      }
+      console.log('✅ Fund record updated:', fundUpdateData);
 
       // Update submission status
-      const { error: submissionUpdateError } = await supabase
+      console.log('📝 Updating submission status...');
+      const { data: submissionUpdateData, error: submissionUpdateError } = await supabase
         .from('fund_brief_submissions')
         .update({
           status: 'approved',
           reviewed_at: new Date().toISOString(),
           reviewed_by: user.id
         })
-        .eq('id', submission.id);
+        .eq('id', submission.id)
+        .select();
 
-      if (submissionUpdateError) throw submissionUpdateError;
+      if (submissionUpdateError) {
+        console.error('❌ Submission update error:', submissionUpdateError);
+        throw new Error(`Failed to update submission: ${submissionUpdateError.message}`);
+      }
+      console.log('✅ Submission updated:', submissionUpdateData);
 
       // Send approval notification email
       try {
@@ -199,20 +228,32 @@ const FundBriefApproval: React.FC = () => {
           }
         });
       } catch (emailError) {
-        console.error('Failed to send approval email:', emailError);
-        // Don't throw - email failure shouldn't stop the approval process
+        console.error('⚠️ Failed to send approval email (non-critical):', emailError);
       }
 
       // Delete from pending bucket
+      console.log('🗑️ Deleting from pending bucket...');
       await supabase.storage
         .from('fund-briefs-pending')
         .remove([submission.brief_filename]);
 
-      toast.success('Fund brief approved and made active');
-      fetchSubmissions();
-    } catch (error) {
-      console.error('Error approving submission:', error);
-      toast.error('Failed to approve fund brief');
+      // Dispatch event to trigger fund data refresh across the app
+      window.dispatchEvent(new CustomEvent('fund-brief-approved', { 
+        detail: { fundId: submission.fund_id, briefUrl: publicUrl }
+      }));
+      console.log('✅ Approval process completed successfully');
+
+      toast.success('Fund brief approved and activated! Page will refresh...');
+      
+      // Refresh submissions list
+      await fetchSubmissions();
+      
+      // Force page reload to ensure all components see the update
+      setTimeout(() => window.location.reload(), 1500);
+      
+    } catch (error: any) {
+      console.error('❌ APPROVAL FAILED:', error);
+      toast.error(error.message || 'Failed to approve fund brief. Check console for details.');
     } finally {
       setProcessing(null);
     }
