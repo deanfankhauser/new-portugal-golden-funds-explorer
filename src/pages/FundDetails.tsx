@@ -7,6 +7,7 @@ import { PageSEO } from '../components/common/PageSEO';
 import FundDetailsContent from '../components/fund-details/FundDetailsContent';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
+import { useFundPageSEOAudit } from '../hooks/useFundPageSEOAudit';
 import type { Fund } from '../data/types/funds';
 
 const FundDetails = () => {
@@ -18,6 +19,10 @@ const FundDetails = () => {
   const { getFundById } = useRealTimeFunds();
   const fund = fundId ? getFundById(fundId) : null;
   const { addToRecentlyViewed } = useRecentlyViewed();
+  
+  // Run SEO audit in development
+  const { auditResult } = useFundPageSEOAudit(import.meta.env.DEV && !!fund);
+  
   useEffect(() => {
     if (fund) {
       addToRecentlyViewed(fund);

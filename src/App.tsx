@@ -51,8 +51,8 @@ const TempMigrationPage = lazy(() => import('./pages/TempMigrationPage'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
-// Import funds data to validate direct fund routes
-import { fundsData } from './data/mock/funds/index';
+// Import real-time funds hook for route validation
+import { useRealTimeFunds } from './hooks/useRealTimeFunds';
 
 import './App.css';
 
@@ -100,12 +100,18 @@ const ScrollToTop = () => {
 const DirectFundRoute = () => {
   const location = useLocation();
   const pathname = location.pathname;
+  const { getFundById, loading } = useRealTimeFunds();
   
   // Extract potential fund ID from pathname (remove leading slash)
   const potentialFundId = pathname.slice(1);
   
-  // Check if this path matches a fund ID
-  const fund = fundsData.find(f => f.id === potentialFundId);
+  // Show loader while fetching funds
+  if (loading) {
+    return <FundDetailsLoader />;
+  }
+  
+  // Check if this path matches a fund ID using real-time data
+  const fund = getFundById(potentialFundId);
   
   if (fund) {
     // Valid fund found, render fund details with lazy loading
