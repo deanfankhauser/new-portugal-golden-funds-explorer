@@ -1,16 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
-import { Mail, Calendar, BarChart3, Bookmark } from 'lucide-react';
+import { Phone, BarChart3 } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
-import { useShortlist } from '../../contexts/ShortlistContext';
 import { calculateRiskScore, getRiskLabel, getRiskColor } from '../../utils/riskCalculation';
-import { useAuth } from '../../hooks/useAuth';
-import { AuthRequiredModal } from '../fund-editing/AuthRequiredModal';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { buildBookingUrl, openExternalLink } from '../../utils/urlHelpers';
+import analytics from '../../utils/analytics';
 import FundSnapshotCard from './FundSnapshotCard';
 import { FundEditButton } from '../fund-editing/FundEditButton';
 import { managerToSlug } from '../../lib/utils';
@@ -20,15 +16,8 @@ interface FundHeroSnapshotProps {
 }
 
 const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
-  const { isInComparison, addToComparison, removeFromComparison } = useComparison();
-  const { isInShortlist, addToShortlist, removeFromShortlist } = useShortlist();
-  const { user, isAuthenticated } = useAuth();
-  const { toast } = useToast();
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [isRequestingBrief, setIsRequestingBrief] = useState(false);
-  
+  const { isInComparison, addToComparison } = useComparison();
   const isCompared = isInComparison(fund.id);
-  const isShortlisted = isInShortlist(fund.id);
 
   // Calculate risk score and get risk styling
   const riskScore = calculateRiskScore(fund);
@@ -36,102 +25,18 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
   const riskColor = getRiskColor(riskScore);
 
   const handleCompareClick = () => {
-    if (isCompared) {
-      removeFromComparison(fund.id);
-    } else {
-      addToComparison(fund);
-    }
+    addToComparison(fund);
+    analytics.trackEvent('add_to_comparison', {
+      fund_id: fund.id,
+      fund_name: fund.name,
+      source: 'hero_snapshot'
+    });
   };
 
-  const handleShortlistClick = () => {
-    if (isShortlisted) {
-      removeFromShortlist(fund.id);
-    } else {
-      addToShortlist(fund);
-    }
-  };
-
-  const handleGetFundBrief = async () => {
-    if (!isAuthenticated) {
-      setShowAuthModal(true);
-      return;
-    }
-
-    if (!user?.email) {
-      toast({
-        title: "Error",
-        description: "User email not found. Please try logging in again.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsRequestingBrief(true);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('send-fund-brief', {
-        body: {
-          userEmail: user.email,
-          fundName: fund.name,
-          fundId: fund.id,
-        },
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      toast({
-        title: "Fund Brief Requested",
-        description: `We'll send the ${fund.name} brief to ${user.email} within 24 hours.`,
-      });
-    } catch (error: any) {
-      console.error('Error requesting fund brief:', error);
-      
-      const errorMessage = error?.message || '';
-      const isNoFundBriefError = errorMessage.includes('No fund brief available') || 
-                                errorMessage.includes('No fund brief URL found');
-      
-      toast({
-        title: "Error",
-        description: isNoFundBriefError 
-          ? "This fund doesn't have a brief document available yet." 
-          : "Failed to request fund brief. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsRequestingBrief(false);
-    }
-  };
-
-  const handleBookCall = async () => {
-    if (!isAuthenticated) {
-      setShowAuthModal(true);
-      return;
-    }
-
-    try {
-      const { error } = await supabase.functions.invoke('send-booking-request', {
-        body: { 
-          fundName: fund.name,
-          userEmail: user?.email 
-        }
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Booking Request Sent!",
-        description: `We'll contact you shortly to schedule your call about ${fund.name}.`,
-      });
-    } catch (error) {
-      console.error('Error sending booking request:', error);
-      toast({
-        title: "Error",
-        description: "Failed to send booking request. Please try again.",
-        variant: "destructive",
-      });
-    }
+  const handleBookCall = () => {
+    const bookingUrl = buildBookingUrl(fund.id, fund.name);
+    openExternalLink(bookingUrl);
+    analytics.trackCTAClick('hero_snapshot', 'book_call', bookingUrl);
   };
 
   return (
@@ -181,44 +86,20 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
                   size="lg"
-                  variant={fund.fundBriefUrl ? "default" : "secondary"}
-                  className={`font-semibold ${!fund.fundBriefUrl ? 'bg-white/20 text-white/70 cursor-not-allowed hover:bg-white/20' : 'bg-white text-primary hover:bg-white/90'}`}
-                  onClick={fund.fundBriefUrl ? handleGetFundBrief : undefined}
-                  disabled={isRequestingBrief || !fund.fundBriefUrl}
+                  className="bg-white text-primary hover:bg-white/90 font-semibold"
+                  onClick={handleBookCall}
                 >
-                  <Mail className="mr-2 h-5 w-5" />
-                  {isRequestingBrief ? "Requesting..." : fund.fundBriefUrl ? "Get Fund Brief" : "No Brief Available"}
+                  <Phone className="mr-2 h-5 w-5" />
+                  Book 30-min Call
                 </Button>
                 <Button 
                   size="lg"
                   variant="outline" 
                   className="border-white/40 text-white hover:bg-white hover:text-primary bg-white/10 backdrop-blur-sm font-semibold"
-                  onClick={handleBookCall}
-                >
-                  <Calendar className="mr-2 h-5 w-5" />
-                  Book 15-min Call
-                </Button>
-              </div>
-              
-              {/* Secondary CTAs */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button 
-                  variant="ghost" 
-                  size="sm"
                   onClick={handleCompareClick}
-                  className={`${isCompared ? "bg-white/20 text-white font-medium" : "text-white/90 hover:bg-white/15 hover:text-white"} flex-1 border border-white/20`}
                 >
-                  <BarChart3 className="mr-2 h-4 w-4" />
-                  {isCompared ? "Remove from Compare" : "Add to Compare"}
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={handleShortlistClick}
-                  className={`${isShortlisted ? "bg-white/20 text-white font-medium" : "text-white/90 hover:bg-white/15 hover:text-white"} flex-1 border border-white/20`}
-                >
-                  <Bookmark className="mr-2 h-4 w-4" />
-                  {isShortlisted ? "Shortlisted" : "Add to Shortlist"}
+                  <BarChart3 className="mr-2 h-5 w-5" />
+                  {isCompared ? "In Compare" : "Add to Compare"}
                 </Button>
               </div>
             </div>
@@ -232,11 +113,6 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
           </div>
         </div>
       </div>
-
-      <AuthRequiredModal 
-        open={showAuthModal} 
-        onOpenChange={setShowAuthModal}
-      />
     </div>
   );
 };

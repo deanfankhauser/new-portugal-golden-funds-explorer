@@ -47,11 +47,11 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
         robots.setAttribute('content', 'noindex, follow');
       }
       
-      // Initialize performance optimizations
-      PerformanceOptimizationService.initializePerformanceOptimizations();
-      
-      // Auto-fix common SEO issues
-      EnhancedSEOValidationService.autoFixSEOIssues();
+      // Defer performance optimizations and SEO fixes to avoid forced reflows
+      requestAnimationFrame(() => {
+        PerformanceOptimizationService.initializePerformanceOptimizations();
+        EnhancedSEOValidationService.autoFixSEOIssues();
+      });
       
     } catch (error) {
       console.error('SEO Error:', error);

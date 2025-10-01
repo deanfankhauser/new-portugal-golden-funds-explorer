@@ -25,7 +25,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import HistoricalPerformanceEditor from './HistoricalPerformanceEditor';
-import FundBriefSubmission from './FundBriefSubmission';
 
 interface FundEditModalProps {
   fund: Fund;
@@ -72,8 +71,6 @@ const buildFormData = (f: Fund) => {
     historicalPerformance: f.historicalPerformance || {},
     // FAQs - always present as array
     faqs: f.faqs || [],
-    // Fund Brief URL
-    fundBriefUrl: f.fundBriefUrl || '',
     // Tags - always present as array
     tags: f.tags || [],
   };
@@ -270,7 +267,6 @@ useEffect(() => {
     eligibilityBasis: fund.eligibilityBasis,
     historicalPerformance: fund.historicalPerformance,
     faqs: fund.faqs,
-    fundBriefUrl: fund.fundBriefUrl,
     tags: fund.tags,
   });
 
@@ -1150,22 +1146,6 @@ useEffect(() => {
                 ))}
               </div>
 
-              <Separator />
-
-              {/* Fund Brief */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Fund Brief Document</h3>
-                <FundBriefSubmission
-                  fundId={fund.id}
-                  fundName={fund.name}
-                  currentBriefUrl={formData.fundBriefUrl}
-                  onSubmissionSuccess={() => {
-                    handleInputChange('fundBriefUrl', 'SUBMISSION_PENDING');
-                  }}
-                />
-              </div>
-
-              <Separator />
 
               {/* FAQs */}
               <div className="space-y-4">

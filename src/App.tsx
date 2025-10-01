@@ -52,7 +52,7 @@ const TempMigrationPage = lazy(() => import('./pages/TempMigrationPage'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Import funds data to validate direct fund routes
-import { fundsData } from './data/mock/funds';
+import { fundsData } from './data/mock/funds/index';
 
 import './App.css';
 import SEODebugger from './components/common/SEODebugger';

@@ -112,93 +112,6 @@ export type Database = {
         }
         Relationships: []
       }
-      fund_brief_submissions: {
-        Row: {
-          brief_filename: string
-          brief_url: string
-          created_at: string
-          fund_id: string
-          id: string
-          investor_user_id: string | null
-          manager_user_id: string | null
-          rejection_reason: string | null
-          reviewed_at: string | null
-          reviewed_by: string | null
-          status: string
-          submitted_at: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          brief_filename: string
-          brief_url: string
-          created_at?: string
-          fund_id: string
-          id?: string
-          investor_user_id?: string | null
-          manager_user_id?: string | null
-          rejection_reason?: string | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          status?: string
-          submitted_at?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          brief_filename?: string
-          brief_url?: string
-          created_at?: string
-          fund_id?: string
-          id?: string
-          investor_user_id?: string | null
-          manager_user_id?: string | null
-          rejection_reason?: string | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          status?: string
-          submitted_at?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fund_brief_submissions_fund_id_fkey"
-            columns: ["fund_id"]
-            isOneToOne: false
-            referencedRelation: "funds"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fund_brief_submissions_investor_user_fk"
-            columns: ["investor_user_id"]
-            isOneToOne: false
-            referencedRelation: "investor_profiles"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "fund_brief_submissions_investor_user_fkey"
-            columns: ["investor_user_id"]
-            isOneToOne: false
-            referencedRelation: "investor_profiles"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "fund_brief_submissions_manager_user_fk"
-            columns: ["manager_user_id"]
-            isOneToOne: false
-            referencedRelation: "manager_profiles"
-            referencedColumns: ["user_id"]
-          },
-          {
-            foreignKeyName: "fund_brief_submissions_manager_user_fkey"
-            columns: ["manager_user_id"]
-            isOneToOne: false
-            referencedRelation: "manager_profiles"
-            referencedColumns: ["user_id"]
-          },
-        ]
-      }
       fund_edit_history: {
         Row: {
           admin_user_id: string
@@ -294,7 +207,6 @@ export type Database = {
           expected_return_max: number | null
           expected_return_min: number | null
           faqs: Json | null
-          fund_brief_url: string | null
           geographic_allocation: Json | null
           gv_eligible: boolean | null
           historical_performance: Json | null
@@ -337,7 +249,6 @@ export type Database = {
           expected_return_max?: number | null
           expected_return_min?: number | null
           faqs?: Json | null
-          fund_brief_url?: string | null
           geographic_allocation?: Json | null
           gv_eligible?: boolean | null
           historical_performance?: Json | null
@@ -380,7 +291,6 @@ export type Database = {
           expected_return_max?: number | null
           expected_return_min?: number | null
           faqs?: Json | null
-          fund_brief_url?: string | null
           geographic_allocation?: Json | null
           gv_eligible?: boolean | null
           historical_performance?: Json | null

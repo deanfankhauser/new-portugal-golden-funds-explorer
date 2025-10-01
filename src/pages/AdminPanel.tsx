@@ -16,7 +16,6 @@ import { AdminActivityLog } from '@/components/admin/AdminActivityLog';
 import UsersManagement from '@/components/admin/UsersManagement';
 import { DataCopyButton } from '@/components/admin/DataCopyButton';
 import MigrateFundsButton from '@/components/admin/MigrateFundsButton';
-import FundBriefApproval from '@/components/admin/FundBriefApproval';
 import FundManagement from '@/components/admin/FundManagement';
 
 const AdminPanel = () => {
@@ -203,14 +202,10 @@ const AdminPanel = () => {
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="suggestions" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="suggestions" className="flex items-center gap-2">
                 <Edit3 className="h-4 w-4" />
                 Suggestions
-              </TabsTrigger>
-              <TabsTrigger value="briefs" className="flex items-center gap-2">
-                <FileText className="h-4 w-4" />
-                Briefs
               </TabsTrigger>
               <TabsTrigger value="funds" className="flex items-center gap-2">
                 <Database className="h-4 w-4" />
@@ -249,10 +244,6 @@ const AdminPanel = () => {
                   fetchStats();
                 }
               }} />
-            </TabsContent>
-            
-            <TabsContent value="briefs">
-              <FundBriefApproval />
             </TabsContent>
             
             <TabsContent value="funds">

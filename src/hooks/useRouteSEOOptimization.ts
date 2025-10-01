@@ -10,11 +10,12 @@ export const useRouteSEOOptimization = () => {
     // Scroll to top on route change for better UX
     window.scrollTo(0, 0);
     
-    // Add a small delay to ensure page content is loaded
-    setTimeout(() => {
-      // Report performance metrics after navigation
-      PerformanceMonitoringService.reportMetrics();
-    }, 1000);
+    // Use requestAnimationFrame to avoid forced reflows when reporting metrics
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        PerformanceMonitoringService.reportMetrics();
+      }, 1000);
+    });
   }, [location.pathname]);
 
   return null;
