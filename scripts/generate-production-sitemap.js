@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Production sitemap generation script - triggers GitHub sync
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
