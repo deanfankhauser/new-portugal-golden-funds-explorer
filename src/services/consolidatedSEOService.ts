@@ -119,6 +119,19 @@ export class ConsolidatedSEOService {
     // Start with fund name and manager for brand recognition
     parts.push(`${fund.name} by ${fund.managerName}:`);
     
+    // Add historical performance if available (high-impact SEO)
+    if (fund.historicalPerformance && typeof fund.historicalPerformance === 'object') {
+      const performanceData = Object.entries(fund.historicalPerformance)
+        .sort(([yearA], [yearB]) => parseInt(yearB) - parseInt(yearA));
+      
+      if (performanceData.length > 0) {
+        const [latestYear, latestData]: [string, any] = performanceData[0];
+        if (latestData && latestData.returns) {
+          parts.push(`${latestData.returns}% returns in ${latestYear}`);
+        }
+      }
+    }
+    
     // Add minimum investment
     const minInvest = fund.minimumInvestment >= 1000000 
       ? `€${(fund.minimumInvestment / 1000000).toFixed(1)}M`
@@ -127,26 +140,31 @@ export class ConsolidatedSEOService {
     
     // Add return target if available
     if (fund.returnTarget) {
-      parts.push(`${fund.returnTarget} target returns`);
+      parts.push(`${fund.returnTarget} target`);
     }
     
     // Add management fee
     if (fund.managementFee) {
-      parts.push(`${fund.managementFee}% annual fee`);
+      parts.push(`${fund.managementFee}% fee`);
+    }
+    
+    // Add risk level for investor matching
+    if (fund.riskLevel) {
+      parts.push(`${fund.riskLevel.toLowerCase()}-risk`);
     }
     
     // Add key USPs
     const usps: string[] = [];
     if (fund.tags?.includes('UCITS')) usps.push('UCITS regulated');
     if (fund.tags?.includes('Daily NAV')) usps.push('daily liquidity');
-    if (fund.tags?.includes('PFIC-Compliant')) usps.push('PFIC-compliant for US investors');
-    if (fund.fundStatus === 'Open') usps.push('accepting investments');
+    if (fund.tags?.includes('No Lock-Up')) usps.push('no lock-up');
+    if (fund.tags?.includes('PFIC-Compliant')) usps.push('PFIC-compliant');
     
     if (usps.length > 0) {
       parts.push(usps.slice(0, 2).join(', '));
     }
     
-    // Add category context
+    // Add Portugal Golden Visa context
     parts.push(`Portugal Golden Visa eligible ${fund.category.toLowerCase()} fund`);
     
     return parts.join('. ') + '.';
@@ -616,8 +634,13 @@ export class ConsolidatedSEOService {
     });
   }
 
-  private static getFundByName(fundName: string): any {
-    return funds.find(fund => fund.name === fundName);
+  private static getFundByName(fundNameOrId: string): any {
+    // Search by both fund ID and name for maximum compatibility
+    return funds.find(fund => 
+      fund.id === fundNameOrId || 
+      fund.name === fundNameOrId ||
+      fund.name.toLowerCase() === fundNameOrId.toLowerCase()
+    );
   }
 
   private static slugify(text: string): string {
