@@ -251,7 +251,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                   className="flex-1 sm:flex-initial"
                 >
                   <Phone className="mr-2 h-5 w-5" />
-                  Book 15-min Call
+                  Book 30-min Call
                 </Button>
                 <Button 
                   size="lg"

@@ -81,7 +81,7 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
                 onClick={handleBookCall}
               >
                 <Phone className="w-4 h-4 mr-1" />
-                Book 15-min Call
+                Book 30-min Call
               </Button>
             </div>
           </div>
