@@ -12,24 +12,26 @@ async function generateProductionSitemap() {
   try {
     console.log('🗺️  Starting production sitemap generation...');
     
-    // Pre-flight check: Verify data sources
-    console.log('🔍 Pre-flight: Verifying data sources...');
-    const { funds } = await import('../src/data/services/funds-service.ts');
-    const { getAllComparisonSlugs } = await import('../src/data/services/comparison-service.ts');
-    
-    console.log(`   ✓ Funds available: ${funds.length}`);
-    const comparisonSlugs = getAllComparisonSlugs();
-    console.log(`   ✓ Comparison slugs: ${comparisonSlugs.length}`);
-    
-    if (funds.length === 0) {
-      throw new Error('CRITICAL: No funds available for sitemap generation!');
-    }
-    
-    if (comparisonSlugs.length === 0) {
-      console.warn('⚠️  WARNING: No comparison slugs generated - sitemap will be incomplete');
-    }
-    
-    // Use comprehensive sitemap service
+// Pre-flight check: Verify data sources
+console.log('🧪 Pre-flight: Verifying data sources...');
+const { funds } = await import('../src/data/services/funds-service.ts');
+const { getAllComparisonSlugs } = await import('../src/data/services/comparison-service.ts');
+
+console.log(`  ✓ Funds available: ${funds.length}`);
+const comparisonSlugs = getAllComparisonSlugs();
+console.log(`  ✓ Comparison slugs: ${comparisonSlugs.length}`);
+
+if (funds.length === 0) {
+  throw new Error('CRITICAL: No funds available for sitemap generation!');
+}
+
+if (comparisonSlugs.length === 0) {
+  console.warn('⚠️  WARNING: No comparison slugs generated – sitemap will be incomplete');
+}
+
+// Use comprehensive sitemap service (TypeScript file)
+const { ComprehensiveSitemapService } = await import('../src/services/comprehensiveSitemapService.ts');
+
     const { ComprehensiveSitemapService } = await import('../src/services/comprehensiveSitemapService.ts');
     
     const publicDir = path.join(process.cwd(), 'public');

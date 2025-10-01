@@ -24,49 +24,40 @@ export default function ResetPassword() {
   React.useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     const searchParams = new URLSearchParams(window.location.search);
-    
-    console.log('🔐 ResetPassword: Checking URL params');
-    console.log('🔐 Hash params:', Object.fromEntries(hashParams.entries()));
-    console.log('🔐 Search params:', Object.fromEntries(searchParams.entries()));
-    
+
     // Check for Supabase recovery tokens (from built-in auth)
     const accessToken = hashParams.get('access_token');
     const refreshToken = hashParams.get('refresh_token');
     const type = hashParams.get('type');
-    
+
     // Check for custom reset token (from our custom function)
     const customToken = searchParams.get('token');
     const tokenEmail = searchParams.get('email');
-    
+
     if (accessToken && refreshToken && type === 'recovery') {
-      console.log('🔐 Found Supabase recovery tokens, setting session and switching to reset step');
       // User clicked Supabase recovery link, set session and go to reset step
       supabase.auth.setSession({
         access_token: accessToken,
         refresh_token: refreshToken,
       }).then(({ error }) => {
         if (!error) {
-          console.log('🔐 Session set successfully, switching to reset step');
           setStep('reset');
           // Clean URL
           window.history.replaceState({}, document.title, window.location.pathname);
         } else {
-          console.error('🔐 Error setting session:', error);
+          console.error('Error setting session:', error);
         }
       });
     } else if (customToken && tokenEmail) {
-      console.log('🔐 Found custom reset token, switching to reset step');
       // User clicked custom reset link - validate token and proceed
       setStep('reset');
       setEmail(decodeURIComponent(tokenEmail));
       // Clean URL
       window.history.replaceState({}, document.title, window.location.pathname);
     } else {
-      console.log('🔐 No recovery tokens found, staying on request step');
       // Check if user is already authenticated with a recovery session
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session?.user) {
-          console.log('🔐 Found existing session, switching to reset step');
           setStep('reset');
         }
       });

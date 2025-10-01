@@ -5,12 +5,13 @@ import { normalizeComparisonSlug } from '../utils/comparisonUtils';
 import { getComparisonBySlug } from '../data/services/comparison-service';
 import { InvestmentFundStructuredDataService } from './investmentFundStructuredDataService';
 import { EnhancedStructuredDataService } from './enhancedStructuredDataService';
+import type { Fund } from '../data/types/funds';
 
 
 export class ConsolidatedSEOService {
-  private static readonly DEFAULT_IMAGE = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
+  private static readonly DEFAULT_IMAGE = 'https://funds.movingto.com/lovable-uploads/3965a727-dc95-4cfe-bc27-546bdd2397f3.png';
   private static readonly MAX_TITLE_LENGTH = 60;
-  private static readonly MAX_DESCRIPTION_LENGTH = 155;
+  private static readonly MAX_DESCRIPTION_LENGTH = 160;
 
   // Clean up only managed structured data, preserve FAQs and other schemas
   static cleanup(): void {
@@ -21,17 +22,21 @@ export class ConsolidatedSEOService {
 
   // Optimize title and description
   static optimizeText(text: string, maxLength: number): string {
+    if (!text || text.trim().length === 0) {
+      return maxLength === this.MAX_TITLE_LENGTH ? 'Portugal Golden Visa Investment Funds' : 'Compare Portugal Golden Visa investment funds';
+    }
+
     if (text.length <= maxLength) return text;
-    
+
     const truncated = text.substring(0, maxLength - 3);
     const lastSpace = truncated.lastIndexOf(' ');
-    return lastSpace > maxLength * 0.8 
+    return lastSpace > maxLength * 0.8
       ? truncated.substring(0, lastSpace) + '...'
       : truncated + '...';
   }
 
   // Generate optimized fund title with key metrics (under 60 chars)
-  private static generateFundTitle(fund: any): string {
+  private static generateFundTitle(fund: Fund): string {
     // Prioritize critical keywords: Fund name + Portugal Golden Visa
     const fundNameShort = fund.name.length > 30 
       ? fund.name.substring(0, 27) + '...' 
@@ -51,66 +56,66 @@ export class ConsolidatedSEOService {
   }
 
   // Generate optimized fund description with USPs, performance, and competitive positioning
-  private static generateFundDescription(fund: any): string {
+  private static generateFundDescription(fund: Fund): string {
     try {
       const parts: string[] = [];
-      
+
       // Start with primary keyword and value prop
       parts.push(`Portugal Golden Visa ${fund.category} fund by ${fund.managerName}`);
-      
+
       // Add minimum investment with context
-      const minInvest = fund.minimumInvestment >= 1000000 
+      const minInvest = fund.minimumInvestment >= 1000000
         ? `€${(fund.minimumInvestment / 1000000).toFixed(1)}M`
         : `€${(fund.minimumInvestment / 1000).toFixed(0)}k`;
-      parts.push(`${minInvest} minimum investment`);
-      
+      parts.push(`${minInvest} minimum`);
+
       // Add return target if available
       if (fund.returnTarget) {
-        parts.push(`${fund.returnTarget} target return`);
+        parts.push(`${fund.returnTarget} target`);
       }
-      
+
       // Add historical performance if available (high-impact SEO)
       if (fund.historicalPerformance && typeof fund.historicalPerformance === 'object') {
         const performanceData = Object.entries(fund.historicalPerformance)
           .sort(([yearA], [yearB]) => parseInt(yearB) - parseInt(yearA));
-        
+
         if (performanceData.length > 0) {
           const [latestYear, latestData]: [string, any] = performanceData[0];
           if (latestData && latestData.returns) {
-            parts.push(`${latestData.returns}% return in ${latestYear}`);
+            parts.push(`${latestData.returns}% in ${latestYear}`);
           }
         }
       }
-      
+
       // Add key USPs with competitive advantages
       const usps: string[] = [];
-      if (fund.tags?.includes('UCITS')) usps.push('UCITS regulated');
+      if (fund.tags?.includes('UCITS')) usps.push('UCITS');
       if (fund.tags?.includes('Daily NAV')) usps.push('daily liquidity');
       if (fund.tags?.includes('No Lock-Up')) usps.push('no lock-up');
       if (fund.tags?.includes('PFIC-Compliant')) usps.push('US tax-compliant');
-      
+
       if (usps.length > 0) {
         parts.push(usps.slice(0, 2).join(', '));
       }
-      
+
       // Add management fee
       if (fund.managementFee) {
-        parts.push(`${fund.managementFee}% management fee`);
+        parts.push(`${fund.managementFee}% fee`);
       }
-      
+
       // Close with regulatory compliance
       parts.push(`${fund.regulatedBy || 'CMVM'} regulated`);
-      
+
       return parts.join('. ') + '.';
     } catch (error) {
       console.error('[ConsolidatedSEO] Error generating fund description:', error);
       // Fallback description
-      return `${fund.name} is a Portugal Golden Visa eligible ${fund.category} investment fund managed by ${fund.managerName}. Minimum investment: €${fund.minimumInvestment.toLocaleString()}.`;
+      return `${fund.name} is a Portugal Golden Visa eligible ${fund.category} investment fund managed by ${fund.managerName}. Minimum: €${fund.minimumInvestment.toLocaleString()}.`;
     }
   }
 
   // Generate dynamic keywords based on fund characteristics
-  private static generateFundKeywords(fund: any): string[] {
+  private static generateFundKeywords(fund: Fund): string[] {
     const keywords: string[] = [
       'Portugal Golden Visa',
       fund.name,
@@ -456,12 +461,16 @@ export class ConsolidatedSEOService {
       canonical.setAttribute('rel', 'canonical');
       document.head.appendChild(canonical);
     }
-    canonical.setAttribute('href', url);
+    // Ensure absolute URL
+    const absoluteUrl = url.startsWith('http') ? url : `${URL_CONFIG.BASE_URL}${url.startsWith('/') ? url : '/' + url}`;
+    canonical.setAttribute('href', absoluteUrl);
   }
 
   private static setRobots(robotsDirective?: string): void {
     // Ensure fund pages are always indexable - never use noindex for funds
-    const robots = robotsDirective === 'noindex, follow' ? 'index, follow' : (robotsDirective || 'index, follow, max-image-preview:large');
+    // Only allow noindex for auth pages and 404s
+    const isAuthOrNotFound = robotsDirective === 'noindex, nofollow';
+    const robots = isAuthOrNotFound ? robotsDirective : 'index, follow, max-image-preview:large';
     this.setOrUpdateMeta('robots', robots);
   }
 
@@ -544,29 +553,47 @@ export class ConsolidatedSEOService {
   }
 
   private static setStructuredData(structuredData: any): void {
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.setAttribute('data-managed', 'consolidated-seo');
-    
-    // Ensure structured data is valid before adding to DOM
     try {
-      if (structuredData && typeof structuredData === 'object') {
-        // Ensure @context exists and is a string
-        if (Array.isArray(structuredData)) {
-          structuredData.forEach(item => {
-            if (item && typeof item === 'object' && !item['@context']) {
+      if (!structuredData || typeof structuredData !== 'object') {
+        console.warn('[ConsolidatedSEO] Invalid structured data:', structuredData);
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.setAttribute('data-managed', 'consolidated-seo');
+
+      // Ensure @context exists and is a string
+      if (Array.isArray(structuredData)) {
+        structuredData.forEach(item => {
+          if (item && typeof item === 'object') {
+            if (!item['@context']) {
               item['@context'] = 'https://schema.org';
             }
-          });
-        } else if (!structuredData['@context']) {
+            // Validate @type exists
+            if (!item['@type']) {
+              console.warn('[ConsolidatedSEO] Structured data item missing @type:', item);
+            }
+          }
+        });
+      } else {
+        if (!structuredData['@context']) {
           structuredData['@context'] = 'https://schema.org';
         }
-        
-        script.textContent = JSON.stringify(structuredData, null, 2);
-        document.head.appendChild(script);
+        // Validate @type exists
+        if (!structuredData['@type']) {
+          console.warn('[ConsolidatedSEO] Structured data missing @type:', structuredData);
+        }
       }
+
+      // Validate JSON before adding to DOM
+      const jsonString = JSON.stringify(structuredData, null, 2);
+      JSON.parse(jsonString); // Validate it's valid JSON
+
+      script.textContent = jsonString;
+      document.head.appendChild(script);
     } catch (error) {
-      console.warn('Failed to add structured data:', error);
+      console.error('[ConsolidatedSEO] Failed to add structured data:', error, structuredData);
     }
   }
 
@@ -643,7 +670,7 @@ export class ConsolidatedSEOService {
     ];
   }
 
-  private static getFundStructuredData(fund: any): any {
+  private static getFundStructuredData(fund: Fund): Record<string, unknown>[] {
     // Use comprehensive investment fund structured data
     const investmentFundSchema = InvestmentFundStructuredDataService.generateInvestmentFundSchema(fund);
     
@@ -986,7 +1013,7 @@ export class ConsolidatedSEOService {
     };
   }
 
-  private static getFundAlternativesStructuredData(fund: any): any {
+  private static getFundAlternativesStructuredData(fund: Fund): Record<string, unknown>[] {
     // Simple structured data without dynamic imports  
     const baseStructuredData = [
       {
@@ -1026,7 +1053,7 @@ export class ConsolidatedSEOService {
 
 
   // Generate fund comparison structured data
-  private static getFundComparisonStructuredData(fund1: any, fund2: any) {
+  private static getFundComparisonStructuredData(fund1: Fund, fund2: Fund): Record<string, unknown>[] {
     if (!fund1 || !fund2 || !fund1.name || !fund2.name || !fund1.id || !fund2.id) return this.getGenericComparisonStructuredData();
 
     const normalizedSlug = `${[fund1.id, fund2.id].sort().join('-vs-')}`;

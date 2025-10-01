@@ -33,40 +33,58 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
       });
 
       ConsolidatedSEOService.applyMetaTags(seoData);
-      
-      // Add preload hints for critical resources on fund pages
-      if (pageType === 'fund' && funds && funds.length > 0) {
-        const fund = funds[0];
-        
-        // Preload fund manager page
-        const managerPreload = document.createElement('link');
-        managerPreload.rel = 'prefetch';
-        managerPreload.href = `/manager/${fund.managerName.toLowerCase().replace(/\s+/g, '-')}`;
-        document.head.appendChild(managerPreload);
-        
-        // Preconnect to external resources
-        if (fund.websiteUrl) {
-          const preconnect = document.createElement('link');
-          preconnect.rel = 'preconnect';
-          try {
-            const url = new URL(fund.websiteUrl);
-            preconnect.href = url.origin;
-            document.head.appendChild(preconnect);
-          } catch (e) {
-            // Invalid URL, skip
-          }
-        }
-      }
-      
-      // Only noindex true 404 pages
-      if (pageType === '404') {
+// Add preload hints for critical resources on fund pages
+if (pageType === 'fund' && funds && funds.length > 0) {
+  const fund = funds[0];
+
+  // Preload fund manager page
+  const managerPreload = document.createElement('link');
+  managerPreload.rel = 'prefetch';
+  managerPreload.href = `/manager/${fund.managerName.toLowerCase().replace(/\s+/g, '-')}`;
+  document.head.appendChild(managerPreload);
+
+  // Preconnect to external resources
+  if (fund.websiteUrl) {
+    const preconnect = document.createElement('link');
+    preconnect.rel = 'preconnect';
+    try {
+      const url = new URL(fund.websiteUrl);
+      preconnect.href = url.origin;
+      document.head.appendChild(preconnect);
+    } catch (e) {
+      // Invalid URL, skip
+    }
+  }
+}
+
+// Critical: Never apply noindex to fund pages
+// Only apply noindex to 404 pages and auth pages
+const noIndexPages = ['404', 'manager-auth', 'investor-auth'];
+if (noIndexPages.includes(pageType)) {
+  const robotsContent = pageType === '404' ? 'noindex, follow' : 'noindex, nofollow';
+
+  let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+  if (!robots) {
+    robots = document.createElement('meta') as HTMLMetaElement;
+    robots.setAttribute('name', 'robots');
+    document.head.appendChild(robots);
+  }
+  robots.setAttribute('content', robotsContent);
+}
+
         let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
         if (!robots) {
           robots = document.createElement('meta');
           robots.setAttribute('name', 'robots');
           document.head.appendChild(robots);
         }
-        robots.setAttribute('content', 'noindex, follow');
+        robots.setAttribute('content', robotsContent);
+      } else {
+        // Ensure fund pages are indexed
+        let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+        if (robots && robots.getAttribute('content')?.includes('noindex')) {
+          robots.setAttribute('content', 'index, follow, max-image-preview:large');
+        }
       }
       
       // Dispatch SEO update event for validation

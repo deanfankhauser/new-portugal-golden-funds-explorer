@@ -16,19 +16,10 @@ import { supabase } from '@/integrations/supabase/client';
 
 const AuthAwareButton = () => {
   const [isAdmin, setIsAdmin] = useState(false);
-  
-  // Add error boundary and safe fallback
-  let authState;
-  try {
-    authState = useEnhancedAuth();
-  } catch (error) {
-    console.error('Auth context error:', error);
-    return <UniversalAuthButton />;
-  }
 
+  // MUST call hook unconditionally at top level
+  const authState = useEnhancedAuth();
   const { user, profile, userType, signOut, loading } = authState;
-
-  console.log('🔐 AuthAwareButton state:', { user: !!user, profile: !!profile, loading, userType });
 
   // Check admin status
   useEffect(() => {
