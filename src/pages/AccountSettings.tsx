@@ -209,7 +209,6 @@ const AccountSettings = () => {
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log('🔑 Password change initiated, user:', user?.email, 'loading:', loading);
 
     // reset status
     setPasswordChangeStatus('idle');
@@ -217,7 +216,6 @@ const AccountSettings = () => {
     
     // Check if user is authenticated
     if (!user) {
-      console.log('🔑 No authenticated user found');
       toast.error("Authentication Error", {
         description: "You must be logged in to change your password."
       });
@@ -247,12 +245,10 @@ const AccountSettings = () => {
     }
 
     setIsUpdatingPassword(true);
-    console.log('🔑 Starting password update for user:', user.email);
 
     // Listen for auth events to detect success even if the promise takes long
     let finished = false;
     const { data: authSub } = supabase.auth.onAuthStateChange((event) => {
-      console.log('🔑 Auth event during password change:', event);
       if (!finished && (event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED')) {
         finished = true;
         setIsUpdatingPassword(false);
@@ -277,7 +273,6 @@ const AccountSettings = () => {
     }, 20000);
 
     try {
-      console.log('🔑 Calling supabase.auth.updateUser');
       const { error } = await supabase.auth.updateUser({ password: passwordData.newPassword });
 
       if (finished) return; // already handled by auth event
@@ -285,12 +280,10 @@ const AccountSettings = () => {
       authSub.subscription.unsubscribe();
 
       if (error) {
-        console.log('🔑 Password update failed:', error.message);
         setPasswordChangeStatus('error');
         setPasswordChangeMessage(error.message);
         toast.error("Password Update Failed", { description: error.message });
       } else {
-        console.log('🔑 Password update successful (no auth event)');
         setPasswordChangeStatus('success');
         setPasswordChangeMessage('Your password has been successfully updated.');
         toast.success("Password Changed", { description: "Your password has been successfully updated." });
@@ -304,7 +297,6 @@ const AccountSettings = () => {
       setPasswordChangeMessage('An unexpected error occurred. Please try again.');
       toast.error("Update Failed", { description: "An unexpected error occurred. Please try again." });
     } finally {
-      console.log('🔑 Setting isUpdatingPassword to false');
       setIsUpdatingPassword(false);
     }
   };

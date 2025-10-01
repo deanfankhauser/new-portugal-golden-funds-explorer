@@ -68,7 +68,6 @@ const AdminPanel = () => {
       if (!isAdmin) return;
 
       try {
-        console.log('Fetching admin stats...');
         
         // Get pending suggestions count
         const { count: pendingCount, error: pendingError } = await supabase
@@ -79,7 +78,6 @@ const AdminPanel = () => {
         if (pendingError) {
           console.error('Error fetching pending count:', pendingError);
         } else {
-          console.log('Pending suggestions count:', pendingCount);
         }
 
         // Get today's approved suggestions

@@ -78,8 +78,6 @@ const ManagerAuth = () => {
     setIsSubmitting(true);
     setError(null);
 
-    console.log('🔐 Starting manager login process with context...');
-
     try {
       const { error } = await signIn(loginData.email, loginData.password);
       
@@ -103,7 +101,6 @@ const ManagerAuth = () => {
         }
         setIsSubmitting(false);
       } else {
-        console.log('🔐 Login successful, redirecting to home...');
         toast.success("Welcome back!", {
           description: "You have been successfully logged in."
         });

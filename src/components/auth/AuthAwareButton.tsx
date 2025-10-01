@@ -21,8 +21,6 @@ const AuthAwareButton = () => {
   const authState = useEnhancedAuth();
   const { user, profile, userType, signOut, loading } = authState;
 
-  console.log('🔐 AuthAwareButton state:', { user: !!user, profile: !!profile, loading, userType });
-
   // Check admin status
   useEffect(() => {
     const checkAdminStatus = async () => {
