@@ -322,16 +322,6 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
         <p className="text-xs text-muted-foreground pt-4 border-t">
           Capital at risk. Past performance isn't indicative of future returns.
         </p>
-
-        {/* Suggest Edit Link */}
-        <div className="pt-3 text-center">
-          <button className="text-xs text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1">
-            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
-            Suggest an edit
-          </button>
-        </div>
       </CardContent>
     </Card>
   );

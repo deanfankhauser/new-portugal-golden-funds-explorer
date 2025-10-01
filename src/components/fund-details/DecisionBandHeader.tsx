@@ -40,23 +40,34 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
 
   return (
     <div className="space-y-8">
-      {/* Clean Title Section */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-3 flex-wrap">
-          {isOpenForSubscriptions && (
-            <Badge variant="success" className="text-xs font-medium">
-              Open for subscriptions
-            </Badge>
-          )}
+      {/* Header with Suggest Edit */}
+      <div className="flex items-start justify-between gap-6">
+        <div className="flex-1 space-y-4">
+          <div className="flex items-center gap-3 flex-wrap">
+            {isOpenForSubscriptions && (
+              <Badge variant="success" className="text-xs font-medium">
+                Open for subscriptions
+              </Badge>
+            )}
+          </div>
+          
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+            {fund.name}
+          </h1>
+          
+          <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
+            {summary}
+          </p>
         </div>
         
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-          {fund.name}
-        </h1>
-        
-        <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-          {summary}
-        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          className="shrink-0 gap-2"
+        >
+          <Pencil className="h-4 w-4" />
+          Suggest an edit
+        </Button>
       </div>
 
       {/* Clean CTAs */}
@@ -78,6 +89,43 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
         >
           {isCompared ? 'In Comparison' : 'Compare'}
         </Button>
+      </div>
+
+      {/* Key Highlights Section */}
+      <div className="space-y-4 max-w-2xl">
+        <h2 className="text-lg font-semibold">Why This Fund?</h2>
+        <ul className="space-y-3">
+          {hasGoldenVisa && (
+            <li className="flex items-start gap-3">
+              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+              <span className="text-sm text-muted-foreground leading-relaxed">
+                <strong className="text-foreground">Golden Visa Eligible</strong> — Qualifies for Portugal's Golden Visa program
+              </span>
+            </li>
+          )}
+          <li className="flex items-start gap-3">
+            <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+            <span className="text-sm text-muted-foreground leading-relaxed">
+              <strong className="text-foreground">{fund.regulatedBy || 'CMVM'} Regulated</strong> — Licensed and supervised by Portuguese authorities
+            </span>
+          </li>
+          {redemptionFreq === 'daily' && (
+            <li className="flex items-start gap-3">
+              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+              <span className="text-sm text-muted-foreground leading-relaxed">
+                <strong className="text-foreground">Daily Liquidity</strong> — Redeem your investment any business day
+              </span>
+            </li>
+          )}
+          {fund.established && (
+            <li className="flex items-start gap-3">
+              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+              <span className="text-sm text-muted-foreground leading-relaxed">
+                <strong className="text-foreground">Established {fund.established}</strong> — {new Date().getFullYear() - Number(fund.established)} years of track record
+              </span>
+            </li>
+          )}
+        </ul>
       </div>
     </div>
   );
