@@ -10,8 +10,12 @@ export const generateFundComparisons = (): Array<{ fund1: Fund; fund2: Fund; slu
   
   if (!funds || funds.length === 0) {
     console.error('❌ CRITICAL: No funds available for comparison generation');
+    console.error('❌ Funds type:', typeof funds, 'Length:', funds?.length);
+    console.error('❌ This will result in 0 comparison pages in sitemap');
     return [];
   }
+  
+  console.log(`✅ Generating comparisons from ${funds.length} funds...`);
   
   for (let i = 0; i < funds.length; i++) {
     for (let j = i + 1; j < funds.length; j++) {

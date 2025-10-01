@@ -63,11 +63,18 @@ export async function generateStaticFiles() {
   
   // Use the new comprehensive sitemap generator (PRIMARY METHOD)
   console.log('\n🗺️  Starting COMPREHENSIVE sitemap generation...');
+  console.log('🔍 Debug: Checking funds availability before sitemap generation...');
+  
+  // Import funds to verify they're available
+  const { funds: availableFunds } = await import('../../src/data/services/funds-service');
+  console.log(`🔍 Debug: ${availableFunds?.length || 0} funds available for sitemap generation`);
+  
   try {
     generateComprehensiveSitemaps(distDir);
     console.log('✅ Comprehensive sitemap generation completed successfully!');
   } catch (sitemapError) {
     console.error('❌ CRITICAL: Comprehensive sitemap generation failed:', sitemapError);
+    console.error('❌ Error stack:', sitemapError instanceof Error ? sitemapError.stack : 'No stack trace');
     console.warn('⚠️  Falling back to legacy generators (expect missing pages)...');
     
     // Fallback to existing generators

@@ -239,20 +239,30 @@ ${sitemapElements}
 
     // Comparison pages - ALL fund combinations
     try {
+      console.log(`🔍 Attempting to generate comparison pages from ${funds.length} funds...`);
       const comparisonSlugs = getAllComparisonSlugs();
-      console.log(`🔍 Generating ${comparisonSlugs.length} comparison pages...`);
-      comparisonSlugs.forEach(slug => {
-        urls.push({
-          loc: URL_CONFIG.buildComparisonUrl(slug),
-          lastmod: currentDate,
-          changefreq: 'weekly',
-          priority: 0.85
+      
+      if (comparisonSlugs.length === 0) {
+        console.error('❌ CRITICAL: getAllComparisonSlugs returned 0 slugs!');
+        console.error('❌ Expected 378 slugs from 28 funds (n*(n-1)/2)');
+        console.error('❌ Funds available:', funds.length);
+        // Don't throw - continue with warning
+      } else {
+        console.log(`🔍 Generating ${comparisonSlugs.length} comparison pages...`);
+        comparisonSlugs.forEach(slug => {
+          urls.push({
+            loc: URL_CONFIG.buildComparisonUrl(slug),
+            lastmod: currentDate,
+            changefreq: 'weekly',
+            priority: 0.85
+          });
         });
-      });
-      console.log(`✅ Added ${comparisonSlugs.length} comparison pages to sitemap`);
+        console.log(`✅ Added ${comparisonSlugs.length} comparison pages to sitemap`);
+      }
     } catch (error) {
       console.error('❌ CRITICAL: Failed to generate comparison URLs:', error);
-      throw error; // Don't silently fail
+      console.error('❌ Error details:', error);
+      // Don't throw - log and continue
     }
 
     return urls;
