@@ -5,24 +5,48 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { PageSEO } from '../components/common/PageSEO';
 import FundDetailsContent from '../components/fund-details/FundDetailsContent';
+import FundPagePerformanceOptimizer from '../components/fund-details/FundPagePerformanceOptimizer';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
+import { useFundPageSEOAudit } from '../hooks/useFundPageSEOAudit';
 import type { Fund } from '../data/types/funds';
 
 const FundDetails = () => {
-  const { id, potentialFundId } = useParams<{ id?: string; potentialFundId?: string }>();
+  const { id } = useParams<{ id: string }>();
   const location = useLocation();
   
-  // Support direct fund routing: /:fundId
-  const fundId = id || potentialFundId;
-  const { getFundById } = useRealTimeFunds();
+  // Extract fund ID from route params or pathname
+  // Support both /funds/:id and /:id patterns
+  const fundId = id || location.pathname.slice(1).split('/')[0];
+  
+  const { getFundById, loading } = useRealTimeFunds();
   const fund = fundId ? getFundById(fundId) : null;
   const { addToRecentlyViewed } = useRecentlyViewed();
+  
+  // Run SEO audit in development when fund is loaded
+  const { auditResult } = useFundPageSEOAudit(import.meta.env.DEV && !!fund);
+  
   useEffect(() => {
     if (fund) {
       addToRecentlyViewed(fund);
     }
   }, [fund, addToRecentlyViewed]);
+
+  // Show loading state while fetching funds
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Header />
+        <main className="flex-1 flex items-center justify-center p-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading fund details...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!fund) {
     return (
@@ -45,6 +69,7 @@ const FundDetails = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <PageSEO pageType="fund" fundName={fund.name} funds={[fund]} />
+      <FundPagePerformanceOptimizer fund={fund} />
       
       <Header />
       

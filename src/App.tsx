@@ -51,11 +51,10 @@ const TempMigrationPage = lazy(() => import('./pages/TempMigrationPage'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
-// Import funds data to validate direct fund routes
-import { fundsData } from './data/mock/funds/index';
+// Import real-time funds hook for route validation
+import { useRealTimeFunds } from './hooks/useRealTimeFunds';
 
 import './App.css';
-import SEODebugger from './components/common/SEODebugger';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -98,38 +97,16 @@ const ScrollToTop = () => {
 
 
 // Component to handle direct fund routes (e.g., /horizon-fund)
+// Simplified to just render FundDetails which handles fund validation internally
 const DirectFundRoute = () => {
-  const location = useLocation();
-  const pathname = location.pathname;
-  
-  // Extract potential fund ID from pathname (remove leading slash)
-  const potentialFundId = pathname.slice(1);
-  
-  // Check if this path matches a fund ID
-  const fund = fundsData.find(f => f.id === potentialFundId);
-  
-  if (fund) {
-    // Valid fund found, render fund details with lazy loading
-    return (
-      <Suspense fallback={<FundDetailsLoader />}>
-        <FundDetails />
-      </Suspense>
-    );
-  }
-  
-  // No fund found, show 404 with lazy loading
   return (
-    <Suspense fallback={<PageLoader />}>
-      <NotFound />
+    <Suspense fallback={<FundDetailsLoader />}>
+      <FundDetails />
     </Suspense>
   );
 };
 
-// Import SEO and performance optimization hook
-// SEO optimization removed - using consolidated service
-import SEOProvider from './components/providers/SEOProvider';
-
-import SEOEnhancer from './components/common/SEOEnhancer';
+// SEO handled by PageSEO component in each page
 
 function App() {
   // SEO optimization handled by consolidated service
@@ -145,7 +122,6 @@ function App() {
             <EnhancedAuthProvider>
               <TooltipProvider>
               <Router>
-                <SEOProvider>
                   <ScrollToTop />
                   <div className="min-h-screen w-full bg-background">
                     <Routes>
@@ -301,10 +277,6 @@ function App() {
                     </Routes>
                   </div>
                   <Toaster />
-                  <SEODebugger />
-                  <SEOEnhancer enableMonitoring={import.meta.env.DEV} />
-                  
-                </SEOProvider>
               </Router>
             </TooltipProvider>
             </EnhancedAuthProvider>

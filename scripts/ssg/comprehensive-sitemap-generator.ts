@@ -7,6 +7,7 @@ import path from 'path';
  */
 export function generateComprehensiveSitemaps(distDir: string): void {
   console.log('🗺️  Starting comprehensive sitemap generation...');
+  console.log(`   📂 Output directory: ${distDir}`);
   
   try {
     // Generate sitemaps
