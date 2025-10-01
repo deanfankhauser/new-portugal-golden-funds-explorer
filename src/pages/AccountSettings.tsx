@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Upload, Loader2, User, Mail, Lock, Camera, Home, Trash2, Edit3 } from 'lucide-react';
+import { Upload, Loader as Loader2, User, Mail, Lock, Camera, Hop as Home, Trash2, CreditCard as Edit3 } from 'lucide-react';
 import { toast } from "@/components/ui/sonner";
 import { Navigate, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
