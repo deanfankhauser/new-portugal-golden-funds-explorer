@@ -11,8 +11,8 @@ async function generateProductionSitemap() {
   try {
     console.log('🗺️  Starting production sitemap generation...');
     
-    // Use comprehensive sitemap service
-    const { ComprehensiveSitemapService } = await import('../src/services/comprehensiveSitemapService.js');
+    // Use comprehensive sitemap service (TypeScript file)
+    const { ComprehensiveSitemapService } = await import('../src/services/comprehensiveSitemapService.ts');
     
     const publicDir = path.join(process.cwd(), 'public');
     

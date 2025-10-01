@@ -11,7 +11,7 @@ import type { Fund } from '../data/types/funds';
 export class ConsolidatedSEOService {
   private static readonly DEFAULT_IMAGE = 'https://funds.movingto.com/lovable-uploads/3965a727-dc95-4cfe-bc27-546bdd2397f3.png';
   private static readonly MAX_TITLE_LENGTH = 60;
-  private static readonly MAX_DESCRIPTION_LENGTH = 155;
+  private static readonly MAX_DESCRIPTION_LENGTH = 160;
 
   // Clean up duplicate meta tags
   static cleanup(): void {
@@ -115,58 +115,58 @@ export class ConsolidatedSEOService {
   private static generateFundDescription(fund: Fund): string {
     try {
       const parts: string[] = [];
-      
+
       // Start with primary keyword and value prop
       parts.push(`Portugal Golden Visa ${fund.category} fund by ${fund.managerName}`);
-      
+
       // Add minimum investment with context
-      const minInvest = fund.minimumInvestment >= 1000000 
+      const minInvest = fund.minimumInvestment >= 1000000
         ? `€${(fund.minimumInvestment / 1000000).toFixed(1)}M`
         : `€${(fund.minimumInvestment / 1000).toFixed(0)}k`;
-      parts.push(`${minInvest} minimum investment`);
-      
+      parts.push(`${minInvest} minimum`);
+
       // Add return target if available
       if (fund.returnTarget) {
-        parts.push(`${fund.returnTarget} target return`);
+        parts.push(`${fund.returnTarget} target`);
       }
-      
+
       // Add historical performance if available (high-impact SEO)
       if (fund.historicalPerformance && typeof fund.historicalPerformance === 'object') {
         const performanceData = Object.entries(fund.historicalPerformance)
           .sort(([yearA], [yearB]) => parseInt(yearB) - parseInt(yearA));
-        
+
         if (performanceData.length > 0) {
           const [latestYear, latestData]: [string, any] = performanceData[0];
           if (latestData && latestData.returns) {
-            parts.push(`${latestData.returns}% return in ${latestYear}`);
+            parts.push(`${latestData.returns}% in ${latestYear}`);
           }
         }
       }
-      
+
       // Add key USPs with competitive advantages
       const usps: string[] = [];
-      if (fund.tags?.includes('UCITS')) usps.push('UCITS regulated');
+      if (fund.tags?.includes('UCITS')) usps.push('UCITS');
       if (fund.tags?.includes('Daily NAV')) usps.push('daily liquidity');
       if (fund.tags?.includes('No Lock-Up')) usps.push('no lock-up');
       if (fund.tags?.includes('PFIC-Compliant')) usps.push('US tax-compliant');
-      
+
       if (usps.length > 0) {
         parts.push(usps.slice(0, 2).join(', '));
       }
-      
+
       // Add management fee
       if (fund.managementFee) {
-        parts.push(`${fund.managementFee}% management fee`);
+        parts.push(`${fund.managementFee}% fee`);
       }
-      
+
       // Close with regulatory compliance
       parts.push(`${fund.regulatedBy || 'CMVM'} regulated`);
-      
+
       return parts.join('. ') + '.';
     } catch (error) {
       console.error('[ConsolidatedSEO] Error generating fund description:', error);
       // Fallback description
-      return `${fund.name} is a Portugal Golden Visa eligible ${fund.category} investment fund managed by ${fund.managerName}. Minimum investment: €${fund.minimumInvestment.toLocaleString()}.`;
+      return `${fund.name} is a Portugal Golden Visa eligible ${fund.category} investment fund managed by ${fund.managerName}. Minimum: €${fund.minimumInvestment.toLocaleString()}.`;
     }
   }
 
