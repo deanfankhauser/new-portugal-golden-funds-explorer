@@ -22,6 +22,8 @@ export default defineConfig(({ mode }) => ({
   build: {
     // Increase chunk size warning limit to 1000kb
     chunkSizeWarningLimit: 1000,
+    // Enable CSS code splitting to reduce render-blocking CSS
+    cssCodeSplit: true,
     rollupOptions: {
       output: {
         // Disable manual chunking to prevent module evaluation issues
