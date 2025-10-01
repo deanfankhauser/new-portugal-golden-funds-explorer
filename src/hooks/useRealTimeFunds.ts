@@ -4,11 +4,8 @@ import { funds as staticFunds } from '../data/funds'; // Fallback to static data
 import { supabase } from '../integrations/supabase/client';
 
 export const useRealTimeFunds = () => {
-  // Detect SSR/SSG environment
-  const isSSR = typeof window === 'undefined';
-  
   const [funds, setFunds] = useState<Fund[]>(staticFunds);
-  const [loading, setLoading] = useState(!isSSR); // Not loading in SSR since we use static data
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
 // Helper to apply approved edit history changes on top of base funds
@@ -111,13 +108,6 @@ const applyEditHistory = (
 
 // Function to fetch funds from Supabase
   const fetchFunds = async () => {
-    // In SSR/SSG, immediately return static funds without fetching
-    if (isSSR) {
-      setFunds(staticFunds);
-      setLoading(false);
-      return;
-    }
-    
     try {
       setLoading(true);
       console.log('🔍 Attempting to fetch funds from Supabase...');

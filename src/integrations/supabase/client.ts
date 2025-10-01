@@ -3,9 +3,6 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 import { getSupabaseConfig } from '../../lib/supabase-config';
 
-// Detect if we're in SSR/SSG context
-const isSSR = typeof window === 'undefined';
-
 // Get environment-specific configuration
 const config = getSupabaseConfig();
 
@@ -14,14 +11,8 @@ const config = getSupabaseConfig();
 
 export const supabase = createClient<Database>(config.url, config.anonKey, {
   auth: {
-    storage: !isSSR ? localStorage : undefined,
-    persistSession: !isSSR,
-    autoRefreshToken: !isSSR,
-  },
-  // In SSR, disable realtime features
-  realtime: !isSSR ? undefined : {
-    params: {
-      eventsPerSecond: 0
-    }
+    storage: typeof window !== 'undefined' ? localStorage : undefined,
+    persistSession: typeof window !== 'undefined',
+    autoRefreshToken: typeof window !== 'undefined',
   }
 });
