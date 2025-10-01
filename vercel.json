@@ -13,10 +13,12 @@
     {
       "source": "/robots.txt",
       "destination": "/robots.txt"
+    },
+    {
+      "source": "/((?!assets|api|_next|favicon.ico|sitemap.xml|robots.txt).*)",
+      "destination": "/index.html"
     }
   ],
-  "cleanUrls": true,
-  "trailingSlash": false,
   "redirects": [
     {
       "source": "/(.*)",
