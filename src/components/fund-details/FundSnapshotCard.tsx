@@ -199,31 +199,133 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
     }
   ];
 
+  // Helper function to determine US eligibility
+  const determineUSEligibility = (fund: Fund): string => {
+    const hasUSRestriction = fund.tags?.some(tag => 
+      tag.toLowerCase().includes('us') && tag.toLowerCase().includes('restrict')
+    );
+    return !hasUSRestriction ? "Yes" : "No";
+  };
+
+  // Critical items to show above-the-fold
+  const criticalItems = [
+    {
+      label: 'Min Investment',
+      value: formatCurrency(fund.minimumInvestment),
+      icon: '💰'
+    },
+    {
+      label: 'Redemptions',
+      value: fund.redemptionTerms?.frequency || 'N/A',
+      icon: '📅'
+    },
+    {
+      label: 'Open to US',
+      value: determineUSEligibility(fund),
+      icon: '🇺🇸'
+    },
+    {
+      label: 'Lock-up',
+      value: getLockUpPeriod(),
+      icon: '🔒'
+    },
+    {
+      label: 'Fund Size',
+      value: fund.fundSize ? formatCurrency(fund.fundSize * 1000000) : 'N/A',
+      icon: '📊'
+    }
+  ];
+
+  // Additional items for collapsible section
+  const additionalItems = [
+    {
+      label: 'Redemption Notice',
+      value: fund.redemptionTerms?.noticePeriod ? `${fund.redemptionTerms.noticePeriod} days` : 'N/A',
+      icon: '⏰'
+    },
+    {
+      label: 'Fund Type',
+      value: getFundTypeDisplay(),
+      icon: '🔄'
+    },
+    {
+      label: 'Fund Lifetime',
+      value: getFundLifetime(),
+      icon: '⏳'
+    },
+    {
+      label: 'Manager',
+      value: fund.managerName || 'Not specified',
+      icon: '👔'
+    },
+    {
+      label: 'Hurdle Rate',
+      value: getHurdleRate(fund),
+      icon: '📈'
+    },
+    {
+      label: 'CMVM License',
+      value: fund.cmvmId ? `#${fund.cmvmId}` : 'N/A',
+      icon: '🏛️'
+    },
+    {
+      label: 'Investment Sector',
+      value: fund.category,
+      icon: '🎯'
+    },
+    {
+      label: 'Subscription Fee',
+      value: fund.subscriptionFee ? `${fund.subscriptionFee}%` : 'None',
+      icon: '💳'
+    }
+  ];
+
   return (
-    <Card className="bg-card border shadow-lg">
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-foreground">Fund Snapshot</h3>
-          <Badge variant="outline" className="text-xs">
-            Key Details
-          </Badge>
+    <Card className="bg-gradient-to-br from-card via-card to-muted/30 border-2 border-primary/20 shadow-2xl">
+      <CardContent className="p-6 space-y-1">
+        <div className="mb-6">
+          <h3 className="text-xl font-bold text-foreground flex items-center gap-3">
+            <span className="text-2xl">📊</span>
+            Fund Snapshot
+          </h3>
         </div>
-        
-        <div className="grid grid-cols-1 gap-4">
-          {snapshotData.map((item, index) => (
-            <div key={index} className="flex justify-between items-center py-2 border-b border-border/30 last:border-b-0">
-              <span className="text-sm text-muted-foreground font-medium">
+
+        {/* Critical items - always visible */}
+        <div className="grid grid-cols-2 gap-x-6 gap-y-4 mb-4">
+          {criticalItems.map((item, index) => (
+            <div key={index} className="flex justify-between items-center py-2">
+              <span className="text-sm text-muted-foreground flex items-center gap-2">
+                <span>{item.icon}</span>
                 {item.label}
               </span>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-foreground text-right">
-                  {item.value}
-                </span>
-                {item.icon}
-              </div>
+              <span className="text-sm font-semibold text-foreground text-right">
+                {item.value}
+              </span>
             </div>
           ))}
         </div>
+
+        {/* Collapsible section for additional details */}
+        <details className="group">
+          <summary className="cursor-pointer list-none flex items-center justify-between py-3 text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+            <span>More key details</span>
+            <span className="transition-transform group-open:rotate-180">▾</span>
+          </summary>
+          
+          <div className="grid grid-cols-2 gap-x-6 gap-y-4 mt-2 pt-4 border-t border-border/50">
+            {additionalItems.map((item, index) => (
+              <div key={index} className="flex justify-between items-center py-2">
+                <span className="text-sm text-muted-foreground flex items-center gap-2">
+                  <span>{item.icon}</span>
+                  {item.label}
+                </span>
+                <span className="text-sm font-semibold text-foreground text-right">
+                  {item.value}
+                </span>
+              </div>
+            ))}
+          </div>
+        </details>
       </CardContent>
     </Card>
   );
