@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Plus, GitCompare, Mail, Calendar } from 'lucide-react';
+import { Plus, GitCompare, Phone } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
-import { useAuth } from '../../hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { buildBookingUrl, openExternalLink } from '../../utils/urlHelpers';
+import analytics from '../../utils/analytics';
 import type { Fund } from '../../data/types/funds';
 
 interface StickyNavigationProps {
@@ -13,10 +12,7 @@ interface StickyNavigationProps {
 
 const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isRequestingBrief, setIsRequestingBrief] = useState(false);
   const { isInComparison, addToComparison, removeFromComparison } = useComparison();
-  const { isAuthenticated, user } = useAuth();
-  const { toast } = useToast();
   const isComparing = isInComparison(fund.id);
 
   useEffect(() => {
@@ -34,146 +30,58 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
       removeFromComparison(fund.id);
     } else {
       addToComparison(fund);
+      analytics.trackEvent('add_to_comparison', {
+        fund_id: fund.id,
+        fund_name: fund.name,
+        source: 'sticky_nav'
+      });
     }
   };
 
-  const handleGetFundBrief = async () => {
-    if (!isAuthenticated || !user?.email) {
-      toast({
-        title: "Authentication Required",
-        description: "Please log in to request fund brief",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsRequestingBrief(true);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('send-fund-brief', {
-        body: {
-          userEmail: user.email,
-          fundName: fund.name,
-          fundId: fund.id,
-        },
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      toast({
-        title: "Fund Brief Requested",
-        description: `We'll send the ${fund.name} brief to ${user.email} within 24 hours.`,
-      });
-    } catch (error: any) {
-      console.error('Error requesting fund brief:', error);
-      
-      // Check if it's a specific error about no fund brief being available
-      const errorMessage = error?.message || '';
-      const isNoFundBriefError = errorMessage.includes('No fund brief available') || 
-                                errorMessage.includes('No fund brief URL found');
-      
-      toast({
-        title: "Error",
-        description: isNoFundBriefError 
-          ? "This fund doesn't have a brief document available yet." 
-          : "Failed to request fund brief. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsRequestingBrief(false);
-    }
-  };
-
-  const handleBookCall = async () => {
-    if (!isAuthenticated || !user?.email) {
-      toast({
-        title: "Authentication Required",
-        description: "Please log in to book a call",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const { error } = await supabase.functions.invoke('send-booking-request', {
-        body: { 
-          fundName: fund.name,
-          userEmail: user.email 
-        }
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Booking Request Sent!",
-        description: `We'll contact you shortly to schedule your call about ${fund.name}.`,
-      });
-    } catch (error) {
-      console.error('Error sending booking request:', error);
-      toast({
-        title: "Error",
-        description: "Failed to send booking request. Please try again.",
-        variant: "destructive",
-      });
-    }
+  const handleBookCall = () => {
+    const bookingUrl = buildBookingUrl(fund.id, fund.name);
+    openExternalLink(bookingUrl);
+    analytics.trackCTAClick('sticky_nav', 'book_call', bookingUrl);
   };
 
   if (!isVisible) return null;
 
   return (
     <>
-      {/* Desktop Sticky Header */}
-      <div className="hidden md:block fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-b border-border z-40 transition-all duration-300">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="flex items-center justify-between py-3">
+      {/* Desktop Sticky Bar */}
+      <div className="hidden md:block fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-b border-border z-50 py-3 shadow-sm">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <h2 className="text-lg font-semibold text-foreground truncate max-w-md">
-                {fund.name}
-              </h2>
-              <div className="flex items-center space-x-2">
-                {fund.historicalPerformance?.sinceInception?.returns && (
-                  <span className="text-sm px-2 py-1 bg-muted rounded-md">
-                    SI: {fund.historicalPerformance.sinceInception.returns.toFixed(1)}%
-                  </span>
-                )}
-                {fund.historicalPerformance?.ytd?.returns && (
-                  <span className="text-sm px-2 py-1 bg-muted rounded-md">
-                    YTD: {fund.historicalPerformance.ytd.returns > 0 ? '+' : ''}{fund.historicalPerformance.ytd.returns.toFixed(1)}%
-                  </span>
-                )}
-              </div>
+              <h2 className="font-semibold text-lg truncate max-w-md">{fund.name}</h2>
+              <span className="text-sm text-muted-foreground">by {fund.managerName}</span>
             </div>
             
             <div className="flex items-center space-x-3">
-              <Button
-                variant="outline"
+              <Button 
+                variant={isComparing ? "default" : "outline"}
                 size="sm"
                 onClick={handleCompareClick}
-                className="flex items-center"
               >
-                <GitCompare className="w-4 h-4 mr-1" />
-                {isComparing ? 'Remove' : 'Compare'}
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={fund.fundBriefUrl ? handleGetFundBrief : undefined}
-                disabled={isRequestingBrief || !fund.fundBriefUrl}
-                className={fund.fundBriefUrl ? '' : 'opacity-50 cursor-not-allowed'}
-              >
-                <Mail className="w-4 h-4 mr-1" />
-                {isRequestingBrief ? "Requesting..." : fund.fundBriefUrl ? "Get Fund Brief" : "No Brief Available"}
+                {isComparing ? (
+                  <>
+                    <Plus className="w-4 h-4 mr-1 rotate-45" />
+                    Remove
+                  </>
+                ) : (
+                  <>
+                    <GitCompare className="w-4 h-4 mr-1" />
+                    Compare
+                  </>
+                )}
               </Button>
               
               <Button 
                 size="sm"
                 onClick={handleBookCall}
               >
-                Book Call
-                <Calendar className="w-4 h-4 ml-1" />
+                <Phone className="w-4 h-4 mr-1" />
+                Book 15-min Call
               </Button>
             </div>
           </div>
@@ -184,30 +92,20 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border z-40 p-4">
         <div className="flex space-x-3">
           <Button 
-            variant="outline" 
-            className={`flex-1 ${fund.fundBriefUrl ? '' : 'opacity-50 cursor-not-allowed'}`}
-            onClick={fund.fundBriefUrl ? handleGetFundBrief : undefined}
-            disabled={isRequestingBrief || !fund.fundBriefUrl}
+            variant="outline"
+            className="flex-1"
+            onClick={handleCompareClick}
           >
-            <Mail className="w-4 h-4 mr-1" />
-            {isRequestingBrief ? "Requesting..." : fund.fundBriefUrl ? "Get Brief" : "No Brief"}
+            <GitCompare className="w-4 h-4 mr-1" />
+            {isComparing ? "Remove" : "Compare"}
           </Button>
           
           <Button 
             className="flex-1"
             onClick={handleBookCall}
           >
+            <Phone className="w-4 h-4 mr-1" />
             Book Call
-            <Calendar className="w-4 h-4 ml-1" />
-          </Button>
-          
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handleCompareClick}
-            className={isComparing ? "bg-primary text-primary-foreground" : ""}
-          >
-            {isComparing ? <Plus className="w-4 h-4 rotate-45" /> : <GitCompare className="w-4 h-4" />}
           </Button>
         </div>
       </div>

@@ -1,132 +1,60 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { InfoTip } from '../ui/info-tip';
-import { Mail, Calendar, BarChart3, Bookmark, Info } from 'lucide-react';
+import { Phone, BarChart3, ExternalLink, Share2 } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
-import { useShortlist } from '../../contexts/ShortlistContext';
 import { formatPercentage } from './utils/formatters';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
 import { FundEditButton } from '../fund-editing/FundEditButton';
-import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
+import { buildBookingUrl, buildShareUrl, openExternalLink } from '../../utils/urlHelpers';
 import { calculateRiskScore, getRiskLabel, getRiskColor } from '../../utils/riskCalculation';
-import { useAuth } from '../../hooks/useAuth';
-import { AuthRequiredModal } from '../fund-editing/AuthRequiredModal';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import analytics from '../../utils/analytics';
 
 interface DecisionBandHeaderProps {
   fund: Fund;
 }
 
 const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
-  const { isInComparison, addToComparison, removeFromComparison } = useComparison();
-  const { isInShortlist, addToShortlist, removeFromShortlist } = useShortlist();
-  const { user, isAuthenticated } = useAuth();
-  const { toast } = useToast();
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [isRequestingBrief, setIsRequestingBrief] = useState(false);
+  const { isInComparison, addToComparison } = useComparison();
   const isCompared = isInComparison(fund.id);
-  const isShortlisted = isInShortlist(fund.id);
 
   const handleCompareClick = () => {
-    if (isCompared) {
-      removeFromComparison(fund.id);
-    } else {
-      addToComparison(fund);
-    }
+    addToComparison(fund);
+    analytics.trackEvent('add_to_comparison', {
+      fund_id: fund.id,
+      fund_name: fund.name,
+      source: 'decision_band'
+    });
   };
 
-  const handleShortlistClick = () => {
-    if (isShortlisted) {
-      removeFromShortlist(fund.id);
-    } else {
-      addToShortlist(fund);
-    }
+  const handleBookCall = () => {
+    const bookingUrl = buildBookingUrl(fund.id, fund.name);
+    openExternalLink(bookingUrl);
+    analytics.trackCTAClick('decision_band', 'book_call', bookingUrl);
   };
 
-  const handleGetFundBrief = async () => {
-    if (!isAuthenticated) {
-      setShowAuthModal(true);
-      return;
-    }
-
-    if (!user?.email) {
-      toast({
-        title: "Error",
-        description: "User email not found. Please try logging in again.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsRequestingBrief(true);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('send-fund-brief', {
-        body: {
-          userEmail: user.email,
-          fundName: fund.name,
-          fundId: fund.id,
-        },
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      toast({
-        title: "Fund Brief Requested",
-        description: `We'll send the ${fund.name} brief to ${user.email} within 24 hours.`,
-      });
-    } catch (error: any) {
-      console.error('Error requesting fund brief:', error);
-      
-      // Check if it's a specific error about no fund brief being available
-      const errorMessage = error?.message || '';
-      const isNoFundBriefError = errorMessage.includes('No fund brief available') || 
-                                errorMessage.includes('No fund brief URL found');
-      
-      toast({
-        title: "Error",
-        description: isNoFundBriefError 
-          ? "This fund doesn't have a brief document available yet." 
-          : "Failed to request fund brief. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsRequestingBrief(false);
-    }
+  const handleShareWithPartner = () => {
+    const fundUrl = window.location.href;
+    const shareUrl = buildShareUrl(fund.name, fundUrl, fund.description);
+    window.location.href = shareUrl;
+    analytics.trackEvent('share_fund', {
+      fund_id: fund.id,
+      fund_name: fund.name,
+      source: 'decision_band'
+    });
   };
 
-  const handleBookCall = async () => {
-    if (!isAuthenticated) {
-      setShowAuthModal(true);
-      return;
-    }
-
-    try {
-      const { error } = await supabase.functions.invoke('send-booking-request', {
-        body: { 
-          fundName: fund.name,
-          userEmail: user?.email 
-        }
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Booking Request Sent!",
-        description: `We'll contact you shortly to schedule your call about ${fund.name}.`,
-      });
-    } catch (error) {
-      console.error('Error sending booking request:', error);
-      toast({
-        title: "Error",
-        description: "Failed to send booking request. Please try again.",
-        variant: "destructive",
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      analytics.trackEvent('anchor_click', {
+        fund_id: fund.id,
+        section: sectionId,
+        source: 'decision_band'
       });
     }
   };
@@ -314,62 +242,59 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
 
           {/* Right: Primary CTAs */}
           <div className="lg:col-span-1">
-            <div className="flex flex-col gap-3">
-              {/* Primary CTAs */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3">
+            <div className="flex flex-col gap-4">
+              {/* Primary & Secondary CTAs */}
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
-                  className={`font-semibold ${
-                    fund.fundBriefUrl 
-                      ? 'bg-primary hover:bg-primary/90 text-primary-foreground' 
-                      : 'bg-muted text-muted-foreground cursor-not-allowed opacity-50'
-                  }`}
-                  onClick={fund.fundBriefUrl ? handleGetFundBrief : undefined}
-                  disabled={isRequestingBrief || !fund.fundBriefUrl}
+                  size="lg"
+                  onClick={handleBookCall}
+                  className="flex-1 sm:flex-initial"
                 >
-                  <Mail className="mr-2 h-4 w-4" />
-                  {isRequestingBrief ? "Requesting..." : fund.fundBriefUrl ? "Get Fund Brief" : "No Brief Available"}
+                  <Phone className="mr-2 h-5 w-5" />
+                  Book 15-min Call
                 </Button>
                 <Button 
+                  size="lg"
                   variant="outline" 
-                  className="border-primary text-primary hover:bg-primary hover:text-primary-foreground"
-                  onClick={handleBookCall}
+                  onClick={handleCompareClick}
+                  className="flex-1 sm:flex-initial"
                 >
-                  <Calendar className="mr-2 h-4 w-4" />
-                  Book 15-min Call
+                  <BarChart3 className="mr-2 h-5 w-5" />
+                  {isCompared ? "In Compare" : "Add to Compare"}
                 </Button>
               </div>
               
-              {/* Secondary CTAs */}
-              <div className="grid grid-cols-2 gap-3">
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={handleCompareClick}
-                  className={isCompared ? "bg-accent text-accent-foreground" : ""}
+              {/* Tertiary CTAs: Anchor Links */}
+              <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
+                <button
+                  onClick={() => scrollToSection('financial-details')}
+                  className="hover:text-foreground transition-colors inline-flex items-center gap-1"
                 >
-                  <BarChart3 className="mr-2 h-4 w-4" />
-                  {isCompared ? "Remove" : "Compare"}
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={handleShortlistClick}
-                  className={isShortlisted ? "bg-accent text-accent-foreground" : ""}
+                  See Fees & Risks
+                  <ExternalLink className="h-3 w-3" />
+                </button>
+                <span className="text-muted-foreground/50">·</span>
+                <button
+                  onClick={() => scrollToSection('fund-overview')}
+                  className="hover:text-foreground transition-colors inline-flex items-center gap-1"
                 >
-                  <Bookmark className="mr-2 h-4 w-4" />
-                  {isShortlisted ? "Shortlisted" : "Shortlist"}
-                </Button>
+                  See Portfolio & Thesis
+                  <ExternalLink className="h-3 w-3" />
+                </button>
+                <span className="text-muted-foreground/50">·</span>
+                <button
+                  onClick={handleShareWithPartner}
+                  className="hover:text-foreground transition-colors inline-flex items-center gap-1"
+                >
+                  <Share2 className="h-3 w-3" />
+                  Share with Partner
+                </button>
               </div>
             </div>
           </div>
 
         </div>
       </div>
-
-      <AuthRequiredModal 
-        open={showAuthModal} 
-        onOpenChange={setShowAuthModal}
-      />
     </div>
   );
 };
