@@ -5,6 +5,7 @@ import { normalizeComparisonSlug } from '../utils/comparisonUtils';
 import { getComparisonBySlug } from '../data/services/comparison-service';
 import { InvestmentFundStructuredDataService } from './investmentFundStructuredDataService';
 import { EnhancedStructuredDataService } from './enhancedStructuredDataService';
+import type { Fund } from '../data/types/funds';
 
 
 export class ConsolidatedSEOService {
@@ -91,7 +92,7 @@ export class ConsolidatedSEOService {
   }
 
   // Generate optimized fund title with key metrics (under 60 chars)
-  private static generateFundTitle(fund: any): string {
+  private static generateFundTitle(fund: Fund): string {
     // Prioritize critical keywords: Fund name + Portugal Golden Visa
     const fundNameShort = fund.name.length > 30 
       ? fund.name.substring(0, 27) + '...' 
@@ -111,7 +112,7 @@ export class ConsolidatedSEOService {
   }
 
   // Generate optimized fund description with USPs, performance, and competitive positioning
-  private static generateFundDescription(fund: any): string {
+  private static generateFundDescription(fund: Fund): string {
     try {
       const parts: string[] = [];
       
@@ -170,7 +171,7 @@ export class ConsolidatedSEOService {
   }
 
   // Generate dynamic keywords based on fund characteristics
-  private static generateFundKeywords(fund: any): string[] {
+  private static generateFundKeywords(fund: Fund): string[] {
     const keywords: string[] = [
       'Portugal Golden Visa',
       fund.name,
@@ -725,7 +726,7 @@ export class ConsolidatedSEOService {
     ];
   }
 
-  private static getFundStructuredData(fund: any): any {
+  private static getFundStructuredData(fund: Fund): Record<string, unknown>[] {
     // Use comprehensive investment fund structured data
     const investmentFundSchema = InvestmentFundStructuredDataService.generateInvestmentFundSchema(fund);
     
@@ -1068,7 +1069,7 @@ export class ConsolidatedSEOService {
     };
   }
 
-  private static getFundAlternativesStructuredData(fund: any): any {
+  private static getFundAlternativesStructuredData(fund: Fund): Record<string, unknown>[] {
     // Simple structured data without dynamic imports  
     const baseStructuredData = [
       {
@@ -1108,7 +1109,7 @@ export class ConsolidatedSEOService {
 
 
   // Generate fund comparison structured data
-  private static getFundComparisonStructuredData(fund1: any, fund2: any) {
+  private static getFundComparisonStructuredData(fund1: Fund, fund2: Fund): Record<string, unknown>[] {
     if (!fund1 || !fund2 || !fund1.name || !fund2.name || !fund1.id || !fund2.id) return this.getGenericComparisonStructuredData();
 
     const normalizedSlug = `${[fund1.id, fund2.id].sort().join('-vs-')}`;

@@ -13,15 +13,8 @@ const MobileNavigation = () => {
   const [open, setOpen] = React.useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Auth state with error handling
-  let authState;
-  try {
-    authState = useEnhancedAuth();
-  } catch (error) {
-    console.error('Auth context error in mobile nav:', error);
-    authState = { user: null, profile: null, userType: null, signOut: () => {}, loading: false };
-  }
-
+  // MUST call hook unconditionally at top level
+  const authState = useEnhancedAuth();
   const { user, profile, userType, signOut, loading } = authState;
 
   // Check admin status
