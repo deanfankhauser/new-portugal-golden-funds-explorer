@@ -16,7 +16,8 @@ export class InvestmentFundStructuredDataService {
       fund.redemptionFee ? `Exit Fee: ${cleanFeeString(fund.redemptionFee)}% on redemption` : ''
     ].filter(Boolean).join('; ');
 
-    return {
+    // Build enhanced schema with additional properties
+    const schema: any = {
       "@context": "https://schema.org",
       "@type": "InvestmentFund",
       "name": fund.name,
@@ -26,8 +27,12 @@ export class InvestmentFundStructuredDataService {
       "category": fund.category,
       "feesAndCommissionsSpecification": feesSpec || "Contact fund for details",
       "auditor": fund.auditor || "Not specified",
-      "custodian": fund.custodian || "Not specified", 
-      "areaServed": "PT",
+      "custodian": fund.custodian || "Not specified",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Portugal",
+        "alternateName": "PT"
+      },
       "isAccessibleForFree": true,
       "provider": {
         "@type": "Organization",
@@ -36,13 +41,82 @@ export class InvestmentFundStructuredDataService {
       },
       "offers": {
         "@type": "Offer",
+        "price": fund.minimumInvestment || 0,
+        "priceCurrency": "EUR",
         "priceSpecification": {
           "@type": "PriceSpecification",
           "minPrice": fund.minimumInvestment || 0,
-          "priceCurrency": "EUR"
-        }
+          "priceCurrency": "EUR",
+          "valueAddedTaxIncluded": false
+        },
+        "availability": fund.fundStatus === 'Open' ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        "validFrom": fund.datePublished || new Date().toISOString().split('T')[0]
       }
     };
+
+    // Add geographic allocation if available
+    if (fund.geographicAllocation && fund.geographicAllocation.length > 0) {
+      schema.spatialCoverage = fund.geographicAllocation.map(geo => ({
+        "@type": "Place",
+        "name": geo.region,
+        "geo": {
+          "@type": "GeoCoordinates",
+          "addressCountry": geo.region.includes('Portugal') ? 'PT' : 'International'
+        }
+      }));
+    }
+
+    // Add fund performance data if available
+    if (fund.returnTarget) {
+      schema.expectedReturn = fund.returnTarget;
+    }
+
+    // Add compliance and regulatory info
+    if (fund.cmvmId) {
+      schema.identifier = {
+        "@type": "PropertyValue",
+        "name": "CMVM Registration",
+        "value": fund.cmvmId
+      };
+    }
+
+    // Add verification/trust signals
+    if (fund.regulatedBy) {
+      schema.recognizingAuthority = {
+        "@type": "Organization",
+        "name": fund.regulatedBy
+      };
+    }
+
+    // Add dateModified for freshness signals
+    if (fund.dateModified) {
+      schema.dateModified = fund.dateModified;
+    }
+    if (fund.datePublished) {
+      schema.datePublished = fund.datePublished;
+    }
+
+    // Add fund size/AUM
+    if (fund.fundSize) {
+      schema.potentialAction = {
+        "@type": "InvestAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": URL_CONFIG.buildFundUrl(fund.id),
+          "actionPlatform": [
+            "http://schema.org/DesktopWebPlatform",
+            "http://schema.org/MobileWebPlatform"
+          ]
+        },
+        "result": {
+          "@type": "MonetaryAmount",
+          "currency": "EUR",
+          "minValue": fund.minimumInvestment
+        }
+      };
+    }
+
+    return schema;
   }
 
   static generateFundListSchema(funds: Fund[], listType: string = "funds"): any {
