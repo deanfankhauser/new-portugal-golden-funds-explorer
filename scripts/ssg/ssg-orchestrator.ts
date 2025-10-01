@@ -44,7 +44,6 @@ export async function generateStaticFiles() {
   let successCount = 0;
   const failedRoutes: string[] = [];
   const successfulRoutes: any[] = [];
-  const fundRoutes: any[] = [];
 
   // Process each route
   for (const route of routes) {
@@ -53,23 +52,10 @@ export async function generateStaticFiles() {
     if (result.success && result.outputPath && result.seoData) {
       successCount++;
       successfulRoutes.push(route);
-      
-      // Track fund routes separately
-      if (route.pageType === 'fund') {
-        fundRoutes.push(route);
-      }
-      
       validateGeneratedFile(result.outputPath, result.seoData, validCss, validJs);
     } else {
       failedRoutes.push(route.path);
     }
-  }
-
-  console.log(`\n📊 SSG: Route Generation Summary:`);
-  console.log(`   ✅ Total routes: ${successCount}/${routes.length}`);
-  console.log(`   📄 Fund pages: ${fundRoutes.length}`);
-  if (failedRoutes.length > 0) {
-    console.log(`   ❌ Failed: ${failedRoutes.length} routes`);
   }
 
   // Generate 404 page
