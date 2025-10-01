@@ -9,7 +9,7 @@ import type { Fund } from '../data/types/funds';
 
 
 export class ConsolidatedSEOService {
-  private static readonly DEFAULT_IMAGE = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
+  private static readonly DEFAULT_IMAGE = 'https://funds.movingto.com/lovable-uploads/3965a727-dc95-4cfe-bc27-546bdd2397f3.png';
   private static readonly MAX_TITLE_LENGTH = 60;
   private static readonly MAX_DESCRIPTION_LENGTH = 155;
 
