@@ -36,16 +36,25 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
       });
 
       ConsolidatedSEOService.applyMetaTags(seoData);
-      
-      // Only noindex true 404 pages, never fund pages
-      if (pageType === '404') {
+
+      // Critical: Never apply noindex to fund pages
+      // Only apply noindex to 404 pages and auth pages
+      const noIndexPages = ['404', 'manager-auth', 'investor-auth'];
+      if (noIndexPages.includes(pageType)) {
+        const robotsContent = pageType === '404' ? 'noindex, follow' : 'noindex, nofollow';
         let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
         if (!robots) {
           robots = document.createElement('meta');
           robots.setAttribute('name', 'robots');
           document.head.appendChild(robots);
         }
-        robots.setAttribute('content', 'noindex, follow');
+        robots.setAttribute('content', robotsContent);
+      } else {
+        // Ensure fund pages are indexed
+        let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+        if (robots && robots.getAttribute('content')?.includes('noindex')) {
+          robots.setAttribute('content', 'index, follow, max-image-preview:large');
+        }
       }
       
       // Initialize Core Web Vitals monitoring
