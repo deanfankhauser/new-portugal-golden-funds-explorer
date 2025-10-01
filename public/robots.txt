@@ -14,12 +14,14 @@ Crawl-delay: 2
 # Sitemap location
 Sitemap: https://funds.movingto.com/sitemap.xml
 
-# Disallow admin and auth pages
+# Disallow admin and auth pages only
 Disallow: /admin
 Disallow: /auth
 Disallow: /manager-auth
 Disallow: /investor-auth
-Disallow: /api/
+Disallow: /account-settings
+Disallow: /reset-password
+Disallow: /email-confirmation
 
 # Allow important pages
 Allow: /index
