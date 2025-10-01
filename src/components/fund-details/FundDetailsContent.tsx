@@ -177,21 +177,23 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       </div>
       
       
-      {/* Related Funds Section */}
-      <RelatedFunds currentFund={fund} />
-      
-      {/* Alternative Funds Section */}
-      <AlternativeFunds currentFund={fund} />
-      
-      {/* Fund Comparison Suggestions */}
-      <FundComparisonSuggestions currentFund={fund} />
-      
-      {/* ROI Calculator */}
-      <ROICalculator fund={fund} />
-      
-      
-      {/* FAQ Section */}
-      <FundFAQSection fund={fund} />
+      {/* Bottom Sections with Proper Spacing */}
+      <div className="space-y-8 md:space-y-12">
+        {/* Related Funds Section */}
+        <RelatedFunds currentFund={fund} />
+        
+        {/* Alternative Funds Section */}
+        <AlternativeFunds currentFund={fund} />
+        
+        {/* Fund Comparison Suggestions */}
+        <FundComparisonSuggestions currentFund={fund} />
+        
+        {/* ROI Calculator */}
+        <ROICalculator fund={fund} />
+        
+        {/* FAQ Section */}
+        <FundFAQSection fund={fund} />
+      </div>
       
       {/* Floating TOC (Mobile only) */}
       <FloatingTableOfContents fund={fund} />
