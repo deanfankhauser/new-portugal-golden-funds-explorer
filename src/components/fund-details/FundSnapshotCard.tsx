@@ -1,12 +1,15 @@
 import React, { useEffect } from 'react';
 import { Fund } from '../../data/funds';
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, X } from 'lucide-react';
+import { Banknote, Calendar, Globe, Lock, TrendingUp, Shield, Award } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { InvestmentFundStructuredDataService } from '../../services/investmentFundStructuredDataService';
 import { getFundType } from '../../utils/fundTypeUtils';
 import FundSizeFormatter from './FundSizeFormatter';
 import { getReturnTargetDisplay, getReturnTargetNumbers } from '../../utils/returnTarget';
+import PerformancePreview from './PerformancePreview';
+import KeyFactsChips from './KeyFactsChips';
 
 interface FundSnapshotCardProps {
   fund: Fund;
@@ -138,194 +141,85 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
 
   const usEligible = getUSEligibility();
 
-  const snapshotData = [
-    {
-      label: "Investment Sector",
-      value: fund.category || "Alternative Investment"
-    },
-    {
-      label: "Target Annual Return",
-      value: getReturnTargetDisplay(fund)
-    },
-    {
-      label: "Fund Size",
-      value: <FundSizeFormatter fund={fund} />
-    },
-    {
-      label: "Fund Type", 
-      value: getFundTypeDisplay(),
-      icon: isOpenEnded() ? <Check className="w-4 h-4 text-success" /> : undefined
-    },
-    {
-      label: "Open to US Citizens",
-      value: usEligible ? "Yes" : "No",
-      icon: usEligible ? <Check className="w-4 h-4 text-success" /> : <X className="w-4 h-4 text-destructive" />
-    },
-    {
-      label: "Minimum Investment",
-      value: formatCurrency(fund.minimumInvestment, 'EUR')
-    },
-    {
-      label: "Subscriptions",
-      value: getSubscriptionDeadline()
-    },
-    {
-      label: "Redemptions",
-      value: getRedemptionStatus()
-    },
-    {
-      label: "Notice Period",
-      value: fund.redemptionTerms?.noticePeriod ? `${fund.redemptionTerms.noticePeriod} days` : (isOpenEnded() ? 'None' : '30 days')
-    },
-    {
-      label: "Lock-up Period",
-      value: getLockUpPeriod()
-    },
-    {
-      label: "Fund Lifetime",
-      value: getFundLifetime()
-    },
-    {
-      label: "Fund Manager",
-      value: fund.managerName || "Not specified"
-    },
-    {
-      label: "Performance Fee Hurdle",
-      value: getHurdleRate(fund)
-    },
-    {
-      label: "CMVM License Number",
-      value: getCMVMLicense()
+  const formatFundSize = (size: number | undefined): string => {
+    if (!size) return 'N/A';
+    if (size >= 1) {
+      return `€${size.toFixed(1)}m`;
     }
-  ];
-
-  // Helper function to determine US eligibility
-  const determineUSEligibility = (fund: Fund): string => {
-    const hasUSRestriction = fund.tags?.some(tag => 
-      tag.toLowerCase().includes('us') && tag.toLowerCase().includes('restrict')
-    );
-    return !hasUSRestriction ? "Yes" : "No";
+    return `€${(size * 1000).toFixed(0)}k`;
   };
 
-  // Critical items to show above-the-fold
-  const criticalItems = [
-    {
-      label: 'Min Investment',
-      value: formatCurrency(fund.minimumInvestment),
-      icon: '💰'
-    },
-    {
-      label: 'Redemptions',
-      value: fund.redemptionTerms?.frequency || 'N/A',
-      icon: '📅'
-    },
-    {
-      label: 'Open to US',
-      value: determineUSEligibility(fund),
-      icon: '🇺🇸'
-    },
-    {
-      label: 'Lock-up',
-      value: getLockUpPeriod(),
-      icon: '🔒'
-    },
-    {
-      label: 'Fund Size',
-      value: fund.fundSize ? formatCurrency(fund.fundSize * 1000000) : 'N/A',
-      icon: '📊'
-    }
-  ];
-
-  // Additional items for collapsible section
-  const additionalItems = [
-    {
-      label: 'Redemption Notice',
-      value: fund.redemptionTerms?.noticePeriod ? `${fund.redemptionTerms.noticePeriod} days` : 'N/A',
-      icon: '⏰'
-    },
-    {
-      label: 'Fund Type',
-      value: getFundTypeDisplay(),
-      icon: '🔄'
-    },
-    {
-      label: 'Fund Lifetime',
-      value: getFundLifetime(),
-      icon: '⏳'
-    },
-    {
-      label: 'Manager',
-      value: fund.managerName || 'Not specified',
-      icon: '👔'
-    },
-    {
-      label: 'Hurdle Rate',
-      value: getHurdleRate(fund),
-      icon: '📈'
-    },
-    {
-      label: 'CMVM License',
-      value: fund.cmvmId ? `#${fund.cmvmId}` : 'N/A',
-      icon: '🏛️'
-    },
-    {
-      label: 'Investment Sector',
-      value: fund.category,
-      icon: '🎯'
-    },
-    {
-      label: 'Subscription Fee',
-      value: fund.subscriptionFee ? `${fund.subscriptionFee}%` : 'None',
-      icon: '💳'
-    }
-  ];
-
   return (
-    <Card className="bg-gradient-to-br from-card via-card to-muted/30 border-2 border-primary/20 shadow-2xl">
-      <CardContent className="p-6 space-y-1">
-        <div className="mb-6">
-          <h3 className="text-xl font-bold text-foreground flex items-center gap-3">
-            <span className="text-2xl">📊</span>
-            Fund Snapshot
-          </h3>
+    <Card className="shadow-lg border-2">
+      <CardHeader className="pb-6">
+        <CardTitle className="text-2xl">Fund Snapshot</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Performance Preview */}
+        <div className="pb-6 border-b">
+          <PerformancePreview fund={fund} />
         </div>
 
-        {/* Critical items - always visible */}
-        <div className="grid grid-cols-2 gap-x-6 gap-y-4 mb-4">
-          {criticalItems.map((item, index) => (
-            <div key={index} className="flex justify-between items-center py-2">
-              <span className="text-sm text-muted-foreground flex items-center gap-2">
-                <span>{item.icon}</span>
-                {item.label}
-              </span>
-              <span className="text-sm font-semibold text-foreground text-right">
-                {item.value}
-              </span>
+        {/* Key Facts */}
+        <div>
+          <h3 className="text-sm font-medium text-muted-foreground mb-3">Key Facts</h3>
+          <KeyFactsChips fund={fund} />
+        </div>
+
+        {/* Trust Badges */}
+        <div className="pt-6 border-t">
+          <h3 className="text-sm font-medium text-muted-foreground mb-3">Compliance</h3>
+          <TooltipProvider>
+            <div className="flex flex-wrap gap-2">
+              {fund.tags?.includes('UCITS') && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-accent/10 text-accent rounded-md text-xs font-medium">
+                      <Shield className="h-3.5 w-3.5" />
+                      UCITS
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">EU-regulated investment fund</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              
+              {fund.cmvmId && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-accent/10 text-accent rounded-md text-xs font-medium">
+                      <Award className="h-3.5 w-3.5" />
+                      CMVM #{fund.cmvmId}
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">Portuguese securities regulator ID</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              
+              {fund.tags?.includes('Golden Visa Eligible') && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-warning/10 text-warning rounded-md text-xs font-medium">
+                      <Award className="h-3.5 w-3.5" />
+                      GV Eligible
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">Qualifies for Portugal Golden Visa</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
             </div>
-          ))}
+          </TooltipProvider>
         </div>
 
-        {/* Collapsible section for additional details */}
-        <details className="group">
-          <summary className="cursor-pointer list-none flex items-center justify-between py-3 text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-            <span>More key details</span>
-            <span className="transition-transform group-open:rotate-180">▾</span>
-          </summary>
-          
-          <div className="grid grid-cols-2 gap-x-6 gap-y-4 mt-2 pt-4 border-t border-border/50">
-            {additionalItems.map((item, index) => (
-              <div key={index} className="flex justify-between items-center py-2">
-                <span className="text-sm text-muted-foreground flex items-center gap-2">
-                  <span>{item.icon}</span>
-                  {item.label}
-                </span>
-                <span className="text-sm font-semibold text-foreground text-right">
-                  {item.value}
-                </span>
-              </div>
-            ))}
-          </div>
-        </details>
+        {/* Disclaimer */}
+        <p className="text-xs text-muted-foreground pt-4 border-t">
+          Capital at risk. Past performance isn't indicative of future returns.
+        </p>
       </CardContent>
     </Card>
   );

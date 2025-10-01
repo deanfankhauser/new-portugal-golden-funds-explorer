@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import DecisionBandHeader from './DecisionBandHeader';
+import FundSnapshotCard from './FundSnapshotCard';
 import HistoricalPerformanceChart from './HistoricalPerformanceChart';
 import TrustPracticalityCards from './TrustPracticalityCards';
 import StickyNavigation from './StickyNavigation';
@@ -15,7 +16,6 @@ import AlternativeFunds from './AlternativeFunds';
 import RelatedFunds from './RelatedFunds';
 import FundComparisonSuggestions from './FundComparisonSuggestions';
 import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
-import BackToFundsButton from './BackToFundsButton';
 import { Button } from '@/components/ui/button';
 import { Calculator, TrendingUp } from 'lucide-react';
 import { tagToSlug } from '@/lib/utils';
@@ -53,12 +53,20 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       {/* Sticky Navigation */}
       <StickyNavigation fund={fund} />
       
-      <div className="space-y-6 md:space-y-8 pb-20 md:pb-8">
+      <div className="space-y-8">
         {/* Breadcrumbs */}
         <FundBreadcrumbs fund={fund} />
-        
-        {/* Decision Band Header */}
-        <DecisionBandHeader fund={fund} />
+
+        {/* Two Column Layout */}
+        <div className="grid lg:grid-cols-[1fr_400px] gap-8 items-start">
+          {/* Left: Main Header */}
+          <DecisionBandHeader fund={fund} />
+          
+          {/* Right: Snapshot Card */}
+          <div className="lg:sticky lg:top-24">
+            <FundSnapshotCard fund={fund} />
+          </div>
+        </div>
         
         {/* Historical Performance Chart - Full Width */}
         <HistoricalPerformanceChart historicalPerformance={fund.historicalPerformance} />
