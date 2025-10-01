@@ -10,26 +10,30 @@ export const useSEOValidation = (enabled: boolean = import.meta.env.DEV) => {
   const runValidation = () => {
     if (!enabled) return;
     
-    try {
-      const seoResult = EnhancedSEOValidationService.validatePageSEO();
-      const perfResult = PerformanceOptimizationService.validatePerformanceOptimizations();
-      
-      setValidationResult(seoResult);
-      setPerformanceMetrics(perfResult);
-
-      // Log results in development
-      if (import.meta.env.DEV) {
-        const seoReport = EnhancedSEOValidationService.generateEnhancedSEOReport();
-        const perfReport = PerformanceOptimizationService.generatePerformanceReport();
+    // Use requestAnimationFrame to avoid forced reflows
+    // This ensures DOM queries happen after layout is complete
+    requestAnimationFrame(() => {
+      try {
+        const seoResult = EnhancedSEOValidationService.validatePageSEO();
+        const perfResult = PerformanceOptimizationService.validatePerformanceOptimizations();
         
-        console.group('🔍 SEO & Performance Validation');
-        console.log(seoReport);
-        console.log(perfReport);
-        console.groupEnd();
+        setValidationResult(seoResult);
+        setPerformanceMetrics(perfResult);
+
+        // Log results in development
+        if (import.meta.env.DEV) {
+          const seoReport = EnhancedSEOValidationService.generateEnhancedSEOReport();
+          const perfReport = PerformanceOptimizationService.generatePerformanceReport();
+          
+          console.group('🔍 SEO & Performance Validation');
+          console.log(seoReport);
+          console.log(perfReport);
+          console.groupEnd();
+        }
+      } catch (error) {
+        // Silent error handling
       }
-    } catch (error) {
-      // Silent error handling
-    }
+    });
   };
 
   useEffect(() => {
@@ -49,14 +53,21 @@ export const useSEOValidation = (enabled: boolean = import.meta.env.DEV) => {
     // Listen to popstate for back/forward navigation
     window.addEventListener('popstate', handleRouteChange);
 
-    // Initial validation with staggered fallbacks
+    // Initial validation with staggered fallbacks using requestAnimationFrame
     const timer1 = setTimeout(runValidation, 500);
     const timer2 = setTimeout(runValidation, 1500);
     const timer3 = setTimeout(runValidation, 3000);
 
+    // Debounce validation to avoid rapid successive calls
+    let validationTimeout: NodeJS.Timeout | null = null;
+    const debouncedValidation = () => {
+      if (validationTimeout) clearTimeout(validationTimeout);
+      validationTimeout = setTimeout(runValidation, 300);
+    };
+
     // Listen for SEO updates
     const handleSEOUpdate = () => {
-      setTimeout(runValidation, 100);
+      debouncedValidation();
     };
     window.addEventListener('seo:updated', handleSEOUpdate);
 
@@ -72,7 +83,7 @@ export const useSEOValidation = (enabled: boolean = import.meta.env.DEV) => {
       );
       
       if (hasRelevantChanges) {
-        setTimeout(runValidation, 200);
+        debouncedValidation();
       }
     });
 
