@@ -2,9 +2,6 @@
 import React, { useEffect } from 'react';
 import { PageSEOProps } from '../../types/seo';
 import { ConsolidatedSEOService } from '../../services/consolidatedSEOService';
-import { EnhancedSEOValidationService } from '../../services/enhancedSEOValidationService';
-import { PerformanceOptimizationService } from '../../services/performanceOptimizationService';
-import { CoreWebVitalsService } from '../../services/coreWebVitalsService';
 import { SEOErrorBoundary } from './SEOErrorBoundary';
 
 interface PageSEOComponentProps extends PageSEOProps {
@@ -24,7 +21,7 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
 }) => {
   useEffect(() => {
     try {
-      // Apply SEO meta tags
+      // Single source of truth: ConsolidatedSEOService
       const seoData = ConsolidatedSEOService.getSEOData(pageType, {
         fundName,
         managerName,
@@ -37,7 +34,7 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
 
       ConsolidatedSEOService.applyMetaTags(seoData);
       
-      // Only noindex true 404 pages, never fund pages
+      // Only noindex true 404 pages
       if (pageType === '404') {
         let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
         if (!robots) {
@@ -48,17 +45,8 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
         robots.setAttribute('content', 'noindex, follow');
       }
       
-      // Initialize Core Web Vitals monitoring
-      CoreWebVitalsService.initialize();
-      
-      // Defer performance optimizations and SEO fixes to avoid forced reflows
-      requestAnimationFrame(() => {
-        PerformanceOptimizationService.initializePerformanceOptimizations();
-        EnhancedSEOValidationService.autoFixSEOIssues();
-      });
-      
     } catch (error) {
-      console.error('SEO Error:', error);
+      console.error('[PageSEO] Error:', error);
     }
   }, [pageType, fundName, managerName, categoryName, tagName, comparisonTitle, comparisonSlug, funds]);
 

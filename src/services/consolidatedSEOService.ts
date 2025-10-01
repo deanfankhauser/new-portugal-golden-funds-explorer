@@ -12,67 +12,11 @@ export class ConsolidatedSEOService {
   private static readonly MAX_TITLE_LENGTH = 60;
   private static readonly MAX_DESCRIPTION_LENGTH = 155;
 
-  // Clean up duplicate meta tags
+  // Clean up only managed structured data, preserve FAQs and other schemas
   static cleanup(): void {
-    // Remove duplicate and empty title tags
-    const titles = document.querySelectorAll('title');
-    if (titles.length > 1) {
-      // Remove empty titles first
-      titles.forEach(title => {
-        if (!title.textContent?.trim()) {
-          title.remove();
-        }
-      });
-      
-      // If still duplicates, keep only the first meaningful one
-      const remainingTitles = document.querySelectorAll('title');
-      if (remainingTitles.length > 1) {
-        for (let i = 1; i < remainingTitles.length; i++) {
-          remainingTitles[i].remove();
-        }
-      }
-    }
-
-    // Remove duplicate viewports
-    const viewports = document.querySelectorAll('meta[name="viewport"]');
-    if (viewports.length > 1) {
-      for (let i = 1; i < viewports.length; i++) {
-        viewports[i].remove();
-      }
-    }
-
-    // Remove duplicate descriptions
-    const descriptions = document.querySelectorAll('meta[name="description"]');
-    if (descriptions.length > 1) {
-      for (let i = 1; i < descriptions.length; i++) {
-        descriptions[i].remove();
-      }
-    }
-
-    // Remove duplicate canonicals
-    const canonicals = document.querySelectorAll('link[rel="canonical"]');
-    if (canonicals.length > 1) {
-      for (let i = 1; i < canonicals.length; i++) {
-        canonicals[i].remove();
-      }
-    }
-
-    // Clean up only managed structured data, preserve others (like FAQ schemas)
+    // Only remove our managed structured data scripts
     const managedSchemas = document.querySelectorAll('script[type="application/ld+json"][data-managed="consolidated-seo"]');
     managedSchemas.forEach(script => script.remove());
-    
-    // Remove duplicate robots meta tags (keep only one)
-    const robotsTags = document.querySelectorAll('meta[name="robots"]');
-    robotsTags.forEach((robot, index) => {
-      if (index > 0) robot.remove();
-    });
-    
-    // If we're about to inject new JSON-LD and there are existing ones, replace or skip to prevent duplication
-    const existingJsonLd = document.querySelectorAll('script[type="application/ld+json"]:not([data-managed])');
-    if (existingJsonLd.length > 0) {
-      // Mark existing as managed to prevent duplication
-      existingJsonLd.forEach(script => script.setAttribute('data-managed', 'legacy'));
-    }
   }
 
   // Optimize title and description

@@ -55,7 +55,6 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 import { fundsData } from './data/mock/funds/index';
 
 import './App.css';
-import SEODebugger from './components/common/SEODebugger';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -125,11 +124,7 @@ const DirectFundRoute = () => {
   );
 };
 
-// Import SEO and performance optimization hook
-// SEO optimization removed - using consolidated service
-import SEOProvider from './components/providers/SEOProvider';
-
-import SEOEnhancer from './components/common/SEOEnhancer';
+// SEO handled by PageSEO component in each page
 
 function App() {
   // SEO optimization handled by consolidated service
@@ -145,7 +140,6 @@ function App() {
             <EnhancedAuthProvider>
               <TooltipProvider>
               <Router>
-                <SEOProvider>
                   <ScrollToTop />
                   <div className="min-h-screen w-full bg-background">
                     <Routes>
@@ -301,10 +295,6 @@ function App() {
                     </Routes>
                   </div>
                   <Toaster />
-                  <SEODebugger />
-                  <SEOEnhancer enableMonitoring={import.meta.env.DEV} />
-                  
-                </SEOProvider>
               </Router>
             </TooltipProvider>
             </EnhancedAuthProvider>
