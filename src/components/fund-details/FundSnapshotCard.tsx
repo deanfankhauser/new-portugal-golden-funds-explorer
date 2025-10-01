@@ -149,13 +149,22 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
     if (years.length > 0) {
       const latestYear = years[0];
       const aum = fund.historicalPerformance[latestYear]?.aum;
-      if (aum) {
+      if (aum !== undefined && aum !== null) {
+        // If AUM is already in millions (< 1000), use it directly
+        // If AUM is in actual euros (>= 1000), convert to millions
+        if (aum >= 1000) {
+          const aumInMillions = aum / 1000000;
+          return `€${aumInMillions.toFixed(0)}M`;
+        }
         return `€${aum.toFixed(0)}M`;
       }
     }
     
     // Fallback to fund.fundSize if available
     if (fund.fundSize) {
+      if (fund.fundSize >= 1000) {
+        return `€${(fund.fundSize / 1000000).toFixed(0)}M`;
+      }
       return `€${fund.fundSize.toFixed(0)}M`;
     }
     

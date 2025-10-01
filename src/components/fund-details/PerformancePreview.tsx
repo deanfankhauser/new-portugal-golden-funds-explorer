@@ -64,12 +64,19 @@ const PerformancePreview: React.FC<PerformancePreviewProps> = ({ fund }) => {
   if (!hasPerformance) return null;
 
   return (
-    <div className="text-sm text-white/80 mb-4">
-      <span className="font-medium">YTD: {ytd}</span>
-      <span className="mx-2">|</span>
-      <span className="font-medium">1Y: {oneYear}</span>
-      <span className="mx-2">|</span>
-      <span className="font-medium">Since inception: {sinceInception}</span>
+    <div className="text-sm space-y-1">
+      <div className="flex items-center justify-between">
+        <span className="text-muted-foreground">YTD</span>
+        <span className="font-semibold text-foreground">{ytd}</span>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="text-muted-foreground">1 Year</span>
+        <span className="font-semibold text-foreground">{oneYear}</span>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="text-muted-foreground">Since Inception</span>
+        <span className="font-semibold text-foreground">{sinceInception}</span>
+      </div>
     </div>
   );
 };
