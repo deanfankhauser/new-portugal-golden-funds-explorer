@@ -11,7 +11,7 @@ import FundComparisonFAQ from '../components/comparison/FundComparisonFAQ';
 import { getComparisonBySlug } from '../data/services/comparison-service';
 import { normalizeComparisonSlug, isCanonicalComparisonSlug } from '../utils/comparisonUtils';
 import { Card, CardContent } from '@/components/ui/card';
-import { AlertCircle } from 'lucide-react';
+import { CircleAlert as AlertCircle } from 'lucide-react';
 
 const FundComparison = () => {
   const { slug } = useParams<{ slug: string }>();

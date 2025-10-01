@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ComposedChart, ReferenceLine } from 'recharts';
-import { TrendingUp, TrendingDown, Calendar, BarChart3, Info, Maximize2 } from 'lucide-react';
+import { TrendingUp, TrendingDown, Calendar, ChartBar as BarChart3, Info, Maximize2 } from 'lucide-react';
 
 interface MonthlyPerformanceData {
   returns?: number;
