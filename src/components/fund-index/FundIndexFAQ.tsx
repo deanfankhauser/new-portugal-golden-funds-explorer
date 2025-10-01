@@ -1,5 +1,6 @@
 
 import React, { useEffect } from 'react';
+import { FAQSchemaService } from '../../services/faqSchemaService';
 import {
   Accordion,
   AccordionContent,
@@ -51,40 +52,14 @@ const FundIndexFAQ: React.FC = () => {
   ];
 
   useEffect(() => {
-    // Create FAQ Page schema for SEO
-    const faqSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      'mainEntity': faqs.map((faq: FAQItem) => ({
-        '@type': 'Question',
-        'name': faq.question,
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': faq.answer
-        }
-      }))
-    };
+    // Register FAQs with unified schema service
+    const cleanup = FAQSchemaService.registerFAQs({
+      schemaId: 'fund-index-faq',
+      faqs: faqs,
+      pageContext: 'Movingto Fund Index - Portugal Golden Visa Investment Funds'
+    });
 
-    // Remove existing FAQ schema
-    const existingFAQSchema = document.querySelector('script[data-schema="fund-index-faq"]');
-    if (existingFAQSchema) {
-      existingFAQSchema.remove();
-    }
-
-    // Add new FAQ schema
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.setAttribute('data-schema', 'fund-index-faq');
-    script.textContent = JSON.stringify(faqSchema);
-    document.head.appendChild(script);
-
-    // Cleanup function
-    return () => {
-      const schemaScript = document.querySelector('script[data-schema="fund-index-faq"]');
-      if (schemaScript) {
-        schemaScript.remove();
-      }
-    };
+    return cleanup;
   }, [faqs]);
 
   return (

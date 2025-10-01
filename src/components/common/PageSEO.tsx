@@ -4,6 +4,7 @@ import { PageSEOProps } from '../../types/seo';
 import { ConsolidatedSEOService } from '../../services/consolidatedSEOService';
 import { EnhancedSEOValidationService } from '../../services/enhancedSEOValidationService';
 import { PerformanceOptimizationService } from '../../services/performanceOptimizationService';
+import { CoreWebVitalsService } from '../../services/coreWebVitalsService';
 import { SEOErrorBoundary } from './SEOErrorBoundary';
 
 interface PageSEOComponentProps extends PageSEOProps {
@@ -46,6 +47,9 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
         }
         robots.setAttribute('content', 'noindex, follow');
       }
+      
+      // Initialize Core Web Vitals monitoring
+      CoreWebVitalsService.initialize();
       
       // Defer performance optimizations and SEO fixes to avoid forced reflows
       requestAnimationFrame(() => {

@@ -112,62 +112,79 @@ export class ConsolidatedSEOService {
     return `${parts.join(' | ')} | Portugal Golden Visa Fund | Movingto`;
   }
 
-  // Generate optimized fund description with USPs and performance
+  // Generate optimized fund description with USPs, performance, and competitive positioning
   private static generateFundDescription(fund: any): string {
-    const parts: string[] = [];
-    
-    // Start with fund name and manager for brand recognition
-    parts.push(`${fund.name} by ${fund.managerName}:`);
-    
-    // Add historical performance if available (high-impact SEO)
-    if (fund.historicalPerformance && typeof fund.historicalPerformance === 'object') {
-      const performanceData = Object.entries(fund.historicalPerformance)
-        .sort(([yearA], [yearB]) => parseInt(yearB) - parseInt(yearA));
+    try {
+      const parts: string[] = [];
       
-      if (performanceData.length > 0) {
-        const [latestYear, latestData]: [string, any] = performanceData[0];
-        if (latestData && latestData.returns) {
-          parts.push(`${latestData.returns}% returns in ${latestYear}`);
+      // Start with fund name and manager for brand recognition
+      parts.push(`${fund.name} by ${fund.managerName}:`);
+      
+      // Add historical performance if available (high-impact SEO)
+      if (fund.historicalPerformance && typeof fund.historicalPerformance === 'object') {
+        const performanceData = Object.entries(fund.historicalPerformance)
+          .sort(([yearA], [yearB]) => parseInt(yearB) - parseInt(yearA));
+        
+        if (performanceData.length > 0) {
+          const [latestYear, latestData]: [string, any] = performanceData[0];
+          if (latestData && latestData.returns) {
+            parts.push(`${latestData.returns}% returns in ${latestYear}`);
+          }
         }
       }
+      
+      // Add minimum investment with competitive context
+      const minInvest = fund.minimumInvestment >= 1000000 
+        ? `€${(fund.minimumInvestment / 1000000).toFixed(1)}M`
+        : `€${(fund.minimumInvestment / 1000).toFixed(0)}k`;
+      
+      // Add competitive positioning for minimum investment
+      if (fund.minimumInvestment <= 350000) {
+        parts.push(`${minInvest} minimum (below market average)`);
+      } else if (fund.minimumInvestment === 500000) {
+        parts.push(`${minInvest} minimum (Golden Visa threshold)`);
+      } else {
+        parts.push(`${minInvest} minimum`);
+      }
+      
+      // Add return target if available
+      if (fund.returnTarget) {
+        parts.push(`${fund.returnTarget} target`);
+      }
+      
+      // Add management fee with competitive context
+      if (fund.managementFee) {
+        const feeText = fund.managementFee <= 1.5 
+          ? `${fund.managementFee}% fee (competitive)` 
+          : `${fund.managementFee}% fee`;
+        parts.push(feeText);
+      }
+      
+      // Add risk level for investor matching
+      if (fund.riskLevel) {
+        parts.push(`${fund.riskLevel.toLowerCase()}-risk profile`);
+      }
+      
+      // Add key USPs with competitive advantages
+      const usps: string[] = [];
+      if (fund.tags?.includes('UCITS')) usps.push('UCITS regulated');
+      if (fund.tags?.includes('Daily NAV')) usps.push('daily liquidity');
+      if (fund.tags?.includes('No Lock-Up')) usps.push('no lock-up period');
+      if (fund.tags?.includes('PFIC-Compliant')) usps.push('US tax-compliant');
+      
+      if (usps.length > 0) {
+        parts.push(usps.slice(0, 2).join(' & '));
+      }
+      
+      // Add Portugal Golden Visa context with regional SEO
+      parts.push(`Portugal Golden Visa eligible ${fund.category.toLowerCase()} investment`);
+      
+      return parts.join('. ') + '.';
+    } catch (error) {
+      console.error('[ConsolidatedSEO] Error generating fund description:', error);
+      // Fallback description
+      return `${fund.name} is a Portugal Golden Visa eligible ${fund.category} investment fund managed by ${fund.managerName}. Minimum investment: €${fund.minimumInvestment.toLocaleString()}.`;
     }
-    
-    // Add minimum investment
-    const minInvest = fund.minimumInvestment >= 1000000 
-      ? `€${(fund.minimumInvestment / 1000000).toFixed(1)}M`
-      : `€${(fund.minimumInvestment / 1000).toFixed(0)}k`;
-    parts.push(`${minInvest} minimum`);
-    
-    // Add return target if available
-    if (fund.returnTarget) {
-      parts.push(`${fund.returnTarget} target`);
-    }
-    
-    // Add management fee
-    if (fund.managementFee) {
-      parts.push(`${fund.managementFee}% fee`);
-    }
-    
-    // Add risk level for investor matching
-    if (fund.riskLevel) {
-      parts.push(`${fund.riskLevel.toLowerCase()}-risk`);
-    }
-    
-    // Add key USPs
-    const usps: string[] = [];
-    if (fund.tags?.includes('UCITS')) usps.push('UCITS regulated');
-    if (fund.tags?.includes('Daily NAV')) usps.push('daily liquidity');
-    if (fund.tags?.includes('No Lock-Up')) usps.push('no lock-up');
-    if (fund.tags?.includes('PFIC-Compliant')) usps.push('PFIC-compliant');
-    
-    if (usps.length > 0) {
-      parts.push(usps.slice(0, 2).join(', '));
-    }
-    
-    // Add Portugal Golden Visa context
-    parts.push(`Portugal Golden Visa eligible ${fund.category.toLowerCase()} fund`);
-    
-    return parts.join('. ') + '.';
   }
 
   // Generate dynamic keywords based on fund characteristics
@@ -434,15 +451,15 @@ export class ConsolidatedSEOService {
     }
   }
 
-  // Set all meta tags and structured data
+  // Set all meta tags and structured data with error handling
   static applyMetaTags(seoData: SEOData): void {
     try {
       this.cleanup();
       
-      // Basic meta tags
-      document.title = seoData.title;
-      this.setOrUpdateMeta('description', seoData.description);
-      this.setCanonical(seoData.url);
+      // Basic meta tags with fallbacks
+      document.title = seoData.title || 'Portugal Golden Visa Investment Funds | Movingto';
+      this.setOrUpdateMeta('description', seoData.description || 'Compare Portugal Golden Visa investment funds with comprehensive analysis and insights.');
+      this.setCanonical(seoData.url || window.location.href);
       this.setRobots(seoData.robots);
       
       // Keywords meta tag
@@ -450,24 +467,44 @@ export class ConsolidatedSEOService {
         this.setOrUpdateMeta('keywords', seoData.keywords.join(', '));
       }
       
-      // Social media tags
-    this.setOpenGraph(seoData);
-    this.setTwitterCard(seoData);
-    this.setLocale();
+      // Social media tags with error handling
+      try {
+        this.setOpenGraph(seoData);
+        this.setTwitterCard(seoData);
+        this.setLocale();
+      } catch (socialError) {
+        console.error('[ConsolidatedSEO] Error setting social tags:', socialError);
+      }
       
-      // Structured data
+      // Structured data with error handling
       if (seoData.structuredData) {
-        this.setStructuredData(seoData.structuredData);
+        try {
+          this.setStructuredData(seoData.structuredData);
+        } catch (structuredError) {
+          console.error('[ConsolidatedSEO] Error setting structured data:', structuredError);
+        }
       }
       
       // Security headers
-      this.addSecurityHeaders();
+      try {
+        this.addSecurityHeaders();
+      } catch (securityError) {
+        console.error('[ConsolidatedSEO] Error setting security headers:', securityError);
+      }
       
       // Dispatch event to notify components of SEO update
       window.dispatchEvent(new CustomEvent('seo:updated', { detail: seoData }));
       
     } catch (error) {
-      // Silent fallback - no console logging in production
+      console.error('[ConsolidatedSEO] Critical error applying meta tags:', error);
+      // Fallback: ensure minimum viable SEO
+      try {
+        if (!document.title) {
+          document.title = 'Portugal Golden Visa Investment Funds | Movingto';
+        }
+      } catch (fallbackError) {
+        // Silent fail - nothing more we can do
+      }
     }
   }
 
