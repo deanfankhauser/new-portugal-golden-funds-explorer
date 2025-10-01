@@ -12,6 +12,9 @@ import { useFundPageSEOAudit } from '../hooks/useFundPageSEOAudit';
 import type { Fund } from '../data/types/funds';
 
 const FundDetails = () => {
+  // Detect SSR/SSG environment
+  const isSSR = typeof window === 'undefined';
+  
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   
@@ -22,6 +25,13 @@ const FundDetails = () => {
   const { getFundById, loading } = useRealTimeFunds();
   const fund = fundId ? getFundById(fundId) : null;
   const { addToRecentlyViewed } = useRecentlyViewed();
+  
+  // In SSR, log fund loading for debugging
+  useEffect(() => {
+    if (isSSR && import.meta.env.DEV) {
+      console.log('🔥 FundDetails SSR: fundId:', fundId, 'found:', !!fund);
+    }
+  }, [isSSR, fundId, fund]);
   
   // Run SEO audit in development when fund is loaded
   const { auditResult } = useFundPageSEOAudit(import.meta.env.DEV && !!fund);
