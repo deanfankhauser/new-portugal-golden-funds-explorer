@@ -6,6 +6,9 @@ import path from 'path';
 // Compile TypeScript files to JavaScript for SSG
 export function compileSSGFiles() {
   try {
+    console.log('\n🎨 SSG: Starting static site generation...');
+    console.log('📦 SSG: Compiling and running SSG process...\n');
+    
     // Use tsx to compile and run the SSG process
     execSync('npx tsx scripts/ssg-runner.ts', { stdio: 'inherit' });
     
@@ -27,14 +30,22 @@ export function compileSSGFiles() {
     ];
     
     let fundPagesGenerated = 0;
+    let fundPagesWithH1 = 0;
     fundDirs.forEach(fundPath => {
       if (fs.existsSync(fundPath)) {
         const content = fs.readFileSync(fundPath, 'utf8');
         if (content.includes('meta name="description"')) {
           fundPagesGenerated++;
         }
+        if (content.includes('<h1')) {
+          fundPagesWithH1++;
+        }
       }
     });
+    
+    console.log(`\n📊 SSG: Fund Pages Status:`);
+    console.log(`   ✅ Generated: ${fundPagesGenerated} fund pages`);
+    console.log(`   🏷️  With H1 tags: ${fundPagesWithH1} fund pages`);
     
     // Check routing files exist
     const routeFiles = [
@@ -49,12 +60,19 @@ export function compileSSGFiles() {
       const sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
       const comparisonUrls = (sitemapContent.match(/\/compare\//g) || []).length;
       const alternativesUrls = (sitemapContent.match(/\/alternatives\//g) || []).length;
-      console.log(`✅ SSG: Generated ${fundPagesGenerated} fund pages, ${comparisonUrls} comparison URLs, ${alternativesUrls} alternatives URLs`);
+      const fundUrls = (sitemapContent.match(/<loc>https:\/\/funds\.movingto\.com\/[^/<]+<\/loc>/g) || []).length;
+      
+      console.log(`\n🗺️  SSG: Sitemap Status:`);
+      console.log(`   📄 Fund pages: ${fundUrls} URLs`);
+      console.log(`   🔄 Comparison pages: ${comparisonUrls} URLs`);
+      console.log(`   🔀 Alternatives pages: ${alternativesUrls} URLs`);
+      
       if (alternativesUrls === 0) {
-        console.warn('⚠️  SSG: No alternatives pages detected in sitemap. Verify /:id/alternatives generation.');
+        console.warn('   ⚠️  No alternatives pages detected');
       }
-    } else {
-      console.log(`✅ SSG: Generated ${fundPagesGenerated} fund pages successfully`);
+      if (fundUrls === 0) {
+        console.error('   ❌ CRITICAL: No fund pages detected in sitemap!');
+      }
     }
 
     // Also copy enhanced sitemap files from dist to public so /sitemap.xml resolves correctly in dev/preview
