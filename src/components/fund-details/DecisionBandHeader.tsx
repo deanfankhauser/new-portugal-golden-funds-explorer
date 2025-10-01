@@ -1,11 +1,12 @@
 import React from 'react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { Pencil, Calendar } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
 import { buildBookingUrl, openExternalLink } from '../../utils/urlHelpers';
 import analytics from '../../utils/analytics';
 import { Fund } from '../../data/funds';
+import { FundEditButton } from '../fund-editing';
 
 interface DecisionBandHeaderProps {
   fund: Fund;
@@ -60,14 +61,12 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
           </p>
         </div>
         
-        <Button
+        <FundEditButton 
+          fund={fund}
           variant="outline"
           size="sm"
-          className="shrink-0 gap-2"
-        >
-          <Pencil className="h-4 w-4" />
-          Suggest an edit
-        </Button>
+          className="shrink-0"
+        />
       </div>
 
       {/* Clean CTAs */}
