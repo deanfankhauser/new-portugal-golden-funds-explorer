@@ -15,21 +15,22 @@ import { AlertCircle } from 'lucide-react';
 
 const FundComparison = () => {
   const { slug } = useParams<{ slug: string }>();
-  
+
+  // MUST call all hooks before any conditional returns
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
+
   // Check if slug needs canonicalization (redirect to normalized version)
   if (slug && !isCanonicalComparisonSlug(slug)) {
     const normalizedSlug = normalizeComparisonSlug(slug);
     return <Navigate to={`/compare/${normalizedSlug}`} replace />;
   }
-  
+
   // Get the comparison data using the slug
   const comparisonData = slug ? getComparisonBySlug(slug) : null;
-  
+
   const comparisonTitle = slug?.replace(/-/g, ' ') || '';
-  
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [slug]);
 
   // If no comparison data found, show error
   if (!comparisonData) {
