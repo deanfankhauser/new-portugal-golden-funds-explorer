@@ -14,8 +14,8 @@ async function generateProductionSitemap() {
     
     // Pre-flight check: Verify data sources
     console.log('🔍 Pre-flight: Verifying data sources...');
-    const { funds } = await import('../src/data/services/funds-service.js');
-    const { getAllComparisonSlugs } = await import('../src/data/services/comparison-service.js');
+    const { funds } = await import('../src/data/services/funds-service.ts');
+    const { getAllComparisonSlugs } = await import('../src/data/services/comparison-service.ts');
     
     console.log(`   ✓ Funds available: ${funds.length}`);
     const comparisonSlugs = getAllComparisonSlugs();
@@ -30,7 +30,7 @@ async function generateProductionSitemap() {
     }
     
     // Use comprehensive sitemap service
-    const { ComprehensiveSitemapService } = await import('../src/services/comprehensiveSitemapService.js');
+    const { ComprehensiveSitemapService } = await import('../src/services/comprehensiveSitemapService.ts');
     
     const publicDir = path.join(process.cwd(), 'public');
     
