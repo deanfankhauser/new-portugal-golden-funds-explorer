@@ -41,33 +41,22 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
   return (
     <div className="space-y-8">
       {/* Clean Title Section */}
-      <div className="flex items-start justify-between gap-6">
-        <div className="flex-1 space-y-4">
-          <div className="flex items-center gap-3 flex-wrap">
-            {isOpenForSubscriptions && (
-              <Badge variant="success" className="text-xs font-medium">
-                Open for subscriptions
-              </Badge>
-            )}
-          </div>
-          
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-            {fund.name}
-          </h1>
-          
-          <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            {summary}
-          </p>
+      <div className="space-y-4">
+        <div className="flex items-center gap-3 flex-wrap">
+          {isOpenForSubscriptions && (
+            <Badge variant="success" className="text-xs font-medium">
+              Open for subscriptions
+            </Badge>
+          )}
         </div>
         
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-muted-foreground hover:text-foreground shrink-0"
-        >
-          <Pencil className="h-4 w-4 mr-2" />
-          Suggest an edit
-        </Button>
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+          {fund.name}
+        </h1>
+        
+        <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
+          {summary}
+        </p>
       </div>
 
       {/* Clean CTAs */}
