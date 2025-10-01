@@ -97,35 +97,11 @@ const ScrollToTop = () => {
 
 
 // Component to handle direct fund routes (e.g., /horizon-fund)
+// Simplified to just render FundDetails which handles fund validation internally
 const DirectFundRoute = () => {
-  const location = useLocation();
-  const pathname = location.pathname;
-  const { getFundById, loading } = useRealTimeFunds();
-  
-  // Extract potential fund ID from pathname (remove leading slash)
-  const potentialFundId = pathname.slice(1);
-  
-  // Show loader while fetching funds
-  if (loading) {
-    return <FundDetailsLoader />;
-  }
-  
-  // Check if this path matches a fund ID using real-time data
-  const fund = getFundById(potentialFundId);
-  
-  if (fund) {
-    // Valid fund found, render fund details with lazy loading
-    return (
-      <Suspense fallback={<FundDetailsLoader />}>
-        <FundDetails />
-      </Suspense>
-    );
-  }
-  
-  // No fund found, show 404 with lazy loading
   return (
-    <Suspense fallback={<PageLoader />}>
-      <NotFound />
+    <Suspense fallback={<FundDetailsLoader />}>
+      <FundDetails />
     </Suspense>
   );
 };
