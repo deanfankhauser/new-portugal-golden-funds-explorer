@@ -117,7 +117,6 @@ const FundBriefSubmission: React.FC<FundBriefSubmissionProps> = ({
       if (uploadError) {
         console.error('❌ Storage upload failed:', {
           message: uploadError.message,
-          status: uploadError.cause,
           details: uploadError
         });
         toast.error(`Upload failed: ${uploadError.message}`);
