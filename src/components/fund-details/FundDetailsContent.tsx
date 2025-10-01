@@ -88,7 +88,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                 
                 {/* Fund Overview Section */}
                 <section id="fund-overview" className="scroll-mt-24">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Fund Overview</h2>
+                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">
+                    About {fund.name}
+                  </h2>
                   <div className="space-y-6">
                     <FundDescription description={fund.detailedDescription} />
                     <RegulatoryIdentifiers fund={fund} />
@@ -98,14 +100,18 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
 
                 {/* Key Terms Section */}
                 <section id="key-terms-strategy" className="scroll-mt-24">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Key Terms</h2>
+                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">
+                    Investment Terms & Strategy
+                  </h2>
                   <KeyTermsTable fund={fund} />
                 </section>
 
 
                 {/* Financial Details Section */}
                 <section id="financial-details" className="scroll-mt-24">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Financial Details</h2>
+                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">
+                    Fees, Returns & Geographic Allocation
+                  </h2>
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
                     <div className="space-y-6">
                       <FeeStructure fund={fund} formatPercentage={formatPercentage} />
@@ -119,7 +125,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
 
                 {/* Fund Structure Section */}
                 <section id="fund-structure" className="scroll-mt-24">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Fund Structure</h2>
+                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">
+                    Legal Structure & Regulatory Compliance
+                  </h2>
                   <div className="space-y-6">
                     <FundCategory category={fund.category} />
                     <RegulatoryComplianceInfo fund={fund} />
@@ -128,7 +136,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
 
                 {/* Team Information Section */}
                 <section id="team-information" className="scroll-mt-24">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Team Information</h2>
+                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">
+                    Fund Management Team
+                  </h2>
                   <TeamSection team={fund.team} />
                 </section>
 
