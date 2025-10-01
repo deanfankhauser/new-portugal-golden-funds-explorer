@@ -61,27 +61,35 @@ export async function generateStaticFiles() {
   // Generate 404 page
   await generate404Page(distDir);
   
-  // Use the new comprehensive sitemap generator
+  // Use the new comprehensive sitemap generator (PRIMARY METHOD)
+  console.log('\n🗺️  Starting COMPREHENSIVE sitemap generation...');
   try {
     generateComprehensiveSitemaps(distDir);
+    console.log('✅ Comprehensive sitemap generation completed successfully!');
   } catch (sitemapError) {
-    console.warn('⚠️  Comprehensive sitemap generation failed, falling back to legacy generators');
+    console.error('❌ CRITICAL: Comprehensive sitemap generation failed:', sitemapError);
+    console.warn('⚠️  Falling back to legacy generators (expect missing pages)...');
     
     // Fallback to existing generators
-    generateSitemap(routes, distDir);
-    generateFundsSitemap(distDir);
-    
-    // Generate enhanced sitemap as a supplemental file
-    const enhancedSitemapXML = EnhancedSitemapService.generateEnhancedSitemapXML();
-    fs.writeFileSync(path.join(distDir, 'sitemap-enhanced.xml'), enhancedSitemapXML);
-    
-    // Generate sitemap index
-    const sitemapIndex = EnhancedSitemapService.generateSitemapIndex();
-    fs.writeFileSync(path.join(distDir, 'sitemap-index.xml'), sitemapIndex);
-    
-    // Generate robots.txt
-    const robotsTxt = EnhancedSitemapService.generateRobotsTxt();
-    fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsTxt);
+    try {
+      generateSitemap(routes, distDir);
+      generateFundsSitemap(distDir);
+      
+      // Generate enhanced sitemap as a supplemental file
+      const enhancedSitemapXML = EnhancedSitemapService.generateEnhancedSitemapXML();
+      fs.writeFileSync(path.join(distDir, 'sitemap-enhanced.xml'), enhancedSitemapXML);
+      
+      // Generate sitemap index
+      const sitemapIndex = EnhancedSitemapService.generateSitemapIndex();
+      fs.writeFileSync(path.join(distDir, 'sitemap-index.xml'), sitemapIndex);
+      
+      // Generate robots.txt
+      const robotsTxt = EnhancedSitemapService.generateRobotsTxt();
+      fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsTxt);
+    } catch (fallbackError) {
+      console.error('❌ CRITICAL: Even fallback sitemap generation failed:', fallbackError);
+      throw fallbackError;
+    }
   }
 
   // Final report
