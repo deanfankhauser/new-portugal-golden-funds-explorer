@@ -141,12 +141,25 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
 
   const usEligible = getUSEligibility();
 
-  const formatFundSize = (size: number | undefined): string => {
-    if (!size) return 'N/A';
-    if (size >= 1) {
-      return `€${size.toFixed(1)}m`;
+  // Get fund size from AUM in historicalPerformance
+  const getFundSize = (): string => {
+    if (!fund.historicalPerformance) return 'N/A';
+    
+    const years = Object.keys(fund.historicalPerformance).sort((a, b) => parseInt(b) - parseInt(a));
+    if (years.length > 0) {
+      const latestYear = years[0];
+      const aum = fund.historicalPerformance[latestYear]?.aum;
+      if (aum) {
+        return `€${aum.toFixed(0)}M`;
+      }
     }
-    return `€${(size * 1000).toFixed(0)}k`;
+    
+    // Fallback to fund.fundSize if available
+    if (fund.fundSize) {
+      return `€${fund.fundSize.toFixed(0)}M`;
+    }
+    
+    return 'N/A';
   };
 
   return (
@@ -160,11 +173,91 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
           <PerformancePreview fund={fund} />
         </div>
 
-        {/* Key Facts */}
+        {/* Key Facts - Top 5 */}
         <div>
           <h3 className="text-sm font-medium text-muted-foreground mb-3">Key Facts</h3>
-          <KeyFactsChips fund={fund} />
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground flex items-center gap-2">
+                <Banknote className="h-4 w-4" />
+                Min Investment
+              </span>
+              <span className="text-sm font-medium">{formatCurrency(fund.minimumInvestment)}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                Redemptions
+              </span>
+              <span className="text-sm font-medium">{fund.redemptionTerms?.frequency || 'N/A'}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                Open to US
+              </span>
+              <span className="text-sm font-medium">{usEligible ? 'Yes' : 'No'}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground flex items-center gap-2">
+                <Lock className="h-4 w-4" />
+                Lock-up
+              </span>
+              <span className="text-sm font-medium">{getLockUpPeriod()}</span>
+            </div>
+            <div className="flex items-center justify-between py-2">
+              <span className="text-sm text-muted-foreground flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" />
+                Fund Size (AUM)
+              </span>
+              <span className="text-sm font-medium">{getFundSize()}</span>
+            </div>
+          </div>
         </div>
+
+        {/* Expandable Details */}
+        <details className="group">
+          <summary className="flex items-center justify-between cursor-pointer py-3 border-t hover:bg-accent/5 transition-colors px-2 -mx-2 rounded">
+            <span className="text-sm font-medium">More key details</span>
+            <svg className="h-4 w-4 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div className="pt-4 space-y-2.5 pb-2">
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground">Management Fee</span>
+              <span className="text-sm font-medium">{fund.managementFee ? `${fund.managementFee}%` : 'N/A'}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground">Performance Fee</span>
+              <span className="text-sm font-medium">{fund.performanceFee ? `${fund.performanceFee}%` : 'N/A'}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground">NAV Frequency</span>
+              <span className="text-sm font-medium">{fund.navFrequency || 'N/A'}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground">Established</span>
+              <span className="text-sm font-medium">{fund.established || 'N/A'}</span>
+            </div>
+            {fund.cmvmId && (
+              <div className="flex items-center justify-between py-2 border-b">
+                <span className="text-sm text-muted-foreground">CMVM ID</span>
+                <span className="text-sm font-medium">{fund.cmvmId}</span>
+              </div>
+            )}
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground">Notice Period</span>
+              <span className="text-sm font-medium">
+                {fund.redemptionTerms?.noticePeriod ? `${fund.redemptionTerms.noticePeriod} days` : 'N/A'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between py-2">
+              <span className="text-sm text-muted-foreground">Regulated By</span>
+              <span className="text-sm font-medium">{fund.regulatedBy || 'N/A'}</span>
+            </div>
+          </div>
+        </details>
 
         {/* Trust Badges */}
         <div className="pt-6 border-t">

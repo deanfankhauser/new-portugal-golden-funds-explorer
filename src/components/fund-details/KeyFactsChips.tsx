@@ -46,11 +46,11 @@ const KeyFactsChips: React.FC<KeyFactsChipsProps> = ({ fund }) => {
   ];
 
   return (
-    <div className="flex flex-wrap gap-2 mb-6">
+    <div className="flex flex-wrap gap-2">
       {chips.map((chip, index) => (
         <div
           key={index}
-          className="flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-sm text-white"
+          className="flex items-center gap-2 px-3 py-1.5 bg-accent/10 border border-border rounded-full text-sm"
         >
           <chip.icon className="h-4 w-4" />
           <span>{chip.label}</span>
