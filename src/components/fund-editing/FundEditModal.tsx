@@ -25,7 +25,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import HistoricalPerformanceEditor from './HistoricalPerformanceEditor';
-import FundBriefSubmission from './FundBriefSubmission';
 
 interface FundEditModalProps {
   fund: Fund;
