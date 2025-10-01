@@ -1,12 +1,15 @@
 import React, { useEffect } from 'react';
 import { Fund } from '../../data/funds';
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, X } from 'lucide-react';
+import { Banknote, Calendar, Globe, Lock, TrendingUp, Shield, Award } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { InvestmentFundStructuredDataService } from '../../services/investmentFundStructuredDataService';
 import { getFundType } from '../../utils/fundTypeUtils';
 import FundSizeFormatter from './FundSizeFormatter';
 import { getReturnTargetDisplay, getReturnTargetNumbers } from '../../utils/returnTarget';
+import PerformancePreview from './PerformancePreview';
+import KeyFactsChips from './KeyFactsChips';
 
 interface FundSnapshotCardProps {
   fund: Fund;
@@ -138,92 +141,187 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
 
   const usEligible = getUSEligibility();
 
-  const snapshotData = [
-    {
-      label: "Investment Sector",
-      value: fund.category || "Alternative Investment"
-    },
-    {
-      label: "Target Annual Return",
-      value: getReturnTargetDisplay(fund)
-    },
-    {
-      label: "Fund Size",
-      value: <FundSizeFormatter fund={fund} />
-    },
-    {
-      label: "Fund Type", 
-      value: getFundTypeDisplay(),
-      icon: isOpenEnded() ? <Check className="w-4 h-4 text-success" /> : undefined
-    },
-    {
-      label: "Open to US Citizens",
-      value: usEligible ? "Yes" : "No",
-      icon: usEligible ? <Check className="w-4 h-4 text-success" /> : <X className="w-4 h-4 text-destructive" />
-    },
-    {
-      label: "Minimum Investment",
-      value: formatCurrency(fund.minimumInvestment, 'EUR')
-    },
-    {
-      label: "Subscriptions",
-      value: getSubscriptionDeadline()
-    },
-    {
-      label: "Redemptions",
-      value: getRedemptionStatus()
-    },
-    {
-      label: "Notice Period",
-      value: fund.redemptionTerms?.noticePeriod ? `${fund.redemptionTerms.noticePeriod} days` : (isOpenEnded() ? 'None' : '30 days')
-    },
-    {
-      label: "Lock-up Period",
-      value: getLockUpPeriod()
-    },
-    {
-      label: "Fund Lifetime",
-      value: getFundLifetime()
-    },
-    {
-      label: "Fund Manager",
-      value: fund.managerName || "Not specified"
-    },
-    {
-      label: "Performance Fee Hurdle",
-      value: getHurdleRate(fund)
-    },
-    {
-      label: "CMVM License Number",
-      value: getCMVMLicense()
+  // Get fund size from AUM in historicalPerformance
+  const getFundSize = (): string => {
+    if (!fund.historicalPerformance) return 'N/A';
+    
+    const years = Object.keys(fund.historicalPerformance).sort((a, b) => parseInt(b) - parseInt(a));
+    if (years.length > 0) {
+      const latestYear = years[0];
+      const aum = fund.historicalPerformance[latestYear]?.aum;
+      if (aum !== undefined && aum !== null) {
+        // If AUM is already in millions (< 1000), use it directly
+        // If AUM is in actual euros (>= 1000), convert to millions
+        if (aum >= 1000) {
+          const aumInMillions = aum / 1000000;
+          return `€${aumInMillions.toFixed(0)}M`;
+        }
+        return `€${aum.toFixed(0)}M`;
+      }
     }
-  ];
+    
+    // Fallback to fund.fundSize if available
+    if (fund.fundSize) {
+      if (fund.fundSize >= 1000) {
+        return `€${(fund.fundSize / 1000000).toFixed(0)}M`;
+      }
+      return `€${fund.fundSize.toFixed(0)}M`;
+    }
+    
+    return 'N/A';
+  };
 
   return (
-    <Card className="bg-card border shadow-lg">
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-foreground">Fund Snapshot</h3>
-          <Badge variant="outline" className="text-xs">
-            Key Details
-          </Badge>
+    <Card className="shadow-lg border-2">
+      <CardHeader className="pb-6">
+        <CardTitle className="text-2xl">Fund Snapshot</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Performance Preview */}
+        <div className="pb-6 border-b">
+          <PerformancePreview fund={fund} />
         </div>
-        
-        <div className="grid grid-cols-1 gap-4">
-          {snapshotData.map((item, index) => (
-            <div key={index} className="flex justify-between items-center py-2 border-b border-border/30 last:border-b-0">
-              <span className="text-sm text-muted-foreground font-medium">
-                {item.label}
+
+        {/* Key Facts - Top 5 */}
+        <div>
+          <h3 className="text-sm font-medium text-muted-foreground mb-3">Key Facts</h3>
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground flex items-center gap-2">
+                <Banknote className="h-4 w-4" />
+                Min Investment
               </span>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-foreground text-right">
-                  {item.value}
-                </span>
-                {item.icon}
-              </div>
+              <span className="text-sm font-medium">{formatCurrency(fund.minimumInvestment)}</span>
             </div>
-          ))}
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                Redemptions
+              </span>
+              <span className="text-sm font-medium">{fund.redemptionTerms?.frequency || 'N/A'}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                Open to US
+              </span>
+              <span className="text-sm font-medium">{usEligible ? 'Yes' : 'No'}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground flex items-center gap-2">
+                <Lock className="h-4 w-4" />
+                Lock-up
+              </span>
+              <span className="text-sm font-medium">{getLockUpPeriod()}</span>
+            </div>
+            <div className="flex items-center justify-between py-2">
+              <span className="text-sm text-muted-foreground flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" />
+                Fund Size (AUM)
+              </span>
+              <span className="text-sm font-medium">{getFundSize()}</span>
+            </div>
+          </div>
         </div>
+
+        {/* Expandable Details */}
+        <details className="group">
+          <summary className="flex items-center justify-between cursor-pointer py-3 border-t hover:bg-accent/5 transition-colors px-2 -mx-2 rounded">
+            <span className="text-sm font-medium">More key details</span>
+            <svg className="h-4 w-4 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div className="pt-4 space-y-2.5 pb-2">
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground">Management Fee</span>
+              <span className="text-sm font-medium">{fund.managementFee ? `${fund.managementFee}%` : 'N/A'}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground">Performance Fee</span>
+              <span className="text-sm font-medium">{fund.performanceFee ? `${fund.performanceFee}%` : 'N/A'}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground">NAV Frequency</span>
+              <span className="text-sm font-medium">{fund.navFrequency || 'N/A'}</span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground">Established</span>
+              <span className="text-sm font-medium">{fund.established || 'N/A'}</span>
+            </div>
+            {fund.cmvmId && (
+              <div className="flex items-center justify-between py-2 border-b">
+                <span className="text-sm text-muted-foreground">CMVM ID</span>
+                <span className="text-sm font-medium">{fund.cmvmId}</span>
+              </div>
+            )}
+            <div className="flex items-center justify-between py-2 border-b">
+              <span className="text-sm text-muted-foreground">Notice Period</span>
+              <span className="text-sm font-medium">
+                {fund.redemptionTerms?.noticePeriod ? `${fund.redemptionTerms.noticePeriod} days` : 'N/A'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between py-2">
+              <span className="text-sm text-muted-foreground">Regulated By</span>
+              <span className="text-sm font-medium">{fund.regulatedBy || 'N/A'}</span>
+            </div>
+          </div>
+        </details>
+
+        {/* Trust Badges */}
+        <div className="pt-6 border-t">
+          <h3 className="text-sm font-medium text-muted-foreground mb-3">Compliance</h3>
+          <TooltipProvider>
+            <div className="flex flex-wrap gap-2">
+              {fund.tags?.includes('UCITS') && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-accent/10 text-accent rounded-md text-xs font-medium">
+                      <Shield className="h-3.5 w-3.5" />
+                      UCITS
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">EU-regulated investment fund</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              
+              {fund.cmvmId && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-accent/10 text-accent rounded-md text-xs font-medium">
+                      <Award className="h-3.5 w-3.5" />
+                      CMVM #{fund.cmvmId}
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">Portuguese securities regulator ID</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              
+              {fund.tags?.includes('Golden Visa Eligible') && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-warning/10 text-warning rounded-md text-xs font-medium">
+                      <Award className="h-3.5 w-3.5" />
+                      GV Eligible
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">Qualifies for Portugal Golden Visa</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </div>
+          </TooltipProvider>
+        </div>
+
+        {/* Disclaimer */}
+        <p className="text-xs text-muted-foreground pt-4 border-t">
+          Capital at risk. Past performance isn't indicative of future returns.
+        </p>
       </CardContent>
     </Card>
   );

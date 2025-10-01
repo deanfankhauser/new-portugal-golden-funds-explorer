@@ -16,7 +16,8 @@ export class InvestmentFundStructuredDataService {
       fund.redemptionFee ? `Exit Fee: ${cleanFeeString(fund.redemptionFee)}% on redemption` : ''
     ].filter(Boolean).join('; ');
 
-    return {
+    // Build enhanced schema with additional properties
+    const schema: any = {
       "@context": "https://schema.org",
       "@type": "InvestmentFund",
       "name": fund.name,
@@ -26,23 +27,143 @@ export class InvestmentFundStructuredDataService {
       "category": fund.category,
       "feesAndCommissionsSpecification": feesSpec || "Contact fund for details",
       "auditor": fund.auditor || "Not specified",
-      "custodian": fund.custodian || "Not specified", 
-      "areaServed": "PT",
+      "custodian": fund.custodian || "Not specified",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Portugal",
+        "alternateName": "PT"
+      },
       "isAccessibleForFree": true,
       "provider": {
         "@type": "Organization",
         "name": fund.managerName,
-        "url": URL_CONFIG.buildManagerUrl(fund.managerName)
+        "url": URL_CONFIG.buildManagerUrl(fund.managerName),
+        "sameAs": fund.websiteUrl || URL_CONFIG.buildManagerUrl(fund.managerName)
       },
       "offers": {
         "@type": "Offer",
+        "price": fund.minimumInvestment || 0,
+        "priceCurrency": "EUR",
         "priceSpecification": {
           "@type": "PriceSpecification",
           "minPrice": fund.minimumInvestment || 0,
-          "priceCurrency": "EUR"
+          "priceCurrency": "EUR",
+          "valueAddedTaxIncluded": false
+        },
+        "availability": fund.fundStatus === 'Open' ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        "validFrom": fund.datePublished || new Date().toISOString().split('T')[0],
+        "seller": {
+          "@type": "Organization",
+          "name": fund.managerName,
+          "url": URL_CONFIG.buildManagerUrl(fund.managerName)
         }
       }
     };
+    
+    // Add sameAs for fund website if available
+    if (fund.websiteUrl) {
+      schema.sameAs = fund.websiteUrl;
+    }
+
+    // Add geographic allocation if available
+    if (fund.geographicAllocation && fund.geographicAllocation.length > 0) {
+      schema.spatialCoverage = fund.geographicAllocation.map(geo => {
+        const geoSchema: any = {
+          "@type": "Place",
+          "name": geo.region
+        };
+        
+        // Add coordinates for Portugal (Lisbon as reference point)
+        if (geo.region.includes('Portugal')) {
+          geoSchema.geo = {
+            "@type": "GeoCoordinates",
+            "latitude": "38.7223",
+            "longitude": "-9.1393",
+            "addressCountry": "PT"
+          };
+        } else {
+          geoSchema.geo = {
+            "@type": "GeoCoordinates",
+            "addressCountry": geo.region.includes('Portugal') ? 'PT' : 'International'
+          };
+        }
+        
+        return geoSchema;
+      });
+    }
+
+    // Add fund performance data if available
+    if (fund.returnTarget) {
+      schema.expectedReturn = fund.returnTarget;
+    }
+
+    // Add compliance and regulatory info
+    if (fund.cmvmId) {
+      schema.identifier = {
+        "@type": "PropertyValue",
+        "name": "CMVM Registration",
+        "value": fund.cmvmId
+      };
+    }
+
+    // Add verification/trust signals
+    if (fund.regulatedBy) {
+      schema.recognizingAuthority = {
+        "@type": "Organization",
+        "name": fund.regulatedBy
+      };
+    }
+
+    // Add dateModified for freshness signals
+    if (fund.dateModified) {
+      schema.dateModified = fund.dateModified;
+    }
+    if (fund.datePublished) {
+      schema.datePublished = fund.datePublished;
+    }
+
+    // Add potentialAction for investment process
+    schema.potentialAction = {
+      "@type": "InvestAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": URL_CONFIG.buildFundUrl(fund.id),
+        "actionPlatform": [
+          "http://schema.org/DesktopWebPlatform",
+          "http://schema.org/MobileWebPlatform"
+        ],
+        "description": "View detailed fund information and investment requirements"
+      },
+      "result": {
+        "@type": "MonetaryAmount",
+        "currency": "EUR",
+        "minValue": fund.minimumInvestment,
+        "description": `Minimum investment required: €${fund.minimumInvestment?.toLocaleString()}`
+      }
+    };
+    
+    // Add aggregateRating if we have performance data
+    if (fund.historicalPerformance && typeof fund.historicalPerformance === 'object') {
+      const performanceYears = Object.keys(fund.historicalPerformance).length;
+      if (performanceYears > 0) {
+        // Calculate a performance-based rating (simplified)
+        const avgPerformance = Object.values(fund.historicalPerformance)
+          .reduce((sum: number, data: any) => sum + (data?.returns || 0), 0) / performanceYears;
+        
+        const rating = Math.min(5, Math.max(1, 3 + (avgPerformance / 10))); // Base 3, adjusted by performance
+        
+        schema.aggregateRating = {
+          "@type": "AggregateRating",
+          "ratingValue": rating.toFixed(1),
+          "bestRating": "5",
+          "worstRating": "1",
+          "ratingCount": performanceYears,
+          "description": `Based on ${performanceYears} years of historical performance data`
+        };
+      }
+    }
+
+    return schema;
   }
 
   static generateFundListSchema(funds: Fund[], listType: string = "funds"): any {

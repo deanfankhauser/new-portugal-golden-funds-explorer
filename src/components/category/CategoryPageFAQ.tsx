@@ -1,5 +1,6 @@
 
 import React, { useEffect } from 'react';
+import { FAQSchemaService } from '../../services/faqSchemaService';
 import {
   Accordion,
   AccordionContent,
@@ -43,41 +44,15 @@ const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categor
   const faqs = generateCategoryFAQs(categoryName, fundsCount);
 
   useEffect(() => {
-    // Create FAQ Page schema for SEO
-    const faqSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      'mainEntity': faqs.map((faq: FAQItem) => ({
-        '@type': 'Question',
-        'name': faq.question,
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': faq.answer
-        }
-      }))
-    };
+    // Register FAQs with unified schema service
+    const cleanup = FAQSchemaService.registerFAQs({
+      schemaId: `category-faq-${categorySlug}`,
+      faqs: faqs,
+      pageContext: `${categoryName} Portugal Golden Visa Funds`
+    });
 
-    // Remove existing FAQ schema
-    const existingFAQSchema = document.querySelector('script[data-schema="faq"]');
-    if (existingFAQSchema) {
-      existingFAQSchema.remove();
-    }
-
-    // Add new FAQ schema with unified data-schema="faq"
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.setAttribute('data-schema', 'faq');
-    script.textContent = JSON.stringify(faqSchema);
-    document.head.appendChild(script);
-
-    // Cleanup function
-    return () => {
-      const schemaScript = document.querySelector('script[data-schema="faq"]');
-      if (schemaScript) {
-        schemaScript.remove();
-      }
-    };
-  }, [faqs]);
+    return cleanup;
+  }, [faqs, categorySlug, categoryName]);
 
   return (
     <section className="bg-card rounded-lg p-6 shadow-sm border mt-8" itemScope itemType="https://schema.org/FAQPage">

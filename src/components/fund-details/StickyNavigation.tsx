@@ -44,69 +44,69 @@ const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
     analytics.trackCTAClick('sticky_nav', 'book_call', bookingUrl);
   };
 
-  if (!isVisible) return null;
-
   return (
     <>
-      {/* Desktop Sticky Bar */}
-      <div className="hidden md:block fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-b border-border z-50 py-3 shadow-sm">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <h2 className="font-semibold text-lg truncate max-w-md">{fund.name}</h2>
-              <span className="text-sm text-muted-foreground">by {fund.managerName}</span>
+      {/* Desktop sticky bar */}
+      <div
+        className={`hidden md:block fixed top-0 left-0 right-0 z-40 bg-card border-b border-border shadow-lg transition-transform duration-300 ${
+          isVisible ? 'translate-y-0' : '-translate-y-full'
+        }`}
+      >
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <h2 className="text-lg font-semibold text-foreground truncate">
+                {fund.name}
+              </h2>
+              {fund.managerName && (
+                <p className="text-sm text-muted-foreground truncate">
+                  {fund.managerName}
+                </p>
+              )}
             </div>
-            
-            <div className="flex items-center space-x-3">
-              <Button 
-                variant={isComparing ? "default" : "outline"}
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={handleCompareClick}
               >
-                {isComparing ? (
-                  <>
-                    <Plus className="w-4 h-4 mr-1 rotate-45" />
-                    Remove
-                  </>
-                ) : (
-                  <>
-                    <GitCompare className="w-4 h-4 mr-1" />
-                    Compare
-                  </>
-                )}
+                <GitCompare className="mr-2 h-4 w-4" />
+                {isComparing ? "In Compare" : "Add to Compare"}
               </Button>
-              
-              <Button 
+              <Button
                 size="sm"
                 onClick={handleBookCall}
               >
-                <Phone className="w-4 h-4 mr-1" />
-                Book 30-min Call
+                <Phone className="mr-2 h-4 w-4" />
+                Book Call
               </Button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Mobile Sticky Bottom Bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border z-40 p-4">
-        <div className="flex space-x-3">
-          <Button 
-            variant="outline"
-            className="flex-1"
-            onClick={handleCompareClick}
-          >
-            <GitCompare className="w-4 h-4 mr-1" />
-            {isComparing ? "Remove" : "Compare"}
-          </Button>
-          
-          <Button 
-            className="flex-1"
-            onClick={handleBookCall}
-          >
-            <Phone className="w-4 h-4 mr-1" />
-            Book Call
-          </Button>
+      {/* Mobile sticky bottom bar */}
+      <div
+        className={`md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border shadow-lg transition-transform duration-300 ${
+          isVisible ? 'translate-y-0' : 'translate-y-full'
+        }`}
+      >
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-semibold text-foreground truncate">
+                {fund.name.length > 30 ? `${fund.name.substring(0, 30)}...` : fund.name}
+              </h3>
+            </div>
+            <Button
+              size="sm"
+              onClick={handleBookCall}
+              className="whitespace-nowrap"
+            >
+              <Phone className="mr-2 h-4 w-4" />
+              Book Call
+            </Button>
+          </div>
         </div>
       </div>
     </>

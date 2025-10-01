@@ -1,249 +1,315 @@
-export interface CoreWebVitalsMetrics {
-  lcp: number | null; // Largest Contentful Paint
-  fid: number | null; // First Input Delay
-  cls: number | null; // Cumulative Layout Shift
-  inp: number | null; // Interaction to Next Paint
-  fcp: number | null; // First Contentful Paint
-  ttfb: number | null; // Time to First Byte
+/**
+ * Core Web Vitals Monitoring Service
+ * Tracks and reports key performance metrics for SEO
+ */
+
+interface WebVitalMetric {
+  name: string;
+  value: number;
+  rating: 'good' | 'needs-improvement' | 'poor';
+  timestamp: number;
+}
+
+interface WebVitalsReport {
+  lcp?: WebVitalMetric;
+  fid?: WebVitalMetric;
+  cls?: WebVitalMetric;
+  fcp?: WebVitalMetric;
+  ttfb?: WebVitalMetric;
+  inp?: WebVitalMetric;
 }
 
 export class CoreWebVitalsService {
-  private static metrics: CoreWebVitalsMetrics = {
-    lcp: null,
-    fid: null,
-    cls: null,
-    inp: null,
-    fcp: null,
-    ttfb: null
-  };
-
+  private static metrics: WebVitalsReport = {};
   private static observers: PerformanceObserver[] = [];
 
-  // Initialize Core Web Vitals monitoring
-  static initializeMonitoring(): void {
-    if (!('PerformanceObserver' in window)) {
-      console.warn('PerformanceObserver not supported');
-      return;
+  /**
+   * Initialize Core Web Vitals monitoring
+   */
+  static initialize(): void {
+    try {
+      // Only run in browser
+      if (typeof window === 'undefined') return;
+
+      // Monitor LCP (Largest Contentful Paint)
+      this.observeLCP();
+
+      // Monitor FID (First Input Delay) and INP (Interaction to Next Paint)
+      this.observeInteraction();
+
+      // Monitor CLS (Cumulative Layout Shift)
+      this.observeCLS();
+
+      // Monitor FCP (First Contentful Paint)
+      this.observeFCP();
+
+      // Monitor TTFB (Time to First Byte)
+      this.observeTTFB();
+
+      console.log('[CoreWebVitals] Monitoring initialized');
+    } catch (error) {
+      console.error('[CoreWebVitals] Initialization error:', error);
     }
-
-    this.measureLCP();
-    this.measureFID();
-    this.measureCLS();
-    this.measureINP();
-    this.measureFCP();
-    this.measureTTFB();
-    
-    // Report metrics on page hide
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') {
-        this.reportMetrics();
-      }
-    });
-    
-    // Report metrics on beforeunload
-    window.addEventListener('beforeunload', () => {
-      this.reportMetrics();
-    });
-
-    // Core Web Vitals monitoring initialized
   }
 
-  // Measure Largest Contentful Paint
-  private static measureLCP(): void {
+  /**
+   * Observe Largest Contentful Paint
+   */
+  private static observeLCP(): void {
     try {
+      if (!('PerformanceObserver' in window)) return;
+
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1] as any;
-        this.metrics.lcp = lastEntry.startTime;
+        
+        if (lastEntry?.renderTime || lastEntry?.loadTime) {
+          const value = lastEntry.renderTime || lastEntry.loadTime;
+          this.metrics.lcp = {
+            name: 'LCP',
+            value: Math.round(value),
+            rating: this.rateLCP(value),
+            timestamp: Date.now()
+          };
+        }
       });
-      
-      observer.observe({ type: 'largest-contentful-paint', buffered: true });
+
+      observer.observe({ entryTypes: ['largest-contentful-paint'] });
       this.observers.push(observer);
     } catch (error) {
-      console.warn('LCP measurement failed:', error);
+      console.error('[CoreWebVitals] LCP observation error:', error);
     }
   }
 
-  // Measure First Input Delay
-  private static measureFID(): void {
+  /**
+   * Observe First Input Delay and Interaction to Next Paint
+   */
+  private static observeInteraction(): void {
     try {
-      const observer = new PerformanceObserver((list) => {
+      if (!('PerformanceObserver' in window)) return;
+
+      // FID Observer
+      const fidObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         entries.forEach((entry: any) => {
-          this.metrics.fid = entry.processingStart - entry.startTime;
+          if (entry.processingStart && entry.startTime) {
+            const value = entry.processingStart - entry.startTime;
+            this.metrics.fid = {
+              name: 'FID',
+              value: Math.round(value),
+              rating: this.rateFID(value),
+              timestamp: Date.now()
+            };
+          }
         });
       });
-      
-      observer.observe({ type: 'first-input', buffered: true });
-      this.observers.push(observer);
+
+      fidObserver.observe({ entryTypes: ['first-input'] });
+      this.observers.push(fidObserver);
+
+      // INP Observer (newer metric replacing FID)
+      if ('PerformanceEventTiming' in window) {
+        const inpObserver = new PerformanceObserver((list) => {
+          const entries = list.getEntries();
+          entries.forEach((entry: any) => {
+            if (entry.interactionId) {
+              const value = entry.duration;
+              this.metrics.inp = {
+                name: 'INP',
+                value: Math.round(value),
+                rating: this.rateINP(value),
+                timestamp: Date.now()
+              };
+            }
+          });
+        });
+
+        inpObserver.observe({ entryTypes: ['event'] });
+        this.observers.push(inpObserver);
+      }
     } catch (error) {
-      console.warn('FID measurement failed:', error);
+      console.error('[CoreWebVitals] Interaction observation error:', error);
     }
   }
 
-  // Measure Cumulative Layout Shift
-  private static measureCLS(): void {
+  /**
+   * Observe Cumulative Layout Shift
+   */
+  private static observeCLS(): void {
     try {
+      if (!('PerformanceObserver' in window)) return;
+
       let clsValue = 0;
-      
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         entries.forEach((entry: any) => {
           if (!entry.hadRecentInput) {
             clsValue += entry.value;
-            this.metrics.cls = clsValue;
+            this.metrics.cls = {
+              name: 'CLS',
+              value: Math.round(clsValue * 1000) / 1000,
+              rating: this.rateCLS(clsValue),
+              timestamp: Date.now()
+            };
           }
         });
       });
-      
-      observer.observe({ type: 'layout-shift', buffered: true });
+
+      observer.observe({ entryTypes: ['layout-shift'] });
       this.observers.push(observer);
     } catch (error) {
-      console.warn('CLS measurement failed:', error);
+      console.error('[CoreWebVitals] CLS observation error:', error);
     }
   }
 
-  // Measure Interaction to Next Paint
-  private static measureINP(): void {
+  /**
+   * Observe First Contentful Paint
+   */
+  private static observeFCP(): void {
     try {
-      const observer = new PerformanceObserver((list) => {
-        const entries = list.getEntries();
-        entries.forEach((entry: any) => {
-          this.metrics.inp = entry.processingEnd - entry.startTime;
-        });
-      });
-      
-      observer.observe({ type: 'event', buffered: true });
-      this.observers.push(observer);
-    } catch (error) {
-      console.warn('INP measurement failed:', error);
-    }
-  }
+      if (!('PerformanceObserver' in window)) return;
 
-  // Measure First Contentful Paint
-  private static measureFCP(): void {
-    try {
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         entries.forEach((entry: any) => {
           if (entry.name === 'first-contentful-paint') {
-            this.metrics.fcp = entry.startTime;
+            this.metrics.fcp = {
+              name: 'FCP',
+              value: Math.round(entry.startTime),
+              rating: this.rateFCP(entry.startTime),
+              timestamp: Date.now()
+            };
           }
         });
       });
-      
-      observer.observe({ type: 'paint', buffered: true });
+
+      observer.observe({ entryTypes: ['paint'] });
       this.observers.push(observer);
     } catch (error) {
-      console.warn('FCP measurement failed:', error);
+      console.error('[CoreWebVitals] FCP observation error:', error);
     }
   }
 
-  // Measure Time to First Byte
-  private static measureTTFB(): void {
+  /**
+   * Observe Time to First Byte
+   */
+  private static observeTTFB(): void {
     try {
-      const observer = new PerformanceObserver((list) => {
-        const entries = list.getEntries();
-        entries.forEach((entry: any) => {
-          if (entry.entryType === 'navigation') {
-            this.metrics.ttfb = entry.responseStart - entry.requestStart;
-          }
-        });
-      });
-      
-      observer.observe({ type: 'navigation', buffered: true });
-      this.observers.push(observer);
+      const navEntry = performance.getEntriesByType('navigation')[0] as any;
+      if (navEntry?.responseStart) {
+        const value = navEntry.responseStart;
+        this.metrics.ttfb = {
+          name: 'TTFB',
+          value: Math.round(value),
+          rating: this.rateTTFB(value),
+          timestamp: Date.now()
+        };
+      }
     } catch (error) {
-      console.warn('TTFB measurement failed:', error);
+      console.error('[CoreWebVitals] TTFB observation error:', error);
     }
   }
 
-  // Get current metrics
-  static getMetrics(): CoreWebVitalsMetrics {
+  /**
+   * Rating functions based on Google's thresholds
+   */
+  private static rateLCP(value: number): 'good' | 'needs-improvement' | 'poor' {
+    if (value <= 2500) return 'good';
+    if (value <= 4000) return 'needs-improvement';
+    return 'poor';
+  }
+
+  private static rateFID(value: number): 'good' | 'needs-improvement' | 'poor' {
+    if (value <= 100) return 'good';
+    if (value <= 300) return 'needs-improvement';
+    return 'poor';
+  }
+
+  private static rateINP(value: number): 'good' | 'needs-improvement' | 'poor' {
+    if (value <= 200) return 'good';
+    if (value <= 500) return 'needs-improvement';
+    return 'poor';
+  }
+
+  private static rateCLS(value: number): 'good' | 'needs-improvement' | 'poor' {
+    if (value <= 0.1) return 'good';
+    if (value <= 0.25) return 'needs-improvement';
+    return 'poor';
+  }
+
+  private static rateFCP(value: number): 'good' | 'needs-improvement' | 'poor' {
+    if (value <= 1800) return 'good';
+    if (value <= 3000) return 'needs-improvement';
+    return 'poor';
+  }
+
+  private static rateTTFB(value: number): 'good' | 'needs-improvement' | 'poor' {
+    if (value <= 800) return 'good';
+    if (value <= 1800) return 'needs-improvement';
+    return 'poor';
+  }
+
+  /**
+   * Get current metrics report
+   */
+  static getMetrics(): WebVitalsReport {
     return { ...this.metrics };
   }
 
-  // Report metrics (can be extended to send to analytics)
-  private static reportMetrics(): void {
-    const metrics = this.getMetrics();
+  /**
+   * Get metrics score (0-100)
+   */
+  static getScore(): number {
+    const ratings = Object.values(this.metrics).map(m => m.rating);
+    if (ratings.length === 0) return 0;
+
+    const goodCount = ratings.filter(r => r === 'good').length;
+    const needsImpCount = ratings.filter(r => r === 'needs-improvement').length;
     
-    // Core Web Vitals metrics collected and available
-
-    // Send to analytics (example implementation)
-    this.sendToAnalytics(metrics);
+    // Good = 100, Needs Improvement = 50, Poor = 0
+    const totalScore = (goodCount * 100) + (needsImpCount * 50);
+    return Math.round(totalScore / ratings.length);
   }
 
-  // Send metrics to analytics (placeholder implementation)
-  private static sendToAnalytics(metrics: CoreWebVitalsMetrics): void {
-    // Example: Send to Google Analytics 4
-    if (typeof (window as any).gtag !== 'undefined') {
-      Object.entries(metrics).forEach(([name, value]) => {
-        if (value !== null) {
-          (window as any).gtag('event', name, {
-            value: Math.round(name === 'cls' ? value * 1000 : value),
-            metric_id: name,
-            custom_map: { metric_name: name }
-          });
-        }
-      });
-    }
-    
-    // Example: Send to custom analytics endpoint
-    // fetch('/api/analytics/web-vitals', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(metrics)
-    // }).catch(console.error);
-  }
-
-  // Cleanup observers
-  static cleanup(): void {
-    this.observers.forEach(observer => observer.disconnect());
-    this.observers = [];
-  }
-
-  // Get performance scores and recommendations
-  static getPerformanceReport(): {
-    scores: Record<string, { value: number; rating: 'good' | 'needs-improvement' | 'poor' }>;
-    recommendations: string[];
-  } {
+  /**
+   * Generate performance report
+   */
+  static generateReport(): string {
     const metrics = this.getMetrics();
-    const scores: Record<string, { value: number; rating: 'good' | 'needs-improvement' | 'poor' }> = {};
-    const recommendations: string[] = [];
+    const score = this.getScore();
 
-    // LCP scoring
-    if (metrics.lcp !== null) {
-      scores.lcp = {
-        value: metrics.lcp,
-        rating: metrics.lcp <= 2500 ? 'good' : metrics.lcp <= 4000 ? 'needs-improvement' : 'poor'
-      };
-      if (scores.lcp.rating !== 'good') {
-        recommendations.push('Optimize LCP by reducing server response times, using efficient image formats, and removing unused JavaScript.');
-      }
+    let report = `\n=== Core Web Vitals Report ===\n`;
+    report += `Overall Score: ${score}/100\n\n`;
+
+    Object.entries(metrics).forEach(([key, metric]) => {
+      const icon = metric.rating === 'good' ? '✅' : metric.rating === 'needs-improvement' ? '⚠️' : '❌';
+      report += `${icon} ${metric.name}: ${metric.value}ms (${metric.rating})\n`;
+    });
+
+    report += `\n=== Recommendations ===\n`;
+    if (metrics.lcp && metrics.lcp.rating !== 'good') {
+      report += `- Optimize LCP: Reduce image sizes, preload critical resources\n`;
+    }
+    if (metrics.cls && metrics.cls.rating !== 'good') {
+      report += `- Fix CLS: Add dimensions to images, avoid layout shifts\n`;
+    }
+    if ((metrics.fid && metrics.fid.rating !== 'good') || (metrics.inp && metrics.inp.rating !== 'good')) {
+      report += `- Improve interactivity: Reduce JavaScript execution time\n`;
     }
 
-    // FID scoring
-    if (metrics.fid !== null) {
-      scores.fid = {
-        value: metrics.fid,
-        rating: metrics.fid <= 100 ? 'good' : metrics.fid <= 300 ? 'needs-improvement' : 'poor'
-      };
-      if (scores.fid.rating !== 'good') {
-        recommendations.push('Improve FID by breaking up long-running tasks, optimizing JavaScript execution, and using web workers.');
-      }
-    }
+    return report;
+  }
 
-    // CLS scoring
-    if (metrics.cls !== null) {
-      scores.cls = {
-        value: metrics.cls,
-        rating: metrics.cls <= 0.1 ? 'good' : metrics.cls <= 0.25 ? 'needs-improvement' : 'poor'
-      };
-      if (scores.cls.rating !== 'good') {
-        recommendations.push('Reduce CLS by setting explicit dimensions for images and videos, avoiding dynamic content injection above existing content.');
-      }
+  /**
+   * Cleanup observers
+   */
+  static disconnect(): void {
+    try {
+      this.observers.forEach(observer => observer.disconnect());
+      this.observers = [];
+      this.metrics = {};
+    } catch (error) {
+      console.error('[CoreWebVitals] Disconnect error:', error);
     }
-
-    return { scores, recommendations };
   }
 }
