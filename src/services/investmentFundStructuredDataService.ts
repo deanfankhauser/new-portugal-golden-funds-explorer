@@ -1,4 +1,5 @@
-import { Fund } from '../data/funds';
+import { Fund } from '../data/types/funds';
+import { URL_CONFIG } from '../utils/urlConfig';
 
 export class InvestmentFundStructuredDataService {
   static generateInvestmentFundSchema(fund: Fund): any {
@@ -19,8 +20,10 @@ export class InvestmentFundStructuredDataService {
       "@context": "https://schema.org",
       "@type": "InvestmentFund",
       "name": fund.name,
-      "url": `https://funds.movingto.com/${fund.id}`,
+      "url": URL_CONFIG.buildFundUrl(fund.id),
       "fundLegalName": fund.name,
+      "description": fund.description,
+      "category": fund.category,
       "feesAndCommissionsSpecification": feesSpec || "Contact fund for details",
       "auditor": fund.auditor || "Not specified",
       "custodian": fund.custodian || "Not specified", 
@@ -28,7 +31,8 @@ export class InvestmentFundStructuredDataService {
       "isAccessibleForFree": true,
       "provider": {
         "@type": "Organization",
-        "name": fund.managerName
+        "name": fund.managerName,
+        "url": URL_CONFIG.buildManagerUrl(fund.managerName)
       },
       "offers": {
         "@type": "Offer",

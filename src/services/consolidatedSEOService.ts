@@ -3,6 +3,8 @@ import { URL_CONFIG } from '../utils/urlConfig';
 import { funds } from '../data/funds';
 import { normalizeComparisonSlug } from '../utils/comparisonUtils';
 import { getComparisonBySlug } from '../data/services/comparison-service';
+import { InvestmentFundStructuredDataService } from './investmentFundStructuredDataService';
+import { EnhancedStructuredDataService } from './enhancedStructuredDataService';
 
 
 export class ConsolidatedSEOService {
@@ -534,25 +536,37 @@ export class ConsolidatedSEOService {
   }
 
   private static getFundStructuredData(fund: any): any {
-    // Simple structured data without dynamic imports
-    const baseStructuredData = {
+    // Use comprehensive investment fund structured data
+    const investmentFundSchema = InvestmentFundStructuredDataService.generateInvestmentFundSchema(fund);
+    
+    // Add breadcrumb schema
+    const breadcrumbSchema = {
       '@context': 'https://schema.org',
-      '@type': 'WebPage',
-      'name': `${fund.name} - Fund Details`,
-      'description': fund.description,
-      'dateModified': fund.dateModified || new Date().toISOString(),
-      'url': URL_CONFIG.buildFundUrl(fund.id),
-      'breadcrumb': {
-        '@type': 'BreadcrumbList',
-        'itemListElement': [
-          { '@type': 'ListItem', 'position': 1, 'name': 'Portugal Golden Visa Funds Home', 'item': URL_CONFIG.BASE_URL },
-          { '@type': 'ListItem', 'position': 2, 'name': 'Complete Portugal Fund Database', 'item': URL_CONFIG.buildUrl('/index') },
-          { '@type': 'ListItem', 'position': 3, 'name': `${fund.name} Details & Analysis` }
-        ]
-      }
+      '@type': 'BreadcrumbList',
+      'itemListElement': [
+        { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+        { '@type': 'ListItem', 'position': 2, 'name': 'Fund Index', 'item': URL_CONFIG.buildUrl('/index') },
+        { '@type': 'ListItem', 'position': 3, 'name': fund.name, 'item': URL_CONFIG.buildFundUrl(fund.id) }
+      ]
     };
-
-    return baseStructuredData;
+    
+    // Add FAQ schema if fund has FAQs
+    const schemas: any[] = [investmentFundSchema, breadcrumbSchema];
+    if (fund.faqs && fund.faqs.length > 0) {
+      const faqSchema = EnhancedStructuredDataService.generateFundFAQSchema(fund);
+      schemas.push(faqSchema);
+    }
+    
+    // Add fund manager organization schema
+    const managerSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      'name': fund.managerName,
+      'url': URL_CONFIG.buildManagerUrl(fund.managerName)
+    };
+    schemas.push(managerSchema);
+    
+    return schemas;
   }
 
   private static getCategoryStructuredData(categoryName: string, funds: any[] = []): any {
