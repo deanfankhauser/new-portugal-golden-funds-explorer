@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { PageSEO } from '../components/common/PageSEO';
 import FundDetailsContent from '../components/fund-details/FundDetailsContent';
+import FundPagePerformanceOptimizer from '../components/fund-details/FundPagePerformanceOptimizer';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import { useFundPageSEOAudit } from '../hooks/useFundPageSEOAudit';
@@ -68,6 +69,7 @@ const FundDetails = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <PageSEO pageType="fund" fundName={fund.name} funds={[fund]} />
+      <FundPagePerformanceOptimizer fund={fund} />
       
       <Header />
       

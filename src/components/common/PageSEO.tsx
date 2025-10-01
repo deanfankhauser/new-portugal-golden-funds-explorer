@@ -34,6 +34,30 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
 
       ConsolidatedSEOService.applyMetaTags(seoData);
       
+      // Add preload hints for critical resources on fund pages
+      if (pageType === 'fund' && funds && funds.length > 0) {
+        const fund = funds[0];
+        
+        // Preload fund manager page
+        const managerPreload = document.createElement('link');
+        managerPreload.rel = 'prefetch';
+        managerPreload.href = `/manager/${fund.managerName.toLowerCase().replace(/\s+/g, '-')}`;
+        document.head.appendChild(managerPreload);
+        
+        // Preconnect to external resources
+        if (fund.websiteUrl) {
+          const preconnect = document.createElement('link');
+          preconnect.rel = 'preconnect';
+          try {
+            const url = new URL(fund.websiteUrl);
+            preconnect.href = url.origin;
+            document.head.appendChild(preconnect);
+          } catch (e) {
+            // Invalid URL, skip
+          }
+        }
+      }
+      
       // Only noindex true 404 pages
       if (pageType === '404') {
         let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
@@ -43,6 +67,11 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
           document.head.appendChild(robots);
         }
         robots.setAttribute('content', 'noindex, follow');
+      }
+      
+      // Dispatch SEO update event for validation
+      if (import.meta.env.DEV) {
+        window.dispatchEvent(new CustomEvent('seo:updated'));
       }
       
     } catch (error) {

@@ -269,7 +269,6 @@ export class FundPageSEOAudit {
    * Audit performance metrics
    */
   private static auditPerformance() {
-    // Get performance data from window.performance if available
     const lcp = this.getLCPStatus();
     const cls = this.getCLSStatus();
     const fid = this.getFIDStatus();
@@ -278,16 +277,48 @@ export class FundPageSEOAudit {
   }
   
   private static getLCPStatus(): 'good' | 'needs-improvement' | 'poor' | 'unknown' {
-    // This would be populated by actual Core Web Vitals monitoring
-    // For now, return 'unknown' - should integrate with CoreWebVitalsService
+    // Check if Core Web Vitals data is available
+    const vitals = (window as any).__coreWebVitals;
+    if (vitals?.lcp) {
+      const lcp = vitals.lcp.value;
+      if (lcp <= 2500) return 'good';
+      if (lcp <= 4000) return 'needs-improvement';
+      return 'poor';
+    }
+    
+    // Fallback: Check navigation timing
+    if (window.performance?.timing) {
+      const timing = window.performance.timing;
+      const lcp = timing.loadEventEnd - timing.navigationStart;
+      if (lcp > 0) {
+        if (lcp <= 2500) return 'good';
+        if (lcp <= 4000) return 'needs-improvement';
+        return 'poor';
+      }
+    }
+    
     return 'unknown';
   }
   
   private static getCLSStatus(): 'good' | 'needs-improvement' | 'poor' | 'unknown' {
+    const vitals = (window as any).__coreWebVitals;
+    if (vitals?.cls) {
+      const cls = vitals.cls.value;
+      if (cls <= 0.1) return 'good';
+      if (cls <= 0.25) return 'needs-improvement';
+      return 'poor';
+    }
     return 'unknown';
   }
   
   private static getFIDStatus(): 'good' | 'needs-improvement' | 'poor' | 'unknown' {
+    const vitals = (window as any).__coreWebVitals;
+    if (vitals?.fid) {
+      const fid = vitals.fid.value;
+      if (fid <= 100) return 'good';
+      if (fid <= 300) return 'needs-improvement';
+      return 'poor';
+    }
     return 'unknown';
   }
   
