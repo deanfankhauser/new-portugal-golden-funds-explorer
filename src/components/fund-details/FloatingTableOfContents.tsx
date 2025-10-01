@@ -25,38 +25,56 @@ const FloatingTableOfContents: React.FC<FloatingTableOfContentsProps> = ({ fund 
 
   // Show TOC only on mobile when user scrolls past header
   useEffect(() => {
+    // Handle visibility based on scroll with minimal reflows
     const handleScroll = () => {
-      const scrollY = window.scrollY;
+      const scrollY = window.scrollY || window.pageYOffset;
       const isMobile = window.innerWidth < 768;
-      
-      // Show after scrolling 300px on mobile only
       setIsVisible(isMobile && scrollY > 300);
-      
-      // Update active section based on scroll position
-      for (const section of sections) {
-        const element = document.getElementById(section.id);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 100 && rect.bottom >= 100) {
-            setActiveSection(section.id);
-            break;
-          }
-        }
-      }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check initial state
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Use Intersection Observer for active section (no forced reflows)
+    const observerOptions = {
+      rootMargin: '-100px 0px -66% 0px',
+      threshold: 0
+    };
+    
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+    
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    
+    // Observe all sections
+    sections.forEach((section) => {
+      const element = document.getElementById(section.id);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      observer.disconnect();
+    };
   }, []);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      const yOffset = -80; // Account for sticky header
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      // Use scrollIntoView to avoid getBoundingClientRect forced reflow
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+      // Adjust for sticky header using scroll offset
+      window.scrollBy({ top: -80, behavior: 'instant' });
     }
   };
 
