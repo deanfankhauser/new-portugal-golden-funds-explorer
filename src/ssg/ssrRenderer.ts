@@ -45,8 +45,13 @@ export class SSRRenderer {
     // For SSG, we need to include the real auth provider but with initial loading state
     // This ensures proper hydration when JavaScript loads on the client side
     
-    if (isDev) {
-      console.log(`🔥 SSR: Starting render for route ${route.path} (type: ${route.pageType})`);
+    console.log(`\n🔥 SSR: Starting render for route ${route.path} (type: ${route.pageType})`);
+    
+    // Extract fund ID from path for fund detail pages
+    if (route.path.match(/^\/[^\/]+$/)) {
+      const fundId = route.path.replace('/', '');
+      console.log(`🔥 SSR: Detected potential fund page. Fund ID: "${fundId}"`);
+      console.log(`🔥 SSR: Route params passed:`, route.params);
     }
     
     const queryClient = new QueryClient({

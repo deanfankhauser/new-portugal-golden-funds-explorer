@@ -17,7 +17,20 @@ export async function processRoute(
   validJs: string[]
 ): Promise<RouteProcessingResult> {
   try {
+    console.log(`\n🔨 Processing route: ${route.path}`);
+    console.log(`   Route params:`, route.params);
+    
     const { html, seoData } = await renderRoute(route);
+    
+    // Diagnostic: Check HTML content
+    const hasH1 = html.includes('<h1');
+    const contentLength = html.length;
+    console.log(`   Rendered HTML: ${contentLength} chars, Has H1: ${hasH1}`);
+    
+    if (!hasH1 && route.path !== '/') {
+      console.warn(`⚠️  Warning: No H1 tag found in ${route.path}`);
+    }
+    
     const fullHTML = generateHTMLTemplate(html, seoData, validCss, validJs);
     
     // Determine output path
@@ -34,11 +47,13 @@ export async function processRoute(
     }
     
     fs.writeFileSync(outputPath, fullHTML);
+    console.log(`   ✅ Written to: ${outputPath}`);
     
     return { success: true, outputPath, seoData };
     
   } catch (error) {
     console.error(`❌ SSG: Failed to generate ${route.path}:`, error.message);
+    console.error(`   Stack trace:`, error.stack);
     return { success: false };
   }
 }
