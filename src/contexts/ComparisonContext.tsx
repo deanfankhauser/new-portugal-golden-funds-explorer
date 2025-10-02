@@ -15,6 +15,12 @@ const ComparisonContext = React.createContext<ComparisonContextType | undefined>
 
 export const ComparisonProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [compareFunds, setCompareFunds] = React.useState<Fund[]>([]);
+  const [isHydrated, setIsHydrated] = React.useState(false);
+
+  // Ensure hydration is complete before any state changes
+  React.useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const addToComparison = (fund: Fund) => {
     // Check if we already have this fund
