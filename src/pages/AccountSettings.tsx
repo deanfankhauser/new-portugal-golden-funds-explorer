@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Upload, Loader as Loader2, User, Mail, Lock, Camera, Hop as Home, Trash2, CreditCard as Edit3 } from 'lucide-react';
+import { Upload, Loader2, User, Mail, Lock, Camera, Home, Trash2, Edit3 } from 'lucide-react';
 import { toast } from "@/components/ui/sonner";
 import { Navigate, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -209,6 +209,7 @@ const AccountSettings = () => {
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('🔑 Password change initiated, user:', user?.email, 'loading:', loading);
 
     // reset status
     setPasswordChangeStatus('idle');
@@ -216,6 +217,7 @@ const AccountSettings = () => {
     
     // Check if user is authenticated
     if (!user) {
+      console.log('🔑 No authenticated user found');
       toast.error("Authentication Error", {
         description: "You must be logged in to change your password."
       });
@@ -245,10 +247,12 @@ const AccountSettings = () => {
     }
 
     setIsUpdatingPassword(true);
+    console.log('🔑 Starting password update for user:', user.email);
 
     // Listen for auth events to detect success even if the promise takes long
     let finished = false;
     const { data: authSub } = supabase.auth.onAuthStateChange((event) => {
+      console.log('🔑 Auth event during password change:', event);
       if (!finished && (event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED')) {
         finished = true;
         setIsUpdatingPassword(false);
@@ -273,6 +277,7 @@ const AccountSettings = () => {
     }, 20000);
 
     try {
+      console.log('🔑 Calling supabase.auth.updateUser');
       const { error } = await supabase.auth.updateUser({ password: passwordData.newPassword });
 
       if (finished) return; // already handled by auth event
@@ -280,10 +285,12 @@ const AccountSettings = () => {
       authSub.subscription.unsubscribe();
 
       if (error) {
+        console.log('🔑 Password update failed:', error.message);
         setPasswordChangeStatus('error');
         setPasswordChangeMessage(error.message);
         toast.error("Password Update Failed", { description: error.message });
       } else {
+        console.log('🔑 Password update successful (no auth event)');
         setPasswordChangeStatus('success');
         setPasswordChangeMessage('Your password has been successfully updated.');
         toast.success("Password Changed", { description: "Your password has been successfully updated." });
@@ -297,6 +304,7 @@ const AccountSettings = () => {
       setPasswordChangeMessage('An unexpected error occurred. Please try again.');
       toast.error("Update Failed", { description: "An unexpected error occurred. Please try again." });
     } finally {
+      console.log('🔑 Setting isUpdatingPassword to false');
       setIsUpdatingPassword(false);
     }
   };

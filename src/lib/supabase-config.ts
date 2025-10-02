@@ -6,10 +6,12 @@ export function getSupabaseConfig() {
   
   // If environment variables are available, use them
   if (envUrl && envAnonKey) {
-    return {
+    const config = {
       url: envUrl,
       anonKey: envAnonKey
     };
+    console.log(`🔌 Connected via VITE environment variables:`, config.url);
+    return config;
   }
   
   // No fallback values - VITE environment variables are required

@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader as Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { toast } from "sonner";
 import { supabase } from '@/integrations/supabase/client';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
@@ -15,13 +15,43 @@ import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 const ManagerAuth = () => {
   const navigate = useNavigate();
   const { signIn, signUp, signOut, loading, user } = useEnhancedAuth();
-
-  // MUST declare all hooks before any conditional returns
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [showResendConfirmation, setShowResendConfirmation] = useState(false);
   const [lastSignupEmail, setLastSignupEmail] = useState('');
+
+  // If already authenticated, show options instead of redirecting
+  if (user && !loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold">You're already signed in</CardTitle>
+            <CardDescription>Use the options below to continue.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Button className="w-full" onClick={() => navigate('/')}>Go to Home</Button>
+            <Button variant="outline" className="w-full" onClick={() => navigate('/account-settings')}>Account Settings</Button>
+            <Button 
+              variant="secondary" 
+              className="w-full" 
+              onClick={async () => { 
+                const { error } = await signOut(); 
+                if (!error) { 
+                  toast.success('Signed out'); 
+                } else { 
+                  toast.error('Sign out failed', { description: error.message }); 
+                }
+              }}
+            >
+              Sign out
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Login form state
   const [loginData, setLoginData] = useState({
@@ -39,44 +69,14 @@ const ManagerAuth = () => {
     website: '',
     description: ''
   });
-
-  // If already authenticated, show options instead of redirecting
-  if (user && !loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">You're already signed in</CardTitle>
-            <CardDescription>Use the options below to continue.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button className="w-full" onClick={() => navigate('/')}>Go to Home</Button>
-            <Button variant="outline" className="w-full" onClick={() => navigate('/account-settings')}>Account Settings</Button>
-            <Button
-              variant="secondary"
-              className="w-full"
-              onClick={async () => {
-                const { error } = await signOut();
-                if (!error) {
-                  toast.success('Signed out');
-                } else {
-                  toast.error('Sign out failed', { description: error.message });
-                }
-              }}
-            >
-              Sign out
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
+  
   // Simple auth functions for form handling
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
+
+    console.log('🔐 Starting manager login process with context...');
 
     try {
       const { error } = await signIn(loginData.email, loginData.password);
@@ -101,6 +101,7 @@ const ManagerAuth = () => {
         }
         setIsSubmitting(false);
       } else {
+        console.log('🔐 Login successful, redirecting to home...');
         toast.success("Welcome back!", {
           description: "You have been successfully logged in."
         });

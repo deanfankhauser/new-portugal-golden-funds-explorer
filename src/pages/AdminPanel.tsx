@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, CreditCard as Edit3, Clock, CircleCheck as CheckCircle, Circle as XCircle, Activity, Settings, Database, FileText } from 'lucide-react';
+import { Users, Edit3, Clock, CheckCircle, XCircle, Activity, Settings, Database, FileText } from 'lucide-react';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { EnhancedSuggestionsTable } from '@/components/admin/EnhancedSuggestionsTable';
@@ -68,6 +68,7 @@ const AdminPanel = () => {
       if (!isAdmin) return;
 
       try {
+        console.log('Fetching admin stats...');
         
         // Get pending suggestions count
         const { count: pendingCount, error: pendingError } = await supabase
@@ -78,6 +79,7 @@ const AdminPanel = () => {
         if (pendingError) {
           console.error('Error fetching pending count:', pendingError);
         } else {
+          console.log('Pending suggestions count:', pendingCount);
         }
 
         // Get today's approved suggestions
