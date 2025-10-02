@@ -5,37 +5,12 @@ import { categoryToSlug, tagToSlug, managerToSlug } from '../lib/utils';
 export const DATA_AS_OF_DATE = "Sep 2025";
 export const DATA_AS_OF_LABEL = `(as of ${DATA_AS_OF_DATE})`;
 
-// SSR-safe env accessors
-const fromProcess = (key: string): string | undefined => {
-  return typeof process !== 'undefined' && process.env ? process.env[key] : undefined;
-};
-
-const fromVite = (key: string): string | undefined => {
-  try {
-    // Guard import.meta for Node/SSG
-    // @ts-ignore - import.meta is not typed in Node context
-    return typeof import.meta !== 'undefined' && (import.meta as any)?.env
-      ? (import.meta as any).env[key]
-      : undefined;
-  } catch {
-    return undefined;
-  }
-};
-
-const getBaseUrl = (): string => {
-  return (
-    fromProcess('VITE_APP_BASE_URL') ||
-    fromProcess('APP_BASE_URL') ||
-    fromProcess('NEXT_PUBLIC_APP_BASE_URL') ||
-    fromVite('VITE_APP_BASE_URL') ||
-    'https://funds.movingto.com'
-  );
-};
+import { getBaseUrl } from '../lib/ssr-env';
 
 export const URL_CONFIG = {
   // Resolve at runtime for both SSG (Node) and client (Vite)
-  BASE_URL: getBaseUrl(),
-  SITE_URL: getBaseUrl(),
+  get BASE_URL() { return getBaseUrl(); },
+  get SITE_URL() { return getBaseUrl(); },
 
   buildUrl: (path: string) => {
     const baseUrl = getBaseUrl();

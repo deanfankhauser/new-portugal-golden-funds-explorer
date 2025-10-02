@@ -11,11 +11,16 @@ import { generate404Page } from './404-generator';
 import { generateComprehensiveSitemaps } from './comprehensive-sitemap-generator';
 
 export async function generateStaticFiles() {
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('🎨 SSG: Starting static site generation...');
-  }
-  
   const distDir = path.join(process.cwd(), 'dist');
+  const isDebug = process.env.SSG_DEBUG === '1';
+  
+  console.log('\n🎯 SSG: Starting static site generation...');
+  console.log(`📁 Output directory: ${distDir}`);
+  if (isDebug) {
+    console.log(`🐛 Debug mode: ENABLED (SSG_DEBUG=1)\n`);
+  } else {
+    console.log(`💡 Tip: Set SSG_DEBUG=1 for verbose output\n`);
+  }
   
   if (!fs.existsSync(distDir)) {
     console.error('❌ SSG: Build directory not found. Please run "vite build" first.');
@@ -37,11 +42,10 @@ export async function generateStaticFiles() {
   }
 
   const routes = await getAllStaticRoutes();
-  if (process.env.NODE_ENV !== 'production') {
-    console.log(`📄 SSG: Processing ${routes.length} routes for static generation`);
-  }
+  console.log(`📄 SSG: Processing ${routes.length} routes for static generation\n`);
 
   let successCount = 0;
+  let failedCount = 0;
   const failedRoutes: string[] = [];
   const successfulRoutes: any[] = [];
 
@@ -54,8 +58,24 @@ export async function generateStaticFiles() {
       successfulRoutes.push(route);
       validateGeneratedFile(result.outputPath, result.seoData, validCss, validJs);
     } else {
+      failedCount++;
       failedRoutes.push(route.path);
     }
+  }
+
+  // Summary
+  console.log('\n📊 SSG Generation Summary:');
+  console.log(`   ✅ Success: ${successCount}`);
+  console.log(`   ❌ Failed: ${failedCount}`);
+  console.log(`   📄 Total routes: ${routes.length}`);
+  console.log(`   🎨 CSS files: ${validCss.length}`);
+  console.log(`   📦 JS files: ${validJs.length}`);
+  
+  // Fail build if any critical pages failed
+  if (failedCount > 0) {
+    console.error('\n❌ SSG BUILD FAILED: Some routes could not be generated');
+    console.error(`   Failed routes: ${failedRoutes.join(', ')}`);
+    throw new Error(`SSG failed to generate ${failedCount} routes`);
   }
 
   // Generate 404 page
@@ -85,20 +105,14 @@ export async function generateStaticFiles() {
   }
 
   // Final report
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('\n🎉 SSG: Static site generation completed!');
-    console.log('📊 Generation Summary:');
-    console.log(`   ✅ Successfully generated: ${successCount}/${routes.length} pages`);
-    console.log(`   📁 CSS assets linked: ${validCss.length}`);
-    console.log(`   📁 JS assets linked: ${validJs.length}`);
-    console.log(`   🗺️  Comprehensive sitemap generated with full URL coverage`);
-    
-    if (failedRoutes.length > 0) {
-      console.log(`   ❌ Failed routes: ${failedRoutes.join(', ')}`);
-    }
-    
-    console.log(`\n🚀 Static site ready at: ${distDir}`);
+  console.log('\n🎉 SSG: Static site generation completed!');
+  console.log(`🗺️  Comprehensive sitemap generated with full URL coverage`);
+  
+  if (failedRoutes.length > 0) {
+    console.log(`   ⚠️  Warning: ${failedRoutes.length} routes had issues but build continued`);
   }
+  
+  console.log(`\n🚀 Static site ready at: ${distDir}`);
   
   // Verify critical pages
   verifyCriticalPages(distDir);
