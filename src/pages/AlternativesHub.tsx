@@ -10,14 +10,28 @@ import { ArrowRight, TrendingUp } from 'lucide-react';
 
 const AlternativesHub: React.FC = () => {
   // All funds are now GV eligible, so show general alternatives
-  const allFunds = fundsData;
+  // Filter out any invalid fund entries
+  const allFunds = fundsData.filter((f): f is typeof f & { name: string; id: string } => 
+    !!f && typeof f === 'object' && 
+    typeof f.name === 'string' && 
+    typeof f.id === 'string' &&
+    f.name.trim() !== ''
+  );
   
   // Get funds that have alternatives for general comparison
   const fundsWithAlternatives = allFunds
-    .map(fund => ({
-      fund,
-      alternatives: findAlternativeFunds(fund, 3)
-    }))
+    .map(fund => {
+      try {
+        const alternatives = findAlternativeFunds(fund, 3).filter(
+          (alt): alt is typeof alt & { name: string; id: string } => 
+            !!alt && typeof alt.name === 'string' && typeof alt.id === 'string'
+        );
+        return { fund, alternatives };
+      } catch (error) {
+        console.error(`Error finding alternatives for fund ${fund.id}:`, error);
+        return { fund, alternatives: [] };
+      }
+    })
     .filter(item => item.alternatives.length > 0)
     .sort((a, b) => b.alternatives.length - a.alternatives.length);
 
