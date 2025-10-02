@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { getBaseUrl } from '../src/lib/ssr-env';
+import { getBaseUrl } from '../../src/lib/ssr-env';
 
 export interface ValidationChecks {
   hasTitle: boolean;
