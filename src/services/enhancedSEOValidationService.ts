@@ -33,7 +33,8 @@ export class EnhancedSEOValidationService {
     const preloadValidation = this.validatePreloadDirectives();
     
     // Dev-only: Check for multiple FAQ schemas
-    if (import.meta.env.DEV) {
+    const isDev = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false;
+    if (isDev) {
       const faqSchemas = document.querySelectorAll('script[type="application/ld+json"]');
       const faqCount = Array.from(faqSchemas).filter(script => {
         try {

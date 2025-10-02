@@ -145,7 +145,8 @@ export class PerformanceMonitoringService {
   // Report all collected metrics
   static reportMetrics(): void {
     // Only log in development environment
-    if (import.meta.env.DEV) {
+    const isDev = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false;
+    if (isDev) {
       console.log('📊 Core Web Vitals Report:', this.metrics);
       
       // Evaluate performance
