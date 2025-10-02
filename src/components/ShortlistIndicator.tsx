@@ -11,6 +11,9 @@ const ShortlistIndicator = () => {
   const { shortlistedFunds, removeFromShortlist, clearShortlist } = useShortlist();
   const fundCount = shortlistedFunds.length;
 
+  // SSR-safe: Don't render during server-side rendering
+  if (typeof window === 'undefined') return null;
+  
   if (fundCount === 0) return null;
 
   return (

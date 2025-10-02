@@ -8,6 +8,9 @@ import { getReturnTargetDisplay } from '../utils/returnTarget';
 const RecentlyViewedFunds = () => {
   const { recentlyViewed } = useRecentlyViewed();
 
+  // SSR-safe: Don't render during server-side rendering
+  if (typeof window === 'undefined') return null;
+
   if (recentlyViewed.length === 0) {
     return null;
   }

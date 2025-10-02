@@ -9,14 +9,16 @@ import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import type { Fund } from '../data/types/funds';
 
-const FundDetails = () => {
+interface FundDetailsProps { fund?: Fund }
+
+const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund }) => {
   const { id, potentialFundId } = useParams<{ id?: string; potentialFundId?: string }>();
   const location = useLocation();
   
-  // Support direct fund routing: /:fundId
-  const fundId = id || potentialFundId;
+  // Prefer SSR-injected fund when available; fallback to client lookup
+  const fundId = id || potentialFundId || ssrFund?.id;
   const { getFundById } = useRealTimeFunds();
-  const fund = fundId ? getFundById(fundId) : null;
+  const fund = ssrFund ?? (fundId ? getFundById(fundId) : null);
   const { addToRecentlyViewed } = useRecentlyViewed();
   useEffect(() => {
     if (fund) {

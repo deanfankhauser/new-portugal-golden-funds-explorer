@@ -80,10 +80,16 @@ export default function ResetPassword() {
 
     try {
       // Always call the Edge Function (it's public: verify_jwt=false)
+      const baseUrl = (() => {
+        if (typeof window !== 'undefined') return window.location.origin;
+        if (typeof process !== 'undefined' && process.env.VITE_APP_BASE_URL) return process.env.VITE_APP_BASE_URL;
+        return 'https://funds.movingto.com';
+      })();
+      
       const { data: fnData, error: fnError } = await supabase.functions.invoke('send-password-reset', {
         body: {
           email,
-          redirectTo: `${import.meta.env.VITE_APP_BASE_URL || window.location.origin}/reset-password`
+          redirectTo: `${baseUrl}/reset-password`
         }
       });
 
@@ -91,7 +97,7 @@ export default function ResetPassword() {
         console.error('Edge function error:', fnError);
         // Fallback to Supabase's built-in method
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${import.meta.env.VITE_APP_BASE_URL || window.location.origin}/reset-password`
+          redirectTo: `${baseUrl}/reset-password`
         });
         
         if (error) {
@@ -113,8 +119,14 @@ export default function ResetPassword() {
       
       // Final fallback to Supabase built-in method
       try {
+        const fallbackBaseUrl = (() => {
+          if (typeof window !== 'undefined') return window.location.origin;
+          if (typeof process !== 'undefined' && process.env.VITE_APP_BASE_URL) return process.env.VITE_APP_BASE_URL;
+          return 'https://funds.movingto.com';
+        })();
+        
         const { error: fallbackError } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${import.meta.env.VITE_APP_BASE_URL || window.location.origin}/reset-password`
+          redirectTo: `${fallbackBaseUrl}/reset-password`
         });
         
         if (fallbackError) {

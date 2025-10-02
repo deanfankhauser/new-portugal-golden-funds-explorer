@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { EnhancedSEOValidationService, EnhancedSEOValidationResult } from '../services/enhancedSEOValidationService';
 import { PerformanceOptimizationService } from '../services/performanceOptimizationService';
 
-export const useSEOValidation = (enabled: boolean = import.meta.env.DEV) => {
+export const useSEOValidation = (enabled: boolean = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false) => {
   const [validationResult, setValidationResult] = useState<EnhancedSEOValidationResult | null>(null);
   const [performanceMetrics, setPerformanceMetrics] = useState<any>(null);
   const [currentRoute, setCurrentRoute] = useState(window.location.pathname);
@@ -21,7 +21,8 @@ export const useSEOValidation = (enabled: boolean = import.meta.env.DEV) => {
         setPerformanceMetrics(perfResult);
 
         // Log results in development
-        if (import.meta.env.DEV) {
+        const isDev = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false;
+        if (isDev) {
           const seoReport = EnhancedSEOValidationService.generateEnhancedSEOReport();
           const perfReport = PerformanceOptimizationService.generatePerformanceReport();
           

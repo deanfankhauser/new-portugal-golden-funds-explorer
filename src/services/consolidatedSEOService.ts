@@ -1148,8 +1148,8 @@ export class ConsolidatedSEOService {
   }
 
   private static getAlternativesHubStructuredData() {
-    // Simple structured data without dynamic imports
-    const fundsWithAlternatives = funds.slice(0, 10); // Use static data
+    // Use a simple list of funds for structured data to avoid SSR issues
+    const topFunds = funds.filter((f: any) => f && typeof f.name === 'string' && typeof f.id === 'string').slice(0, 20);
 
     return {
       "@context": "https://schema.org",
@@ -1159,21 +1159,16 @@ export class ConsolidatedSEOService {
       "url": URL_CONFIG.buildUrl('/alternatives'),
       "mainEntity": {
         "@type": "ItemList",
-        "name": "Funds with Alternatives",
-        "numberOfItems": fundsWithAlternatives.length,
-        "itemListElement": fundsWithAlternatives.slice(0, 20).map((item: any, index: number) => ({
+        "name": "Funds",
+        "numberOfItems": topFunds.length,
+        "itemListElement": topFunds.map((item: any, index: number) => ({
           "@type": "ListItem",
           "position": index + 1,
           "item": {
             "@type": "FinancialProduct",
-            "name": item.fund.name,
-            "category": item.fund.category,
-            "url": URL_CONFIG.buildFundUrl(item.fund.id),
-            "additionalProperty": {
-              "@type": "PropertyValue",
-              "name": "alternativesCount",
-              "value": item.alternatives.length
-            }
+            "name": item.name,
+            "category": item.category,
+            "url": URL_CONFIG.buildFundUrl(item.id)
           }
         }))
       }

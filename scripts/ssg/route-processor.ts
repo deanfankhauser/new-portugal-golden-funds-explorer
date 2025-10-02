@@ -16,22 +16,45 @@ export async function processRoute(
   validCss: string[], 
   validJs: string[]
 ): Promise<RouteProcessingResult> {
+  const isDebug = process.env.SSG_DEBUG === '1';
+  
   try {
     console.log(`\n🔨 Processing route: ${route.path}`);
-    console.log(`   Route params:`, route.params);
+    if (isDebug) {
+      console.log(`   Route type: ${route.pageType}`);
+      console.log(`   Route params:`, route.params);
+    }
     
     const { html, seoData } = await renderRoute(route);
     
-    // Diagnostic: Check HTML content
-    const hasH1 = html.includes('<h1');
-    const contentLength = html.length;
-    console.log(`   Rendered HTML: ${contentLength} chars, Has H1: ${hasH1}`);
+    // Diagnostic: Check rendered app HTML first
+    const initialHasH1 = html.includes('<h1');
+    const initialLength = html.length;
+    const hasContent = html.includes('main') || html.includes('article');
     
-    if (!hasH1 && route.path !== '/') {
-      console.warn(`⚠️  Warning: No H1 tag found in ${route.path}`);
+    console.log(`   Rendered HTML: ${initialLength} chars, Has H1: ${initialHasH1}, Has content: ${hasContent}`);
+    
+    if (isDebug && !initialHasH1) {
+      console.log(`   First 500 chars of HTML:`, html.substring(0, 500));
     }
     
+    // Generate full HTML (may inject fallback H1)
     const fullHTML = generateHTMLTemplate(html, seoData, validCss, validJs);
+    
+    // Check final HTML output
+    const finalHasH1 = fullHTML.includes('<h1');
+    const h1Count = (fullHTML.match(/<h1[^>]*>/g) || []).length;
+    
+    if (!finalHasH1 && route.path !== '/') {
+      console.error(`❌ CRITICAL: No H1 tag in final HTML for ${route.path}`);
+      if (isDebug) {
+        console.log(`   Full HTML length: ${fullHTML.length}`);
+      }
+    } else if (h1Count > 1) {
+      console.warn(`⚠️  Warning: Multiple H1 tags (${h1Count}) in ${route.path}`);
+    } else if (finalHasH1) {
+      console.log(`   ✅ Final HTML has valid H1 tag`);
+    }
     
     // Determine output path
     let outputPath: string;
@@ -47,13 +70,28 @@ export async function processRoute(
     }
     
     fs.writeFileSync(outputPath, fullHTML);
-    console.log(`   ✅ Written to: ${outputPath}`);
+    
+    if (isDebug) {
+      console.log(`   ✅ Written to: ${outputPath}`);
+      console.log(`   File size: ${(fullHTML.length / 1024).toFixed(2)}KB`);
+    } else {
+      console.log(`   ✅ Written to: ${outputPath}`);
+    }
+    
+    // Fail build if critical pages lack H1
+    if (!finalHasH1 && ['/', '/index', '/disclaimer', '/privacy'].includes(route.path)) {
+      console.error(`❌ BUILD FAILURE: Critical page ${route.path} missing H1 tag`);
+      return { success: false };
+    }
     
     return { success: true, outputPath, seoData };
     
   } catch (error) {
-    console.error(`❌ SSG: Failed to generate ${route.path}:`, error.message);
-    console.error(`   Stack trace:`, error.stack);
+    console.error(`❌ SSG: Failed to generate ${route.path}`);
+    console.error(`   Error:`, error.message);
+    if (isDebug) {
+      console.error(`   Stack trace:`, error.stack);
+    }
     return { success: false };
   }
 }

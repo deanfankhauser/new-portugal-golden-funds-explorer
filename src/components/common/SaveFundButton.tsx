@@ -21,6 +21,9 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
   showText = false,
   className
 }) => {
+  // SSR-safe: Don't render during server-side rendering
+  if (typeof window === 'undefined') return null;
+  
   const { user } = useEnhancedAuth();
   const { isFundSaved, saveFund, unsaveFund } = useSavedFunds();
   const isSaved = isFundSaved(fundId);

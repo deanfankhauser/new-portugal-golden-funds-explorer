@@ -14,9 +14,11 @@ const ShortlistContext = React.createContext<ShortlistContextType | undefined>(u
 
 export const ShortlistProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [shortlistedFunds, setShortlistedFunds] = React.useState<Fund[]>([]);
+  const [isHydrated, setIsHydrated] = React.useState(false);
 
-  // Load from localStorage on mount
+  // Load from localStorage only after hydration
   React.useEffect(() => {
+    setIsHydrated(true);
     const stored = localStorage.getItem('shortlistedFunds');
     if (stored) {
       try {
@@ -27,10 +29,12 @@ export const ShortlistProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   }, []);
 
-  // Save to localStorage whenever shortlist changes
+  // Save to localStorage whenever shortlist changes (but only after hydration)
   React.useEffect(() => {
-    localStorage.setItem('shortlistedFunds', JSON.stringify(shortlistedFunds));
-  }, [shortlistedFunds]);
+    if (isHydrated) {
+      localStorage.setItem('shortlistedFunds', JSON.stringify(shortlistedFunds));
+    }
+  }, [shortlistedFunds, isHydrated]);
 
   const addToShortlist = (fund: Fund) => {
     // Check if we already have this fund
@@ -85,7 +89,19 @@ export const ShortlistProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
 export const useShortlist = (): ShortlistContextType => {
   const context = React.useContext(ShortlistContext);
+  
+  // SSR-safe: Return empty state if no provider (during SSR)
   if (context === undefined) {
+    if (typeof window === 'undefined') {
+      // During SSR, return empty shortlist
+      return {
+        shortlistedFunds: [],
+        addToShortlist: () => {},
+        removeFromShortlist: () => {},
+        isInShortlist: () => false,
+        clearShortlist: () => {}
+      };
+    }
     throw new Error("useShortlist must be used within a ShortlistProvider");
   }
   return context;
