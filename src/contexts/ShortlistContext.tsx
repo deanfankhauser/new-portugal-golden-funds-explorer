@@ -85,7 +85,19 @@ export const ShortlistProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
 export const useShortlist = (): ShortlistContextType => {
   const context = React.useContext(ShortlistContext);
+  
+  // SSR-safe: Return empty state if no provider (during SSR)
   if (context === undefined) {
+    if (typeof window === 'undefined') {
+      // During SSR, return empty shortlist
+      return {
+        shortlistedFunds: [],
+        addToShortlist: () => {},
+        removeFromShortlist: () => {},
+        isInShortlist: () => false,
+        clearShortlist: () => {}
+      };
+    }
     throw new Error("useShortlist must be used within a ShortlistProvider");
   }
   return context;

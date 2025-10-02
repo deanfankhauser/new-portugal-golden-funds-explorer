@@ -9,8 +9,11 @@ interface FloatingTableOfContentsProps {
 }
 
 const FloatingTableOfContents: React.FC<FloatingTableOfContentsProps> = ({ fund }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+
+  // SSR-safe: Don't render during server-side rendering
+  if (typeof window === 'undefined') return null;
 
   // Table of contents sections
   const sections = [
@@ -24,6 +27,8 @@ const FloatingTableOfContents: React.FC<FloatingTableOfContentsProps> = ({ fund 
   ];
 
   // Show TOC only on mobile when user scrolls past header
+  const [isVisible, setIsVisible] = useState(false);
+  
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;

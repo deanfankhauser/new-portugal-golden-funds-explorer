@@ -66,7 +66,19 @@ export const ComparisonProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
 export const useComparison = (): ComparisonContextType => {
   const context = React.useContext(ComparisonContext);
+  
+  // SSR-safe: Return empty state if no provider (during SSR)
   if (context === undefined) {
+    if (typeof window === 'undefined') {
+      // During SSR, return empty comparison
+      return {
+        compareFunds: [],
+        addToComparison: () => {},
+        removeFromComparison: () => {},
+        isInComparison: () => false,
+        clearComparison: () => {}
+      };
+    }
     throw new Error("useComparison must be used within a ComparisonProvider");
   }
   return context;

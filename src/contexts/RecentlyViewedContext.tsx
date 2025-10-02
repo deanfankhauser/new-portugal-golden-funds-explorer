@@ -47,7 +47,16 @@ export const RecentlyViewedProvider: React.FC<{ children: React.ReactNode }> = (
 
 export const useRecentlyViewed = () => {
   const context = React.useContext(RecentlyViewedContext);
+  
+  // SSR-safe: Return empty state if no provider (during SSR)
   if (context === undefined) {
+    if (typeof window === 'undefined') {
+      // During SSR, return empty recently viewed
+      return {
+        recentlyViewed: [],
+        addToRecentlyViewed: () => {}
+      };
+    }
     throw new Error('useRecentlyViewed must be used within a RecentlyViewedProvider');
   }
   return context;
