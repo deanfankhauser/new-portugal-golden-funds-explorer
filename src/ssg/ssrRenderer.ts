@@ -11,6 +11,8 @@ import { loadComponents, TooltipProvider } from './componentLoader';
 import { ComparisonProvider } from '../contexts/ComparisonContext';
 import { RecentlyViewedProvider } from '../contexts/RecentlyViewedContext';
 import { EnhancedAuthProvider } from '../contexts/EnhancedAuthContext';
+import { fundsData } from '../data/mock/funds';
+import type { Fund } from '../data/types/funds';
 
 // Ensure React is available globally for SSR
 if (typeof global !== 'undefined' && !global.React) {
@@ -47,11 +49,16 @@ export class SSRRenderer {
     
     console.log(`\n🔥 SSR: Starting render for route ${route.path} (type: ${route.pageType})`);
     
-    // Extract fund ID from path for fund detail pages
+    // Extract fund ID and find fund data for SSR injection
+    let fundDataForSSR: Fund | null = null;
     if (route.path.match(/^\/[^\/]+$/)) {
       const fundId = route.path.replace('/', '');
       console.log(`🔥 SSR: Detected potential fund page. Fund ID: "${fundId}"`);
       console.log(`🔥 SSR: Route params passed:`, route.params);
+      
+      // Find the fund directly from fundsData
+      fundDataForSSR = fundsData.find(f => f.id === fundId) || null;
+      console.log(`🔥 SSR: Fund data found for SSR:`, fundDataForSSR ? `✅ ${fundDataForSSR.name}` : '❌ Not found');
     }
     
     const queryClient = new QueryClient({
@@ -150,6 +157,42 @@ export class SSRRenderer {
       return component;
     };
 
+    // Create SSR-compatible FundDetails wrapper that bypasses useParams()
+    const FundDetailsWithData = () => {
+      if (!fundDataForSSR) {
+        console.log(`🔥 SSR: No fund data for SSR, rendering 404`);
+        return React.createElement(FallbackComponent);
+      }
+      
+      console.log(`🔥 SSR: Rendering FundDetails with injected fund data: ${fundDataForSSR.name}`);
+      
+      // Import FundDetailsContent and other necessary components
+      const Header = getComponent('Header');
+      const Footer = getComponent('Footer');
+      const FundDetailsContent = components['FundDetailsContent'];
+      
+      if (!FundDetailsContent) {
+        console.warn(`🔥 SSR: FundDetailsContent not available`);
+        return React.createElement(FallbackComponent);
+      }
+      
+      return React.createElement(
+        'div',
+        { className: 'min-h-screen flex flex-col bg-background' },
+        React.createElement(Header),
+        React.createElement(
+          'main',
+          { className: 'flex-1 py-6 md:py-8' },
+          React.createElement(
+            'div',
+            { className: 'container mx-auto px-4 max-w-7xl' },
+            React.createElement(FundDetailsContent, { fund: fundDataForSSR })
+          )
+        ),
+        React.createElement(Footer)
+      );
+    };
+
     const AppRouter = () => React.createElement(
       QueryClientProvider,
       { client: queryClient },
@@ -208,7 +251,13 @@ export class SSRRenderer {
                 React.createElement(Route, { path: '/:id/alternatives', element: React.createElement(getComponent('FundAlternatives')) }),
                 
                 // Fund details routes (must be last due to catch-all nature)
-                React.createElement(Route, { path: '/:id', element: React.createElement(getComponent('FundDetails')) })
+                // Use SSR-compatible wrapper with direct fund data injection
+                React.createElement(Route, { 
+                  path: '/:id', 
+                  element: fundDataForSSR 
+                    ? React.createElement(FundDetailsWithData) 
+                    : React.createElement(getComponent('FundDetails'))
+                })
               )
             )
           )
