@@ -157,41 +157,6 @@ export class SSRRenderer {
       return component;
     };
 
-    // Create SSR-compatible FundDetails wrapper that bypasses useParams()
-    const FundDetailsWithData = () => {
-      if (!fundDataForSSR) {
-        console.log(`🔥 SSR: No fund data for SSR, rendering 404`);
-        return React.createElement(FallbackComponent);
-      }
-      
-      console.log(`🔥 SSR: Rendering FundDetails with injected fund data: ${fundDataForSSR.name}`);
-      
-      // Import FundDetailsContent and other necessary components
-      const Header = getComponent('Header');
-      const Footer = getComponent('Footer');
-      const FundDetailsContent = components['FundDetailsContent'];
-      
-      if (!FundDetailsContent) {
-        console.warn(`🔥 SSR: FundDetailsContent not available`);
-        return React.createElement(FallbackComponent);
-      }
-      
-      return React.createElement(
-        'div',
-        { className: 'min-h-screen flex flex-col bg-background' },
-        React.createElement(Header),
-        React.createElement(
-          'main',
-          { className: 'flex-1 py-6 md:py-8' },
-          React.createElement(
-            'div',
-            { className: 'container mx-auto px-4 max-w-7xl' },
-            React.createElement(FundDetailsContent, { fund: fundDataForSSR })
-          )
-        ),
-        React.createElement(Footer)
-      );
-    };
 
     const AppRouter = () => React.createElement(
       QueryClientProvider,
@@ -254,9 +219,7 @@ export class SSRRenderer {
                 // Use SSR-compatible wrapper with direct fund data injection
                 React.createElement(Route, { 
                   path: '/:id', 
-                  element: fundDataForSSR 
-                    ? React.createElement(FundDetailsWithData) 
-                    : React.createElement(getComponent('FundDetails'))
+                  element: React.createElement(getComponent('FundDetails'), fundDataForSSR ? { fund: fundDataForSSR } : null)
                 })
               )
             )
