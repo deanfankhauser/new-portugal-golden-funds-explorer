@@ -61,42 +61,27 @@ export async function generateStaticFiles() {
   // Generate 404 page
   await generate404Page(distDir);
   
-  // Use the new comprehensive sitemap generator (PRIMARY METHOD)
-  console.log('\n🗺️  Starting COMPREHENSIVE sitemap generation...');
-  console.log('🔍 Debug: Checking funds availability before sitemap generation...');
-  
-  // Import funds to verify they're available
-  const { funds: availableFunds } = await import('../../src/data/services/funds-service');
-  console.log(`🔍 Debug: ${availableFunds?.length || 0} funds available for sitemap generation`);
-  
+  // Use the new comprehensive sitemap generator
   try {
     generateComprehensiveSitemaps(distDir);
-    console.log('✅ Comprehensive sitemap generation completed successfully!');
   } catch (sitemapError) {
-    console.error('❌ CRITICAL: Comprehensive sitemap generation failed:', sitemapError);
-    console.error('❌ Error stack:', sitemapError instanceof Error ? sitemapError.stack : 'No stack trace');
-    console.warn('⚠️  Falling back to legacy generators (expect missing pages)...');
+    console.warn('⚠️  Comprehensive sitemap generation failed, falling back to legacy generators');
     
     // Fallback to existing generators
-    try {
-      generateSitemap(routes, distDir);
-      generateFundsSitemap(distDir);
-      
-      // Generate enhanced sitemap as a supplemental file
-      const enhancedSitemapXML = EnhancedSitemapService.generateEnhancedSitemapXML();
-      fs.writeFileSync(path.join(distDir, 'sitemap-enhanced.xml'), enhancedSitemapXML);
-      
-      // Generate sitemap index
-      const sitemapIndex = EnhancedSitemapService.generateSitemapIndex();
-      fs.writeFileSync(path.join(distDir, 'sitemap-index.xml'), sitemapIndex);
-      
-      // Generate robots.txt
-      const robotsTxt = EnhancedSitemapService.generateRobotsTxt();
-      fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsTxt);
-    } catch (fallbackError) {
-      console.error('❌ CRITICAL: Even fallback sitemap generation failed:', fallbackError);
-      throw fallbackError;
-    }
+    generateSitemap(routes, distDir);
+    generateFundsSitemap(distDir);
+    
+    // Generate enhanced sitemap as a supplemental file
+    const enhancedSitemapXML = EnhancedSitemapService.generateEnhancedSitemapXML();
+    fs.writeFileSync(path.join(distDir, 'sitemap-enhanced.xml'), enhancedSitemapXML);
+    
+    // Generate sitemap index
+    const sitemapIndex = EnhancedSitemapService.generateSitemapIndex();
+    fs.writeFileSync(path.join(distDir, 'sitemap-index.xml'), sitemapIndex);
+    
+    // Generate robots.txt
+    const robotsTxt = EnhancedSitemapService.generateRobotsTxt();
+    fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsTxt);
   }
 
   // Final report

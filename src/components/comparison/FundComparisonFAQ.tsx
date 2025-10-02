@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { FAQSchemaService } from '../../services/faqSchemaService';
 import {
   Accordion,
   AccordionContent,
@@ -64,15 +63,41 @@ const FundComparisonFAQ: React.FC<FundComparisonFAQProps> = ({ fund1, fund2 }) =
   const faqs = generateComparisonFAQs(fund1, fund2);
 
   useEffect(() => {
-    // Register FAQs with unified schema service
-    const cleanup = FAQSchemaService.registerFAQs({
-      schemaId: `comparison-faq-${fund1.id}-${fund2.id}`,
-      faqs: faqs,
-      pageContext: `Comparison: ${fund1.name} vs ${fund2.name}`
-    });
+    // Create FAQ Page schema for SEO
+    const faqSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'mainEntity': faqs.map((faq: FAQItem) => ({
+        '@type': 'Question',
+        'name': faq.question,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': faq.answer
+        }
+      }))
+    };
 
-    return cleanup;
-  }, [faqs, fund1.id, fund1.name, fund2.id, fund2.name]);
+    // Remove existing FAQ schema
+    const existingFAQSchema = document.querySelector('script[data-schema="comparison-faq"]');
+    if (existingFAQSchema) {
+      existingFAQSchema.remove();
+    }
+
+    // Add new FAQ schema
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-schema', 'comparison-faq');
+    script.textContent = JSON.stringify(faqSchema);
+    document.head.appendChild(script);
+
+    // Cleanup function
+    return () => {
+      const schemaScript = document.querySelector('script[data-schema="comparison-faq"]');
+      if (schemaScript) {
+        schemaScript.remove();
+      }
+    };
+  }, [faqs]);
 
   return (
     <section className="bg-card rounded-lg p-6 shadow-sm border border-border mt-8" itemScope itemType="https://schema.org/FAQPage">

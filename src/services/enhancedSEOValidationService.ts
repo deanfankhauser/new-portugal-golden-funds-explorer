@@ -171,64 +171,36 @@ export class EnhancedSEOValidationService {
 
   // Auto-fix common SEO issues
   static autoFixSEOIssues(): void {
-    try {
-      const validation = this.validatePageSEO();
+    const validation = this.validatePageSEO();
 
-      // Fix missing alt text with generic descriptions (only for decorative images)
-      validation.missingAltImages.forEach((img, index) => {
-        if (!img.alt && img.getAttribute('data-decorative') !== 'false') {
-          // Check if it's a logo or icon
-          const src = img.src?.toLowerCase() || '';
-          if (src.includes('logo') || src.includes('icon')) {
-            img.alt = 'Logo';
-          } else {
-            img.alt = `Image ${index + 1}`;
-          }
-        }
-      });
-
-      // Remove duplicate meta tags (keep the first occurrence)
-      // Be careful not to remove managed tags
-      validation.duplicateMetaTags.forEach(tagName => {
-        const duplicates = document.querySelectorAll(`meta[name="${tagName}"], meta[property="${tagName}"]`);
-        // Skip if only one or if it's a managed tag
-        if (duplicates.length <= 1) return;
-
-        for (let i = 1; i < duplicates.length; i++) {
-          // Don't remove if it has specific attributes that might be important
-          const meta = duplicates[i] as HTMLMetaElement;
-          if (!meta.hasAttribute('data-managed') && !meta.hasAttribute('data-react-helmet')) {
-            duplicates[i].remove();
-          }
-        }
-      });
-
-      // Add missing preconnect for common domains (only if not in SSR)
-      if (typeof window !== 'undefined' && document.fonts) {
-        const commonDomains = ['fonts.googleapis.com', 'fonts.gstatic.com'];
-        const existingPreconnects = Array.from(document.querySelectorAll('link[rel="preconnect"]'))
-          .map(link => {
-            try {
-              return new URL(link.getAttribute('href') || '').hostname;
-            } catch {
-              return '';
-            }
-          })
-          .filter(Boolean);
-
-        commonDomains.forEach(domain => {
-          if (!existingPreconnects.includes(domain)) {
-            const preconnect = document.createElement('link');
-            preconnect.rel = 'preconnect';
-            preconnect.href = `https://${domain}`;
-            preconnect.crossOrigin = 'anonymous';
-            document.head.appendChild(preconnect);
-          }
-        });
+    // Fix missing alt text with generic descriptions
+    validation.missingAltImages.forEach((img, index) => {
+      if (!img.alt) {
+        img.alt = `Image ${index + 1}`;
       }
-    } catch (error) {
-      console.error('[EnhancedSEOValidation] Error in autoFixSEOIssues:', error);
-    }
+    });
+
+    // Remove duplicate meta tags (keep the first occurrence)
+    validation.duplicateMetaTags.forEach(tagName => {
+      const duplicates = document.querySelectorAll(`meta[name="${tagName}"], meta[property="${tagName}"]`);
+      for (let i = 1; i < duplicates.length; i++) {
+        duplicates[i].remove();
+      }
+    });
+
+    // Add missing preconnect for common domains
+    const commonDomains = ['fonts.googleapis.com', 'fonts.gstatic.com'];
+    const existingPreconnects = Array.from(document.querySelectorAll('link[rel="preconnect"]'))
+      .map(link => new URL(link.getAttribute('href') || '').hostname);
+
+    commonDomains.forEach(domain => {
+      if (!existingPreconnects.includes(domain)) {
+        const preconnect = document.createElement('link');
+        preconnect.rel = 'preconnect';
+        preconnect.href = `https://${domain}`;
+        document.head.appendChild(preconnect);
+      }
+    });
   }
 
   // Basic validations from original service

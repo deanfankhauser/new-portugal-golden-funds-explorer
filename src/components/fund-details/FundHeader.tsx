@@ -43,9 +43,9 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
         <div className="flex flex-col gap-4 mb-4 md:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div className="flex-1">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-foreground tracking-tight leading-tight">
-                {fund.name}
-              </h2>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-foreground tracking-tight leading-tight">
+                {fund.name} | Portugal Investment Fund
+              </h1>
               <EnhancedGVEligibilityBadge fund={fund} showDetails={false} />
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">

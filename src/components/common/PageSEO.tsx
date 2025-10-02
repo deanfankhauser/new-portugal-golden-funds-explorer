@@ -2,6 +2,8 @@
 import React, { useEffect } from 'react';
 import { PageSEOProps } from '../../types/seo';
 import { ConsolidatedSEOService } from '../../services/consolidatedSEOService';
+import { EnhancedSEOValidationService } from '../../services/enhancedSEOValidationService';
+import { PerformanceOptimizationService } from '../../services/performanceOptimizationService';
 import { SEOErrorBoundary } from './SEOErrorBoundary';
 
 interface PageSEOComponentProps extends PageSEOProps {
@@ -21,7 +23,7 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
 }) => {
   useEffect(() => {
     try {
-      // Single source of truth: ConsolidatedSEOService
+      // Apply SEO meta tags
       const seoData = ConsolidatedSEOService.getSEOData(pageType, {
         fundName,
         managerName,
@@ -33,59 +35,26 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
       });
 
       ConsolidatedSEOService.applyMetaTags(seoData);
-
-      // Add preload hints for critical resources on fund pages
-      if (pageType === 'fund' && funds && funds.length > 0) {
-        const fund = funds[0];
-
-        // Preload fund manager page
-        const managerPreload = document.createElement('link');
-        managerPreload.rel = 'prefetch';
-        managerPreload.href = `/manager/${fund.managerName.toLowerCase().replace(/\s+/g, '-')}`;
-        document.head.appendChild(managerPreload);
-
-        // Preconnect to external resources
-        if (fund.websiteUrl) {
-          const preconnect = document.createElement('link');
-          preconnect.rel = 'preconnect';
-          try {
-            const url = new URL(fund.websiteUrl);
-            preconnect.href = url.origin;
-            document.head.appendChild(preconnect);
-          } catch (e) {
-            // Invalid URL, skip
-          }
-        }
-      }
-
-      // Critical: Never apply noindex to fund pages
-      // Only apply noindex to 404 pages and auth pages
-      const noIndexPages = ['404', 'manager-auth', 'investor-auth'];
-      if (noIndexPages.includes(pageType)) {
-        const robotsContent = pageType === '404' ? 'noindex, follow' : 'noindex, nofollow';
-
+      
+      // Only noindex true 404 pages, never fund pages
+      if (pageType === '404') {
         let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
         if (!robots) {
-          robots = document.createElement('meta') as HTMLMetaElement;
+          robots = document.createElement('meta');
           robots.setAttribute('name', 'robots');
           document.head.appendChild(robots);
         }
-        robots.setAttribute('content', robotsContent);
-      } else {
-        // Ensure fund pages are indexed
-        let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
-        if (robots && robots.getAttribute('content')?.includes('noindex')) {
-          robots.setAttribute('content', 'index, follow, max-image-preview:large');
-        }
+        robots.setAttribute('content', 'noindex, follow');
       }
       
-      // Dispatch SEO update event for validation
-      if (import.meta.env.DEV) {
-        window.dispatchEvent(new CustomEvent('seo:updated'));
-      }
+      // Defer performance optimizations and SEO fixes to avoid forced reflows
+      requestAnimationFrame(() => {
+        PerformanceOptimizationService.initializePerformanceOptimizations();
+        EnhancedSEOValidationService.autoFixSEOIssues();
+      });
       
     } catch (error) {
-      console.error('[PageSEO] Error:', error);
+      console.error('SEO Error:', error);
     }
   }, [pageType, fundName, managerName, categoryName, tagName, comparisonTitle, comparisonSlug, funds]);
 

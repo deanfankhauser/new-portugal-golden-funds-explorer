@@ -1,1767 +1,736 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://funds.movingto.com</loc>
-    <lastmod>2025-10-01</lastmod>
+    <loc>https://funds.movingto.com/</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+  <!-- Core static and hub pages -->
   <url>
     <loc>https://funds.movingto.com/index</loc>
-    <lastmod>2025-10-01</lastmod>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/categories</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/tags</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/managers</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/comparisons</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://funds.movingto.com/about</loc>
-    <lastmod>2025-10-01</lastmod>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://funds.movingto.com/disclaimer</loc>
-    <lastmod>2025-10-01</lastmod>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://funds.movingto.com/privacy</loc>
-    <lastmod>2025-10-01</lastmod>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://funds.movingto.com/faqs</loc>
-    <lastmod>2025-10-01</lastmod>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://funds.movingto.com/roi-calculator</loc>
-    <lastmod>2025-10-01</lastmod>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/3cc-golden-income</loc>
-    <lastmod>2025-10-01</lastmod>
+    <loc>https://funds.movingto.com/categories</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
+  
+  <!-- Category detail pages -->
   <url>
-    <loc>https://funds.movingto.com/3cc-golden-income/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/bluewater-capital-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/bluewater-capital-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/crown-investments-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/crown-investments-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/digital-insight-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/digital-insight-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/emerald-green-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/emerald-green-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/flex-space-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/flex-space-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/global-european-cinema-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/global-european-cinema-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/growth-blue-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/growth-blue-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/heed-top-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/heed-top-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/horizon-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/horizon-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/imga-funds</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/imga-funds/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/inz-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/inz-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/lakeview-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/lakeview-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/lince-growth-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/lince-growth-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/lince-yield-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/lince-yield-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/mercurio-fund-ii</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/mercurio-fund-ii/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/optimize-golden-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/optimize-golden-opportunities/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/pela-terra-ii-regenerate-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/pela-terra-ii-regenerate-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/portugal-investment-1</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/portugal-investment-1/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/portugal-liquid-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/portugal-liquid-opportunities/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/portugal-prime-fcr</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/portugal-prime-fcr/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/portugal-prime-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/portugal-prime-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/prime-insight-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/prime-insight-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/solar-future-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/solar-future-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/steady-growth-investment</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/steady-growth-investment/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/ventures-eu-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/ventures-eu-fund/alternatives</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/categories/real-estate</loc>
-    <lastmod>2025-10-01</lastmod>
+    <loc>https://funds.movingto.com/categories/venture-capital</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://funds.movingto.com/categories/private-equity</loc>
-    <lastmod>2025-10-01</lastmod>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/categories/venture-capital</loc>
-    <lastmod>2025-10-01</lastmod>
+    <loc>https://funds.movingto.com/categories/real-estate</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/categories/alternative-investments</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/categories/ucits-funds</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/categories/sustainability</loc>
-    <lastmod>2025-10-01</lastmod>
+    <loc>https://funds.movingto.com/categories/mixed</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://funds.movingto.com/categories/infrastructure</loc>
-    <lastmod>2025-10-01</lastmod>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/categories/film-cinema</loc>
-    <lastmod>2025-10-01</lastmod>
+    <loc>https://funds.movingto.com/categories/debt</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/tags/ucits</loc>
-    <lastmod>2025-10-01</lastmod>
+    <loc>https://funds.movingto.com/categories/fixed-income--digital-assets</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/tags/daily-nav</loc>
-    <lastmod>2025-10-01</lastmod>
+    <loc>https://funds.movingto.com/categories/balanced</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/tags/no-lock-up</loc>
-    <lastmod>2025-10-01</lastmod>
+    <loc>https://funds.movingto.com/categories/multi-asset</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/tags/pfic-compliant</loc>
-    <lastmod>2025-10-01</lastmod>
+    <loc>https://funds.movingto.com/categories/private-equity--venture-capital</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/tags/golden-visa-funds-for-u-s-citizens</loc>
-    <lastmod>2025-10-01</lastmod>
+    <loc>https://funds.movingto.com/categories/private-debt--hybrid-instruments</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://funds.movingto.com/categories/clean-energy-solar-battery-storage</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://funds.movingto.com/categories/private-equity--debt</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://funds.movingto.com/tags</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Tag detail pages -->
   <url>
     <loc>https://funds.movingto.com/tags/real-estate</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/tags/venture-capital</loc>
-    <lastmod>2025-10-01</lastmod>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://funds.movingto.com/tags/private-equity</loc>
-    <lastmod>2025-10-01</lastmod>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/tags/sustainability</loc>
-    <lastmod>2025-10-01</lastmod>
+    <loc>https://funds.movingto.com/tags/venture-capital</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://funds.movingto.com/tags/tourism</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://funds.movingto.com/tags/infrastructure</loc>
-    <lastmod>2025-10-01</lastmod>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/tags/film-cinema</loc>
-    <lastmod>2025-10-01</lastmod>
+    <loc>https://funds.movingto.com/tags/technology</loc>
+    <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/3cc</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/healthcare</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/bluewater-capital</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/energy</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/crown-investments</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/sustainability</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/digital-insight</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/golden-visa-eligible</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/emerald-asset-management</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/bonds</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/flex-space</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/crypto</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/global-cinema</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/liquid</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/growth-capital</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/regulated</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/heed</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/open-ended</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/horizon-capital</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/closed-ended</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/imga</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/bitcoin</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/inz</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/ethereum</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/lakeview</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/solana</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/lince-capital</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/equities</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/mercurio</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/balanced</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/optimize</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/ucits</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/pela-terra</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/pfic-compliant</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/portugal-investment</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/qef-eligible</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/prime-capital</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/daily-nav</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/solar-future</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/no-lock-up</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/steady-growth</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/capital-preservation</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/manager/ventures-eu</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://funds.movingto.com/tags/special-situations</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/3cc-golden-income-vs-bluewater-capital-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/smes</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/3cc-golden-income-vs-crown-investments-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/mid-cap</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/3cc-golden-income-vs-digital-insight-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/lock-up</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/3cc-golden-income-vs-emerald-green-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/no-fees</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/3cc-golden-income-vs-flex-space-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/tax-free</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/3cc-golden-income-vs-global-european-cinema-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/capital-growth</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/3cc-golden-income-vs-growth-blue-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/gold</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/3cc-golden-income-vs-heed-top-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/deposits</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/3cc-golden-income-vs-horizon-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/ai-driven</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/bluewater-capital-fund-vs-crown-investments-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/diversified</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/bluewater-capital-fund-vs-digital-insight-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/industrial</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/bluewater-capital-fund-vs-emerald-green-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/circular-economy</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/bluewater-capital-fund-vs-flex-space-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/equity</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/bluewater-capital-fund-vs-global-european-cinema-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/debt</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/bluewater-capital-fund-vs-growth-blue-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/secondary-market</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/bluewater-capital-fund-vs-heed-top-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/long-term</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/bluewater-capital-fund-vs-horizon-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/hybrid</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/bluewater-capital-fund-vs-imga-funds</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/dividends</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/crown-investments-fund-vs-digital-insight-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/5-percent-yield</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/crown-investments-fund-vs-emerald-green-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/renewable-energy</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/crown-investments-fund-vs-flex-space-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/solar</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/crown-investments-fund-vs-global-european-cinema-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/battery-storage</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/crown-investments-fund-vs-growth-blue-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/energy-as-a-service</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/crown-investments-fund-vs-heed-top-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/12-percent-return</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/crown-investments-fund-vs-horizon-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/5-percent-dividend</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/crown-investments-fund-vs-imga-funds</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/climate</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/crown-investments-fund-vs-inz-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/fund-subscription-minimums</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/digital-insight-fund-vs-emerald-green-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/low-risk</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/digital-insight-fund-vs-flex-space-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/medium-risk</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/digital-insight-fund-vs-global-european-cinema-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/high-risk</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/digital-insight-fund-vs-growth-blue-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/small-cap-less-than-50m</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/digital-insight-fund-vs-heed-top-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/mid-cap-50-100m</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/digital-insight-fund-vs-horizon-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/large-cap-greater-than-100m</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/digital-insight-fund-vs-imga-funds</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/golden-visa-funds-for-us-citizens</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/digital-insight-fund-vs-inz-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/golden-visa-funds-for-australian-citizens</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/digital-insight-fund-vs-lakeview-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/golden-visa-funds-for-uk-citizens</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/emerald-green-fund-vs-flex-space-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/golden-visa-funds-for-canadian-citizens</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/emerald-green-fund-vs-global-european-cinema-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/golden-visa-funds-for-chinese-citizens</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/emerald-green-fund-vs-growth-blue-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/tags/portugal</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/emerald-green-fund-vs-heed-top-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/managers</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/emerald-green-fund-vs-horizon-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/comparisons</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/emerald-green-fund-vs-imga-funds</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/alternatives</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
+
+  <!-- Fund detail pages -->
   <url>
-    <loc>https://funds.movingto.com/compare/emerald-green-fund-vs-inz-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/3cc-golden-income</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/emerald-green-fund-vs-lakeview-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/horizon-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/emerald-green-fund-vs-lince-growth-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/optimize-golden-opportunities</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/flex-space-fund-vs-global-european-cinema-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/portugal-investment-1</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/flex-space-fund-vs-growth-blue-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/steady-growth-investment</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/flex-space-fund-vs-heed-top-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/growth-blue-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/flex-space-fund-vs-horizon-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/lince-growth-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/flex-space-fund-vs-imga-funds</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/lince-yield-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/flex-space-fund-vs-inz-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/solar-future-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/flex-space-fund-vs-lakeview-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/mercurio-fund-ii</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/flex-space-fund-vs-lince-growth-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/portugal-liquid-opportunities</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/flex-space-fund-vs-lince-yield-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/heed-top-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/global-european-cinema-fund-vs-growth-blue-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/ventures-eu-fund-i</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/global-european-cinema-fund-vs-heed-top-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/flex-space-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/global-european-cinema-fund-vs-horizon-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/portugal-prime-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/global-european-cinema-fund-vs-imga-funds</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/portugal-prime-fcr</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/global-european-cinema-fund-vs-inz-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/pela-terra-ii-regenerate-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/global-european-cinema-fund-vs-lakeview-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/lakeview-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/global-european-cinema-fund-vs-lince-growth-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/global-european-cinema-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/global-european-cinema-fund-vs-lince-yield-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/inz-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/global-european-cinema-fund-vs-mercurio-fund-ii</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/emerald-green-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/growth-blue-fund-vs-heed-top-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/crown-investments-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/growth-blue-fund-vs-horizon-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/digital-insight-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/growth-blue-fund-vs-imga-funds</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/prime-insight-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/growth-blue-fund-vs-inz-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/bluewater-capital-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/growth-blue-fund-vs-lakeview-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/imga-portuguese-corporate-debt-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/growth-blue-fund-vs-lince-growth-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/imga-silver-domus-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/growth-blue-fund-vs-lince-yield-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/imga-acoes-portugal-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://funds.movingto.com/compare/growth-blue-fund-vs-mercurio-fund-ii</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/growth-blue-fund-vs-optimize-golden-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/heed-top-fund-vs-horizon-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/heed-top-fund-vs-imga-funds</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/heed-top-fund-vs-inz-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/heed-top-fund-vs-lakeview-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/heed-top-fund-vs-lince-growth-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/heed-top-fund-vs-lince-yield-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/heed-top-fund-vs-mercurio-fund-ii</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/heed-top-fund-vs-optimize-golden-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/heed-top-fund-vs-pela-terra-ii-regenerate-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/horizon-fund-vs-imga-funds</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/horizon-fund-vs-inz-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/horizon-fund-vs-lakeview-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/horizon-fund-vs-lince-growth-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/horizon-fund-vs-lince-yield-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/horizon-fund-vs-mercurio-fund-ii</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/horizon-fund-vs-optimize-golden-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/horizon-fund-vs-pela-terra-ii-regenerate-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/horizon-fund-vs-portugal-investment-1</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/imga-funds-vs-inz-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/imga-funds-vs-lakeview-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/imga-funds-vs-lince-growth-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/imga-funds-vs-lince-yield-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/imga-funds-vs-mercurio-fund-ii</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/imga-funds-vs-optimize-golden-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/imga-funds-vs-pela-terra-ii-regenerate-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/imga-funds-vs-portugal-investment-1</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/imga-funds-vs-portugal-liquid-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/inz-fund-vs-lakeview-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/inz-fund-vs-lince-growth-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/inz-fund-vs-lince-yield-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/inz-fund-vs-mercurio-fund-ii</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/inz-fund-vs-optimize-golden-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/inz-fund-vs-pela-terra-ii-regenerate-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/inz-fund-vs-portugal-investment-1</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/inz-fund-vs-portugal-liquid-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/inz-fund-vs-portugal-prime-fcr</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lakeview-fund-vs-lince-growth-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lakeview-fund-vs-lince-yield-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lakeview-fund-vs-mercurio-fund-ii</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lakeview-fund-vs-optimize-golden-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lakeview-fund-vs-pela-terra-ii-regenerate-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lakeview-fund-vs-portugal-investment-1</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lakeview-fund-vs-portugal-liquid-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lakeview-fund-vs-portugal-prime-fcr</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lakeview-fund-vs-portugal-prime-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-growth-fund-vs-lince-yield-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-growth-fund-vs-mercurio-fund-ii</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-growth-fund-vs-optimize-golden-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-growth-fund-vs-pela-terra-ii-regenerate-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-growth-fund-vs-portugal-investment-1</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-growth-fund-vs-portugal-liquid-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-growth-fund-vs-portugal-prime-fcr</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-growth-fund-vs-portugal-prime-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-growth-fund-vs-prime-insight-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-yield-fund-vs-mercurio-fund-ii</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-yield-fund-vs-optimize-golden-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-yield-fund-vs-pela-terra-ii-regenerate-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-yield-fund-vs-portugal-investment-1</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-yield-fund-vs-portugal-liquid-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-yield-fund-vs-portugal-prime-fcr</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-yield-fund-vs-portugal-prime-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-yield-fund-vs-prime-insight-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/lince-yield-fund-vs-solar-future-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/mercurio-fund-ii-vs-optimize-golden-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/mercurio-fund-ii-vs-pela-terra-ii-regenerate-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/mercurio-fund-ii-vs-portugal-investment-1</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/mercurio-fund-ii-vs-portugal-liquid-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/mercurio-fund-ii-vs-portugal-prime-fcr</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/mercurio-fund-ii-vs-portugal-prime-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/mercurio-fund-ii-vs-prime-insight-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/mercurio-fund-ii-vs-solar-future-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/mercurio-fund-ii-vs-steady-growth-investment</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/optimize-golden-opportunities-vs-pela-terra-ii-regenerate-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/optimize-golden-opportunities-vs-portugal-investment-1</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/optimize-golden-opportunities-vs-portugal-liquid-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/optimize-golden-opportunities-vs-portugal-prime-fcr</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/optimize-golden-opportunities-vs-portugal-prime-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/optimize-golden-opportunities-vs-prime-insight-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/optimize-golden-opportunities-vs-solar-future-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/optimize-golden-opportunities-vs-steady-growth-investment</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/optimize-golden-opportunities-vs-ventures-eu-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/pela-terra-ii-regenerate-fund-vs-portugal-investment-1</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/pela-terra-ii-regenerate-fund-vs-portugal-liquid-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/pela-terra-ii-regenerate-fund-vs-portugal-prime-fcr</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/pela-terra-ii-regenerate-fund-vs-portugal-prime-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/pela-terra-ii-regenerate-fund-vs-prime-insight-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/pela-terra-ii-regenerate-fund-vs-solar-future-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/pela-terra-ii-regenerate-fund-vs-steady-growth-investment</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/pela-terra-ii-regenerate-fund-vs-ventures-eu-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-investment-1-vs-portugal-liquid-opportunities</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-investment-1-vs-portugal-prime-fcr</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-investment-1-vs-portugal-prime-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-investment-1-vs-prime-insight-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-investment-1-vs-solar-future-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-investment-1-vs-steady-growth-investment</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-investment-1-vs-ventures-eu-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-liquid-opportunities-vs-portugal-prime-fcr</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-liquid-opportunities-vs-portugal-prime-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-liquid-opportunities-vs-prime-insight-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-liquid-opportunities-vs-solar-future-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-liquid-opportunities-vs-steady-growth-investment</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-liquid-opportunities-vs-ventures-eu-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-prime-fcr-vs-portugal-prime-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-prime-fcr-vs-prime-insight-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-prime-fcr-vs-solar-future-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-prime-fcr-vs-steady-growth-investment</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-prime-fcr-vs-ventures-eu-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-prime-fund-vs-prime-insight-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-prime-fund-vs-solar-future-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-prime-fund-vs-steady-growth-investment</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/portugal-prime-fund-vs-ventures-eu-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/prime-insight-fund-vs-solar-future-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/prime-insight-fund-vs-steady-growth-investment</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/prime-insight-fund-vs-ventures-eu-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/solar-future-fund-vs-steady-growth-investment</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/solar-future-fund-vs-ventures-eu-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://funds.movingto.com/compare/steady-growth-investment-vs-ventures-eu-fund</loc>
-    <lastmod>2025-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://funds.movingto.com/imga-futurum-tech-fund</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

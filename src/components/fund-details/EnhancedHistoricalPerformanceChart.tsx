@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ComposedChart, ReferenceLine } from 'recharts';
-import { TrendingUp, TrendingDown, Calendar, ChartBar as BarChart3, Info, Maximize2 } from 'lucide-react';
+import { TrendingUp, TrendingDown, Calendar, BarChart3, Info, Maximize2 } from 'lucide-react';
 
 interface MonthlyPerformanceData {
   returns?: number;
@@ -17,34 +17,58 @@ interface HistoricalPerformanceChartProps {
 
 type TimeRange = '3M' | '6M' | '1Y' | 'ALL';
 
-const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
-  historicalPerformance
+const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({ 
+  historicalPerformance 
 }) => {
   const [selectedRange, setSelectedRange] = useState<TimeRange>('ALL');
   const [focusedMetric, setFocusedMetric] = useState<'returns' | 'aum' | 'both'>('both');
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // MUST declare all hooks before conditional returns
+  if (!historicalPerformance || Object.keys(historicalPerformance).length === 0) {
+    return (
+      <Card className="border-0 shadow-sm bg-card/30 backdrop-blur-sm">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20">
+                <BarChart3 className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">Historical Performance</h3>
+                <p className="text-sm text-muted-foreground">Track fund performance over time</p>
+              </div>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col items-center justify-center h-64 text-center bg-muted/20 rounded-xl border border-dashed border-muted-foreground/20">
+            <BarChart3 className="h-12 w-12 text-muted-foreground/40 mb-4" />
+            <div className="text-muted-foreground">
+              <div className="text-sm font-medium mb-1">No performance data available</div>
+              <div className="text-xs">Performance metrics will appear when data is provided</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   // Process and filter data based on selected time range
   const processedData = useMemo(() => {
-    if (!historicalPerformance || Object.keys(historicalPerformance).length === 0) {
-      return [];
-    }
-
     const chartData = Object.entries(historicalPerformance)
       .map(([dateStr, data]) => {
         // Parse YYYY-MM format correctly
         const [year, month] = dateStr.split('-').map(Number);
         const fullDate = new Date(year, month - 1, 1); // month - 1 because Date months are 0-indexed
-
+        
         return {
           date: dateStr,
           returns: data.returns || 0,
           aum: data.aum || 0,
           nav: data.nav || 0,
-          displayDate: fullDate.toLocaleDateString('en-US', {
-            month: 'short',
-            year: '2-digit'
+          displayDate: fullDate.toLocaleDateString('en-US', { 
+            month: 'short', 
+            year: '2-digit' 
           }),
           fullDate,
           timestamp: fullDate.getTime()
@@ -56,13 +80,13 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
     if (selectedRange === 'ALL' || chartData.length <= 3) {
       return chartData; // Show all data if we don't have much
     }
-
+    
     const now = new Date();
     const monthsBack = selectedRange === '3M' ? 3 : selectedRange === '6M' ? 6 : 12;
     const cutoffDate = new Date(now.getFullYear(), now.getMonth() - monthsBack, 1);
-
+    
     const filteredData = chartData.filter(item => item.fullDate >= cutoffDate);
-
+    
     // If filtering results in no data, return all data
     return filteredData.length > 0 ? filteredData : chartData;
   }, [historicalPerformance, selectedRange]);
@@ -103,47 +127,6 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
         ((latestData.aum - firstData.aum) / firstData.aum) * 100 : 0
     };
   }, [processedData]);
-
-  // Auto-select appropriate range based on available data
-  useEffect(() => {
-    const availableMonths = Object.keys(historicalPerformance || {}).length;
-    if (selectedRange !== 'ALL') {
-      const requiredMonths = selectedRange === '3M' ? 3 : selectedRange === '6M' ? 6 : 12;
-      if (availableMonths < requiredMonths) {
-        setSelectedRange('ALL');
-      }
-    }
-  }, [historicalPerformance, selectedRange]);
-
-  // Now safe to do early returns after all hooks are called
-  if (!historicalPerformance || Object.keys(historicalPerformance).length === 0) {
-    return (
-      <Card className="border-0 shadow-sm bg-card/30 backdrop-blur-sm">
-        <CardHeader className="pb-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20">
-                <BarChart3 className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-foreground">Historical Performance</h3>
-                <p className="text-sm text-muted-foreground">Track fund performance over time</p>
-              </div>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col items-center justify-center h-64 text-center bg-muted/20 rounded-xl border border-dashed border-muted-foreground/20">
-            <BarChart3 className="h-12 w-12 text-muted-foreground/40 mb-4" />
-            <div className="text-muted-foreground">
-              <div className="text-sm font-medium mb-1">No performance data available</div>
-              <div className="text-xs">Performance metrics will appear when data is provided</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -205,6 +188,17 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
     { key: '1Y', label: '1Y', disabled: processedData.length < 12 },
     { key: 'ALL', label: 'All' }
   ];
+
+  // Auto-select appropriate range based on available data
+  React.useEffect(() => {
+    const availableMonths = Object.keys(historicalPerformance || {}).length;
+    if (selectedRange !== 'ALL') {
+      const requiredMonths = selectedRange === '3M' ? 3 : selectedRange === '6M' ? 6 : 12;
+      if (availableMonths < requiredMonths) {
+        setSelectedRange('ALL');
+      }
+    }
+  }, [historicalPerformance, selectedRange]);
 
   return (
     <Card className="border-0 shadow-sm bg-card/30 backdrop-blur-sm">

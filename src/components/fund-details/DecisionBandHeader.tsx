@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Calendar } from 'lucide-react';
@@ -8,7 +7,6 @@ import { buildBookingUrl, openExternalLink } from '../../utils/urlHelpers';
 import analytics from '../../utils/analytics';
 import { Fund } from '../../data/funds';
 import { FundEditButton } from '../fund-editing';
-import { categoryToSlug, managerToSlug } from '@/lib/utils';
 
 interface DecisionBandHeaderProps {
   fund: Fund;
@@ -35,12 +33,9 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
 
   const isOpenForSubscriptions = fund.fundStatus === 'Open';
 
-  // Simplified one-line summary with internal links
+  // Simplified one-line summary
   const hasGoldenVisa = fund.tags?.some(tag => tag.toLowerCase().includes('golden visa'));
   const redemptionFreq = fund.redemptionTerms?.frequency?.toLowerCase();
-  
-  const categorySlug = categoryToSlug(fund.category);
-  const managerSlug = managerToSlug(fund.managerName);
   
   const summary = `${fund.regulatedBy || 'CMVM'}-regulated, ${fund.term ? 'closed-ended' : 'open-ended'} ${fund.category.toLowerCase()}${redemptionFreq === 'daily' ? ' with daily liquidity' : ''}${hasGoldenVisa ? '. Golden Visa eligible' : ''}.`;
 
@@ -62,21 +57,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
           </h1>
           
           <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            {fund.regulatedBy || 'CMVM'}-regulated, {fund.term ? 'closed-ended' : 'open-ended'}{' '}
-            <Link 
-              to={`/categories/${categorySlug}`}
-              className="text-primary hover:underline font-medium"
-            >
-              {fund.category}
-            </Link>
-            {' '}fund managed by{' '}
-            <Link 
-              to={`/manager/${managerSlug}`}
-              className="text-primary hover:underline font-medium"
-            >
-              {fund.managerName}
-            </Link>
-            {redemptionFreq === 'daily' ? ' with daily liquidity' : ''}{hasGoldenVisa ? '. Golden Visa eligible' : ''}.
+            {summary}
           </p>
         </div>
         
