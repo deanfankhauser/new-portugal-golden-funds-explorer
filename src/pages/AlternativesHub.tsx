@@ -106,21 +106,21 @@ const AlternativesHub: React.FC = () => {
                     <div className="space-y-3">
                       <h4 className="font-medium text-foreground">Similar Funds:</h4>
                       <div className="grid gap-2">
-                        {alternatives.map(alt => (
-                          <div key={alt.id} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                        {(alternatives || []).filter(Boolean).map(alt => (
+                          <div key={(alt as any).id} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
                             <div>
                               <Link 
-                                to={`/${alt.id}`}
+                                to={`/${(alt as any).id}`}
                                 className="font-medium hover:text-primary transition-colors"
                               >
-                                {alt.name}
+                                {(alt as any).name ?? 'Unnamed fund'}
                               </Link>
                               <div className="text-sm text-muted-foreground">
-                                {alt.category} | €{alt.minimumInvestment.toLocaleString()} min
+                                {(alt as any).category} | €{Number((alt as any).minimumInvestment || 0).toLocaleString()} min
                               </div>
                             </div>
-                            <Badge variant={alt.fundStatus === 'Open' ? 'default' : 'secondary'}>
-                              {alt.fundStatus}
+                            <Badge variant={(alt as any).fundStatus === 'Open' ? 'default' : 'secondary'}>
+                              {(alt as any).fundStatus ?? 'Unknown'}
                             </Badge>
                           </div>
                         ))}
