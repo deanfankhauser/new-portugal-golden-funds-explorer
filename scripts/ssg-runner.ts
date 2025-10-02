@@ -1,3 +1,4 @@
+import 'tsconfig-paths/register';
 import { generateStaticFiles } from './ssg/ssg-orchestrator';
 
 // Allow direct execution
