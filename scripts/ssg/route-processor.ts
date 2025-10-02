@@ -22,16 +22,19 @@ export async function processRoute(
     
     const { html, seoData } = await renderRoute(route);
     
-    // Diagnostic: Check HTML content
-    const hasH1 = html.includes('<h1');
-    const contentLength = html.length;
-    console.log(`   Rendered HTML: ${contentLength} chars, Has H1: ${hasH1}`);
+    // Diagnostic: Check rendered app HTML first
+    const initialHasH1 = html.includes('<h1');
+    const initialLength = html.length;
+    console.log(`   Rendered HTML: ${initialLength} chars, Has H1: ${initialHasH1}`);
     
-    if (!hasH1 && route.path !== '/') {
-      console.warn(`⚠️  Warning: No H1 tag found in ${route.path}`);
-    }
-    
+    // Generate full HTML (may inject fallback H1)
     const fullHTML = generateHTMLTemplate(html, seoData, validCss, validJs);
+    
+    // Check final HTML output
+    const finalHasH1 = fullHTML.includes('<h1');
+    if (!finalHasH1 && route.path !== '/') {
+      console.warn(`⚠️  Warning: No H1 tag present after templating in ${route.path}`);
+    }
     
     // Determine output path
     let outputPath: string;
