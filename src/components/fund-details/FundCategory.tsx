@@ -2,9 +2,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from "@/components/ui/badge";
-import { Folder } from 'lucide-react';
+import { Folder, ExternalLink } from 'lucide-react';
 import { Fund } from '../../data/funds';
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { categoryToSlug } from '@/lib/utils';
 
 interface FundCategoryProps {
@@ -13,16 +13,23 @@ interface FundCategoryProps {
 
 const FundCategory: React.FC<FundCategoryProps> = ({ category }) => {
   return (
-    <Card className="border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
-      <CardContent className="p-6">
-        <div className="flex items-center mb-4">
-          <Folder className="w-5 h-5 mr-2 text-primary" />
-          <h2 className="text-xl font-bold">Fund Category</h2>
-        </div>
-        <Link to={`/categories/${categoryToSlug(category)}`}>
-          <Badge className="px-3 py-1.5 text-base bg-primary hover:bg-primary/80 shadow-sm cursor-pointer">
-            {category}
-          </Badge>
+    <Card className="shadow-lg border-2 hover:shadow-xl transition-all duration-300">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-2xl flex items-center gap-2">
+          <Folder className="h-5 w-5" />
+          Fund Category
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Link 
+          to={`/categories/${categoryToSlug(category)}`}
+          className="flex items-center justify-between p-4 rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 hover:border-primary/40 transition-all group"
+        >
+          <div>
+            <Badge className="mb-2 text-xs">{category}</Badge>
+            <p className="text-sm text-muted-foreground">View all funds in this category</p>
+          </div>
+          <ExternalLink className="h-4 w-4 text-primary group-hover:translate-x-1 transition-transform" />
         </Link>
       </CardContent>
     </Card>
