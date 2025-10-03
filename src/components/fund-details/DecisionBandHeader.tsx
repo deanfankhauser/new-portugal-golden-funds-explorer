@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
+import { Card, CardContent } from '../ui/card';
 import { Calendar } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
 import { buildBookingUrl, openExternalLink } from '../../utils/urlHelpers';
@@ -91,41 +92,63 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
       </div>
 
       {/* Key Highlights Section */}
-      <div className="space-y-4 max-w-2xl">
-        <h2 className="text-lg font-semibold">Why This Fund?</h2>
-        <ul className="space-y-3">
-          {hasGoldenVisa && (
-            <li className="flex items-start gap-3">
-              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-              <span className="text-sm text-muted-foreground leading-relaxed">
-                <strong className="text-foreground">Golden Visa Eligible</strong> — Qualifies for Portugal's Golden Visa program
-              </span>
-            </li>
-          )}
-          <li className="flex items-start gap-3">
-            <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-            <span className="text-sm text-muted-foreground leading-relaxed">
-              <strong className="text-foreground">{fund.regulatedBy || 'CMVM'} Regulated</strong> — Licensed and supervised by Portuguese authorities
-            </span>
-          </li>
-          {redemptionFreq === 'daily' && (
-            <li className="flex items-start gap-3">
-              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-              <span className="text-sm text-muted-foreground leading-relaxed">
-                <strong className="text-foreground">Daily Liquidity</strong> — Redeem your investment any business day
-              </span>
-            </li>
-          )}
-          {fund.established && (
-            <li className="flex items-start gap-3">
-              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-              <span className="text-sm text-muted-foreground leading-relaxed">
-                <strong className="text-foreground">Established {fund.established}</strong> — {new Date().getFullYear() - Number(fund.established)} years of track record
-              </span>
-            </li>
-          )}
-        </ul>
-      </div>
+      <Card className="shadow-lg border-2 hover:shadow-xl transition-all duration-300 max-w-2xl">
+        <CardContent className="p-6">
+          <h2 className="text-xl font-bold text-foreground mb-5">Why This Fund?</h2>
+          <div className="space-y-3">
+            {hasGoldenVisa && (
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-success/5 to-success/10 border border-success/20">
+                <div className="p-1.5 rounded-full bg-success/20 mt-0.5">
+                  <div className="h-2 w-2 rounded-full bg-success" />
+                </div>
+                <div>
+                  <div className="font-semibold text-foreground mb-1">Golden Visa Eligible</div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Qualifies for Portugal's Golden Visa program
+                  </p>
+                </div>
+              </div>
+            )}
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20">
+              <div className="p-1.5 rounded-full bg-primary/20 mt-0.5">
+                <div className="h-2 w-2 rounded-full bg-primary" />
+              </div>
+              <div>
+                <div className="font-semibold text-foreground mb-1">{fund.regulatedBy || 'CMVM'} Regulated</div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Licensed and supervised by Portuguese authorities
+                </p>
+              </div>
+            </div>
+            {redemptionFreq === 'daily' && (
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-accent/5 to-accent/10 border border-accent/20">
+                <div className="p-1.5 rounded-full bg-accent/20 mt-0.5">
+                  <div className="h-2 w-2 rounded-full bg-accent" />
+                </div>
+                <div>
+                  <div className="font-semibold text-foreground mb-1">Daily Liquidity</div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Redeem your investment any business day
+                  </p>
+                </div>
+              </div>
+            )}
+            {fund.established && (
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-muted/5 to-muted/10 border border-border">
+                <div className="p-1.5 rounded-full bg-muted/20 mt-0.5">
+                  <div className="h-2 w-2 rounded-full bg-muted-foreground" />
+                </div>
+                <div>
+                  <div className="font-semibold text-foreground mb-1">Established {fund.established}</div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {new Date().getFullYear() - Number(fund.established)} years of track record
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

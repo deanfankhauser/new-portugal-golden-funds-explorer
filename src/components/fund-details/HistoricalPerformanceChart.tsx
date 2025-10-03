@@ -347,9 +347,9 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
         </Tabs>
         
         {/* Performance Disclaimer */}
-        <div className="mt-6 p-4 bg-muted/30 rounded-lg border border-border/50">
+        <div className="mt-6 p-4 bg-gradient-to-br from-muted/5 to-muted/10 border border-border rounded-lg">
           <p className="text-xs text-muted-foreground leading-relaxed">
-            <span className="font-medium">Disclaimer:</span> Historical performance is not indicative of future results. 
+            <span className="font-medium text-foreground">Disclaimer:</span> Historical performance is not indicative of future results. 
             Past performance does not guarantee future returns. All investments carry risk of loss.
           </p>
         </div>
