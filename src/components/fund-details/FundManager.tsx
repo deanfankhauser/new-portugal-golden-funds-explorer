@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { Fund } from '../../data/funds';
-import { Card, CardContent } from "@/components/ui/card";
-import { User, ExternalLink } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Building2, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { managerToSlug } from '../../lib/utils';
 
@@ -12,21 +12,23 @@ interface FundManagerProps {
 
 const FundManager: React.FC<FundManagerProps> = ({ managerName }) => {
   return (
-    <Card className="border border-border shadow-sm hover:shadow-md transition-all duration-300">
-      <CardContent className="p-6">
-        <div className="flex items-center mb-5">
-          <User className="w-5 h-5 mr-2 text-accent" />
-          <h2 className="text-xl font-bold text-foreground">Fund Manager</h2>
-        </div>
+    <Card className="shadow-lg border-2 hover:shadow-xl transition-all duration-300">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-2xl flex items-center gap-2">
+          <Building2 className="h-5 w-5" />
+          Fund Manager
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
         <Link 
           to={`/manager/${managerToSlug(managerName)}`}
-          className="flex items-center gap-4 bg-muted/50 p-5 rounded-lg border border-border hover:bg-muted transition-colors"
+          className="flex items-center justify-between p-4 rounded-lg bg-gradient-to-br from-accent/5 to-accent/10 border border-accent/20 hover:border-accent/40 transition-all group"
         >
-          <div className="flex-1">
-            <h3 className="text-xl font-semibold text-foreground">{managerName}</h3>
-            <p className="text-sm text-muted-foreground">View all funds managed by {managerName}</p>
+          <div>
+            <h3 className="text-lg font-semibold text-foreground mb-1">{managerName}</h3>
+            <p className="text-sm text-muted-foreground">View all funds managed by this manager</p>
           </div>
-          <ExternalLink className="w-4 h-4 text-accent" />
+          <ExternalLink className="h-4 w-4 text-accent group-hover:translate-x-1 transition-transform flex-shrink-0" />
         </Link>
       </CardContent>
     </Card>
