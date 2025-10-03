@@ -26,13 +26,13 @@ const RegulatoryIdentifiers: React.FC<RegulatoryIdentifiersProps> = ({ fund }) =
   return (
     <Card className="shadow-lg border-2 hover:shadow-xl transition-all duration-300">
       <CardContent className="p-6">
-        <div className="flex items-center gap-2 mb-5">
-          <div className="p-2 rounded-lg bg-accent/10">
+        <div className="flex items-start gap-3 mb-5">
+          <div className="p-2 rounded-lg bg-accent/10 shrink-0">
             <Shield className="w-5 h-5 text-accent" />
           </div>
-          <h2 className="text-2xl font-bold text-foreground">Regulatory Identifiers</h2>
+          <h2 className="text-2xl font-bold text-foreground pt-1">Regulatory Identifiers</h2>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-4 ml-[44px]">
           <p className="text-foreground leading-relaxed">
             We source from CMVM-regulated managers where applicable. Verify each fund's registration and GV suitability with counsel.
           </p>
@@ -42,7 +42,7 @@ const RegulatoryIdentifiers: React.FC<RegulatoryIdentifiersProps> = ({ fund }) =
               <h3 className="font-semibold text-foreground mb-3 text-sm uppercase tracking-wide">Regulatory Identifiers</h3>
               <div className="space-y-2.5">
                 {cmvmRegNumber && (
-                  <div className="flex items-center justify-between py-2 border-b">
+                  <div className="flex items-center justify-between py-2 border-b border-accent/10">
                     <span className="text-sm text-muted-foreground flex items-center gap-2">
                       <Shield className="h-4 w-4" />
                       CMVM Registration
