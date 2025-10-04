@@ -226,7 +226,7 @@ export class ConsolidatedSEOService {
     switch (pageType) {
       case 'homepage':
         return {
-          title: this.optimizeText('Portugal Golden Visa Investment Funds | Compare & Analyze | Movingto', 60),
+          title: this.optimizeText('Portugal Golden Visa Funds 2025 | Compare 28+ Investment Options', 60),
           description: this.optimizeText('Discover and compare Portugal Golden Visa Investment Funds. Comprehensive analysis, performance data, and expert insights for qualified Golden Visa investment decisions.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/'),
           structuredData: this.getHomepageStructuredData()
