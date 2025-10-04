@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { PageSEO } from '../components/common/PageSEO';
 import FundDetailsContent from '../components/fund-details/FundDetailsContent';
+import FloatingCTA from '../components/fund-details/FloatingCTA';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import type { Fund } from '../data/types/funds';
@@ -50,11 +51,13 @@ const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund }) => {
       
       <Header />
       
-      <main className="flex-1 py-6 md:py-8">
+      <main className="flex-1 py-6 md:py-8 pb-32 lg:pb-8">
         <div className="container mx-auto px-4 max-w-7xl">
           <FundDetailsContent fund={fund} />
         </div>
       </main>
+      
+      <FloatingCTA fund={fund} />
       
       <Footer />
     </div>
