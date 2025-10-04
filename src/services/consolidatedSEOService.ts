@@ -649,6 +649,9 @@ export class ConsolidatedSEOService {
 
   // Structured data generators
   private static getHomepageStructuredData(): any {
+    // Get top funds for ItemList schema
+    const topFunds = funds.filter((f: any) => f && f.name && f.id).slice(0, 10);
+    
     return [
       {
         '@context': 'https://schema.org',
@@ -665,21 +668,68 @@ export class ConsolidatedSEOService {
       {
         '@context': 'https://schema.org',
         '@type': 'Organization',
-        'name': 'Portugal Investment Funds',
+        'name': 'Movingto',
         'url': URL_CONFIG.BASE_URL,
+        'logo': {
+          '@type': 'ImageObject',
+          'url': `${URL_CONFIG.BASE_URL}/lovable-uploads/c5481949-8ec2-43f1-a77f-8d6cce1eec0e.png`,
+          'width': 512,
+          'height': 512
+        },
         'description': 'Independent platform for comparing Portugal Golden Visa investment funds',
-        'foundingDate': '2024',
+        'foundingDate': '2024-01-01',
+        'contactPoint': {
+          '@type': 'ContactPoint',
+          'contactType': 'Investor Relations',
+          'email': 'info@movingto.com',
+          'areaServed': 'PT',
+          'availableLanguage': ['en', 'pt']
+        },
+        'sameAs': [
+          'https://www.linkedin.com/company/movingto',
+          'https://twitter.com/movingto',
+          'https://www.facebook.com/movingto'
+        ],
         'knowsAbout': [
           'Portugal Golden Visa',
           'Investment Funds',
           'Real Estate Investment',
           'Portuguese Residency',
-          'Fund Management'
+          'Fund Management',
+          'CMVM Regulation',
+          'European Investment'
         ],
         'areaServed': {
           '@type': 'Country',
-          'name': 'Portugal'
+          'name': 'Portugal',
+          'alternateName': 'PT'
+        },
+        'founder': {
+          '@type': 'Organization',
+          'name': 'Movingto'
         }
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        'name': 'Top Portugal Golden Visa Investment Funds',
+        'description': 'Featured top-rated Portugal Golden Visa investment funds',
+        'numberOfItems': topFunds.length,
+        'itemListElement': topFunds.map((fund: any, index: number) => ({
+          '@type': 'ListItem',
+          'position': index + 1,
+          'item': {
+            '@type': 'FinancialProduct',
+            'name': fund.name,
+            'url': URL_CONFIG.buildFundUrl(fund.id),
+            'category': fund.category,
+            'offers': {
+              '@type': 'Offer',
+              'price': fund.minimumInvestment || 0,
+              'priceCurrency': 'EUR'
+            }
+          }
+        }))
       }
     ];
   }
@@ -873,29 +923,69 @@ export class ConsolidatedSEOService {
   }
 
   private static getFundIndexStructuredData(): any {
+    // Get all funds for ranking
+    const allFunds = funds.filter((f: any) => f && f.name && f.id);
+    
+    return [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        'name': 'Portugal Golden Visa Investment Funds Database',
+        'description': 'Complete database of Portugal Golden Visa Investment Funds',
+        'url': URL_CONFIG.buildUrl('index'),
+        'breadcrumb': {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': URL_CONFIG.buildUrl('/')
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Fund Index',
+              'item': URL_CONFIG.buildUrl('index')
+            }
+          ]
+        }
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        'name': 'Ranked Portugal Golden Visa Investment Funds',
+        'description': 'Complete ranked list of Portugal Golden Visa investment funds by score',
+        'numberOfItems': allFunds.length,
+        'itemListElement': allFunds.map((fund: any, index: number) => ({
+          '@type': 'ListItem',
+          'position': index + 1,
+          'item': {
+            '@type': 'FinancialProduct',
+            'name': fund.name,
+            'url': URL_CONFIG.buildFundUrl(fund.id),
+            'category': fund.category,
+            'description': fund.description?.substring(0, 200),
+            'offers': {
+              '@type': 'Offer',
+              'price': fund.minimumInvestment || 0,
+              'priceCurrency': 'EUR',
+              'availability': fund.fundStatus === 'Open' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'
+            }
+          }
+        }))
+      },
+      this.getFundIndexTableSchema(allFunds)
+    ];
+  }
+
+  private static getFundIndexTableSchema(allFunds: any[]): any {
     return {
       '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      'name': 'Portugal Golden Visa Investment Funds Database',
-      'description': 'Complete database of Portugal Golden Visa Investment Funds',
-      'url': URL_CONFIG.buildUrl('index'),
-      'breadcrumb': {
-        '@type': 'BreadcrumbList',
-        'itemListElement': [
-          {
-            '@type': 'ListItem',
-            'position': 1,
-            'name': 'Home',
-            'item': URL_CONFIG.buildUrl('/')
-          },
-          {
-            '@type': 'ListItem',
-            'position': 2,
-            'name': 'Fund Index',
-            'item': URL_CONFIG.buildUrl('index')
-          }
-        ]
-      }
+      '@type': 'Table',
+      'about': 'Portugal Golden Visa Investment Funds Rankings',
+      'name': 'Fund Index Rankings Table',
+      'description': 'Comprehensive ranking table of Portugal Golden Visa investment funds with scores, categories, and minimum investment amounts'
     };
   }
 
