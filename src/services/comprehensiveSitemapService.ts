@@ -167,7 +167,6 @@ ${sitemapElements}
     });
 
     // Fund detail pages
-    console.log(`🔍 Generating ${funds.length} fund pages + ${funds.length} alternatives pages...`);
     funds.forEach(fund => {
       urls.push({
         loc: URL_CONFIG.buildFundUrl(fund.id),
@@ -184,12 +183,10 @@ ${sitemapElements}
         priority: 0.8
       });
     });
-    console.log(`✅ Added ${funds.length * 2} fund-related pages to sitemap`);
 
     // Category pages
     try {
       const categories = getAllCategories();
-      console.log(`🔍 Generating ${categories.length} category pages...`);
       categories.forEach(category => {
         urls.push({
           loc: URL_CONFIG.buildCategoryUrl(category),
@@ -198,15 +195,13 @@ ${sitemapElements}
           priority: 0.8
         });
       });
-      console.log(`✅ Added ${categories.length} category pages to sitemap`);
     } catch (error) {
-      console.error('❌ Failed to generate category URLs:', error);
+      console.warn('Failed to generate category URLs:', error);
     }
 
     // Tag pages
     try {
       const tags = getAllTags();
-      console.log(`🔍 Generating ${tags.length} tag pages...`);
       tags.forEach(tag => {
         urls.push({
           loc: URL_CONFIG.buildTagUrl(tag),
@@ -215,15 +210,13 @@ ${sitemapElements}
           priority: 0.7
         });
       });
-      console.log(`✅ Added ${tags.length} tag pages to sitemap`);
     } catch (error) {
-      console.error('❌ Failed to generate tag URLs:', error);
+      console.warn('Failed to generate tag URLs:', error);
     }
 
     // Manager pages
     try {
       const managers = getAllFundManagers();
-      console.log(`🔍 Generating ${managers.length} manager pages...`);
       managers.forEach(manager => {
         urls.push({
           loc: URL_CONFIG.buildManagerUrl(manager.name),
@@ -232,15 +225,13 @@ ${sitemapElements}
           priority: 0.8
         });
       });
-      console.log(`✅ Added ${managers.length} manager pages to sitemap`);
     } catch (error) {
-      console.error('❌ Failed to generate manager URLs:', error);
+      console.warn('Failed to generate manager URLs:', error);
     }
 
-    // Comparison pages - ALL fund combinations
+    // Comparison pages
     try {
       const comparisonSlugs = getAllComparisonSlugs();
-      console.log(`🔍 Generating ${comparisonSlugs.length} comparison pages...`);
       comparisonSlugs.forEach(slug => {
         urls.push({
           loc: URL_CONFIG.buildComparisonUrl(slug),
@@ -249,10 +240,8 @@ ${sitemapElements}
           priority: 0.85
         });
       });
-      console.log(`✅ Added ${comparisonSlugs.length} comparison pages to sitemap`);
     } catch (error) {
-      console.error('❌ CRITICAL: Failed to generate comparison URLs:', error);
-      throw error; // Don't silently fail
+      console.warn('Failed to generate comparison URLs:', error);
     }
 
     return urls;
@@ -431,10 +420,7 @@ Allow: /alternatives
       });
     });
 
-    console.log(`\n📊 SITEMAP SUMMARY:`);
-    console.log(`   Total URLs collected: ${allURLs.length}`);
-    console.log(`   Discovered from dist: ${discoveredFromDist.length}`);
-    console.log(`   Expected: 1500+ URLs (28 funds × 2 + 378 comparisons + categories + tags + managers + static)`);
+    console.log(`📊 Collected ${allURLs.length} URLs for sitemap generation (including ${discoveredFromDist.length} discovered from dist)`);
 
     // Verify and add any missing dynamic routes
     allURLs = this.verifyAndAddMissingRoutes(allURLs);

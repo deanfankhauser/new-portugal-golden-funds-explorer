@@ -60,5 +60,6 @@ export const findAlternativeFunds = (currentFund: Fund, maxSuggestions: number =
   return scoredFunds
     .sort((a, b) => b.score - a.score)
     .slice(0, maxSuggestions)
-    .map(item => item.fund);
+    .map(item => item.fund)
+    .filter((f): f is Fund => !!f && typeof (f as any).name === 'string');
 };

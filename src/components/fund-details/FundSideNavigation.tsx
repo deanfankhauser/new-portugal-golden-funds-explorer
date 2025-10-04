@@ -7,6 +7,9 @@ interface FundSideNavigationProps {
 }
 
 const FundSideNavigation: React.FC<FundSideNavigationProps> = ({ className = '' }) => {
+  // SSR-safe: Don't render during server-side rendering (requires DOM APIs)
+  if (typeof window === 'undefined') return null;
+  
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {

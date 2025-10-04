@@ -30,6 +30,8 @@ const Footer = () => {
                 src="/lovable-uploads/9bdf45a5-6a2f-466e-8c2d-b8ba65863e8a.png" 
                 alt="Movingto Logo" 
                 className="h-8"
+                width="155"
+                height="32"
               />
             </Link>
             <p className="text-sm text-muted-foreground mb-4">

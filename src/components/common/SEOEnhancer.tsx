@@ -8,7 +8,7 @@ interface SEOEnhancerProps {
 }
 
 export const SEOEnhancer: React.FC<SEOEnhancerProps> = ({ 
-  enableMonitoring = import.meta.env.DEV,
+  enableMonitoring = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false,
   monitoringInterval = 30
 }) => {
   useEffect(() => {
@@ -31,7 +31,8 @@ export const SEOEnhancer: React.FC<SEOEnhancerProps> = ({
   }, [enableMonitoring, monitoringInterval]);
 
   // Only render in development for debugging
-  if (!import.meta.env.DEV) {
+  const isDev = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false;
+  if (!isDev) {
     return null;
   }
 

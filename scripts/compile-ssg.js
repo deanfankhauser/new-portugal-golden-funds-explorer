@@ -5,56 +5,99 @@ import path from 'path';
 
 // Compile TypeScript files to JavaScript for SSG
 export function compileSSGFiles() {
+  console.log('\n🏗️  Compiling SSG files...');
+  
   try {
-    // Use tsx to compile and run the SSG process
-    execSync('npx tsx scripts/ssg-runner.ts', { stdio: 'inherit' });
+    // Execute the SSG runner with debug mode if requested
+    const ssgEnv = {
+      ...process.env,
+      SSG_DEBUG: process.env.SSG_DEBUG || '0'
+    };
+    
+    console.log('🔧 SSG_DEBUG=' + ssgEnv.SSG_DEBUG);
+    
+    execSync('npx tsx scripts/ssg-runner.ts', {
+      stdio: 'inherit',
+      env: ssgEnv
+    });
     
     // Verify that static files were generated with proper SEO
     const distDir = path.join(process.cwd(), 'dist');
     
-    // Check homepage - silent verification
-    const indexPath = path.join(distDir, 'index.html');
-    if (fs.existsSync(indexPath)) {
-      const content = fs.readFileSync(indexPath, 'utf8');
-      // Silent verification - no logging
+    // Step 4: Verify critical pages with strict checks
+    console.log('\n🔍 Verifying critical pages...');
+    
+    const criticalPages = [
+      { path: path.join(distDir, 'index.html'), name: 'homepage' },
+      { path: path.join(distDir, 'disclaimer', 'index.html'), name: 'disclaimer' },
+      { path: path.join(distDir, 'privacy', 'index.html'), name: 'privacy' },
+      { path: path.join(distDir, 'index', 'index.html'), name: 'fund index' }
+    ];
+    
+    let verificationFailed = false;
+    
+    for (const page of criticalPages) {
+      if (!fs.existsSync(page.path)) {
+        console.error(`❌ CRITICAL: ${page.name} not generated at ${page.path}`);
+        verificationFailed = true;
+        continue;
+      }
+      
+      const content = fs.readFileSync(page.path, 'utf-8');
+      const hasH1 = content.includes('<h1');
+      const h1Count = (content.match(/<h1[^>]*>/g) || []).length;
+      const contentLength = content.length;
+      const hasContent = content.includes('<main') || content.includes('<article');
+      
+      if (!hasH1) {
+        console.error(`❌ CRITICAL: ${page.name} missing H1 tag`);
+        verificationFailed = true;
+      } else if (h1Count > 1) {
+        console.warn(`⚠️  ${page.name} has ${h1Count} H1 tags (should be 1)`);
+      } else if (contentLength < 1500) {
+        console.warn(`⚠️  ${page.name} suspiciously short (${contentLength} bytes)`);
+      } else if (!hasContent) {
+        console.warn(`⚠️  ${page.name} missing semantic HTML`);
+      } else {
+        console.log(`   ✅ ${page.name}: ${contentLength} bytes, 1 H1, semantic HTML`);
+      }
     }
     
-    // Check a sample fund page - silent verification
-    const fundDirs = [
-      path.join(distDir, 'horizon-fund', 'index.html'),
-      path.join(distDir, 'imga-portuguese-corporate-debt-fund', 'index.html'),
-      path.join(distDir, 'imga-silver-domus-fund', 'index.html')
-    ];
+    if (verificationFailed) {
+      throw new Error('SSG verification failed: Critical pages missing or incomplete');
+    }
     
-    let fundPagesGenerated = 0;
-    fundDirs.forEach(fundPath => {
-      if (fs.existsSync(fundPath)) {
-        const content = fs.readFileSync(fundPath, 'utf8');
-        if (content.includes('meta name="description"')) {
-          fundPagesGenerated++;
-        }
-      }
+    // Quick check on fund pages
+    const fundDirs = fs.readdirSync(distDir).filter(f => {
+      const fullPath = path.join(distDir, f);
+      const stat = fs.statSync(fullPath);
+      return stat.isDirectory() && !['assets', 'categories', 'tags', 'managers', 'compare', 'comparisons', 'alternatives', 'index', 'disclaimer', 'privacy', 'about'].includes(f);
     });
     
-    // Check routing files exist
-    const routeFiles = [
-      path.join(distDir, 'index', 'index.html'),
-      path.join(distDir, 'categories', 'index.html'),
-      path.join(distDir, 'tags', 'index.html')
-    ];
+    const sampleSize = Math.min(3, fundDirs.length);
+    if (sampleSize > 0) {
+      console.log(`\n🔍 Spot-checking ${sampleSize} fund pages...`);
+      fundDirs.slice(0, sampleSize).forEach(fundId => {
+        const fundHtml = path.join(distDir, fundId, 'index.html');
+        if (fs.existsSync(fundHtml)) {
+          const fundContent = fs.readFileSync(fundHtml, 'utf-8');
+          const hasH1 = fundContent.includes('<h1');
+          if (!hasH1) {
+            console.warn(`⚠️  Fund page ${fundId} missing H1 tag`);
+          } else {
+            console.log(`   ✅ ${fundId}: has H1`);
+          }
+        }
+      });
+    }
     
-    // Verify sitemap includes comparison pages
+    // Check sitemap
     const sitemapPath = path.join(distDir, 'sitemap.xml');
     if (fs.existsSync(sitemapPath)) {
       const sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
       const comparisonUrls = (sitemapContent.match(/\/compare\//g) || []).length;
       const alternativesUrls = (sitemapContent.match(/\/alternatives\//g) || []).length;
-      console.log(`✅ SSG: Generated ${fundPagesGenerated} fund pages, ${comparisonUrls} comparison URLs, ${alternativesUrls} alternatives URLs`);
-      if (alternativesUrls === 0) {
-        console.warn('⚠️  SSG: No alternatives pages detected in sitemap. Verify /:id/alternatives generation.');
-      }
-    } else {
-      console.log(`✅ SSG: Generated ${fundPagesGenerated} fund pages successfully`);
+      console.log(`\n✅ Sitemap includes: ${comparisonUrls} comparisons, ${alternativesUrls} alternatives`);
     }
 
     // Also copy enhanced sitemap files from dist to public so /sitemap.xml resolves correctly in dev/preview
