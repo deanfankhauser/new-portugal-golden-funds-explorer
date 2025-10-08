@@ -247,8 +247,9 @@ const applyEditHistory = (
             realEstateExposure: 'Not provided',
             managerAttestation: true
           } : undefined,
-                finalRank: rankingMap.get(fund.id) || 999
-              }));
+          finalRank: rankingMap.get(fund.id) || 999,
+          updatedAt: fund.updated_at || fund.created_at || undefined
+        }));
               
               // Sort funds by finalRank
               const sortedFunds = transformedFunds.sort((a, b) => 
@@ -377,7 +378,8 @@ const applyEditHistory = (
             realEstateExposure: 'Not provided',
             managerAttestation: true
           } : undefined,
-          finalRank: rankingMap.get(fund.id) || 999
+          finalRank: rankingMap.get(fund.id) || 999,
+          updatedAt: fund.updated_at || fund.created_at || undefined
         }));
 
         // Also fetch edit history and apply approved changes as an overlay

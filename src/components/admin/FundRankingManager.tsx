@@ -12,9 +12,7 @@ import {
   ArrowDown, 
   Hash,
   AlertCircle,
-  CheckCircle2,
   Save,
-  Sparkles,
   Info
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,12 +20,6 @@ import { useToast } from '@/hooks/use-toast';
 import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 import { FundRankingService, FundRankingData } from '@/services/fundRankingService';
 import { Fund } from '@/data/types/funds';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import {
   Dialog,
   DialogContent,
@@ -77,7 +69,7 @@ const FundRankingManager: React.FC = () => {
       // Transform DB data to include computed fields
       const enrichedRankings: FundRankingData[] = (data || []).map(row => ({
         ...row,
-        algo_rank: null, // Will be computed later
+        recency_rank: null, // Will be computed later
         final_rank: row.manual_rank || 999
       }));
 
@@ -143,45 +135,10 @@ const FundRankingManager: React.FC = () => {
     }
   };
 
-  const useAlgorithmRank = async (fund: EnrichedFund) => {
-    if (fund.rankingData.algo_rank === null) return;
-    await saveRanking(fund.id, fund.rankingData.algo_rank);
-  };
-
   const moveRank = async (fund: EnrichedFund, direction: 'up' | 'down') => {
-    const currentRank = fund.rankingData.manual_rank || fund.rankingData.algo_rank || 999;
+    const currentRank = fund.rankingData.manual_rank || 999;
     const newRank = direction === 'up' ? Math.max(1, currentRank - 1) : currentRank + 1;
     await saveRanking(fund.id, newRank, fund.rankingData.notes || undefined);
-  };
-
-  const getDeviationBadge = (fund: EnrichedFund) => {
-    const { deviation, severity } = FundRankingService.getRankDeviation(
-      fund.rankingData.manual_rank,
-      fund.rankingData.algo_rank
-    );
-
-    if (severity === 'none') return null;
-
-    const colors = {
-      low: 'bg-green-100 text-green-800 border-green-300',
-      medium: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-      high: 'bg-red-100 text-red-800 border-red-300'
-    };
-
-    return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            <Badge variant="outline" className={colors[severity]}>
-              {deviation > 0 ? '+' : ''}{deviation}
-            </Badge>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Deviation from algorithm: {deviation} positions</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    );
   };
 
   const filteredFunds = enrichedFunds.filter(fund =>
@@ -191,7 +148,7 @@ const FundRankingManager: React.FC = () => {
   );
 
   const rankedCount = enrichedFunds.filter(f => f.rankingData.manual_rank !== null).length;
-  const unrankedCount = enrichedFunds.length - rankedCount;
+  const recencyRankedCount = enrichedFunds.length - rankedCount;
 
   if (loading || fundsLoading) {
     return (
@@ -226,12 +183,12 @@ const FundRankingManager: React.FC = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Hash className="h-4 w-4" />
-              Algorithm Ranked
+              Recency Ranked
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{unrankedCount}</div>
-            <p className="text-xs text-muted-foreground">Using auto-generated ranks</p>
+            <div className="text-2xl font-bold">{recencyRankedCount}</div>
+            <p className="text-xs text-muted-foreground">Ranked by update recency</p>
           </CardContent>
         </Card>
 
@@ -239,20 +196,12 @@ const FundRankingManager: React.FC = () => {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <AlertCircle className="h-4 w-4" />
-              High Deviations
+              Total Funds
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {enrichedFunds.filter(f => {
-                const { severity } = FundRankingService.getRankDeviation(
-                  f.rankingData.manual_rank,
-                  f.rankingData.algo_rank
-                );
-                return severity === 'high';
-              }).length}
-            </div>
-            <p className="text-xs text-muted-foreground">&gt;10 positions from algorithm</p>
+            <div className="text-2xl font-bold">{enrichedFunds.length}</div>
+            <p className="text-xs text-muted-foreground">All funds in the system</p>
           </CardContent>
         </Card>
       </div>
@@ -284,23 +233,24 @@ const FundRankingManager: React.FC = () => {
                     <div>
                       <h4 className="font-semibold mb-2">Manual Rank</h4>
                       <p className="text-sm">
-                        Set custom rankings for funds. Lower numbers = higher visibility. 
-                        Manual ranks always override algorithm rankings.
+                        Set custom rankings for funds. Lower numbers = higher visibility (rank 1 appears first). 
+                        Manual ranks always take priority over recency-based rankings.
                       </p>
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-2">Algorithm Rank</h4>
+                      <h4 className="font-semibold mb-2">Recency Rank</h4>
                       <p className="text-sm">
-                        Auto-calculated based on performance (40%), regulatory compliance (25%), 
-                        fees (20%), and investor protection (15%).
+                        Funds without manual ranks are automatically ranked by how recently they were updated.
+                        More recently updated funds appear higher in the list. This encourages fund managers 
+                        to keep their information current.
                       </p>
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-2">Deviation Badges</h4>
+                      <h4 className="font-semibold mb-2">Priority Order</h4>
                       <p className="text-sm">
-                        <span className="font-medium text-green-600">Green</span>: 1-3 positions difference<br/>
-                        <span className="font-medium text-yellow-600">Yellow</span>: 4-10 positions difference<br/>
-                        <span className="font-medium text-red-600">Red</span>: 10+ positions difference
+                        1. Manual ranks (highest priority)<br/>
+                        2. Recency-based ranks (for unranked funds)<br/>
+                        3. Completely unranked funds appear last
                       </p>
                     </div>
                   </DialogDescription>
@@ -366,7 +316,6 @@ const FundRankingManager: React.FC = () => {
                             </Badge>
                           </div>
                         </div>
-                        {getDeviationBadge(fund)}
                       </div>
 
                       {/* Ranking Details */}
@@ -376,8 +325,16 @@ const FundRankingManager: React.FC = () => {
                           <span>{fund.rankingData.manual_rank || '—'}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <span className="font-medium">Algorithm:</span>
-                          <span>{fund.rankingData.algo_rank || '—'}</span>
+                          <span className="font-medium">Last Updated:</span>
+                          <span>
+                            {fund.updatedAt 
+                              ? new Date(fund.updatedAt).toLocaleDateString('en-US', { 
+                                  month: 'short', 
+                                  day: 'numeric', 
+                                  year: 'numeric' 
+                                })
+                              : '—'}
+                          </span>
                         </div>
                       </div>
 
@@ -394,7 +351,7 @@ const FundRankingManager: React.FC = () => {
                             <Button
                               size="sm"
                               onClick={() => {
-                                const currentRank = fund.rankingData.manual_rank || fund.rankingData.algo_rank || index + 1;
+                                const currentRank = fund.rankingData.manual_rank || index + 1;
                                 saveRanking(fund.id, currentRank, editNotes);
                               }}
                               disabled={saving}
@@ -426,26 +383,6 @@ const FundRankingManager: React.FC = () => {
 
                     {/* Actions */}
                     <div className="flex flex-col gap-2">
-                      {fund.rankingData.manual_rank === null && (
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => useAlgorithmRank(fund)}
-                                disabled={saving}
-                              >
-                                <Sparkles className="h-3 w-3 mr-1" />
-                                Use Algo
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Use algorithm rank as manual rank</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      )}
                       <Button
                         size="sm"
                         variant="ghost"

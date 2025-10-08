@@ -198,4 +198,5 @@ export interface Fund {
   
   // Ranking (admin-controlled, invisible to end users)
   finalRank?: number;
+  updatedAt?: string; // ISO 8601 date when fund was last updated
 }
