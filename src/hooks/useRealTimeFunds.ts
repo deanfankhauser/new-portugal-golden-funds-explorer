@@ -126,10 +126,16 @@ const applyEditHistory = (
       
       console.log('🧪 Basic connection test:', { testData, testError });
       
+      // Fetch funds with rankings
       const { data: supabaseFunds, error: fetchError } = await supabase
         .from('funds')
         .select('*')
         .order('created_at', { ascending: true });
+      
+      // Fetch rankings separately
+      const { data: rankingsData } = await supabase
+        .from('fund_rankings')
+        .select('fund_id, manual_rank');
 
       console.log('📊 Supabase response:', { 
         supabaseFunds: supabaseFunds?.length, 
@@ -149,6 +155,15 @@ const applyEditHistory = (
             
             if (!developError && developFunds?.funds) {
               console.log('✅ Successfully fetched from Funds_Develop:', developFunds.funds.length, 'funds');
+              
+              // Fetch rankings for develop funds too
+              const { data: rankingsData } = await supabase
+                .from('fund_rankings')
+                .select('fund_id, manual_rank');
+              
+              const rankingMap = new Map(
+                rankingsData?.map(r => [r.fund_id, r.manual_rank ?? 999]) || []
+              );
               
               // Transform the data to Fund interface
               const transformedFunds: Fund[] = developFunds.funds.map((fund: any) => ({
@@ -226,15 +241,22 @@ const applyEditHistory = (
           custodian: fund.custodian || undefined,
           navFrequency: fund.nav_frequency || undefined,
           pficStatus: fund.pfic_status as 'QEF available' | 'MTM only' | 'Not provided' || undefined,
-                eligibilityBasis: fund.gv_eligible ? {
-                  portugalAllocation: 'Not provided',
-                  maturityYears: 'Not provided',
-                  realEstateExposure: 'Not provided',
-                  managerAttestation: true
-                } : undefined
-              }));
+          eligibilityBasis: fund.gv_eligible ? {
+            portugalAllocation: 'Not provided',
+            maturityYears: 'Not provided',
+            realEstateExposure: 'Not provided',
+            managerAttestation: true
+          } : undefined,
+          finalRank: rankingMap.get(fund.id) || 999,
+          updatedAt: fund.updated_at || fund.created_at || undefined
+        }));
               
-              setFunds(transformedFunds);
+              // Sort funds by finalRank
+              const sortedFunds = transformedFunds.sort((a, b) => 
+                (a.finalRank ?? 999) - (b.finalRank ?? 999)
+              );
+              
+              setFunds(sortedFunds);
               setError(null);
               return;
             }
@@ -265,6 +287,11 @@ const applyEditHistory = (
       }
 
       if (supabaseFunds && supabaseFunds.length > 0) {
+        // Create ranking map for quick lookup
+        const rankingMap = new Map(
+          rankingsData?.map(r => [r.fund_id, r.manual_rank ?? 999]) || []
+        );
+        
         // Transform Supabase data to match our Fund interface
         const transformedFunds: Fund[] = supabaseFunds.map(fund => ({
           id: fund.id,
@@ -350,7 +377,9 @@ const applyEditHistory = (
             maturityYears: 'Not provided',
             realEstateExposure: 'Not provided',
             managerAttestation: true
-          } : undefined
+          } : undefined,
+          finalRank: rankingMap.get(fund.id) || 999,
+          updatedAt: fund.updated_at || fund.created_at || undefined
         }));
 
         // Also fetch edit history and apply approved changes as an overlay
