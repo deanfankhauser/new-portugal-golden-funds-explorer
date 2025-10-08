@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ComposedChart } from 'recharts';
 import { TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import AuthGate from '../auth/AuthGate';
 
 interface MonthlyPerformanceData {
   returns?: number;
@@ -175,184 +176,189 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
       </CardHeader>
       
       <CardContent className="pt-0">
-        <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod} className="mb-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger 
-              value="YTD" 
-              disabled={!hasDataForPeriod('YTD')}
-              className="disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              YTD
-            </TabsTrigger>
-            <TabsTrigger 
-              value="1Y" 
-              disabled={!hasDataForPeriod('1Y')}
-              className="disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              1 Year
-            </TabsTrigger>
-            <TabsTrigger 
-              value="3Y" 
-              disabled={!hasDataForPeriod('3Y')}
-              className="disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              3 Years
-            </TabsTrigger>
-            <TabsTrigger 
-              value="5Y" 
-              disabled={!hasDataForPeriod('5Y')}
-              className="disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              5 Years
-            </TabsTrigger>
-          </TabsList>
+        <AuthGate 
+          message="Sign in to see detailed historical performance data and charts"
+          height="400px"
+        >
+          <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod} className="mb-6">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger 
+                value="YTD" 
+                disabled={!hasDataForPeriod('YTD')}
+                className="disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                YTD
+              </TabsTrigger>
+              <TabsTrigger 
+                value="1Y" 
+                disabled={!hasDataForPeriod('1Y')}
+                className="disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                1 Year
+              </TabsTrigger>
+              <TabsTrigger 
+                value="3Y" 
+                disabled={!hasDataForPeriod('3Y')}
+                className="disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                3 Years
+              </TabsTrigger>
+              <TabsTrigger 
+                value="5Y" 
+                disabled={!hasDataForPeriod('5Y')}
+                className="disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                5 Years
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value={selectedPeriod} className="mt-6">
+              <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart
+                data={chartData} 
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                style={{ fontSize: '12px' }}
+              >
+                <defs>
+                  <linearGradient id="returnsGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                    <stop offset="60%" stopColor="hsl(var(--primary))" stopOpacity={0.18}/>
+                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="aumGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0}/>
+                    <stop offset="60%" stopColor="hsl(var(--chart-2))" stopOpacity={0.08}/>
+                    <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0}/>
+                  </linearGradient>
+                  <filter id="lineShadow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="hsl(var(--primary))" floodOpacity="0.25"/>
+                  </filter>
+                  <filter id="aumLineShadow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="hsl(var(--chart-2))" floodOpacity="0.15"/>
+                  </filter>
+                </defs>
+                
+                <CartesianGrid 
+                  strokeDasharray="3 3" 
+                  stroke="hsl(var(--border))" 
+                  strokeOpacity={0.3}
+                  vertical={false}
+                />
+                
+                <XAxis 
+                  dataKey="displayDate" 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ 
+                    fontSize: 11, 
+                    fill: 'hsl(var(--muted-foreground))',
+                    fontWeight: 500
+                  }}
+                  dy={5}
+                />
+                
+                <YAxis 
+                  yAxisId="returns"
+                  orientation="left"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ 
+                    fontSize: 11, 
+                    fill: 'hsl(var(--muted-foreground))',
+                    fontWeight: 500
+                  }}
+                  tickFormatter={(value) => `${value}%`}
+                  dx={-5}
+                />
+                
+                <YAxis 
+                  yAxisId="aum"
+                  orientation="right"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ 
+                    fontSize: 11, 
+                    fill: 'hsl(var(--muted-foreground))',
+                    fontWeight: 500
+                  }}
+                  tickFormatter={(value) => `€${(value / 1000000).toFixed(0)}M`}
+                  dx={5}
+                />
+                
+                {/* Area fills for shadow effect */}
+                <Area
+                  yAxisId="returns"
+                  type="monotone"
+                  dataKey="returns"
+                  fill="url(#returnsGradient)"
+                  stroke="none"
+                  strokeWidth={0}
+                  dot={false}
+                  activeDot={false}
+                />
+                
+                <Area
+                  yAxisId="aum"
+                  type="monotone"
+                  dataKey="aum"
+                  fill="url(#aumGradient)"
+                  stroke="none"
+                  strokeWidth={0}
+                  dot={false}
+                  activeDot={false}
+                />
+                
+                {/* Main lines with shadow */}
+                <Tooltip content={<CustomTooltip />} />
+                
+                <Line
+                  yAxisId="returns"
+                  type="monotone"
+                  dataKey="returns"
+                  stroke="hsl(var(--primary))"
+                  strokeWidth={3}
+                  dot={{ 
+                    fill: 'hsl(var(--primary))', 
+                    strokeWidth: 0, 
+                    r: 4
+                  }}
+                  activeDot={{ 
+                    r: 6, 
+                    fill: 'hsl(var(--primary))',
+                    stroke: 'hsl(var(--background))',
+                    strokeWidth: 2
+                  }}
+                  name="Returns (%)"
+                  connectNulls={false}
+                />
+                
+                <Line
+                  yAxisId="aum"
+                  type="monotone"
+                  dataKey="aum"
+                  stroke="hsl(var(--chart-2))"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={false}
+                  activeDot={false}
+                  name="AUM (€M)"
+                  connectNulls={false}
+                />
+              </ComposedChart>
+              </ResponsiveContainer>
+              </div>
+            </TabsContent>
+          </Tabs>
           
-          <TabsContent value={selectedPeriod} className="mt-6">
-            <div className="h-80 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart
-              data={chartData} 
-              margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-              style={{ fontSize: '12px' }}
-            >
-              <defs>
-                <linearGradient id="returnsGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
-                  <stop offset="60%" stopColor="hsl(var(--primary))" stopOpacity={0.18}/>
-                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
-                </linearGradient>
-                <linearGradient id="aumGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0}/>
-                  <stop offset="60%" stopColor="hsl(var(--chart-2))" stopOpacity={0.08}/>
-                  <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0}/>
-                </linearGradient>
-                <filter id="lineShadow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="hsl(var(--primary))" floodOpacity="0.25"/>
-                </filter>
-                <filter id="aumLineShadow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="hsl(var(--chart-2))" floodOpacity="0.15"/>
-                </filter>
-              </defs>
-              
-              <CartesianGrid 
-                strokeDasharray="3 3" 
-                stroke="hsl(var(--border))" 
-                strokeOpacity={0.3}
-                vertical={false}
-              />
-              
-              <XAxis 
-                dataKey="displayDate" 
-                axisLine={false}
-                tickLine={false}
-                tick={{ 
-                  fontSize: 11, 
-                  fill: 'hsl(var(--muted-foreground))',
-                  fontWeight: 500
-                }}
-                dy={5}
-              />
-              
-              <YAxis 
-                yAxisId="returns"
-                orientation="left"
-                axisLine={false}
-                tickLine={false}
-                tick={{ 
-                  fontSize: 11, 
-                  fill: 'hsl(var(--muted-foreground))',
-                  fontWeight: 500
-                }}
-                tickFormatter={(value) => `${value}%`}
-                dx={-5}
-              />
-              
-              <YAxis 
-                yAxisId="aum"
-                orientation="right"
-                axisLine={false}
-                tickLine={false}
-                tick={{ 
-                  fontSize: 11, 
-                  fill: 'hsl(var(--muted-foreground))',
-                  fontWeight: 500
-                }}
-                tickFormatter={(value) => `€${(value / 1000000).toFixed(0)}M`}
-                dx={5}
-              />
-              
-              {/* Area fills for shadow effect */}
-              <Area
-                yAxisId="returns"
-                type="monotone"
-                dataKey="returns"
-                fill="url(#returnsGradient)"
-                stroke="none"
-                strokeWidth={0}
-                dot={false}
-                activeDot={false}
-              />
-              
-              <Area
-                yAxisId="aum"
-                type="monotone"
-                dataKey="aum"
-                fill="url(#aumGradient)"
-                stroke="none"
-                strokeWidth={0}
-                dot={false}
-                activeDot={false}
-              />
-              
-              {/* Main lines with shadow */}
-              <Tooltip content={<CustomTooltip />} />
-              
-              <Line
-                yAxisId="returns"
-                type="monotone"
-                dataKey="returns"
-                stroke="hsl(var(--primary))"
-                strokeWidth={3}
-                dot={{ 
-                  fill: 'hsl(var(--primary))', 
-                  strokeWidth: 0, 
-                  r: 4
-                }}
-                activeDot={{ 
-                  r: 6, 
-                  fill: 'hsl(var(--primary))',
-                  stroke: 'hsl(var(--background))',
-                  strokeWidth: 2
-                }}
-                name="Returns (%)"
-                connectNulls={false}
-              />
-              
-              <Line
-                yAxisId="aum"
-                type="monotone"
-                dataKey="aum"
-                stroke="hsl(var(--chart-2))"
-                strokeWidth={2}
-                strokeDasharray="5 5"
-                dot={false}
-                activeDot={false}
-                name="AUM (€M)"
-                connectNulls={false}
-              />
-            </ComposedChart>
-            </ResponsiveContainer>
-            </div>
-          </TabsContent>
-        </Tabs>
-        
-        {/* Performance Disclaimer */}
-        <div className="mt-6 p-4 bg-gradient-to-br from-muted/5 to-muted/10 border border-border rounded-lg">
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            <span className="font-medium text-foreground">Disclaimer:</span> Historical performance is not indicative of future results. 
-            Past performance does not guarantee future returns. All investments carry risk of loss.
-          </p>
-        </div>
+          {/* Performance Disclaimer */}
+          <div className="mt-6 p-4 bg-gradient-to-br from-muted/5 to-muted/10 border border-border rounded-lg">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              <span className="font-medium text-foreground">Disclaimer:</span> Historical performance is not indicative of future results. 
+              Past performance does not guarantee future returns. All investments carry risk of loss.
+            </p>
+          </div>
+        </AuthGate>
       </CardContent>
     </Card>
   );
