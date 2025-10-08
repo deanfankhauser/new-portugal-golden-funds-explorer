@@ -33,6 +33,8 @@ const Header = () => {
                 src="/lovable-uploads/ab17d046-1cb9-44fd-aa6d-c4d338e11090.png" 
                 alt="Movingto Logo" 
                 className="h-6"
+                width="116"
+                height="24"
               />
             </Link>
           </div>

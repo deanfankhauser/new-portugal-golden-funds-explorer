@@ -195,4 +195,8 @@ export interface Fund {
     nav?: number;
   }>;
   hurdleRate?: number; // Performance fee hurdle rate percentage
+  
+  // Ranking (admin-controlled, invisible to end users)
+  finalRank?: number;
+  updatedAt?: string; // ISO 8601 date when fund was last updated
 }

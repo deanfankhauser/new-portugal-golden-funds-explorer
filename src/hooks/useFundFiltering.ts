@@ -10,6 +10,12 @@ export const useFundFiltering = () => {
 
   const filteredFunds = useMemo(() => {
     const result = filterFunds(selectedTags, searchQuery);
+    
+    // Re-sort by finalRank to maintain admin-defined order after filtering
+    const sorted = [...result].sort((a, b) => 
+      (a.finalRank ?? 999) - (b.finalRank ?? 999)
+    );
+    
     console.log('🔍 Filtering debug:', {
       totalFunds: funds.length,
       selectedTags,
@@ -18,7 +24,7 @@ export const useFundFiltering = () => {
       loading,
       error
     });
-    return result;
+    return sorted;
   }, [selectedTags, searchQuery, filterFunds, funds.length, loading, error]);
 
   return {

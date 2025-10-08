@@ -120,7 +120,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 <div className="flex items-center gap-2">
                   <span className="font-medium text-foreground">{fund.redemptionTerms.frequency}</span>
                   {!fund.redemptionTerms.redemptionOpen && (
-                    <Badge variant="destructive" className="text-xs">Closed</Badge>
+                    <Badge variant="outline" className="text-xs">Closed</Badge>
                   )}
                 </div>
                 {fund.redemptionTerms.noticePeriod && fund.redemptionTerms.noticePeriod > 0 && (

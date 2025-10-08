@@ -21,12 +21,6 @@ const ResultsHeader: React.FC<ResultsHeaderProps> = ({
   
   return (
     <div className="space-y-4 mb-6">
-      <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-        <p className="text-sm text-blue-700 mb-2">
-          <strong>All funds shown are Golden Visa eligible.</strong> Use filters to narrow your search.
-        </p>
-      </div>
-      
       <div className="flex justify-between items-center p-4 bg-card rounded-lg border border-border">
         <div>
           <p className="text-foreground font-semibold text-lg" role="status">
