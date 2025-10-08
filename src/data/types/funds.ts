@@ -195,4 +195,7 @@ export interface Fund {
     nav?: number;
   }>;
   hurdleRate?: number; // Performance fee hurdle rate percentage
+  
+  // Ranking (admin-controlled, invisible to end users)
+  finalRank?: number;
 }
