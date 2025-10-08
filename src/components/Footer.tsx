@@ -1,13 +1,16 @@
 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { Facebook, Linkedin, ExternalLink } from "lucide-react";
 import RecentlyViewedFunds from "./RecentlyViewedFunds";
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
+  const [currentYear, setCurrentYear] = useState(2025);
 
   useEffect(() => {
+    // Set current year on client-side only
+    setCurrentYear(new Date().getFullYear());
+    
     // Load Fillout script if not already loaded
     if (!document.querySelector('script[src="https://server.fillout.com/embed/v1/"]')) {
       const script = document.createElement('script');

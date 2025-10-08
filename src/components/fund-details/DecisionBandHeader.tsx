@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Card, CardContent } from '../ui/card';
@@ -16,6 +16,13 @@ interface DecisionBandHeaderProps {
 const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
   const { isInComparison, addToComparison } = useComparison();
   const isCompared = isInComparison(fund.id);
+  const [yearsOfTrack, setYearsOfTrack] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (fund.established) {
+      setYearsOfTrack(new Date().getFullYear() - Number(fund.established));
+    }
+  }, [fund.established]);
 
   const handleCompareClick = () => {
     addToComparison(fund);
@@ -141,7 +148,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                 <div>
                   <div className="font-semibold text-foreground mb-1">Established {fund.established}</div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {new Date().getFullYear() - Number(fund.established)} years of track record
+                    {yearsOfTrack !== null ? `${yearsOfTrack} years of track record` : 'Track record available'}
                   </p>
                 </div>
               </div>

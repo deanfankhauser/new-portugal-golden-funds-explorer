@@ -34,9 +34,9 @@ const RedemptionTerms: React.FC<RedemptionTermsProps> = ({ redemptionTerms }) =>
               Redemption Status
             </span>
             {isLocked ? (
-              <Badge variant="destructive" className="text-xs">Locked Until Maturity</Badge>
+              <Badge variant="outline" className="text-xs">Locked Until Maturity</Badge>
             ) : (
-              <Badge variant={redemptionTerms.redemptionOpen ? "default" : "destructive"} className="text-xs">
+              <Badge variant={redemptionTerms.redemptionOpen ? "default" : "outline"} className="text-xs">
                 {redemptionTerms.redemptionOpen ? "Open" : "Closed"}
               </Badge>
             )}

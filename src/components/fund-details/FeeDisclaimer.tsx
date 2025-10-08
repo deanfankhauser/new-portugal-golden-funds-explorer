@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Info } from 'lucide-react';
 
 const FeeDisclaimer: React.FC = () => {
-  const currentDate = new Date().toLocaleDateString('en-US', { 
-    month: 'long', 
-    year: 'numeric' 
-  });
+  const [currentDate, setCurrentDate] = useState('2025');
+
+  useEffect(() => {
+    setCurrentDate(new Date().toLocaleDateString('en-US', { 
+      month: 'long', 
+      year: 'numeric' 
+    }));
+  }, []);
 
   return (
     <Alert className="bg-blue-50 border-blue-200 mt-4">
