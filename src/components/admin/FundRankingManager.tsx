@@ -8,12 +8,11 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { 
   Search, 
   TrendingUp, 
-  ArrowUp, 
-  ArrowDown, 
   Hash,
   AlertCircle,
   Save,
-  Info
+  Info,
+  X
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -40,6 +39,7 @@ const FundRankingManager: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [editingFund, setEditingFund] = useState<string | null>(null);
   const [editNotes, setEditNotes] = useState('');
+  const [editingRanks, setEditingRanks] = useState<Record<string, number | null>>({});
   const { toast } = useToast();
 
   // Fetch rankings from Supabase
@@ -84,7 +84,7 @@ const FundRankingManager: React.FC = () => {
     }
   };
 
-  const saveRanking = async (fundId: string, manual_rank: number, notes?: string) => {
+  const saveRanking = async (fundId: string, manual_rank: number | null, notes?: string, fundName?: string) => {
     setSaving(true);
     try {
       const { data: existing } = await supabase
@@ -93,7 +93,16 @@ const FundRankingManager: React.FC = () => {
         .eq('fund_id', fundId)
         .maybeSingle();
 
-      if (existing) {
+      if (manual_rank === null) {
+        // Delete the ranking if clearing
+        if (existing) {
+          const { error } = await supabase
+            .from('fund_rankings')
+            .delete()
+            .eq('fund_id', fundId);
+          if (error) throw error;
+        }
+      } else if (existing) {
         const { error } = await supabase
           .from('fund_rankings')
           .update({ 
@@ -118,9 +127,16 @@ const FundRankingManager: React.FC = () => {
 
       await fetchRankings();
       
+      // Clear editing state
+      setEditingRanks(prev => {
+        const updated = { ...prev };
+        delete updated[fundId];
+        return updated;
+      });
+      
       toast({
         title: 'Success',
-        description: 'Ranking saved successfully'
+        description: fundName ? `Rank updated for ${fundName}` : 'Ranking saved successfully'
       });
     } catch (error) {
       console.error('Error saving ranking:', error);
@@ -135,10 +151,8 @@ const FundRankingManager: React.FC = () => {
     }
   };
 
-  const moveRank = async (fund: EnrichedFund, direction: 'up' | 'down') => {
-    const currentRank = fund.rankingData.manual_rank || 999;
-    const newRank = direction === 'up' ? Math.max(1, currentRank - 1) : currentRank + 1;
-    await saveRanking(fund.id, newRank, fund.rankingData.notes || undefined);
+  const clearRanking = async (fundId: string, fundName: string) => {
+    await saveRanking(fundId, null, undefined, fundName);
   };
 
   const filteredFunds = enrichedFunds.filter(fund =>
@@ -278,29 +292,49 @@ const FundRankingManager: React.FC = () => {
                 >
                   <div className="flex items-start gap-4">
                     {/* Rank Display */}
-                    <div className="flex flex-col items-center gap-1 min-w-[60px]">
-                      <div className="text-2xl font-bold text-primary">
-                        #{fund.rankingData.final_rank}
+                    <div className="flex flex-col gap-2 min-w-[120px]">
+                      <div className="text-sm text-muted-foreground">
+                        Final: <span className="text-lg font-bold text-primary">#{fund.rankingData.final_rank}</span>
                       </div>
-                      <div className="flex gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-6 w-6 p-0"
-                          onClick={() => moveRank(fund, 'up')}
-                          disabled={saving}
-                        >
-                          <ArrowUp className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-6 w-6 p-0"
-                          onClick={() => moveRank(fund, 'down')}
-                          disabled={saving}
-                        >
-                          <ArrowDown className="h-3 w-3" />
-                        </Button>
+                      <div className="flex items-center gap-2">
+                        <div className="flex flex-col gap-1">
+                          <label className="text-xs text-muted-foreground">Manual Rank</label>
+                          <Input
+                            type="number"
+                            min="1"
+                            placeholder="Auto"
+                            value={editingRanks[fund.id] ?? fund.rankingData.manual_rank ?? ''}
+                            onChange={(e) => {
+                              const value = e.target.value === '' ? null : parseInt(e.target.value);
+                              setEditingRanks(prev => ({ ...prev, [fund.id]: value }));
+                            }}
+                            className="h-8 w-20 text-center"
+                            disabled={saving}
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1 self-end">
+                          {editingRanks[fund.id] !== undefined && editingRanks[fund.id] !== fund.rankingData.manual_rank ? (
+                            <Button
+                              size="sm"
+                              className="h-8 px-2"
+                              onClick={() => saveRanking(fund.id, editingRanks[fund.id], fund.rankingData.notes || undefined, fund.name)}
+                              disabled={saving}
+                            >
+                              <Save className="h-3 w-3" />
+                            </Button>
+                          ) : fund.rankingData.manual_rank !== null ? (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-8 px-2"
+                              onClick={() => clearRanking(fund.id, fund.name)}
+                              disabled={saving}
+                              title="Clear manual rank"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          ) : null}
+                        </div>
                       </div>
                     </div>
 
@@ -320,10 +354,6 @@ const FundRankingManager: React.FC = () => {
 
                       {/* Ranking Details */}
                       <div className="flex items-center gap-4 text-xs text-muted-foreground mb-2">
-                        <div className="flex items-center gap-1">
-                          <span className="font-medium">Manual:</span>
-                          <span>{fund.rankingData.manual_rank || '—'}</span>
-                        </div>
                         <div className="flex items-center gap-1">
                           <span className="font-medium">Last Updated:</span>
                           <span>
@@ -348,11 +378,11 @@ const FundRankingManager: React.FC = () => {
                             className="min-h-[60px]"
                           />
                           <div className="flex gap-2">
-                            <Button
+                          <Button
                               size="sm"
                               onClick={() => {
-                                const currentRank = fund.rankingData.manual_rank || index + 1;
-                                saveRanking(fund.id, currentRank, editNotes);
+                                const currentRank = fund.rankingData.manual_rank || null;
+                                saveRanking(fund.id, currentRank, editNotes, fund.name);
                               }}
                               disabled={saving}
                             >
