@@ -8,6 +8,12 @@ export function compileSSGFiles() {
   console.log('\n🏗️  Compiling SSG files...');
   
   try {
+    // Generate dynamic redirects first
+    console.log('🔀 Generating dynamic redirects...');
+    execSync('npx tsx scripts/ssg/generate-redirects.ts', {
+      stdio: 'inherit'
+    });
+    
     // Execute the SSG runner with debug mode if requested
     const ssgEnv = {
       ...process.env,
