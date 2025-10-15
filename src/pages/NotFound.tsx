@@ -6,31 +6,38 @@ import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import { Badge } from '@/components/ui/badge';
 import { Tag } from 'lucide-react';
+import { getAllTags } from '@/data/funds';
+import { tagToSlug, categoryToSlug } from '@/lib/utils';
 
 const NotFound = () => {
   const location = useLocation();
   
-  // Common tag slugs that might be accessed without /tags/ prefix
-  const commonTags = useMemo(() => [
-    'solar', 'crypto', 'regulated', 'carbon-credits', 'tech', 'healthcare',
-    'film', 'real-estate', 'low-risk', 'medium-risk', 'high-risk', 'flexible',
-    'renewable-energy', 'european-focus', 'sustainability', 'diversified',
-    'institutional-grade', 'esg', 'growth', 'income', 'value', 'balanced',
-    'ai', 'fintech', 'biotech', 'infrastructure', 'agriculture', 'tourism',
-    'manufacturing', 'education', 'entertainment'
-  ], []);
-
-  // Detect if this looks like a tag URL without the /tags/ prefix
-  const suggestedTagUrl = useMemo(() => {
-    const pathname = location.pathname.replace(/^\//, '').replace(/\/$/, '');
+  // Dynamically suggest tag or category page based on actual data
+  const suggestedUrl = useMemo(() => {
+    const path = location.pathname.toLowerCase().replace(/^\//, '').replace(/\/$/, '');
     
-    // Check if the pathname matches a known tag
-    if (commonTags.includes(pathname.toLowerCase())) {
-      return `/tags/${pathname.toLowerCase()}`;
+    // Get all actual tags and convert to slugs
+    const allTags = getAllTags();
+    const tagSlugs = allTags.map(tag => tagToSlug(tag));
+    
+    // Check if path matches a tag slug
+    if (tagSlugs.includes(path)) {
+      return { url: `/tags/${path}`, type: 'tag' };
+    }
+    
+    // Check for category slugs
+    const categories = [
+      'Private Equity', 'Venture Capital', 'Real Estate', 
+      'Private Debt', 'Hedge Funds', 'Infrastructure', 'Natural Resources'
+    ];
+    const categorySlugs = categories.map(cat => categoryToSlug(cat));
+    
+    if (categorySlugs.includes(path)) {
+      return { url: `/categories/${path}`, type: 'category' };
     }
     
     return null;
-  }, [location.pathname, commonTags]);
+  }, [location.pathname]);
 
   useEffect(() => {
     console.error(
@@ -50,20 +57,20 @@ const NotFound = () => {
           <h1 className="text-6xl font-bold text-primary mb-4">404</h1>
           <p className="text-2xl text-foreground mb-4">Oops! Page not found</p>
           
-          {suggestedTagUrl ? (
+          {suggestedUrl ? (
             <div className="mb-8">
               <div className="p-6 bg-primary/5 border-2 border-primary/20 rounded-lg mb-6">
                 <div className="flex items-center justify-center gap-2 mb-3">
                   <Tag className="h-5 w-5 text-primary" />
                   <p className="text-lg font-semibold text-foreground">
-                    Looking for funds with this tag?
+                    Looking for this {suggestedUrl.type}?
                   </p>
                 </div>
                 <p className="text-muted-foreground mb-4">
-                  It looks like you're trying to access a tag page. Try this correct URL:
+                  It looks like you're trying to access a {suggestedUrl.type} page. Try this correct URL:
                 </p>
                 <Link 
-                  to={suggestedTagUrl}
+                  to={suggestedUrl.url}
                   className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 rounded-md font-medium transition-colors"
                 >
                   <Tag className="h-4 w-4" />
