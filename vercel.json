@@ -49,6 +49,161 @@
       "source": "/funds/",
       "destination": "/index",
       "permanent": true
+    },
+    {
+      "source": "/solar",
+      "destination": "/tags/solar",
+      "permanent": true
+    },
+    {
+      "source": "/crypto",
+      "destination": "/tags/crypto",
+      "permanent": true
+    },
+    {
+      "source": "/regulated",
+      "destination": "/tags/regulated",
+      "permanent": true
+    },
+    {
+      "source": "/carbon-credits",
+      "destination": "/tags/carbon-credits",
+      "permanent": true
+    },
+    {
+      "source": "/tech",
+      "destination": "/tags/tech",
+      "permanent": true
+    },
+    {
+      "source": "/healthcare",
+      "destination": "/tags/healthcare",
+      "permanent": true
+    },
+    {
+      "source": "/film",
+      "destination": "/tags/film",
+      "permanent": true
+    },
+    {
+      "source": "/real-estate",
+      "destination": "/tags/real-estate",
+      "permanent": true
+    },
+    {
+      "source": "/low-risk",
+      "destination": "/tags/low-risk",
+      "permanent": true
+    },
+    {
+      "source": "/medium-risk",
+      "destination": "/tags/medium-risk",
+      "permanent": true
+    },
+    {
+      "source": "/high-risk",
+      "destination": "/tags/high-risk",
+      "permanent": true
+    },
+    {
+      "source": "/flexible",
+      "destination": "/tags/flexible",
+      "permanent": true
+    },
+    {
+      "source": "/renewable-energy",
+      "destination": "/tags/renewable-energy",
+      "permanent": true
+    },
+    {
+      "source": "/european-focus",
+      "destination": "/tags/european-focus",
+      "permanent": true
+    },
+    {
+      "source": "/sustainability",
+      "destination": "/tags/sustainability",
+      "permanent": true
+    },
+    {
+      "source": "/diversified",
+      "destination": "/tags/diversified",
+      "permanent": true
+    },
+    {
+      "source": "/institutional-grade",
+      "destination": "/tags/institutional-grade",
+      "permanent": true
+    },
+    {
+      "source": "/esg",
+      "destination": "/tags/esg",
+      "permanent": true
+    },
+    {
+      "source": "/growth",
+      "destination": "/tags/growth",
+      "permanent": true
+    },
+    {
+      "source": "/income",
+      "destination": "/tags/income",
+      "permanent": true
+    },
+    {
+      "source": "/value",
+      "destination": "/tags/value",
+      "permanent": true
+    },
+    {
+      "source": "/balanced",
+      "destination": "/tags/balanced",
+      "permanent": true
+    },
+    {
+      "source": "/ai",
+      "destination": "/tags/ai",
+      "permanent": true
+    },
+    {
+      "source": "/fintech",
+      "destination": "/tags/fintech",
+      "permanent": true
+    },
+    {
+      "source": "/biotech",
+      "destination": "/tags/biotech",
+      "permanent": true
+    },
+    {
+      "source": "/infrastructure",
+      "destination": "/tags/infrastructure",
+      "permanent": true
+    },
+    {
+      "source": "/agriculture",
+      "destination": "/tags/agriculture",
+      "permanent": true
+    },
+    {
+      "source": "/tourism",
+      "destination": "/tags/tourism",
+      "permanent": true
+    },
+    {
+      "source": "/manufacturing",
+      "destination": "/tags/manufacturing",
+      "permanent": true
+    },
+    {
+      "source": "/education",
+      "destination": "/tags/education",
+      "permanent": true
+    },
+    {
+      "source": "/entertainment",
+      "destination": "/tags/entertainment",
+      "permanent": true
     }
   ],
   "headers": [

@@ -10,6 +10,7 @@ import FundSizeFormatter from './FundSizeFormatter';
 import { getReturnTargetDisplay, getReturnTargetNumbers } from '../../utils/returnTarget';
 import PerformancePreview from './PerformancePreview';
 import KeyFactsChips from './KeyFactsChips';
+import AuthGate from '../auth/AuthGate';
 
 interface FundSnapshotCardProps {
   fund: Fund;
@@ -224,49 +225,48 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
           </div>
         </div>
 
-        {/* Expandable Details */}
-        <details className="group">
-          <summary className="flex items-center justify-between cursor-pointer py-3 border-t hover:bg-accent/5 transition-colors px-2 -mx-2 rounded">
-            <span className="text-sm font-medium">More key details</span>
-            <svg className="h-4 w-4 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </summary>
-          <div className="pt-4 space-y-2.5 pb-2">
-            <div className="flex items-center justify-between py-2 border-b">
-              <span className="text-sm text-muted-foreground">Management Fee</span>
-              <span className="text-sm font-medium">{fund.managementFee ? `${fund.managementFee}%` : 'N/A'}</span>
-            </div>
-            <div className="flex items-center justify-between py-2 border-b">
-              <span className="text-sm text-muted-foreground">Performance Fee</span>
-              <span className="text-sm font-medium">{fund.performanceFee ? `${fund.performanceFee}%` : 'N/A'}</span>
-            </div>
-            <div className="flex items-center justify-between py-2 border-b">
-              <span className="text-sm text-muted-foreground">NAV Frequency</span>
-              <span className="text-sm font-medium">{fund.navFrequency || 'N/A'}</span>
-            </div>
-            <div className="flex items-center justify-between py-2 border-b">
-              <span className="text-sm text-muted-foreground">Established</span>
-              <span className="text-sm font-medium">{fund.established || 'N/A'}</span>
-            </div>
-            {fund.cmvmId && (
+        {/* Expandable Details - Gated */}
+        <div className="border-t pt-4">
+          <AuthGate 
+            message="Sign in to view complete fee structure, notice periods, and regulatory details"
+            height="200px"
+          >
+            <div className="space-y-2.5 pb-2">
               <div className="flex items-center justify-between py-2 border-b">
-                <span className="text-sm text-muted-foreground">CMVM ID</span>
-                <span className="text-sm font-medium">{fund.cmvmId}</span>
+                <span className="text-sm text-muted-foreground">Management Fee</span>
+                <span className="text-sm font-medium">{fund.managementFee ? `${fund.managementFee}%` : 'N/A'}</span>
               </div>
-            )}
-            <div className="flex items-center justify-between py-2 border-b">
-              <span className="text-sm text-muted-foreground">Notice Period</span>
-              <span className="text-sm font-medium">
-                {fund.redemptionTerms?.noticePeriod ? `${fund.redemptionTerms.noticePeriod} days` : 'N/A'}
-              </span>
+              <div className="flex items-center justify-between py-2 border-b">
+                <span className="text-sm text-muted-foreground">Performance Fee</span>
+                <span className="text-sm font-medium">{fund.performanceFee ? `${fund.performanceFee}%` : 'N/A'}</span>
+              </div>
+              <div className="flex items-center justify-between py-2 border-b">
+                <span className="text-sm text-muted-foreground">NAV Frequency</span>
+                <span className="text-sm font-medium">{fund.navFrequency || 'N/A'}</span>
+              </div>
+              <div className="flex items-center justify-between py-2 border-b">
+                <span className="text-sm text-muted-foreground">Established</span>
+                <span className="text-sm font-medium">{fund.established || 'N/A'}</span>
+              </div>
+              {fund.cmvmId && (
+                <div className="flex items-center justify-between py-2 border-b">
+                  <span className="text-sm text-muted-foreground">CMVM ID</span>
+                  <span className="text-sm font-medium">{fund.cmvmId}</span>
+                </div>
+              )}
+              <div className="flex items-center justify-between py-2 border-b">
+                <span className="text-sm text-muted-foreground">Notice Period</span>
+                <span className="text-sm font-medium">
+                  {fund.redemptionTerms?.noticePeriod ? `${fund.redemptionTerms.noticePeriod} days` : 'N/A'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between py-2">
+                <span className="text-sm text-muted-foreground">Regulated By</span>
+                <span className="text-sm font-medium">{fund.regulatedBy || 'N/A'}</span>
+              </div>
             </div>
-            <div className="flex items-center justify-between py-2">
-              <span className="text-sm text-muted-foreground">Regulated By</span>
-              <span className="text-sm font-medium">{fund.regulatedBy || 'N/A'}</span>
-            </div>
-          </div>
-        </details>
+          </AuthGate>
+        </div>
 
         {/* Trust Badges */}
         <div className="pt-6 border-t">
