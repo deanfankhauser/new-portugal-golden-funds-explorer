@@ -1,4 +1,4 @@
-name: Generate Redirects
+name: Generate Redirects & Sitemap
 
 on:
   workflow_dispatch: # Manual trigger
@@ -7,7 +7,9 @@ on:
     paths:
       - 'src/data/services/tags-service.ts'
       - 'src/data/services/categories-service.ts'
+      - 'src/data/services/funds-service.ts'
       - 'scripts/ssg/generate-redirects.ts'
+      - 'src/services/**/*sitemap*.ts'
 
 jobs:
   generate:
@@ -31,10 +33,13 @@ jobs:
       - name: Generate redirects
         run: npm run generate:redirects
       
+      - name: Generate sitemap
+        run: npm run generate:sitemap || node scripts/generate-production-sitemap.js
+      
       - name: Check for changes
         id: check_changes
         run: |
-          if git diff --quiet vercel.json; then
+          if git diff --quiet vercel.json public/sitemap.xml public/sitemap-index.xml public/robots.txt; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -45,6 +50,6 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add vercel.json
-          git commit -m "chore: auto-generate redirects [skip ci]"
+          git add vercel.json public/sitemap*.xml public/robots.txt
+          git commit -m "chore: auto-generate redirects and sitemap [skip ci]"
           git push
