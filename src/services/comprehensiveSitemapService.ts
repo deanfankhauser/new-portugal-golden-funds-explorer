@@ -129,7 +129,6 @@ ${sitemapElements}
 
     // Static pages
     const staticPages = [
-      { path: '/index', priority: 0.9, changefreq: 'daily' as const },
       { path: '/about', priority: 0.6, changefreq: 'monthly' as const },
       { path: '/disclaimer', priority: 0.3, changefreq: 'monthly' as const },
       { path: '/privacy', priority: 0.3, changefreq: 'monthly' as const },
@@ -167,7 +166,6 @@ ${sitemapElements}
     });
 
     // Fund detail pages
-    console.log(`🔍 Generating ${funds.length} fund pages + ${funds.length} alternatives pages...`);
     funds.forEach(fund => {
       urls.push({
         loc: URL_CONFIG.buildFundUrl(fund.id),
@@ -184,12 +182,10 @@ ${sitemapElements}
         priority: 0.8
       });
     });
-    console.log(`✅ Added ${funds.length * 2} fund-related pages to sitemap`);
 
     // Category pages
     try {
       const categories = getAllCategories();
-      console.log(`🔍 Generating ${categories.length} category pages...`);
       categories.forEach(category => {
         urls.push({
           loc: URL_CONFIG.buildCategoryUrl(category),
@@ -198,15 +194,13 @@ ${sitemapElements}
           priority: 0.8
         });
       });
-      console.log(`✅ Added ${categories.length} category pages to sitemap`);
     } catch (error) {
-      console.error('❌ Failed to generate category URLs:', error);
+      console.warn('Failed to generate category URLs:', error);
     }
 
     // Tag pages
     try {
       const tags = getAllTags();
-      console.log(`🔍 Generating ${tags.length} tag pages...`);
       tags.forEach(tag => {
         urls.push({
           loc: URL_CONFIG.buildTagUrl(tag),
@@ -215,15 +209,13 @@ ${sitemapElements}
           priority: 0.7
         });
       });
-      console.log(`✅ Added ${tags.length} tag pages to sitemap`);
     } catch (error) {
-      console.error('❌ Failed to generate tag URLs:', error);
+      console.warn('Failed to generate tag URLs:', error);
     }
 
     // Manager pages
     try {
       const managers = getAllFundManagers();
-      console.log(`🔍 Generating ${managers.length} manager pages...`);
       managers.forEach(manager => {
         urls.push({
           loc: URL_CONFIG.buildManagerUrl(manager.name),
@@ -232,15 +224,13 @@ ${sitemapElements}
           priority: 0.8
         });
       });
-      console.log(`✅ Added ${managers.length} manager pages to sitemap`);
     } catch (error) {
-      console.error('❌ Failed to generate manager URLs:', error);
+      console.warn('Failed to generate manager URLs:', error);
     }
 
-    // Comparison pages - ALL fund combinations
+    // Comparison pages
     try {
       const comparisonSlugs = getAllComparisonSlugs();
-      console.log(`🔍 Generating ${comparisonSlugs.length} comparison pages...`);
       comparisonSlugs.forEach(slug => {
         urls.push({
           loc: URL_CONFIG.buildComparisonUrl(slug),
@@ -249,10 +239,8 @@ ${sitemapElements}
           priority: 0.85
         });
       });
-      console.log(`✅ Added ${comparisonSlugs.length} comparison pages to sitemap`);
     } catch (error) {
-      console.error('❌ CRITICAL: Failed to generate comparison URLs:', error);
-      throw error; // Don't silently fail
+      console.warn('Failed to generate comparison URLs:', error);
     }
 
     return urls;
@@ -267,15 +255,17 @@ ${sitemapElements}
 
     const hasIndexHtml = (dir: string) => fs.existsSync(path.join(dir, 'index.html'));
 
-    const walk = (baseAbs: string, rel: string) => {
+    const walk = (baseAbs: string, rel: string, subdir: string) => {
       // If this folder has an index.html and rel is non-empty, it represents a route
       if (rel && hasIndexHtml(baseAbs)) {
-        found.push(rel.replace(/\\/g, '/')); // normalize
+        // Prefix the path with the subdirectory to ensure proper URL structure
+        const fullPath = `${subdir}/${rel}`.replace(/\\/g, '/');
+        found.push(fullPath);
       }
       const entries = fs.existsSync(baseAbs) ? fs.readdirSync(baseAbs, { withFileTypes: true }) : [];
       for (const entry of entries) {
         if (entry.isDirectory()) {
-          walk(path.join(baseAbs, entry.name), `${rel ? rel + '/' : ''}${entry.name}`);
+          walk(path.join(baseAbs, entry.name), `${rel ? rel + '/' : ''}${entry.name}`, subdir);
         }
       }
     };
@@ -283,11 +273,11 @@ ${sitemapElements}
     subdirs.forEach((sub) => {
       const root = path.join(outputDir, sub);
       if (!fs.existsSync(root)) return;
-      walk(root, '');
+      walk(root, '', sub);
     });
 
     // Convert discovered relative paths into absolute canonical URLs under BASE_URL
-    const urls = found.map(rel => `${URL_CONFIG.BASE_URL}/${rel.startsWith('categories') || rel.startsWith('tags') ? rel : rel}`);
+    const urls = found.map(rel => `${URL_CONFIG.BASE_URL}/${rel}`);
 
     return Array.from(new Set(urls));
   }
@@ -431,10 +421,7 @@ Allow: /alternatives
       });
     });
 
-    console.log(`\n📊 SITEMAP SUMMARY:`);
-    console.log(`   Total URLs collected: ${allURLs.length}`);
-    console.log(`   Discovered from dist: ${discoveredFromDist.length}`);
-    console.log(`   Expected: 1500+ URLs (28 funds × 2 + 378 comparisons + categories + tags + managers + static)`);
+    console.log(`📊 Collected ${allURLs.length} URLs for sitemap generation (including ${discoveredFromDist.length} discovered from dist)`);
 
     // Verify and add any missing dynamic routes
     allURLs = this.verifyAndAddMissingRoutes(allURLs);

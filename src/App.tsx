@@ -302,7 +302,7 @@ function App() {
                   </div>
                   <Toaster />
                   <SEODebugger />
-                  <SEOEnhancer enableMonitoring={import.meta.env.DEV} />
+                  <SEOEnhancer enableMonitoring={typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false} />
                   
                 </SEOProvider>
               </Router>

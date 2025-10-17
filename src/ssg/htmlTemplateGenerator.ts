@@ -38,6 +38,11 @@ export function generateHTMLTemplate(
   const validatedCssFiles = cssFiles;
   const validatedJsFiles = jsFiles;
 
+  // Ensure a single H1 exists for SEO if the app content lacks one (SSR fallback)
+  const contentWithH1 = appHtml && appHtml.includes('<h1')
+    ? appHtml
+    : `<main><h1 class="text-2xl font-bold text-foreground mb-4">${title}</h1>${appHtml || ''}</main>`;
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -211,7 +216,7 @@ export function generateHTMLTemplate(
   ${validatedCssFiles.map(css => `  <link rel="stylesheet" href="/assets/${css}" />`).join('\n')}
 </head>
 <body>
-  <div id="root">${appHtml}</div>
+  <div id="root">${contentWithH1}</div>
   
   <!-- Built JavaScript Files - Only load main entry -->
   ${(() => {

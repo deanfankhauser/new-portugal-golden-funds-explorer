@@ -17,6 +17,11 @@ import { supabase } from '@/integrations/supabase/client';
 const AuthAwareButton = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   
+  // SSR-safe: Don't render during server-side rendering
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  
   // Add error boundary and safe fallback
   let authState;
   try {

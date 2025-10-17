@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 import { Fund } from '../../data/funds';
 import { getFundType } from '../../utils/fundTypeUtils';
-import { FAQSchemaService } from '../../services/faqSchemaService';
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Accordion,
@@ -59,15 +58,41 @@ const FundManagerFAQs: React.FC<FundManagerFAQsProps> = ({ fund }) => {
   const faqs = generateFAQs(fund);
 
   useEffect(() => {
-    // Register FAQs with unified schema service
-    const cleanup = FAQSchemaService.registerFAQs({
-      schemaId: `manager-faq-${fund.id}`,
-      faqs: faqs,
-      pageContext: `${fund.name} Fund by ${fund.managerName}`
-    });
+    // Create FAQ Page schema for SEO
+    const faqSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'mainEntity': faqs.map((faq: FAQItem) => ({
+        '@type': 'Question',
+        'name': faq.question,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': faq.answer
+        }
+      }))
+    };
 
-    return cleanup;
-  }, [faqs, fund.id, fund.name, fund.managerName]);
+    // Remove existing FAQ schema
+    const existingFAQSchema = document.querySelector('script[data-schema="faq"]');
+    if (existingFAQSchema) {
+      existingFAQSchema.remove();
+    }
+
+    // Add new FAQ schema with unified data-schema="faq"
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-schema', 'faq');
+    script.textContent = JSON.stringify(faqSchema);
+    document.head.appendChild(script);
+
+    // Cleanup function
+    return () => {
+      const schemaScript = document.querySelector('script[data-schema="faq"]');
+      if (schemaScript) {
+        schemaScript.remove();
+      }
+    };
+  }, [faqs]);
 
   return (
     <Card className="border border-gray-100 shadow-sm" itemScope itemType="https://schema.org/FAQPage">

@@ -72,14 +72,14 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
 
       {/* Similar Investment Amount Funds */}
       {similarInvestmentFunds.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-accent" />
-              Similar Investment Range
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card className="shadow-lg border-2 hover:shadow-xl transition-all duration-300">
+          <CardContent className="p-6">
+            <div className="flex items-start gap-3 mb-3">
+              <div className="p-2 rounded-lg bg-accent/10 shrink-0">
+                <DollarSign className="w-5 h-5 text-accent" />
+              </div>
+              <h2 className="text-2xl font-bold text-foreground pt-1">Similar Investment Range</h2>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {similarInvestmentFunds.map(fund => (
                 <div key={fund.id} className="border border-border rounded-lg p-4 hover:border-accent transition-colors">

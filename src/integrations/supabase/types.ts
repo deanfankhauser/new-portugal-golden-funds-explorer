@@ -192,8 +192,53 @@ export type Database = {
         }
         Relationships: []
       }
+      fund_rankings: {
+        Row: {
+          category_rank: number | null
+          created_at: string | null
+          fund_id: string
+          id: string
+          last_modified_by: string | null
+          manual_rank: number
+          notes: string | null
+          updated_at: string | null
+          visibility_boost: number | null
+        }
+        Insert: {
+          category_rank?: number | null
+          created_at?: string | null
+          fund_id: string
+          id?: string
+          last_modified_by?: string | null
+          manual_rank: number
+          notes?: string | null
+          updated_at?: string | null
+          visibility_boost?: number | null
+        }
+        Update: {
+          category_rank?: number | null
+          created_at?: string | null
+          fund_id?: string
+          id?: string
+          last_modified_by?: string | null
+          manual_rank?: number
+          notes?: string | null
+          updated_at?: string | null
+          visibility_boost?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_rankings_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: true
+            referencedRelation: "funds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       funds: {
         Row: {
+          algo_rank: number | null
           auditor: string | null
           aum: number | null
           category: string | null
@@ -207,6 +252,7 @@ export type Database = {
           expected_return_max: number | null
           expected_return_min: number | null
           faqs: Json | null
+          final_rank: number | null
           geographic_allocation: Json | null
           gv_eligible: boolean | null
           historical_performance: Json | null
@@ -218,6 +264,7 @@ export type Database = {
           lock_up_period_months: number | null
           management_fee: number | null
           manager_name: string | null
+          manual_rank: number | null
           minimum_investment: number | null
           name: string
           nav_frequency: string | null
@@ -236,6 +283,7 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          algo_rank?: number | null
           auditor?: string | null
           aum?: number | null
           category?: string | null
@@ -249,6 +297,7 @@ export type Database = {
           expected_return_max?: number | null
           expected_return_min?: number | null
           faqs?: Json | null
+          final_rank?: number | null
           geographic_allocation?: Json | null
           gv_eligible?: boolean | null
           historical_performance?: Json | null
@@ -260,6 +309,7 @@ export type Database = {
           lock_up_period_months?: number | null
           management_fee?: number | null
           manager_name?: string | null
+          manual_rank?: number | null
           minimum_investment?: number | null
           name: string
           nav_frequency?: string | null
@@ -278,6 +328,7 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          algo_rank?: number | null
           auditor?: string | null
           aum?: number | null
           category?: string | null
@@ -291,6 +342,7 @@ export type Database = {
           expected_return_max?: number | null
           expected_return_min?: number | null
           faqs?: Json | null
+          final_rank?: number | null
           geographic_allocation?: Json | null
           gv_eligible?: boolean | null
           historical_performance?: Json | null
@@ -302,6 +354,7 @@ export type Database = {
           lock_up_period_months?: number | null
           management_fee?: number | null
           manager_name?: string | null
+          manual_rank?: number | null
           minimum_investment?: number | null
           name?: string
           nav_frequency?: string | null

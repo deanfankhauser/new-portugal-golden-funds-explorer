@@ -11,6 +11,8 @@ import { loadComponents, TooltipProvider } from './componentLoader';
 import { ComparisonProvider } from '../contexts/ComparisonContext';
 import { RecentlyViewedProvider } from '../contexts/RecentlyViewedContext';
 import { EnhancedAuthProvider } from '../contexts/EnhancedAuthContext';
+import { fundsData } from '../data/mock/funds';
+import type { Fund } from '../data/types/funds';
 
 // Ensure React is available globally for SSR
 if (typeof global !== 'undefined' && !global.React) {
@@ -45,8 +47,18 @@ export class SSRRenderer {
     // For SSG, we need to include the real auth provider but with initial loading state
     // This ensures proper hydration when JavaScript loads on the client side
     
-    if (isDev) {
-      console.log(`🔥 SSR: Starting render for route ${route.path} (type: ${route.pageType})`);
+    console.log(`\n🔥 SSR: Starting render for route ${route.path} (type: ${route.pageType})`);
+    
+    // Extract fund ID and find fund data for SSR injection
+    let fundDataForSSR: Fund | null = null;
+    if (route.path.match(/^\/[^\/]+$/)) {
+      const fundId = route.path.replace('/', '');
+      console.log(`🔥 SSR: Detected potential fund page. Fund ID: "${fundId}"`);
+      console.log(`🔥 SSR: Route params passed:`, route.params);
+      
+      // Find the fund directly from fundsData
+      fundDataForSSR = fundsData.find(f => f.id === fundId) || null;
+      console.log(`🔥 SSR: Fund data found for SSR:`, fundDataForSSR ? `✅ ${fundDataForSSR.name}` : '❌ Not found');
     }
     
     const queryClient = new QueryClient({
@@ -145,6 +157,7 @@ export class SSRRenderer {
       return component;
     };
 
+
     const AppRouter = () => React.createElement(
       QueryClientProvider,
       { client: queryClient },
@@ -203,7 +216,11 @@ export class SSRRenderer {
                 React.createElement(Route, { path: '/:id/alternatives', element: React.createElement(getComponent('FundAlternatives')) }),
                 
                 // Fund details routes (must be last due to catch-all nature)
-                React.createElement(Route, { path: '/:id', element: React.createElement(getComponent('FundDetails')) })
+                // Use SSR-compatible wrapper with direct fund data injection
+                React.createElement(Route, { 
+                  path: '/:id', 
+                  element: React.createElement(getComponent('FundDetails'), fundDataForSSR ? { fund: fundDataForSSR } : null)
+                })
               )
             )
           )
@@ -302,13 +319,23 @@ export class SSRRenderer {
 
       return { html, seoData: finalSeoData };
     } catch (error) {
-      if (isDev) {
-        console.error(`🔥 SSR: Error rendering route ${route.path}:`, error);
+      const isSSG = typeof process !== 'undefined' && process.env.NODE_ENV === 'production';
+      
+      console.error(`❌ SSR: CRITICAL ERROR rendering route ${route.path}`);
+      console.error(`   Error message:`, error.message);
+      console.error(`   Error stack:`, error.stack);
+      
+      // During SSG, we should fail fast rather than silently generating error pages
+      if (isSSG) {
+        throw new Error(`SSG rendering failed for ${route.path}: ${error.message}`);
       }
+      
+      // Only use fallback during client-side hydration/dev
       return { 
         html: `
           <div class="p-8 text-center">
             <div class="mb-4 font-semibold">Error rendering page. Please try again later.</div>
+            <div class="text-sm text-muted-foreground mb-4">Error: ${error.message}</div>
             <nav aria-label="Continue exploring" class="mt-2">
               <ul class="flex flex-wrap justify-center gap-3 text-sm">
                 <li><a href="/">Home</a></li>

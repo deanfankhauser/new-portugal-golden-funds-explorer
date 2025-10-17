@@ -2,6 +2,8 @@
 import React from 'react';
 import { Fund } from '../data/funds';
 import { toast } from "@/components/ui/use-toast";
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 interface ComparisonContextType {
   compareFunds: Fund[];
@@ -15,6 +17,12 @@ const ComparisonContext = React.createContext<ComparisonContextType | undefined>
 
 export const ComparisonProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [compareFunds, setCompareFunds] = React.useState<Fund[]>([]);
+  const [isHydrated, setIsHydrated] = React.useState(false);
+
+  // Ensure hydration is complete before any state changes
+  React.useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const addToComparison = (fund: Fund) => {
     // Check if we already have this fund
@@ -66,7 +74,19 @@ export const ComparisonProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
 export const useComparison = (): ComparisonContextType => {
   const context = React.useContext(ComparisonContext);
+  
+  // SSR-safe: Return empty state if no provider (during SSR)
   if (context === undefined) {
+    if (typeof window === 'undefined') {
+      // During SSR, return empty comparison
+      return {
+        compareFunds: [],
+        addToComparison: () => {},
+        removeFromComparison: () => {},
+        isInComparison: () => false,
+        clearComparison: () => {}
+      };
+    }
     throw new Error("useComparison must be used within a ComparisonProvider");
   }
   return context;

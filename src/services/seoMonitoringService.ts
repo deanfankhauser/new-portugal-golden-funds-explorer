@@ -19,7 +19,7 @@ export interface SEOMetrics {
 
 export class SEOMonitoringService {
   private static config: SEOMonitoringConfig = {
-    enabled: import.meta.env.DEV,
+    enabled: typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false,
     intervalMinutes: 30,
     alertThreshold: 70,
     trackingEnabled: true
@@ -77,7 +77,8 @@ export class SEOMonitoringService {
       this.checkAlerts(metrics);
 
       // Log in development
-      if (import.meta.env.DEV) {
+      const isDev = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false;
+      if (isDev) {
         this.logMetrics(metrics);
       }
 
