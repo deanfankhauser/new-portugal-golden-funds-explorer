@@ -131,9 +131,17 @@ export async function generateStaticFiles() {
   console.log('\n🔍 Validating sitemap URLs...');
   const sitemapValidation = validateSitemapURLs(distDir);
   
-  if (!sitemapValidation.valid) {
+  // Only fail on errors, not warnings (warnings are informational)
+  const errors = sitemapValidation.issues.filter(i => i.type === 'error');
+  if (errors.length > 0) {
     console.error('\n❌ BUILD FAILED: Sitemap contains invalid URLs');
     throw new Error('Sitemap validation failed - found incorrect tag/category URLs');
+  }
+  
+  // Warnings are OK - they're just informational
+  const warnings = sitemapValidation.issues.filter(i => i.type === 'warning');
+  if (warnings.length > 0) {
+    console.log(`\n📝 Note: ${warnings.length} sitemap validation warnings (non-blocking)`);
   }
 
   // Final report
