@@ -14,7 +14,10 @@ export const URL_CONFIG = {
 
   buildUrl: (path: string) => {
     const baseUrl = getBaseUrl();
-    return `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
+    // Ensure no trailing slash (except for homepage)
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    const finalPath = cleanPath.endsWith('/') && cleanPath !== '/' ? cleanPath.slice(0, -1) : cleanPath;
+    return `${baseUrl}${finalPath}`;
   },
   buildFundUrl: (fundId: string) => {
     const baseUrl = getBaseUrl();
