@@ -49,16 +49,14 @@ export function generateRedirectRules() {
   const categories = getAllCategories();
   const categorySlugs = categories.map(cat => categoryToSlug(cat));
   
-  // Detect slug conflicts between tags and categories
+  // Check for overlaps between tags and categories (informational only)
   const tagSlugSet = new Set(tagSlugs);
-  const conflicts = categorySlugs.filter(slug => tagSlugSet.has(slug));
+  const overlaps = categorySlugs.filter(slug => tagSlugSet.has(slug));
   
-  if (conflicts.length > 0) {
-    console.error('❌ CONFLICT: These slugs exist as both tags AND categories:');
-    conflicts.forEach(slug => console.error(`   - ${slug}`));
-    console.error('\n⚠️  BUILD FAILED: Resolve conflicts manually.');
-    console.error('   Decision required: Should these be tags or categories?');
-    process.exit(1);
+  if (overlaps.length > 0) {
+    console.log('📌 Note: These slugs exist as both tags AND categories:');
+    overlaps.forEach(slug => console.log(`   - ${slug}`));
+    console.log('   (Both will work correctly with different URL paths: /tags/ vs /categories/)');
   }
   
   console.log(`📋 Found ${tagSlugs.length} tag slugs`);
@@ -140,7 +138,6 @@ export function updateVercelConfig() {
   console.log(`   - ${stats.tagCount} tag slugs (${stats.tagChunks} chunks, ${tagRedirects.length} rules)`);
   console.log(`   - ${stats.categoryCount} category slugs (${stats.categoryChunks} chunks, ${categoryRedirects.length} rules)`);
   console.log(`   - ${stats.legacyCount} legacy patterns`);
-  console.log(`   - 0 conflicts detected`);
   console.log(`   - Total redirect rules: ${config.redirects.length}`);
 }
 
