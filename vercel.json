@@ -4,7 +4,7 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "framework": "vite",
-  "trailingSlash": true,
+  "trailingSlash": false,
   "rewrites": [
     {
       "source": "/sitemap.xml",
@@ -13,6 +13,15 @@
     {
       "source": "/robots.txt",
       "destination": "/robots.txt"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/index.html",
+      "missing": [
+        { "type": "file", "value": "/:path*" },
+        { "type": "file", "value": "/:path*/index.html" },
+        { "type": "file", "value": "/:path*.html" }
+      ]
     }
   ],
   "cleanUrls": true,
