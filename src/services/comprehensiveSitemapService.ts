@@ -437,6 +437,23 @@ Allow: /alternatives
     if (uniqueURLs.length !== allURLs.length) {
       console.log(`🔄 Removed ${allURLs.length - uniqueURLs.length} duplicate URLs`);
     }
+    
+    // Log sample of generated URLs for verification
+    console.log('\n📋 Sample of generated sitemap URLs:');
+    const sampleURLs = [
+      uniqueURLs.find(u => u.loc.endsWith('movingto.com') || u.loc.endsWith('movingto.com/')),
+      uniqueURLs.find(u => u.loc.includes('/about')),
+      uniqueURLs.find(u => u.loc.includes('/categories') && !u.loc.includes('/categories/')),
+      uniqueURLs.find(u => u.loc.includes('/tags') && !u.loc.includes('/tags/')),
+      uniqueURLs.find(u => u.loc.includes('/managers')),
+      uniqueURLs.find(u => u.loc.includes('/categories/')),
+      uniqueURLs.find(u => u.loc.includes('/tags/'))
+    ].filter(Boolean);
+    
+    sampleURLs.forEach(url => {
+      if (url) console.log(`   - ${url.loc}`);
+    });
+    console.log('');
 
     const currentDate = new Date().toISOString().split('T')[0];
     const sitemapFiles: string[] = [];
