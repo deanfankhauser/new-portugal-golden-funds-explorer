@@ -13,10 +13,6 @@
     {
       "source": "/robots.txt",
       "destination": "/robots.txt"
-    },
-    {
-      "source": "/:path*",
-      "destination": "/index.html"
     }
   ],
   "cleanUrls": true,
