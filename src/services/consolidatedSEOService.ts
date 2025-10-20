@@ -498,27 +498,13 @@ export class ConsolidatedSEOService {
       document.head.appendChild(canonical);
     }
     
-    // Ensure canonical matches the actual current URL exactly (with or without trailing slash)
-    const currentPath = window.location.pathname;
+    // Always remove trailing slashes from canonical URLs (except for homepage)
     const urlObj = new URL(url);
-    const urlPath = urlObj.pathname;
-    
-    // If current path has trailing slash but canonical doesn't (or vice versa), normalize
-    const hasTrailingSlash = currentPath.endsWith('/') && currentPath !== '/';
-    const canonicalHasTrailingSlash = urlPath.endsWith('/') && urlPath !== '/';
-    
-    if (hasTrailingSlash && !canonicalHasTrailingSlash) {
-      // Add trailing slash to canonical to match current URL
-      urlObj.pathname = urlPath + '/';
-      canonical.setAttribute('href', urlObj.toString());
-    } else if (!hasTrailingSlash && canonicalHasTrailingSlash) {
-      // Remove trailing slash from canonical to match current URL
-      urlObj.pathname = urlPath.slice(0, -1);
-      canonical.setAttribute('href', urlObj.toString());
-    } else {
-      // Already matches
-      canonical.setAttribute('href', url);
+    if (urlObj.pathname.endsWith('/') && urlObj.pathname !== '/') {
+      urlObj.pathname = urlObj.pathname.slice(0, -1);
     }
+    
+    canonical.setAttribute('href', urlObj.toString());
   }
 
   private static setRobots(robotsDirective?: string): void {
