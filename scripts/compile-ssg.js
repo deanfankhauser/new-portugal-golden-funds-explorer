@@ -106,6 +106,23 @@ export function compileSSGFiles() {
       console.log(`\n✅ Sitemap includes: ${comparisonUrls} comparisons, ${alternativesUrls} alternatives`);
     }
 
+    // Write quick presence check for tags/categories and expose for debugging
+    const tagsDir = path.join(distDir, 'tags');
+    const categoriesDir = path.join(distDir, 'categories');
+    const manifest = {
+      tagsSubdirs: fs.existsSync(tagsDir) ? fs.readdirSync(tagsDir) : [],
+      categoriesSubdirs: fs.existsSync(categoriesDir) ? fs.readdirSync(categoriesDir) : []
+    };
+    fs.writeFileSync(path.join(distDir, 'ssg-presence.json'), JSON.stringify(manifest, null, 2));
+    console.log('📝 Wrote SSG presence manifest: dist/ssg-presence.json');
+
+    if (!fs.existsSync(tagsDir) || manifest.tagsSubdirs.length === 0) {
+      console.warn('⚠️  No tag pages detected in dist/tags. Reloads for /tags/* will 404.');
+    }
+    if (!fs.existsSync(categoriesDir) || manifest.categoriesSubdirs.length === 0) {
+      console.warn('⚠️  No category pages detected in dist/categories. Reloads for /categories/* will 404.');
+    }
+
     // Also copy enhanced sitemap files from dist to public so /sitemap.xml resolves correctly in dev/preview
     try {
       const publicDir = path.join(process.cwd(), 'public');

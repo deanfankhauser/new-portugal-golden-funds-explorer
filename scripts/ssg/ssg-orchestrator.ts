@@ -71,7 +71,29 @@ export async function generateStaticFiles() {
   console.log(`   📄 Total routes: ${routes.length}`);
   console.log(`   🎨 CSS files: ${validCss.length}`);
   console.log(`   📦 JS files: ${validJs.length}`);
-  
+
+  // Write manifest of generated routes for debugging on Vercel
+  try {
+    const manifest = {
+      generatedAt: new Date().toISOString(),
+      counts: {
+        total: routes.length,
+        success: successCount,
+        failed: failedCount,
+        byType: routes.reduce((acc: Record<string, number>, r) => {
+          acc[r.pageType] = (acc[r.pageType] || 0) + 1;
+          return acc;
+        }, {})
+      },
+      routes: successfulRoutes.map(r => r.path),
+      failedRoutes
+    };
+    fs.writeFileSync(path.join(distDir, 'ssg-manifest.json'), JSON.stringify(manifest, null, 2));
+    console.log('📝 Wrote SSG manifest: dist/ssg-manifest.json');
+  } catch (e) {
+    console.warn('⚠️  Could not write ssg-manifest.json:', (e as Error).message);
+  }
+
   // Fail build if any critical pages failed
   if (failedCount > 0) {
     console.error('\n❌ SSG BUILD FAILED: Some routes could not be generated');
