@@ -40,10 +40,19 @@ export class ComprehensiveSitemapService {
     
     try {
       const urlObj = new URL(url);
-      return urlObj.toString();
+      let normalized = urlObj.toString();
+      // Remove trailing slash (except for homepage)
+      if (normalized.endsWith('/') && normalized !== PRODUCTION_BASE_URL + '/') {
+        normalized = normalized.slice(0, -1);
+      }
+      return normalized;
     } catch {
       // If not absolute, assume it's relative and prepend base URL
-      const cleanUrl = url.startsWith('/') ? url : `/${url}`;
+      let cleanUrl = url.startsWith('/') ? url : `/${url}`;
+      // Remove trailing slash (except for homepage)
+      if (cleanUrl.endsWith('/') && cleanUrl !== '/') {
+        cleanUrl = cleanUrl.slice(0, -1);
+      }
       return `${PRODUCTION_BASE_URL}${cleanUrl}`;
     }
   }
