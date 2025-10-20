@@ -27,6 +27,14 @@ export const getEnv = (key: string): string | undefined => {
 };
 
 export const getBaseUrl = (): string => {
+  // During SSG/production build, always use production URL
+  const isProduction = isSSR && process.env.NODE_ENV === 'production';
+  
+  if (isProduction) {
+    // Force production URL during SSG build
+    return 'https://funds.movingto.com';
+  }
+  
   return (
     getEnv('VITE_APP_BASE_URL') ||
     getEnv('APP_BASE_URL') ||
@@ -70,6 +78,7 @@ export const logEnvSnapshot = () => {
   console.log('\n🔐 SSG Environment Snapshot:');
   console.log('  NODE_ENV:', process.env.NODE_ENV);
   console.log('  SSG_DEBUG:', process.env.SSG_DEBUG);
+  console.log('  BASE_URL (resolved):', getBaseUrl());
   console.log('  VITE_APP_BASE_URL:', process.env.VITE_APP_BASE_URL ? `${process.env.VITE_APP_BASE_URL.substring(0, 30)}...` : 'NOT SET');
   console.log('  APP_BASE_URL:', process.env.APP_BASE_URL ? `${process.env.APP_BASE_URL.substring(0, 30)}...` : 'NOT SET');
   console.log('  VITE_SUPABASE_URL:', process.env.VITE_SUPABASE_URL ? `${process.env.VITE_SUPABASE_URL.substring(0, 40)}...` : 'NOT SET');
