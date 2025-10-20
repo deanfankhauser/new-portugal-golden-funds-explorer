@@ -36,13 +36,15 @@ export class ComprehensiveSitemapService {
    * Validate and normalize URL
    */
   private static normalizeURL(url: string): string {
+    const PRODUCTION_BASE_URL = 'https://funds.movingto.com';
+    
     try {
       const urlObj = new URL(url);
       return urlObj.toString();
     } catch {
       // If not absolute, assume it's relative and prepend base URL
       const cleanUrl = url.startsWith('/') ? url : `/${url}`;
-      return `${URL_CONFIG.BASE_URL}${cleanUrl}`;
+      return `${PRODUCTION_BASE_URL}${cleanUrl}`;
     }
   }
 
@@ -98,8 +100,10 @@ ${urlElements}
    * Generate sitemap index XML
    */
   private static generateSitemapIndexXML(sitemapFiles: Array<{ filename: string; lastmod: string }>): string {
+    const PRODUCTION_BASE_URL = 'https://funds.movingto.com';
+    
     const sitemapElements = sitemapFiles.map(sitemap => {
-      const sitemapURL = `${URL_CONFIG.BASE_URL}/${sitemap.filename}`;
+      const sitemapURL = `${PRODUCTION_BASE_URL}/${sitemap.filename}`;
       return `  <sitemap>
     <loc>${this.escapeXML(sitemapURL)}</loc>
     <lastmod>${this.formatDate(sitemap.lastmod)}</lastmod>
@@ -118,10 +122,15 @@ ${sitemapElements}
   private static collectAllURLs(): SitemapURL[] {
     const urls: SitemapURL[] = [];
     const currentDate = new Date().toISOString().split('T')[0];
+    
+    // CRITICAL: Always use production URL for sitemaps, regardless of environment
+    const PRODUCTION_BASE_URL = 'https://funds.movingto.com';
+    
+    console.log(`🗺️  Generating sitemap URLs with BASE_URL: ${PRODUCTION_BASE_URL}`);
 
     // Homepage
     urls.push({
-      loc: URL_CONFIG.BASE_URL,
+      loc: PRODUCTION_BASE_URL,
       lastmod: currentDate,
       changefreq: 'daily',
       priority: 1.0
@@ -139,7 +148,7 @@ ${sitemapElements}
 
     staticPages.forEach(page => {
       urls.push({
-        loc: `${URL_CONFIG.BASE_URL}${page.path}`,
+        loc: `${PRODUCTION_BASE_URL}${page.path}`,
         lastmod: currentDate,
         changefreq: page.changefreq,
         priority: page.priority
@@ -158,7 +167,7 @@ ${sitemapElements}
 
     hubPages.forEach(hub => {
       urls.push({
-        loc: `${URL_CONFIG.BASE_URL}${hub.path}`,
+        loc: `${PRODUCTION_BASE_URL}${hub.path}`,
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: hub.priority
@@ -168,7 +177,7 @@ ${sitemapElements}
     // Fund detail pages
     funds.forEach(fund => {
       urls.push({
-        loc: URL_CONFIG.buildFundUrl(fund.id),
+        loc: `${PRODUCTION_BASE_URL}/${fund.id}`,
         lastmod: fund.dateModified || currentDate,
         changefreq: 'weekly',
         priority: fund.fundStatus === 'Open' ? 0.9 : fund.fundStatus === 'Closing Soon' ? 0.95 : 0.8
@@ -176,7 +185,7 @@ ${sitemapElements}
 
       // Fund alternatives pages
       urls.push({
-        loc: `${URL_CONFIG.buildFundUrl(fund.id)}/alternatives`,
+        loc: `${PRODUCTION_BASE_URL}/${fund.id}/alternatives`,
         lastmod: fund.dateModified || currentDate,
         changefreq: 'weekly',
         priority: 0.8
@@ -187,8 +196,9 @@ ${sitemapElements}
     try {
       const categories = getAllCategories();
       categories.forEach(category => {
+        const slug = categoryToSlug(category);
         urls.push({
-          loc: URL_CONFIG.buildCategoryUrl(category),
+          loc: `${PRODUCTION_BASE_URL}/categories/${slug}`,
           lastmod: currentDate,
           changefreq: 'weekly',
           priority: 0.8
@@ -202,8 +212,9 @@ ${sitemapElements}
     try {
       const tags = getAllTags();
       tags.forEach(tag => {
+        const slug = tagToSlug(tag);
         urls.push({
-          loc: URL_CONFIG.buildTagUrl(tag),
+          loc: `${PRODUCTION_BASE_URL}/tags/${slug}`,
           lastmod: currentDate,
           changefreq: 'weekly',
           priority: 0.7
@@ -217,8 +228,9 @@ ${sitemapElements}
     try {
       const managers = getAllFundManagers();
       managers.forEach(manager => {
+        const slug = managerToSlug(manager.name);
         urls.push({
-          loc: URL_CONFIG.buildManagerUrl(manager.name),
+          loc: `${PRODUCTION_BASE_URL}/manager/${slug}`,
           lastmod: currentDate,
           changefreq: 'weekly',
           priority: 0.8
@@ -233,7 +245,7 @@ ${sitemapElements}
       const comparisonSlugs = getAllComparisonSlugs();
       comparisonSlugs.forEach(slug => {
         urls.push({
-          loc: URL_CONFIG.buildComparisonUrl(slug),
+          loc: `${PRODUCTION_BASE_URL}/compare/${slug}`,
           lastmod: currentDate,
           changefreq: 'weekly',
           priority: 0.85
@@ -252,6 +264,7 @@ ${sitemapElements}
    */
   private static discoverDynamicPathsFromDist(outputDir: string, subdirs: string[]): string[] {
     const found: string[] = [];
+    const PRODUCTION_BASE_URL = 'https://funds.movingto.com';
 
     const hasIndexHtml = (dir: string) => fs.existsSync(path.join(dir, 'index.html'));
 
@@ -277,7 +290,7 @@ ${sitemapElements}
     });
 
     // Convert discovered relative paths into absolute canonical URLs under BASE_URL
-    const urls = found.map(rel => `${URL_CONFIG.BASE_URL}/${rel}`);
+    const urls = found.map(rel => `${PRODUCTION_BASE_URL}/${rel}`);
 
     return Array.from(new Set(urls));
   }
@@ -298,8 +311,9 @@ ${sitemapElements}
    */
   private static generateRobotsTxt(sitemapFiles: string[]): string {
     const currentDate = new Date().toISOString().split('T')[0];
+    const PRODUCTION_BASE_URL = 'https://funds.movingto.com';
     
-    let robotsContent = `# Robots.txt for ${URL_CONFIG.BASE_URL}
+    let robotsContent = `# Robots.txt for ${PRODUCTION_BASE_URL}
 # Generated on ${currentDate}
 
 User-agent: *
@@ -333,7 +347,7 @@ Allow: /alternatives
 `;
 
     sitemapFiles.forEach(filename => {
-      robotsContent += `Sitemap: ${URL_CONFIG.BASE_URL}/${filename}\n`;
+      robotsContent += `Sitemap: ${PRODUCTION_BASE_URL}/${filename}\n`;
     });
 
     return robotsContent;
@@ -346,12 +360,14 @@ Allow: /alternatives
     const currentDate = new Date().toISOString().split('T')[0];
     const existingURLs = new Set(allURLs.map(url => url.loc));
     const missingURLs: SitemapURL[] = [];
+    const PRODUCTION_BASE_URL = 'https://funds.movingto.com';
 
     // Verify all categories are included
     try {
       const categories = getAllCategories();
       categories.forEach(category => {
-        const expectedURL = URL_CONFIG.buildCategoryUrl(category);
+        const slug = categoryToSlug(category);
+        const expectedURL = `${PRODUCTION_BASE_URL}/categories/${slug}`;
         if (!existingURLs.has(expectedURL)) {
           console.warn(`⚠️  Missing category route: ${expectedURL}`);
           missingURLs.push({
@@ -370,7 +386,8 @@ Allow: /alternatives
     try {
       const tags = getAllTags();
       tags.forEach(tag => {
-        const expectedURL = URL_CONFIG.buildTagUrl(tag);
+        const slug = tagToSlug(tag);
+        const expectedURL = `${PRODUCTION_BASE_URL}/tags/${slug}`;
         if (!existingURLs.has(expectedURL)) {
           console.warn(`⚠️  Missing tag route: ${expectedURL}`);
           missingURLs.push({
@@ -434,6 +451,23 @@ Allow: /alternatives
     if (uniqueURLs.length !== allURLs.length) {
       console.log(`🔄 Removed ${allURLs.length - uniqueURLs.length} duplicate URLs`);
     }
+    
+    // Log sample of generated URLs for verification
+    console.log('\n📋 Sample of generated sitemap URLs:');
+    const sampleURLs = [
+      uniqueURLs.find(u => u.loc.endsWith('movingto.com') || u.loc.endsWith('movingto.com/')),
+      uniqueURLs.find(u => u.loc.includes('/about')),
+      uniqueURLs.find(u => u.loc.includes('/categories') && !u.loc.includes('/categories/')),
+      uniqueURLs.find(u => u.loc.includes('/tags') && !u.loc.includes('/tags/')),
+      uniqueURLs.find(u => u.loc.includes('/managers')),
+      uniqueURLs.find(u => u.loc.includes('/categories/')),
+      uniqueURLs.find(u => u.loc.includes('/tags/'))
+    ].filter(Boolean);
+    
+    sampleURLs.forEach(url => {
+      if (url) console.log(`   - ${url.loc}`);
+    });
+    console.log('');
 
     const currentDate = new Date().toISOString().split('T')[0];
     const sitemapFiles: string[] = [];

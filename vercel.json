@@ -3,8 +3,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install",
-  "framework": "vite",
-  "trailingSlash": false,
+  "cleanUrls": false,
   "rewrites": [
     {
       "source": "/sitemap.xml",
@@ -15,8 +14,7 @@
       "destination": "/robots.txt"
     }
   ],
-  "cleanUrls": true,
-  "trailingSlash": false,
+  "trailingSlash": true,
   "redirects": [
     {
       "source": "/(.*)",
