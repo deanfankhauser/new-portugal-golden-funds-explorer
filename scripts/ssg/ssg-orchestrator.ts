@@ -9,6 +9,7 @@ import { generateFundsSitemap } from './sitemap-funds-generator';
 import { EnhancedSitemapService } from '../../src/services/enhancedSitemapService';
 import { generate404Page } from './404-generator';
 import { generateComprehensiveSitemaps } from './comprehensive-sitemap-generator';
+import { validateSitemapURLs } from './validate-sitemap-urls';
 
 export async function generateStaticFiles() {
   const distDir = path.join(process.cwd(), 'dist');
@@ -104,9 +105,19 @@ export async function generateStaticFiles() {
     fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsTxt);
   }
 
+  // Validate sitemap URLs
+  console.log('\n🔍 Validating sitemap URLs...');
+  const sitemapValidation = validateSitemapURLs(distDir);
+  
+  if (!sitemapValidation.valid) {
+    console.error('\n❌ BUILD FAILED: Sitemap contains invalid URLs');
+    throw new Error('Sitemap validation failed - found incorrect tag/category URLs');
+  }
+
   // Final report
   console.log('\n🎉 SSG: Static site generation completed!');
   console.log(`🗺️  Comprehensive sitemap generated with full URL coverage`);
+  console.log(`✅ Sitemap validation passed`);
   
   if (failedRoutes.length > 0) {
     console.log(`   ⚠️  Warning: ${failedRoutes.length} routes had issues but build continued`);

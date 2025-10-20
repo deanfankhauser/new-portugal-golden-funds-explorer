@@ -10,7 +10,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "build:ssg": "node scripts/build-ssg.js",
-    "preview:ssg": "npm run preview"
+    "preview:ssg": "npm run preview",
+    "generate:redirects": "tsx scripts/ssg/generate-redirects.ts",
+    "validate:redirects": "tsx scripts/validate-redirects.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

@@ -129,7 +129,6 @@ ${sitemapElements}
 
     // Static pages
     const staticPages = [
-      { path: '/index', priority: 0.9, changefreq: 'daily' as const },
       { path: '/about', priority: 0.6, changefreq: 'monthly' as const },
       { path: '/disclaimer', priority: 0.3, changefreq: 'monthly' as const },
       { path: '/privacy', priority: 0.3, changefreq: 'monthly' as const },
@@ -256,15 +255,17 @@ ${sitemapElements}
 
     const hasIndexHtml = (dir: string) => fs.existsSync(path.join(dir, 'index.html'));
 
-    const walk = (baseAbs: string, rel: string) => {
+    const walk = (baseAbs: string, rel: string, subdir: string) => {
       // If this folder has an index.html and rel is non-empty, it represents a route
       if (rel && hasIndexHtml(baseAbs)) {
-        found.push(rel.replace(/\\/g, '/')); // normalize
+        // Prefix the path with the subdirectory to ensure proper URL structure
+        const fullPath = `${subdir}/${rel}`.replace(/\\/g, '/');
+        found.push(fullPath);
       }
       const entries = fs.existsSync(baseAbs) ? fs.readdirSync(baseAbs, { withFileTypes: true }) : [];
       for (const entry of entries) {
         if (entry.isDirectory()) {
-          walk(path.join(baseAbs, entry.name), `${rel ? rel + '/' : ''}${entry.name}`);
+          walk(path.join(baseAbs, entry.name), `${rel ? rel + '/' : ''}${entry.name}`, subdir);
         }
       }
     };
@@ -272,11 +273,11 @@ ${sitemapElements}
     subdirs.forEach((sub) => {
       const root = path.join(outputDir, sub);
       if (!fs.existsSync(root)) return;
-      walk(root, '');
+      walk(root, '', sub);
     });
 
     // Convert discovered relative paths into absolute canonical URLs under BASE_URL
-    const urls = found.map(rel => `${URL_CONFIG.BASE_URL}/${rel.startsWith('categories') || rel.startsWith('tags') ? rel : rel}`);
+    const urls = found.map(rel => `${URL_CONFIG.BASE_URL}/${rel}`);
 
     return Array.from(new Set(urls));
   }

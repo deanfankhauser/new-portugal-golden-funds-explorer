@@ -51,158 +51,73 @@
       "permanent": true
     },
     {
-      "source": "/solar",
-      "destination": "/tags/solar",
+      "source": "/:num(\\d+)-return",
+      "destination": "/tags/:num-percent-return",
       "permanent": true
     },
     {
-      "source": "/crypto",
-      "destination": "/tags/crypto",
+      "source": "/:num(\\d+)-annual-yield",
+      "destination": "/tags/:num-percent-yield",
       "permanent": true
     },
     {
-      "source": "/regulated",
-      "destination": "/tags/regulated",
+      "source": "/:num(\\d+)-dividend",
+      "destination": "/tags/:num-percent-dividend",
       "permanent": true
     },
     {
-      "source": "/carbon-credits",
-      "destination": "/tags/carbon-credits",
+      "source": "/small-cap-50m",
+      "destination": "/tags/small-cap-less-than-50m",
       "permanent": true
     },
     {
-      "source": "/tech",
-      "destination": "/tags/tech",
+      "source": "/mid-cap",
+      "destination": "/tags/mid-cap-50-100m",
       "permanent": true
     },
     {
-      "source": "/healthcare",
-      "destination": "/tags/healthcare",
+      "source": "/large-cap",
+      "destination": "/tags/large-cap-100m-plus",
       "permanent": true
     },
     {
-      "source": "/film",
-      "destination": "/tags/film",
+      "source": "/:slug(balanced|clean-energy-solar-battery-storage|debt|fixed-income-digital-assets|infrastructure|mixed|multi-asset|private-debt-hybrid-instruments|private-equity|private-equity-debt|private-equity-venture-capital|real-estate|venture-capital)",
+      "destination": "/categories/:slug",
       "permanent": true
     },
     {
-      "source": "/real-estate",
-      "destination": "/tags/real-estate",
+      "source": "/:slug(balanced|clean-energy-solar-battery-storage|debt|fixed-income-digital-assets|infrastructure|mixed|multi-asset|private-debt-hybrid-instruments|private-equity|private-equity-debt|private-equity-venture-capital|real-estate|venture-capital)/",
+      "destination": "/categories/:slug",
       "permanent": true
     },
     {
-      "source": "/low-risk",
-      "destination": "/tags/low-risk",
+      "source": "/:slug(3-5-percent-annual-yield|5-10-year-lock-up|5-percent-dividend|5-percent-yield|12-percent-return|1-1-5-percent-management-fee|250k-350k-subscription-min-only-gv-still-requires-500k-total|300k-400k-subscription-min-only-gv-still-requires-500k-total|350k-500k-subscription-min-only-gv-still-requires-500k-total|400k-600k-subscription-min-only-gv-still-requires-500k-total|500k-plus|ai-driven|balanced|battery-storage|bitcoin|bonds|capital-growth|capital-preservation|circular-economy|climate|closed-ended|crypto|daily-nav|debt|deposits|diversified|dividends|energy|energy-as-a-service|equities|equity|ethereum|fund-subscription-minimums|gold|golden-visa-eligible|golden-visa-funds-for-australian-citizens|golden-visa-funds-for-canadian-citizens|golden-visa-funds-for-chinese-citizens)",
+      "destination": "/tags/:slug",
       "permanent": true
     },
     {
-      "source": "/medium-risk",
-      "destination": "/tags/medium-risk",
+      "source": "/:slug(3-5-percent-annual-yield|5-10-year-lock-up|5-percent-dividend|5-percent-yield|12-percent-return|1-1-5-percent-management-fee|250k-350k-subscription-min-only-gv-still-requires-500k-total|300k-400k-subscription-min-only-gv-still-requires-500k-total|350k-500k-subscription-min-only-gv-still-requires-500k-total|400k-600k-subscription-min-only-gv-still-requires-500k-total|500k-plus|ai-driven|balanced|battery-storage|bitcoin|bonds|capital-growth|capital-preservation|circular-economy|climate|closed-ended|crypto|daily-nav|debt|deposits|diversified|dividends|energy|energy-as-a-service|equities|equity|ethereum|fund-subscription-minimums|gold|golden-visa-eligible|golden-visa-funds-for-australian-citizens|golden-visa-funds-for-canadian-citizens|golden-visa-funds-for-chinese-citizens)/",
+      "destination": "/tags/:slug",
       "permanent": true
     },
     {
-      "source": "/high-risk",
-      "destination": "/tags/high-risk",
+      "source": "/:slug(golden-visa-funds-for-u-s-citizens|golden-visa-funds-for-uk-citizens|greater-than-1-5-percent-management-fee|greater-than-10-year-lock-up|greater-than-5-annual-yield|greater-than-5-percent-annual-yield|healthcare|high-risk|hybrid|industrial|infrastructure|large-cap-greater-than-100m|less-than-1-percent-management-fee|less-than-3-percent-annual-yield|less-than-5-year-lock-up|liquid|lock-up|long-term|low-risk|medium-risk|mid-cap|mid-cap-50-100m|no-fees|no-lock-up|open-ended|pfic-compliant|portugal|private-equity|qef-eligible|real-estate|regulated|renewable-energy|secondary-market|small-cap-less-than-50m|smes|solar|solana|special-situations)",
+      "destination": "/tags/:slug",
       "permanent": true
     },
     {
-      "source": "/flexible",
-      "destination": "/tags/flexible",
+      "source": "/:slug(golden-visa-funds-for-u-s-citizens|golden-visa-funds-for-uk-citizens|greater-than-1-5-percent-management-fee|greater-than-10-year-lock-up|greater-than-5-annual-yield|greater-than-5-percent-annual-yield|healthcare|high-risk|hybrid|industrial|infrastructure|large-cap-greater-than-100m|less-than-1-percent-management-fee|less-than-3-percent-annual-yield|less-than-5-year-lock-up|liquid|lock-up|long-term|low-risk|medium-risk|mid-cap|mid-cap-50-100m|no-fees|no-lock-up|open-ended|pfic-compliant|portugal|private-equity|qef-eligible|real-estate|regulated|renewable-energy|secondary-market|small-cap-less-than-50m|smes|solar|solana|special-situations)/",
+      "destination": "/tags/:slug",
       "permanent": true
     },
     {
-      "source": "/renewable-energy",
-      "destination": "/tags/renewable-energy",
+      "source": "/:slug(sustainability|tax-free|technology|tourism|ucits|venture-capital)",
+      "destination": "/tags/:slug",
       "permanent": true
     },
     {
-      "source": "/european-focus",
-      "destination": "/tags/european-focus",
-      "permanent": true
-    },
-    {
-      "source": "/sustainability",
-      "destination": "/tags/sustainability",
-      "permanent": true
-    },
-    {
-      "source": "/diversified",
-      "destination": "/tags/diversified",
-      "permanent": true
-    },
-    {
-      "source": "/institutional-grade",
-      "destination": "/tags/institutional-grade",
-      "permanent": true
-    },
-    {
-      "source": "/esg",
-      "destination": "/tags/esg",
-      "permanent": true
-    },
-    {
-      "source": "/growth",
-      "destination": "/tags/growth",
-      "permanent": true
-    },
-    {
-      "source": "/income",
-      "destination": "/tags/income",
-      "permanent": true
-    },
-    {
-      "source": "/value",
-      "destination": "/tags/value",
-      "permanent": true
-    },
-    {
-      "source": "/balanced",
-      "destination": "/tags/balanced",
-      "permanent": true
-    },
-    {
-      "source": "/ai",
-      "destination": "/tags/ai",
-      "permanent": true
-    },
-    {
-      "source": "/fintech",
-      "destination": "/tags/fintech",
-      "permanent": true
-    },
-    {
-      "source": "/biotech",
-      "destination": "/tags/biotech",
-      "permanent": true
-    },
-    {
-      "source": "/infrastructure",
-      "destination": "/tags/infrastructure",
-      "permanent": true
-    },
-    {
-      "source": "/agriculture",
-      "destination": "/tags/agriculture",
-      "permanent": true
-    },
-    {
-      "source": "/tourism",
-      "destination": "/tags/tourism",
-      "permanent": true
-    },
-    {
-      "source": "/manufacturing",
-      "destination": "/tags/manufacturing",
-      "permanent": true
-    },
-    {
-      "source": "/education",
-      "destination": "/tags/education",
-      "permanent": true
-    },
-    {
-      "source": "/entertainment",
-      "destination": "/tags/entertainment",
+      "source": "/:slug(sustainability|tax-free|technology|tourism|ucits|venture-capital)/",
+      "destination": "/tags/:slug",
       "permanent": true
     }
   ],

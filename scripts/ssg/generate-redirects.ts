@@ -1,8 +1,38 @@
 import fs from 'fs';
 import path from 'path';
 import { getAllTags } from '../../src/data/services/tags-service';
+import { getAllCategories } from '../../src/data/services/categories-service';
 import { tagToSlug, categoryToSlug } from '../../src/lib/utils';
-import type { FundCategory } from '../../src/data/types/funds';
+
+/**
+ * Create chunked redirects to avoid Vercel regex complexity limits
+ * Generates pairs of redirects (with and without trailing slash) for each chunk
+ */
+function createChunkedRedirects(slugs: string[], destination: string) {
+  const CHUNK_SIZE = 25;
+  const chunks: any[] = [];
+  
+  for (let i = 0; i < slugs.length; i += CHUNK_SIZE) {
+    const chunk = slugs.slice(i, i + CHUNK_SIZE);
+    const pattern = chunk.join('|');
+    
+    // Without trailing slash
+    chunks.push({
+      source: `/:slug(${pattern})`,
+      destination: destination, // destination is /tags/:slug or /categories/:slug (no trailing slash)
+      permanent: true
+    });
+    
+    // With trailing slash - redirect to same destination (no trailing slash)
+    chunks.push({
+      source: `/:slug(${pattern})/`,
+      destination: destination,
+      permanent: true
+    });
+  }
+  
+  return chunks;
+}
 
 /**
  * Generate dynamic redirect rules for vercel.json
@@ -15,58 +45,41 @@ export function generateRedirectRules() {
   const allTags = getAllTags();
   const tagSlugs = allTags.map(tag => tagToSlug(tag));
   
-  // Get all categories and convert to slugs
-  const categories: FundCategory[] = [
-    'Private Equity',
-    'Venture Capital', 
-    'Real Estate',
-    'Private Debt',
-    'Hedge Funds',
-    'Infrastructure',
-    'Natural Resources'
-  ];
+  // Get all categories dynamically and convert to slugs
+  const categories = getAllCategories();
   const categorySlugs = categories.map(cat => categoryToSlug(cat));
   
-  // Build regex alternations
-  const tagSlugRegex = tagSlugs.join('|');
-  const categorySlugRegex = categorySlugs.join('|');
+  // Detect slug conflicts between tags and categories
+  const tagSlugSet = new Set(tagSlugs);
+  const conflicts = categorySlugs.filter(slug => tagSlugSet.has(slug));
+  
+  if (conflicts.length > 0) {
+    console.error('❌ CONFLICT: These slugs exist as both tags AND categories:');
+    conflicts.forEach(slug => console.error(`   - ${slug}`));
+    console.error('\n⚠️  BUILD FAILED: Resolve conflicts manually.');
+    console.error('   Decision required: Should these be tags or categories?');
+    process.exit(1);
+  }
   
   console.log(`📋 Found ${tagSlugs.length} tag slugs`);
   console.log(`📋 Found ${categorySlugs.length} category slugs`);
   
-  // Build redirect rules
-  const tagRedirects = [
-    {
-      source: `/:slug(${tagSlugRegex})`,
-      destination: '/tags/:slug',
-      permanent: true
-    },
-    {
-      source: `/:slug(${tagSlugRegex})/`,
-      destination: '/tags/:slug',
-      permanent: true
-    }
-  ];
+  // Generate chunked redirects
+  const tagRedirects = createChunkedRedirects(tagSlugs, '/tags/:slug');
+  const categoryRedirects = createChunkedRedirects(categorySlugs, '/categories/:slug');
   
-  const categoryRedirects = [
-    {
-      source: `/:slug(${categorySlugRegex})`,
-      destination: '/categories/:slug',
-      permanent: true
-    },
-    {
-      source: `/:slug(${categorySlugRegex})/`,
-      destination: '/categories/:slug',
-      permanent: true
-    }
-  ];
+  const tagChunkCount = Math.ceil(tagSlugs.length / 25);
+  const categoryChunkCount = Math.ceil(categorySlugs.length / 25);
   
-  // Legacy alias patterns
+  console.log(`📦 Generated ${tagChunkCount} tag redirect chunks (${tagRedirects.length} rules)`);
+  console.log(`📦 Generated ${categoryChunkCount} category redirect chunks (${categoryRedirects.length} rules)`);
+  
+  // Legacy alias patterns (more specific, should match first)
   const legacyRedirects = [
-    // Percent return patterns
-    { source: '/:num(\\\\\\\\d+)-return', destination: '/tags/:num-percent-return', permanent: true },
-    { source: '/:num(\\\\\\\\d+)-annual-yield', destination: '/tags/:num-percent-yield', permanent: true },
-    { source: '/:num(\\\\\\\\d+)-dividend', destination: '/tags/:num-percent-dividend', permanent: true },
+    // Percent return patterns - FIXED: Only 2 backslashes in JS string → 1 backslash in JSON
+    { source: '/:num(\\d+)-return', destination: '/tags/:num-percent-return', permanent: true },
+    { source: '/:num(\\d+)-annual-yield', destination: '/tags/:num-percent-yield', permanent: true },
+    { source: '/:num(\\d+)-dividend', destination: '/tags/:num-percent-dividend', permanent: true },
     
     // Known legacy names
     { source: '/small-cap-50m', destination: '/tags/small-cap-less-than-50m', permanent: true },
@@ -79,9 +92,11 @@ export function generateRedirectRules() {
     categoryRedirects,
     legacyRedirects,
     stats: {
-      tagSlugs: tagSlugs.length,
-      categorySlugs: categorySlugs.length,
-      legacyRules: legacyRedirects.length
+      tagCount: tagSlugs.length,
+      categoryCount: categorySlugs.length,
+      tagChunks: tagChunkCount,
+      categoryChunks: categoryChunkCount,
+      legacyCount: legacyRedirects.length
     }
   };
 }
@@ -107,24 +122,25 @@ export function updateVercelConfig() {
     if (redirect.has || redirect.source === '/funds' || redirect.source === '/funds/') {
       return true;
     }
-    // Remove old individual tag redirects
+    // Remove all other redirects (old tag/category rules)
     return false;
   });
   
-  // Add new dynamic redirects at the end (after domain redirects)
+  // IMPORTANT: Order matters! More specific rules must come first
   config.redirects = [
-    ...filteredRedirects,
-    ...legacyRedirects,
-    ...tagRedirects,
-    ...categoryRedirects
+    ...filteredRedirects,      // Domain redirects, /funds redirects (kept)
+    ...legacyRedirects,        // /:num(\d+)-return (most specific)
+    ...categoryRedirects,      // /:slug(private-equity|...) (medium specificity)
+    ...tagRedirects            // /:slug(solar|wind|...) (least specific, fallback)
   ];
   
   fs.writeFileSync(vercelConfigPath, JSON.stringify(config, null, 2));
   
   console.log('✅ Updated vercel.json with dynamic redirects');
-  console.log(`   - ${stats.tagSlugs} tag slugs covered`);
-  console.log(`   - ${stats.categorySlugs} category slugs covered`);
-  console.log(`   - ${stats.legacyRules} legacy patterns added`);
+  console.log(`   - ${stats.tagCount} tag slugs (${stats.tagChunks} chunks, ${tagRedirects.length} rules)`);
+  console.log(`   - ${stats.categoryCount} category slugs (${stats.categoryChunks} chunks, ${categoryRedirects.length} rules)`);
+  console.log(`   - ${stats.legacyCount} legacy patterns`);
+  console.log(`   - 0 conflicts detected`);
   console.log(`   - Total redirect rules: ${config.redirects.length}`);
 }
 
