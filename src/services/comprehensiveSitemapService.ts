@@ -118,6 +118,9 @@ ${sitemapElements}
   private static collectAllURLs(): SitemapURL[] {
     const urls: SitemapURL[] = [];
     const currentDate = new Date().toISOString().split('T')[0];
+    
+    // Log the base URL being used for sitemap generation
+    console.log(`🗺️  Generating sitemap URLs with BASE_URL: ${URL_CONFIG.BASE_URL}`);
 
     // Homepage
     urls.push({
