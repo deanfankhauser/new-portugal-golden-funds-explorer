@@ -130,7 +130,6 @@ const DirectFundRoute = () => {
 import SEOProvider from './components/providers/SEOProvider';
 
 import SEOEnhancer from './components/common/SEOEnhancer';
-import SEOAnalysisToggle from './components/seo/SEOAnalysisToggle';
 
 function App() {
   // SEO optimization handled by consolidated service
@@ -304,7 +303,7 @@ function App() {
                   <Toaster />
                   <SEODebugger />
                   <SEOEnhancer enableMonitoring={typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false} />
-                  <SEOAnalysisToggle />
+                  
                 </SEOProvider>
               </Router>
             </TooltipProvider>
