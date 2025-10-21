@@ -48,6 +48,7 @@ const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const SavedFunds = lazy(() => import('./pages/SavedFunds'));
 const TempMigrationPage = lazy(() => import('./pages/TempMigrationPage'));
+const SEOAnalysis = lazy(() => import('./pages/SEOAnalysis'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -275,6 +276,13 @@ function App() {
                        <Route path="/saved-funds" element={
                          <Suspense fallback={<PageLoader />}>
                            <SavedFunds />
+                         </Suspense>
+                       } />
+
+                       {/* SEO Analysis */}
+                       <Route path="/seo-analysis" element={
+                         <Suspense fallback={<PageLoader />}>
+                           <SEOAnalysis />
                          </Suspense>
                        } />
 
