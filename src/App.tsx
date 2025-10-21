@@ -48,7 +48,6 @@ const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const SavedFunds = lazy(() => import('./pages/SavedFunds'));
 const TempMigrationPage = lazy(() => import('./pages/TempMigrationPage'));
-const SEOAnalysis = lazy(() => import('./pages/SEOAnalysis'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -131,6 +130,7 @@ const DirectFundRoute = () => {
 import SEOProvider from './components/providers/SEOProvider';
 
 import SEOEnhancer from './components/common/SEOEnhancer';
+import SEOAnalysisToggle from './components/seo/SEOAnalysisToggle';
 
 function App() {
   // SEO optimization handled by consolidated service
@@ -279,13 +279,6 @@ function App() {
                          </Suspense>
                        } />
 
-                       {/* SEO Analysis */}
-                       <Route path="/seo-analysis" element={
-                         <Suspense fallback={<PageLoader />}>
-                           <SEOAnalysis />
-                         </Suspense>
-                       } />
-
                       {/* Alternatives hub */}
                       <Route path="/alternatives" element={
                         <Suspense fallback={<PageLoader />}>
@@ -311,7 +304,7 @@ function App() {
                   <Toaster />
                   <SEODebugger />
                   <SEOEnhancer enableMonitoring={typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false} />
-                  
+                  <SEOAnalysisToggle />
                 </SEOProvider>
               </Router>
             </TooltipProvider>

@@ -17,7 +17,10 @@ import {
   TrendingDown,
   Minus,
   Search,
-  Filter
+  Filter,
+  X,
+  Maximize2,
+  Minimize2
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
@@ -29,12 +32,17 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-const SEOAnalysisPanel: React.FC = () => {
+interface SEOAnalysisPanelProps {
+  onClose?: () => void;
+}
+
+const SEOAnalysisPanel: React.FC<SEOAnalysisPanelProps> = ({ onClose }) => {
   const [report, setReport] = useState<SEOAnalysisReport | null>(null);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<string>('all');
   const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [isMaximized, setIsMaximized] = useState(false);
 
   const runAnalysis = async () => {
     setLoading(true);
@@ -132,13 +140,19 @@ const SEOAnalysisPanel: React.FC = () => {
     return matchesSearch && matchesType && matchesCategory;
   }) || [];
 
+  const containerClass = isMaximized 
+    ? "fixed inset-4 z-[100] bg-background rounded-lg shadow-2xl border" 
+    : "fixed bottom-4 right-4 w-[600px] max-h-[80vh] z-[100] bg-background rounded-lg shadow-2xl border";
+
   if (loading && !report) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <RefreshCw className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
-          <p className="text-lg font-medium">Analyzing SEO...</p>
-          <p className="text-sm text-muted-foreground">This may take a few seconds</p>
+      <div className={containerClass}>
+        <div className="flex items-center justify-center h-full p-8">
+          <div className="text-center">
+            <RefreshCw className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
+            <p className="text-lg font-medium">Analyzing SEO...</p>
+            <p className="text-sm text-muted-foreground">This may take a few seconds</p>
+          </div>
         </div>
       </div>
     );
@@ -146,11 +160,18 @@ const SEOAnalysisPanel: React.FC = () => {
 
   if (!report) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>SEO Analysis</CardTitle>
-            <CardDescription>Run a comprehensive SEO audit</CardDescription>
+      <div className={containerClass}>
+        <Card className="h-full border-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+            <div>
+              <CardTitle>SEO Analysis</CardTitle>
+              <CardDescription>Run a comprehensive SEO audit</CardDescription>
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={onClose} size="icon" variant="ghost">
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <Button onClick={runAnalysis} className="w-full">
@@ -164,29 +185,38 @@ const SEOAnalysisPanel: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
+    <div className={containerClass}>
+      <div className="flex flex-col h-full">
+        <div className="flex items-center justify-between p-4 border-b shrink-0">
           <div>
-            <h1 className="text-4xl font-bold mb-2">SEO Analysis Report</h1>
-            <p className="text-muted-foreground">
+            <h2 className="text-xl font-bold">SEO Analysis Report</h2>
+            <p className="text-sm text-muted-foreground">
               {new Date(report.timestamp).toLocaleString()}
             </p>
           </div>
           <div className="flex gap-2">
-            <Button onClick={runAnalysis} disabled={loading} variant="outline">
+            <Button onClick={runAnalysis} disabled={loading} variant="outline" size="sm">
               <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
               Re-analyze
             </Button>
-            <Button onClick={downloadReport} variant="outline">
+            <Button onClick={downloadReport} variant="outline" size="sm">
               <Download className="mr-2 h-4 w-4" />
               Export
+            </Button>
+            <Button onClick={() => setIsMaximized(!isMaximized)} size="icon" variant="ghost">
+              {isMaximized ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+            </Button>
+            <Button onClick={onClose} size="icon" variant="ghost">
+              <X className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
-        {/* Score Card */}
-        <Card className="mb-6">
+        <ScrollArea className="flex-1 p-4">
+          <div className="space-y-4">
+
+            {/* Score Card */}
+            <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
@@ -221,9 +251,9 @@ const SEOAnalysisPanel: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Recommendations */}
-        {report.recommendations.length > 0 && (
-          <Card className="mb-6">
+            {/* Recommendations */}
+            {report.recommendations.length > 0 && (
+              <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-primary" />
@@ -241,13 +271,13 @@ const SEOAnalysisPanel: React.FC = () => {
                   </li>
                 ))}
               </ul>
-            </CardContent>
-          </Card>
-        )}
+              </CardContent>
+            </Card>
+            )}
 
-        {/* Performance Metrics */}
-        {report.performance && Object.keys(report.performance).length > 0 && (
-          <Card className="mb-6">
+            {/* Performance Metrics */}
+            {report.performance && Object.keys(report.performance).length > 0 && (
+              <Card>
             <CardHeader>
               <CardTitle>Core Web Vitals</CardTitle>
               <CardDescription>Performance metrics that impact SEO</CardDescription>
@@ -290,14 +320,13 @@ const SEOAnalysisPanel: React.FC = () => {
                     <p className="text-xl font-bold">{report.performance.ttfb}ms</p>
                   </div>
                 )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+                </div>
+              </CardContent>
+            </Card>
+            )}
 
-      {/* Issues Section */}
-      <Card>
+            {/* Issues Section */}
+            <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Filter className="h-5 w-5" />
@@ -365,10 +394,13 @@ const SEOAnalysisPanel: React.FC = () => {
             </TabsContent>
             <TabsContent value="info">
               <IssuesList issues={filteredIssues.filter(i => i.type === 'info')} getIssueIcon={getIssueIcon} getIssueVariant={getIssueVariant} getImpactIcon={getImpactIcon} />
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+          </div>
+        </ScrollArea>
+      </div>
     </div>
   );
 };
