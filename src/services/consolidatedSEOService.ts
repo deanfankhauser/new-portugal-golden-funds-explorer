@@ -497,7 +497,14 @@ export class ConsolidatedSEOService {
       canonical.setAttribute('rel', 'canonical');
       document.head.appendChild(canonical);
     }
-    canonical.setAttribute('href', url);
+    
+    // Always remove trailing slashes from canonical URLs (except for homepage)
+    const urlObj = new URL(url);
+    if (urlObj.pathname.endsWith('/') && urlObj.pathname !== '/') {
+      urlObj.pathname = urlObj.pathname.slice(0, -1);
+    }
+    
+    canonical.setAttribute('href', urlObj.toString());
   }
 
   private static setRobots(robotsDirective?: string): void {

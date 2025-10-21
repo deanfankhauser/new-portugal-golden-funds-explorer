@@ -4,6 +4,7 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "cleanUrls": false,
+  "trailingSlash": false,
   "rewrites": [
     {
       "source": "/sitemap.xml",
@@ -14,7 +15,6 @@
       "destination": "/robots.txt"
     }
   ],
-  "trailingSlash": true,
   "redirects": [
     {
       "source": "/(.*)",
