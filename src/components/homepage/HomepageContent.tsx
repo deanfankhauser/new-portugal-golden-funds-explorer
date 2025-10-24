@@ -9,6 +9,8 @@ import HomepageSidebar from './HomepageSidebar';
 import ResultsHeader from './ResultsHeader';
 import EmptyFundsState from './EmptyFundsState';
 import FundsList from './FundsList';
+import BackToTopButton from './BackToTopButton';
+import MobileFilterButton from './MobileFilterButton';
 
 
 interface HomepageContentProps {
@@ -46,6 +48,17 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
+      
+      {/* Floating action buttons */}
+      <BackToTopButton />
+      <MobileFilterButton
+        selectedTags={selectedTags}
+        setSelectedTags={setSelectedTags}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        selectedManager={selectedManager}
+        setSelectedManager={setSelectedManager}
+      />
 
       {/* Mobile filter - always visible */}
       <div className="lg:hidden mb-6 space-y-4">

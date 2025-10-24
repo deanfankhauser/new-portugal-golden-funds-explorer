@@ -20,9 +20,10 @@ import { SaveFundButton } from './common/SaveFundButton';
 
 interface FundListItemProps {
   fund: Fund;
+  rank?: number;
 }
 
-const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
+const FundListItem: React.FC<FundListItemProps> = ({ fund, rank }) => {
   const { addToComparison, removeFromComparison, isInComparison } = useComparison();
   
   const isSelected = isInComparison(fund.id);
@@ -43,8 +44,33 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
     ? fund.geographicAllocation[0] 
     : null;
 
+  const getRankBadge = () => {
+    if (!rank || rank > 3) return null;
+    
+    const badges = {
+      1: { emoji: '🏆', text: '#1 Ranked', gradient: 'from-yellow-400 to-yellow-600' },
+      2: { emoji: '🥈', text: '#2 Ranked', gradient: 'from-gray-300 to-gray-400' },
+      3: { emoji: '🥉', text: '#3 Ranked', gradient: 'from-orange-300 to-orange-500' }
+    };
+    
+    const badge = badges[rank as 1 | 2 | 3];
+    
+    return (
+      <div className={`bg-gradient-to-r ${badge.gradient} text-white px-3 py-1 rounded-full text-xs font-semibold shadow-md flex items-center gap-1.5`}>
+        <span>{badge.emoji}</span>
+        <span>{badge.text}</span>
+      </div>
+    );
+  };
+
   return (
-    <Card className="border rounded-xl hover:shadow-lg transition-all duration-200 bg-card w-full group">
+    <Card className={`border rounded-xl hover:shadow-lg transition-all duration-200 bg-card w-full group relative ${
+      rank && rank <= 3 ? 'border-2' : ''
+    } ${
+      rank === 1 ? 'border-yellow-500/30' : 
+      rank === 2 ? 'border-gray-400/30' : 
+      rank === 3 ? 'border-orange-400/30' : ''
+    }`}>
       <CardContent className="p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
@@ -54,7 +80,8 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 {fund.name}
               </Link>
             </h3>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              {getRankBadge()}
               {isGVEligible && (
                 <Badge variant="default" className="text-xs font-medium">
                   GV Eligible
