@@ -1,0 +1,197 @@
+import React, { useState } from 'react';
+import { FundTag } from '../../data/types/funds';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { X, Search } from 'lucide-react';
+import { analytics } from '../../utils/analytics';
+import { getTopFilters, getCategorizedFilters } from '../../services/filterDataService';
+
+interface StreamlinedFilterProps {
+  selectedTags: FundTag[];
+  setSelectedTags: (tags: FundTag[]) => void;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+}
+
+const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({ 
+  selectedTags, 
+  setSelectedTags, 
+  searchQuery, 
+  setSearchQuery 
+}) => {
+  const [showAll, setShowAll] = useState(false);
+  const [searchFocus, setSearchFocus] = useState(false);
+  
+  const topFilters = getTopFilters(8);
+  const categorizedFilters = getCategorizedFilters();
+
+  const toggleTag = (tag: FundTag) => {
+    const newTags = selectedTags.includes(tag) 
+      ? selectedTags.filter(t => t !== tag)
+      : [...selectedTags, tag];
+    
+    setSelectedTags(newTags);
+    analytics.trackFilterUsage(newTags, searchQuery);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    if (value.trim()) {
+      analytics.trackSearch(value.trim(), 0);
+    }
+  };
+
+  const clearFilters = () => {
+    setSelectedTags([]);
+    setSearchQuery('');
+    analytics.trackEvent('filters_cleared');
+  };
+
+  const hasActiveFilters = selectedTags.length > 0 || searchQuery.trim() !== '';
+
+  return (
+    <div className="bg-card rounded-xl border border-border overflow-hidden">
+      {/* Search */}
+      <div className="p-4 sm:p-6">
+        <div className="relative">
+          <Search className={`absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${
+            searchFocus ? 'text-primary' : 'text-muted-foreground'
+          }`} />
+          <Input
+            type="text"
+            placeholder="Search funds..."
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            onFocus={() => setSearchFocus(true)}
+            onBlur={() => setSearchFocus(false)}
+            className={`pl-10 h-11 rounded-lg border transition-all ${
+              searchFocus 
+                ? 'border-primary ring-2 ring-primary/20' 
+                : 'border-border'
+            }`}
+          />
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+        {!showAll ? (
+          // Top filters - pill style
+          <div className="flex flex-wrap gap-2">
+            {topFilters.map(filter => (
+              <button
+                key={filter.tag}
+                onClick={() => toggleTag(filter.tag)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                  selectedTags.includes(filter.tag)
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                }`}
+              >
+                {filter.label}
+                <span className="ml-1.5 text-xs opacity-75">
+                  {filter.count}
+                </span>
+              </button>
+            ))}
+            
+            {categorizedFilters.length > 0 && (
+              <button
+                onClick={() => setShowAll(true)}
+                className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Show more
+              </button>
+            )}
+          </div>
+        ) : (
+          // Categorized filters
+          <div className="space-y-5">
+            {categorizedFilters.map(group => (
+              <div key={group.title}>
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2.5">
+                  {group.title}
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {group.filters.map(filter => (
+                    <button
+                      key={filter.tag}
+                      onClick={() => toggleTag(filter.tag)}
+                      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                        selectedTags.includes(filter.tag)
+                          ? 'bg-primary text-primary-foreground shadow-sm'
+                          : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                      }`}
+                    >
+                      {filter.label}
+                      <span className="ml-1.5 text-xs opacity-75">
+                        {filter.count}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+            
+            <button
+              onClick={() => setShowAll(false)}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Show less
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Active filters */}
+      {hasActiveFilters && (
+        <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-2 border-t border-border">
+          <div className="flex items-start gap-2 flex-wrap">
+            <span className="text-xs font-medium text-muted-foreground pt-1.5">
+              Active:
+            </span>
+            <div className="flex flex-wrap gap-2 flex-1">
+              {selectedTags.map(tag => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-secondary text-secondary-foreground text-xs"
+                >
+                  {tag}
+                  <button
+                    onClick={() => toggleTag(tag)}
+                    className="hover:text-foreground transition-colors"
+                    aria-label={`Remove ${tag} filter`}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              ))}
+              {searchQuery && (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-secondary text-secondary-foreground text-xs">
+                  Search: "{searchQuery.substring(0, 20)}{searchQuery.length > 20 ? '...' : ''}"
+                  <button
+                    onClick={() => handleSearchChange('')}
+                    className="hover:text-foreground transition-colors"
+                    aria-label="Clear search"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              )}
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearFilters}
+              className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
+            >
+              Clear all
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default StreamlinedFilter;
