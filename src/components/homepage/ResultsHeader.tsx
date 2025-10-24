@@ -20,17 +20,9 @@ const ResultsHeader: React.FC<ResultsHeaderProps> = ({
 }) => {
   
   return (
-    <div className="space-y-4 mb-6">
-      <div className="flex justify-between items-center p-4 bg-card rounded-lg border border-border">
-        <div>
-          <p className="text-foreground font-semibold text-lg" role="status">
-            {filteredFunds.length} fund{filteredFunds.length !== 1 ? 's' : ''} found
-          </p>
-          <p className="text-sm text-muted-foreground">
-            All funds are Golden Visa eligible
-          </p>
-        </div>
-        {(selectedTags.length > 0 || searchQuery) && (
+    <>
+      {(selectedTags.length > 0 || searchQuery) && (
+        <div className="flex justify-end mb-6">
           <Button 
             variant="outline" 
             size="sm"
@@ -42,9 +34,9 @@ const ResultsHeader: React.FC<ResultsHeaderProps> = ({
           >
             Reset all filters
           </Button>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </>
   );
 };
 

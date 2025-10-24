@@ -5,7 +5,7 @@ import { Fund } from '../data/funds';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { GitCompare, User, Euro } from 'lucide-react';
+import { GitCompare, User, Euro, CheckCircle2 } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { managerToSlug } from '../lib/utils';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
@@ -40,14 +40,28 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
 
   return (
     <>
-      <Card className="h-full hover:shadow-lg transition-shadow">
+      <Card className={`h-full hover:shadow-lg transition-shadow ${
+        fund.isVerified 
+          ? 'ring-2 ring-green-500/20 bg-green-50/30 border-green-200' 
+          : ''
+      }`}>
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start gap-3">
-            <CardTitle className="text-xl min-w-0">
-              <Link to={`/${fund.id}`} className="hover:text-accent transition-colors block" onClick={() => window.scrollTo(0, 0)}>
-                {fund.name}
-              </Link>
-            </CardTitle>
+            <div className="flex-1 min-w-0">
+              <CardTitle className="text-xl">
+                <Link to={`/${fund.id}`} className="hover:text-accent transition-colors block" onClick={() => window.scrollTo(0, 0)}>
+                  {fund.name}
+                </Link>
+              </CardTitle>
+              {fund.isVerified && (
+                <div className="mt-2">
+                  <Badge className="bg-green-600 text-white border-2 border-green-700 hover:bg-green-700">
+                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                    VERIFIED
+                  </Badge>
+                </div>
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent>

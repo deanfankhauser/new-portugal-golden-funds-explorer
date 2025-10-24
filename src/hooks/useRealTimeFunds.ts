@@ -379,7 +379,12 @@ const applyEditHistory = (
             managerAttestation: true
           } : undefined,
           finalRank: rankingMap.get(fund.id) || 999,
-          updatedAt: fund.updated_at || fund.created_at || undefined
+          updatedAt: fund.updated_at || fund.created_at || undefined,
+          
+          // Admin verification
+          isVerified: fund.is_verified || false,
+          verifiedAt: fund.verified_at || undefined,
+          verifiedBy: fund.verified_by || undefined
         }));
 
         // Also fetch edit history and apply approved changes as an overlay
@@ -388,15 +393,25 @@ const applyEditHistory = (
           .select('fund_id, changes, applied_at')
           .order('applied_at', { ascending: true });
 
+        let fundsWithEdits = transformedFunds;
+        
         if (editsError) {
           console.warn('Could not fetch fund_edit_history, proceeding without overlay:', editsError);
-          setFunds(transformedFunds);
         } else if (editsData && editsData.length > 0) {
-          const finalFunds = applyEditHistory(transformedFunds, editsData as any);
-          setFunds(finalFunds);
-        } else {
-          setFunds(transformedFunds);
+          fundsWithEdits = applyEditHistory(transformedFunds, editsData as any);
         }
+        
+        // Sort by: 1. Verified status (verified first), 2. finalRank
+        const sortedFunds = fundsWithEdits.sort((a, b) => {
+          // Verified funds always come first
+          if (a.isVerified && !b.isVerified) return -1;
+          if (!a.isVerified && b.isVerified) return 1;
+          
+          // Within verified/unverified groups, sort by finalRank
+          return (a.finalRank ?? 999) - (b.finalRank ?? 999);
+        });
+        
+        setFunds(sortedFunds);
         setError(null);
       } else {
         // No funds in database, use static funds but overlay any approved edit history

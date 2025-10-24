@@ -7,13 +7,14 @@ import { getFundType } from '../utils/fundTypeUtils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GitCompare, PieChart, Globe, Tag, User, Euro } from 'lucide-react';
+import { GitCompare, PieChart, Globe, Tag, User, Euro, CheckCircle2 } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import IntroductionButton from './fund-details/IntroductionButton';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 import DataFreshnessIndicator from './common/DataFreshnessIndicator';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
+import { DateManagementService } from '../services/dateManagementService';
 
 import { DATA_AS_OF_LABEL } from '../utils/constants';
 import { SaveFundButton } from './common/SaveFundButton';
@@ -43,8 +44,26 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
     ? fund.geographicAllocation[0] 
     : null;
 
+  const getVerificationBadge = () => {
+    // Priority: Admin verification (manual)
+    if (fund.isVerified) {
+      return (
+        <div className="bg-green-600 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm border-2 border-green-700">
+          <CheckCircle2 className="w-4 h-4" />
+          <span>VERIFIED</span>
+        </div>
+      );
+    }
+    
+    return null;
+  };
+
   return (
-    <Card className="border rounded-xl hover:shadow-lg transition-all duration-200 bg-card w-full group">
+    <Card className={`border rounded-xl hover:shadow-lg transition-all duration-200 bg-card w-full group relative ${
+      fund.isVerified 
+        ? 'ring-2 ring-green-500/20 bg-green-50/30 border-green-200' 
+        : ''
+    }`}>
       <CardContent className="p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
@@ -54,7 +73,8 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 {fund.name}
               </Link>
             </h3>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              {getVerificationBadge()}
               {isGVEligible && (
                 <Badge variant="default" className="text-xs font-medium">
                   GV Eligible

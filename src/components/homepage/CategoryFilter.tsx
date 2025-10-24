@@ -16,7 +16,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   selectedCategory,
   setSelectedCategory
 }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const { funds } = useRealTimeFunds();
   const categories = getAllCategories();
 
@@ -35,7 +35,9 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
           variant="ghost"
           className="w-full justify-between p-3 h-auto hover:bg-muted"
         >
-          <span className="font-semibold text-base">Filter by categories</span>
+          <span className="font-semibold text-base">
+            Categories{!isOpen && selectedCategory && ' (1 active)'}
+          </span>
           <ChevronDown
             className={`h-4 w-4 transition-transform duration-200 ${
               isOpen ? 'rotate-180' : ''
@@ -56,9 +58,9 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
                 variant={isSelected ? "default" : "outline"}
                 size="sm"
                 onClick={() => handleCategoryClick(category)}
-                className="text-left justify-start"
+                className="text-left justify-start max-w-full break-words whitespace-normal h-auto py-2 min-h-[36px]"
               >
-                {category} ({count})
+                <span className="break-words">{category} ({count})</span>
               </Button>
             );
           })}

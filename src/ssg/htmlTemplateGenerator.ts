@@ -89,17 +89,20 @@ export function generateHTMLTemplate(
   ${seoData.helmetData?.link || ''}
   ${seoData.helmetData?.script || ''}
   
-  <!-- Critical Resource Preconnects -->
+  <!-- Critical Resource Preconnects - Establish early connections to improve LCP -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="preconnect" href="https://server.fillout.com" crossorigin>
+  <link rel="preconnect" href="https://bkmvydnfhmkjnuszroim.supabase.co" crossorigin>
   
   <!-- Asset Preloads -->
   ${validatedCssFiles.length > 0 ? `<link rel="preload" href="/assets/${validatedCssFiles[0]}" as="style" />` : ''}
   ${validatedJsFiles.map(js => `  <link rel="modulepreload" href="/assets/${js}" />`).join('\n')}
   
-  <!-- Google Fonts - Load immediately -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Google Fonts - Non-blocking load with fallback -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"></noscript>
   
   <!-- Favicon -->
   <link rel="icon" href="/lovable-uploads/3965a727-dc95-4cfe-bc27-546bdd2397f3.png" type="image/png">
@@ -224,10 +227,19 @@ export function generateHTMLTemplate(
     return mainEntry ? `  <script type="module" src="/assets/${mainEntry}"></script>` : '';
   })()}
   
-  <!-- Google tag (gtag.js) - Load only in production -->
+  <!-- Google tag (gtag.js) - Deferred load after page interactive -->
   <script>
     if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-      (function() {
+      // Defer analytics until after page is interactive to avoid blocking FCP
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(function() { loadGoogleAnalytics(); }, { timeout: 2000 });
+      } else {
+        window.addEventListener('load', function() {
+          setTimeout(loadGoogleAnalytics, 1000);
+        });
+      }
+      
+      function loadGoogleAnalytics() {
         var script = document.createElement('script');
         script.async = true;
         script.src = 'https://www.googletagmanager.com/gtag/js?id=G-BE3HZBVG9D';
@@ -243,7 +255,7 @@ export function generateHTMLTemplate(
         gtag('config', 'G-BE3HZBVG9D', {
           transport_type: 'beacon'
         });
-      })();
+      }
     }
   </script>
 </body>

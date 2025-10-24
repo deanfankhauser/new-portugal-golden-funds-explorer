@@ -9,6 +9,8 @@ import HomepageSidebar from './HomepageSidebar';
 import ResultsHeader from './ResultsHeader';
 import EmptyFundsState from './EmptyFundsState';
 import FundsList from './FundsList';
+import BackToTopButton from './BackToTopButton';
+import MobileFilterButton from './MobileFilterButton';
 
 
 interface HomepageContentProps {
@@ -19,6 +21,8 @@ interface HomepageContentProps {
   setSelectedCategory: (category: FundCategory | null) => void;
   selectedManager: string | null;
   setSelectedManager: (manager: string | null) => void;
+  showOnlyVerified: boolean;
+  setShowOnlyVerified: (value: boolean) => void;
   searchQuery: string;
   allFunds?: Fund[];
   loading?: boolean;
@@ -33,6 +37,8 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
   setSelectedCategory,
   selectedManager,
   setSelectedManager,
+  showOnlyVerified,
+  setShowOnlyVerified,
   searchQuery,
   allFunds = [],
   loading = false,
@@ -46,6 +52,19 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
+      
+      {/* Floating action buttons */}
+      <BackToTopButton />
+      <MobileFilterButton
+        selectedTags={selectedTags}
+        setSelectedTags={setSelectedTags}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        selectedManager={selectedManager}
+        setSelectedManager={setSelectedManager}
+        showOnlyVerified={showOnlyVerified}
+        setShowOnlyVerified={setShowOnlyVerified}
+      />
 
       {/* Mobile filter - always visible */}
       <div className="lg:hidden mb-6 space-y-4">
@@ -66,13 +85,19 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
         <StreamlinedFilter
           selectedTags={selectedTags}
           setSelectedTags={setSelectedTags}
+          showOnlyVerified={showOnlyVerified}
+          setShowOnlyVerified={setShowOnlyVerified}
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8 items-start">
         <HomepageSidebar
           selectedTags={selectedTags}
           setSelectedTags={setSelectedTags}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          showOnlyVerified={showOnlyVerified}
+          setShowOnlyVerified={setShowOnlyVerified}
         />
         
         <main className="lg:col-span-3 order-1 lg:order-2" id="main-content">

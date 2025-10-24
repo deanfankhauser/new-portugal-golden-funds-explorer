@@ -80,7 +80,7 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
 
   return (
     <section className="bg-muted rounded-lg p-6" itemScope itemType="https://schema.org/FAQPage">
-      <h2 className="text-2xl font-bold mb-6 text-foreground">
+      <h2 className="text-xl font-bold mb-6 text-foreground">
         Frequently Asked Questions about {fund.name}
       </h2>
       

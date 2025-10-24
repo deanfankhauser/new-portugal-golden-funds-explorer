@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FundTag } from '../../data/types/funds';
 import { Button } from "@/components/ui/button";
-import { X, ChevronDown } from 'lucide-react';
+import { X, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { getMeaningfulFilters } from '../../services/filterDataService';
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
   Collapsible,
   CollapsibleContent,
@@ -13,13 +15,17 @@ import {
 interface StreamlinedFilterProps {
   selectedTags: FundTag[];
   setSelectedTags: (tags: FundTag[]) => void;
+  showOnlyVerified: boolean;
+  setShowOnlyVerified: (value: boolean) => void;
 }
 
 const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
   selectedTags,
-  setSelectedTags
+  setSelectedTags,
+  showOnlyVerified,
+  setShowOnlyVerified
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   
   const allFilters = getMeaningfulFilters();
 
@@ -39,6 +45,21 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
 
   return (
     <div className="bg-card rounded-lg shadow-sm border p-4 space-y-4">
+      {/* Verified Funds Toggle */}
+      <div className="flex items-center justify-between p-3 hover:bg-muted/50 rounded-lg border border-border">
+        <div className="flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-green-600" />
+          <Label htmlFor="verified-only" className="cursor-pointer font-semibold">
+            Show Verified Funds Only
+          </Label>
+        </div>
+        <Switch
+          id="verified-only"
+          checked={showOnlyVerified}
+          onCheckedChange={setShowOnlyVerified}
+        />
+      </div>
+
       {/* Tags Dropdown */}
       <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full space-y-4">
         <div className="flex items-center justify-between gap-2">
@@ -47,7 +68,9 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
               variant="ghost"
               className="flex-1 justify-between p-3 h-auto hover:bg-muted"
             >
-              <span className="font-semibold text-lg">Filter by tags</span>
+              <span className="font-semibold text-base">
+                Tags{!isOpen && hasActiveFilters && ` (${selectedTags.length} active)`}
+              </span>
               <ChevronDown
                 className={`h-4 w-4 transition-transform duration-200 ${
                   isOpen ? 'rotate-180' : ''
