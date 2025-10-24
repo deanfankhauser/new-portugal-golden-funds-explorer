@@ -39,35 +39,33 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
 
   return (
     <div className="bg-card rounded-lg shadow-sm border p-4 space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Filter by tags</h2>
-        {hasActiveFilters && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearFilters}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            Clear all
-          </Button>
-        )}
-      </div>
-
       {/* Tags Dropdown */}
-      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
-        <CollapsibleTrigger asChild>
-          <Button
-            variant="ghost"
-            className="w-full justify-between p-3 h-auto hover:bg-muted"
-          >
-            <span className="font-medium">Select tags</span>
-            <ChevronDown
-              className={`h-4 w-4 transition-transform duration-200 ${
-                isOpen ? 'rotate-180' : ''
-              }`}
-            />
-          </Button>
-        </CollapsibleTrigger>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full space-y-4">
+        <div className="flex items-center justify-between gap-2">
+          <CollapsibleTrigger asChild>
+            <Button
+              variant="ghost"
+              className="flex-1 justify-between p-3 h-auto hover:bg-muted"
+            >
+              <span className="font-semibold text-lg">Filter by tags</span>
+              <ChevronDown
+                className={`h-4 w-4 transition-transform duration-200 ${
+                  isOpen ? 'rotate-180' : ''
+                }`}
+              />
+            </Button>
+          </CollapsibleTrigger>
+          {hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearFilters}
+              className="text-muted-foreground hover:text-foreground shrink-0"
+            >
+              Clear all
+            </Button>
+          )}
+        </div>
 
         <CollapsibleContent className="space-y-2 pt-2">
           <div className="flex flex-wrap gap-2 w-full">
