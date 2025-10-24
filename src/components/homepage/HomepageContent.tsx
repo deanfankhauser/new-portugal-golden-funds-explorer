@@ -69,7 +69,7 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8 items-start">
         <HomepageSidebar
           selectedTags={selectedTags}
           setSelectedTags={setSelectedTags}
