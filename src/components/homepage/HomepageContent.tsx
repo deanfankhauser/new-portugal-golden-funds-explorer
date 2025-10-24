@@ -42,7 +42,7 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
     selectedCategory !== null || selectedManager !== null;
 
   return (
-    <div className="spacing-responsive-md">
+    <div className="spacing-responsive-md" id="funds-section">
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
