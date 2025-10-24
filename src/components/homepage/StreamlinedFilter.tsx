@@ -19,7 +19,7 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
   selectedTags,
   setSelectedTags
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   
   const allFilters = getMeaningfulFilters();
 
@@ -47,7 +47,9 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
               variant="ghost"
               className="flex-1 justify-between p-3 h-auto hover:bg-muted"
             >
-              <span className="font-semibold text-lg">Filter by tags</span>
+              <span className="font-semibold text-base">
+                Tags{!isOpen && hasActiveFilters && ` (${selectedTags.length} active)`}
+              </span>
               <ChevronDown
                 className={`h-4 w-4 transition-transform duration-200 ${
                   isOpen ? 'rotate-180' : ''
