@@ -2,9 +2,14 @@ import React, { useState } from 'react';
 import { FundTag } from '../../data/types/funds';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { X, Search } from 'lucide-react';
+import { X, Search, ChevronDown } from 'lucide-react';
 import { analytics } from '../../utils/analytics';
-import { getTopFilters, getCategorizedFilters } from '../../services/filterDataService';
+import { getMeaningfulFilters } from '../../services/filterDataService';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 interface StreamlinedFilterProps {
   selectedTags: FundTag[];
@@ -19,11 +24,10 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
   searchQuery, 
   setSearchQuery 
 }) => {
-  const [showAll, setShowAll] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [searchFocus, setSearchFocus] = useState(false);
   
-  const topFilters = getTopFilters(8);
-  const categorizedFilters = getCategorizedFilters();
+  const allFilters = getMeaningfulFilters();
 
   const toggleTag = (tag: FundTag) => {
     const newTags = selectedTags.includes(tag) 
@@ -73,74 +77,40 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
         </div>
       </div>
 
-      {/* Filters */}
+      {/* Filter by tags dropdown */}
       <div className="px-4 sm:px-6 pb-4 sm:pb-6">
-        {!showAll ? (
-          // Top filters - pill style
-          <div className="flex flex-wrap gap-2">
-            {topFilters.map(filter => (
-              <button
-                key={filter.tag}
-                onClick={() => toggleTag(filter.tag)}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-                  selectedTags.includes(filter.tag)
-                    ? 'bg-primary text-primary-foreground shadow-sm'
-                    : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                }`}
-              >
-                {filter.label}
-                <span className="ml-1.5 text-xs opacity-75">
-                  {filter.count}
-                </span>
-              </button>
-            ))}
-            
-            {categorizedFilters.length > 0 && (
-              <button
-                onClick={() => setShowAll(true)}
-                className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Show more
-              </button>
-            )}
-          </div>
-        ) : (
-          // Categorized filters
-          <div className="space-y-5">
-            {categorizedFilters.map(group => (
-              <div key={group.title}>
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2.5">
-                  {group.title}
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {group.filters.map(filter => (
-                    <button
-                      key={filter.tag}
-                      onClick={() => toggleTag(filter.tag)}
-                      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-                        selectedTags.includes(filter.tag)
-                          ? 'bg-primary text-primary-foreground shadow-sm'
-                          : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                      }`}
-                    >
-                      {filter.label}
-                      <span className="ml-1.5 text-xs opacity-75">
-                        {filter.count}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
-            
-            <button
-              onClick={() => setShowAll(false)}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+          <CollapsibleTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-full justify-between h-11 font-medium"
             >
-              Show less
-            </button>
-          </div>
-        )}
+              <span>Filter by tags</span>
+              <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </Button>
+          </CollapsibleTrigger>
+          
+          <CollapsibleContent className="mt-3">
+            <div className="space-y-1">
+              {allFilters.map(filter => (
+                <button
+                  key={filter.tag}
+                  onClick={() => toggleTag(filter.tag)}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    selectedTags.includes(filter.tag)
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-secondary/50 text-foreground hover:bg-secondary'
+                  }`}
+                >
+                  <span className="text-left">{filter.label}</span>
+                  <span className="text-xs opacity-75 ml-2">
+                    {filter.count}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
       </div>
 
       {/* Active filters */}
