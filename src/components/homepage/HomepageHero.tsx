@@ -80,14 +80,14 @@ const HomepageHero: React.FC = () => {
               return (
                 <div
                   key={index}
-                  className="bg-card rounded-2xl p-6 border border-border shadow-sm hover:shadow-md transition-shadow"
+                  className="bg-card rounded-2xl p-4 sm:p-6 border border-border shadow-sm hover:shadow-md transition-shadow"
                 >
                   <div className="flex flex-col items-center text-center">
-                    <Icon className="h-6 w-6 text-accent mb-3" />
-                    <div className="text-3xl sm:text-4xl font-bold text-high-contrast mb-2">
+                    <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-accent mb-2 sm:mb-3 shrink-0" />
+                    <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-high-contrast mb-1 sm:mb-2 break-words hyphens-auto w-full">
                       {stat.value}
                     </div>
-                    <div className="text-sm sm:text-base text-medium-contrast font-medium">
+                    <div className="text-xs sm:text-sm md:text-base text-medium-contrast font-medium break-words w-full">
                       {stat.label}
                     </div>
                   </div>

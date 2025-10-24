@@ -66,9 +66,9 @@ const ManagerFilter: React.FC<ManagerFilterProps> = ({
                 variant={isSelected ? "default" : "outline"}
                 size="sm"
                 onClick={() => handleManagerClick(manager.name)}
-                className="text-left justify-start"
+                className="text-left justify-start max-w-full break-words whitespace-normal h-auto py-2 min-h-[36px]"
               >
-                {manager.name} ({manager.count})
+                <span className="break-words">{manager.name} ({manager.count})</span>
               </Button>
             );
           })}
