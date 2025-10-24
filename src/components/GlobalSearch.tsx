@@ -76,7 +76,7 @@ const GlobalSearch = () => {
   };
 
   return (
-    <div ref={searchRef} className="relative w-full md:w-80">
+    <div ref={searchRef} className="relative w-full md:w-96 lg:w-[500px]">
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-background/60" />
         <Input
@@ -87,7 +87,7 @@ const GlobalSearch = () => {
           onChange={(e) => handleInputChange(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() => searchValue.trim() && setIsOpen(true)}
-          className="pl-10 pr-10 bg-background/10 border-background/20 text-background placeholder:text-background/60 focus:bg-background/20"
+          className="pl-10 pr-10 bg-background/10 border-background/20 text-background placeholder:text-background/60 focus:bg-background/20 h-10 md:h-11"
         />
         {searchValue && (
           <Button
