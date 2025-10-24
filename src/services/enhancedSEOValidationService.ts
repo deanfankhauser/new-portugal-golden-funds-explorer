@@ -109,7 +109,7 @@ export class EnhancedSEOValidationService {
     return Array.from(new Set(duplicates));
   }
 
-  // Enhanced image validation
+  // Enhanced image validation - optimized to avoid forced reflows
   private static validateImagesEnhanced(): {
     missingAltImages: HTMLImageElement[];
     nonOptimizedImages: HTMLImageElement[];
@@ -118,14 +118,21 @@ export class EnhancedSEOValidationService {
     const missingAltImages: HTMLImageElement[] = [];
     const nonOptimizedImages: HTMLImageElement[] = [];
 
+    // Batch all DOM reads together to avoid forced reflows
     images.forEach((img) => {
+      // Only read attributes, don't trigger layout
+      const hasAlt = img.hasAttribute('alt');
+      const altText = hasAlt ? img.getAttribute('alt') : null;
+      const hasOptimized = img.hasAttribute('data-optimized');
+      const hasLoading = img.hasAttribute('loading');
+
       // Check for missing alt text
-      if (!img.alt || img.alt.trim().length === 0) {
+      if (!altText || altText.trim().length === 0) {
         missingAltImages.push(img);
       }
 
-      // Check if using OptimizedImage component (has data-optimized attribute)
-      if (!img.hasAttribute('data-optimized') && !img.loading) {
+      // Check if using OptimizedImage component
+      if (!hasOptimized && !hasLoading) {
         nonOptimizedImages.push(img);
       }
     });
