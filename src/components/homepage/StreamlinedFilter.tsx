@@ -78,9 +78,9 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
                   variant={isSelected ? "default" : "outline"}
                   size="sm"
                   onClick={() => toggleTag(filter.tag)}
-                  className="text-left justify-start max-w-full break-words whitespace-normal h-auto py-2"
+                  className="text-left justify-start max-w-full break-words whitespace-normal h-auto py-2 min-h-[36px]"
                 >
-                  {filter.label} ({filter.count})
+                  <span className="break-words">{filter.label} ({filter.count})</span>
                 </Button>
               );
             })}
