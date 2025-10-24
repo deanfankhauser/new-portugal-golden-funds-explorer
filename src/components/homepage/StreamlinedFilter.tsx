@@ -70,7 +70,7 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
         </CollapsibleTrigger>
 
         <CollapsibleContent className="space-y-2 pt-2">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 w-full">
             {allFilters.map((filter) => {
               const isSelected = selectedTags.includes(filter.tag);
               
@@ -80,7 +80,7 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
                   variant={isSelected ? "default" : "outline"}
                   size="sm"
                   onClick={() => toggleTag(filter.tag)}
-                  className="text-left justify-start"
+                  className="text-left justify-start max-w-full break-words whitespace-normal h-auto py-2"
                 >
                   {filter.label} ({filter.count})
                 </Button>
@@ -99,15 +99,15 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
 
       {/* Active Filters Display */}
       {hasActiveFilters && (
-        <div className="flex flex-wrap gap-2 pt-2 border-t">
+        <div className="flex flex-wrap gap-2 pt-2 border-t w-full">
           {selectedTags.map(tag => (
-            <div key={tag} className="flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded-md text-sm">
-              <span>{tag}</span>
+            <div key={tag} className="flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded-md text-sm max-w-full break-words">
+              <span className="break-words">{tag}</span>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => toggleTag(tag)}
-                className="h-4 w-4 p-0 hover:bg-primary/20"
+                className="h-4 w-4 p-0 hover:bg-primary/20 shrink-0"
               >
                 <X className="h-3 w-3" />
               </Button>
