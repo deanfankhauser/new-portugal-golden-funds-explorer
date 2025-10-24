@@ -93,8 +93,8 @@ export function generateHTMLTemplate(
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://www.googletagmanager.com">
-  <link rel="preconnect" href="https://server.fillout.com">
-  <link rel="preconnect" href="https://bkmvydnfhmkjnuszroim.supabase.co">
+  <link rel="preconnect" href="https://server.fillout.com" crossorigin>
+  <link rel="preconnect" href="https://bkmvydnfhmkjnuszroim.supabase.co" crossorigin>
   
   <!-- Asset Preloads -->
   ${validatedCssFiles.length > 0 ? `<link rel="preload" href="/assets/${validatedCssFiles[0]}" as="style" />` : ''}
