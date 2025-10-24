@@ -20,9 +20,9 @@ const ResultsHeader: React.FC<ResultsHeaderProps> = ({
 }) => {
   
   return (
-    <div className="space-y-4 mb-6">
+    <>
       {(selectedTags.length > 0 || searchQuery) && (
-        <div className="flex justify-end">
+        <div className="flex justify-end mb-6">
           <Button 
             variant="outline" 
             size="sm"
@@ -36,7 +36,7 @@ const ResultsHeader: React.FC<ResultsHeaderProps> = ({
           </Button>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
