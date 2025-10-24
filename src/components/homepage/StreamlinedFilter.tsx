@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { FundTag } from '../../data/types/funds';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,8 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
   const [searchFocus, setSearchFocus] = useState(false);
   
   const allFilters = getMeaningfulFilters();
+  const displayedFilters = allFilters.slice(0, 9);
+  const hasMoreTags = allFilters.length > 9;
 
   const toggleTag = (tag: FundTag) => {
     const newTags = selectedTags.includes(tag) 
@@ -92,7 +95,7 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
           
           <CollapsibleContent className="mt-3">
             <div className="space-y-1">
-              {allFilters.map(filter => (
+              {displayedFilters.map(filter => (
                 <button
                   key={filter.tag}
                   onClick={() => toggleTag(filter.tag)}
@@ -108,6 +111,17 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
                   </span>
                 </button>
               ))}
+              
+              {hasMoreTags && (
+                <Link to="/tags" className="block mt-2">
+                  <Button
+                    variant="ghost"
+                    className="w-full text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    See all tags →
+                  </Button>
+                </Link>
+              )}
             </div>
           </CollapsibleContent>
         </Collapsible>
