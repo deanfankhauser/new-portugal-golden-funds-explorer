@@ -10,14 +10,28 @@ import { ArrowRight, TrendingUp } from 'lucide-react';
 
 const AlternativesHub: React.FC = () => {
   // All funds are now GV eligible, so show general alternatives
-  const allFunds = fundsData;
+  // Filter out any invalid fund entries
+  const allFunds = fundsData.filter((f): f is typeof f & { name: string; id: string } => 
+    !!f && typeof f === 'object' && 
+    typeof f.name === 'string' && 
+    typeof f.id === 'string' &&
+    f.name.trim() !== ''
+  );
   
   // Get funds that have alternatives for general comparison
   const fundsWithAlternatives = allFunds
-    .map(fund => ({
-      fund,
-      alternatives: findAlternativeFunds(fund, 3)
-    }))
+    .map(fund => {
+      try {
+        const alternatives = findAlternativeFunds(fund, 3).filter(
+          (alt): alt is typeof alt & { name: string; id: string } => 
+            !!alt && typeof alt.name === 'string' && typeof alt.id === 'string'
+        );
+        return { fund, alternatives };
+      } catch (error) {
+        console.error(`Error finding alternatives for fund ${fund.id}:`, error);
+        return { fund, alternatives: [] };
+      }
+    })
     .filter(item => item.alternatives.length > 0)
     .sort((a, b) => b.alternatives.length - a.alternatives.length);
 
@@ -106,21 +120,21 @@ const AlternativesHub: React.FC = () => {
                     <div className="space-y-3">
                       <h4 className="font-medium text-foreground">Similar Funds:</h4>
                       <div className="grid gap-2">
-                        {alternatives.map(alt => (
-                          <div key={alt.id} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                        {(alternatives || []).filter(Boolean).map(alt => (
+                          <div key={(alt as any).id} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
                             <div>
                               <Link 
-                                to={`/${alt.id}`}
+                                to={`/${(alt as any).id}`}
                                 className="font-medium hover:text-primary transition-colors"
                               >
-                                {alt.name}
+                                {(alt as any).name ?? 'Unnamed fund'}
                               </Link>
                               <div className="text-sm text-muted-foreground">
-                                {alt.category} | €{alt.minimumInvestment.toLocaleString()} min
+                                {(alt as any).category} | €{Number((alt as any).minimumInvestment || 0).toLocaleString()} min
                               </div>
                             </div>
-                            <Badge variant={alt.fundStatus === 'Open' ? 'default' : 'secondary'}>
-                              {alt.fundStatus}
+                            <Badge variant={(alt as any).fundStatus === 'Open' ? 'default' : 'secondary'}>
+                              {(alt as any).fundStatus ?? 'Unknown'}
                             </Badge>
                           </div>
                         ))}

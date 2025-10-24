@@ -1,5 +1,5 @@
 
-import { fundsData } from '../mock/funds';
+import { funds } from './funds-service';
 import { supabase } from '../../integrations/supabase/client';
 
 // Public manager data type (no sensitive information)
@@ -43,15 +43,14 @@ export const getAllApprovedManagers = async (): Promise<PublicManagerData[]> => 
 export const getAllFundManagers = (): { name: string; fundsCount: number }[] => {
   const managersMap = new Map<string, { name: string; fundsCount: number }>();
   
-  fundsData.forEach(fund => {
+  funds.forEach(fund => {
     const managerKey = fund.managerName.toLowerCase();
     if (!managersMap.has(managerKey)) {
-      managersMap.set(managerKey, { 
+      managersMap.set(managerKey, {
         name: fund.managerName,
-        fundsCount: 0
+        fundsCount: 0,
       });
     }
-    // Increment the funds count for this manager
     const manager = managersMap.get(managerKey)!;
     manager.fundsCount++;
   });
@@ -63,21 +62,21 @@ export const getAllFundManagers = (): { name: string; fundsCount: number }[] => 
 
 // Function to get funds by manager name
 export const getFundsByManager = (managerName: string) => {
-  return fundsData.filter(fund => 
+  return funds.filter(fund =>
     fund.managerName.toLowerCase() === managerName.toLowerCase()
   );
 };
 
 // Function to get count of funds by manager
 export const getFundsCountByManager = (managerName: string): number => {
-  return fundsData.filter(fund => 
+  return funds.filter(fund =>
     fund.managerName.toLowerCase() === managerName.toLowerCase()
   ).length;
 };
 
 // Function to get total fund size managed by a manager
 export const getTotalFundSizeByManager = (managerName: string): number => {
-  return fundsData
+  return funds
     .filter(fund => fund.managerName.toLowerCase() === managerName.toLowerCase())
     .reduce((sum, fund) => sum + fund.fundSize, 0);
 };

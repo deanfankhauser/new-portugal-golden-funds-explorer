@@ -55,7 +55,18 @@ const addTagsToFunds = (funds: any[]): any[] => {
 
 // Enhanced funds with investment, risk, APY, lock-up, management fee, fund size, audience tags, and date fields
 const fundsWithTags = addTagsToFunds(fundsData);
-export const funds: Fund[] = FundDataMigrationService.migrateFundsArray(fundsWithTags);
+const migratedFunds = FundDataMigrationService.migrateFundsArray(fundsWithTags);
+
+// Filter out any invalid fund entries to prevent SSR errors
+export const funds: Fund[] = migratedFunds.filter(
+  (fund): fund is Fund => 
+    !!fund && 
+    typeof fund === 'object' &&
+    typeof fund.id === 'string' && 
+    typeof fund.name === 'string' &&
+    fund.id.trim() !== '' &&
+    fund.name.trim() !== ''
+);
 
 // Function to get a fund by ID
 export const getFundById = (id: string): Fund | undefined => {

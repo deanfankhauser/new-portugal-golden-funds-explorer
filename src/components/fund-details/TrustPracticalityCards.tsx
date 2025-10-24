@@ -45,10 +45,12 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
   return (
     <div className="grid grid-cols-1 gap-6">
       {/* Fees Card */}
-      <Card className="h-fit">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Calculator className="h-5 w-5 text-accent" />
+      <Card className="shadow-lg border-2 hover:shadow-xl transition-all duration-300 h-fit">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-2xl flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Calculator className="h-5 w-5 text-primary" />
+            </div>
             Fees
           </CardTitle>
         </CardHeader>
@@ -100,20 +102,20 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
             
             <div className="space-y-3">
               <div>
-                <label className="text-xs text-muted-foreground">Investment Amount (€)</label>
-                <div className="flex items-center gap-2 mt-1">
+                <label className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-2 block">Investment Amount (€)</label>
+                <div className="flex items-center gap-2">
                   <input
                     type="number"
                     value={investmentAmount}
                     onChange={(e) => setInvestmentAmount(Number(e.target.value))}
-                    className="flex-1 px-3 py-2 text-sm border border-border rounded-md bg-background"
+                    className="flex-1 px-3 py-2 text-sm border-2 border-border rounded-md bg-background focus:border-primary transition-colors"
                     step="10000"
                     min="0"
                   />
                 </div>
               </div>
               
-              <div className="bg-muted/50 rounded-lg p-3 space-y-2">
+              <div className="bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 rounded-lg p-4 space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Management fee:</span>
                   <span className="font-medium">€{fees.management.toLocaleString()}</span>

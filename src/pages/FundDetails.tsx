@@ -5,18 +5,21 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { PageSEO } from '../components/common/PageSEO';
 import FundDetailsContent from '../components/fund-details/FundDetailsContent';
+import FloatingCTA from '../components/fund-details/FloatingCTA';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import type { Fund } from '../data/types/funds';
 
-const FundDetails = () => {
+interface FundDetailsProps { fund?: Fund }
+
+const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund }) => {
   const { id, potentialFundId } = useParams<{ id?: string; potentialFundId?: string }>();
   const location = useLocation();
   
-  // Support direct fund routing: /:fundId
-  const fundId = id || potentialFundId;
+  // Prefer SSR-injected fund when available; fallback to client lookup
+  const fundId = id || potentialFundId || ssrFund?.id;
   const { getFundById } = useRealTimeFunds();
-  const fund = fundId ? getFundById(fundId) : null;
+  const fund = ssrFund ?? (fundId ? getFundById(fundId) : null);
   const { addToRecentlyViewed } = useRecentlyViewed();
   useEffect(() => {
     if (fund) {
@@ -48,11 +51,13 @@ const FundDetails = () => {
       
       <Header />
       
-      <main className="flex-1 py-6 md:py-8">
+      <main className="flex-1 py-6 md:py-8 pb-32 lg:pb-8">
         <div className="container mx-auto px-4 max-w-7xl">
           <FundDetailsContent fund={fund} />
         </div>
       </main>
+      
+      <FloatingCTA fund={fund} />
       
       <Footer />
     </div>

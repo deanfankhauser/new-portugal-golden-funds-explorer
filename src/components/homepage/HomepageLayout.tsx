@@ -59,8 +59,7 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
                 €500,000 total investment required for Golden Visa fund route, with no real-estate exposure permitted (post-October 2023 regulatory changes). 
                 A fund's subscription minimum can be lower, but you still need €500,000 across one or more qualifying funds.
                 <br /><br />
-                <strong>Sources:</strong> <a href="https://nomadgate.com/portugal-golden-visa-investment-funds/" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 underline">Nomad Gate Guide</a> | 
-                <a href="https://www.imidaily.com/portugal/" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 underline ml-1">IMI Daily</a>
+                <strong>Source:</strong> <a href="https://www.imidaily.com/portugal/" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 underline">IMI Daily</a>
               </p>
             </div>
             

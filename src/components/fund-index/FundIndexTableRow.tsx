@@ -6,6 +6,7 @@ import { Badge } from '../ui/badge';
 import { TableCell, TableRow } from '../ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import DataFreshnessIndicator from '../common/DataFreshnessIndicator';
+import { CheckCircle2 } from 'lucide-react';
 
 interface FundIndexTableRowProps {
   score: FundScore;
@@ -37,7 +38,9 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
 
   return (
     <TableRow 
-      className="hover:bg-gray-50/50 transition-colors border-b border-gray-100 cursor-pointer"
+      className={`hover:bg-gray-50/50 transition-colors border-b border-gray-100 cursor-pointer ${
+        fund.isVerified ? 'bg-green-50/20 border-l-4 border-l-green-500' : ''
+      }`}
       onClick={handleRowClick}
       itemScope
       itemType="https://schema.org/FinancialProduct"
@@ -148,6 +151,13 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
       
       <TableCell className="py-4 w-20 text-center">
         <div className="space-y-1">
+          {fund.isVerified && (
+            <Badge className="bg-green-600 text-white px-2 py-1 text-xs font-bold border-2 border-green-700 shadow-sm">
+              <CheckCircle2 className="w-3 h-3 mr-1 inline" />
+              VERIFIED
+            </Badge>
+          )}
+          
           <Badge 
             variant={fund.fundStatus === 'Open' ? 'default' : 'secondary'}
             className={`text-xs px-2 py-1 ${

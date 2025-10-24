@@ -14,8 +14,13 @@ const IndexPage = () => {
   const {
     selectedTags,
     setSelectedTags,
+    selectedCategory,
+    setSelectedCategory,
+    selectedManager,
+    setSelectedManager,
+    showOnlyVerified,
+    setShowOnlyVerified,
     searchQuery,
-    setSearchQuery,
     filteredFunds,
     allFunds,
     loading,
@@ -32,8 +37,13 @@ const IndexPage = () => {
         filteredFunds={filteredFunds}
         selectedTags={selectedTags}
         setSelectedTags={setSelectedTags}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        selectedManager={selectedManager}
+        setSelectedManager={setSelectedManager}
+        showOnlyVerified={showOnlyVerified}
+        setShowOnlyVerified={setShowOnlyVerified}
         searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
         allFunds={allFunds}
         loading={loading}
         error={error}

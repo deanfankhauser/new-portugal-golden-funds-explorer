@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, Edit3, Clock, CheckCircle, XCircle, Activity, Settings, Database, FileText } from 'lucide-react';
+import { Users, Edit3, Clock, CheckCircle, XCircle, Activity, Settings, Database, FileText, TrendingUp } from 'lucide-react';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { EnhancedSuggestionsTable } from '@/components/admin/EnhancedSuggestionsTable';
@@ -17,6 +17,7 @@ import UsersManagement from '@/components/admin/UsersManagement';
 import { DataCopyButton } from '@/components/admin/DataCopyButton';
 import MigrateFundsButton from '@/components/admin/MigrateFundsButton';
 import FundManagement from '@/components/admin/FundManagement';
+import FundRankingManager from '@/components/admin/FundRankingManager';
 
 const AdminPanel = () => {
   const { user, loading, userType } = useEnhancedAuth();
@@ -202,7 +203,7 @@ const AdminPanel = () => {
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="suggestions" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="suggestions" className="flex items-center gap-2">
                 <Edit3 className="h-4 w-4" />
                 Suggestions
@@ -210,6 +211,10 @@ const AdminPanel = () => {
               <TabsTrigger value="funds" className="flex items-center gap-2">
                 <Database className="h-4 w-4" />
                 Funds
+              </TabsTrigger>
+              <TabsTrigger value="rankings" className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" />
+                Rankings
               </TabsTrigger>
               <TabsTrigger value="users" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
@@ -248,6 +253,10 @@ const AdminPanel = () => {
             
             <TabsContent value="funds">
               <FundManagement />
+            </TabsContent>
+
+            <TabsContent value="rankings">
+              <FundRankingManager />
             </TabsContent>
 
             <TabsContent value="users">
