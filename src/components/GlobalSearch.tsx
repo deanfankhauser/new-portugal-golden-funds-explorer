@@ -1,55 +1,92 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useGlobalSearch } from '@/hooks/useGlobalSearch';
+import { GlobalSearchDropdown } from './GlobalSearchDropdown';
 
 const GlobalSearch = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { results, isSearching } = useGlobalSearch(searchValue);
 
-  // Initialize from URL params
+  // Click outside to close
   useEffect(() => {
-    const query = searchParams.get('search') || '';
-    setSearchValue(query);
-  }, [searchParams]);
-
-  const handleSearch = (value: string) => {
-    setSearchValue(value);
-    
-    // Navigate to homepage if not there
-    if (location.pathname !== '/') {
-      navigate(`/?search=${encodeURIComponent(value)}`);
-    } else {
-      // Update URL params
-      const newParams = new URLSearchParams(searchParams);
-      if (value.trim()) {
-        newParams.set('search', value);
-      } else {
-        newParams.delete('search');
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
       }
-      setSearchParams(newParams);
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Reset selected index when results change
+  useEffect(() => {
+    setSelectedIndex(0);
+  }, [results]);
+
+  const handleInputChange = (value: string) => {
+    setSearchValue(value);
+    setIsOpen(value.trim().length > 0);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!isOpen || results.length === 0) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev + 1) % results.length);
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev - 1 + results.length) % results.length);
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (results[selectedIndex]) {
+          navigate(results[selectedIndex].url);
+          handleResultClick();
+        }
+        break;
+      case 'Escape':
+        setIsOpen(false);
+        inputRef.current?.blur();
+        break;
     }
+  };
+
+  const handleResultClick = () => {
+    setIsOpen(false);
+    setSearchValue('');
+    inputRef.current?.blur();
   };
 
   const clearSearch = () => {
     setSearchValue('');
-    const newParams = new URLSearchParams(searchParams);
-    newParams.delete('search');
-    setSearchParams(newParams);
+    setIsOpen(false);
+    inputRef.current?.focus();
   };
 
   return (
-    <div className="relative w-full md:w-80">
+    <div ref={searchRef} className="relative w-full md:w-80">
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-background/60" />
         <Input
+          ref={inputRef}
           type="text"
-          placeholder="Search funds..."
+          placeholder="Search funds, categories, managers..."
           value={searchValue}
-          onChange={(e) => handleSearch(e.target.value)}
+          onChange={(e) => handleInputChange(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onFocus={() => searchValue.trim() && setIsOpen(true)}
           className="pl-10 pr-10 bg-background/10 border-background/20 text-background placeholder:text-background/60 focus:bg-background/20"
         />
         {searchValue && (
@@ -63,6 +100,15 @@ const GlobalSearch = () => {
           </Button>
         )}
       </div>
+
+      {isOpen && (
+        <GlobalSearchDropdown
+          results={results}
+          isSearching={isSearching}
+          onResultClick={handleResultClick}
+          selectedIndex={selectedIndex}
+        />
+      )}
     </div>
   );
 };
