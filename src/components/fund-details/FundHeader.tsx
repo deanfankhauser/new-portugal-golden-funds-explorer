@@ -3,7 +3,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import { Button } from "@/components/ui/button";
-import { GitCompare, Calculator } from 'lucide-react';
+import { GitCompare, Calculator, CheckCircle2 } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
 import { tagToSlug } from '@/lib/utils';
 import IntroductionButton from './IntroductionButton';
@@ -48,6 +48,12 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
                 {fund.name} | Portugal Investment Fund
               </h1>
               <div className="flex flex-wrap items-center gap-2">
+                {fund.isVerified && (
+                  <div className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shadow-md border-2 border-green-700">
+                    <CheckCircle2 className="w-5 h-5" />
+                    <span>VERIFIED FUND</span>
+                  </div>
+                )}
                 <EnhancedGVEligibilityBadge fund={fund} showDetails={false} />
                 <RecentlyUpdatedBadge fund={fund} />
               </div>

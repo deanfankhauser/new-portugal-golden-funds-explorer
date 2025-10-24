@@ -21,6 +21,8 @@ interface HomepageContentProps {
   setSelectedCategory: (category: FundCategory | null) => void;
   selectedManager: string | null;
   setSelectedManager: (manager: string | null) => void;
+  showOnlyVerified: boolean;
+  setShowOnlyVerified: (value: boolean) => void;
   searchQuery: string;
   allFunds?: Fund[];
   loading?: boolean;
@@ -35,6 +37,8 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
   setSelectedCategory,
   selectedManager,
   setSelectedManager,
+  showOnlyVerified,
+  setShowOnlyVerified,
   searchQuery,
   allFunds = [],
   loading = false,
@@ -58,6 +62,8 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
         setSelectedCategory={setSelectedCategory}
         selectedManager={selectedManager}
         setSelectedManager={setSelectedManager}
+        showOnlyVerified={showOnlyVerified}
+        setShowOnlyVerified={setShowOnlyVerified}
       />
 
       {/* Mobile filter - always visible */}
@@ -79,6 +85,8 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
         <StreamlinedFilter
           selectedTags={selectedTags}
           setSelectedTags={setSelectedTags}
+          showOnlyVerified={showOnlyVerified}
+          setShowOnlyVerified={setShowOnlyVerified}
         />
       </div>
 
@@ -88,6 +96,8 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
           setSelectedTags={setSelectedTags}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
+          showOnlyVerified={showOnlyVerified}
+          setShowOnlyVerified={setShowOnlyVerified}
         />
         
         <main className="lg:col-span-3 order-1 lg:order-2" id="main-content">

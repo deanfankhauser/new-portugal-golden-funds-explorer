@@ -9,6 +9,7 @@ export const useFundFiltering = () => {
   const [selectedTags, setSelectedTags] = useState<FundTag[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<FundCategory | null>(null);
   const [selectedManager, setSelectedManager] = useState<string | null>(null);
+  const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   const { funds, filterFunds, loading, error } = useRealTimeFunds();
 
   // Get search query from URL params
@@ -27,6 +28,11 @@ export const useFundFiltering = () => {
       result = result.filter(fund => 
         fund.managerName.toLowerCase() === selectedManager.toLowerCase()
       );
+    }
+    
+    // Apply verified filter
+    if (showOnlyVerified) {
+      result = result.filter(fund => fund.isVerified === true);
     }
     
     // Sort by: 1. Verified status (verified first), 2. finalRank
@@ -59,6 +65,8 @@ export const useFundFiltering = () => {
     setSelectedCategory,
     selectedManager,
     setSelectedManager,
+    showOnlyVerified,
+    setShowOnlyVerified,
     searchQuery,
     filteredFunds,
     allFunds: funds,

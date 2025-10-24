@@ -20,6 +20,7 @@ const ITEMS_PER_PAGE = 10;
 const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   
   const {
     searchTerm,
@@ -32,9 +33,17 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
     handleClearFilters
   } = useFilterAndSort(scores);
 
+  // Apply verified filter
+  const finalFilteredScores = showOnlyVerified 
+    ? filteredAndSortedScores.filter(score => {
+        const fund = getFundById(score.fundId);
+        return fund?.isVerified === true;
+      })
+    : filteredAndSortedScores;
+
   // Pagination
-  const totalPages = Math.ceil(filteredAndSortedScores.length / ITEMS_PER_PAGE);
-  const paginatedScores = filteredAndSortedScores.slice(
+  const totalPages = Math.ceil(finalFilteredScores.length / ITEMS_PER_PAGE);
+  const paginatedScores = finalFilteredScores.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
@@ -61,7 +70,7 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
 
   // Add structured data for fund index
   useEffect(() => {
-    const funds = filteredAndSortedScores.map(score => getFundById(score.fundId)).filter(Boolean);
+    const funds = finalFilteredScores.map(score => getFundById(score.fundId)).filter(Boolean);
     const listSchema = InvestmentFundStructuredDataService.generateFundListSchema(funds, "fund-index");
     
     const script = document.createElement('script');
@@ -76,7 +85,7 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
         document.head.removeChild(existingScript);
       }
     };
-  }, [filteredAndSortedScores]);
+  }, [finalFilteredScores]);
 
   return (
     <section 
@@ -98,7 +107,9 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
             <FundIndexControls
               searchTerm={searchTerm}
               onSearchChange={handleSearchChange}
-              filteredScores={filteredAndSortedScores}
+              filteredScores={finalFilteredScores}
+              showOnlyVerified={showOnlyVerified}
+              onShowOnlyVerifiedChange={setShowOnlyVerified}
             />
             
             <AdvancedFilters
@@ -111,7 +122,7 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
             
             <FundIndexStats
               paginatedCount={paginatedScores.length}
-              filteredCount={filteredAndSortedScores.length}
+              filteredCount={finalFilteredScores.length}
               totalCount={scores.length}
             />
           </div>
@@ -129,7 +140,7 @@ const FullIndexTable: React.FC<FullIndexTableProps> = ({ scores }) => {
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={setCurrentPage}
-              totalItems={filteredAndSortedScores.length}
+              totalItems={finalFilteredScores.length}
               itemsPerPage={ITEMS_PER_PAGE}
             />
           </div>

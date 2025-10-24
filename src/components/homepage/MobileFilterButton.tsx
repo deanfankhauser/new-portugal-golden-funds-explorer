@@ -15,6 +15,8 @@ interface MobileFilterButtonProps {
   setSelectedCategory: (category: FundCategory | null) => void;
   selectedManager: string | null;
   setSelectedManager: (manager: string | null) => void;
+  showOnlyVerified: boolean;
+  setShowOnlyVerified: (value: boolean) => void;
 }
 
 const MobileFilterButton: React.FC<MobileFilterButtonProps> = ({
@@ -23,7 +25,9 @@ const MobileFilterButton: React.FC<MobileFilterButtonProps> = ({
   selectedCategory,
   setSelectedCategory,
   selectedManager,
-  setSelectedManager
+  setSelectedManager,
+  showOnlyVerified,
+  setShowOnlyVerified
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -91,6 +95,8 @@ const MobileFilterButton: React.FC<MobileFilterButtonProps> = ({
           <StreamlinedFilter
             selectedTags={selectedTags}
             setSelectedTags={setSelectedTags}
+            showOnlyVerified={showOnlyVerified}
+            setShowOnlyVerified={setShowOnlyVerified}
           />
           
           {activeFilterCount > 0 && (

@@ -9,6 +9,8 @@ interface HomepageSidebarProps {
   setSelectedTags: (tags: FundTag[]) => void;
   selectedCategory: FundCategory | null;
   setSelectedCategory: (category: FundCategory | null) => void;
+  showOnlyVerified: boolean;
+  setShowOnlyVerified: (value: boolean) => void;
 }
 
 const HomepageSidebar: React.FC<HomepageSidebarProps> = ({
@@ -16,6 +18,8 @@ const HomepageSidebar: React.FC<HomepageSidebarProps> = ({
   setSelectedTags,
   selectedCategory,
   setSelectedCategory,
+  showOnlyVerified,
+  setShowOnlyVerified
 }) => {
   return (
     <aside className="lg:col-span-1 order-2 lg:order-1" aria-label="Sidebar tools">
@@ -23,6 +27,8 @@ const HomepageSidebar: React.FC<HomepageSidebarProps> = ({
         <StreamlinedFilter
           selectedTags={selectedTags}
           setSelectedTags={setSelectedTags}
+          showOnlyVerified={showOnlyVerified}
+          setShowOnlyVerified={setShowOnlyVerified}
         />
         
         <div className="bg-card rounded-lg shadow-sm border p-4">

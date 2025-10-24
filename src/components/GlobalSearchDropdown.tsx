@@ -6,7 +6,8 @@ import {
   User, 
   Tag,
   TrendingUp,
-  Loader2
+  Loader2,
+  CheckCircle2
 } from 'lucide-react';
 import { SearchResult } from '@/hooks/useGlobalSearch';
 
@@ -92,8 +93,11 @@ export const GlobalSearchDropdown: React.FC<Props> = ({
                 </div>
                 
                 <div className="flex-1 min-w-0 overflow-hidden">
-                  <div className="font-medium text-foreground truncate">
+                  <div className="font-medium text-foreground truncate flex items-center gap-1.5">
                     {result.name}
+                    {result.type === 'fund' && result.metadata?.isVerified && (
+                      <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
+                    )}
                   </div>
                   {result.subtitle && (
                     <div className="text-sm text-muted-foreground truncate">

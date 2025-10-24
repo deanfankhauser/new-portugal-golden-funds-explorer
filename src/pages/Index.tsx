@@ -18,6 +18,8 @@ const IndexPage = () => {
     setSelectedCategory,
     selectedManager,
     setSelectedManager,
+    showOnlyVerified,
+    setShowOnlyVerified,
     searchQuery,
     filteredFunds,
     allFunds,
@@ -39,6 +41,8 @@ const IndexPage = () => {
         setSelectedCategory={setSelectedCategory}
         selectedManager={selectedManager}
         setSelectedManager={setSelectedManager}
+        showOnlyVerified={showOnlyVerified}
+        setShowOnlyVerified={setShowOnlyVerified}
         searchQuery={searchQuery}
         allFunds={allFunds}
         loading={loading}
