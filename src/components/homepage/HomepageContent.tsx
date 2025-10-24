@@ -1,9 +1,8 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Fund, FundTag } from '../../data/funds';
-import CompactFilter from './CompactFilter';
+import StreamlinedFilter from './StreamlinedFilter';
 import FundListSkeleton from '../common/FundListSkeleton';
-import MobileFilterToggle from './MobileFilterToggle';
 import HomepageSidebar from './HomepageSidebar';
 import ResultsHeader from './ResultsHeader';
 import EmptyFundsState from './EmptyFundsState';
@@ -31,8 +30,6 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
   loading = false,
   error = null
 }) => {
-  const [showMobileFilter, setShowMobileFilter] = useState(false);
-
   const hasActiveFilters = selectedTags.length > 0 || searchQuery.trim() !== '';
 
   return (
@@ -41,23 +38,15 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
         Skip to main content
       </a>
 
-      <MobileFilterToggle 
-        showMobileFilter={showMobileFilter}
-        setShowMobileFilter={setShowMobileFilter}
-        activeFiltersCount={selectedTags.length}
-        hasSearch={searchQuery.trim() !== ''}
-      />
-
-      {showMobileFilter && (
-        <div className="lg:hidden mb-6" id="mobile-filter-section">
-          <CompactFilter
-            selectedTags={selectedTags}
-            setSelectedTags={setSelectedTags}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-          />
-        </div>
-      )}
+      {/* Mobile filter - always visible */}
+      <div className="lg:hidden mb-6">
+        <StreamlinedFilter
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
         <HomepageSidebar

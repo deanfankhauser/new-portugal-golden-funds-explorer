@@ -1,6 +1,6 @@
 
 import React from 'react';
-import CompactFilter from './CompactFilter';
+import StreamlinedFilter from './StreamlinedFilter';
 import { FundTag } from '../../data/funds';
 
 interface HomepageSidebarProps {
@@ -17,13 +17,15 @@ const HomepageSidebar: React.FC<HomepageSidebarProps> = ({
   setSearchQuery
 }) => {
   return (
-    <aside className="lg:col-span-1 order-2 lg:order-1 hidden lg:block" aria-label="Sidebar tools">
-      <CompactFilter
-        selectedTags={selectedTags}
-        setSelectedTags={setSelectedTags}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
+    <aside className="lg:col-span-1 order-2 lg:order-1" aria-label="Sidebar tools">
+      <div className="sticky top-4">
+        <StreamlinedFilter
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
+      </div>
     </aside>
   );
 };
