@@ -7,23 +7,23 @@ import { getFundType } from '../utils/fundTypeUtils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GitCompare, PieChart, Globe, Tag, User, Euro } from 'lucide-react';
+import { GitCompare, PieChart, Globe, Tag, User, Euro, CheckCircle2 } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import IntroductionButton from './fund-details/IntroductionButton';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 import DataFreshnessIndicator from './common/DataFreshnessIndicator';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
+import { DateManagementService } from '../services/dateManagementService';
 
 import { DATA_AS_OF_LABEL } from '../utils/constants';
 import { SaveFundButton } from './common/SaveFundButton';
 
 interface FundListItemProps {
   fund: Fund;
-  rank?: number;
 }
 
-const FundListItem: React.FC<FundListItemProps> = ({ fund, rank }) => {
+const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
   const { addToComparison, removeFromComparison, isInComparison } = useComparison();
   
   const isSelected = isInComparison(fund.id);
@@ -44,33 +44,23 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund, rank }) => {
     ? fund.geographicAllocation[0] 
     : null;
 
-  const getRankBadge = () => {
-    if (!rank || rank > 3) return null;
+  const getVerificationBadge = () => {
+    const contentDates = DateManagementService.getFundContentDates(fund);
+    const dataAge = DateManagementService.getContentAge(contentDates.dataLastVerified);
     
-    const badges = {
-      1: { emoji: '🏆', text: '#1 Ranked', bg: 'bg-yellow-600', textColor: 'text-white' },
-      2: { emoji: '🥈', text: '#2 Ranked', bg: 'bg-gray-500', textColor: 'text-white' },
-      3: { emoji: '🥉', text: '#3 Ranked', bg: 'bg-orange-600', textColor: 'text-white' }
-    };
-    
-    const badge = badges[rank as 1 | 2 | 3];
+    // Only show verified badge for recently verified data (within 30 days)
+    if (dataAge > 30) return null;
     
     return (
-      <div className={`${badge.bg} ${badge.textColor} px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5`}>
-        <span>{badge.emoji}</span>
-        <span>{badge.text}</span>
+      <div className="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5">
+        <CheckCircle2 className="w-3.5 h-3.5" />
+        <span>Verified</span>
       </div>
     );
   };
 
   return (
-    <Card className={`border rounded-xl hover:shadow-lg transition-all duration-200 bg-card w-full group relative ${
-      rank && rank <= 3 ? 'border-2' : ''
-    } ${
-      rank === 1 ? 'border-yellow-500/30' : 
-      rank === 2 ? 'border-gray-400/30' : 
-      rank === 3 ? 'border-orange-400/30' : ''
-    }`}>
+    <Card className="border rounded-xl hover:shadow-lg transition-all duration-200 bg-card w-full group relative">
       <CardContent className="p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
@@ -81,7 +71,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund, rank }) => {
               </Link>
             </h3>
             <div className="flex items-center gap-2 flex-wrap">
-              {getRankBadge()}
+              {getVerificationBadge()}
               {isGVEligible && (
                 <Badge variant="default" className="text-xs font-medium">
                   GV Eligible

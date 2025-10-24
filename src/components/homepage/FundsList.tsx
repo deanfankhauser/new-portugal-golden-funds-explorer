@@ -35,7 +35,7 @@ const FundsList: React.FC<FundsListProps> = ({
       {filteredFunds.map((fund, index) => (
         <div key={fund.id} className="relative">
           <div className="card-modern transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1 hover:scale-[1.01]">
-            <FundListItem fund={fund} rank={index + 1} />
+            <FundListItem fund={fund} />
           </div>
           
           {/* Enhanced CTA placement with better styling */}
