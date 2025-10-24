@@ -6,24 +6,18 @@ import { FundTag } from '../../data/funds';
 interface HomepageSidebarProps {
   selectedTags: FundTag[];
   setSelectedTags: (tags: FundTag[]) => void;
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
 }
 
 const HomepageSidebar: React.FC<HomepageSidebarProps> = ({
   selectedTags,
   setSelectedTags,
-  searchQuery,
-  setSearchQuery
 }) => {
   return (
     <aside className="lg:col-span-1 order-2 lg:order-1" aria-label="Sidebar tools">
-      <div className="sticky top-4">
+      <div className="sticky top-4 space-y-4">
         <StreamlinedFilter
           selectedTags={selectedTags}
           setSelectedTags={setSelectedTags}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
         />
       </div>
     </aside>

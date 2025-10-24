@@ -1,55 +1,128 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-
-import PremiumCTA from '../cta/PremiumCTA';
-import LastUpdated from '../common/LastUpdated';
+import { ShieldCheck, TrendingUp, Building2, Euro } from 'lucide-react';
+import { Button } from '../ui/button';
 import { funds } from '../../data/funds';
 
 const HomepageHero: React.FC = () => {
-  // Calculate the most recent update date from all funds
-  const getMostRecentUpdateDate = () => {
-    const dates = funds
-      .map(fund => fund.dateModified || fund.dataLastVerified)
-      .filter(Boolean)
-      .sort((a, b) => new Date(b!).getTime() - new Date(a!).getTime());
-    
-    return dates[0] || null;
-  };
+  const totalFunds = funds.length;
+  const minimumInvestment = '€500K';
 
-  const mostRecentUpdate = getMostRecentUpdateDate();
+  const stats = [
+    {
+      value: `${totalFunds}`,
+      label: 'Golden Visa Funds',
+      icon: Building2,
+    },
+    {
+      value: 'Comprehensive',
+      label: 'Analysis & Comparison',
+      icon: TrendingUp,
+    },
+    {
+      value: minimumInvestment,
+      label: 'Standard Investment',
+      icon: Euro,
+    },
+    {
+      value: 'Updated',
+      label: 'Regularly Verified Data',
+      icon: ShieldCheck,
+    },
+  ];
+
+  const scrollToFunds = () => {
+    const fundsSection = document.getElementById('funds-section');
+    if (fundsSection) {
+      fundsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <header className="mb-12 sm:mb-16 lg:mb-20 max-w-7xl mx-auto container-responsive-padding">
       <div className="relative">
         {/* Background decoration */}
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-gradient-to-br from-accent/8 to-accent/3 rounded-full blur-3xl opacity-40"></div>
-          <div className="absolute top-20 left-1/4 w-64 h-64 bg-gradient-to-br from-muted/30 to-muted/10 rounded-full blur-2xl opacity-50"></div>
-          <div className="absolute top-40 right-1/4 w-48 h-48 bg-gradient-to-br from-secondary/20 to-secondary/5 rounded-full blur-2xl opacity-60"></div>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-gradient-to-br from-accent/10 to-accent/5 rounded-full blur-3xl opacity-60"></div>
         </div>
 
-        <div className="relative z-10 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold 
-                         mb-4 sm:mb-6 text-high-contrast leading-[1.1] tracking-tight">
-            <span className="block">Portugal Golden Visa</span>
-            <span className="text-accent font-bold">
-              Investment Funds
-            </span>
-          </h1>
-          
-          <p className="text-lg sm:text-xl md:text-2xl text-medium-contrast 
-                       mb-6 sm:mb-8 max-w-4xl leading-relaxed font-light mx-auto">
-            Explore <span className="font-semibold text-accent">Portugal Golden Visa Investment Funds</span> with 
-            comprehensive analysis and compare qualified funds for your Golden Visa application.
-          </p>
-          
-          <div className="mb-8 sm:mb-10">
+        <div className="relative z-10">
+          {/* Trust Badge */}
+          <div className="flex justify-center mb-8">
+            <div className="inline-flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-full px-6 py-3 border border-border shadow-sm">
+              <ShieldCheck className="h-5 w-5 text-accent" />
+              <span className="text-sm font-medium text-high-contrast">
+                Expert-Curated Golden Visa Fund Analysis
+              </span>
+            </div>
+          </div>
+
+          {/* Main Headline */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-high-contrast leading-[1.1] tracking-tight">
+              Portugal Golden Visa Funds
+            </h1>
+            <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+              <span className="text-accent italic font-cheltenham">Profiles, Metrics, Comparisons</span>
+            </div>
+            
+            <p className="text-lg sm:text-xl text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-8">
+              Compare Portugal Golden Visa investment funds with comprehensive analysis. 
+              Detailed breakdown of fees, returns, and compliance requirements.
+            </p>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 mb-8 max-w-4xl mx-auto">
+            {stats.map((stat, index) => {
+              const Icon = stat.icon;
+              return (
+                <div
+                  key={index}
+                  className="bg-card rounded-2xl p-6 border border-border shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div className="flex flex-col items-center text-center">
+                    <Icon className="h-6 w-6 text-accent mb-3" />
+                    <div className="text-3xl sm:text-4xl font-bold text-high-contrast mb-2">
+                      {stat.value}
+                    </div>
+                    <div className="text-sm sm:text-base text-medium-contrast font-medium">
+                      {stat.label}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+            <Button
+              size="lg"
+              onClick={scrollToFunds}
+              className="w-full sm:w-auto text-base sm:text-lg px-8 py-6 bg-accent hover:bg-accent/90 text-white font-semibold"
+            >
+              Browse All Funds
+            </Button>
+            <Link to="/about" className="w-full sm:w-auto">
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full text-base sm:text-lg px-8 py-6 font-semibold"
+              >
+                About Our Analysis
+              </Button>
+            </Link>
+          </div>
+
+          {/* Learn More Link */}
+          <div className="text-center">
             <a 
               href="https://movingto.com/pt/portugal-golden-visa" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center text-accent hover:text-accent/80 font-medium text-base sm:text-lg transition-colors duration-200 group"
+              className="inline-flex items-center text-accent hover:text-accent/80 font-medium text-sm sm:text-base transition-colors duration-200 group"
             >
               Learn about Portugal Golden Visa requirements
               <svg className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -57,24 +130,6 @@ const HomepageHero: React.FC = () => {
               </svg>
             </a>
           </div>
-          
-          {mostRecentUpdate && (
-            <div className="flex justify-center mb-8 sm:mb-10" role="complementary">
-              <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 border border-border shadow-sm">
-                <LastUpdated dateModified={mostRecentUpdate} />
-              </div>
-            </div>
-          )}
-
-          <div className="mb-10 sm:mb-12" role="complementary" aria-label="Get expert guidance">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-accent/15 to-accent/5 rounded-3xl blur-xl"></div>
-              <div className="relative">
-                <PremiumCTA variant="banner" location="homepage-hero" />
-              </div>
-            </div>
-          </div>
-
         </div>
       </div>
     </header>

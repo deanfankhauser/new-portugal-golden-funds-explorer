@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 import AuthAwareButton from "./auth/AuthAwareButton";
+import GlobalSearch from "./GlobalSearch";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -25,9 +26,9 @@ const Header = () => {
       <DisclaimerBanner />
       <header className="bg-foreground text-background py-3 shadow-lg w-full">
       <div className="container mx-auto px-4 w-full">
-        <div className="flex justify-between items-center w-full">
+        <div className="flex justify-between items-center gap-4 w-full">
           {/* Left section - Logo */}
-          <div className="flex items-center">
+          <div className="flex items-center flex-shrink-0">
             <Link to="/" className="flex items-center">
               <img 
                 src="/lovable-uploads/ab17d046-1cb9-44fd-aa6d-c4d338e11090.png" 
@@ -39,8 +40,13 @@ const Header = () => {
             </Link>
           </div>
 
+          {/* Global Search - Desktop */}
+          <div className="hidden md:flex flex-1 max-w-md">
+            <GlobalSearch />
+          </div>
+
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-6 flex-shrink-0">
             <NavigationMenu>
               <NavigationMenuList>
                 {/* Analysis Dropdown */}
@@ -149,11 +155,16 @@ const Header = () => {
           </div>
 
           {/* Mobile Navigation and Comparison */}
-          <div className="flex md:hidden items-center gap-2">
+          <div className="flex md:hidden items-center gap-2 flex-shrink-0">
             <ShortlistIndicator />
             <ComparisonIndicator />
             <MobileNavigation />
           </div>
+        </div>
+        
+        {/* Global Search - Mobile (full width below header) */}
+        <div className="md:hidden mt-3">
+          <GlobalSearch />
         </div>
       </div>
     </header>
