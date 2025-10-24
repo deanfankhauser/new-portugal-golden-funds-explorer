@@ -69,7 +69,7 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
 
         <CollapsibleContent className="space-y-2 pt-2">
           <div className="flex flex-wrap gap-2 w-full">
-            {allFilters.map((filter) => {
+            {allFilters.slice(0, 10).map((filter) => {
               const isSelected = selectedTags.includes(filter.tag);
               
               return (
@@ -86,11 +86,13 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
             })}
           </div>
 
-          <Link
-            to="/tags"
-            className="flex items-center gap-2 text-sm text-primary hover:underline pt-2"
-          >
-            See all tags →
+          <Link to="/tags">
+            <Button
+              variant="outline"
+              className="w-full mt-3"
+            >
+              See more tags
+            </Button>
           </Link>
         </CollapsibleContent>
       </Collapsible>
