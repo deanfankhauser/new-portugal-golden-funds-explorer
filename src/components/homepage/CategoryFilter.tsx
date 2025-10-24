@@ -16,7 +16,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   selectedCategory,
   setSelectedCategory
 }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const { funds } = useRealTimeFunds();
   const categories = getAllCategories();
 
@@ -56,9 +56,9 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
                 variant={isSelected ? "default" : "outline"}
                 size="sm"
                 onClick={() => handleCategoryClick(category)}
-                className="text-left justify-start"
+                className="text-left justify-start max-w-full break-words whitespace-normal h-auto py-2 min-h-[36px]"
               >
-                {category} ({count})
+                <span className="break-words">{category} ({count})</span>
               </Button>
             );
           })}
