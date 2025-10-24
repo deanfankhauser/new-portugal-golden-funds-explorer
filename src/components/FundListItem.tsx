@@ -48,15 +48,15 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund, rank }) => {
     if (!rank || rank > 3) return null;
     
     const badges = {
-      1: { emoji: '🏆', text: '#1 Ranked', gradient: 'from-yellow-400 to-yellow-600' },
-      2: { emoji: '🥈', text: '#2 Ranked', gradient: 'from-gray-300 to-gray-400' },
-      3: { emoji: '🥉', text: '#3 Ranked', gradient: 'from-orange-300 to-orange-500' }
+      1: { emoji: '🏆', text: '#1 Ranked', bg: 'bg-yellow-600', textColor: 'text-white' },
+      2: { emoji: '🥈', text: '#2 Ranked', bg: 'bg-gray-500', textColor: 'text-white' },
+      3: { emoji: '🥉', text: '#3 Ranked', bg: 'bg-orange-600', textColor: 'text-white' }
     };
     
     const badge = badges[rank as 1 | 2 | 3];
     
     return (
-      <div className={`bg-gradient-to-r ${badge.gradient} text-white px-3 py-1 rounded-full text-xs font-semibold shadow-md flex items-center gap-1.5`}>
+      <div className={`${badge.bg} ${badge.textColor} px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5`}>
         <span>{badge.emoji}</span>
         <span>{badge.text}</span>
       </div>
