@@ -64,7 +64,7 @@ const HomepageHero: React.FC = () => {
               Portugal Golden Visa Funds
             </h1>
             <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              <span className="text-accent">Curated & Analyzed</span>
+              <span className="text-accent italic">Curated & Analyzed</span>
             </div>
             
             <p className="text-lg sm:text-xl text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-8">
