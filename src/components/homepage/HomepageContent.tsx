@@ -73,6 +73,8 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
         <HomepageSidebar
           selectedTags={selectedTags}
           setSelectedTags={setSelectedTags}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
         />
         
         <main className="lg:col-span-3 order-1 lg:order-2" id="main-content">
