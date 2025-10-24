@@ -80,10 +80,10 @@ export const GlobalSearchDropdown: React.FC<Props> = ({
                 to={result.url}
                 onClick={onResultClick}
                 className={`
-                  flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors cursor-pointer border-l-2
+                  flex items-center gap-3 px-4 py-3 transition-colors cursor-pointer border-l-2
                   ${isSelected 
-                    ? 'bg-accent border-primary' 
-                    : 'border-transparent'
+                    ? 'bg-primary/10 border-primary text-foreground' 
+                    : 'border-transparent hover:bg-muted/50'
                   }
                 `}
               >
