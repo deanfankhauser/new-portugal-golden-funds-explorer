@@ -48,7 +48,7 @@ export type Database = {
           created_at: string | null
           details: Json | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           target_id: string | null
           target_type: string
           user_agent: string | null
@@ -59,7 +59,7 @@ export type Database = {
           created_at?: string | null
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           target_id?: string | null
           target_type: string
           user_agent?: string | null
@@ -70,7 +70,7 @@ export type Database = {
           created_at?: string | null
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           target_id?: string | null
           target_type?: string
           user_agent?: string | null
@@ -259,6 +259,7 @@ export type Database = {
           hurdle_rate: number | null
           id: string
           inception_date: string | null
+          is_verified: boolean | null
           last_modified_by: string | null
           location: string | null
           lock_up_period_months: number | null
@@ -279,6 +280,8 @@ export type Database = {
           tags: string[] | null
           team_members: Json | null
           updated_at: string | null
+          verified_at: string | null
+          verified_by: string | null
           version: number | null
           website: string | null
         }
@@ -304,6 +307,7 @@ export type Database = {
           hurdle_rate?: number | null
           id: string
           inception_date?: string | null
+          is_verified?: boolean | null
           last_modified_by?: string | null
           location?: string | null
           lock_up_period_months?: number | null
@@ -324,6 +328,8 @@ export type Database = {
           tags?: string[] | null
           team_members?: Json | null
           updated_at?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
           version?: number | null
           website?: string | null
         }
@@ -349,6 +355,7 @@ export type Database = {
           hurdle_rate?: number | null
           id?: string
           inception_date?: string | null
+          is_verified?: boolean | null
           last_modified_by?: string | null
           location?: string | null
           lock_up_period_months?: number | null
@@ -369,6 +376,8 @@ export type Database = {
           tags?: string[] | null
           team_members?: Json | null
           updated_at?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
           version?: number | null
           website?: string | null
         }
@@ -535,7 +544,7 @@ export type Database = {
           access_type: string
           accessed_at: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           user_agent: string | null
           user_id: string | null
         }
@@ -543,7 +552,7 @@ export type Database = {
           access_type: string
           accessed_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id?: string | null
         }
@@ -551,7 +560,7 @@ export type Database = {
           access_type?: string
           accessed_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id?: string | null
         }
@@ -603,7 +612,7 @@ export type Database = {
         Returns: boolean
       }
       check_sensitive_data_exposure: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           has_sensitive_columns: boolean
           sensitive_columns: string[]
@@ -611,7 +620,7 @@ export type Database = {
         }[]
       }
       copy_funds_to_develop: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           details: string
           operation: string
@@ -619,16 +628,10 @@ export type Database = {
           status: string
         }[]
       }
-      find_user_by_email: {
-        Args: { user_email: string }
-        Returns: string
-      }
-      get_admin_data_access_level: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      find_user_by_email: { Args: { user_email: string }; Returns: string }
+      get_admin_data_access_level: { Args: never; Returns: string }
       get_all_investor_profiles_admin: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           address: string
           annual_income_range: string
@@ -650,7 +653,7 @@ export type Database = {
         }[]
       }
       get_basic_manager_info: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           city: string
           company_name: string
@@ -661,7 +664,7 @@ export type Database = {
         }[]
       }
       get_database_schema_info: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           column_default: string
           column_name: string
@@ -693,7 +696,7 @@ export type Database = {
         }[]
       }
       get_investor_profile_stats: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           active_investors: number
           recent_signups: number
@@ -701,7 +704,7 @@ export type Database = {
         }[]
       }
       get_investor_profiles_for_admin: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           address: string
           annual_income_range: string
@@ -723,7 +726,7 @@ export type Database = {
         }[]
       }
       get_investor_profiles_for_admin_secure: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           address: string
           annual_income_range: string
@@ -770,7 +773,7 @@ export type Database = {
         }[]
       }
       get_public_manager_profiles: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           assets_under_management: number
           city: string
@@ -789,7 +792,7 @@ export type Database = {
         }[]
       }
       get_super_admin_emails: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           admin_name: string
           email: string
@@ -807,10 +810,7 @@ export type Database = {
           user_id: string
         }[]
       }
-      is_user_admin: {
-        Args: { check_user_id?: string }
-        Returns: boolean
-      }
+      is_user_admin: { Args: { check_user_id?: string }; Returns: boolean }
       log_admin_activity: {
         Args: {
           p_action_type: string
@@ -847,7 +847,7 @@ export type Database = {
         Returns: string
       }
       sync_database_functions_to_develop: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           function_definition: string
           function_name: string

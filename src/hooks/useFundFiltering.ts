@@ -29,10 +29,15 @@ export const useFundFiltering = () => {
       );
     }
     
-    // Re-sort by finalRank to maintain admin-defined order after filtering
-    const sorted = [...result].sort((a, b) => 
-      (a.finalRank ?? 999) - (b.finalRank ?? 999)
-    );
+    // Sort by: 1. Verified status (verified first), 2. finalRank
+    const sorted = [...result].sort((a, b) => {
+      // Verified funds always at the top
+      if (a.isVerified && !b.isVerified) return -1;
+      if (!a.isVerified && b.isVerified) return 1;
+      
+      // Then by admin ranking
+      return (a.finalRank ?? 999) - (b.finalRank ?? 999);
+    });
     
     console.log('🔍 Filtering debug:', {
       totalFunds: funds.length,

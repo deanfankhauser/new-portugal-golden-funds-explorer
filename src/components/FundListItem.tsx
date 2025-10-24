@@ -45,22 +45,25 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
     : null;
 
   const getVerificationBadge = () => {
-    const contentDates = DateManagementService.getFundContentDates(fund);
-    const dataAge = DateManagementService.getContentAge(contentDates.dataLastVerified);
+    // Priority: Admin verification (manual)
+    if (fund.isVerified) {
+      return (
+        <div className="bg-green-600 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm border-2 border-green-700">
+          <CheckCircle2 className="w-4 h-4" />
+          <span>VERIFIED</span>
+        </div>
+      );
+    }
     
-    // Only show verified badge for recently verified data (within 30 days)
-    if (dataAge > 30) return null;
-    
-    return (
-      <div className="bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5">
-        <CheckCircle2 className="w-3.5 h-3.5" />
-        <span>Verified</span>
-      </div>
-    );
+    return null;
   };
 
   return (
-    <Card className="border rounded-xl hover:shadow-lg transition-all duration-200 bg-card w-full group relative">
+    <Card className={`border rounded-xl hover:shadow-lg transition-all duration-200 bg-card w-full group relative ${
+      fund.isVerified 
+        ? 'ring-2 ring-green-500/20 bg-green-50/30 border-green-200' 
+        : ''
+    }`}>
       <CardContent className="p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
