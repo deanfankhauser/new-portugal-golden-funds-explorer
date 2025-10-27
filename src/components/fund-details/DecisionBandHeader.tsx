@@ -41,11 +41,13 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
 
   const isOpenForSubscriptions = fund.fundStatus === 'Open';
 
-  // Simplified one-line summary
+  // Simplified one-line summary with verification gating
   const hasGoldenVisa = fund.tags?.some(tag => tag.toLowerCase().includes('golden visa'));
   const redemptionFreq = fund.redemptionTerms?.frequency?.toLowerCase();
   
-  const summary = `${fund.regulatedBy || 'CMVM'}-regulated, ${fund.term ? 'closed-ended' : 'open-ended'} ${fund.category.toLowerCase()}${redemptionFreq === 'daily' ? ' with daily liquidity' : ''}${hasGoldenVisa ? '. Golden Visa eligible' : ''}.`;
+  const summary = `${fund.term ? 'closed-ended' : 'open-ended'} ${fund.category.toLowerCase()}${redemptionFreq === 'daily' ? ' with daily liquidity' : ''}` +
+    (fund.isVerified ? `${fund.regulatedBy ? `, ${fund.regulatedBy}-regulated` : ', CMVM-regulated'}` : '') +
+    (fund.isVerified && hasGoldenVisa ? '. Golden Visa eligible' : '.');
 
   return (
     <div className="space-y-8">
@@ -108,7 +110,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
         <CardContent className="p-6">
           <h2 className="text-xl font-bold text-foreground mb-5">Why This Fund?</h2>
           <div className="space-y-3">
-            {hasGoldenVisa && (
+            {fund.isVerified && hasGoldenVisa && (
               <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-success/5 to-success/10 border border-success/20">
                 <div className="p-1.5 rounded-full bg-success/20 mt-0.5">
                   <div className="h-2 w-2 rounded-full bg-success" />
@@ -121,17 +123,19 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                 </div>
               </div>
             )}
-            <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20">
-              <div className="p-1.5 rounded-full bg-primary/20 mt-0.5">
-                <div className="h-2 w-2 rounded-full bg-primary" />
+            {fund.isVerified && (
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20">
+                <div className="p-1.5 rounded-full bg-primary/20 mt-0.5">
+                  <div className="h-2 w-2 rounded-full bg-primary" />
+                </div>
+                <div>
+                  <div className="font-semibold text-foreground mb-1">{fund.regulatedBy || 'CMVM'} Regulated</div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Licensed and supervised by Portuguese authorities
+                  </p>
+                </div>
               </div>
-              <div>
-                <div className="font-semibold text-foreground mb-1">{fund.regulatedBy || 'CMVM'} Regulated</div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Licensed and supervised by Portuguese authorities
-                </p>
-              </div>
-            </div>
+            )}
             {redemptionFreq === 'daily' && (
               <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-accent/5 to-accent/10 border border-accent/20">
                 <div className="p-1.5 rounded-full bg-accent/20 mt-0.5">

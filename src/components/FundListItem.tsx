@@ -80,7 +80,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             </h3>
             <div className="flex items-center gap-2 flex-wrap">
               {getVerificationBadge()}
-              {isGVEligible && (
+              {fund.isVerified && isGVEligible && (
                 <Badge variant="default" className="text-xs font-medium">
                   GV Eligible
                 </Badge>
