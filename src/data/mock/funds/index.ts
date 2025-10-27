@@ -13,8 +13,6 @@ import { portugalLiquidOpportunities } from './portugal-liquid-opportunities';
 import { heedTopFund } from './heed-top-fund';
 import { venturesEUFund } from './ventures-eu-fund';
 import { flexSpaceFund } from './flex-space-fund';
-import { portugalPrimeFund } from './portugal-prime-fund';
-import { portugalPrimeFCR } from './portugal-prime-fcr';
 import { pelaTerraIIRegenerateFund } from './pela-terra-ii-regenerate-fund';
 import { lakeviewFund } from './lakeview-fund';
 import { globalEuropeanCinemaFund } from './global-european-cinema-fund';
@@ -43,8 +41,6 @@ export const fundsData: Fund[] = [
   heedTopFund,
   venturesEUFund,
   flexSpaceFund,
-  portugalPrimeFund,
-  portugalPrimeFCR,
   pelaTerraIIRegenerateFund,
   lakeviewFund,
   globalEuropeanCinemaFund,
@@ -76,8 +72,6 @@ export {
   heedTopFund,
   venturesEUFund,
   flexSpaceFund,
-  portugalPrimeFund,
-  portugalPrimeFCR,
   pelaTerraIIRegenerateFund,
   lakeviewFund,
   globalEuropeanCinemaFund,

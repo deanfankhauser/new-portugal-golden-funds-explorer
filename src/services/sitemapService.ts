@@ -31,74 +31,74 @@ export class SitemapService {
       },
       // Hub Pages
       {
-        url: `${URL_CONFIG.BASE_URL}/categories`,
+        url: URL_CONFIG.buildUrl('/categories'),
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: 0.8
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/tags`,
+        url: URL_CONFIG.buildUrl('/tags'),
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: 0.8
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/managers`,
+        url: URL_CONFIG.buildUrl('/managers'),
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: 0.8
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/comparisons`,
+        url: URL_CONFIG.buildUrl('/comparisons'),
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: 0.7
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/compare`,
+        url: URL_CONFIG.buildUrl('/compare'),
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: 0.6
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/alternatives`,
+        url: URL_CONFIG.buildUrl('/alternatives'),
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: 0.7
       },
       // Static Pages
       {
-        url: `${URL_CONFIG.BASE_URL}/about`,
+        url: URL_CONFIG.buildUrl('/about'),
         lastmod: currentDate,
         changefreq: 'monthly',
         priority: 0.6
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/disclaimer`,
+        url: URL_CONFIG.buildUrl('/disclaimer'),
         lastmod: currentDate,
         changefreq: 'monthly',
         priority: 0.3
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/privacy`,
+        url: URL_CONFIG.buildUrl('/privacy'),
         lastmod: currentDate,
         changefreq: 'monthly',
         priority: 0.3
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/faqs`,
+        url: URL_CONFIG.buildUrl('/faqs'),
         lastmod: currentDate,
         changefreq: 'monthly',
         priority: 0.7
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/roi-calculator`,
+        url: URL_CONFIG.buildUrl('/roi-calculator'),
         lastmod: currentDate,
         changefreq: 'monthly',
         priority: 0.6
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/saved-funds`,
+        url: URL_CONFIG.buildUrl('/saved-funds'),
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: 0.6

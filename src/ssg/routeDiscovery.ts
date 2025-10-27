@@ -16,10 +16,10 @@ export class RouteDiscovery {
   static async getAllStaticRoutes(): Promise<StaticRoute[]> {
     const routes: StaticRoute[] = [];
 
-    // Homepage
+    // Homepage (also serves as fund index)
     routes.push({ path: '/', pageType: 'homepage' });
-
-    // Fund Index page - Fixed to avoid double /funds
+    
+    // Fund index page
     routes.push({ path: '/index', pageType: 'fund-index' });
 
     // Static pages

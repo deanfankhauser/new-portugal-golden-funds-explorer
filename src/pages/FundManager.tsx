@@ -1,7 +1,7 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getFundsByManager, getAllFundManagers } from '../data/services/managers-service';
+import { getFundsByManager, getAllFundManagers, getAllApprovedManagers } from '../data/services/managers-service';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -15,6 +15,7 @@ const FundManager = () => {
   const slugName = name || '';
   const managerName = slugToManager(slugName);
   const allManagers = getAllFundManagers();
+  const [isManagerVerified, setIsManagerVerified] = useState(false);
   
   // Find matching manager by checking if any manager matches when converted to slug
   const matchingManager = allManagers.find(manager => 
@@ -23,6 +24,24 @@ const FundManager = () => {
   
   const displayManagerName = matchingManager ? matchingManager.name : managerName;
   const managerFunds = matchingManager ? getFundsByManager(matchingManager.name) : [];
+
+  useEffect(() => {
+    const checkManagerVerification = async () => {
+      const approvedManagers = await getAllApprovedManagers();
+      const slugMatches = (s?: string) => (s ? managerToSlug(s) === slugName : false);
+      const verifiedManager = approvedManagers.find(
+        (m) =>
+          m.manager_name?.toLowerCase() === displayManagerName.toLowerCase() ||
+          slugMatches(m.manager_name) ||
+          slugMatches(m.company_name)
+      );
+      setIsManagerVerified(!!verifiedManager && verifiedManager.status === 'approved');
+    };
+    
+    if (displayManagerName) {
+      checkManagerVerification();
+    }
+  }, [displayManagerName, slugName]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -40,7 +59,11 @@ const FundManager = () => {
       
       <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
         <FundManagerBreadcrumbs managerName={displayManagerName} />
-        <FundManagerContent managerFunds={managerFunds} managerName={displayManagerName} />
+        <FundManagerContent 
+          managerFunds={managerFunds} 
+          managerName={displayManagerName} 
+          isManagerVerified={isManagerVerified}
+        />
       </main>
       
       <Footer />

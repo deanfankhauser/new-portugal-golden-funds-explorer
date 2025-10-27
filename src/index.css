@@ -3,7 +3,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Cheltenham';
+  src: url('/fonts/Cheltenham-BT-Roman.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
+  h1 {
+    font-family: 'Cheltenham', serif;
+  }
   :root {
     /* Brand Color System - Warm Premium Heritage */
     --brand-bordeaux: 340 66% 18%;      /* Rich Bordeaux #4B0F23 */

@@ -1,13 +1,16 @@
 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { Facebook, Linkedin, ExternalLink } from "lucide-react";
 import RecentlyViewedFunds from "./RecentlyViewedFunds";
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
+  const [currentYear, setCurrentYear] = useState(2025);
 
   useEffect(() => {
+    // Set current year on client-side only
+    setCurrentYear(new Date().getFullYear());
+    
     // Load Fillout script if not already loaded
     if (!document.querySelector('script[src="https://server.fillout.com/embed/v1/"]')) {
       const script = document.createElement('script');
@@ -30,6 +33,8 @@ const Footer = () => {
                 src="/lovable-uploads/9bdf45a5-6a2f-466e-8c2d-b8ba65863e8a.png" 
                 alt="Movingto Logo" 
                 className="h-8"
+                width="155"
+                height="32"
               />
             </Link>
             <p className="text-sm text-muted-foreground mb-4">

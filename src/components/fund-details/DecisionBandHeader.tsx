@@ -1,14 +1,13 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
+import { Card, CardContent } from '../ui/card';
 import { Calendar } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
 import { buildBookingUrl, openExternalLink } from '../../utils/urlHelpers';
 import analytics from '../../utils/analytics';
 import { Fund } from '../../data/funds';
 import { FundEditButton } from '../fund-editing';
-import { categoryToSlug, managerToSlug } from '@/lib/utils';
 
 interface DecisionBandHeaderProps {
   fund: Fund;
@@ -17,6 +16,13 @@ interface DecisionBandHeaderProps {
 const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
   const { isInComparison, addToComparison } = useComparison();
   const isCompared = isInComparison(fund.id);
+  const [yearsOfTrack, setYearsOfTrack] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (fund.established) {
+      setYearsOfTrack(new Date().getFullYear() - Number(fund.established));
+    }
+  }, [fund.established]);
 
   const handleCompareClick = () => {
     addToComparison(fund);
@@ -35,14 +41,13 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
 
   const isOpenForSubscriptions = fund.fundStatus === 'Open';
 
-  // Simplified one-line summary with internal links
+  // Simplified one-line summary with verification gating
   const hasGoldenVisa = fund.tags?.some(tag => tag.toLowerCase().includes('golden visa'));
   const redemptionFreq = fund.redemptionTerms?.frequency?.toLowerCase();
   
-  const categorySlug = categoryToSlug(fund.category);
-  const managerSlug = managerToSlug(fund.managerName);
-  
-  const summary = `${fund.regulatedBy || 'CMVM'}-regulated, ${fund.term ? 'closed-ended' : 'open-ended'} ${fund.category.toLowerCase()}${redemptionFreq === 'daily' ? ' with daily liquidity' : ''}${hasGoldenVisa ? '. Golden Visa eligible' : ''}.`;
+  const summary = `${fund.term ? 'closed-ended' : 'open-ended'} ${fund.category.toLowerCase()}${redemptionFreq === 'daily' ? ' with daily liquidity' : ''}` +
+    (fund.isVerified ? `${fund.regulatedBy ? `, ${fund.regulatedBy}-regulated` : ', CMVM-regulated'}` : '') +
+    (fund.isVerified && hasGoldenVisa ? '. Golden Visa eligible' : '.');
 
   return (
     <div className="space-y-8">
@@ -55,6 +60,11 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                 Open for subscriptions
               </Badge>
             )}
+            {fund.isVerified ? (
+              <Badge variant="success" className="text-xs font-medium">Verified</Badge>
+            ) : (
+              <Badge variant="outline" className="text-xs font-medium">Unverified</Badge>
+            )}
           </div>
           
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
@@ -62,21 +72,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
           </h1>
           
           <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            {fund.regulatedBy || 'CMVM'}-regulated, {fund.term ? 'closed-ended' : 'open-ended'}{' '}
-            <Link 
-              to={`/categories/${categorySlug}`}
-              className="text-primary hover:underline font-medium"
-            >
-              {fund.category}
-            </Link>
-            {' '}fund managed by{' '}
-            <Link 
-              to={`/manager/${managerSlug}`}
-              className="text-primary hover:underline font-medium"
-            >
-              {fund.managerName}
-            </Link>
-            {redemptionFreq === 'daily' ? ' with daily liquidity' : ''}{hasGoldenVisa ? '. Golden Visa eligible' : ''}.
+            {summary}
           </p>
         </div>
         
@@ -110,41 +106,73 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
       </div>
 
       {/* Key Highlights Section */}
-      <div className="space-y-4 max-w-2xl">
-        <h2 className="text-lg font-semibold">Why This Fund?</h2>
-        <ul className="space-y-3">
-          {hasGoldenVisa && (
-            <li className="flex items-start gap-3">
-              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-              <span className="text-sm text-muted-foreground leading-relaxed">
-                <strong className="text-foreground">Golden Visa Eligible</strong> — Qualifies for Portugal's Golden Visa program
-              </span>
-            </li>
-          )}
-          <li className="flex items-start gap-3">
-            <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-            <span className="text-sm text-muted-foreground leading-relaxed">
-              <strong className="text-foreground">{fund.regulatedBy || 'CMVM'} Regulated</strong> — Licensed and supervised by Portuguese authorities
-            </span>
-          </li>
-          {redemptionFreq === 'daily' && (
-            <li className="flex items-start gap-3">
-              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-              <span className="text-sm text-muted-foreground leading-relaxed">
-                <strong className="text-foreground">Daily Liquidity</strong> — Redeem your investment any business day
-              </span>
-            </li>
-          )}
-          {fund.established && (
-            <li className="flex items-start gap-3">
-              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-              <span className="text-sm text-muted-foreground leading-relaxed">
-                <strong className="text-foreground">Established {fund.established}</strong> — {new Date().getFullYear() - Number(fund.established)} years of track record
-              </span>
-            </li>
-          )}
-        </ul>
-      </div>
+      <Card className="shadow-lg border-2 hover:shadow-xl transition-all duration-300 max-w-2xl">
+        <CardContent className="p-6">
+          <h2 className="text-xl font-bold text-foreground mb-5">Why This Fund?</h2>
+          <div className="space-y-3">
+            {hasGoldenVisa && (
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-success/5 to-success/10 border border-success/20">
+                <div className="p-1.5 rounded-full bg-success/20 mt-0.5">
+                  <div className="h-2 w-2 rounded-full bg-success" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-semibold text-foreground">Golden Visa Eligible</span>
+                    {!fund.isVerified && (
+                      <Badge variant="outline" className="text-xs">Unverified</Badge>
+                    )}
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Qualifies for Portugal's Golden Visa program
+                  </p>
+                </div>
+              </div>
+            )}
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20">
+              <div className="p-1.5 rounded-full bg-primary/20 mt-0.5">
+                <div className="h-2 w-2 rounded-full bg-primary" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-semibold text-foreground">{fund.regulatedBy || 'CMVM'} Regulated</span>
+                  {!fund.isVerified && (
+                    <Badge variant="outline" className="text-xs">Unverified</Badge>
+                  )}
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Licensed and supervised by Portuguese authorities
+                </p>
+              </div>
+            </div>
+            {redemptionFreq === 'daily' && (
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-accent/5 to-accent/10 border border-accent/20">
+                <div className="p-1.5 rounded-full bg-accent/20 mt-0.5">
+                  <div className="h-2 w-2 rounded-full bg-accent" />
+                </div>
+                <div>
+                  <div className="font-semibold text-foreground mb-1">Daily Liquidity</div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Redeem your investment any business day
+                  </p>
+                </div>
+              </div>
+            )}
+            {fund.established && (
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-muted/5 to-muted/10 border border-border">
+                <div className="p-1.5 rounded-full bg-muted/20 mt-0.5">
+                  <div className="h-2 w-2 rounded-full bg-muted-foreground" />
+                </div>
+                <div>
+                  <div className="font-semibold text-foreground mb-1">Established {fund.established}</div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {yearsOfTrack !== null ? `${yearsOfTrack} years of track record` : 'Track record available'}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

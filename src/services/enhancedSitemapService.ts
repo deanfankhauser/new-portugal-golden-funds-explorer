@@ -32,22 +32,10 @@ export class EnhancedSitemapService extends SitemapService {
     });
   }
 
-  // Generate fund index page
-  private static getFundIndexPage(): SitemapEntry {
-    const contentDates = DateManagementService.getContentDates('fund-index');
-    return {
-      url: `${URL_CONFIG.BASE_URL}/index`,
-      lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
-      changefreq: 'daily',
-      priority: 0.9
-    };
-  }
-
   // Enhanced sitemap generation with all pages
   static generateEnhancedSitemapEntries(): SitemapEntry[] {
     return [
       ...super.generateSitemapEntries(),
-      this.getFundIndexPage(),
       ...this.getComparisonPages(),
       ...this.getAlternativesPages()
     ];
