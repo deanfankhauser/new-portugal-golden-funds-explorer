@@ -58,6 +58,11 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                 Open for subscriptions
               </Badge>
             )}
+            {fund.isVerified ? (
+              <Badge variant="success" className="text-xs font-medium">Verified</Badge>
+            ) : (
+              <Badge variant="outline" className="text-xs font-medium">Unverified</Badge>
+            )}
           </div>
           
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">

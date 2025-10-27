@@ -53,12 +53,16 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
                   {fund.name}
                 </Link>
               </CardTitle>
-              {fund.isVerified && (
+              {fund.isVerified ? (
                 <div className="mt-2">
                   <Badge className="bg-green-600 text-white border-2 border-green-700 hover:bg-green-700">
                     <CheckCircle2 className="w-3 h-3 mr-1" />
                     VERIFIED
                   </Badge>
+                </div>
+              ) : (
+                <div className="mt-2">
+                  <Badge variant="outline">UNVERIFIED</Badge>
                 </div>
               )}
             </div>
