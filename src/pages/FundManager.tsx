@@ -28,8 +28,12 @@ const FundManager = () => {
   useEffect(() => {
     const checkManagerVerification = async () => {
       const approvedManagers = await getAllApprovedManagers();
+      const slugMatches = (s?: string) => (s ? managerToSlug(s) === slugName : false);
       const verifiedManager = approvedManagers.find(
-        m => m.manager_name.toLowerCase() === displayManagerName.toLowerCase()
+        (m) =>
+          m.manager_name?.toLowerCase() === displayManagerName.toLowerCase() ||
+          slugMatches(m.manager_name) ||
+          slugMatches(m.company_name)
       );
       setIsManagerVerified(!!verifiedManager && verifiedManager.status === 'approved');
     };
@@ -37,7 +41,7 @@ const FundManager = () => {
     if (displayManagerName) {
       checkManagerVerification();
     }
-  }, [displayManagerName]);
+  }, [displayManagerName, slugName]);
 
   useEffect(() => {
     window.scrollTo(0, 0);

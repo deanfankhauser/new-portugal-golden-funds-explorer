@@ -1,7 +1,7 @@
 import React from 'react';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Info } from 'lucide-react';
 import { Fund } from '@/data/funds';
-import ManagerTrustIndicators from './ManagerTrustIndicators';
+import { Badge } from '@/components/ui/badge';
 
 interface ManagerVerificationBadgeProps {
   isVerified: boolean;
@@ -11,7 +11,7 @@ interface ManagerVerificationBadgeProps {
 
 const ManagerVerificationBadge: React.FC<ManagerVerificationBadgeProps> = ({ 
   isVerified,
-  funds = [],
+  // funds prop kept for future use if needed
   className = '' 
 }) => {
   // Show verified badge if manager is verified
@@ -24,8 +24,13 @@ const ManagerVerificationBadge: React.FC<ManagerVerificationBadgeProps> = ({
     );
   }
 
-  // Show trust indicators for unverified managers
-  return <ManagerTrustIndicators funds={funds} className={className} />;
+  // For unverified managers, show a neutral notice (no GV/CMVM claims)
+  return (
+    <Badge variant="warning" className={`gap-1.5 px-3 py-1.5 text-sm ${className}`}>
+      <Info className="w-4 h-4" />
+      Manager not verified
+    </Badge>
+  );
 };
 
 export default ManagerVerificationBadge;
