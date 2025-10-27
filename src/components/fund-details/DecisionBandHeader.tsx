@@ -110,32 +110,40 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
         <CardContent className="p-6">
           <h2 className="text-xl font-bold text-foreground mb-5">Why This Fund?</h2>
           <div className="space-y-3">
-            {fund.isVerified && hasGoldenVisa && (
+            {hasGoldenVisa && (
               <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-success/5 to-success/10 border border-success/20">
                 <div className="p-1.5 rounded-full bg-success/20 mt-0.5">
                   <div className="h-2 w-2 rounded-full bg-success" />
                 </div>
-                <div>
-                  <div className="font-semibold text-foreground mb-1">Golden Visa Eligible</div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-semibold text-foreground">Golden Visa Eligible</span>
+                    {!fund.isVerified && (
+                      <Badge variant="outline" className="text-xs">Unverified</Badge>
+                    )}
+                  </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     Qualifies for Portugal's Golden Visa program
                   </p>
                 </div>
               </div>
             )}
-            {fund.isVerified && (
-              <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20">
-                <div className="p-1.5 rounded-full bg-primary/20 mt-0.5">
-                  <div className="h-2 w-2 rounded-full bg-primary" />
-                </div>
-                <div>
-                  <div className="font-semibold text-foreground mb-1">{fund.regulatedBy || 'CMVM'} Regulated</div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Licensed and supervised by Portuguese authorities
-                  </p>
-                </div>
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20">
+              <div className="p-1.5 rounded-full bg-primary/20 mt-0.5">
+                <div className="h-2 w-2 rounded-full bg-primary" />
               </div>
-            )}
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-semibold text-foreground">{fund.regulatedBy || 'CMVM'} Regulated</span>
+                  {!fund.isVerified && (
+                    <Badge variant="outline" className="text-xs">Unverified</Badge>
+                  )}
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Licensed and supervised by Portuguese authorities
+                </p>
+              </div>
+            </div>
             {redemptionFreq === 'daily' && (
               <div className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-br from-accent/5 to-accent/10 border border-accent/20">
                 <div className="p-1.5 rounded-full bg-accent/20 mt-0.5">
