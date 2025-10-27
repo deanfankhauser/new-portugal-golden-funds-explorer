@@ -21,7 +21,11 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
   return (
     <>
       <div className="mb-6">
-        <ManagerVerificationBadge isVerified={isManagerVerified} className="mb-4" />
+        <ManagerVerificationBadge 
+          isVerified={isManagerVerified} 
+          funds={managerFunds}
+          className="mb-4" 
+        />
         <h1 className="text-2xl font-bold">Portugal Golden Visa Investment Funds Managed by {managerName}</h1>
       </div>
       
