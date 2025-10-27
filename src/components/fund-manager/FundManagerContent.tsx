@@ -5,16 +5,25 @@ import { Fund } from '../../data/funds';
 import FundListItem from '@/components/FundListItem';
 import FundManagerAbout from './FundManagerAbout';
 import FundManagerFAQs from './FundManagerFAQs';
+import ManagerVerificationBadge from './ManagerVerificationBadge';
 
 interface FundManagerContentProps {
   managerFunds: Fund[];
   managerName: string;
+  isManagerVerified?: boolean;
 }
 
-const FundManagerContent: React.FC<FundManagerContentProps> = ({ managerFunds, managerName }) => {
+const FundManagerContent: React.FC<FundManagerContentProps> = ({ 
+  managerFunds, 
+  managerName, 
+  isManagerVerified = false 
+}) => {
   return (
     <>
-      <h1 className="text-2xl font-bold mb-6">Portugal Golden Visa Investment Funds Managed by {managerName}</h1>
+      <div className="mb-6">
+        <ManagerVerificationBadge isVerified={isManagerVerified} className="mb-4" />
+        <h1 className="text-2xl font-bold">Portugal Golden Visa Investment Funds Managed by {managerName}</h1>
+      </div>
       
       <div className="space-y-4 mb-12">
         {managerFunds.map(fund => (
