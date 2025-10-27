@@ -55,7 +55,12 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
       );
     }
     
-    return null;
+    // Explicitly show unverified status
+    return (
+      <Badge variant="outline" className="text-xs font-medium">
+        UNVERIFIED
+      </Badge>
+    );
   };
 
   return (
