@@ -46,7 +46,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
   
   // Filter out "Golden Visa Eligible" tag for non-GV funds
   const displayTags = fund.tags.filter(tag => 
-    tag !== 'Golden Visa Eligible' || isGVEligible
+    tag !== 'Golden Visa Eligible' || (isGVEligible && fund.isVerified)
   );
   return (
     <>

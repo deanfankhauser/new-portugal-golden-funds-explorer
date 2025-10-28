@@ -41,11 +41,13 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
 
   const isOpenForSubscriptions = fund.fundStatus === 'Open';
 
-  // Simplified one-line summary
+  // Simplified one-line summary with verification gating
   const hasGoldenVisa = fund.tags?.some(tag => tag.toLowerCase().includes('golden visa'));
   const redemptionFreq = fund.redemptionTerms?.frequency?.toLowerCase();
   
-  const summary = `${fund.regulatedBy || 'CMVM'}-regulated, ${fund.term ? 'closed-ended' : 'open-ended'} ${fund.category.toLowerCase()}${redemptionFreq === 'daily' ? ' with daily liquidity' : ''}${hasGoldenVisa ? '. Golden Visa eligible' : ''}.`;
+  const summary = `${fund.term ? 'closed-ended' : 'open-ended'} ${fund.category.toLowerCase()}${redemptionFreq === 'daily' ? ' with daily liquidity' : ''}` +
+    (fund.isVerified ? `${fund.regulatedBy ? `, ${fund.regulatedBy}-regulated` : ', CMVM-regulated'}` : '') +
+    (fund.isVerified && hasGoldenVisa ? '. Golden Visa eligible' : '.');
 
   return (
     <div className="space-y-8">
@@ -113,8 +115,13 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
                 <div className="p-1.5 rounded-full bg-success/20 mt-0.5">
                   <div className="h-2 w-2 rounded-full bg-success" />
                 </div>
-                <div>
-                  <div className="font-semibold text-foreground mb-1">Golden Visa Eligible</div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-semibold text-foreground">Golden Visa Eligible</span>
+                    {!fund.isVerified && (
+                      <Badge variant="outline" className="text-xs">Unverified</Badge>
+                    )}
+                  </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     Qualifies for Portugal's Golden Visa program
                   </p>
@@ -125,8 +132,13 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
               <div className="p-1.5 rounded-full bg-primary/20 mt-0.5">
                 <div className="h-2 w-2 rounded-full bg-primary" />
               </div>
-              <div>
-                <div className="font-semibold text-foreground mb-1">{fund.regulatedBy || 'CMVM'} Regulated</div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-semibold text-foreground">{fund.regulatedBy || 'CMVM'} Regulated</span>
+                  {!fund.isVerified && (
+                    <Badge variant="outline" className="text-xs">Unverified</Badge>
+                  )}
+                </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Licensed and supervised by Portuguese authorities
                 </p>
