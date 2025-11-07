@@ -40,6 +40,7 @@ const ROICalculator = lazy(() => import('./pages/ROICalculator'));
 const FundComparison = lazy(() => import('./pages/FundComparison'));
 const FundAlternatives = lazy(() => import('./pages/FundAlternatives'));
 const AlternativesHub = lazy(() => import('./pages/AlternativesHub'));
+const VerifiedFunds = lazy(() => import('./pages/VerifiedFunds'));
 import ManagerAuth from './pages/ManagerAuth'; // Make non-lazy for debugging
 const InvestorAuth = lazy(() => import('./pages/InvestorAuth'));
 const AccountSettings = lazy(() => import('./pages/AccountSettings'));
@@ -278,7 +279,7 @@ function App() {
                          </Suspense>
                        } />
 
-                      {/* Alternatives hub */}
+                       {/* Alternatives hub */}
                       <Route path="/alternatives" element={
                         <Suspense fallback={<PageLoader />}>
                           <AlternativesHub />
@@ -288,6 +289,13 @@ function App() {
                       <Route path="/:id/alternatives" element={
                         <Suspense fallback={<PageLoader />}>
                           <FundAlternatives />
+                        </Suspense>
+                      } />
+
+                      {/* Verified Funds */}
+                      <Route path="/verified-funds" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <VerifiedFunds />
                         </Suspense>
                       } />
                       
