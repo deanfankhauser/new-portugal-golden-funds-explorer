@@ -5,6 +5,8 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import FundListItem from '../components/FundListItem';
+import VerificationStats from '../components/common/VerificationStats';
+import VerificationExplainerModal from '../components/common/VerificationExplainerModal';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../components/ui/breadcrumb';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import FundListSkeleton from '../components/common/FundListSkeleton';
@@ -63,9 +65,17 @@ const VerifiedFunds = () => {
           </div>
         </div>
 
+        {/* Verification Stats Widget */}
+        <section className="mb-12">
+          <VerificationStats funds={allFunds || []} variant="detailed" />
+        </section>
+
         {/* What Verification Means Section */}
         <section className="mb-12">
-          <h2 className="text-3xl font-bold mb-8 text-center">What Does Verification Mean?</h2>
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-bold">What Does Verification Mean?</h2>
+            <VerificationExplainerModal />
+          </div>
           
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="border-2 border-success/20 hover:border-success/40 transition-colors">

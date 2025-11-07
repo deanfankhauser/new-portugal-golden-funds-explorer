@@ -13,6 +13,7 @@ import TrustSignals from '../components/fund-index/TrustSignals';
 import IndexSummaryWidgets from '../components/fund-index/IndexSummaryWidgets';
 import FundIndexFAQ from '../components/fund-index/FundIndexFAQ';
 import VerificationFilterChip from '../components/common/VerificationFilterChip';
+import VerificationStats from '../components/common/VerificationStats';
 import { Card, CardContent } from '../components/ui/card';
 
 const FundIndex: React.FC = () => {
@@ -65,6 +66,11 @@ const FundIndex: React.FC = () => {
               showOnlyVerified={showOnlyVerified}
               setShowOnlyVerified={setShowOnlyVerified}
             />
+          </div>
+
+          {/* Verification Stats */}
+          <div className="max-w-7xl mx-auto px-6 py-4">
+            <VerificationStats funds={funds} variant="detailed" />
           </div>
           
           <div className="max-w-7xl mx-auto px-6 py-12 space-y-12">

@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FundTag } from '../../data/types/funds';
 import { Button } from "@/components/ui/button";
-import { X, ChevronDown, CheckCircle2 } from 'lucide-react';
+import { X, ChevronDown, CheckCircle2, Info } from 'lucide-react';
 import { getMeaningfulFilters } from '../../services/filterDataService';
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import VerificationExplainerModal from '../common/VerificationExplainerModal';
 import {
   Collapsible,
   CollapsibleContent,
@@ -48,10 +49,17 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
       {/* Verified Funds Toggle */}
       <div className="flex items-center justify-between p-3 hover:bg-muted/50 rounded-lg border border-border">
         <div className="flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-green-600" />
+          <CheckCircle2 className="w-4 h-4 text-success" />
           <Label htmlFor="verified-only" className="cursor-pointer font-semibold">
             Show Verified Funds Only
           </Label>
+          <VerificationExplainerModal 
+            trigger={
+              <Button variant="ghost" size="icon" className="h-6 w-6 p-0">
+                <Info className="h-4 w-4 text-muted-foreground" />
+              </Button>
+            }
+          />
         </div>
         <Switch
           id="verified-only"

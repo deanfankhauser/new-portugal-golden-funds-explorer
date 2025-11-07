@@ -1,7 +1,9 @@
 import React from 'react';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Info } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import VerificationExplainerModal from './VerificationExplainerModal';
 
 interface VerificationFilterChipProps {
   showOnlyVerified: boolean;
@@ -21,6 +23,13 @@ const VerificationFilterChip: React.FC<VerificationFilterChipProps> = ({
         <Label htmlFor="verified-filter" className="cursor-pointer font-semibold text-sm">
           Show Verified Funds Only
         </Label>
+        <VerificationExplainerModal 
+          trigger={
+            <Button variant="ghost" size="icon" className="h-6 w-6 p-0">
+              <Info className="h-4 w-4 text-muted-foreground" />
+            </Button>
+          }
+        />
       </div>
       <Switch
         id="verified-filter"
