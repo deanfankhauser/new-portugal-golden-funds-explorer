@@ -10,6 +10,7 @@ import TagsCell from './table/TagsCell';
 import RedemptionTermsRow from './table/RedemptionTermsRow';
 import DataFreshnessIndicator from '../common/DataFreshnessIndicator';
 import { getReturnTargetDisplay, getReturnTargetNumbers } from '../../utils/returnTarget';
+import { CheckCircle2 } from 'lucide-react';
 
 interface ComparisonTableProps {
   funds: Fund[];
@@ -27,8 +28,25 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
         <table className="w-full border-collapse">
           <ComparisonTableHeader funds={funds} />
           <tbody>
+            {/* Verification Status Row */}
+            <tr className="border-b bg-success/5">
+              <td className="py-3 px-4 font-medium">Verification Status</td>
+              {funds.map(fund => (
+                <td key={fund.id} className="py-3 px-4">
+                  {fund.isVerified ? (
+                    <div className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold inline-flex items-center gap-1.5 shadow-md border-2 border-success/70 ring-2 ring-success/20">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      ✓ VERIFIED
+                    </div>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">Not verified</span>
+                  )}
+                </td>
+              ))}
+            </tr>
+            
             {/* Always visible - Basic Information */}
-            <StandardRow 
+            <StandardRow
               funds={funds}
               field="category"
               label="Fund Type"

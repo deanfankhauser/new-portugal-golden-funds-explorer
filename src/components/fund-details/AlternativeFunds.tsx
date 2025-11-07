@@ -6,7 +6,7 @@ import { findAlternativeFunds } from '../../data/services/alternative-funds-serv
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, TrendingUp, Clock, Users } from 'lucide-react';
+import { ArrowRight, TrendingUp, Clock, Users, CheckCircle2 } from 'lucide-react';
 import { buildContactUrl } from '../../utils/urlHelpers';
 
 interface AlternativeFundsProps {
@@ -59,7 +59,15 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
             <div key={fund.id} className="bg-card rounded-lg border border-border p-4 hover:shadow-md transition-shadow">
               <div className="flex justify-between items-start mb-3">
                 <div className="flex-1">
-                  <h3 className="font-semibold text-foreground mb-1">{fund.name}</h3>
+                  <h3 className="font-semibold text-foreground mb-1 flex items-center gap-2">
+                    {fund.name}
+                    {fund.isVerified && (
+                      <span className="bg-success text-success-foreground px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-md border-2 border-success/70 ring-2 ring-success/20">
+                        <CheckCircle2 className="w-3 h-3" />
+                        ✓ VERIFIED
+                      </span>
+                    )}
+                  </h3>
                   <p className="text-sm text-muted-foreground line-clamp-2">{fund.description}</p>
                 </div>
                 <Badge className={`ml-3 ${getStatusColor(fund.fundStatus)}`}>

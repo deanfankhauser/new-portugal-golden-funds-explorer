@@ -93,10 +93,13 @@ export const GlobalSearchDropdown: React.FC<Props> = ({
                 </div>
                 
                 <div className="flex-1 min-w-0 overflow-hidden">
-                  <div className="font-medium text-foreground truncate flex items-center gap-1.5">
+                  <div className="font-medium text-foreground truncate flex items-center gap-2">
                     {result.name}
                     {result.type === 'fund' && result.metadata?.isVerified && (
-                      <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
+                      <span className="bg-success text-success-foreground px-2 py-0.5 rounded-full text-xs font-bold inline-flex items-center gap-1 shrink-0">
+                        <CheckCircle2 className="w-3 h-3" />
+                        VERIFIED
+                      </span>
                     )}
                   </div>
                   {result.subtitle && (

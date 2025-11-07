@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, TrendingUp } from 'lucide-react';
+import { Clock, TrendingUp, CheckCircle2 } from 'lucide-react';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
 
@@ -37,8 +37,11 @@ const RecentlyViewedFunds = () => {
             to={`/${fund.id}`}
             className="bg-card border border-border rounded-lg p-3 hover:shadow-md transition-shadow group"
           >
-            <h4 className="font-medium text-sm mb-2 group-hover:text-primary transition-colors line-clamp-2">
+            <h4 className="font-medium text-sm mb-2 group-hover:text-primary transition-colors line-clamp-2 flex items-center gap-1.5">
               {fund.name}
+              {fund.isVerified && (
+                <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
+              )}
             </h4>
             <div className="space-y-1">
               <div className="flex justify-between text-xs text-muted-foreground">

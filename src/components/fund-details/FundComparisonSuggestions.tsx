@@ -4,7 +4,7 @@ import { Fund } from '../../data/types/funds';
 import { funds } from '../../data/funds';
 import { normalizeComparisonSlug } from '../../utils/comparisonUtils';
 import { URL_CONFIG } from '../../utils/urlConfig';
-import { GitCompare } from 'lucide-react';
+import { GitCompare, CheckCircle2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface FundComparisonSuggestionsProps {
@@ -46,13 +46,19 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
                 to={comparisonUrl}
                 className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <div>
-                  <div className="font-medium text-sm">{currentFund.name} vs {fund.name}</div>
+                <div className="flex-1">
+                  <div className="font-medium text-sm flex items-center gap-2 flex-wrap">
+                    <span>{currentFund.name}</span>
+                    {currentFund.isVerified && <CheckCircle2 className="w-3.5 h-3.5 text-success" />}
+                    <span>vs</span>
+                    <span>{fund.name}</span>
+                    {fund.isVerified && <CheckCircle2 className="w-3.5 h-3.5 text-success" />}
+                  </div>
                   <div className="text-xs text-muted-foreground">
                     Compare {fund.category} • Min. {fund.minimumInvestment > 0 ? `€${fund.minimumInvestment.toLocaleString()}` : 'Not provided'}
                   </div>
                 </div>
-                <GitCompare className="h-4 w-4 text-muted-foreground" />
+                <GitCompare className="h-4 w-4 text-muted-foreground shrink-0 ml-2" />
               </Link>
             );
           })}
