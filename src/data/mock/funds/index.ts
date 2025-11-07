@@ -23,6 +23,7 @@ import { digitalInsightFund } from './digital-insight-fund';
 import { primeInsightFund } from './prime-insight-fund';
 import { blueWaterCapitalFund } from './bluewater-capital-fund';
 import { imgaPortugueseCorporateDebtFund, imgaSilverDomusFund, imgaAcoesPortugalFund, imgaFuturumTechFund } from './imga-funds';
+import { fortitudeSpecialSituationsII } from './fortitude-special-situations-ii';
 import { Fund } from '../../types/funds';
 
 // Export all funds as an array
@@ -53,7 +54,8 @@ export const fundsData: Fund[] = [
   imgaPortugueseCorporateDebtFund,
   imgaSilverDomusFund,
   imgaAcoesPortugalFund,
-  imgaFuturumTechFund
+  imgaFuturumTechFund,
+  fortitudeSpecialSituationsII
 ];
 
 // Export individual funds
@@ -84,5 +86,6 @@ export {
   imgaPortugueseCorporateDebtFund,
   imgaSilverDomusFund,
   imgaAcoesPortugalFund,
-  imgaFuturumTechFund
+  imgaFuturumTechFund,
+  fortitudeSpecialSituationsII
 };

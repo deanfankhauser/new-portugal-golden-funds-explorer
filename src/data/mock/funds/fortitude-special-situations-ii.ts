@@ -1,0 +1,27 @@
+import { Fund } from '../../types/funds';
+
+export const fortitudeSpecialSituationsII: Fund = {
+  id: 'fortitude-special-situations-ii',
+  name: 'Fortitude Portugal Special Situations II',
+  description: 'Private equity fund targeting 15-20% IRR through special situations investments in Iberia, with Golden Visa eligibility and CMVM regulation.',
+  detailedDescription: 'Fortitude Special Situations II is a €150M CMVM-regulated private equity fund focused on special situations investments across Iberia.',
+  managerName: 'Fortitude Capital',
+  minimumInvestment: 100000,
+  fundSize: 150,
+  managementFee: 2.0,
+  performanceFee: 20,
+  subscriptionFee: 5.0,
+  redemptionFee: 0,
+  term: 8,
+  returnTarget: '15-20% annually',
+  expectedReturnMin: 15,
+  expectedReturnMax: 20,
+  fundStatus: 'Open' as const,
+  established: 2025,
+  regulatedBy: 'CMVM',
+  location: 'Portugal',
+  tags: ['Private Equity', 'Golden Visa Eligible', 'Regulated'],
+  category: 'Private Equity',
+  datePublished: '2025-01-01',
+  dateModified: '2025-01-01',
+};
