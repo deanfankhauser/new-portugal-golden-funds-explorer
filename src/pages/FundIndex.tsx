@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { funds } from '../data/funds';
 import { FundScoringService } from '../services/fundScoringService';
 import Header from '../components/Header';
@@ -12,11 +12,20 @@ import MethodologySection from '../components/fund-index/MethodologySection';
 import TrustSignals from '../components/fund-index/TrustSignals';
 import IndexSummaryWidgets from '../components/fund-index/IndexSummaryWidgets';
 import FundIndexFAQ from '../components/fund-index/FundIndexFAQ';
+import VerificationFilterChip from '../components/common/VerificationFilterChip';
 import { Card, CardContent } from '../components/ui/card';
 
 const FundIndex: React.FC = () => {
-  // Calculate scores for all funds
-  const allFundScores = FundScoringService.getAllFundScores(funds);
+  const [showOnlyVerified, setShowOnlyVerified] = useState(false);
+  
+  // Filter funds by verification status
+  const filteredFunds = useMemo(() => {
+    if (!showOnlyVerified) return funds;
+    return funds.filter(fund => fund.isVerified);
+  }, [showOnlyVerified]);
+  
+  // Calculate scores for filtered funds
+  const allFundScores = FundScoringService.getAllFundScores(filteredFunds);
   const topFiveScores = allFundScores.slice(0, 5);
 
   // Remove component-level schema injection - ConsolidatedSEOService handles page-level schemas
@@ -48,6 +57,14 @@ const FundIndex: React.FC = () => {
                 </div>
               </CardContent>
             </Card>
+          </div>
+          
+          {/* Verification Filter */}
+          <div className="max-w-7xl mx-auto px-6 py-4">
+            <VerificationFilterChip 
+              showOnlyVerified={showOnlyVerified}
+              setShowOnlyVerified={setShowOnlyVerified}
+            />
           </div>
           
           <div className="max-w-7xl mx-auto px-6 py-12 space-y-12">

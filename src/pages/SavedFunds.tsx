@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import FundListItem from '../components/FundListItem';
+import VerificationFilterChip from '../components/common/VerificationFilterChip';
 import { useSavedFunds } from '../hooks/useSavedFunds';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import { useEnhancedAuth } from '../contexts/EnhancedAuthContext';
@@ -17,6 +18,7 @@ const SavedFunds = () => {
   const { user, loading: authLoading } = useEnhancedAuth();
   const { savedFunds, loading: savedLoading } = useSavedFunds();
   const { getFundById, loading: fundsLoading } = useRealTimeFunds();
+  const [showOnlyVerified, setShowOnlyVerified] = useState(false);
 
   // Redirect if not authenticated (wait for auth to finish)
   if (!authLoading && !user) {
@@ -27,9 +29,15 @@ const SavedFunds = () => {
   const loading = savedLoading || fundsLoading;
 
   // Get the actual fund objects for saved fund IDs
-  const savedFundObjects = savedFunds
+  const allSavedFundObjects = savedFunds
     .map(saved => getFundById(saved.fund_id))
     .filter(fund => fund !== undefined);
+  
+  // Filter by verification status
+  const savedFundObjects = useMemo(() => {
+    if (!showOnlyVerified) return allSavedFundObjects;
+    return allSavedFundObjects.filter(fund => fund.isVerified);
+  }, [allSavedFundObjects, showOnlyVerified]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -69,6 +77,14 @@ const SavedFunds = () => {
             </div>
           </div>
 
+          {/* Verification Filter */}
+          <div className="mb-6">
+            <VerificationFilterChip 
+              showOnlyVerified={showOnlyVerified}
+              setShowOnlyVerified={setShowOnlyVerified}
+            />
+          </div>
+
           {/* Content */}
           {loading ? (
             <div className="space-y-4">
@@ -76,7 +92,7 @@ const SavedFunds = () => {
                 <PageLoader key={i} />
               ))}
             </div>
-          ) : savedFundObjects.length === 0 ? (
+          ) : savedFundObjects.length === 0 && !showOnlyVerified ? (
             <Card className="border border-border">
               <CardContent className="py-16 px-8 text-center">
                 <div className="flex flex-col items-center space-y-4">
@@ -93,6 +109,20 @@ const SavedFunds = () => {
                   >
                     Browse Funds
                   </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ) : savedFundObjects.length === 0 && showOnlyVerified && allSavedFundObjects.length > 0 ? (
+            <Card className="border border-border">
+              <CardContent className="py-16 px-8 text-center">
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="p-4 bg-muted rounded-full">
+                    <Bookmark className="w-8 h-8 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-foreground">No Verified Saved Funds</h3>
+                  <p className="text-muted-foreground max-w-md">
+                    None of your {allSavedFundObjects.length} saved fund{allSavedFundObjects.length !== 1 ? 's are' : ' is'} verified. Try disabling the verification filter.
+                  </p>
                 </div>
               </CardContent>
             </Card>
