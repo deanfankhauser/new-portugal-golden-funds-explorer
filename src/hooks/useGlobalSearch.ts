@@ -47,7 +47,8 @@ export const useGlobalSearch = (query: string) => {
         metadata: {
           category: fund.category,
           returnTarget: fund.returnTarget,
-          isVerified: fund.isVerified
+          isVerified: fund.isVerified,
+          verifiedAt: fund.verifiedAt
         }
       }));
 

@@ -7,6 +7,7 @@ import { TableCell, TableRow } from '../ui/table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import DataFreshnessIndicator from '../common/DataFreshnessIndicator';
 import { CheckCircle2 } from 'lucide-react';
+import RecentlyVerifiedBadge from '../common/RecentlyVerifiedBadge';
 
 interface FundIndexTableRowProps {
   score: FundScore;
@@ -152,9 +153,12 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
       <TableCell className="py-4 w-20 text-center">
         <div className="space-y-1">
           {fund.isVerified && (
-            <div className="bg-success text-success-foreground px-2 py-1 text-xs font-bold rounded-full flex items-center gap-1 shadow-md border-2 border-success/70 w-fit mx-auto">
-              <CheckCircle2 className="w-3 h-3" />
-              <span>✓ VERIFIED</span>
+            <div className="flex flex-col items-center gap-1">
+              <div className="bg-success text-success-foreground px-2 py-1 text-xs font-bold rounded-full flex items-center gap-1 shadow-md border-2 border-success/70 w-fit">
+                <CheckCircle2 className="w-3 h-3" />
+                <span>✓ VERIFIED</span>
+              </div>
+              <RecentlyVerifiedBadge verifiedAt={fund.verifiedAt} />
             </div>
           )}
           

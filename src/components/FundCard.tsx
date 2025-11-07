@@ -9,6 +9,7 @@ import { GitCompare, User, Euro, CheckCircle2 } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { managerToSlug } from '../lib/utils';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
+import RecentlyVerifiedBadge from './common/RecentlyVerifiedBadge';
 
 interface FundCardProps {
   fund: Fund;
@@ -54,11 +55,12 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
                 </Link>
               </CardTitle>
               {fund.isVerified ? (
-                <div className="mt-2">
+                <div className="mt-2 flex items-center gap-2">
                   <div className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-md border-2 border-success/70 ring-2 ring-success/20 w-fit">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     <span>✓ VERIFIED</span>
                   </div>
+                  <RecentlyVerifiedBadge verifiedAt={fund.verifiedAt} />
                 </div>
               ) : (
                 <div className="mt-2">

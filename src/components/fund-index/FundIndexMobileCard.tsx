@@ -6,6 +6,7 @@ import { getFundById } from '../../data/funds';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
+import RecentlyVerifiedBadge from '../common/RecentlyVerifiedBadge';
 
 interface FundIndexMobileCardProps {
   score: FundScore;
@@ -30,10 +31,13 @@ const FundIndexMobileCard: React.FC<FundIndexMobileCardProps> = ({ score }) => {
                 </Badge>
               )}
               {fund.isVerified && (
-                <div className="bg-success text-success-foreground px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-md border border-success/70">
-                  <CheckCircle2 className="w-3 h-3" />
-                  <span>✓ VERIFIED</span>
-                </div>
+                <>
+                  <div className="bg-success text-success-foreground px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-md border border-success/70">
+                    <CheckCircle2 className="w-3 h-3" />
+                    <span>✓ VERIFIED</span>
+                  </div>
+                  <RecentlyVerifiedBadge verifiedAt={fund.verifiedAt} />
+                </>
               )}
             </div>
             <h3 className="font-semibold text-lg leading-tight">{fund.name}</h3>

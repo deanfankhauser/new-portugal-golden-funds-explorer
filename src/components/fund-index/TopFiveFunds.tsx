@@ -6,6 +6,7 @@ import { getFundById } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { ExternalLink, CheckCircle2 } from 'lucide-react';
+import RecentlyVerifiedBadge from '../common/RecentlyVerifiedBadge';
 
 interface TopFiveFundsProps {
   scores: FundScore[];
@@ -58,7 +59,7 @@ const TopFiveFunds: React.FC<TopFiveFundsProps> = ({ scores }) => {
                   <div className="flex items-center justify-between gap-6">
                     <div className="flex items-center gap-4 flex-1 min-w-0">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <h3 
                             className="text-lg font-medium text-foreground truncate"
                             itemProp="name"
@@ -66,10 +67,13 @@ const TopFiveFunds: React.FC<TopFiveFundsProps> = ({ scores }) => {
                             {fund.name}
                           </h3>
                           {fund.isVerified && (
-                            <div className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-md border-2 border-success/70 ring-2 ring-success/20 shrink-0">
-                              <CheckCircle2 className="w-3.5 h-3.5" />
-                              <span>✓ VERIFIED</span>
-                            </div>
+                            <>
+                              <div className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-md border-2 border-success/70 ring-2 ring-success/20 shrink-0">
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                <span>✓ VERIFIED</span>
+                              </div>
+                              <RecentlyVerifiedBadge verifiedAt={fund.verifiedAt} />
+                            </>
                           )}
                         </div>
                         

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, TrendingUp, Clock, Users, CheckCircle2 } from 'lucide-react';
 import { buildContactUrl } from '../../utils/urlHelpers';
+import RecentlyVerifiedBadge from '../common/RecentlyVerifiedBadge';
 
 interface AlternativeFundsProps {
   currentFund: Fund;
@@ -59,13 +60,16 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
             <div key={fund.id} className="bg-card rounded-lg border border-border p-4 hover:shadow-md transition-shadow">
               <div className="flex justify-between items-start mb-3">
                 <div className="flex-1">
-                  <h3 className="font-semibold text-foreground mb-1 flex items-center gap-2">
+                  <h3 className="font-semibold text-foreground mb-1 flex items-center gap-2 flex-wrap">
                     {fund.name}
                     {fund.isVerified && (
-                      <span className="bg-success text-success-foreground px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-md border-2 border-success/70 ring-2 ring-success/20">
-                        <CheckCircle2 className="w-3 h-3" />
-                        ✓ VERIFIED
-                      </span>
+                      <>
+                        <span className="bg-success text-success-foreground px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-md border-2 border-success/70 ring-2 ring-success/20">
+                          <CheckCircle2 className="w-3 h-3" />
+                          ✓ VERIFIED
+                        </span>
+                        <RecentlyVerifiedBadge verifiedAt={fund.verifiedAt} />
+                      </>
                     )}
                   </h3>
                   <p className="text-sm text-muted-foreground line-clamp-2">{fund.description}</p>
