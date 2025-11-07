@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ExternalLink, TrendingUp, Euro, Users } from 'lucide-react';
+import { ExternalLink, TrendingUp, Euro, Users, CheckCircle2 } from 'lucide-react';
 import { FundScore } from '../../services/fundScoringService';
 import { getFundById } from '../../data/funds';
 import { Button } from '../ui/button';
@@ -17,17 +17,23 @@ const FundIndexMobileCard: React.FC<FundIndexMobileCardProps> = ({ score }) => {
   if (!fund) return null;
 
   return (
-    <Card className="w-full">
+    <Card className={`w-full ${fund.isVerified ? 'ring-2 ring-success/30 border-success/30' : ''}`}>
       <CardContent className="p-4 space-y-4">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
               <span className="text-lg font-bold text-primary">#{score.rank}</span>
               {score.rank <= 3 && (
                 <Badge variant="secondary" className="text-xs">
                   Top {score.rank}
                 </Badge>
+              )}
+              {fund.isVerified && (
+                <div className="bg-success text-success-foreground px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-md border border-success/70">
+                  <CheckCircle2 className="w-3 h-3" />
+                  <span>✓ VERIFIED</span>
+                </div>
               )}
             </div>
             <h3 className="font-semibold text-lg leading-tight">{fund.name}</h3>

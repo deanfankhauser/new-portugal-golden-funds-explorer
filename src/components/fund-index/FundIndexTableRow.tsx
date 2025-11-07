@@ -39,7 +39,7 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
   return (
     <TableRow 
       className={`hover:bg-gray-50/50 transition-colors border-b border-gray-100 cursor-pointer ${
-        fund.isVerified ? 'bg-green-50/20 border-l-4 border-l-green-500' : ''
+        fund.isVerified ? 'bg-success/5 border-l-4 border-l-success' : ''
       }`}
       onClick={handleRowClick}
       itemScope
@@ -152,10 +152,10 @@ const FundIndexTableRow: React.FC<FundIndexTableRowProps> = ({ score }) => {
       <TableCell className="py-4 w-20 text-center">
         <div className="space-y-1">
           {fund.isVerified && (
-            <Badge className="bg-green-600 text-white px-2 py-1 text-xs font-bold border-2 border-green-700 shadow-sm">
-              <CheckCircle2 className="w-3 h-3 mr-1 inline" />
-              VERIFIED
-            </Badge>
+            <div className="bg-success text-success-foreground px-2 py-1 text-xs font-bold rounded-full flex items-center gap-1 shadow-md border-2 border-success/70 w-fit mx-auto">
+              <CheckCircle2 className="w-3 h-3" />
+              <span>✓ VERIFIED</span>
+            </div>
           )}
           
           <Badge 

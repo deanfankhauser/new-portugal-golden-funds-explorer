@@ -48,9 +48,9 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
     // Priority: Admin verification (manual)
     if (fund.isVerified) {
       return (
-        <div className="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg border-2 border-green-700 ring-2 ring-green-400/50 animate-in fade-in duration-300">
+        <div className="bg-success text-success-foreground px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg border-2 border-success/70 ring-2 ring-success/30 animate-in fade-in duration-300">
           <CheckCircle2 className="w-5 h-5" />
-          <span>VERIFIED</span>
+          <span>✓ VERIFIED</span>
         </div>
       );
     }
@@ -66,7 +66,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
   return (
     <Card className={`border rounded-xl hover:shadow-lg transition-all duration-200 bg-card w-full group relative ${
       fund.isVerified 
-        ? 'ring-2 ring-green-500/20 bg-green-50/30 border-green-200' 
+        ? 'ring-2 ring-success/30 border-success/30' 
         : ''
     }`}>
       <CardContent className="p-6">
