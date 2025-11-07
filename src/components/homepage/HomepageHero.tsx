@@ -3,10 +3,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, TrendingUp, Building2, Euro } from 'lucide-react';
 import { Button } from '../ui/button';
-import { funds } from '../../data/funds';
 import VerificationStats from '../common/VerificationStats';
+import { Fund } from '../../data/types/funds';
 
-const HomepageHero: React.FC = () => {
+interface HomepageHeroProps {
+  funds: Fund[];
+}
+
+const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
   const totalFunds = funds.length;
   const minimumInvestment = '€500K';
 

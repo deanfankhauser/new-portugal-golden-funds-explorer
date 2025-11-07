@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { funds } from '../data/funds';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import { FundScoringService } from '../services/fundScoringService';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -15,8 +15,10 @@ import FundIndexFAQ from '../components/fund-index/FundIndexFAQ';
 import VerificationFilterChip from '../components/common/VerificationFilterChip';
 import VerificationStats from '../components/common/VerificationStats';
 import { Card, CardContent } from '../components/ui/card';
+import FundListSkeleton from '../components/common/FundListSkeleton';
 
 const FundIndex: React.FC = () => {
+  const { funds, loading } = useRealTimeFunds();
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   
   // Filter funds by verification status
@@ -30,6 +32,21 @@ const FundIndex: React.FC = () => {
   const topFiveScores = allFundScores.slice(0, 5);
 
   // Remove component-level schema injection - ConsolidatedSEOService handles page-level schemas
+
+  if (loading) {
+    return (
+      <>
+        <PageSEO pageType="fund-index" />
+        <div className="min-h-screen bg-gray-50">
+          <Header />
+          <main className="max-w-7xl mx-auto px-6 py-12">
+            <FundListSkeleton />
+          </main>
+          <Footer />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

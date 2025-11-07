@@ -31,7 +31,7 @@ const IndexPage = () => {
     <HomepageLayout>
       <PageSEO pageType="homepage" />
       
-      <HomepageHero />
+      <HomepageHero funds={allFunds || []} />
 
       <HomepageContent
         filteredFunds={filteredFunds}
