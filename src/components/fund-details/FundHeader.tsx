@@ -49,9 +49,9 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
               </h1>
               <div className="flex flex-wrap items-center gap-2">
                 {fund.isVerified && (
-                  <div className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shadow-md border-2 border-green-700">
-                    <CheckCircle2 className="w-5 h-5" />
-                    <span>VERIFIED FUND</span>
+                  <div className="bg-success text-success-foreground px-6 py-3 rounded-full text-base font-bold flex items-center gap-2.5 shadow-xl border-2 border-success/80 ring-4 ring-success/30 animate-in fade-in zoom-in duration-500">
+                    <CheckCircle2 className="w-6 h-6" />
+                    <span>✓ VERIFIED FUND</span>
                   </div>
                 )}
                 <EnhancedGVEligibilityBadge fund={fund} showDetails={false} />
