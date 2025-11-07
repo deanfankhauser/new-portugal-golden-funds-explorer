@@ -6,6 +6,7 @@ import { normalizeComparisonSlug } from '../../utils/comparisonUtils';
 import { URL_CONFIG } from '../../utils/urlConfig';
 import { GitCompare, CheckCircle2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import RecentlyVerifiedBadge from '../common/RecentlyVerifiedBadge';
 
 interface FundComparisonSuggestionsProps {
   currentFund: Fund;
@@ -49,10 +50,20 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
                 <div className="flex-1">
                   <div className="font-medium text-sm flex items-center gap-2 flex-wrap">
                     <span>{currentFund.name}</span>
-                    {currentFund.isVerified && <CheckCircle2 className="w-3.5 h-3.5 text-success" />}
+                    {currentFund.isVerified && (
+                      <>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-success" />
+                        <RecentlyVerifiedBadge verifiedAt={currentFund.verifiedAt} />
+                      </>
+                    )}
                     <span>vs</span>
                     <span>{fund.name}</span>
-                    {fund.isVerified && <CheckCircle2 className="w-3.5 h-3.5 text-success" />}
+                    {fund.isVerified && (
+                      <>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-success" />
+                        <RecentlyVerifiedBadge verifiedAt={fund.verifiedAt} />
+                      </>
+                    )}
                   </div>
                   <div className="text-xs text-muted-foreground">
                     Compare {fund.category} • Min. {fund.minimumInvestment > 0 ? `€${fund.minimumInvestment.toLocaleString()}` : 'Not provided'}

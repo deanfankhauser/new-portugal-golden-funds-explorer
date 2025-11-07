@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Clock, TrendingUp, CheckCircle2 } from 'lucide-react';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
+import RecentlyVerifiedBadge from './common/RecentlyVerifiedBadge';
 
 const RecentlyViewedFunds = () => {
   const { recentlyViewed } = useRecentlyViewed();
@@ -40,7 +41,10 @@ const RecentlyViewedFunds = () => {
             <h4 className="font-medium text-sm mb-2 group-hover:text-primary transition-colors line-clamp-2 flex items-center gap-1.5">
               {fund.name}
               {fund.isVerified && (
-                <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
+                <>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
+                  <RecentlyVerifiedBadge verifiedAt={fund.verifiedAt} className="ml-1" />
+                </>
               )}
             </h4>
             <div className="space-y-1">
