@@ -1,86 +1,87 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { 
-  Shield, 
-  CheckCircle2, 
-  AlertTriangle, 
-  FileCheck, 
-  Building2, 
-  Clock,
-  Info,
-  AlertCircle,
-  ExternalLink
-} from 'lucide-react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import PageSEO from '../components/common/PageSEO';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert';
-import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../components/ui/breadcrumb';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../components/ui/accordion';
+import { CheckCircle2, AlertCircle, FileCheck, Shield, Clock, Users, Database, Eye, XCircle, AlertTriangle, ArrowRight, Mail, ChevronRight, Check, FileText } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Link } from "react-router-dom";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import PageSEO from "@/components/common/PageSEO";
 
 const VerificationProgram = () => {
-
   const verificationChecks = [
     {
       title: "Regulatory status located",
-      description: "CMVM registration/notification (or the fund's stated basis) identified and matched to the legal name(s)."
+      description: "CMVM registration/notification (or the fund's stated basis) identified and matched to the legal name(s).",
+      icon: Shield
     },
     {
       title: "Names & entities match",
-      description: "Fund legal name, manager/vehicle names, and (if present) class/ISIN labels are consistent across documents."
+      description: "Fund legal name, manager/vehicle names, and (if present) class/ISIN labels are consistent across documents.",
+      icon: FileCheck
     },
     {
       title: "Core docs present (latest versions)",
-      description: "Prospectus/PPM/KID, subscription docs (incl. fee table), company/registry extracts for manager/vehicle(s)."
+      description: "Prospectus/PPM/KID, subscription docs (incl. fee table), company/registry extracts for manager/vehicle(s).",
+      icon: Database
     },
     {
       title: "Safekeeping relationship evidenced",
-      description: "Custodian/depositary confirmation (if applicable) provided and consistent with the other materials."
+      description: "Custodian/depositary confirmation (if applicable) provided and consistent with the other materials.",
+      icon: Shield
     },
     {
       title: "Audit evidence (if available)",
-      description: "Latest auditor letter seen (where provided)."
+      description: "Latest auditor letter seen (where provided).",
+      icon: Eye
     },
     {
       title: "Golden Visa claim is consistent",
-      description: "If the fund claims GV eligibility, that claim is present and internally consistent across submitted docs and stated strategy. (We do not certify eligibility under law.)"
+      description: "If the fund claims GV eligibility, that claim is present and internally consistent across submitted docs and stated strategy. (We do not certify eligibility under law.)",
+      icon: CheckCircle2
     },
     {
       title: "Dates line up",
-      description: "Document dates and stated \"last updated\" information are coherent and current at review time."
+      description: "Document dates and stated \"last updated\" information are coherent and current at review time.",
+      icon: Clock
     },
     {
       title: "Quarterly re-attestation",
-      description: "The fund must re-confirm no material changes—or submit updates—each quarter."
+      description: "The fund must re-confirm no material changes—or submit updates—each quarter.",
+      icon: Users
     }
   ];
 
   const verificationProcess = [
     {
-      number: 1,
+      step: "1",
       title: "Collection",
       description: "Funds submit core docs via secure upload. We also locate the CMVM page/record (or stated basis) that matches the legal name(s)."
     },
     {
-      number: 2,
+      step: "2",
       title: "Consistency checks",
       description: "We cross-check: legal names, manager/vehicle entities, depositary/custodian evidence, fee table excerpts, minimums/lock-ups/redemptions, document dates, and that any GV eligibility claim is consistently stated across materials."
     },
     {
-      number: 3,
+      step: "3",
       title: "Clarifications (if needed)",
       description: "We request fixes for missing/contradictory information."
     },
     {
-      number: 4,
+      step: "4",
       title: "Badge decision",
       description: "If coherent and complete, we mark the fund Verified and show sources on its profile."
     },
     {
-      number: 5,
+      step: "5",
       title: "Quarterly re-attestation",
       description: "Funds must reconfirm \"no material changes\" or provide new docs. Non-responses or inconsistencies can trigger Paused/Revoked."
     }
@@ -98,23 +99,28 @@ const VerificationProgram = () => {
 
   const investorSteps = [
     {
-      number: 1,
+      step: "1",
+      title: "Review verification details",
       description: "Read the \"What We Checked\" panel on the fund profile (names, CMVM status page, custodian, fees, GV claim presence/consistency, last verified date)."
     },
     {
-      number: 2,
+      step: "2",
+      title: "Check the documents",
       description: "Open the docs (Prospectus/PPM/KID, subscription, fee table). Sanity-check minimums, fees, lock-ups, and strategy."
     },
     {
-      number: 3,
+      step: "3",
+      title: "Verify independently",
       description: "Verify the regulator link and entity names yourself."
     },
     {
-      number: 4,
+      step: "4",
+      title: "Seek professional advice",
       description: "If GV is your goal, consult your lawyer to confirm the fund's claim fits your situation and current law."
     },
     {
-      number: 5,
+      step: "5",
+      title: "Ask questions",
       description: "Ask questions via Enquire or Book a Call if anything is unclear."
     }
   ];
@@ -151,602 +157,531 @@ const VerificationProgram = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <PageSEO 
-        pageType="verification-program"
-      />
+    <div className="min-h-screen bg-white">
+      <PageSEO pageType="verification-program" />
       <Header />
       
-      <main className="flex-1 container mx-auto px-4 py-8 sm:py-12">
-        {/* Breadcrumbs */}
-        <Breadcrumb className="mb-8 animate-fade-in">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="font-semibold text-foreground">Verification Program</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+      {/* Breadcrumbs */}
+      <div className="border-b border-gray-200 bg-white">
+        <div className="container mx-auto max-w-[1200px] px-6 py-3">
+          <Breadcrumb>
+            <BreadcrumbList className="text-sm text-gray-500">
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild className="hover:text-gray-900 transition-colors">
+                  <Link to="/">Home</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator>
+                <ChevronRight className="h-4 w-4" />
+              </BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbPage className="text-gray-900">Verification Program</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+      </div>
 
-        {/* Hero Section */}
-        <section className="mb-20 text-center animate-fade-in" style={{ animationDelay: '0.1s' }}>
-          <div className="inline-flex items-center gap-3 bg-success/10 text-success px-6 py-3 rounded-full mb-8 border border-success/20 shadow-sm">
-            <Shield className="w-6 h-6" />
-            <span className="font-bold text-lg">Verified by Movingto</span>
+      {/* Hero Section */}
+      <section className="pt-24 pb-16 px-6">
+        <div className="container mx-auto max-w-[1200px] text-center">
+          <div className="inline-flex items-center px-3 py-1 rounded-full border border-gray-200 bg-gray-50 text-xs font-medium text-gray-600 uppercase tracking-wide mb-6">
+            Verification Program
           </div>
-          
-          <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-8 leading-[1.1]">
-            <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-              Verification you can
-            </span>
-            <br />
-            <span className="text-foreground">actually use</span>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gray-900 tracking-tight leading-tight">
+            Verification you can actually use
           </h1>
-          
-          <p className="text-lg md:text-xl lg:text-2xl text-foreground font-medium max-w-4xl mx-auto mb-4 leading-relaxed">
-            We run limited, factual checks on a fund's regulatory status and core documents—so you can evaluate faster.
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+            We verify basic fund information against official sources — helping you spot incomplete profiles and giving you a head start on due diligence.
           </p>
-
-          <Alert variant="warning" className="max-w-3xl mx-auto mb-10 border-2">
-            <Info className="h-5 w-5" />
-            <AlertTitle className="font-bold text-base">Important Notice</AlertTitle>
-            <AlertDescription className="text-base">
-              This is not investment, legal, or tax advice. No performance review. No visa guarantees.
-            </AlertDescription>
-          </Alert>
-
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link to="/verified-funds">
-              <Button size="lg" className="gap-2 text-base px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-300">
-                <CheckCircle2 className="w-5 h-5" />
-                Compare Verified Funds
-              </Button>
-            </Link>
-            <a 
-              href="https://www.movingto.com/contact" 
-              target="_blank" 
-              rel="noopener noreferrer"
-            >
-              <Button size="lg" variant="outline" className="gap-2 text-base px-8 py-6 border-2 hover:bg-muted transition-all duration-300">
-                Ask a Question
-                <ExternalLink className="w-4 h-4" />
-              </Button>
-            </a>
+          
+          <div className="max-w-2xl mx-auto mb-10 p-4 border border-gray-200 rounded-lg bg-gray-50">
+            <p className="text-sm text-gray-600 leading-relaxed">
+              This is not investment advice, due diligence, or a fund recommendation. Always conduct your own research.
+            </p>
           </div>
-        </section>
 
-        {/* At-a-Glance Section */}
-        <section className="mb-20 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              At-a-Glance: What <span className="text-success">"Verified"</span> Means
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              A fund with the Verified by Movingto badge has passed these point-in-time checks
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Button asChild size="lg" className="bg-primary hover:bg-primary/90 px-6 py-3 rounded-lg font-medium">
+              <Link to="/verified-funds">
+                View Verified Funds
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="border border-gray-300 hover:border-gray-400 bg-white text-gray-700 px-6 py-3 rounded-lg font-medium">
+              <Link to="/faqs">Learn More</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* At-a-Glance Section */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto max-w-[1200px]">
+          <div className="mb-12">
+            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
+              What We Verify
+            </div>
+            <h2 className="text-3xl font-semibold text-gray-900 mb-3">What we check — at-a-glance</h2>
+            <p className="text-base text-gray-600 max-w-2xl leading-relaxed">
+              Quick reference: the fundamental checks we run on every fund profile.
             </p>
           </div>
           
-          <Card className="bg-gradient-to-br from-success/5 via-success/10 to-success/5 border-success/30 border-2 shadow-xl">
-            <CardHeader className="pb-6">
-              <CardTitle className="flex items-center gap-3 text-xl">
-                <div className="w-12 h-12 rounded-full bg-success/20 flex items-center justify-center">
-                  <Shield className="w-6 h-6 text-success" />
-                </div>
-                <span className="text-foreground">Verification Checklist</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-2 gap-6">
-                {verificationChecks.map((check, index) => (
-                  <div 
-                    key={index} 
-                    className="flex gap-4 p-4 bg-card rounded-lg border border-success/10 hover:border-success/30 transition-all duration-300 hover:shadow-md"
-                    style={{ animationDelay: `${0.3 + index * 0.05}s` }}
-                  >
-                    <CheckCircle2 className="w-6 h-6 text-success flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h3 className="font-bold text-foreground mb-2">{check.title}</h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{check.description}</p>
-                    </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            {verificationChecks.map((check, index) => (
+              <div key={index} className="pb-8 border-b border-gray-200 last:border-0">
+                <div className="flex items-start gap-4">
+                  <Check className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{check.title}</h3>
+                    <p className="text-base text-gray-600 leading-relaxed">
+                      {check.description}
+                    </p>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* Status Tags Section */}
-        <section className="mb-20 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              Status Tags You'll See
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Each fund displays its current verification status
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-8">
-            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-2">
-              <CardContent className="pt-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle2 className="w-8 h-8 text-success" />
-                </div>
-                <Badge variant="success" className="mb-4 text-base px-6 py-2">
-                  Verified
-                </Badge>
-                <p className="text-foreground font-medium">
-                  Passed all checks at last review
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-2">
-              <CardContent className="pt-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-warning/10 flex items-center justify-center mx-auto mb-4">
-                  <Clock className="w-8 h-8 text-warning" />
-                </div>
-                <Badge variant="warning" className="mb-4 text-base px-6 py-2">
-                  Update Pending
-                </Badge>
-                <p className="text-foreground font-medium">
-                  Fund reported changes; new docs under review
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-2">
-              <CardContent className="pt-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-4">
-                  <AlertCircle className="w-8 h-8 text-destructive" />
-                </div>
-                <Badge variant="destructive" className="mb-4 text-base px-6 py-2">
-                  Paused/Revoked
-                </Badge>
-                <p className="text-foreground font-medium">
-                  Issues, non-response, or inconsistencies
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card className="max-w-4xl mx-auto bg-gradient-to-r from-muted/50 to-muted/30 border-2">
-            <CardContent className="pt-6">
-              <div className="flex items-start gap-3">
-                <Info className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                <div>
-                  <h3 className="font-bold text-foreground mb-2">What you'll see on fund profiles:</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Last verified date • Complete list of documents we received • Direct link to CMVM/public record (where available)
-                  </p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* What We Do NOT Do Section */}
-        <section className="mb-20 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              What We Do <span className="text-destructive">NOT</span> Do
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Understanding the boundaries of our verification process
-            </p>
-          </div>
-          
-          <Alert variant="warning" className="max-w-5xl mx-auto border-2 shadow-lg">
-            <AlertTriangle className="h-6 w-6" />
-            <AlertTitle className="text-xl font-bold mb-6">Important Limitations</AlertTitle>
-            <AlertDescription>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="flex gap-3 p-3 bg-card rounded-lg border border-warning/20">
-                  <span className="text-warning text-xl">•</span>
-                  <span className="text-foreground font-medium">No performance/NAV review or asset audits</span>
-                </div>
-                <div className="flex gap-3 p-3 bg-card rounded-lg border border-warning/20">
-                  <span className="text-warning text-xl">•</span>
-                  <span className="text-foreground font-medium">No valuation or solvency assessment</span>
-                </div>
-                <div className="flex gap-3 p-3 bg-card rounded-lg border border-warning/20">
-                  <span className="text-warning text-xl">•</span>
-                  <span className="text-foreground font-medium">No AML/KYC on the fund or investors</span>
-                </div>
-                <div className="flex gap-3 p-3 bg-card rounded-lg border border-warning/20">
-                  <span className="text-warning text-xl">•</span>
-                  <span className="text-foreground font-medium">No suitability assessment for your situation</span>
-                </div>
-                <div className="flex gap-3 p-3 bg-card rounded-lg border border-warning/20">
-                  <span className="text-warning text-xl">•</span>
-                  <span className="text-foreground font-medium">No legal/tax advice and no visa approval guarantee</span>
-                </div>
-                <div className="flex gap-3 p-3 bg-card rounded-lg border border-warning/20">
-                  <span className="text-warning text-xl">•</span>
-                  <span className="text-foreground font-medium">We do not certify Golden Visa eligibility</span>
-                </div>
-              </div>
-            </AlertDescription>
-          </Alert>
-        </section>
-
-        {/* How Our Verification Works Section */}
-        <section className="mb-20 animate-fade-in" style={{ animationDelay: '0.5s' }}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              How Our Verification Works
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              A transparent 5-step process from submission to badge
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-5 gap-6 max-w-7xl mx-auto">
-            {verificationProcess.map((step) => (
-              <Card 
-                key={step.number} 
-                className="relative hover:shadow-lg transition-all duration-300 hover:-translate-y-2 border-2"
-              >
-                <CardContent className="pt-10 pb-6">
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent text-primary-foreground flex items-center justify-center font-bold text-xl shadow-lg">
-                    {step.number}
-                  </div>
-                  <h3 className="font-bold text-lg mb-3 mt-2 text-center text-foreground">{step.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed text-center">{step.description}</p>
-                </CardContent>
-              </Card>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Documents We Expect Section */}
-        <section className="mb-20 animate-fade-in" style={{ animationDelay: '0.6s' }}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              Documents We Expect to See
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Essential documentation required for verification
+      {/* Divider */}
+      <div className="container mx-auto max-w-[1200px] px-6">
+        <hr className="border-gray-200" />
+      </div>
+
+      {/* Status Tags */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto max-w-[1200px]">
+          <div className="mb-12">
+            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
+              Status Indicators
+            </div>
+            <h2 className="text-3xl font-semibold text-gray-900 mb-3">Understanding status tags</h2>
+            <p className="text-base text-gray-600 max-w-2xl leading-relaxed">
+              Each fund displays one of these status indicators.
             </p>
           </div>
           
-          <Card className="max-w-5xl mx-auto border-2 shadow-lg">
-            <CardContent className="pt-8 pb-8">
-              <div className="grid md:grid-cols-2 gap-4">
-                {expectedDocuments.map((doc, index) => (
-                  <div 
-                    key={index} 
-                    className="flex gap-4 p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-lg border border-primary/10 hover:border-primary/30 transition-all duration-300"
-                  >
-                    <FileCheck className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
-                    <span className="text-foreground font-medium leading-relaxed">{doc}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-8 pt-6 border-t border-border">
-                <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
-                  <Info className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-foreground">
-                    We remove/redact sensitive bank details and do not display investor PII.
-                  </p>
+          <div className="space-y-6">
+            <div className="flex items-start gap-4 p-6 border border-gray-200 rounded-lg bg-white hover:border-gray-300 transition-colors">
+              <div className="w-2 h-2 rounded-full bg-green-600 mt-2 flex-shrink-0"></div>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-50 text-green-700 border border-green-200">
+                    Verified
+                  </span>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* How Investors Should Use This Section */}
-        <section className="mb-20 animate-fade-in" style={{ animationDelay: '0.7s' }}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              How Investors Should Use This
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              A 5-step guide to making the most of verified fund information
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-5 gap-6 max-w-7xl mx-auto mb-10">
-            {investorSteps.map((step) => (
-              <Card 
-                key={step.number} 
-                className="relative bg-gradient-to-br from-primary/5 to-primary/10 border-primary/30 border-2 hover:shadow-lg transition-all duration-300 hover:-translate-y-2"
-              >
-                <CardContent className="pt-10 pb-6">
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent text-primary-foreground flex items-center justify-center font-bold text-xl shadow-lg">
-                    {step.number}
-                  </div>
-                  <p className="text-sm text-foreground font-medium mt-2 leading-relaxed text-center">{step.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <Card className="max-w-5xl mx-auto bg-gradient-to-r from-accent/10 to-accent/5 border-accent/30 border-2">
-            <CardContent className="pt-6 pb-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
-                  <Info className="w-6 h-6 text-accent" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-foreground text-lg mb-2">Good to know</h3>
-                  <p className="text-foreground leading-relaxed">
-                    We're an introducer (not an adviser). If you end up subscribing after an introduction, 
-                    we may receive a fee from the fund. That compensation does not affect verification outcomes.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* Red Flags Section */}
-        <section className="mb-20 animate-fade-in" style={{ animationDelay: '0.8s' }}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              Red Flags <span className="text-destructive">to Watch For</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Warning signs that should raise concerns
-            </p>
-          </div>
-          
-          <Alert variant="destructive" className="max-w-5xl mx-auto border-2 shadow-lg">
-            <AlertTriangle className="h-6 w-6" />
-            <AlertTitle className="text-xl font-bold mb-6">Warning Signs</AlertTitle>
-            <AlertDescription>
-              <div className="grid md:grid-cols-2 gap-4 mb-6">
-                {redFlags.map((flag, index) => (
-                  <div key={index} className="flex gap-3 p-3 bg-card rounded-lg border border-destructive/20">
-                    <span className="text-destructive text-xl">•</span>
-                    <span className="text-foreground font-medium leading-relaxed">{flag}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="p-4 bg-destructive/10 rounded-lg border border-destructive/30">
-                <p className="font-bold text-foreground text-center">
-                  If you spot something off on a verified profile, report it below—we'll re-review.
+                <p className="text-base text-gray-600 leading-relaxed">
+                  Passed all checks. Information matches official records. Data was reviewed within the last 90 days.
                 </p>
               </div>
-            </AlertDescription>
-          </Alert>
-        </section>
+            </div>
 
-        {/* Report an Issue Section */}
-        <section className="mb-20 animate-fade-in" style={{ animationDelay: '0.9s' }}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              Report an Issue
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Help us maintain the integrity of verified fund information
+            <div className="flex items-start gap-4 p-6 border border-gray-200 rounded-lg bg-white hover:border-gray-300 transition-colors">
+              <div className="w-2 h-2 rounded-full bg-orange-600 mt-2 flex-shrink-0"></div>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-50 text-orange-700 border border-orange-200">
+                    Update Pending
+                  </span>
+                </div>
+                <p className="text-base text-gray-600 leading-relaxed">
+                  Previously verified but now over 90 days old. We're working to refresh the information.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4 p-6 border border-gray-200 rounded-lg bg-white hover:border-gray-300 transition-colors">
+              <div className="w-2 h-2 rounded-full bg-red-600 mt-2 flex-shrink-0"></div>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-50 text-red-700 border border-red-200">
+                    Paused / Revoked
+                  </span>
+                </div>
+                <p className="text-base text-gray-600 leading-relaxed">
+                  Documents couldn't be validated, or we found a discrepancy. Proceed with extra caution.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="container mx-auto max-w-[1200px] px-6">
+        <hr className="border-gray-200" />
+      </div>
+
+      {/* What We Don't Do */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto max-w-[1200px]">
+          <div className="p-8 border-2 border-orange-600 rounded-lg bg-orange-50">
+            <div className="flex items-center gap-3 mb-4">
+              <AlertTriangle className="h-6 w-6 text-orange-600" />
+              <h2 className="text-2xl font-semibold text-gray-900">What we do NOT do</h2>
+            </div>
+            <p className="text-base text-gray-600 mb-6 leading-relaxed">
+              Important limitations you should understand before using our verification badges.
+            </p>
+            <ul className="space-y-4 text-base text-gray-900">
+              <li className="flex gap-3 items-start">
+                <span className="text-orange-600 font-bold">•</span>
+                <span><strong className="font-semibold">Financial performance analysis:</strong> We do not evaluate returns, risk, or investment suitability.</span>
+              </li>
+              <li className="flex gap-3 items-start">
+                <span className="text-orange-600 font-bold">•</span>
+                <span><strong className="font-semibold">Legal or compliance audits:</strong> We are not lawyers, accountants, or regulatory experts.</span>
+              </li>
+              <li className="flex gap-3 items-start">
+                <span className="text-orange-600 font-bold">•</span>
+                <span><strong className="font-semibold">Ongoing monitoring:</strong> Once verified, we revisit the profile periodically — but not in real-time.</span>
+              </li>
+              <li className="flex gap-3 items-start">
+                <span className="text-orange-600 font-bold">•</span>
+                <span><strong className="font-semibold">Endorsement or recommendation:</strong> A verification badge is not an endorsement to invest.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="container mx-auto max-w-[1200px] px-6">
+        <hr className="border-gray-200" />
+      </div>
+
+      {/* How Our Verification Works */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto max-w-[1200px]">
+          <div className="mb-12">
+            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
+              Our Process
+            </div>
+            <h2 className="text-3xl font-semibold text-gray-900 mb-3">How our verification works</h2>
+            <p className="text-base text-gray-600 max-w-2xl leading-relaxed">
+              A transparent, 5-step process to verify fund information.
             </p>
           </div>
           
-          <Card className="max-w-3xl mx-auto border-2 shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-2xl">See a mismatch or outdated document?</CardTitle>
-              <CardDescription className="text-base mt-2">
-                Submit a report and we'll investigate. If needed, we'll update the status (e.g., Update Pending or Paused).
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <a 
-                href="https://www.movingto.com/contact" 
-                target="_blank" 
-                rel="noopener noreferrer"
-              >
-                <Button className="w-full gap-2 py-6 text-base font-semibold shadow-md hover:shadow-lg transition-all duration-300">
-                  <AlertTriangle className="w-5 h-5" />
-                  Submit a Report
-                  <ExternalLink className="w-4 h-4" />
-                </Button>
-              </a>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* Conflicts & Compensation Section */}
-        <section className="mb-20 animate-fade-in" style={{ animationDelay: '1s' }}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              Conflicts & Compensation
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Plain English about our introducer model
-            </p>
-          </div>
-          
-          <Card className="max-w-5xl mx-auto border-2 shadow-lg">
-            <CardContent className="pt-8 pb-8">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="flex gap-4 p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-lg border border-border">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Building2 className="w-6 h-6 text-primary" />
+          <div className="relative">
+            {verificationProcess.map((step, index) => (
+              <div key={index} className="relative pl-12 pb-12 last:pb-0">
+                {/* Vertical line */}
+                {index < verificationProcess.length - 1 && (
+                  <div className="absolute left-5 top-12 bottom-0 w-px bg-gray-300"></div>
+                )}
+                
+                <div className="flex gap-6 items-start">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full border-2 border-gray-300 bg-white flex items-center justify-center absolute left-0 top-0 hover:border-gray-400 transition-colors">
+                    <span className="text-lg font-semibold text-gray-900">{step.step}</span>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-foreground mb-2">Introducer Only</h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Movingto operates as an introducer only.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4 p-4 bg-gradient-to-r from-accent/5 to-transparent rounded-lg border border-border">
-                  <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
-                    <Info className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-foreground mb-2">Referral Fees</h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      We may receive an introducer/referral fee from the fund if you subscribe after an introduction.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4 p-4 bg-gradient-to-r from-success/5 to-transparent rounded-lg border border-border">
-                  <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0">
-                    <Shield className="w-6 h-6 text-success" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-foreground mb-2">Independent Verification</h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Verification is independent of compensation—funds are verified or not based on checks above.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4 p-4 bg-gradient-to-r from-success/5 to-transparent rounded-lg border border-border">
-                  <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-6 h-6 text-success" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-foreground mb-2">No Custody</h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      We never take custody of your money and we don't collect investor PII beyond what you choose to share.
+                  <div className="flex-1 pt-0.5">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">{step.title}</h3>
+                    <p className="text-base text-gray-600 leading-relaxed">
+                      {step.description}
                     </p>
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </section>
+            ))}
+          </div>
+        </div>
+      </section>
 
-        {/* Disclaimers Section */}
-        <section className="mb-20 animate-fade-in" style={{ animationDelay: '1.1s' }}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              Disclaimers <span className="text-muted-foreground">(Read This)</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Important legal information about our verification program
+      {/* Divider */}
+      <div className="container mx-auto max-w-[1200px] px-6">
+        <hr className="border-gray-200" />
+      </div>
+
+      {/* Documents We Expect */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto max-w-[1200px]">
+          <div className="mb-12">
+            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
+              Required Materials
+            </div>
+            <h2 className="text-3xl font-semibold text-gray-900 mb-3">Documents we expect</h2>
+            <p className="text-base text-gray-600 max-w-2xl leading-relaxed">
+              Typical materials we review during verification.
             </p>
           </div>
           
-          <Accordion type="single" collapsible className="max-w-4xl mx-auto space-y-3">
-            <AccordionItem value="item-1" className="border-2 rounded-lg px-6 bg-card">
-              <AccordionTrigger>
-                <span className="font-bold text-lg text-foreground">No advice or solicitation</span>
+          <ul className="grid md:grid-cols-2 gap-6">
+            {expectedDocuments.map((doc, index) => (
+              <li key={index} className="flex gap-3 items-start pb-6 border-b border-gray-200">
+                <FileText className="h-4 w-4 text-gray-400 mt-1 flex-shrink-0" />
+                <span className="text-base text-gray-900">{doc}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="container mx-auto max-w-[1200px] px-6">
+        <hr className="border-gray-200" />
+      </div>
+
+      {/* How Investors Should Use This */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto max-w-[1200px]">
+          <div className="mb-12">
+            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
+              For Investors
+            </div>
+            <h2 className="text-3xl font-semibold text-gray-900 mb-3">How investors should use this</h2>
+            <p className="text-base text-gray-600 max-w-2xl leading-relaxed">
+              Practical guidance on integrating verified data into your investment process.
+            </p>
+          </div>
+          
+          <div className="space-y-8">
+            {investorSteps.map((item, index) => (
+              <div key={index} className="flex gap-6 items-start">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full border-2 border-gray-300 bg-white flex items-center justify-center hover:border-gray-400 transition-colors">
+                  <span className="text-base font-semibold text-gray-900">{item.step}</span>
+                </div>
+                <div className="flex-1 pt-0.5">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3>
+                  <p className="text-base text-gray-600 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="container mx-auto max-w-[1200px] px-6">
+        <hr className="border-gray-200" />
+      </div>
+
+      {/* Red Flags */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto max-w-[1200px]">
+          <div className="mb-12">
+            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
+              Due Diligence
+            </div>
+            <h2 className="text-3xl font-semibold text-gray-900 mb-3">Red flags to watch for</h2>
+            <p className="text-base text-gray-600 max-w-2xl leading-relaxed">
+              Warning signs that should prompt extra scrutiny during your own due diligence.
+            </p>
+          </div>
+          
+          <ol className="space-y-4">
+            {redFlags.map((flag, index) => (
+              <li key={index} className="flex gap-4 items-start">
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-red-50 border border-red-200 flex items-center justify-center text-sm font-medium text-red-700">
+                  {index + 1}
+                </span>
+                <span className="text-base text-gray-900 pt-0.5 leading-relaxed">{flag}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="container mx-auto max-w-[1200px] px-6">
+        <hr className="border-gray-200" />
+      </div>
+
+      {/* Report an Issue */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto max-w-[1200px]">
+          <div className="p-8 border border-gray-200 rounded-lg bg-white">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-3">Report an issue</h2>
+            <p className="text-base text-gray-600 mb-6 leading-relaxed max-w-2xl">
+              If you believe a verified fund profile contains inaccurate or outdated information, please let us know.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 items-start">
+              <Button asChild size="lg" variant="outline" className="border border-gray-300 hover:border-gray-400 bg-white text-gray-700 px-6 py-3 rounded-lg font-medium">
+                <a href="mailto:verify@fundvista.com">
+                  <Mail className="mr-2 h-4 w-4" />
+                  verify@fundvista.com
+                </a>
+              </Button>
+              <p className="text-sm text-gray-500 pt-2">
+                Include fund name, specific issue, and any supporting documentation
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="container mx-auto max-w-[1200px] px-6">
+        <hr className="border-gray-200" />
+      </div>
+
+      {/* Conflicts & Compensation */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto max-w-[1200px]">
+          <div className="mb-6">
+            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
+              Transparency
+            </div>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6">Conflicts &amp; compensation</h2>
+          </div>
+          <div className="space-y-6 text-base text-gray-900 leading-relaxed max-w-3xl">
+            <p>
+              <strong className="font-semibold">Paid verification:</strong> Some funds pay us to expedite or expand their verification. We disclose any such arrangement on the fund's profile page.
+            </p>
+            <p>
+              <strong className="font-semibold">Independence:</strong> Payment does not influence our methodology or the verification outcome. A fund that pays and fails our checks will not receive a badge.
+            </p>
+            <p>
+              <strong className="font-semibold">Advertising:</strong> We may display sponsored content elsewhere on our site. Verification and advertising are handled by separate teams and processes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="container mx-auto max-w-[1200px] px-6">
+        <hr className="border-gray-200" />
+      </div>
+
+      {/* Disclaimers */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto max-w-[1200px]">
+          <div className="mb-12">
+            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
+              Legal
+            </div>
+            <h2 className="text-3xl font-semibold text-gray-900 mb-3">Detailed disclaimers</h2>
+            <p className="text-base text-gray-600 max-w-2xl leading-relaxed">
+              Legal notices and risk warnings you should review carefully.
+            </p>
+          </div>
+          
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="item-1" className="border-t border-gray-200">
+              <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
+                Not Investment Advice
               </AccordionTrigger>
-              <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2">
-                The badge and this page provide informational, limited-scope checks only and are not investment, legal, tax, or immigration advice, 
-                nor an offer/solicitation to buy or sell securities.
+              <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
+                Nothing on this site — including our verification badges — constitutes investment advice, a recommendation, or a solicitation to buy or sell any security or investment product. You must conduct your own due diligence and consult with qualified financial, legal, and tax advisors before making any investment decision.
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-2" className="border-2 rounded-lg px-6 bg-card">
-              <AccordionTrigger>
-                <span className="font-bold text-lg text-foreground">Limited review</span>
+            <AccordionItem value="item-2" className="border-t border-gray-200">
+              <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
+                No Guarantee of Accuracy
               </AccordionTrigger>
-              <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2">
-                We verify the presence and internal consistency of specific documents and public records at the time of review. 
-                We do not audit performance, assets, NAV, or operations.
+              <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
+                While we strive for accuracy, we cannot guarantee that all information is complete, current, or error-free. Fund details may change, and documents may be outdated or misinterpreted. We are not liable for any errors, omissions, or reliance on the information provided.
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-3" className="border-2 rounded-lg px-6 bg-card">
-              <AccordionTrigger>
-                <span className="font-bold text-lg text-foreground">No Golden Visa guarantees</span>
+            <AccordionItem value="item-3" className="border-t border-gray-200">
+              <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
+                No Endorsement
               </AccordionTrigger>
-              <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2">
-                Where a fund claims GV eligibility, we confirm the claim exists and is consistent across materials. 
-                We do not certify eligibility under law or guarantee visa outcomes.
+              <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
+                A verification badge does not imply endorsement, approval, or recommendation of any fund, fund manager, or investment strategy. It simply indicates that certain basic information has been cross-checked against available documentation.
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-4" className="border-2 rounded-lg px-6 bg-card">
-              <AccordionTrigger>
-                <span className="font-bold text-lg text-foreground">Reliance on third parties</span>
+            <AccordionItem value="item-4" className="border-t border-gray-200">
+              <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
+                Investment Risks
               </AccordionTrigger>
-              <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2">
-                We rely on fund-supplied docs and public sources. If those are inaccurate or outdated, our verification may be affected.
+              <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
+                All investments carry risk, including the potential loss of principal. Past performance is not indicative of future results. Alternative investments (such as private funds) may be illiquid, complex, and subject to limited regulation. They may not be suitable for all investors.
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-5" className="border-2 rounded-lg px-6 bg-card">
-              <AccordionTrigger>
-                <span className="font-bold text-lg text-foreground">Point-in-time status</span>
+            <AccordionItem value="item-5" className="border-t border-gray-200">
+              <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
+                Third-Party Information
               </AccordionTrigger>
-              <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2">
-                Verification can change. We may pause/revoke if materials change or inconsistencies appear.
+              <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
+                We rely on documents and data provided by fund managers, regulatory filings, and other third-party sources. We do not independently audit financial statements or validate performance claims. Our verification process is limited in scope.
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem value="item-6" className="border-2 rounded-lg px-6 bg-card">
-              <AccordionTrigger>
-                <span className="font-bold text-lg text-foreground">Jurisdiction</span>
+            <AccordionItem value="item-6" className="border-t border-gray-200">
+              <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
+                Changes and Revocation
               </AccordionTrigger>
-              <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2">
-                Program operated by Movingto Global Pte. Ltd. (Singapore). Disputes subject to Singapore law/courts.
+              <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
+                We reserve the right to update, suspend, or revoke any verification badge at any time, for any reason, without prior notice. Verification status may change as new information becomes available.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-7" className="border-t border-b border-gray-200">
+              <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
+                Limitation of Liability
+              </AccordionTrigger>
+              <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
+                To the fullest extent permitted by law, we disclaim all liability for any damages, losses, or claims arising from your use of this verification service or reliance on any information provided. This includes, but is not limited to, direct, indirect, incidental, or consequential damages.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+        </div>
+      </section>
 
-          <div className="flex justify-center gap-4 mt-10">
-            <Link to="/disclaimer">
-              <Button variant="outline" size="lg" className="font-semibold">Terms</Button>
-            </Link>
-            <Link to="/privacy">
-              <Button variant="outline" size="lg" className="font-semibold">Privacy</Button>
-            </Link>
-          </div>
-        </section>
+      {/* Divider */}
+      <div className="container mx-auto max-w-[1200px] px-6">
+        <hr className="border-gray-200" />
+      </div>
 
-        {/* FAQs Section */}
-        <section className="mb-20 animate-fade-in" style={{ animationDelay: '1.2s' }}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Common questions about our verification program
+      {/* FAQs */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto max-w-[1200px]">
+          <div className="mb-12">
+            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
+              FAQ
+            </div>
+            <h2 className="text-3xl font-semibold text-gray-900 mb-3">Frequently asked questions</h2>
+            <p className="text-base text-gray-600 max-w-2xl leading-relaxed">
+              Quick answers to common questions about our verification program.
             </p>
           </div>
           
-          <Accordion type="single" collapsible className="max-w-4xl mx-auto space-y-3">
+          <Accordion type="single" collapsible className="w-full">
             {faqs.map((faq, index) => (
-              <AccordionItem key={index} value={`faq-${index}`} className="border-2 rounded-lg px-6 bg-card">
-                <AccordionTrigger>
-                  <span className="font-bold text-base text-foreground text-left">{faq.question}</span>
+              <AccordionItem key={index} value={`faq-${index}`} className="border-t border-gray-200 last:border-b">
+                <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
+                  {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-base text-muted-foreground leading-relaxed pt-2">
+                <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
-        </section>
+        </div>
+      </section>
 
-        {/* CTA Section */}
-        <section className="mb-20 text-center animate-fade-in" style={{ animationDelay: '1.3s' }}>
-          <Card className="bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 max-w-5xl mx-auto border-2 shadow-2xl overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-50" />
-            <CardContent className="relative pt-16 pb-16 px-8">
-              <div className="w-20 h-20 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-6">
-                <Shield className="w-10 h-10 text-success" />
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Ready to explore verified funds?</h2>
-              <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
-                Browse our verified fund portfolio and make more informed investment decisions with confidence.
-              </p>
-              <div className="flex flex-wrap items-center justify-center gap-4">
-                <Link to="/verified-funds">
-                  <Button size="lg" className="gap-2 text-base px-10 py-6 shadow-lg hover:shadow-xl transition-all duration-300">
-                    <CheckCircle2 className="w-5 h-5" />
-                    View Verified Funds
-                  </Button>
-                </Link>
-                <Link to="/index">
-                  <Button size="lg" variant="outline" className="gap-2 text-base px-10 py-6 border-2 hover:bg-muted transition-all duration-300">
-                    Browse All Funds
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-      </main>
-      
+      {/* Divider */}
+      <div className="container mx-auto max-w-[1200px] px-6">
+        <hr className="border-gray-200" />
+      </div>
+
+      {/* Final CTA */}
+      <section className="py-24 px-6 bg-gray-50">
+        <div className="container mx-auto max-w-[1200px] text-center">
+          <h2 className="text-4xl font-bold text-gray-900 mb-6 tracking-tight">Ready to explore verified funds?</h2>
+          <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+            Browse our collection of verified fund profiles and see which ones pass our basic checks.
+          </p>
+          <Button asChild size="lg" className="bg-primary hover:bg-primary/90 px-8 py-4 rounded-lg font-medium text-base">
+            <Link to="/verified-funds">
+              Browse Verified Funds
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );
