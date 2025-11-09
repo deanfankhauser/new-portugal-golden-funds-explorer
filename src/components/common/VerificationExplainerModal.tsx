@@ -10,6 +10,8 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Link } from 'react-router-dom';
+import { DialogFooter } from '@/components/ui/dialog';
 
 interface VerificationExplainerModalProps {
   trigger?: React.ReactNode;
@@ -185,13 +187,21 @@ const VerificationExplainerModal: React.FC<VerificationExplainerModalProps> = ({
             <p className="text-sm text-muted-foreground mb-3">
               Looking for verified investment opportunities?
             </p>
-            <Button asChild>
-              <a href="/verified-funds">
-                View All Verified Funds
-              </a>
-            </Button>
           </div>
         </div>
+
+        <DialogFooter className="gap-2 sm:gap-0">
+          <Button variant="outline" asChild>
+            <Link to="/verification-program">
+              Learn About Our Process
+            </Link>
+          </Button>
+          <Button variant="default" asChild>
+            <Link to="/verified-funds">
+              View All Verified Funds
+            </Link>
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

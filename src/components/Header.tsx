@@ -149,6 +149,15 @@ const Header = () => {
                             </div>
                           </Link>
                         </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <Link to="/verification-program" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
+                            <ExternalLink className="h-5 w-5 text-primary flex-shrink-0" />
+                            <div>
+                              <div className="font-medium text-foreground">Verification Program</div>
+                              <div className="text-sm text-muted-foreground">How verification works</div>
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
                       </div>
                     </div>
                   </NavigationMenuContent>

@@ -53,14 +53,12 @@ const VerificationStats: React.FC<VerificationStatsProps> = ({
                 <p className="text-sm text-muted-foreground">Verified Funds</p>
               </div>
             </div>
-            <VerificationExplainerModal 
-              trigger={
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <CheckCircle2 className="w-4 h-4" />
-                  Learn More
-                </Button>
-              }
-            />
+            <Link to="/verification-program">
+              <Button variant="ghost" size="sm" className="gap-2">
+                <CheckCircle2 className="w-4 h-4" />
+                Learn More
+              </Button>
+            </Link>
           </div>
         </CardContent>
       </Card>

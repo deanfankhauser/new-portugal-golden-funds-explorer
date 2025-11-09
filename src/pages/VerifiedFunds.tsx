@@ -9,6 +9,8 @@ import VerificationStats from '../components/common/VerificationStats';
 import VerificationExplainerModal from '../components/common/VerificationExplainerModal';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../components/ui/breadcrumb';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Link } from 'react-router-dom';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 
 const VerifiedFunds = () => {
@@ -74,7 +76,11 @@ const VerifiedFunds = () => {
         <section className="mb-12">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-bold">What Does Verification Mean?</h2>
-            <VerificationExplainerModal />
+            <Link to="/verification-program">
+              <Button variant="outline" size="sm">
+                Learn More About Verification
+              </Button>
+            </Link>
           </div>
           
           <div className="grid md:grid-cols-3 gap-6">
@@ -186,6 +192,23 @@ const VerifiedFunds = () => {
               ))}
             </div>
           )}
+        </section>
+
+        {/* CTA to Verification Program */}
+        <section className="mb-12">
+          <Card className="bg-gradient-to-br from-primary/10 via-primary/5 to-background">
+            <CardContent className="pt-8 pb-8 text-center">
+              <h2 className="text-2xl font-bold mb-4">Want to learn more about our verification process?</h2>
+              <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+                Discover exactly what we check, how we verify funds, and what the verification badge means for your investment decisions.
+              </p>
+              <Link to="/verification-program">
+                <Button size="lg">
+                  Learn About Our Verification Process
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
         </section>
       </main>
       
