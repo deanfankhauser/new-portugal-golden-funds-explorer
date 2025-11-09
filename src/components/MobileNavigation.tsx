@@ -239,6 +239,12 @@ const MobileNavigation = () => {
                   <span>Tags</span>
                 </Button>
               </Link>
+              <Link to="/verified-funds" onClick={closeMenu}>
+                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
+                  <ClipboardCheck className="h-5 w-5 text-success" />
+                  <span>Verified Funds</span>
+                </Button>
+              </Link>
             </div>
           </div>
 

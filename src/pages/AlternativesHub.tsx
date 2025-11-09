@@ -1,17 +1,26 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { fundsData } from '../data/mock/funds';
 import { findAlternativeFunds } from '../data/services/alternative-funds-service';
 import { isFundGVEligible } from '../data/services/gv-eligibility-service';
 import { PageSEO } from '../components/common/PageSEO';
+import VerificationFilterChip from '../components/common/VerificationFilterChip';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { ArrowRight, TrendingUp } from 'lucide-react';
 
 const AlternativesHub: React.FC = () => {
+  const [showOnlyVerified, setShowOnlyVerified] = useState(false);
+  
+  // Filter funds by verification status
+  const filteredFunds = useMemo(() => {
+    if (!showOnlyVerified) return fundsData;
+    return fundsData.filter(fund => fund.isVerified);
+  }, [showOnlyVerified]);
+  
   // All funds are now GV eligible, so show general alternatives
   // Filter out any invalid fund entries
-  const allFunds = fundsData.filter((f): f is typeof f & { name: string; id: string } => 
+  const allFunds = filteredFunds.filter((f): f is typeof f & { name: string; id: string } => 
     !!f && typeof f === 'object' && 
     typeof f.name === 'string' && 
     typeof f.id === 'string' &&
@@ -50,6 +59,14 @@ const AlternativesHub: React.FC = () => {
               Discover similar Golden Visa eligible funds based on category, investment requirements, and performance metrics.
               Compare alternatives to find the perfect fund for your needs.
             </p>
+          </div>
+          
+          {/* Verification Filter */}
+          <div className="mb-8">
+            <VerificationFilterChip 
+              showOnlyVerified={showOnlyVerified}
+              setShowOnlyVerified={setShowOnlyVerified}
+            />
           </div>
 
           {/* Stats */}

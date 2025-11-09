@@ -1,5 +1,5 @@
-import React from 'react';
-import { funds } from '../data/funds';
+import React, { useState, useMemo } from 'react';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import { FundScoringService } from '../services/fundScoringService';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -12,14 +12,41 @@ import MethodologySection from '../components/fund-index/MethodologySection';
 import TrustSignals from '../components/fund-index/TrustSignals';
 import IndexSummaryWidgets from '../components/fund-index/IndexSummaryWidgets';
 import FundIndexFAQ from '../components/fund-index/FundIndexFAQ';
+import VerificationFilterChip from '../components/common/VerificationFilterChip';
+import VerificationStats from '../components/common/VerificationStats';
 import { Card, CardContent } from '../components/ui/card';
+import FundListSkeleton from '../components/common/FundListSkeleton';
 
 const FundIndex: React.FC = () => {
-  // Calculate scores for all funds
-  const allFundScores = FundScoringService.getAllFundScores(funds);
+  const { funds, loading } = useRealTimeFunds();
+  const [showOnlyVerified, setShowOnlyVerified] = useState(false);
+  
+  // Filter funds by verification status
+  const filteredFunds = useMemo(() => {
+    if (!showOnlyVerified) return funds;
+    return funds.filter(fund => fund.isVerified);
+  }, [showOnlyVerified]);
+  
+  // Calculate scores for filtered funds
+  const allFundScores = FundScoringService.getAllFundScores(filteredFunds);
   const topFiveScores = allFundScores.slice(0, 5);
 
   // Remove component-level schema injection - ConsolidatedSEOService handles page-level schemas
+
+  if (loading) {
+    return (
+      <>
+        <PageSEO pageType="fund-index" />
+        <div className="min-h-screen bg-gray-50">
+          <Header />
+          <main className="max-w-7xl mx-auto px-6 py-12">
+            <FundListSkeleton />
+          </main>
+          <Footer />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -48,6 +75,19 @@ const FundIndex: React.FC = () => {
                 </div>
               </CardContent>
             </Card>
+          </div>
+          
+          {/* Verification Filter */}
+          <div className="max-w-7xl mx-auto px-6 py-4">
+            <VerificationFilterChip 
+              showOnlyVerified={showOnlyVerified}
+              setShowOnlyVerified={setShowOnlyVerified}
+            />
+          </div>
+
+          {/* Verification Stats */}
+          <div className="max-w-7xl mx-auto px-6 py-4">
+            <VerificationStats funds={funds} variant="detailed" />
           </div>
           
           <div className="max-w-7xl mx-auto px-6 py-12 space-y-12">

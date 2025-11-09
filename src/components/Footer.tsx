@@ -119,6 +119,12 @@ const Footer = () => {
             <h3 className="text-base font-semibold mb-4">Resources</h3>
             <ul className="space-y-2">
               <li>
+                <Link to="/verified-funds" className="text-muted-foreground hover:text-accent text-sm transition-colors">Verified Funds</Link>
+              </li>
+              <li>
+                <Link to="/verification-program" className="text-muted-foreground hover:text-accent text-sm transition-colors">Verification Program</Link>
+              </li>
+              <li>
                 <a 
                   href="https://www.movingto.com/pt/portugal-golden-visa" 
                   target="_blank" 

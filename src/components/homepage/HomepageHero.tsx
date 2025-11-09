@@ -3,9 +3,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, TrendingUp, Building2, Euro } from 'lucide-react';
 import { Button } from '../ui/button';
-import { funds } from '../../data/funds';
+import VerificationStats from '../common/VerificationStats';
+import { Fund } from '../../data/types/funds';
 
-const HomepageHero: React.FC = () => {
+interface HomepageHeroProps {
+  funds: Fund[];
+}
+
+const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
   const totalFunds = funds.length;
   const minimumInvestment = '€500K';
 
@@ -97,7 +102,7 @@ const HomepageHero: React.FC = () => {
           </div>
 
           {/* Learn More Link */}
-          <div className="text-center">
+          <div className="text-center mb-8">
             <a 
               href="https://movingto.com/pt/portugal-golden-visa" 
               target="_blank" 
@@ -109,6 +114,11 @@ const HomepageHero: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </a>
+          </div>
+
+          {/* Verification Stats */}
+          <div className="mt-8">
+            <VerificationStats funds={funds} variant="compact" />
           </div>
         </div>
       </div>

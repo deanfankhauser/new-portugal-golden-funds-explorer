@@ -140,6 +140,24 @@ const Header = () => {
                             </div>
                           </Link>
                         </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <Link to="/verified-funds" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
+                            <ClipboardCheck className="h-5 w-5 text-success flex-shrink-0" />
+                            <div>
+                              <div className="font-medium text-foreground">Verified Funds</div>
+                              <div className="text-sm text-muted-foreground">Trusted & verified</div>
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <Link to="/verification-program" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
+                            <ExternalLink className="h-5 w-5 text-primary flex-shrink-0" />
+                            <div>
+                              <div className="font-medium text-foreground">Verification Program</div>
+                              <div className="text-sm text-muted-foreground">How verification works</div>
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
                       </div>
                     </div>
                   </NavigationMenuContent>

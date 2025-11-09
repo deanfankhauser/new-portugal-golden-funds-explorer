@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Card, CardContent } from '../ui/card';
-import { Calendar } from 'lucide-react';
+import { Calendar, CheckCircle2 } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
 import { buildBookingUrl, openExternalLink } from '../../utils/urlHelpers';
 import analytics from '../../utils/analytics';
@@ -55,14 +55,18 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
       <div className="flex items-start justify-between gap-6">
         <div className="flex-1 space-y-4">
           <div className="flex items-center gap-3 flex-wrap">
+            {fund.isVerified && (
+              <div className="bg-success text-success-foreground px-5 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg border-2 border-success/70 ring-2 ring-success/30 animate-in fade-in duration-300">
+                <CheckCircle2 className="w-5 h-5" />
+                <span>✓ VERIFIED FUND</span>
+              </div>
+            )}
             {isOpenForSubscriptions && (
               <Badge variant="success" className="text-xs font-medium">
                 Open for subscriptions
               </Badge>
             )}
-            {fund.isVerified ? (
-              <Badge variant="success" className="text-xs font-medium">Verified</Badge>
-            ) : (
+            {!fund.isVerified && (
               <Badge variant="outline" className="text-xs font-medium">Unverified</Badge>
             )}
           </div>

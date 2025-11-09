@@ -8,7 +8,7 @@ import PageSEO from '../components/common/PageSEO';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { ArrowLeft, ExternalLink, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Alert, AlertDescription } from '../components/ui/alert';
 
@@ -131,8 +131,14 @@ const FundAlternatives = () => {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <CardTitle className="text-xl text-foreground mb-2">
+                      <CardTitle className="text-xl text-foreground mb-2 flex items-center gap-2">
                         {alternativeFund.name}
+                        {alternativeFund.isVerified && (
+                          <span className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-md border-2 border-success/70 ring-2 ring-success/20">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            ✓ VERIFIED
+                          </span>
+                        )}
                       </CardTitle>
                       <Badge className={`${getStatusColor(alternativeFund.fundStatus)} mb-3`}>
                         {alternativeFund.fundStatus}

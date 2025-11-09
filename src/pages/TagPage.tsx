@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { getFundsByTag, getAllTags } from '../data/funds';
 import Header from '../components/Header';
@@ -12,12 +12,14 @@ import TagPageFundList from '../components/tag/TagPageFundList';
 import TagPageEmptyState from '../components/tag/TagPageEmptyState';
 import TagPageFAQ from '../components/tag/TagPageFAQ';
 import RelatedTags from '../components/tag/RelatedTags';
+import VerificationFilterChip from '../components/common/VerificationFilterChip';
 import { FundTag } from '../data/types/funds';
 import { slugToTag, tagToSlug } from '../lib/utils';
 
 const TagPage = () => {
   const { tag: tagSlug } = useParams<{ tag: string }>();
   const allTags = getAllTags();
+  const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   
   // Processing tag slug and available tags
   
@@ -67,7 +69,13 @@ const TagPage = () => {
   }
   
   const tagExists = !!matchingTag;
-  const funds = tagExists ? getFundsByTag(matchingTag as FundTag) : [];
+  const allFunds = tagExists ? getFundsByTag(matchingTag as FundTag) : [];
+  
+  // Filter funds by verification status
+  const funds = useMemo(() => {
+    if (!showOnlyVerified) return allFunds;
+    return allFunds.filter(fund => fund.isVerified);
+  }, [allFunds, showOnlyVerified]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -100,11 +108,28 @@ const TagPage = () => {
         <TagBreadcrumbs tagName={displayTagName} tagSlug={tagSlug || ''} />
         <TagPageHeader tagName={displayTagName} />
         
+        {/* Verification Filter */}
+        <div className="mb-6">
+          <VerificationFilterChip 
+            showOnlyVerified={showOnlyVerified}
+            setShowOnlyVerified={setShowOnlyVerified}
+          />
+        </div>
+        
         {funds.length > 0 ? (
           <>
             <TagPageFundSummary count={funds.length} tagName={displayTagName} />
             <TagPageFundList funds={funds} />
           </>
+        ) : showOnlyVerified && allFunds.length > 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-lg">
+              No verified funds found with the tag "{displayTagName}".
+            </p>
+            <p className="text-muted-foreground mt-2">
+              Try disabling the verification filter to see all {allFunds.length} funds.
+            </p>
+          </div>
         ) : (
           <TagPageEmptyState tagName={displayTagName} />
         )}

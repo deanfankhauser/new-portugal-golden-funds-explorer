@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom';
 import { Fund, getFundsByCategory, funds } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
-import { ExternalLink, TrendingUp, DollarSign } from 'lucide-react';
+import { ExternalLink, TrendingUp, DollarSign, CheckCircle2 } from 'lucide-react';
 import { categoryToSlug } from '@/lib/utils';
+import RecentlyVerifiedBadge from '../common/RecentlyVerifiedBadge';
 
 interface RelatedFundsProps {
   currentFund: Fund;
@@ -41,8 +42,14 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
               {sameCategoryFunds.map(fund => (
                 <div key={fund.id} className="border border-border rounded-lg p-4 hover:border-accent transition-colors">
                   <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
-                    <h4 className="font-semibold text-foreground mb-2 hover:text-accent transition-colors">
+                    <h4 className="font-semibold text-foreground mb-2 hover:text-accent transition-colors flex items-center gap-1.5 flex-wrap">
                       {fund.name}
+                      {fund.isVerified && (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
+                          <RecentlyVerifiedBadge verifiedAt={fund.verifiedAt} className="text-[10px]" />
+                        </>
+                      )}
                     </h4>
                   </Link>
                   <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{fund.description}</p>
@@ -84,8 +91,14 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
               {similarInvestmentFunds.map(fund => (
                 <div key={fund.id} className="border border-border rounded-lg p-4 hover:border-accent transition-colors">
                   <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
-                    <h4 className="font-semibold text-foreground mb-2 hover:text-accent transition-colors">
+                    <h4 className="font-semibold text-foreground mb-2 hover:text-accent transition-colors flex items-center gap-1.5 flex-wrap">
                       {fund.name}
+                      {fund.isVerified && (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
+                          <RecentlyVerifiedBadge verifiedAt={fund.verifiedAt} className="text-[10px]" />
+                        </>
+                      )}
                     </h4>
                   </Link>
                   <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{fund.description}</p>
