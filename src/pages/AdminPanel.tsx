@@ -137,7 +137,7 @@ const AdminPanel = () => {
   }
 
   if (!user) {
-    return <Navigate to="/investor-auth" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   if (!isAdmin) {

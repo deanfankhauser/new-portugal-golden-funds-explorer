@@ -41,7 +41,7 @@ const ManagerAuthButton = () => {
   if (!user) {
     return (
       <Button asChild variant="default" size="sm">
-        <Link to="/manager-auth">Manager Login</Link>
+        <Link to="/auth">Manager Login</Link>
       </Button>
     );
   }

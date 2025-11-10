@@ -340,8 +340,6 @@ Crawl-delay: 2
 # Disallow admin and auth pages
 Disallow: /admin
 Disallow: /auth
-Disallow: /manager-auth
-Disallow: /investor-auth
 Disallow: /api/
 
 # Allow important pages

@@ -121,7 +121,7 @@ const MobileNavigation = () => {
                 Account
               </h3>
               <div className="space-y-2">
-                <Link to="/investor-auth" onClick={closeMenu}>
+                <Link to="/auth" onClick={closeMenu}>
                   <Button variant="ghost" className="w-full justify-start gap-3 h-12">
                     <LogIn className="h-5 w-5" />
                     <span>Login / Sign Up</span>

@@ -146,7 +146,10 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: metadata || {},
+        data: {
+          first_name: metadata?.first_name || '',
+          last_name: metadata?.last_name || '',
+        },
       },
     });
 

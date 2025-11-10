@@ -32,9 +32,8 @@ export class RouteDiscovery {
     routes.push({ path: '/roi-calculator', pageType: 'roi-calculator' });
     routes.push({ path: '/saved-funds', pageType: 'saved-funds' });
     
-    // Auth pages - generate for SEO but handle auth state gracefully
-    routes.push({ path: '/manager-auth', pageType: 'manager-auth' });
-    routes.push({ path: '/investor-auth', pageType: 'investor-auth' });
+    // Auth page
+    routes.push({ path: '/auth', pageType: 'auth' });
     routes.push({ path: '/account-settings', pageType: 'account-settings' });
     routes.push({ path: '/reset-password', pageType: 'reset-password' });
     routes.push({ path: '/confirm', pageType: 'email-confirmation' });

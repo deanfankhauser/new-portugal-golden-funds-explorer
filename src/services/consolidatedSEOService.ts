@@ -411,20 +411,11 @@ export class ConsolidatedSEOService {
           structuredData: this.getFundAlternativesStructuredData(altFund)
         };
 
-      case 'manager-auth':
+      case 'auth':
         return {
-          title: this.optimizeText('Manager Portal | Portugal Golden Visa Investment Funds | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Access your investment management dashboard for Portugal Golden Visa funds. Manage fund information, updates, and investor communications.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('/manager-auth'),
-          robots: 'noindex, nofollow',
-          structuredData: this.getHomepageStructuredData()
-        };
-
-      case 'investor-auth':
-        return {
-          title: this.optimizeText('Investor Portal | Portugal Golden Visa Investment Funds | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Join thousands of investors exploring top Portugal Golden Visa investment opportunities. Access exclusive fund analysis and comparison tools.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('/investor-auth'),
+          title: this.optimizeText('Login / Register | Portugal Golden Visa Investment Funds | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Sign in or create an account to access personalized features, save funds, and manage your investment portfolio.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('/auth'),
           robots: 'noindex, nofollow',
           structuredData: this.getHomepageStructuredData()
         };

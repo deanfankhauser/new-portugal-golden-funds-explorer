@@ -44,7 +44,7 @@ const AuthGate: React.FC<AuthGateProps> = ({
             <p className="text-sm text-muted-foreground">{message}</p>
           </div>
           <Button 
-            onClick={() => navigate('/investor-auth')}
+            onClick={() => navigate('/auth')}
             className="gap-2"
           >
             <Lock className="h-4 w-4" />

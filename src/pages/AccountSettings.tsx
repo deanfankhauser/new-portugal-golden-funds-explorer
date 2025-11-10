@@ -115,7 +115,7 @@ const AccountSettings = () => {
   }
 
   if (!user) {
-    return <Navigate to="/investor-auth" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   const getDisplayName = () => {
