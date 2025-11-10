@@ -921,9 +921,11 @@ export type Database = {
           description: string
           founded_year: number
           id: string
+          license_number: string
           logo_url: string
           manager_name: string
-          status: Database["public"]["Enums"]["manager_status"]
+          registration_number: string
+          status: string
           updated_at: string
           user_id: string
           website: string

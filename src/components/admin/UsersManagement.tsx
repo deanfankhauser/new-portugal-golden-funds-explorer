@@ -177,48 +177,33 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
     try {
       setUsersLoading(true);
       
-      // Get all investor profiles directly with RLS handling access control
-      const { data: investors, error: investorError } = await supabase
-        .from('investor_profiles')
-        .select('id, user_id, first_name, last_name, email, created_at, city, country')
+      // Get all profiles from unified table with RLS handling access control
+      const { data: allProfiles, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, user_id, first_name, last_name, manager_name, company_name, email, created_at, city, country, status')
         .order('created_at', { ascending: false });
 
-      if (investorError) {
-        console.error('Error fetching investors:', investorError);
-        toast.error('Failed to load investor profiles');
+      if (profileError) {
+        console.error('Error fetching profiles:', profileError);
+        toast.error('Failed to load user profiles');
+        return;
       }
 
-      // Get all manager profiles (managers are less sensitive, can use direct query)
-      const { data: managers, error: managerError } = await supabase
-        .from('manager_profiles')
-        .select('id, user_id, company_name, manager_name, email, created_at, city, country, status')
-        .order('created_at', { ascending: false });
+      // Format profiles based on type
+      const formattedUsers = (allProfiles || []).map(profile => {
+        const isManager = !!(profile.company_name && profile.manager_name);
+        
+        return {
+          ...profile,
+          user_type: isManager ? 'manager' : 'investor',
+          display_name: isManager 
+            ? profile.manager_name || 'No name'
+            : `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'No name',
+          status: profile.status || 'active'
+        };
+      });
 
-      if (managerError) {
-        console.error('Error fetching managers:', managerError);
-      }
-
-      // Format investor data (from secure function or fallback)
-      const investorData = investors || [];
-      const formattedInvestors = investorData.map(investor => ({
-        ...investor,
-        user_type: 'investor',
-        display_name: `${investor.first_name || ''} ${investor.last_name || ''}`.trim() || 'No name',
-        company_name: null,
-        status: 'active'
-      }));
-
-      // Format manager data
-      const formattedManagers = (managers || []).map(manager => ({
-        ...manager,
-        user_type: 'manager',
-        display_name: manager.manager_name || 'No name',
-        first_name: null,
-        last_name: null
-      }));
-
-      const combinedUsers = [...formattedInvestors, ...formattedManagers];
-      setAllUsers(combinedUsers);
+      setAllUsers(formattedUsers);
     } catch (error) {
       console.error('Error fetching all users:', error);
       toast.error('Failed to load users');

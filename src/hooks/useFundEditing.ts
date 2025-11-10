@@ -92,39 +92,35 @@ export const useFundEditing = () => {
       try {
         console.log('Sending notification to super admins for new suggestion:', data.id);
         
-        // Get submitter info for notification (try manager first, then investor)
+        // Get submitter info from unified profiles table
         let submitterName = 'User';
         let userEmail: string | null = null;
         
-        const { data: managerProfile } = await supabase
-          .from('manager_profiles')
-          .select('manager_name, company_name, email')
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('manager_name, company_name, first_name, last_name, email')
           .eq('user_id', user.id)
           .single();
         
-        if (managerProfile?.email) {
-          userEmail = managerProfile.email;
-          submitterName = `${managerProfile.manager_name} (${managerProfile.company_name})`;
-        } else {
-          const { data: investorProfile } = await supabase
-            .from('investor_profiles')
-            .select('first_name, last_name, email')
-            .eq('user_id', user.id)
-            .single();
+        if (profile?.email) {
+          userEmail = profile.email;
           
-          if (investorProfile?.email) {
-            userEmail = investorProfile.email;
-            submitterName = `${investorProfile.first_name ?? ''} ${investorProfile.last_name ?? ''}`.trim() || 'User';
+          // Determine display name based on profile type
+          if (profile.manager_name && profile.company_name) {
+            submitterName = `${profile.manager_name} (${profile.company_name})`;
+          } else if (profile.first_name || profile.last_name) {
+            submitterName = `${profile.first_name ?? ''} ${profile.last_name ?? ''}`.trim() || 'User';
           }
         }
         
         // Send admin notification
+        const submitterType = profile?.manager_name ? 'Manager' : 'Investor';
         const notificationResult = await supabase.functions.invoke('notify-super-admins', {
           body: {
             suggestionId: data.id,
             fundId: fundId,
             submitterName: submitterName,
-            submitterType: managerProfile?.email ? 'Manager' : 'Investor',
+            submitterType: submitterType,
             changes: suggestedChanges
           }
         });
