@@ -32,6 +32,9 @@ verify_jwt = false
 [functions.send-confirmation-email]
 verify_jwt = false
 
+[functions.send-confirmation-email-capture]
+verify_jwt = false
+
 [functions.send-welcome-email]
 verify_jwt = false
 

@@ -46,6 +46,7 @@ import ManagerAuth from './pages/ManagerAuth'; // Make non-lazy for debugging
 const InvestorAuth = lazy(() => import('./pages/InvestorAuth'));
 const AccountSettings = lazy(() => import('./pages/AccountSettings'));
 const EmailConfirmation = lazy(() => import('./pages/EmailConfirmation'));
+const ConfirmEmailCapture = lazy(() => import('./pages/ConfirmEmailCapture'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const SavedFunds = lazy(() => import('./pages/SavedFunds'));
@@ -132,6 +133,7 @@ const DirectFundRoute = () => {
 import SEOProvider from './components/providers/SEOProvider';
 
 import SEOEnhancer from './components/common/SEOEnhancer';
+import ExitIntentModal from './components/ExitIntentModal';
 
 function App() {
   // SEO optimization handled by consolidated service
@@ -252,6 +254,13 @@ function App() {
                           </Suspense>
                         } />
                         
+                        {/* Email Capture Confirmation */}
+                        <Route path="/confirm-email" element={
+                          <Suspense fallback={<PageLoader />}>
+                            <ConfirmEmailCapture />
+                          </Suspense>
+                        } />
+                        
                          {/* Password Reset */}
                          <Route path="/reset-password" element={
                            <Suspense fallback={<PageLoader />}>
@@ -319,6 +328,7 @@ function App() {
                   <Toaster />
                   <SEODebugger />
                   <SEOEnhancer enableMonitoring={typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false} />
+                  <ExitIntentModal />
                   
                 </SEOProvider>
               </Router>
