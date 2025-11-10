@@ -45,9 +45,14 @@ Deno.serve(async (req) => {
 
     console.log('✓ Test fund created successfully')
 
-    // Get existing user from manager_profiles
-    const { data: managers } = await dev.from('manager_profiles').select('user_id').limit(1)
-    const testUserId = managers?.[0]?.user_id
+    // Get existing user from profiles (check for manager profile)
+    const { data: profiles } = await dev
+      .from('profiles')
+      .select('user_id, company_name, manager_name')
+      .not('company_name', 'is', null)
+      .not('manager_name', 'is', null)
+      .limit(1)
+    const testUserId = profiles?.[0]?.user_id
 
     if (testUserId) {
       // Create a test submission
@@ -80,8 +85,8 @@ Deno.serve(async (req) => {
       .select(`
         *,
         funds!inner(name),
-        manager_profiles!manager_user_id(manager_name, email),
-        investor_profiles!investor_user_id(first_name, last_name, email)
+        profiles!fund_brief_submissions_manager_user_id_fkey(manager_name, company_name, email),
+        profiles!fund_brief_submissions_investor_user_id_fkey(first_name, last_name, email)
       `)
       .limit(5)
 
