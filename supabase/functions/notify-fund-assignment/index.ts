@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { ServerClient } from "npm:postmark@4.0.0";
 
 const postmark = new ServerClient(Deno.env.get("POSTMARK_SERVER_TOKEN") as string);
+const fromEmail = Deno.env.get("NOTIFICATION_FROM_EMAIL") || "noreply@movingto.com";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -211,7 +212,7 @@ https://funds.movingto.com
 
     // Send email via Postmark
     const emailResponse = await postmark.sendEmail({
-      From: "Investment Funds Platform <notifications@funds.movingto.com>",
+      From: `Investment Funds Platform <${fromEmail}>`,
       To: manager_email,
       Subject: `You've Been Assigned to Manage ${fund_name}`,
       HtmlBody: htmlBody,
@@ -242,13 +243,24 @@ https://funds.movingto.com
     );
   } catch (error: any) {
     console.error("Error in notify-fund-assignment function:", error);
+    
+    // Check for Postmark sender verification error
+    if (error.statusCode === 422 && error.code === 400) {
+      console.error(
+        "❌ Sender email not verified in Postmark. Please verify the sender signature at https://account.postmarkapp.com/signatures",
+        "\nCurrent From address:", fromEmail
+      );
+    }
+    
     return new Response(
       JSON.stringify({ 
         error: error.message,
         success: false,
+        hint: error.statusCode === 422 ? "Sender email not verified in Postmark" : undefined,
+        statusCode: error.statusCode,
       }),
       {
-        status: 500,
+        status: error.statusCode || 500,
         headers: { 
           "Content-Type": "application/json", 
           ...corsHeaders 
