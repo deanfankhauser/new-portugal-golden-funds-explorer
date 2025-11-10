@@ -69,41 +69,65 @@ export const FundManagerAssignment: React.FC = () => {
   }, []);
 
   const fetchData = async () => {
-    try {
-      setLoading(true);
+    setLoading(true);
 
-      // Fetch all assignments with profile data
-      const { data: assignmentsData, error: assignmentsError } = await supabase
+    const [assignmentsRes, managersRes] = await Promise.allSettled([
+      supabase
         .from('fund_managers' as any)
         .select(`
           *,
           profiles (*)
         `)
-        .order('assigned_at', { ascending: false });
-
-      if (assignmentsError) throw assignmentsError;
-      setAssignments((assignmentsData as any) || []);
-
-      // Fetch ALL approved users (any user can be a fund manager)
-      const { data: managersData, error: managersError } = await supabase
+        .order('assigned_at', { ascending: false }),
+      supabase
         .from('profiles')
         .select('*')
-        .eq('status', 'approved')
-        .order('email', { ascending: true });
+        .order('email', { ascending: true }),
+    ]);
 
-      if (managersError) throw managersError;
-      setManagers(managersData || []);
-
-    } catch (error) {
-      console.error('Error fetching data:', error);
+    if (assignmentsRes.status === 'fulfilled') {
+      const { data, error } = assignmentsRes.value as any;
+      if (!error) {
+        setAssignments((data as any) || []);
+        console.log('Assignments loaded:', (data || []).length);
+      } else {
+        console.error('Assignments fetch error:', error);
+        toast({
+          title: 'Assignments unavailable',
+          description: 'Assignments could not load, but you can still assign users.',
+        });
+      }
+    } else {
+      console.error('Assignments request failed:', assignmentsRes.reason);
       toast({
-        title: 'Error',
-        description: 'Failed to load fund manager assignments',
+        title: 'Assignments unavailable',
+        description: 'Assignments could not load, but you can still assign users.',
+      });
+    }
+
+    if (managersRes.status === 'fulfilled') {
+      const { data, error } = managersRes.value as any;
+      if (!error) {
+        setManagers(data || []);
+        console.log('Profiles loaded:', (data || []).length);
+      } else {
+        console.error('Profiles fetch error:', error);
+        toast({
+          title: 'Failed to load users',
+          description: 'User list could not be loaded.',
+          variant: 'destructive',
+        });
+      }
+    } else {
+      console.error('Profiles request failed:', managersRes.reason);
+      toast({
+        title: 'Failed to load users',
+        description: 'User list could not be loaded.',
         variant: 'destructive',
       });
-    } finally {
-      setLoading(false);
     }
+
+    setLoading(false);
   };
 
   const handleAssignManager = async () => {
@@ -339,13 +363,14 @@ export const FundManagerAssignment: React.FC = () => {
                       <SelectTrigger>
                         <SelectValue placeholder="Select a fund" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[9999]">
                         {funds.map(fund => (
                           <SelectItem key={fund.id} value={fund.id}>
                             {fund.name}
                           </SelectItem>
                         ))}
-                      </SelectContent>
+                      </SelectContent
+                      >
                     </Select>
                   </div>
 
@@ -355,7 +380,7 @@ export const FundManagerAssignment: React.FC = () => {
                       <SelectTrigger>
                         <SelectValue placeholder="Select a manager" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-[9999]">
                         {managers.map(manager => (
                           <SelectItem key={manager.user_id} value={manager.user_id}>
                             {manager.manager_name && manager.company_name
