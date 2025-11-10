@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import DecisionBandHeader from './DecisionBandHeader';
@@ -17,8 +17,10 @@ import RelatedFunds from './RelatedFunds';
 import FundComparisonSuggestions from './FundComparisonSuggestions';
 import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
 import { Button } from '@/components/ui/button';
-import { Calculator, TrendingUp } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Calculator, TrendingUp, MessageSquare, Mail } from 'lucide-react';
 import { tagToSlug } from '@/lib/utils';
+import { FundEnquiryModal } from './FundEnquiryModal';
 
 import FundBreadcrumbs from './FundBreadcrumbs';
 import { FundEditButton } from '../fund-editing/FundEditButton';
@@ -42,6 +44,7 @@ interface FundDetailsContentProps {
 }
 
 const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
+  const [enquiryModalOpen, setEnquiryModalOpen] = useState(false);
   const isGVEligible = isFundGVEligible(fund);
   
   // Filter out "Golden Visa Eligible" tag for non-GV funds
@@ -132,6 +135,32 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                   <TeamSection team={fund.team} />
                 </section>
 
+                {/* Get in Touch CTA */}
+                <Card className="bg-gradient-to-br from-primary/5 via-primary/10 to-accent/5 border-2 border-primary/20">
+                  <div className="p-6 md:p-8 text-center space-y-4">
+                    <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                      <Mail className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="text-xl md:text-2xl font-bold text-foreground">
+                      Have questions about this fund?
+                    </h3>
+                    <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
+                      Get in touch with the fund manager directly. They typically respond within 24-48 hours 
+                      to answer your questions and provide detailed information.
+                    </p>
+                    <Button 
+                      size="lg" 
+                      className="gap-2 shadow-lg mt-4"
+                      onClick={() => setEnquiryModalOpen(true)}
+                    >
+                      <MessageSquare className="h-5 w-5" />
+                      Get in Touch with Fund Manager
+                    </Button>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Join over 200+ investors who have enquired about funds on our platform
+                    </p>
+                  </div>
+                </Card>
 
                 {/* CTA Section */}
                 <div className="bg-gradient-to-r from-success/10 to-success/5 p-4 md:p-6 rounded-lg border border-success/30">
@@ -202,6 +231,13 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       
       {/* Floating TOC (Mobile only) */}
       <FloatingTableOfContents fund={fund} />
+      
+      {/* Enquiry Modal */}
+      <FundEnquiryModal 
+        open={enquiryModalOpen} 
+        onOpenChange={setEnquiryModalOpen} 
+        fund={fund} 
+      />
     </>
   );
 };

@@ -234,6 +234,80 @@ export type Database = {
         }
         Relationships: []
       }
+      fund_enquiries: {
+        Row: {
+          closed_at: string | null
+          contacted_at: string | null
+          created_at: string | null
+          email: string
+          first_name: string
+          fund_id: string
+          id: string
+          interest_areas: Json | null
+          investment_amount_range: string | null
+          last_name: string
+          message: string
+          notes: string | null
+          phone: string | null
+          referrer: string | null
+          session_id: string | null
+          status: string | null
+          updated_at: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          closed_at?: string | null
+          contacted_at?: string | null
+          created_at?: string | null
+          email: string
+          first_name: string
+          fund_id: string
+          id?: string
+          interest_areas?: Json | null
+          investment_amount_range?: string | null
+          last_name: string
+          message: string
+          notes?: string | null
+          phone?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          closed_at?: string | null
+          contacted_at?: string | null
+          created_at?: string | null
+          email?: string
+          first_name?: string
+          fund_id?: string
+          id?: string
+          interest_areas?: Json | null
+          investment_amount_range?: string | null
+          last_name?: string
+          message?: string
+          notes?: string | null
+          phone?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_enquiries_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "funds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fund_interactions: {
         Row: {
           created_at: string | null
