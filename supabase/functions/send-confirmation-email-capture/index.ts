@@ -222,7 +222,7 @@ If you didn't request this email, you can safely ignore it.
         'X-Postmark-Server-Token': postmarkToken,
       },
       body: JSON.stringify({
-        From: 'Movingto Funds <noreply@funds.movingto.com>',
+        From: 'Movingto Funds <noreply@movingto.com>',
         To: normalizedEmail,
         Subject: 'Confirm your subscription - Movingto Funds',
         HtmlBody: emailHtml,
