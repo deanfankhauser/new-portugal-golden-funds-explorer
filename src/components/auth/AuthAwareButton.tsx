@@ -19,6 +19,7 @@ import { getDisplayName, getAvatarUrl, isManagerProfile } from '@/types/profile'
 const AuthAwareButton: React.FC = () => {
   const { user, profile, signOut, loading } = useEnhancedAuth();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [hasAssignedFunds, setHasAssignedFunds] = useState(false);
 
   useEffect(() => {
     const checkAdminStatus = async () => {
@@ -51,6 +52,30 @@ const AuthAwareButton: React.FC = () => {
     };
 
     checkAdminStatus();
+  }, [user?.id]);
+
+  useEffect(() => {
+    const checkAssignedFunds = async () => {
+      if (!user?.id) {
+        setHasAssignedFunds(false);
+        return;
+      }
+
+      try {
+        const { count } = await supabase
+          .from('fund_managers' as any)
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+          .eq('status', 'active');
+
+        setHasAssignedFunds((count || 0) > 0);
+      } catch (error) {
+        console.error('Error checking assigned funds:', error);
+        setHasAssignedFunds(false);
+      }
+    };
+
+    checkAssignedFunds();
   }, [user?.id]);
 
   console.log('🔐 AuthAwareButton state:', {
@@ -120,6 +145,15 @@ const AuthAwareButton: React.FC = () => {
             <Link to="/account-settings?tab=edits" className="w-full cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
               My Edits
+            </Link>
+          </DropdownMenuItem>
+        )}
+
+        {hasAssignedFunds && (
+          <DropdownMenuItem asChild>
+            <Link to="/my-funds" className="w-full cursor-pointer">
+              <Building className="mr-2 h-4 w-4" />
+              Manage My Funds
             </Link>
           </DropdownMenuItem>
         )}

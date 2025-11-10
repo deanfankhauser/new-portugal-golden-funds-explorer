@@ -19,13 +19,37 @@ export const FundEditButton: React.FC<FundEditButtonProps> = ({
   size = 'sm',
   className = ''
 }) => {
-  const { isAuthenticated, isHydrated, checkHydration } = useFundEditing();
+  const { isAuthenticated, isHydrated, checkHydration, canEditFund } = useFundEditing();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [canDirectEdit, setCanDirectEdit] = useState(false);
+  const [checkingPermission, setCheckingPermission] = useState(false);
 
   useEffect(() => {
     checkHydration();
   }, [checkHydration]);
+
+  useEffect(() => {
+    const checkPermission = async () => {
+      if (!isAuthenticated || !isHydrated) {
+        setCanDirectEdit(false);
+        return;
+      }
+
+      setCheckingPermission(true);
+      try {
+        const canEdit = await canEditFund(fund.id);
+        setCanDirectEdit(canEdit);
+      } catch (error) {
+        console.error('Error checking edit permission:', error);
+        setCanDirectEdit(false);
+      } finally {
+        setCheckingPermission(false);
+      }
+    };
+
+    checkPermission();
+  }, [isAuthenticated, isHydrated, fund.id, canEditFund]);
 
   const handleEditClick = () => {
     if (!isHydrated) {
@@ -40,20 +64,28 @@ export const FundEditButton: React.FC<FundEditButtonProps> = ({
     }
   };
 
+  const buttonText = checkingPermission 
+    ? 'Loading...' 
+    : !isHydrated 
+    ? 'Loading...' 
+    : canDirectEdit 
+    ? 'Edit Fund' 
+    : 'Suggest Edit';
+
   return (
     <>
       <Button
         variant={variant}
         size={size}
         onClick={handleEditClick}
-        disabled={!isHydrated}
+        disabled={!isHydrated || checkingPermission}
         className={`gap-2 ${className}`}
       >
         <Edit3 className="h-4 w-4" />
-        <span className="hidden sm:inline">
-          {isHydrated ? 'Edit Fund Info' : 'Loading...'}
+        <span className="hidden sm:inline">{buttonText}</span>
+        <span className="sm:hidden">
+          {canDirectEdit ? 'Edit' : 'Suggest'}
         </span>
-        <span className="sm:hidden">Edit</span>
       </Button>
 
       <AuthRequiredModal 
