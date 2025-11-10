@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
-import { Calendar, MessageSquare } from 'lucide-react';
+import { MessageSquare, Heart } from 'lucide-react';
 import { Fund } from '../../data/funds';
-import { buildBookingUrl, openExternalLink } from '../../utils/urlHelpers';
 import analytics from '../../utils/analytics';
 import { trackInteraction } from '../../utils/analyticsTracking';
 import { FundEnquiryModal } from './FundEnquiryModal';
+import { useSavedFunds } from '../../hooks/useSavedFunds';
 
 interface FloatingCTAProps {
   fund: Fund;
@@ -14,6 +14,7 @@ interface FloatingCTAProps {
 const FloatingCTA: React.FC<FloatingCTAProps> = ({ fund }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [enquiryModalOpen, setEnquiryModalOpen] = useState(false);
+  const { isFundSaved, saveFund, unsaveFund } = useSavedFunds();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,11 +26,21 @@ const FloatingCTA: React.FC<FloatingCTAProps> = ({ fund }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleBookCall = () => {
-    const bookingUrl = buildBookingUrl(fund.id, fund.name);
-    openExternalLink(bookingUrl);
-    analytics.trackCTAClick('floating_cta', 'book_call', bookingUrl);
-    trackInteraction(fund.id, 'booking_click');
+  const isSaved = isFundSaved(fund.id);
+
+  const handleSaveFund = async () => {
+    if (isSaved) {
+      await unsaveFund(fund.id);
+    } else {
+      await saveFund(fund.id);
+    }
+    analytics.trackEvent('save_fund', {
+      fund_id: fund.id,
+      fund_name: fund.name,
+      action: isSaved ? 'unsave' : 'save',
+      source: 'floating_cta'
+    });
+    trackInteraction(fund.id, 'save_fund');
   };
 
   if (!isVisible) return null;
@@ -51,12 +62,12 @@ const FloatingCTA: React.FC<FloatingCTAProps> = ({ fund }) => {
             
             <Button 
               size="lg"
-              variant="outline"
+              variant={isSaved ? "secondary" : "outline"}
               className="w-full gap-2 h-14 text-sm font-semibold shadow-lg border-2"
-              onClick={handleBookCall}
+              onClick={handleSaveFund}
             >
-              <Calendar className="h-5 w-5" />
-              Book a 30-min Call
+              <Heart className={`h-5 w-5 ${isSaved ? 'fill-current' : ''}`} />
+              {isSaved ? 'Saved' : 'Save'}
             </Button>
           </div>
         </div>
@@ -76,12 +87,12 @@ const FloatingCTA: React.FC<FloatingCTAProps> = ({ fund }) => {
               
               <Button 
                 size="lg"
-                variant="outline"
+                variant={isSaved ? "secondary" : "outline"}
                 className="gap-2 shadow-lg border-2"
-                onClick={handleBookCall}
+                onClick={handleSaveFund}
               >
-                <Calendar className="h-5 w-5" />
-                Book a 30-min Call
+                <Heart className={`h-5 w-5 ${isSaved ? 'fill-current' : ''}`} />
+                {isSaved ? 'Saved' : 'Save'}
               </Button>
             </div>
           </div>
