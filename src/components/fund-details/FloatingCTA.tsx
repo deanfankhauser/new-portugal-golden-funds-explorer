@@ -5,6 +5,7 @@ import { Fund } from '../../data/funds';
 import { useComparison } from '../../contexts/ComparisonContext';
 import { buildBookingUrl, openExternalLink } from '../../utils/urlHelpers';
 import analytics from '../../utils/analytics';
+import { trackInteraction } from '../../utils/analyticsTracking';
 
 interface FloatingCTAProps {
   fund: Fund;
@@ -29,10 +30,12 @@ const FloatingCTA: React.FC<FloatingCTAProps> = ({ fund }) => {
     const bookingUrl = buildBookingUrl(fund.id, fund.name);
     openExternalLink(bookingUrl);
     analytics.trackCTAClick('floating_cta', 'book_call', bookingUrl);
+    trackInteraction(fund.id, 'booking_click');
   };
 
   const handleCompareClick = () => {
     addToComparison(fund);
+    trackInteraction(fund.id, 'comparison_add');
     analytics.trackEvent('add_to_comparison', {
       fund_id: fund.id,
       fund_name: fund.name,

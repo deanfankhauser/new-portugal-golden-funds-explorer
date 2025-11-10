@@ -3,6 +3,9 @@ project_id = "bkmvydnfhmkjnuszroim"
 [functions.notify-fund-assignment]
 verify_jwt = false
 
+[functions.track-fund-event]
+verify_jwt = false
+
 [auth]
 # Enable custom email templates
 enable_signup = true

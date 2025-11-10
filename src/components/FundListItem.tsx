@@ -176,7 +176,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
             <SaveFundButton fundId={fund.id} showText={false} size="sm" />
-            <IntroductionButton variant="compact" />
+            <IntroductionButton variant="compact" fundId={fund.id} />
             <Button 
               variant={isSelected ? "default" : "outline"}
               size="sm"

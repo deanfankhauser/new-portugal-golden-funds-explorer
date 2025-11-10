@@ -73,7 +73,7 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
                 {isSelected ? 'Added to Compare' : 'Compare'}
               </Button>
               <div className="w-full sm:w-auto">
-                <IntroductionButton variant="compact" />
+                <IntroductionButton variant="compact" fundId={fund.id} />
               </div>
             </div>
           </div>

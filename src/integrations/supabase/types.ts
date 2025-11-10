@@ -234,6 +234,44 @@ export type Database = {
         }
         Relationships: []
       }
+      fund_interactions: {
+        Row: {
+          created_at: string | null
+          fund_id: string
+          id: string
+          interacted_at: string
+          interaction_type: string
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          fund_id: string
+          id?: string
+          interacted_at?: string
+          interaction_type: string
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          fund_id?: string
+          id?: string
+          interacted_at?: string
+          interaction_type?: string
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_interactions_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "funds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fund_manager_edits: {
         Row: {
           changes: Json
@@ -323,6 +361,47 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      fund_page_views: {
+        Row: {
+          created_at: string | null
+          fund_id: string
+          id: string
+          referrer: string | null
+          session_id: string
+          user_agent: string | null
+          user_id: string | null
+          viewed_at: string
+        }
+        Insert: {
+          created_at?: string | null
+          fund_id: string
+          id?: string
+          referrer?: string | null
+          session_id: string
+          user_agent?: string | null
+          user_id?: string | null
+          viewed_at?: string
+        }
+        Update: {
+          created_at?: string | null
+          fund_id?: string
+          id?: string
+          referrer?: string | null
+          session_id?: string
+          user_agent?: string | null
+          user_id?: string | null
+          viewed_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_page_views_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "funds"
+            referencedColumns: ["id"]
           },
         ]
       }
