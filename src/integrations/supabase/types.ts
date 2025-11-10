@@ -234,6 +234,91 @@ export type Database = {
         }
         Relationships: []
       }
+      fund_manager_edits: {
+        Row: {
+          changes: Json
+          created_at: string | null
+          edit_type: string
+          fund_id: string
+          id: string
+          manager_user_id: string
+          previous_values: Json
+        }
+        Insert: {
+          changes: Json
+          created_at?: string | null
+          edit_type: string
+          fund_id: string
+          id?: string
+          manager_user_id: string
+          previous_values: Json
+        }
+        Update: {
+          changes?: Json
+          created_at?: string | null
+          edit_type?: string
+          fund_id?: string
+          id?: string
+          manager_user_id?: string
+          previous_values?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_manager_edits_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "funds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fund_managers: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          created_at: string | null
+          fund_id: string
+          id: string
+          notes: string | null
+          permissions: Json | null
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          created_at?: string | null
+          fund_id: string
+          id?: string
+          notes?: string | null
+          permissions?: Json | null
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          created_at?: string | null
+          fund_id?: string
+          id?: string
+          notes?: string | null
+          permissions?: Json | null
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_managers_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "funds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fund_rankings: {
         Row: {
           category_rank: number | null
@@ -613,8 +698,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_list_profiles: {
+        Args: never
+        Returns: {
+          company_name: string
+          email: string
+          first_name: string
+          last_name: string
+          manager_name: string
+          status: string
+          user_id: string
+        }[]
+      }
       can_access_manager_sensitive_data: {
         Args: { manager_user_id?: string }
+        Returns: boolean
+      }
+      can_user_edit_fund: {
+        Args: { p_fund_id: string; p_user_id: string }
         Returns: boolean
       }
       check_sensitive_data_exposure: {
