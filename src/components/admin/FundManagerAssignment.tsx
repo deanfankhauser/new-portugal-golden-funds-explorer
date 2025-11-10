@@ -33,6 +33,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 import { Profile } from '@/types/profile';
+import { Checkbox } from '@/components/ui/checkbox';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface FundManagerAssignment {
   id: string;
@@ -59,7 +61,7 @@ export const FundManagerAssignment: React.FC = () => {
   
   // Assignment form state
   const [selectedFund, setSelectedFund] = useState('');
-  const [selectedManager, setSelectedManager] = useState('');
+  const [selectedManagers, setSelectedManagers] = useState<string[]>([]);
   const [assignmentNotes, setAssignmentNotes] = useState('');
   const [canEdit, setCanEdit] = useState(true);
   const [canPublish, setCanPublish] = useState(false);
@@ -168,39 +170,79 @@ export const FundManagerAssignment: React.FC = () => {
   };
 
   const handleAssignManager = async () => {
-    if (!selectedFund || !selectedManager) {
+    if (!selectedFund || selectedManagers.length === 0) {
       toast({
         title: 'Missing Information',
-        description: 'Please select both a fund and a manager',
+        description: 'Please select a fund and at least one manager',
         variant: 'destructive',
       });
       return;
     }
 
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const currentUserId = user?.id;
+
+      if (!currentUserId) {
+        toast({
+          title: 'Authentication Error',
+          description: 'You must be logged in as an admin',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      // Check for existing assignments
+      const { data: existingAssignments } = await supabase
+        .from('fund_managers')
+        .select('user_id')
+        .eq('fund_id', selectedFund)
+        .in('user_id', selectedManagers);
+
+      const alreadyAssigned = new Set(existingAssignments?.map(a => a.user_id) || []);
+      const toAssign = selectedManagers.filter(id => !alreadyAssigned.has(id));
+
+      if (toAssign.length === 0) {
+        toast({
+          title: 'Already Assigned',
+          description: 'All selected managers are already assigned to this fund',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      // Prepare records for bulk insert
+      const records = toAssign.map(managerId => ({
+        fund_id: selectedFund,
+        user_id: managerId,
+        assigned_by: currentUserId,
+        status: 'active',
+        permissions: {
+          can_edit: canEdit,
+          can_publish: canPublish,
+        },
+        notes: assignmentNotes || null,
+      }));
+
       const { error } = await supabase
         .from('fund_managers' as any)
-        .insert({
-          fund_id: selectedFund,
-          user_id: selectedManager,
-          status: 'active',
-          permissions: {
-            can_edit: canEdit,
-            can_publish: canPublish,
-          },
-          notes: assignmentNotes || null,
-        });
+        .insert(records);
 
       if (error) throw error;
 
+      const skippedCount = alreadyAssigned.size;
+      const assignedCount = toAssign.length;
+
       toast({
-        title: 'Manager Assigned',
-        description: 'Fund manager has been successfully assigned',
+        title: 'Managers Assigned',
+        description: `Successfully assigned ${assignedCount} manager(s).${
+          skippedCount > 0 ? ` Skipped ${skippedCount} already assigned.` : ''
+        }`,
       });
 
       // Reset form and close dialog
       setSelectedFund('');
-      setSelectedManager('');
+      setSelectedManagers([]);
       setAssignmentNotes('');
       setCanEdit(true);
       setCanPublish(false);
@@ -410,31 +452,45 @@ export const FundManagerAssignment: React.FC = () => {
                     </Select>
                   </div>
 
-                  <div>
-                    <Label>Manager</Label>
-                    <Select value={selectedManager} onValueChange={setSelectedManager}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a manager" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[9999] bg-popover">
-                        {managers.length === 0 ? (
-                          <SelectItem disabled value="no-users">
-                            No users found or access denied
-                          </SelectItem>
-                        ) : (
-                          managers.map(manager => (
-                            <SelectItem key={manager.user_id} value={manager.user_id}>
-                              {manager.manager_name && manager.company_name
-                                ? `${manager.manager_name} (${manager.company_name})`
-                                : manager.first_name && manager.last_name
-                                ? `${manager.first_name} ${manager.last_name} (${manager.email})`
-                                : manager.email
-                              }
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
+                  <div className="space-y-2">
+                    <Label>Managers ({selectedManagers.length} selected)</Label>
+                    <ScrollArea className="h-[200px] w-full border rounded-md p-2">
+                      {managers.length === 0 ? (
+                        <div className="p-2 text-sm text-muted-foreground">
+                          No users found or access denied
+                        </div>
+                      ) : (
+                        managers.map(manager => {
+                          const displayName = manager.manager_name && manager.company_name
+                            ? `${manager.manager_name} (${manager.company_name})`
+                            : manager.first_name && manager.last_name
+                            ? `${manager.first_name} ${manager.last_name}`
+                            : manager.email;
+                          
+                          return (
+                            <div key={manager.user_id} className="flex items-center space-x-2 py-2">
+                              <Checkbox
+                                id={`manager-${manager.user_id}`}
+                                checked={selectedManagers.includes(manager.user_id)}
+                                onCheckedChange={(checked) => {
+                                  setSelectedManagers(prev =>
+                                    checked
+                                      ? [...prev, manager.user_id]
+                                      : prev.filter(id => id !== manager.user_id)
+                                  );
+                                }}
+                              />
+                              <Label
+                                htmlFor={`manager-${manager.user_id}`}
+                                className="flex-1 cursor-pointer text-sm"
+                              >
+                                {displayName}
+                              </Label>
+                            </div>
+                          );
+                        })
+                      )}
+                    </ScrollArea>
                   </div>
 
                   <div className="space-y-2">
