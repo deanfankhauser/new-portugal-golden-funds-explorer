@@ -190,8 +190,8 @@ const applyEditHistory = (
                 established: fund.inception_date 
                   ? new Date(fund.inception_date).getFullYear() 
                   : new Date().getFullYear(),
-                regulatedBy: 'CMVM',
-                location: 'Portugal',
+                regulatedBy: fund.regulated_by || undefined,
+                location: fund.location || undefined,
                  tags: (fund.tags || []) as FundTag[],
                  category: (fund.category || 'Mixed') as FundCategory,
           websiteUrl: fund.website || undefined,
@@ -214,8 +214,8 @@ const applyEditHistory = (
                  })(),
                  datePublished: fund.created_at || new Date().toISOString(),
                  dateModified: fund.updated_at || fund.created_at || new Date().toISOString(),
-            subscriptionFee: 0,
-            redemptionFee: 0,
+            subscriptionFee: fund.subscription_fee ? Number(fund.subscription_fee) : undefined,
+            redemptionFee: fund.redemption_fee ? Number(fund.redemption_fee) : undefined,
                  redemptionTerms: (() => {
                    const rt = fund.redemption_terms;
                    if (rt && typeof rt === 'object' && !Array.isArray(rt)) {
@@ -241,12 +241,21 @@ const applyEditHistory = (
           custodian: fund.custodian || undefined,
           navFrequency: fund.nav_frequency || undefined,
           pficStatus: fund.pfic_status as 'QEF available' | 'MTM only' | 'Not provided' || undefined,
-          eligibilityBasis: fund.gv_eligible ? {
-            portugalAllocation: 'Not provided',
-            maturityYears: 'Not provided',
-            realEstateExposure: 'Not provided',
-            managerAttestation: true
-          } : undefined,
+          hurdleRate: fund.hurdle_rate ? Number(fund.hurdle_rate) : undefined,
+          eligibilityBasis: (() => {
+            if (!fund.gv_eligible) return undefined;
+            const eb = fund.eligibility_basis;
+            if (eb && typeof eb === 'object' && !Array.isArray(eb)) {
+              const ebObj = eb as Record<string, any>;
+              return {
+                portugalAllocation: ebObj.portugalAllocation ?? ebObj.portugal_allocation ?? undefined,
+                maturityYears: ebObj.maturityYears ?? ebObj.maturity_years ?? undefined,
+                realEstateExposure: ebObj.realEstateExposure ?? ebObj.real_estate_exposure ?? undefined,
+                managerAttestation: ebObj.managerAttestation ?? ebObj.manager_attestation ?? false
+              };
+            }
+            return undefined;
+          })(),
           finalRank: rankingMap.get(fund.id) || 999,
           updatedAt: fund.updated_at || fund.created_at || undefined
         }));
@@ -317,8 +326,8 @@ const applyEditHistory = (
           established: fund.inception_date 
             ? new Date(fund.inception_date).getFullYear() 
             : new Date().getFullYear(),
-          regulatedBy: 'CMVM', // Default regulator for Portuguese funds
-          location: 'Portugal', // Default location
+          regulatedBy: fund.regulated_by || undefined,
+          location: fund.location || undefined,
           tags: (fund.tags || []) as FundTag[],
           category: (fund.category || 'Mixed') as FundCategory,
           websiteUrl: fund.website || undefined,
@@ -342,9 +351,9 @@ const applyEditHistory = (
           // Date tracking
           datePublished: fund.created_at || new Date().toISOString(),
           dateModified: fund.updated_at || fund.created_at || new Date().toISOString(),
-          // Additional fields with defaults
-          subscriptionFee: 0,
-          redemptionFee: 0,
+          // Additional fields
+          subscriptionFee: fund.subscription_fee ? Number(fund.subscription_fee) : undefined,
+          redemptionFee: fund.redemption_fee ? Number(fund.redemption_fee) : undefined,
           redemptionTerms: (() => {
             const rt = fund.redemption_terms;
             if (rt && typeof rt === 'object' && !Array.isArray(rt)) {
@@ -371,13 +380,21 @@ const applyEditHistory = (
           custodian: fund.custodian || undefined,
           navFrequency: fund.nav_frequency || undefined,
           pficStatus: fund.pfic_status as 'QEF available' | 'MTM only' | 'Not provided' || undefined,
-          hurdleRate: fund.hurdle_rate || undefined,
-          eligibilityBasis: fund.gv_eligible ? {
-            portugalAllocation: 'Not provided',
-            maturityYears: 'Not provided',
-            realEstateExposure: 'Not provided',
-            managerAttestation: true
-          } : undefined,
+          hurdleRate: fund.hurdle_rate ? Number(fund.hurdle_rate) : undefined,
+          eligibilityBasis: (() => {
+            if (!fund.gv_eligible) return undefined;
+            const eb = fund.eligibility_basis;
+            if (eb && typeof eb === 'object' && !Array.isArray(eb)) {
+              const ebObj = eb as Record<string, any>;
+              return {
+                portugalAllocation: ebObj.portugalAllocation ?? ebObj.portugal_allocation ?? undefined,
+                maturityYears: ebObj.maturityYears ?? ebObj.maturity_years ?? undefined,
+                realEstateExposure: ebObj.realEstateExposure ?? ebObj.real_estate_exposure ?? undefined,
+                managerAttestation: ebObj.managerAttestation ?? ebObj.manager_attestation ?? false
+              };
+            }
+            return undefined;
+          })(),
           finalRank: rankingMap.get(fund.id) || 999,
           updatedAt: fund.updated_at || fund.created_at || undefined,
           
