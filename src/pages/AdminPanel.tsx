@@ -19,6 +19,7 @@ import MigrateFundsButton from '@/components/admin/MigrateFundsButton';
 import FundManagement from '@/components/admin/FundManagement';
 import FundRankingManager from '@/components/admin/FundRankingManager';
 import EmailCapturesManagement from '@/components/admin/EmailCapturesManagement';
+import { FundManagerAssignment } from '@/components/admin/FundManagerAssignment';
 
 const AdminPanel = () => {
   const { user, loading } = useEnhancedAuth();
@@ -227,7 +228,7 @@ const AdminPanel = () => {
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="suggestions" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-7">
+            <TabsList className="grid w-full grid-cols-8">
               <TabsTrigger value="suggestions" className="flex items-center gap-2">
                 <Edit3 className="h-4 w-4" />
                 Suggestions
@@ -239,6 +240,10 @@ const AdminPanel = () => {
               <TabsTrigger value="rankings" className="flex items-center gap-2">
                 <TrendingUp className="h-4 w-4" />
                 Rankings
+              </TabsTrigger>
+              <TabsTrigger value="managers" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Fund Managers
               </TabsTrigger>
               <TabsTrigger value="users" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
@@ -285,6 +290,10 @@ const AdminPanel = () => {
 
             <TabsContent value="rankings">
               <FundRankingManager />
+            </TabsContent>
+
+            <TabsContent value="managers">
+              <FundManagerAssignment />
             </TabsContent>
 
             <TabsContent value="users">

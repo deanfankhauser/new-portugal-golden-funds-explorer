@@ -229,6 +229,104 @@ export const useFundEditing = () => {
     }
   }, []);
 
+  const getAssignedFunds = useCallback(async () => {
+    if (!user) return [];
+
+    try {
+      const { data, error } = await supabase
+        .from('fund_managers' as any)
+        .select('fund_id')
+        .eq('user_id', user.id)
+        .eq('status', 'active');
+
+      if (error) throw error;
+      return data?.map((d: any) => d.fund_id) || [];
+    } catch (error) {
+      console.error('Error fetching assigned funds:', error);
+      return [];
+    }
+  }, [user]);
+
+  const canEditFund = useCallback(async (fundId: string) => {
+    if (!user) return false;
+
+    try {
+      const { data, error } = await supabase
+        .rpc('can_user_edit_fund' as any, {
+          p_user_id: user.id,
+          p_fund_id: fundId
+        } as any);
+
+      if (error) throw error;
+      return !!data;
+    } catch (error) {
+      console.error('Error checking edit permission:', error);
+      return false;
+    }
+  }, [user]);
+
+  const directUpdateFund = useCallback(async (
+    fundId: string,
+    updates: Record<string, any>
+  ) => {
+    if (!user) {
+      throw new Error('User must be authenticated to update funds');
+    }
+
+    setLoading(true);
+    try {
+      // First check if user has permission
+      const canEdit = await canEditFund(fundId);
+      if (!canEdit) {
+        throw new Error('You do not have permission to edit this fund');
+      }
+
+      // Update the fund directly
+      const { error: updateError } = await supabase
+        .from('funds')
+        .update(updates)
+        .eq('id', fundId);
+
+      if (updateError) throw updateError;
+
+      // Log the edit
+      const { error: logError } = await supabase
+        .from('fund_manager_edits' as any)
+        .insert({
+          fund_id: fundId,
+          manager_user_id: user.id,
+          changes: updates,
+          previous_values: {}, // Could fetch current values first if needed
+          edit_type: 'direct'
+        } as any);
+
+      if (logError) {
+        console.error('Failed to log edit:', logError);
+        // Don't throw - the update was successful
+      }
+
+      toast({
+        title: "Fund Updated! ✓",
+        description: "Your changes have been saved and are now live.",
+      });
+
+      // Clear any pending changes for this fund
+      clearPendingChangesForFund(fundId);
+
+      return true;
+    } catch (error) {
+      console.error('Error updating fund:', error);
+      toast({
+        title: "Update Failed",
+        description: error instanceof Error ? error.message : "Failed to update fund. Please try again.",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }, [user, canEditFund, clearPendingChangesForFund]);
+
   return {
     user,
     loading: authLoading || loading,
@@ -243,5 +341,8 @@ export const useFundEditing = () => {
     getPendingChangesForFund: (fundId: string) => pendingChanges[fundId] || {},
     clearPendingChangesForFund,
     clearAllPendingChanges,
+    getAssignedFunds,
+    canEditFund,
+    directUpdateFund,
   };
 };

@@ -50,6 +50,7 @@ const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const SavedFunds = lazy(() => import('./pages/SavedFunds'));
 const TempMigrationPage = lazy(() => import('./pages/TempMigrationPage'));
+const MyFunds = lazy(() => import('./pages/MyFunds'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -294,6 +295,13 @@ function App() {
                        <Route path="/saved-funds" element={
                          <Suspense fallback={<PageLoader />}>
                            <SavedFunds />
+                         </Suspense>
+                       } />
+
+                       {/* My Funds - Manager Dashboard */}
+                       <Route path="/my-funds" element={
+                         <Suspense fallback={<PageLoader />}>
+                           <MyFunds />
                          </Suspense>
                        } />
 
