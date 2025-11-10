@@ -95,6 +95,40 @@ const ManageFund: React.FC = () => {
           }
         }
 
+        // Transform snake_case DB fields to camelCase for UI compatibility
+        if (loadedFund) {
+          loadedFund = {
+            ...loadedFund,
+            detailedDescription: loadedFund.detailed_description || loadedFund.detailedDescription,
+            managerName: loadedFund.manager_name || loadedFund.managerName,
+            minimumInvestment: loadedFund.minimum_investment || loadedFund.minimumInvestment,
+            expectedReturnMin: loadedFund.expected_return_min || loadedFund.expectedReturnMin,
+            expectedReturnMax: loadedFund.expected_return_max || loadedFund.expectedReturnMax,
+            managementFee: loadedFund.management_fee || loadedFund.managementFee,
+            performanceFee: loadedFund.performance_fee || loadedFund.performanceFee,
+            lockUpPeriodMonths: loadedFund.lock_up_period_months || loadedFund.lockUpPeriodMonths,
+            websiteUrl: loadedFund.website || loadedFund.websiteUrl,
+            cmvmId: loadedFund.cmvm_id || loadedFund.cmvmId,
+            inceptionDate: loadedFund.inception_date || loadedFund.inceptionDate,
+            navFrequency: loadedFund.nav_frequency || loadedFund.navFrequency,
+            pficStatus: loadedFund.pfic_status || loadedFund.pficStatus,
+            regulatedBy: loadedFund.regulated_by || loadedFund.regulatedBy,
+            riskLevel: loadedFund.risk_level || loadedFund.riskLevel,
+            fundStatus: loadedFund.fund_status || loadedFund.fundStatus,
+            eligibilityBasis: loadedFund.eligibility_basis || loadedFund.eligibilityBasis,
+            redemptionTerms: loadedFund.redemption_terms || loadedFund.redemptionTerms,
+            geographicAllocation: loadedFund.geographic_allocation || loadedFund.geographicAllocation,
+            teamMembers: loadedFund.team_members || loadedFund.teamMembers,
+            pdfDocuments: loadedFund.pdf_documents || loadedFund.pdfDocuments,
+            historicalPerformance: loadedFund.historical_performance || loadedFund.historicalPerformance,
+            gvEligible: loadedFund.gv_eligible !== undefined ? loadedFund.gv_eligible : loadedFund.gvEligible,
+            isVerified: loadedFund.is_verified !== undefined ? loadedFund.is_verified : loadedFund.isVerified,
+            subscriptionFee: loadedFund.subscription_fee || loadedFund.subscriptionFee,
+            redemptionFee: loadedFund.redemption_fee || loadedFund.redemptionFee,
+            hurdleRate: loadedFund.hurdle_rate || loadedFund.hurdleRate,
+          };
+        }
+
         setFund(loadedFund as any);
       } catch (error) {
         console.error('[ManageFund] Unexpected error', error);
