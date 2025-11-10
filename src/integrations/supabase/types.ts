@@ -557,6 +557,102 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          address: string | null
+          annual_income_range: string | null
+          approved_at: string | null
+          approved_by: string | null
+          assets_under_management: number | null
+          avatar_url: string | null
+          city: string | null
+          company_name: string | null
+          country: string | null
+          created_at: string
+          date_of_birth: string | null
+          description: string | null
+          email: string
+          first_name: string | null
+          founded_year: number | null
+          id: string
+          investment_experience: string | null
+          last_name: string | null
+          license_number: string | null
+          logo_url: string | null
+          manager_name: string | null
+          net_worth_range: string | null
+          phone: string | null
+          registration_number: string | null
+          risk_tolerance: string | null
+          status: Database["public"]["Enums"]["manager_status"] | null
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          annual_income_range?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          assets_under_management?: number | null
+          avatar_url?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          description?: string | null
+          email: string
+          first_name?: string | null
+          founded_year?: number | null
+          id?: string
+          investment_experience?: string | null
+          last_name?: string | null
+          license_number?: string | null
+          logo_url?: string | null
+          manager_name?: string | null
+          net_worth_range?: string | null
+          phone?: string | null
+          registration_number?: string | null
+          risk_tolerance?: string | null
+          status?: Database["public"]["Enums"]["manager_status"] | null
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          annual_income_range?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          assets_under_management?: number | null
+          avatar_url?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          description?: string | null
+          email?: string
+          first_name?: string | null
+          founded_year?: number | null
+          id?: string
+          investment_experience?: string | null
+          last_name?: string | null
+          license_number?: string | null
+          logo_url?: string | null
+          manager_name?: string | null
+          net_worth_range?: string | null
+          phone?: string | null
+          registration_number?: string | null
+          risk_tolerance?: string | null
+          status?: Database["public"]["Enums"]["manager_status"] | null
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       saved_funds: {
         Row: {
           created_at: string
