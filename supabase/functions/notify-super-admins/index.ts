@@ -1,6 +1,13 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { 
+  BRAND_COLORS, 
+  COMPANY_INFO, 
+  generateEmailWrapper, 
+  generateContentCard,
+  generatePlainTextEmail 
+} from "../_shared/email-templates.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -97,35 +104,51 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
 
-    // Create email content
+    // Create branded email content
     const changedFields = Object.keys(changes);
     const emailSubject = `🔔 New Fund Edit Suggestion - ${fundId}`;
     
-    const emailBody = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #2563eb;">New Fund Edit Suggestion Received 📝</h2>
-        <p>Dear Super Admin,</p>
-        <p>A new fund edit suggestion has been submitted and requires your review.</p>
-        
-        <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="margin-top: 0; color: #1e40af;">Suggestion Details</h3>
-          <p><strong>Suggestion ID:</strong> ${suggestionId}</p>
-          <p><strong>Fund ID:</strong> ${fundId}</p>
-          <p><strong>Submitted by:</strong> ${submitterName} (${submitterType})</p>
-          <p><strong>Fields changed:</strong> ${changedFields.length} field(s)</p>
-          <ul>
-            ${changedFields.map(field => `<li>${field.replace(/_/g, ' ')}</li>`).join('')}
-          </ul>
-        </div>
+    const bodyContent = `
+      <h2 style="color: ${BRAND_COLORS.bordeaux}; margin-top: 0;">New Fund Edit Suggestion Received 📝</h2>
+      <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px;">Dear Super Admin,</p>
+      <p style="color: ${BRAND_COLORS.textDark};">A new fund edit suggestion has been submitted and requires your review.</p>
+      
+      ${generateContentCard(`
+        <h3 style="margin-top: 0; color: ${BRAND_COLORS.bordeaux};">Suggestion Details</h3>
+        <p style="margin: 5px 0;"><strong>Suggestion ID:</strong> ${suggestionId}</p>
+        <p style="margin: 5px 0;"><strong>Fund ID:</strong> ${fundId}</p>
+        <p style="margin: 5px 0;"><strong>Submitted by:</strong> ${submitterName} (${submitterType})</p>
+        <p style="margin: 5px 0;"><strong>Fields changed:</strong> ${changedFields.length} field(s)</p>
+        <ul style="margin: 10px 0; padding-left: 20px;">
+          ${changedFields.map(field => `<li>${field.replace(/_/g, ' ')}</li>`).join('')}
+        </ul>
+      `, 'bordeaux')}
 
-        <div style="background-color: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; margin: 20px 0;">
-          <p style="margin: 0;"><strong>Action Required:</strong> Please log into the admin panel to review and approve/reject this suggestion.</p>
-        </div>
+      ${generateContentCard(`
+        <p style="margin: 0;"><strong>Action Required:</strong> Please log into the admin panel to review and approve/reject this suggestion.</p>
+      `, 'bronze')}
 
-        <p>You can review this suggestion in the admin panel under Fund Edit Suggestions.</p>
-        <p>Best regards,<br>Movingto Team</p>
-      </div>
+      <p style="color: ${BRAND_COLORS.textDark};">You can review this suggestion in the admin panel under Fund Edit Suggestions.</p>
     `;
+
+    const html = generateEmailWrapper(emailSubject, bodyContent);
+    
+    const textContent = generatePlainTextEmail(
+      emailSubject,
+      `Dear Super Admin,
+
+A new fund edit suggestion has been submitted and requires your review.
+
+Suggestion Details:
+- Suggestion ID: ${suggestionId}
+- Fund ID: ${fundId}
+- Submitted by: ${submitterName} (${submitterType})
+- Fields changed: ${changedFields.length} field(s)
+
+${changedFields.map(field => `- ${field.replace(/_/g, ' ')}`).join('\n')}
+
+Action Required: Please log into the admin panel to review and approve/reject this suggestion.`
+    );
 
     console.log(`Sending notifications to ${superAdmins.length} super admin(s)`);
 
@@ -133,10 +156,11 @@ const handler = async (req: Request): Promise<Response> => {
     const emailPromises = superAdmins.map(async (admin: any) => {
       try {
         await client.send({
-          from: `Movingto Team <${gmailEmail}>`,
+          from: `${COMPANY_INFO.tradingName} <${gmailEmail}>`,
           to: admin.email,
           subject: emailSubject,
-          html: emailBody,
+          html: html,
+          content: textContent,
         });
         console.log(`✅ Email sent to super admin: ${admin.email}`);
         return { email: admin.email, success: true };
