@@ -12,14 +12,31 @@ import { getReturnTargetDisplay, getReturnTargetNumbers } from '../../utils/retu
 import PerformancePreview from './PerformancePreview';
 import KeyFactsChips from './KeyFactsChips';
 import AuthGate from '../auth/AuthGate';
-import { FundEnquiryModal } from './FundEnquiryModal';
 
 interface FundSnapshotCardProps {
   fund: Fund;
 }
 
+const scrollToEnquiry = () => {
+  const element = document.getElementById('enquiry-form');
+  if (element) {
+    const headerOffset = 100;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+    
+    setTimeout(() => {
+      const firstInput = element.querySelector('input');
+      firstInput?.focus();
+    }, 500);
+  }
+};
+
 const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
-  const [enquiryModalOpen, setEnquiryModalOpen] = useState(false);
   
   // Enhanced hurdle rate calculation with priority
   const getHurdleRate = (fund: Fund): string => {
@@ -177,21 +194,20 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
   };
 
   return (
-    <>
-      <Card className="shadow-lg border-2">
-        <CardHeader className="pb-6">
-          <CardTitle className="text-2xl">Fund Snapshot</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Get in Touch Button */}
-          <Button 
-            onClick={() => setEnquiryModalOpen(true)}
-            className="w-full gap-2 shadow-lg"
-            size="lg"
-          >
-            <MessageSquare className="h-5 w-5" />
-            Get in Touch
-          </Button>
+    <Card className="shadow-lg border-2">
+      <CardHeader className="pb-6">
+        <CardTitle className="text-2xl">Fund Snapshot</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Get in Touch Button - Mobile/Tablet Only */}
+        <Button 
+          onClick={scrollToEnquiry}
+          className="w-full gap-2 shadow-lg lg:hidden"
+          size="lg"
+        >
+          <MessageSquare className="h-5 w-5" />
+          Get in Touch
+        </Button>
         {/* Performance Preview */}
         <div className="pb-6 border-b">
           <PerformancePreview fund={fund} />
@@ -334,18 +350,10 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
 
           {/* Disclaimer */}
           <p className="text-xs text-muted-foreground pt-4 border-t">
-            Capital at risk. Past performance isn't indicative of future returns.
-          </p>
+          Capital at risk. Past performance isn't indicative of future returns.
+        </p>
         </CardContent>
       </Card>
-      
-      {/* Enquiry Modal */}
-      <FundEnquiryModal 
-        open={enquiryModalOpen} 
-        onOpenChange={setEnquiryModalOpen} 
-        fund={fund} 
-      />
-    </>
   );
 };
 
