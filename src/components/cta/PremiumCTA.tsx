@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Crown, Users, Shield, Zap, ExternalLink } from 'lucide-react';
+import { Crown, FileCheck, Scale, FileText, ExternalLink } from 'lucide-react';
 import { analytics } from '../../utils/analytics';
 import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
 
@@ -76,28 +76,28 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
               Speak with Movingto
             </h3>
             <p className="text-muted-foreground text-lg">
-              Connect with Movingto for personalized investment information
+              Get expert legal support for your Golden Visa application
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div className="flex items-center gap-2 bg-card p-3 rounded-lg shadow-sm">
-              <Users className="h-4 w-4 text-primary" />
+              <FileCheck className="h-4 w-4 text-primary" />
               <span>1-on-1 Consultation</span>
             </div>
             <div className="flex items-center gap-2 bg-card p-3 rounded-lg shadow-sm">
-              <Shield className="h-4 w-4 text-primary" />
-              <span>Due Diligence Reports</span>
+              <Scale className="h-4 w-4 text-primary" />
+              <span>Application Support</span>
             </div>
             <div className="flex items-center gap-2 bg-card p-3 rounded-lg shadow-sm">
-              <Zap className="h-4 w-4 text-primary" />
-              <span>Priority Fund Access</span>
+              <FileText className="h-4 w-4 text-primary" />
+              <span>Legal Documentation</span>
             </div>
           </div>
           
            <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
             <p className="text-primary font-medium text-sm">
-              ✨ Our experts help you secure better terms and access exclusive fund opportunities
+              ✨ Our experts help you navigate the Golden Visa process and secure approval efficiently
             </p>
           </div>
           
