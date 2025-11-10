@@ -11,14 +11,6 @@ interface DecisionBandHeaderProps {
 const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
   const isOpenForSubscriptions = fund.fundStatus === 'Open';
 
-  // Simplified one-line summary with verification gating
-  const hasGoldenVisa = fund.tags?.some(tag => tag.toLowerCase().includes('golden visa'));
-  const redemptionFreq = fund.redemptionTerms?.frequency?.toLowerCase();
-  
-  const summary = `${fund.term ? 'closed-ended' : 'open-ended'} ${fund.category.toLowerCase()}${redemptionFreq === 'daily' ? ' with daily liquidity' : ''}` +
-    (fund.isVerified ? `${fund.regulatedBy ? `, ${fund.regulatedBy}-regulated` : ', CMVM-regulated'}` : '') +
-    (fund.isVerified && hasGoldenVisa ? '. Golden Visa eligible' : '.');
-
   return (
     <div className="space-y-4">
       {/* Header with Suggest Edit */}
@@ -26,8 +18,8 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
         <div className="flex-1 space-y-4">
           <div className="flex items-center gap-3 flex-wrap">
             {fund.isVerified && (
-              <div className="bg-success text-success-foreground px-5 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg border-2 border-success/70 ring-2 ring-success/30 animate-in fade-in duration-300">
-                <CheckCircle2 className="w-5 h-5" />
+              <div className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-md border border-success/70 animate-in fade-in duration-300">
+                <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>✓ VERIFIED FUND</span>
               </div>
             )}
@@ -46,7 +38,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
           </h1>
           
           <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            {summary}
+            {fund.description}
           </p>
         </div>
         
