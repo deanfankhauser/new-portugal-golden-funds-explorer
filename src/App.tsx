@@ -51,6 +51,7 @@ const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const SavedFunds = lazy(() => import('./pages/SavedFunds'));
 const TempMigrationPage = lazy(() => import('./pages/TempMigrationPage'));
 const MyFunds = lazy(() => import('./pages/MyFunds'));
+const ManageFund = lazy(() => import('./pages/ManageFund'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -302,6 +303,13 @@ function App() {
                        <Route path="/my-funds" element={
                          <Suspense fallback={<PageLoader />}>
                            <MyFunds />
+                         </Suspense>
+                       } />
+
+                       {/* Manage Individual Fund */}
+                       <Route path="/manage-fund/:fundId" element={
+                         <Suspense fallback={<PageLoader />}>
+                           <ManageFund />
                          </Suspense>
                        } />
 

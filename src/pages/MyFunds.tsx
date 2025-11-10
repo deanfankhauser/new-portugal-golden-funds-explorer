@@ -207,10 +207,10 @@ const MyFunds = () => {
                           </Button>
                         </Link>
                         {fund.assignment.permissions?.can_edit && (
-                          <Link to={`/${fund.id}`}>
+                          <Link to={`/manage-fund/${fund.id}`}>
                             <Button className="w-full" size="sm">
                               <Edit3 className="h-4 w-4 mr-2" />
-                              Edit Fund
+                              Manage Fund
                             </Button>
                           </Link>
                         )}

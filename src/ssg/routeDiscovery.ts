@@ -115,6 +115,8 @@ export class RouteDiscovery {
       if (route.path.startsWith('/admin')) return false;
       // Exclude edit suggestion routes
       if (route.path.includes('/edit-suggestions')) return false;
+      // Exclude fund manager routes
+      if (route.path.startsWith('/manage-fund')) return false;
       return true;
     });
 
