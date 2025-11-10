@@ -84,12 +84,12 @@ export const FundManagerAssignment: React.FC = () => {
       if (assignmentsError) throw assignmentsError;
       setAssignments((assignmentsData as any) || []);
 
-      // Fetch all manager profiles (users with company_name and manager_name)
+      // Fetch ALL approved users (any user can be a fund manager)
       const { data: managersData, error: managersError } = await supabase
         .from('profiles')
         .select('*')
-        .not('company_name', 'is', null)
-        .not('manager_name', 'is', null);
+        .eq('status', 'approved')
+        .order('email', { ascending: true });
 
       if (managersError) throw managersError;
       setManagers(managersData || []);
@@ -239,12 +239,18 @@ export const FundManagerAssignment: React.FC = () => {
     const fund = funds.find(f => f.id === assignment.fund_id);
     const managerName = assignment.profiles?.manager_name || '';
     const companyName = assignment.profiles?.company_name || '';
+    const firstName = assignment.profiles?.first_name || '';
+    const lastName = assignment.profiles?.last_name || '';
+    const email = assignment.profiles?.email || '';
     const fundName = fund?.name || '';
     
     const query = searchQuery.toLowerCase();
     return (
       managerName.toLowerCase().includes(query) ||
       companyName.toLowerCase().includes(query) ||
+      firstName.toLowerCase().includes(query) ||
+      lastName.toLowerCase().includes(query) ||
+      email.toLowerCase().includes(query) ||
       fundName.toLowerCase().includes(query)
     );
   });
@@ -312,7 +318,7 @@ export const FundManagerAssignment: React.FC = () => {
                 Assign and manage fund managers with editing permissions
               </CardDescription>
             </div>
-            <Dialog open={isAssignDialogOpen} onOpenChange={setIsAssignDialogOpen}>
+            <Dialog modal={false} open={isAssignDialogOpen} onOpenChange={setIsAssignDialogOpen}>
               <DialogTrigger asChild>
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />
@@ -352,7 +358,12 @@ export const FundManagerAssignment: React.FC = () => {
                       <SelectContent>
                         {managers.map(manager => (
                           <SelectItem key={manager.user_id} value={manager.user_id}>
-                            {manager.manager_name} ({manager.company_name})
+                            {manager.manager_name && manager.company_name
+                              ? `${manager.manager_name} (${manager.company_name})`
+                              : manager.first_name && manager.last_name
+                              ? `${manager.first_name} ${manager.last_name} (${manager.email})`
+                              : manager.email
+                            }
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -448,9 +459,19 @@ export const FundManagerAssignment: React.FC = () => {
                       </TableCell>
                       <TableCell>
                         <div>
-                          <div className="font-medium">{assignment.profiles?.manager_name}</div>
+                          <div className="font-medium">
+                            {assignment.profiles?.manager_name && assignment.profiles?.company_name
+                              ? assignment.profiles.manager_name
+                              : assignment.profiles?.first_name && assignment.profiles?.last_name
+                              ? `${assignment.profiles.first_name} ${assignment.profiles.last_name}`
+                              : assignment.profiles?.email || 'Unknown User'
+                            }
+                          </div>
                           <div className="text-xs text-muted-foreground">
-                            {assignment.profiles?.company_name}
+                            {assignment.profiles?.manager_name && assignment.profiles?.company_name
+                              ? assignment.profiles.company_name
+                              : assignment.profiles?.email
+                            }
                           </div>
                         </div>
                       </TableCell>
