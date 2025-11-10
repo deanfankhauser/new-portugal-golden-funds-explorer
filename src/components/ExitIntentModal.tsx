@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { CheckCircle, X } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
+import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 
 const emailSchema = z.object({
   email: z
@@ -38,6 +39,7 @@ export default function ExitIntentModal() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const location = useLocation();
+  const { user, loading } = useEnhancedAuth();
 
   const {
     register,
@@ -52,22 +54,31 @@ export default function ExitIntentModal() {
   const shouldShowModal = useCallback(() => {
     // Don't show on mobile
     if (window.innerWidth < MOBILE_BREAKPOINT) {
+      console.log('[ExitIntent] Not showing: mobile viewport');
       return false;
     }
 
     // Don't show on excluded routes
     if (EXCLUDED_ROUTES.some(route => location.pathname.startsWith(route))) {
+      console.log('[ExitIntent] Not showing: excluded route', location.pathname);
+      return false;
+    }
+
+    // Wait for auth to load
+    if (loading) {
+      console.log('[ExitIntent] Not showing: auth loading');
       return false;
     }
 
     // Check if user is authenticated (don't show for logged-in users)
-    const session = supabase.auth.getSession();
-    if (session) {
+    if (user) {
+      console.log('[ExitIntent] Not showing: user authenticated');
       return false;
     }
 
     // Check session storage (once per session)
     if (sessionStorage.getItem('exitIntentShownThisSession') === 'true') {
+      console.log('[ExitIntent] Not showing: already shown this session');
       return false;
     }
 
@@ -76,12 +87,14 @@ export default function ExitIntentModal() {
     if (lastClosed) {
       const timeSinceClose = Date.now() - parseInt(lastClosed, 10);
       if (timeSinceClose < COOLDOWN_MS) {
+        console.log('[ExitIntent] Not showing: in cooldown period');
         return false;
       }
     }
 
+    console.log('[ExitIntent] All checks passed, ready to show on exit');
     return true;
-  }, [location.pathname]);
+  }, [location.pathname, user, loading]);
 
   // Exit intent detection
   useEffect(() => {
@@ -97,9 +110,12 @@ export default function ExitIntentModal() {
       hasBeenOnPageLongEnough = true;
     }, MIN_TIME_ON_PAGE);
 
-    const handleMouseLeave = (e: MouseEvent) => {
-      // Trigger when mouse leaves from the top (exit intent)
-      if (e.clientY <= 50 && hasBeenOnPageLongEnough) {
+    const handleMouseOut = (e: MouseEvent) => {
+      // Trigger when mouse leaves viewport from the top (exit intent)
+      const leavingWindow = !e.relatedTarget && e.clientY <= 50;
+      
+      if (leavingWindow && hasBeenOnPageLongEnough) {
+        console.log('[ExitIntent] Exit detected, showing modal');
         // Debounce to avoid multiple triggers
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => {
@@ -109,10 +125,10 @@ export default function ExitIntentModal() {
       }
     };
 
-    document.addEventListener('mouseleave', handleMouseLeave);
+    document.addEventListener('mouseout', handleMouseOut);
 
     return () => {
-      document.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('mouseout', handleMouseOut);
       clearTimeout(timeoutId);
       clearTimeout(pageTimerId);
     };
