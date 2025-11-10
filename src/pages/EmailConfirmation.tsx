@@ -165,7 +165,7 @@ export default function EmailConfirmation() {
   };
 
   const handleGoToLogin = () => {
-    navigate('/manager-auth');
+    navigate('/auth');
   };
 
   return (

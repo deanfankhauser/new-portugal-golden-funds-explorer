@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { Button } from '@/components/ui/button';
 import { 
   DropdownMenu,
@@ -15,7 +15,7 @@ import { User, LogOut, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const ManagerAuthButton = () => {
-  const { user, signOut, loading } = useAuth();
+  const { user, signOut, loading } = useEnhancedAuth();
   const { toast } = useToast();
 
   const handleSignOut = async () => {
@@ -41,7 +41,7 @@ const ManagerAuthButton = () => {
   if (!user) {
     return (
       <Button asChild variant="default" size="sm">
-        <Link to="/manager-auth">Manager Login</Link>
+        <Link to="/auth">Manager Login</Link>
       </Button>
     );
   }

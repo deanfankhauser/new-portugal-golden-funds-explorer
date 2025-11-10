@@ -28,8 +28,7 @@ const MOBILE_BREAKPOINT = 768;
 const EXCLUDED_ROUTES = [
   '/admin',
   '/account-settings',
-  '/investor-auth',
-  '/manager-auth',
+  '/auth',
   '/reset-password',
 ];
 

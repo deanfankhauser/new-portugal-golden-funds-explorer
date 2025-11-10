@@ -203,33 +203,27 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
       try {
         console.log('Fetching user profile for email notification...');
         
-        // Try to find user in manager_profiles first
+        // Fetch from unified profiles table
         let userProfile = null;
         let displayName = '';
         
-        const { data: managerProfile } = await supabase
-          .from('manager_profiles')
-          .select('email, manager_name')
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('email, manager_name, company_name, first_name, last_name')
           .eq('user_id', suggestion.user_id)
           .single();
         
-        if (managerProfile?.email) {
-          userProfile = managerProfile;
-          displayName = managerProfile.manager_name;
-          console.log('Manager profile found:', managerProfile);
-        } else {
-          // If not found in managers, try investor_profiles
-          const { data: investorProfile } = await supabase
-            .from('investor_profiles')
-            .select('email, first_name, last_name')
-            .eq('user_id', suggestion.user_id)
-            .single();
+        if (profile?.email) {
+          userProfile = { email: profile.email };
           
-          if (investorProfile?.email) {
-            userProfile = { email: investorProfile.email };
-            displayName = `${investorProfile.first_name} ${investorProfile.last_name}`.trim();
-            console.log('Investor profile found:', investorProfile);
+          // Determine display name based on profile type
+          if (profile.manager_name) {
+            displayName = profile.manager_name;
+          } else if (profile.first_name || profile.last_name) {
+            displayName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
           }
+          
+          console.log('User profile found:', profile);
         }
 
         if (userProfile?.email) {
@@ -326,33 +320,27 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
       try {
         console.log('Fetching user profile for email notification...');
         
-        // Try to find user in manager_profiles first
+        // Fetch from unified profiles table
         let userProfile = null;
         let displayName = '';
         
-        const { data: managerProfile } = await supabase
-          .from('manager_profiles')
-          .select('email, manager_name')
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('email, manager_name, company_name, first_name, last_name')
           .eq('user_id', suggestion.user_id)
           .single();
         
-        if (managerProfile?.email) {
-          userProfile = managerProfile;
-          displayName = managerProfile.manager_name;
-          console.log('Manager profile found:', managerProfile);
-        } else {
-          // If not found in managers, try investor_profiles
-          const { data: investorProfile } = await supabase
-            .from('investor_profiles')
-            .select('email, first_name, last_name')
-            .eq('user_id', suggestion.user_id)
-            .single();
+        if (profile?.email) {
+          userProfile = { email: profile.email };
           
-          if (investorProfile?.email) {
-            userProfile = { email: investorProfile.email };
-            displayName = `${investorProfile.first_name} ${investorProfile.last_name}`.trim();
-            console.log('Investor profile found:', investorProfile);
+          // Determine display name based on profile type
+          if (profile.manager_name) {
+            displayName = profile.manager_name;
+          } else if (profile.first_name || profile.last_name) {
+            displayName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
           }
+          
+          console.log('User profile found:', profile);
         }
 
         if (userProfile?.email) {

@@ -42,8 +42,7 @@ const FundAlternatives = lazy(() => import('./pages/FundAlternatives'));
 const AlternativesHub = lazy(() => import('./pages/AlternativesHub'));
 const VerifiedFunds = lazy(() => import('./pages/VerifiedFunds'));
 const VerificationProgram = lazy(() => import('./pages/VerificationProgram'));
-import ManagerAuth from './pages/ManagerAuth'; // Make non-lazy for debugging
-const InvestorAuth = lazy(() => import('./pages/InvestorAuth'));
+const Auth = lazy(() => import('./pages/Auth'));
 const AccountSettings = lazy(() => import('./pages/AccountSettings'));
 const EmailConfirmation = lazy(() => import('./pages/EmailConfirmation'));
 const ConfirmEmailCapture = lazy(() => import('./pages/ConfirmEmailCapture'));
@@ -230,13 +229,22 @@ function App() {
                         </Suspense>
                       } />
                         
-                        {/* Manager Authentication */}
-                        <Route path="/manager-auth" element={<ManagerAuth />} />
+                        {/* Unified Authentication */}
+                        <Route path="/auth" element={
+                          <Suspense fallback={<PageLoader />}>
+                            <Auth />
+                          </Suspense>
+                        } />
                         
-                        {/* Investor Authentication */}
+                        {/* Legacy auth routes - redirect to unified auth */}
+                        <Route path="/manager-auth" element={
+                          <Suspense fallback={<PageLoader />}>
+                            <Auth />
+                          </Suspense>
+                        } />
                         <Route path="/investor-auth" element={
                           <Suspense fallback={<PageLoader />}>
-                            <InvestorAuth />
+                            <Auth />
                           </Suspense>
                         } />
                        

@@ -18,7 +18,7 @@ import { supabase } from '@/integrations/supabase/client';
 import MyEditsSection from '@/components/manager/MyEditsSection';
 
 const AccountSettings = () => {
-  const { user, userType, profile, updateProfile, uploadAvatar, loading, signOut } = useEnhancedAuth();
+  const { user, profile, updateProfile, uploadAvatar, loading, signOut } = useEnhancedAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isUpdating, setIsUpdating] = useState(false);
@@ -33,33 +33,33 @@ const AccountSettings = () => {
   const [profileData, setProfileData] = useState<Record<string, any>>(() => {
     if (!profile) return {};
     
-    if (userType === 'manager') {
-      const managerProfile = profile as any;
+    const isManager = !!(profile.company_name && profile.manager_name);
+    
+    if (isManager) {
       return {
-        manager_name: managerProfile.manager_name || '',
-        company_name: managerProfile.company_name || '',
-        email: managerProfile.email || '',
-        phone: managerProfile.phone || '',
-        website: managerProfile.website || '',
-        description: managerProfile.description || '',
-        address: managerProfile.address || '',
-        city: managerProfile.city || '',
-        country: managerProfile.country || '',
+        manager_name: profile.manager_name || '',
+        company_name: profile.company_name || '',
+        email: profile.email || '',
+        phone: profile.phone || '',
+        website: profile.website || '',
+        description: profile.description || '',
+        address: profile.address || '',
+        city: profile.city || '',
+        country: profile.country || '',
       };
     } else {
-      const investorProfile = profile as any;
       return {
-        first_name: investorProfile.first_name || '',
-        last_name: investorProfile.last_name || '',
-        email: investorProfile.email || '',
-        phone: investorProfile.phone || '',
-        address: investorProfile.address || '',
-        city: investorProfile.city || '',
-        country: investorProfile.country || '',
-        investment_experience: investorProfile.investment_experience || '',
-        risk_tolerance: investorProfile.risk_tolerance || '',
-        annual_income_range: investorProfile.annual_income_range || '',
-        net_worth_range: investorProfile.net_worth_range || '',
+        first_name: profile.first_name || '',
+        last_name: profile.last_name || '',
+        email: profile.email || '',
+        phone: profile.phone || '',
+        address: profile.address || '',
+        city: profile.city || '',
+        country: profile.country || '',
+        investment_experience: profile.investment_experience || '',
+        risk_tolerance: profile.risk_tolerance || '',
+        annual_income_range: profile.annual_income_range || '',
+        net_worth_range: profile.net_worth_range || '',
       };
     }
   });
@@ -67,37 +67,37 @@ const AccountSettings = () => {
   // Update profile data when profile changes
   useEffect(() => {
     if (profile) {
-      if (userType === 'manager') {
-        const managerProfile = profile as any;
+      const isManager = !!(profile.company_name && profile.manager_name);
+      
+      if (isManager) {
         setProfileData({
-          manager_name: managerProfile.manager_name || '',
-          company_name: managerProfile.company_name || '',
-          email: managerProfile.email || '',
-          phone: managerProfile.phone || '',
-          website: managerProfile.website || '',
-          description: managerProfile.description || '',
-          address: managerProfile.address || '',
-          city: managerProfile.city || '',
-          country: managerProfile.country || '',
+          manager_name: profile.manager_name || '',
+          company_name: profile.company_name || '',
+          email: profile.email || '',
+          phone: profile.phone || '',
+          website: profile.website || '',
+          description: profile.description || '',
+          address: profile.address || '',
+          city: profile.city || '',
+          country: profile.country || '',
         });
       } else {
-        const investorProfile = profile as any;
         setProfileData({
-          first_name: investorProfile.first_name || '',
-          last_name: investorProfile.last_name || '',
-          email: investorProfile.email || '',
-          phone: investorProfile.phone || '',
-          address: investorProfile.address || '',
-          city: investorProfile.city || '',
-          country: investorProfile.country || '',
-          investment_experience: investorProfile.investment_experience || '',
-          risk_tolerance: investorProfile.risk_tolerance || '',
-          annual_income_range: investorProfile.annual_income_range || '',
-          net_worth_range: investorProfile.net_worth_range || '',
+          first_name: profile.first_name || '',
+          last_name: profile.last_name || '',
+          email: profile.email || '',
+          phone: profile.phone || '',
+          address: profile.address || '',
+          city: profile.city || '',
+          country: profile.country || '',
+          investment_experience: profile.investment_experience || '',
+          risk_tolerance: profile.risk_tolerance || '',
+          annual_income_range: profile.annual_income_range || '',
+          net_worth_range: profile.net_worth_range || '',
         });
       }
     }
-  }, [profile, userType]);
+  }, [profile]);
 
   // Password change state
   const [passwordData, setPasswordData] = useState({
@@ -115,19 +115,17 @@ const AccountSettings = () => {
   }
 
   if (!user) {
-    return <Navigate to="/investor-auth" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   const getDisplayName = () => {
-    if (userType === 'manager' && profile) {
-      const managerProfile = profile as any;
-      return managerProfile.manager_name || 'Manager';
+    if (!profile) return user.email?.split('@')[0] || 'User';
+    
+    const isManager = !!(profile.company_name && profile.manager_name);
+    if (isManager) {
+      return profile.manager_name || 'Manager';
     }
-    if (userType === 'investor' && profile) {
-      const investorProfile = profile as any;
-      return `${investorProfile.first_name} ${investorProfile.last_name}` || 'Investor';
-    }
-    return user.email?.split('@')[0] || 'User';
+    return `${profile.first_name} ${profile.last_name}` || 'Investor';
   };
 
   const getInitials = () => {
@@ -402,11 +400,11 @@ const AccountSettings = () => {
           </div>
 
           <Tabs defaultValue={searchParams.get('tab') || "profile"} className="space-y-6">
-            <TabsList className={`grid w-full ${userType === 'manager' ? 'grid-cols-4' : 'grid-cols-3'}`}>
+            <TabsList className={`grid w-full ${profile && profile.company_name && profile.manager_name ? 'grid-cols-4' : 'grid-cols-3'}`}>
               <TabsTrigger value="profile">Profile</TabsTrigger>
               <TabsTrigger value="security">Security</TabsTrigger>
               <TabsTrigger value="preferences">Preferences</TabsTrigger>
-              {userType === 'manager' && (
+              {profile && profile.company_name && profile.manager_name && (
                 <TabsTrigger value="edits">My Edits</TabsTrigger>
               )}
             </TabsList>
@@ -467,7 +465,7 @@ const AccountSettings = () => {
 
                   {/* Profile Form */}
                   <form onSubmit={handleProfileUpdate} className="space-y-4">
-                    {userType === 'manager' ? (
+                    {profile && profile.company_name && profile.manager_name ? (
                       <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-2">
@@ -833,7 +831,7 @@ const AccountSettings = () => {
               </Card>
             </TabsContent>
 
-            {userType === 'manager' && (
+            {profile && profile.company_name && profile.manager_name && (
               <TabsContent value="edits">
                 <MyEditsSection />
               </TabsContent>

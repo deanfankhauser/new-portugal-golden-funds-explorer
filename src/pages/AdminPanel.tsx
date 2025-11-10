@@ -21,7 +21,7 @@ import FundRankingManager from '@/components/admin/FundRankingManager';
 import EmailCapturesManagement from '@/components/admin/EmailCapturesManagement';
 
 const AdminPanel = () => {
-  const { user, loading, userType } = useEnhancedAuth();
+  const { user, loading } = useEnhancedAuth();
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminRole, setAdminRole] = useState<string | null>(null);
   const [checkingAdmin, setCheckingAdmin] = useState(true);
@@ -101,13 +101,9 @@ const AdminPanel = () => {
           .eq('status', 'rejected')
           .gte('updated_at', today);
 
-        // Get total users (investors + managers)
-        const { count: investorCount } = await supabase
-          .from('investor_profiles')
-          .select('*', { count: 'exact', head: true });
-
-        const { count: managerCount } = await supabase
-          .from('manager_profiles')
+        // Get total users from unified profiles table
+        const { count: totalUserCount } = await supabase
+          .from('profiles')
           .select('*', { count: 'exact', head: true });
 
         // Get email captures stats
@@ -124,7 +120,7 @@ const AdminPanel = () => {
           pendingCount: pendingCount || 0,
           approvedToday: approvedToday || 0,
           rejectedToday: rejectedToday || 0,
-          totalUsers: (investorCount || 0) + (managerCount || 0),
+          totalUsers: totalUserCount || 0,
           emailCapturesCount: emailCapturesCount || 0,
           emailCapturesConfirmed: emailCapturesConfirmed || 0
         });
@@ -141,7 +137,7 @@ const AdminPanel = () => {
   }
 
   if (!user) {
-    return <Navigate to="/investor-auth" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   if (!isAdmin) {

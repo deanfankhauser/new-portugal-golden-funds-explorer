@@ -217,7 +217,7 @@ export default function ResetPassword() {
                   Your password has been updated successfully. You can now log in with your new password.
                 </AlertDescription>
               </Alert>
-              <Button className="w-full" onClick={() => navigate('/manager-auth')}>
+              <Button className="w-full" onClick={() => navigate('/auth')}>
                 Go to Login
               </Button>
               <Button variant="outline" className="w-full" onClick={() => navigate('/')}> 
@@ -253,7 +253,7 @@ export default function ResetPassword() {
                   type="button" 
                   variant="link" 
                   className="text-sm"
-                  onClick={() => navigate('/manager-auth')}
+                  onClick={() => navigate('/auth')}
                 >
                   Back to Login
                 </Button>

@@ -22,12 +22,12 @@ export const AuthRequiredModal: React.FC<AuthRequiredModalProps> = ({
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    navigate('/investor-auth');
+    navigate('/auth');
     onOpenChange(false);
   };
 
   const handleRegister = () => {
-    navigate('/manager-auth');
+    navigate('/auth');
     onOpenChange(false);
   };
 

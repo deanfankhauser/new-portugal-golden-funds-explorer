@@ -2,8 +2,6 @@
 import React from 'react';
 import { Fund } from '../data/funds';
 import { toast } from "@/components/ui/use-toast";
-import { useAuth } from '@/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
 
 interface ComparisonContextType {
   compareFunds: Fund[];

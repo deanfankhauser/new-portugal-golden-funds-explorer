@@ -425,132 +425,96 @@ export type Database = {
         }
         Relationships: []
       }
-      investor_profiles: {
+      profiles: {
         Row: {
           address: string | null
           annual_income_range: string | null
-          avatar_url: string | null
-          city: string | null
-          country: string | null
-          created_at: string
-          date_of_birth: string | null
-          email: string
-          first_name: string
-          id: string
-          investment_experience: string | null
-          last_name: string
-          net_worth_range: string | null
-          phone: string | null
-          risk_tolerance: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          address?: string | null
-          annual_income_range?: string | null
-          avatar_url?: string | null
-          city?: string | null
-          country?: string | null
-          created_at?: string
-          date_of_birth?: string | null
-          email: string
-          first_name: string
-          id?: string
-          investment_experience?: string | null
-          last_name: string
-          net_worth_range?: string | null
-          phone?: string | null
-          risk_tolerance?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          address?: string | null
-          annual_income_range?: string | null
-          avatar_url?: string | null
-          city?: string | null
-          country?: string | null
-          created_at?: string
-          date_of_birth?: string | null
-          email?: string
-          first_name?: string
-          id?: string
-          investment_experience?: string | null
-          last_name?: string
-          net_worth_range?: string | null
-          phone?: string | null
-          risk_tolerance?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      manager_profiles: {
-        Row: {
-          address: string | null
           approved_at: string | null
           approved_by: string | null
           assets_under_management: number | null
+          avatar_url: string | null
           city: string | null
-          company_name: string
+          company_name: string | null
           country: string | null
           created_at: string
+          date_of_birth: string | null
           description: string | null
           email: string
+          first_name: string | null
           founded_year: number | null
           id: string
+          investment_experience: string | null
+          last_name: string | null
           license_number: string | null
           logo_url: string | null
-          manager_name: string
+          manager_name: string | null
+          net_worth_range: string | null
           phone: string | null
           registration_number: string | null
-          status: Database["public"]["Enums"]["manager_status"]
+          risk_tolerance: string | null
+          status: Database["public"]["Enums"]["manager_status"] | null
           updated_at: string
           user_id: string
           website: string | null
         }
         Insert: {
           address?: string | null
+          annual_income_range?: string | null
           approved_at?: string | null
           approved_by?: string | null
           assets_under_management?: number | null
+          avatar_url?: string | null
           city?: string | null
-          company_name: string
+          company_name?: string | null
           country?: string | null
           created_at?: string
+          date_of_birth?: string | null
           description?: string | null
           email: string
+          first_name?: string | null
           founded_year?: number | null
           id?: string
+          investment_experience?: string | null
+          last_name?: string | null
           license_number?: string | null
           logo_url?: string | null
-          manager_name: string
+          manager_name?: string | null
+          net_worth_range?: string | null
           phone?: string | null
           registration_number?: string | null
-          status?: Database["public"]["Enums"]["manager_status"]
+          risk_tolerance?: string | null
+          status?: Database["public"]["Enums"]["manager_status"] | null
           updated_at?: string
           user_id: string
           website?: string | null
         }
         Update: {
           address?: string | null
+          annual_income_range?: string | null
           approved_at?: string | null
           approved_by?: string | null
           assets_under_management?: number | null
+          avatar_url?: string | null
           city?: string | null
-          company_name?: string
+          company_name?: string | null
           country?: string | null
           created_at?: string
+          date_of_birth?: string | null
           description?: string | null
           email?: string
+          first_name?: string | null
           founded_year?: number | null
           id?: string
+          investment_experience?: string | null
+          last_name?: string | null
           license_number?: string | null
           logo_url?: string | null
-          manager_name?: string
+          manager_name?: string | null
+          net_worth_range?: string | null
           phone?: string | null
           registration_number?: string | null
-          status?: Database["public"]["Enums"]["manager_status"]
+          risk_tolerance?: string | null
+          status?: Database["public"]["Enums"]["manager_status"] | null
           updated_at?: string
           user_id?: string
           website?: string | null
@@ -672,28 +636,6 @@ export type Database = {
       }
       find_user_by_email: { Args: { user_email: string }; Returns: string }
       get_admin_data_access_level: { Args: never; Returns: string }
-      get_all_investor_profiles_admin: {
-        Args: never
-        Returns: {
-          address: string
-          annual_income_range: string
-          avatar_url: string
-          city: string
-          country: string
-          created_at: string
-          date_of_birth: string
-          email: string
-          first_name: string
-          id: string
-          investment_experience: string
-          last_name: string
-          net_worth_range: string
-          phone: string
-          risk_tolerance: string
-          updated_at: string
-          user_id: string
-        }[]
-      }
       get_basic_manager_info: {
         Args: never
         Returns: {
@@ -715,105 +657,6 @@ export type Database = {
           table_name: string
         }[]
       }
-      get_investor_profile_secure: {
-        Args: { profile_user_id: string }
-        Returns: {
-          address: string
-          annual_income_range: string
-          avatar_url: string
-          city: string
-          country: string
-          created_at: string
-          date_of_birth: string
-          email: string
-          first_name: string
-          id: string
-          investment_experience: string
-          last_name: string
-          net_worth_range: string
-          phone: string
-          risk_tolerance: string
-          updated_at: string
-          user_id: string
-        }[]
-      }
-      get_investor_profile_stats: {
-        Args: never
-        Returns: {
-          active_investors: number
-          recent_signups: number
-          total_investors: number
-        }[]
-      }
-      get_investor_profiles_for_admin: {
-        Args: never
-        Returns: {
-          address: string
-          annual_income_range: string
-          avatar_url: string
-          city: string
-          country: string
-          created_at: string
-          date_of_birth: string
-          email: string
-          first_name: string
-          id: string
-          investment_experience: string
-          last_name: string
-          net_worth_range: string
-          phone: string
-          risk_tolerance: string
-          updated_at: string
-          user_id: string
-        }[]
-      }
-      get_investor_profiles_for_admin_secure: {
-        Args: never
-        Returns: {
-          address: string
-          annual_income_range: string
-          avatar_url: string
-          city: string
-          country: string
-          created_at: string
-          date_of_birth: string
-          email: string
-          first_name: string
-          id: string
-          investment_experience: string
-          last_name: string
-          net_worth_range: string
-          phone: string
-          risk_tolerance: string
-          updated_at: string
-          user_id: string
-        }[]
-      }
-      get_masked_investor_data: {
-        Args: {
-          profile_row: Database["public"]["Tables"]["investor_profiles"]["Row"]
-          requesting_user_id?: string
-        }
-        Returns: {
-          address: string
-          annual_income_range: string
-          avatar_url: string
-          city: string
-          country: string
-          created_at: string
-          date_of_birth: string
-          email: string
-          first_name: string
-          id: string
-          investment_experience: string
-          last_name: string
-          net_worth_range: string
-          phone: string
-          risk_tolerance: string
-          updated_at: string
-          user_id: string
-        }[]
-      }
       get_public_manager_profiles: {
         Args: never
         Returns: {
@@ -825,9 +668,11 @@ export type Database = {
           description: string
           founded_year: number
           id: string
+          license_number: string
           logo_url: string
           manager_name: string
-          status: Database["public"]["Enums"]["manager_status"]
+          registration_number: string
+          status: string
           updated_at: string
           user_id: string
           website: string
@@ -861,10 +706,6 @@ export type Database = {
           p_target_type: string
         }
         Returns: undefined
-      }
-      log_and_allow_investor_profile_access: {
-        Args: { target_user_id?: string }
-        Returns: boolean
       }
       log_sensitive_data_access: {
         Args: {

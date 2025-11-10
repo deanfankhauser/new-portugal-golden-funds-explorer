@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
+import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 
 interface AuthGateProps {
   children: React.ReactNode;
@@ -18,9 +18,9 @@ const AuthGate: React.FC<AuthGateProps> = ({
   height = "300px"
 }) => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { user } = useEnhancedAuth();
 
-  if (isAuthenticated) {
+  if (user) {
     return <>{children}</>;
   }
 
@@ -44,7 +44,7 @@ const AuthGate: React.FC<AuthGateProps> = ({
             <p className="text-sm text-muted-foreground">{message}</p>
           </div>
           <Button 
-            onClick={() => navigate('/investor-auth')}
+            onClick={() => navigate('/auth')}
             className="gap-2"
           >
             <Lock className="h-4 w-4" />
