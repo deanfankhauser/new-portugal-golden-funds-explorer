@@ -112,6 +112,48 @@ export type Database = {
         }
         Relationships: []
       }
+      email_captures: {
+        Row: {
+          confirmation_token: string | null
+          confirmed_at: string | null
+          created_at: string | null
+          email: string
+          id: string
+          referrer_url: string | null
+          source: string
+          status: string
+          tags: Json | null
+          updated_at: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          confirmation_token?: string | null
+          confirmed_at?: string | null
+          created_at?: string | null
+          email: string
+          id?: string
+          referrer_url?: string | null
+          source?: string
+          status?: string
+          tags?: Json | null
+          updated_at?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          confirmation_token?: string | null
+          confirmed_at?: string | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          referrer_url?: string | null
+          source?: string
+          status?: string
+          tags?: Json | null
+          updated_at?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       fund_edit_history: {
         Row: {
           admin_user_id: string
