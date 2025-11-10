@@ -109,6 +109,16 @@ const DirectFundRoute = () => {
   // Extract potential fund ID from pathname (remove leading slash)
   const potentialFundId = pathname.slice(1);
   
+  // Only handle single-segment paths (e.g., /horizon-fund, not /manage-fund/horizon-fund)
+  // If the path contains multiple segments, it should be handled by other routes
+  if (potentialFundId.includes('/')) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <NotFound />
+      </Suspense>
+    );
+  }
+  
   // Check if this path matches a fund ID
   const fund = fundsData.find(f => f.id === potentialFundId);
   
