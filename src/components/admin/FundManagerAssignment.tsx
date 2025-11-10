@@ -79,10 +79,8 @@ export const FundManagerAssignment: React.FC = () => {
           profiles (*)
         `)
         .order('assigned_at', { ascending: false }),
-      supabase
-        .from('profiles')
-        .select('*')
-        .order('email', { ascending: true }),
+      // Prefer secure RPC that bypasses RLS for admins
+      supabase.rpc('admin_list_profiles'),
     ]);
 
     if (assignmentsRes.status === 'fulfilled') {
@@ -107,24 +105,63 @@ export const FundManagerAssignment: React.FC = () => {
 
     if (managersRes.status === 'fulfilled') {
       const { data, error } = managersRes.value as any;
-      if (!error) {
-        setManagers(data || []);
-        console.log('Profiles loaded:', (data || []).length);
+      if (!error && Array.isArray(data)) {
+        if ((data || []).length > 0) {
+          setManagers(data || []);
+          console.log('Profiles loaded via RPC:', (data || []).length);
+        } else {
+          // Fallback to RLS-select (will at least return own profile)
+          const { data: fallbackData, error: fallbackError } = await supabase
+            .from('profiles')
+            .select('*')
+            .order('email', { ascending: true });
+          if (!fallbackError) {
+            setManagers(fallbackData || []);
+            console.log('Profiles loaded via fallback:', (fallbackData || []).length);
+          } else {
+            console.error('Profiles fallback fetch error:', fallbackError);
+            toast({
+              title: 'Failed to load users',
+              description: 'User list could not be loaded.',
+              variant: 'destructive',
+            });
+          }
+        }
       } else {
-        console.error('Profiles fetch error:', error);
+        // RPC failed; try fallback
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from('profiles')
+          .select('*')
+          .order('email', { ascending: true });
+        if (!fallbackError) {
+          setManagers(fallbackData || []);
+          console.log('Profiles loaded via fallback:', (fallbackData || []).length);
+        } else {
+          console.error('Profiles fallback fetch error:', fallbackError);
+          toast({
+            title: 'Failed to load users',
+            description: 'User list could not be loaded.',
+            variant: 'destructive',
+          });
+        }
+      }
+    } else {
+      console.error('Profiles request failed:', managersRes.reason);
+      // Try fallback as well
+      const { data: fallbackData, error: fallbackError } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('email', { ascending: true });
+      if (!fallbackError) {
+        setManagers(fallbackData || []);
+        console.log('Profiles loaded via fallback:', (fallbackData || []).length);
+      } else {
         toast({
           title: 'Failed to load users',
           description: 'User list could not be loaded.',
           variant: 'destructive',
         });
       }
-    } else {
-      console.error('Profiles request failed:', managersRes.reason);
-      toast({
-        title: 'Failed to load users',
-        description: 'User list could not be loaded.',
-        variant: 'destructive',
-      });
     }
 
     setLoading(false);
@@ -363,14 +400,13 @@ export const FundManagerAssignment: React.FC = () => {
                       <SelectTrigger>
                         <SelectValue placeholder="Select a fund" />
                       </SelectTrigger>
-                      <SelectContent className="z-[9999]">
+                      <SelectContent className="z-[9999] bg-popover">
                         {funds.map(fund => (
                           <SelectItem key={fund.id} value={fund.id}>
                             {fund.name}
                           </SelectItem>
                         ))}
-                      </SelectContent
-                      >
+                      </SelectContent>
                     </Select>
                   </div>
 
@@ -380,17 +416,23 @@ export const FundManagerAssignment: React.FC = () => {
                       <SelectTrigger>
                         <SelectValue placeholder="Select a manager" />
                       </SelectTrigger>
-                      <SelectContent className="z-[9999]">
-                        {managers.map(manager => (
-                          <SelectItem key={manager.user_id} value={manager.user_id}>
-                            {manager.manager_name && manager.company_name
-                              ? `${manager.manager_name} (${manager.company_name})`
-                              : manager.first_name && manager.last_name
-                              ? `${manager.first_name} ${manager.last_name} (${manager.email})`
-                              : manager.email
-                            }
+                      <SelectContent className="z-[9999] bg-popover">
+                        {managers.length === 0 ? (
+                          <SelectItem disabled value="no-users">
+                            No users found or access denied
                           </SelectItem>
-                        ))}
+                        ) : (
+                          managers.map(manager => (
+                            <SelectItem key={manager.user_id} value={manager.user_id}>
+                              {manager.manager_name && manager.company_name
+                                ? `${manager.manager_name} (${manager.company_name})`
+                                : manager.first_name && manager.last_name
+                                ? `${manager.first_name} ${manager.last_name} (${manager.email})`
+                                : manager.email
+                              }
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   </div>
