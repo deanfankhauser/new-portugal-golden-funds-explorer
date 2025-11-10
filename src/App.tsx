@@ -109,20 +109,14 @@ const DirectFundRoute = () => {
   // Extract potential fund ID from pathname (remove leading slash)
   const potentialFundId = pathname.slice(1);
   
-  // Only handle single-segment paths (e.g., /horizon-fund, not /manage-fund/horizon-fund)
-  // If the path contains multiple segments, it should be handled by other routes
-  if (potentialFundId.includes('/')) {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <NotFound />
-      </Suspense>
-    );
-  }
+  // Debug: Log to understand routing behavior
+  console.log('[DirectFundRoute] Checking pathname:', pathname, 'fundId:', potentialFundId);
   
   // Check if this path matches a fund ID
   const fund = fundsData.find(f => f.id === potentialFundId);
   
   if (fund) {
+    console.log('[DirectFundRoute] Fund found:', fund.id);
     // Valid fund found, render fund details with lazy loading
     return (
       <Suspense fallback={<FundDetailsLoader />}>
@@ -132,6 +126,7 @@ const DirectFundRoute = () => {
   }
   
   // No fund found, show 404 with lazy loading
+  console.log('[DirectFundRoute] No fund found, showing 404');
   return (
     <Suspense fallback={<PageLoader />}>
       <NotFound />
