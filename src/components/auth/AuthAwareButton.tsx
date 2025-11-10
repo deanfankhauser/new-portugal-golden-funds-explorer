@@ -1,41 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
+import { Link } from 'react-router-dom';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Settings, LogOut, Building, TrendingUp, Shield, Heart } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Heart, User, Settings, LogOut, Shield, Building, TrendingUp } from 'lucide-react';
+import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import UniversalAuthButton from './UniversalAuthButton';
 import { supabase } from '@/integrations/supabase/client';
+import { getDisplayName, getAvatarUrl, isManagerProfile } from '@/types/profile';
 
-const AuthAwareButton = () => {
+const AuthAwareButton: React.FC = () => {
+  const { user, profile, signOut, loading } = useEnhancedAuth();
   const [isAdmin, setIsAdmin] = useState(false);
-  
-  // SSR-safe: Don't render during server-side rendering
-  if (typeof window === 'undefined') {
-    return null;
-  }
-  
-  // Add error boundary and safe fallback
-  let authState;
-  try {
-    authState = useEnhancedAuth();
-  } catch (error) {
-    console.error('Auth context error:', error);
-    return <UniversalAuthButton />;
-  }
 
-  const { user, profile, userType, signOut, loading } = authState;
-
-  console.log('🔐 AuthAwareButton state:', { user: !!user, profile: !!profile, loading, userType });
-
-  // Check admin status
   useEffect(() => {
     const checkAdminStatus = async () => {
       if (!user?.id) {
@@ -43,23 +27,25 @@ const AuthAwareButton = () => {
         return;
       }
 
+      console.log('🔐 Checking admin status for user:', user.id);
+      
       try {
         const { data, error } = await supabase
           .from('admin_users')
-          .select('role')
+          .select('id')
           .eq('user_id', user.id)
-          .maybeSingle();
+          .single();
 
-        if (error) {
-          console.error('Error checking admin status:', error);
-          setIsAdmin(false);
-          return;
-        }
-
-        // Only set admin if we actually have a record with a valid role
-        setIsAdmin(data && data.role ? true : false);
+        const adminStatus = !!data && !error;
+        console.log('🔐 Admin check result:', { 
+          userId: user.id, 
+          isAdmin: adminStatus,
+          hasData: !!data,
+          error: error?.message 
+        });
+        setIsAdmin(adminStatus);
       } catch (error) {
-        console.error('Error checking admin status:', error);
+        console.error('🔐 Error checking admin status:', error);
         setIsAdmin(false);
       }
     };
@@ -67,93 +53,69 @@ const AuthAwareButton = () => {
     checkAdminStatus();
   }, [user?.id]);
 
-  // Show login button during loading (hydration) or if no user
-  if (loading || !user) {
+  console.log('🔐 AuthAwareButton state:', {
+    hasUser: !!user,
+    hasProfile: !!profile,
+    isAdmin,
+    loading
+  });
+
+  if (loading || !user || !profile) {
     return <UniversalAuthButton />;
   }
 
-  const getDisplayName = () => {
-    if (userType === 'manager' && profile && 'manager_name' in profile && (profile as any).manager_name) {
-      return (profile as any).manager_name as string;
-    }
-    if (userType === 'investor' && profile && 'first_name' in profile && (profile as any).first_name) {
-      const p: any = profile;
-      return `${p.first_name} ${p.last_name || ''}`.trim();
-    }
-    return user.email?.split('@')[0] || 'User';
-  };
-
-  const getInitials = () => {
-    const name = getDisplayName();
-    return name
-      .split(' ')
-      .map(word => word[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  const getAvatarUrl = () => {
-    if (!profile) return undefined;
-    if (userType === 'manager' && 'logo_url' in (profile as any)) {
-      return (profile as any).logo_url as string | undefined;
-    }
-    if (userType === 'investor' && 'avatar_url' in (profile as any)) {
-      return (profile as any).avatar_url as string | undefined;
-    }
-    return undefined;
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      console.error('Sign out error:', error);
-    }
-  };
+  const displayName = getDisplayName(profile);
+  const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  const avatarUrl = getAvatarUrl(profile);
+  const isManager = isManagerProfile(profile);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-10 w-10 rounded-full">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={getAvatarUrl()} alt={getDisplayName()} />
+            {avatarUrl && <AvatarImage src={avatarUrl} alt={displayName} />}
             <AvatarFallback className="bg-primary text-primary-foreground">
-              {getInitials()}
+              {initials}
             </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
-        <div className="flex items-center justify-start gap-2 p-2">
-          <div className="flex flex-col space-y-1 leading-none">
-            <div className="flex items-center gap-1">
-              {userType === 'manager' ? (
-                <Building className="h-3 w-3 text-muted-foreground" />
-              ) : (
-                <TrendingUp className="h-3 w-3 text-muted-foreground" />
-              )}
-              <p className="font-medium text-sm">{getDisplayName()}</p>
+        <DropdownMenuLabel>
+          <div className="flex items-center justify-start gap-2">
+            <div className="flex flex-col space-y-1 leading-none">
+              <div className="flex items-center gap-1">
+                {isManager ? (
+                  <Building className="h-3 w-3 text-muted-foreground" />
+                ) : (
+                  <TrendingUp className="h-3 w-3 text-muted-foreground" />
+                )}
+                <p className="font-medium text-sm">{displayName}</p>
+              </div>
+              <p className="w-[200px] truncate text-xs text-muted-foreground">
+                {user.email}
+              </p>
             </div>
-            <p className="w-[200px] truncate text-xs text-muted-foreground">
-              {user.email}
-            </p>
           </div>
-        </div>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        
         <DropdownMenuItem asChild>
           <Link to="/saved-funds" className="w-full cursor-pointer">
             <Heart className="mr-2 h-4 w-4" />
             Saved Funds
           </Link>
         </DropdownMenuItem>
+        
         <DropdownMenuItem asChild>
           <Link to="/account-settings" className="w-full cursor-pointer">
             <User className="mr-2 h-4 w-4" />
             Profile Settings
           </Link>
         </DropdownMenuItem>
-        {userType === 'manager' && (
+        
+        {isManager && (
           <DropdownMenuItem asChild>
             <Link to="/account-settings?tab=edits" className="w-full cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
@@ -161,6 +123,7 @@ const AuthAwareButton = () => {
             </Link>
           </DropdownMenuItem>
         )}
+        
         {isAdmin && (
           <>
             <DropdownMenuSeparator />
@@ -172,8 +135,9 @@ const AuthAwareButton = () => {
             </DropdownMenuItem>
           </>
         )}
+        
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+        <DropdownMenuItem onClick={signOut} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
           Sign out
         </DropdownMenuItem>

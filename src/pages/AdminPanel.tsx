@@ -21,7 +21,7 @@ import FundRankingManager from '@/components/admin/FundRankingManager';
 import EmailCapturesManagement from '@/components/admin/EmailCapturesManagement';
 
 const AdminPanel = () => {
-  const { user, loading, userType } = useEnhancedAuth();
+  const { user, loading } = useEnhancedAuth();
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminRole, setAdminRole] = useState<string | null>(null);
   const [checkingAdmin, setCheckingAdmin] = useState(true);

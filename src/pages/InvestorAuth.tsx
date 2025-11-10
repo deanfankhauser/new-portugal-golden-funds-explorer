@@ -143,13 +143,14 @@ const InvestorAuth = () => {
     // resetPasswordForEmail always succeeds regardless of email existence for security
 
     const metadata = {
+      is_investor: true,
       first_name: signupData.firstName,
       last_name: signupData.lastName,
       investment_experience: signupData.investmentExperience,
       risk_tolerance: signupData.riskTolerance
     };
 
-    const { error } = await signUp(signupData.email, signupData.password, 'investor', metadata);
+    const { error } = await signUp(signupData.email, signupData.password, metadata);
     
     if (error) {
       console.error('Signup error:', error.message);

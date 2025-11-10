@@ -148,7 +148,7 @@ const ManagerAuth = () => {
       description: signupData.description
     };
 
-    const { error } = await signUp(signupData.email, signupData.password, 'manager', metadata);
+    const { error } = await signUp(signupData.email, signupData.password, metadata);
     
     if (error) {
       console.error('Signup error:', error.message);
