@@ -38,6 +38,7 @@ export class RouteDiscovery {
     routes.push({ path: '/account-settings', pageType: 'account-settings' });
     routes.push({ path: '/reset-password', pageType: 'reset-password' });
     routes.push({ path: '/confirm', pageType: 'email-confirmation' });
+    routes.push({ path: '/confirm-email', pageType: 'email-capture-confirmation' });
     
     routes.push({ path: '/managers', pageType: 'managers-hub' });
     routes.push({ path: '/categories', pageType: 'categories-hub' });
