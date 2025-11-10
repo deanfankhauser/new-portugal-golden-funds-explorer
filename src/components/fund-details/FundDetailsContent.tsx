@@ -60,15 +60,10 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
         {/* Breadcrumbs */}
         <FundBreadcrumbs fund={fund} />
 
-        {/* Two Column Layout */}
-        <div className="grid lg:grid-cols-[1fr_400px] gap-8 items-start">
-          {/* Left: Main Header */}
+        {/* Header and Snapshot - Single Column */}
+        <div className="space-y-6">
           <DecisionBandHeader fund={fund} />
-          
-          {/* Right: Snapshot Card */}
-          <div className="lg:sticky lg:top-24">
-            <FundSnapshotCard fund={fund} />
-          </div>
+          <FundSnapshotCard fund={fund} />
         </div>
         
         {/* Historical Performance Chart - Full Width */}
