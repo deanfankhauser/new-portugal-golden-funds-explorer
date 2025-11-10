@@ -65,6 +65,7 @@ export const FundManagerAssignment: React.FC = () => {
   const [assignmentNotes, setAssignmentNotes] = useState('');
   const [canEdit, setCanEdit] = useState(true);
   const [canPublish, setCanPublish] = useState(false);
+  const [assigning, setAssigning] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -179,18 +180,31 @@ export const FundManagerAssignment: React.FC = () => {
       return;
     }
 
+    // Validate UUIDs and deduplicate
+    const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const managerIds = Array.from(new Set(selectedManagers.filter((id) => uuidRe.test(id))));
+    if (managerIds.length === 0) {
+      toast({
+        title: 'No valid managers',
+        description: 'Please pick at least one valid user.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setAssigning(true);
     try {
       const permissions = { can_edit: canEdit, can_publish: canPublish };
 
       const { data: results, error } = await supabase.rpc('admin_assign_fund_managers', {
         _fund_id: selectedFund,
-        _manager_ids: selectedManagers,
+        _manager_ids: managerIds,
         _permissions: permissions,
         _status: 'active',
         _notes: assignmentNotes || null,
       });
 
-      if (error) throw error;
+      if (error) throw error as any;
 
       const insertedCount = (results || []).filter((r: any) => r.inserted).length;
       const skippedCount = (results || []).length - insertedCount;
@@ -212,11 +226,19 @@ export const FundManagerAssignment: React.FC = () => {
       fetchData();
     } catch (error: any) {
       console.error('Error assigning manager:', error);
+      const parts = [
+        error?.message,
+        error?.code ? `code: ${error.code}` : '',
+        error?.details ? `details: ${error.details}` : '',
+        error?.hint ? `hint: ${error.hint}` : '',
+      ].filter(Boolean);
       toast({
         title: 'Assignment Failed',
-        description: error.message || 'Failed to assign manager',
+        description: parts.join(' | ') || 'Failed to assign manager',
         variant: 'destructive',
       });
+    } finally {
+      setAssigning(false);
     }
   };
 
@@ -491,8 +513,8 @@ export const FundManagerAssignment: React.FC = () => {
                     />
                   </div>
 
-                  <Button onClick={handleAssignManager} className="w-full">
-                    Assign Manager
+                  <Button onClick={handleAssignManager} className="w-full" disabled={assigning}>
+                    {assigning ? 'Assigning…' : 'Assign Manager'}
                   </Button>
                 </div>
               </DialogContent>
