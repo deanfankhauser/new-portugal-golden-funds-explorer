@@ -180,64 +180,24 @@ export const FundManagerAssignment: React.FC = () => {
     }
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      const currentUserId = user?.id;
+      const permissions = { can_edit: canEdit, can_publish: canPublish };
 
-      if (!currentUserId) {
-        toast({
-          title: 'Authentication Error',
-          description: 'You must be logged in as an admin',
-          variant: 'destructive',
-        });
-        return;
-      }
-
-      // Check for existing assignments
-      const { data: existingAssignments } = await supabase
-        .from('fund_managers')
-        .select('user_id')
-        .eq('fund_id', selectedFund)
-        .in('user_id', selectedManagers);
-
-      const alreadyAssigned = new Set(existingAssignments?.map(a => a.user_id) || []);
-      const toAssign = selectedManagers.filter(id => !alreadyAssigned.has(id));
-
-      if (toAssign.length === 0) {
-        toast({
-          title: 'Already Assigned',
-          description: 'All selected managers are already assigned to this fund',
-          variant: 'destructive',
-        });
-        return;
-      }
-
-      // Prepare records for bulk insert
-      const records = toAssign.map(managerId => ({
-        fund_id: selectedFund,
-        user_id: managerId,
-        assigned_by: currentUserId,
-        status: 'active',
-        permissions: {
-          can_edit: canEdit,
-          can_publish: canPublish,
-        },
-        notes: assignmentNotes || null,
-      }));
-
-      const { error } = await supabase
-        .from('fund_managers' as any)
-        .insert(records);
+      const { data: results, error } = await supabase.rpc('admin_assign_fund_managers', {
+        _fund_id: selectedFund,
+        _manager_ids: selectedManagers,
+        _permissions: permissions,
+        _status: 'active',
+        _notes: assignmentNotes || null,
+      });
 
       if (error) throw error;
 
-      const skippedCount = alreadyAssigned.size;
-      const assignedCount = toAssign.length;
+      const insertedCount = (results || []).filter((r: any) => r.inserted).length;
+      const skippedCount = (results || []).length - insertedCount;
 
       toast({
         title: 'Managers Assigned',
-        description: `Successfully assigned ${assignedCount} manager(s).${
-          skippedCount > 0 ? ` Skipped ${skippedCount} already assigned.` : ''
-        }`,
+        description: `Inserted ${insertedCount} manager(s)${skippedCount > 0 ? `, skipped ${skippedCount} (already assigned)` : ''}`,
       });
 
       // Reset form and close dialog

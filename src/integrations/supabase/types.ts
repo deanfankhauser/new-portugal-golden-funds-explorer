@@ -698,6 +698,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_assign_fund_managers: {
+        Args: {
+          _fund_id: string
+          _manager_ids: string[]
+          _notes?: string
+          _permissions?: Json
+          _status?: string
+        }
+        Returns: {
+          inserted: boolean
+          user_id: string
+        }[]
+      }
       admin_list_profiles: {
         Args: never
         Returns: {
