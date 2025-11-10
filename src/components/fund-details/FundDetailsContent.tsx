@@ -24,7 +24,6 @@ import { FundEnquiryModal } from './FundEnquiryModal';
 
 import FundBreadcrumbs from './FundBreadcrumbs';
 import { FundEditButton } from '../fund-editing/FundEditButton';
-import FundSideNavigation from './FundSideNavigation';
 
 // Import tab components directly
 import FundDescription from './FundDescription';
@@ -74,16 +73,8 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
             
             <TrustPracticalityCards fund={fund} />
             
-            {/* Main Content Layout with Side Navigation */}
-            <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-              {/* Side Navigation */}
-              <div className="xl:block">
-                <FundSideNavigation />
-              </div>
-              
-              {/* Main Content Area */}
-              <div className="xl:col-span-3">
-                <div className="bg-card rounded-xl md:rounded-2xl shadow-md border border-border overflow-hidden transition-shadow duration-300 hover:shadow-lg">
+            {/* Main Content Card - Full Width */}
+            <div className="bg-card rounded-xl md:rounded-2xl shadow-md border border-border overflow-hidden transition-shadow duration-300 hover:shadow-lg">
                   <div className="p-4 md:p-6 lg:p-10 space-y-8 md:space-y-12">
                     
                     {/* Fund Overview Section */}
@@ -177,8 +168,6 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
           </div>
           
           {/* Right Column - Contact Sidebar (Desktop Only) */}
