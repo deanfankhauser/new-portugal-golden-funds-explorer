@@ -13,6 +13,7 @@ import AnalyticsTab from '@/components/fund-manager/AnalyticsTab';
 import LeadsTab from '@/components/fund-manager/LeadsTab';
 import AdvertisingTab from '@/components/fund-manager/AdvertisingTab';
 import { Fund } from '@/data/types/funds';
+import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 
 const ManageFund: React.FC = () => {
   const { fundId } = useParams<{ fundId: string }>();
@@ -22,51 +23,88 @@ const ManageFund: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
   const [canDirectEdit, setCanDirectEdit] = useState(false);
+  const { getFundById } = useRealTimeFunds();
 
   useEffect(() => {
     const checkAccessAndLoadFund = async () => {
+      console.log('[ManageFund] init', { fundId, userId: user?.id });
+
       if (!user || !fundId) {
         setLoading(false);
         return;
       }
 
       try {
-        // Check if user has access to this fund
-        const { data: canEdit, error: permError } = await supabase
-          .rpc('can_user_edit_fund', {
+        // 1) Permission checks: try RPC, fallback to direct assignment query
+        let access = false;
+        let direct = false;
+        try {
+          const { data: canEdit, error: permError } = await supabase.rpc('can_user_edit_fund', {
             p_user_id: user.id,
-            p_fund_id: fundId
+            p_fund_id: fundId,
           });
+          if (permError) throw permError;
+          access = !!canEdit;
+          direct = !!canEdit;
+          console.log('[ManageFund] RPC can_user_edit_fund result', { access, direct });
+        } catch (e) {
+          console.warn('[ManageFund] RPC failed, falling back to fund_managers', e);
+          const { data: assignment, error: assignError } = await supabase
+            .from('fund_managers')
+            .select('status, permissions')
+            .eq('user_id', user.id)
+            .eq('fund_id', fundId)
+            .maybeSingle();
+          if (assignError) {
+            console.warn('[ManageFund] fund_managers fallback error', assignError);
+          }
+          access = assignment?.status === 'active';
+          // permissions is jsonb; guard optional
+          // @ts-expect-error permissions is jsonb from DB
+          direct = Boolean(assignment?.permissions?.can_edit);
+          console.log('[ManageFund] Fallback assignment result', { access, direct, assignment });
+        }
 
-        if (permError) throw permError;
-
-        setHasAccess(!!canEdit);
-        setCanDirectEdit(!!canEdit);
-
-        if (!canEdit) {
-          setLoading(false);
+        setHasAccess(access);
+        setCanDirectEdit(direct);
+        if (!access) {
+          console.warn('[ManageFund] No access to this fund', { fundId });
           return;
         }
 
-        // Load fund data
-        const { data: fundData, error: fundError } = await supabase
-          .from('funds')
-          .select('*')
-          .eq('id', fundId)
-          .single();
+        // 2) Load fund: DB first, then fallback to local dataset
+        let loadedFund: any = null;
+        try {
+          const { data: fundData, error: fundError } = await supabase
+            .from('funds')
+            .select('*')
+            .eq('id', fundId)
+            .maybeSingle();
+          if (fundError) throw fundError;
+          loadedFund = fundData ?? null;
+          console.log('[ManageFund] Fund from DB', loadedFund?.id);
+        } catch (dbErr) {
+          console.warn('[ManageFund] DB fund fetch failed, will try fallback', dbErr);
+        }
 
-        if (fundError) throw fundError;
+        if (!loadedFund) {
+          const fallback = getFundById(fundId);
+          if (fallback) {
+            console.log('[ManageFund] Using fallback fund dataset', fallback.id);
+            loadedFund = fallback;
+          }
+        }
 
-        setFund(fundData as any);
+        setFund(loadedFund as any);
       } catch (error) {
-        console.error('Error loading fund:', error);
+        console.error('[ManageFund] Unexpected error', error);
       } finally {
         setLoading(false);
       }
     };
 
     checkAccessAndLoadFund();
-  }, [user, fundId]);
+  }, [user, fundId, getFundById]);
 
   if (authLoading || loading) {
     return (
