@@ -40,7 +40,6 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
     hurdleRate: f.hurdleRate != null ? f.hurdleRate.toString() : '',
     term: f.term != null ? f.term.toString() : '0',
     category: f.category ?? '',
-    returnTarget: f.returnTarget ?? '',
     websiteUrl: f.websiteUrl ?? '',
     location: f.location ?? '',
     fundSize: f.fundSize != null ? f.fundSize.toString() : '0',
@@ -187,7 +186,6 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
     hurdleRate: fund.hurdleRate,
     term: fund.term,
     category: fund.category,
-    returnTarget: fund.returnTarget,
     websiteUrl: fund.websiteUrl,
     location: fund.location,
     fundSize: fund.fundSize,
@@ -376,16 +374,6 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
                   type="number"
                   value={formData.fundSize}
                   onChange={(e) => handleInputChange('fundSize', e.target.value)}
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="returnTarget">Return Target</Label>
-                <Input
-                  id="returnTarget"
-                  placeholder="e.g., 8-10% annually"
-                  value={formData.returnTarget}
-                  onChange={(e) => handleInputChange('returnTarget', e.target.value)}
                 />
               </div>
               
