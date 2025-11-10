@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Postmark } from "npm:postmark@4.0.0";
+import { ServerClient } from "npm:postmark@4.0.0";
 
-const postmark = new Postmark(Deno.env.get("POSTMARK_SERVER_TOKEN") as string);
+const postmark = new ServerClient(Deno.env.get("POSTMARK_SERVER_TOKEN") as string);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
