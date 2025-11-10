@@ -33,6 +33,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 import { Profile } from '@/types/profile';
+import { Checkbox } from '@/components/ui/checkbox';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface FundManagerAssignment {
   id: string;
@@ -59,10 +61,11 @@ export const FundManagerAssignment: React.FC = () => {
   
   // Assignment form state
   const [selectedFund, setSelectedFund] = useState('');
-  const [selectedManager, setSelectedManager] = useState('');
+  const [selectedManagers, setSelectedManagers] = useState<string[]>([]);
   const [assignmentNotes, setAssignmentNotes] = useState('');
   const [canEdit, setCanEdit] = useState(true);
   const [canPublish, setCanPublish] = useState(false);
+  const [assigning, setAssigning] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -83,59 +86,23 @@ export const FundManagerAssignment: React.FC = () => {
       supabase.rpc('admin_list_profiles'),
     ]);
 
-    if (assignmentsRes.status === 'fulfilled') {
-      const { data, error } = assignmentsRes.value as any;
-      if (!error) {
-        setAssignments((data as any) || []);
-        console.log('Assignments loaded:', (data || []).length);
-      } else {
-        console.error('Assignments fetch error:', error);
-        toast({
-          title: 'Assignments unavailable',
-          description: 'Assignments could not load, but you can still assign users.',
-        });
-      }
-    } else {
-      console.error('Assignments request failed:', assignmentsRes.reason);
-      toast({
-        title: 'Assignments unavailable',
-        description: 'Assignments could not load, but you can still assign users.',
-      });
-    }
-
+    // 1) Load managers first so we can enrich assignments on fallback
+    let loadedManagers: Profile[] = [];
     if (managersRes.status === 'fulfilled') {
       const { data, error } = managersRes.value as any;
-      if (!error && Array.isArray(data)) {
-        if ((data || []).length > 0) {
-          setManagers(data || []);
-          console.log('Profiles loaded via RPC:', (data || []).length);
-        } else {
-          // Fallback to RLS-select (will at least return own profile)
-          const { data: fallbackData, error: fallbackError } = await supabase
-            .from('profiles')
-            .select('*')
-            .order('email', { ascending: true });
-          if (!fallbackError) {
-            setManagers(fallbackData || []);
-            console.log('Profiles loaded via fallback:', (fallbackData || []).length);
-          } else {
-            console.error('Profiles fallback fetch error:', fallbackError);
-            toast({
-              title: 'Failed to load users',
-              description: 'User list could not be loaded.',
-              variant: 'destructive',
-            });
-          }
-        }
+      if (!error && Array.isArray(data) && (data || []).length > 0) {
+        loadedManagers = data || [];
+        setManagers(loadedManagers);
+        console.log('Profiles loaded via RPC:', loadedManagers.length);
       } else {
-        // RPC failed; try fallback
         const { data: fallbackData, error: fallbackError } = await supabase
           .from('profiles')
           .select('*')
           .order('email', { ascending: true });
         if (!fallbackError) {
-          setManagers(fallbackData || []);
-          console.log('Profiles loaded via fallback:', (fallbackData || []).length);
+          loadedManagers = fallbackData || [];
+          setManagers(loadedManagers);
+          console.log('Profiles loaded via fallback:', loadedManagers.length);
         } else {
           console.error('Profiles fallback fetch error:', fallbackError);
           toast({
@@ -147,14 +114,14 @@ export const FundManagerAssignment: React.FC = () => {
       }
     } else {
       console.error('Profiles request failed:', managersRes.reason);
-      // Try fallback as well
       const { data: fallbackData, error: fallbackError } = await supabase
         .from('profiles')
         .select('*')
         .order('email', { ascending: true });
       if (!fallbackError) {
-        setManagers(fallbackData || []);
-        console.log('Profiles loaded via fallback:', (fallbackData || []).length);
+        loadedManagers = fallbackData || [];
+        setManagers(loadedManagers);
+        console.log('Profiles loaded via fallback:', loadedManagers.length);
       } else {
         toast({
           title: 'Failed to load users',
@@ -164,43 +131,107 @@ export const FundManagerAssignment: React.FC = () => {
       }
     }
 
+    // 2) Load assignments with graceful fallback if relationship embed fails
+    if (assignmentsRes.status === 'fulfilled') {
+      const { data, error } = assignmentsRes.value as any;
+      if (!error) {
+        setAssignments((data as any) || []);
+        console.log('Assignments loaded:', (data || []).length);
+      } else {
+        console.error('Assignments fetch error:', error);
+        const isRelationshipErr =
+          error?.code === 'PGRST200' ||
+          /relationship/i.test(error?.message || '') ||
+          /relationship/i.test(error?.details || '');
+        if (isRelationshipErr) {
+          // Fallback: fetch without embed and enrich from loadedManagers
+          const { data: bareData, error: bareError } = await supabase
+            .from('fund_managers' as any)
+            .select('*')
+            .order('assigned_at', { ascending: false });
+          if (!bareError) {
+            const byUser = new Map(loadedManagers.map((m) => [m.user_id, m]));
+            const enriched = (bareData || []).map((a: any) => ({
+              ...a,
+              profiles: byUser.get(a.user_id),
+            }));
+            setAssignments(enriched);
+            toast({
+              title: 'Loaded assignments',
+              description: 'Assignments loaded without profile join.',
+            });
+          } else {
+            console.error('Assignments bare fetch error:', bareError);
+            toast({
+              title: 'Assignments unavailable',
+              description: 'Assignments could not load, but you can still assign users.',
+            });
+          }
+        } else {
+          toast({
+            title: 'Assignments unavailable',
+            description: 'Assignments could not load, but you can still assign users.',
+          });
+        }
+      }
+    } else {
+      console.error('Assignments request failed:', assignmentsRes.reason);
+      toast({
+        title: 'Assignments unavailable',
+        description: 'Assignments could not load, but you can still assign users.',
+      });
+    }
+
     setLoading(false);
   };
 
   const handleAssignManager = async () => {
-    if (!selectedFund || !selectedManager) {
+    if (!selectedFund || selectedManagers.length === 0) {
       toast({
         title: 'Missing Information',
-        description: 'Please select both a fund and a manager',
+        description: 'Please select a fund and at least one manager',
         variant: 'destructive',
       });
       return;
     }
 
-    try {
-      const { error } = await supabase
-        .from('fund_managers' as any)
-        .insert({
-          fund_id: selectedFund,
-          user_id: selectedManager,
-          status: 'active',
-          permissions: {
-            can_edit: canEdit,
-            can_publish: canPublish,
-          },
-          notes: assignmentNotes || null,
-        });
+    // Validate UUIDs and deduplicate
+    const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const managerIds = Array.from(new Set(selectedManagers.filter((id) => uuidRe.test(id))));
+    if (managerIds.length === 0) {
+      toast({
+        title: 'No valid managers',
+        description: 'Please pick at least one valid user.',
+        variant: 'destructive',
+      });
+      return;
+    }
 
-      if (error) throw error;
+    setAssigning(true);
+    try {
+      const permissions = { can_edit: canEdit, can_publish: canPublish };
+
+      const { data: results, error } = await supabase.rpc('admin_assign_fund_managers', {
+        _fund_id: selectedFund,
+        _manager_ids: managerIds,
+        _permissions: permissions,
+        _status: 'active',
+        _notes: assignmentNotes || null,
+      });
+
+      if (error) throw error as any;
+
+      const insertedCount = (results || []).filter((r: any) => r.inserted).length;
+      const skippedCount = (results || []).length - insertedCount;
 
       toast({
-        title: 'Manager Assigned',
-        description: 'Fund manager has been successfully assigned',
+        title: 'Managers Assigned',
+        description: `Inserted ${insertedCount} manager(s)${skippedCount > 0 ? `, skipped ${skippedCount} (already assigned)` : ''}`,
       });
 
       // Reset form and close dialog
       setSelectedFund('');
-      setSelectedManager('');
+      setSelectedManagers([]);
       setAssignmentNotes('');
       setCanEdit(true);
       setCanPublish(false);
@@ -210,11 +241,19 @@ export const FundManagerAssignment: React.FC = () => {
       fetchData();
     } catch (error: any) {
       console.error('Error assigning manager:', error);
+      const parts = [
+        error?.message,
+        error?.code ? `code: ${error.code}` : '',
+        error?.details ? `details: ${error.details}` : '',
+        error?.hint ? `hint: ${error.hint}` : '',
+      ].filter(Boolean);
       toast({
         title: 'Assignment Failed',
-        description: error.message || 'Failed to assign manager',
+        description: parts.join(' | ') || 'Failed to assign manager',
         variant: 'destructive',
       });
+    } finally {
+      setAssigning(false);
     }
   };
 
@@ -410,31 +449,45 @@ export const FundManagerAssignment: React.FC = () => {
                     </Select>
                   </div>
 
-                  <div>
-                    <Label>Manager</Label>
-                    <Select value={selectedManager} onValueChange={setSelectedManager}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a manager" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[9999] bg-popover">
-                        {managers.length === 0 ? (
-                          <SelectItem disabled value="no-users">
-                            No users found or access denied
-                          </SelectItem>
-                        ) : (
-                          managers.map(manager => (
-                            <SelectItem key={manager.user_id} value={manager.user_id}>
-                              {manager.manager_name && manager.company_name
-                                ? `${manager.manager_name} (${manager.company_name})`
-                                : manager.first_name && manager.last_name
-                                ? `${manager.first_name} ${manager.last_name} (${manager.email})`
-                                : manager.email
-                              }
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
+                  <div className="space-y-2">
+                    <Label>Managers ({selectedManagers.length} selected)</Label>
+                    <ScrollArea className="h-[200px] w-full border rounded-md p-2">
+                      {managers.length === 0 ? (
+                        <div className="p-2 text-sm text-muted-foreground">
+                          No users found or access denied
+                        </div>
+                      ) : (
+                        managers.map(manager => {
+                          const displayName = manager.manager_name && manager.company_name
+                            ? `${manager.manager_name} (${manager.company_name})`
+                            : manager.first_name && manager.last_name
+                            ? `${manager.first_name} ${manager.last_name}`
+                            : manager.email;
+                          
+                          return (
+                            <div key={manager.user_id} className="flex items-center space-x-2 py-2">
+                              <Checkbox
+                                id={`manager-${manager.user_id}`}
+                                checked={selectedManagers.includes(manager.user_id)}
+                                onCheckedChange={(checked) => {
+                                  setSelectedManagers(prev =>
+                                    checked
+                                      ? [...prev, manager.user_id]
+                                      : prev.filter(id => id !== manager.user_id)
+                                  );
+                                }}
+                              />
+                              <Label
+                                htmlFor={`manager-${manager.user_id}`}
+                                className="flex-1 cursor-pointer text-sm"
+                              >
+                                {displayName}
+                              </Label>
+                            </div>
+                          );
+                        })
+                      )}
+                    </ScrollArea>
                   </div>
 
                   <div className="space-y-2">
@@ -475,8 +528,8 @@ export const FundManagerAssignment: React.FC = () => {
                     />
                   </div>
 
-                  <Button onClick={handleAssignManager} className="w-full">
-                    Assign Manager
+                  <Button onClick={handleAssignManager} className="w-full" disabled={assigning}>
+                    {assigning ? 'Assigning…' : 'Assign Manager'}
                   </Button>
                 </div>
               </DialogContent>

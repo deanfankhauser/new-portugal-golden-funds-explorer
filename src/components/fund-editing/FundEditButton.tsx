@@ -51,6 +51,11 @@ export const FundEditButton: React.FC<FundEditButtonProps> = ({
     checkPermission();
   }, [isAuthenticated, isHydrated, fund.id, canEditFund]);
 
+  // Hide button completely for users without permission
+  if (isHydrated && isAuthenticated && !canDirectEdit) {
+    return null;
+  }
+
   const handleEditClick = () => {
     if (!isHydrated) {
       // During SSG build or before hydration, do nothing

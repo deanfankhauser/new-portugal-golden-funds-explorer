@@ -317,6 +317,13 @@ export type Database = {
             referencedRelation: "funds"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fund_managers_user_id_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       fund_rankings: {
@@ -698,6 +705,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_assign_fund_managers: {
+        Args: {
+          _fund_id: string
+          _manager_ids: string[]
+          _notes?: string
+          _permissions?: Json
+          _status?: string
+        }
+        Returns: {
+          inserted: boolean
+          user_id: string
+        }[]
+      }
       admin_list_profiles: {
         Args: never
         Returns: {
