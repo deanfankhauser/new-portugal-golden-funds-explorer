@@ -179,7 +179,7 @@ export default function ExitIntentModal() {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) handleClose(); }}>
       <DialogContent className="sm:max-w-md border-gray-200">
         {/* Close button */}
         <button

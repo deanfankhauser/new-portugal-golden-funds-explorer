@@ -5,6 +5,7 @@ import { useSavedFunds } from '@/hooks/useSavedFunds';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { trackInteraction } from '@/utils/analyticsTracking';
 
 interface SaveFundButtonProps {
   fundId: string;
@@ -41,6 +42,7 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
       await unsaveFund(fundId);
     } else {
       await saveFund(fundId);
+      trackInteraction(fundId, 'save_fund');
     }
   };
 

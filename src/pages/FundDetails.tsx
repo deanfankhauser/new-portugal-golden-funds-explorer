@@ -8,6 +8,7 @@ import FundDetailsContent from '../components/fund-details/FundDetailsContent';
 import FloatingCTA from '../components/fund-details/FloatingCTA';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
+import { trackPageView } from '../utils/analyticsTracking';
 import type { Fund } from '../data/types/funds';
 
 interface FundDetailsProps { fund?: Fund }
@@ -21,9 +22,12 @@ const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund }) => {
   const { getFundById } = useRealTimeFunds();
   const fund = ssrFund ?? (fundId ? getFundById(fundId) : null);
   const { addToRecentlyViewed } = useRecentlyViewed();
+  
   useEffect(() => {
     if (fund) {
       addToRecentlyViewed(fund);
+      // Track page view for analytics
+      trackPageView(fund.id);
     }
   }, [fund, addToRecentlyViewed]);
 

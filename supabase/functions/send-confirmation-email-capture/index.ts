@@ -1,5 +1,11 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { 
+  generateEmailWrapper, 
+  generateContentCard, 
+  generateCTAButton,
+  generatePlainTextEmail 
+} from "../_shared/email-templates.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -131,88 +137,33 @@ const handler = async (req: Request): Promise<Response> => {
 
     const confirmationUrl = `https://funds.movingto.com/confirm-email?token=${confirmationToken}`;
 
-    const emailHtml = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Confirm your subscription</title>
-</head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f9fafb;">
-  <table role="presentation" style="width: 100%; border-collapse: collapse;">
-    <tr>
-      <td align="center" style="padding: 40px 0;">
-        <table role="presentation" style="width: 600px; max-width: 100%; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <!-- Header -->
-          <tr>
-            <td style="padding: 40px 40px 20px; text-align: center;">
-              <h1 style="margin: 0; font-size: 24px; font-weight: 600; color: #111827;">Confirm your subscription</h1>
-            </td>
-          </tr>
-          
-          <!-- Body -->
-          <tr>
-            <td style="padding: 0 40px 40px;">
-              <p style="margin: 0 0 20px; font-size: 16px; line-height: 24px; color: #4b5563;">
-                Thank you for subscribing to Movingto Funds! We'll keep you updated with the latest Golden Visa fund opportunities and investment insights.
-              </p>
-              
-              <p style="margin: 0 0 30px; font-size: 16px; line-height: 24px; color: #4b5563;">
-                Please confirm your email address by clicking the button below:
-              </p>
-              
-              <!-- CTA Button -->
-              <table role="presentation" style="width: 100%;">
-                <tr>
-                  <td align="center">
-                    <a href="${confirmationUrl}" style="display: inline-block; padding: 14px 32px; background-color: hsl(340 66% 18%); color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
-                      Confirm Email Address
-                    </a>
-                  </td>
-                </tr>
-              </table>
-              
-              <p style="margin: 30px 0 0; font-size: 14px; line-height: 20px; color: #6b7280;">
-                Or copy and paste this link into your browser:
-              </p>
-              <p style="margin: 8px 0 0; font-size: 14px; line-height: 20px; color: #6b7280; word-break: break-all;">
-                <a href="${confirmationUrl}" style="color: hsl(340 66% 18%);">${confirmationUrl}</a>
-              </p>
-            </td>
-          </tr>
-          
-          <!-- Footer -->
-          <tr>
-            <td style="padding: 30px 40px; border-top: 1px solid #e5e7eb;">
-              <p style="margin: 0 0 10px; font-size: 12px; line-height: 18px; color: #9ca3af;">
-                If you didn't request this email, you can safely ignore it.
-              </p>
-              <p style="margin: 0; font-size: 12px; line-height: 18px; color: #9ca3af;">
-                © ${new Date().getFullYear()} Movingto Funds. All rights reserved.
-              </p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>
-    `;
+    const emailHtml = generateEmailWrapper(
+      'Confirm your subscription',
+      generateContentCard(`
+        <p style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0;">
+          Thank you for subscribing to Movingto Funds! We'll keep you updated with the latest Golden Visa fund opportunities and investment insights.
+        </p>
+        <p style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0;">
+          Please confirm your email address by clicking the button below:
+        </p>
+        ${generateCTAButton('Confirm Email Address', confirmationUrl, 'bordeaux')}
+        <p style="color: #6b7280; font-size: 14px; line-height: 1.5; margin: 24px 0 0 0; text-align: center;">
+          Or copy and paste this link into your browser:<br/>
+          <a href="${confirmationUrl}" style="color: hsl(340 66% 18%); word-break: break-all;">${confirmationUrl}</a>
+        </p>
+        <p style="color: #6b7280; font-size: 14px; line-height: 1.5; margin: 16px 0 0 0; text-align: center;">
+          If you didn't request this email, you can safely ignore it.
+        </p>
+      `, 'bordeaux'),
+      normalizedEmail
+    );
 
-    const emailText = `
-Confirm your subscription to Movingto Funds
-
-Thank you for subscribing! We'll keep you updated with the latest Golden Visa fund opportunities and investment insights.
-
-Please confirm your email address by clicking this link:
-${confirmationUrl}
-
-If you didn't request this email, you can safely ignore it.
-
-© ${new Date().getFullYear()} Movingto Funds
-    `;
+    const emailText = generatePlainTextEmail(
+      'Confirm your subscription to Movingto Funds',
+      "Thank you for subscribing! We'll keep you updated with the latest Golden Visa fund opportunities and investment insights.",
+      'Confirm Email Address',
+      confirmationUrl
+    );
 
     const postmarkResponse = await fetch('https://api.postmarkapp.com/email', {
       method: 'POST',

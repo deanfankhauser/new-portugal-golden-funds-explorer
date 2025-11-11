@@ -1,6 +1,14 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
+import { 
+  BRAND_COLORS, 
+  COMPANY_INFO, 
+  generateEmailWrapper, 
+  generateCTAButton, 
+  generateContentCard,
+  generatePlainTextEmail 
+} from "../_shared/email-templates.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -113,58 +121,48 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
 
-    // Create fund brief email content
-    const textContent = `
-Fund Brief: ${fundName}
+    // Create branded email content
+    const bodyContent = `
+      <h2 style="color: ${BRAND_COLORS.bordeaux}; margin-top: 0;">Dear Investor,</h2>
+      
+      ${generateContentCard(`
+        <p style="margin: 0;"><strong>Please find attached the official fund brief for ${fundName}.</strong></p>
+        <p style="margin: 10px 0 0 0; color: ${BRAND_COLORS.textDark};">This comprehensive document contains all the essential information you need to make an informed investment decision, including fund strategy, terms, performance data, and regulatory disclosures.</p>
+      `, 'bordeaux')}
+      
+      <div style="background: ${BRAND_COLORS.bone}; padding: 20px; border-radius: 6px; margin: 20px 0; text-align: center;">
+        <p style="margin: 0; color: ${BRAND_COLORS.bordeaux}; font-size: 14px;">📎 <strong>Fund Brief Document Attached</strong></p>
+        <p style="margin: 5px 0 0 0; color: ${BRAND_COLORS.textMuted}; font-size: 12px;">Official PDF document with complete fund information</p>
+      </div>
+      
+      ${generateCTAButton('View Fund Details', `${COMPANY_INFO.website}/${fundId}`, 'bronze')}
+      
+      <p style="margin: 0; color: ${BRAND_COLORS.textMuted}; font-size: 14px; line-height: 1.6;">
+        If you have any questions about this fund or would like to schedule a consultation with our investment team, please don't hesitate to contact us.
+      </p>
+    `;
 
-Dear Investor,
+    const html = generateEmailWrapper(
+      `Fund Brief: ${fundName}`,
+      bodyContent,
+      userEmail
+    );
+
+    // Plain text version
+    const textContent = generatePlainTextEmail(
+      `Fund Brief: ${fundName}`,
+      `Dear Investor,
 
 Please find attached the official fund brief for ${fundName}. This document contains comprehensive information about the fund including investment strategy, terms, performance data, and all regulatory disclosures.
 
-If you have any questions about this fund or would like to schedule a consultation with our investment team, please don't hesitate to contact us.
-
-View Online: https://funds.movingto.com/${fundId}
-
-Best regards,
-Movingto Team
-    `.trim();
-
-    const html = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fund Brief Request</title>
-</head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-<div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-<h1 style="margin: 0; font-size: 24px;">Fund Brief: ${fundName}</h1>
-<p style="margin: 10px 0 0 0; opacity: 0.9;">Comprehensive Investment Documentation</p>
-</div>
-<div style="background: #f8fafc; padding: 30px; border-radius: 0 0 8px 8px;">
-<h2 style="color: #1e293b; margin-top: 0;">Dear Investor,</h2>
-<div style="background: white; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #3b82f6;">
-<p style="margin: 0;"><strong>Please find attached the official fund brief for ${fundName}.</strong></p>
-<p style="margin: 10px 0 0 0;">This comprehensive document contains all the essential information you need to make an informed investment decision, including fund strategy, terms, performance data, and regulatory disclosures.</p>
-</div>
-<div style="background: white; padding: 20px; border-radius: 6px; margin: 20px 0; text-align: center;">
-<p style="margin: 0; color: #64748b; font-size: 14px;">📎 <strong>Fund Brief Document Attached</strong></p>
-<p style="margin: 5px 0 0 0; color: #64748b; font-size: 12px;">Official PDF document with complete fund information</p>
-</div>
-<div style="text-align: center; margin: 30px 0;">
-<a href="https://funds.movingto.com/${fundId}" style="background: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: 500;">View Fund Details</a>
-</div>
-<div style="text-align: center; padding: 20px 0; border-top: 1px solid #e2e8f0; margin-top: 30px;">
-<p style="margin: 0; color: #64748b; font-size: 14px;">Best regards,<br><strong>Movingto Team</strong></p>
-</div>
-</div>
-</body>
-</html>`;
-
+If you have any questions about this fund or would like to schedule a consultation with our investment team, please don't hesitate to contact us.`,
+      'View Fund Details',
+      `${COMPANY_INFO.website}/${fundId}`
+    );
 
     // Send the fund brief with the actual uploaded PDF attachment
     await client.send({
-      from: `Movingto Team <${gmailEmail}>`,
+      from: `${COMPANY_INFO.tradingName} <${gmailEmail}>`,
       to: userEmail,
       subject: `Fund Brief: ${fundName}`,
       html,

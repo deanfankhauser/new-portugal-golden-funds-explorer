@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Fund } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Banknote, Calendar, Globe, Lock, TrendingUp, Shield, Award } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Banknote, Calendar, Globe, Lock, TrendingUp, Shield, Award, MessageSquare } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { InvestmentFundStructuredDataService } from '../../services/investmentFundStructuredDataService';
 import { getFundType } from '../../utils/fundTypeUtils';
@@ -16,7 +17,27 @@ interface FundSnapshotCardProps {
   fund: Fund;
 }
 
+const scrollToEnquiry = () => {
+  const element = document.getElementById('enquiry-form');
+  if (element) {
+    const headerOffset = 100;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+    
+    setTimeout(() => {
+      const firstInput = element.querySelector('input');
+      firstInput?.focus();
+    }, 500);
+  }
+};
+
 const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
+  
   // Enhanced hurdle rate calculation with priority
   const getHurdleRate = (fund: Fund): string => {
     // 1. Explicit hurdle rate (highest priority)
@@ -178,6 +199,15 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
         <CardTitle className="text-2xl">Fund Snapshot</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Get in Touch Button - Mobile/Tablet Only */}
+        <Button 
+          onClick={scrollToEnquiry}
+          className="w-full gap-2 shadow-lg lg:hidden"
+          size="lg"
+        >
+          <MessageSquare className="h-5 w-5" />
+          Get in Touch
+        </Button>
         {/* Performance Preview */}
         <div className="pb-6 border-b">
           <PerformancePreview fund={fund} />
@@ -318,12 +348,12 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
           </TooltipProvider>
         </div>
 
-        {/* Disclaimer */}
-        <p className="text-xs text-muted-foreground pt-4 border-t">
+          {/* Disclaimer */}
+          <p className="text-xs text-muted-foreground pt-4 border-t">
           Capital at risk. Past performance isn't indicative of future returns.
         </p>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
   );
 };
 

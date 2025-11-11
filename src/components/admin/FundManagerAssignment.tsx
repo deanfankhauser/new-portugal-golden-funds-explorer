@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import { 
   Table, 
   TableBody, 
@@ -28,7 +28,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Plus, Trash2, Search, Building2, User, AlertCircle } from 'lucide-react';
+import { Plus, Trash2, Search, Building2, User } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
@@ -257,78 +257,56 @@ export const FundManagerAssignment: React.FC = () => {
     }
   };
 
-  const handleRevokeAssignment = async (assignmentId: string) => {
-    if (!confirm('Are you sure you want to revoke this assignment?')) return;
+  const handleRemoveAssignment = async (assignmentId: string, managerName: string, fundName: string) => {
+    if (!confirm(`Remove ${managerName} from managing ${fundName}?`)) return;
 
     try {
       const { error } = await supabase
         .from('fund_managers' as any)
-        .update({ status: 'revoked' })
+        .delete()
         .eq('id', assignmentId);
 
       if (error) throw error;
 
       toast({
-        title: 'Assignment Revoked',
-        description: 'Manager assignment has been revoked',
+        title: 'Manager Removed',
+        description: `${managerName} has been removed from ${fundName}`,
       });
 
       fetchData();
     } catch (error) {
-      console.error('Error revoking assignment:', error);
+      console.error('Error removing assignment:', error);
       toast({
         title: 'Error',
-        description: 'Failed to revoke assignment',
+        description: 'Failed to remove assignment',
         variant: 'destructive',
       });
     }
   };
 
-  const handleSuspendAssignment = async (assignmentId: string) => {
+  const handleUpdatePermissions = async (
+    assignmentId: string,
+    newPermissions: { can_edit: boolean; can_publish: boolean }
+  ) => {
     try {
       const { error } = await supabase
         .from('fund_managers' as any)
-        .update({ status: 'suspended' })
+        .update({ permissions: newPermissions })
         .eq('id', assignmentId);
 
       if (error) throw error;
 
       toast({
-        title: 'Assignment Suspended',
-        description: 'Manager assignment has been suspended',
+        title: 'Permissions Updated',
+        description: 'Manager permissions have been updated',
       });
 
       fetchData();
     } catch (error) {
-      console.error('Error suspending assignment:', error);
+      console.error('Error updating permissions:', error);
       toast({
         title: 'Error',
-        description: 'Failed to suspend assignment',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const handleReactivateAssignment = async (assignmentId: string) => {
-    try {
-      const { error } = await supabase
-        .from('fund_managers' as any)
-        .update({ status: 'active' })
-        .eq('id', assignmentId);
-
-      if (error) throw error;
-
-      toast({
-        title: 'Assignment Reactivated',
-        description: 'Manager assignment has been reactivated',
-      });
-
-      fetchData();
-    } catch (error) {
-      console.error('Error reactivating assignment:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to reactivate assignment',
+        description: 'Failed to update permissions',
         variant: 'destructive',
       });
     }
@@ -362,7 +340,7 @@ export const FundManagerAssignment: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Assignments</CardTitle>
@@ -370,30 +348,6 @@ export const FundManagerAssignment: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{assignments.length}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active</CardTitle>
-            <User className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {assignments.filter(a => a.status === 'active').length}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Suspended</CardTitle>
-            <AlertCircle className="h-4 w-4 text-yellow-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {assignments.filter(a => a.status === 'suspended').length}
-            </div>
           </CardContent>
         </Card>
 
@@ -556,7 +510,6 @@ export const FundManagerAssignment: React.FC = () => {
               <TableRow>
                 <TableHead>Fund</TableHead>
                 <TableHead>Manager</TableHead>
-                <TableHead>Status</TableHead>
                 <TableHead>Permissions</TableHead>
                 <TableHead>Assigned Date</TableHead>
                 <TableHead>Actions</TableHead>
@@ -565,13 +518,19 @@ export const FundManagerAssignment: React.FC = () => {
             <TableBody>
               {filteredAssignments.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
                     No assignments found
                   </TableCell>
                 </TableRow>
               ) : (
                 filteredAssignments.map((assignment) => {
                   const fund = funds.find(f => f.id === assignment.fund_id);
+                  const managerName = assignment.profiles?.manager_name && assignment.profiles?.company_name
+                    ? assignment.profiles.manager_name
+                    : assignment.profiles?.first_name && assignment.profiles?.last_name
+                    ? `${assignment.profiles.first_name} ${assignment.profiles.last_name}`
+                    : assignment.profiles?.email || 'Unknown User';
+                  
                   return (
                     <TableRow key={assignment.id}>
                       <TableCell className="font-medium">
@@ -579,14 +538,7 @@ export const FundManagerAssignment: React.FC = () => {
                       </TableCell>
                       <TableCell>
                         <div>
-                          <div className="font-medium">
-                            {assignment.profiles?.manager_name && assignment.profiles?.company_name
-                              ? assignment.profiles.manager_name
-                              : assignment.profiles?.first_name && assignment.profiles?.last_name
-                              ? `${assignment.profiles.first_name} ${assignment.profiles.last_name}`
-                              : assignment.profiles?.email || 'Unknown User'
-                            }
-                          </div>
+                          <div className="font-medium">{managerName}</div>
                           <div className="text-xs text-muted-foreground">
                             {assignment.profiles?.manager_name && assignment.profiles?.company_name
                               ? assignment.profiles.company_name
@@ -596,59 +548,45 @@ export const FundManagerAssignment: React.FC = () => {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge
-                          variant={
-                            assignment.status === 'active'
-                              ? 'default'
-                              : assignment.status === 'suspended'
-                              ? 'secondary'
-                              : 'destructive'
-                          }
-                        >
-                          {assignment.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-1">
-                          {assignment.permissions?.can_edit && (
-                            <Badge variant="outline" className="text-xs">Edit</Badge>
-                          )}
-                          {assignment.permissions?.can_publish && (
-                            <Badge variant="outline" className="text-xs">Publish</Badge>
-                          )}
+                        <div className="flex gap-3">
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              checked={assignment.permissions?.can_edit || false}
+                              onCheckedChange={(checked) =>
+                                handleUpdatePermissions(assignment.id, {
+                                  ...assignment.permissions,
+                                  can_edit: checked,
+                                })
+                              }
+                            />
+                            <Label className="text-sm cursor-pointer">Edit</Label>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              checked={assignment.permissions?.can_publish || false}
+                              onCheckedChange={(checked) =>
+                                handleUpdatePermissions(assignment.id, {
+                                  ...assignment.permissions,
+                                  can_publish: checked,
+                                })
+                              }
+                            />
+                            <Label className="text-sm cursor-pointer">Publish</Label>
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell>
                         {new Date(assignment.assigned_at).toLocaleDateString()}
                       </TableCell>
                       <TableCell>
-                        <div className="flex gap-2">
-                          {assignment.status === 'active' && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleSuspendAssignment(assignment.id)}
-                            >
-                              Suspend
-                            </Button>
-                          )}
-                          {assignment.status === 'suspended' && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleReactivateAssignment(assignment.id)}
-                            >
-                              Reactivate
-                            </Button>
-                          )}
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleRevokeAssignment(assignment.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleRemoveAssignment(assignment.id, managerName, fund?.name || assignment.fund_id)}
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Remove
+                        </Button>
                       </TableCell>
                     </TableRow>
                   );

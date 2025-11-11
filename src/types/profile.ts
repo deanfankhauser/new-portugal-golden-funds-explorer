@@ -22,6 +22,12 @@ export interface Profile {
   approved_at?: string;
   approved_by?: string;
   
+  // Manager-level content
+  manager_about?: string;
+  manager_faqs?: any; // JSONB array
+  manager_highlights?: any; // JSONB array
+  team_members?: any; // JSONB array
+  
   // Investor fields
   first_name?: string;
   last_name?: string;

@@ -265,6 +265,76 @@ export const useFundEditing = () => {
     }
   }, [user]);
 
+  // Transform camelCase form fields to snake_case database columns
+  const transformToDbFormat = useCallback((updates: Record<string, any>) => {
+    const dbUpdates: Record<string, any> = {};
+    
+    // Direct field mappings (no transformation needed)
+    if ('description' in updates) dbUpdates.description = updates.description;
+    if ('category' in updates) dbUpdates.category = updates.category;
+    if ('location' in updates) dbUpdates.location = updates.location;
+    if ('currency' in updates) dbUpdates.currency = updates.currency;
+    if ('tags' in updates) dbUpdates.tags = updates.tags;
+    
+    // CamelCase to snake_case conversions
+    if ('detailedDescription' in updates) dbUpdates.detailed_description = updates.detailedDescription;
+    if ('managerName' in updates) dbUpdates.manager_name = updates.managerName;
+    if ('minimumInvestment' in updates) dbUpdates.minimum_investment = updates.minimumInvestment;
+    if ('managementFee' in updates) dbUpdates.management_fee = updates.managementFee;
+    if ('performanceFee' in updates) dbUpdates.performance_fee = updates.performanceFee;
+    if ('subscriptionFee' in updates) dbUpdates.subscription_fee = updates.subscriptionFee;
+    if ('redemptionFee' in updates) dbUpdates.redemption_fee = updates.redemptionFee;
+    if ('hurdleRate' in updates) dbUpdates.hurdle_rate = updates.hurdleRate;
+    if ('regulatedBy' in updates) dbUpdates.regulated_by = updates.regulatedBy;
+    if ('cmvmId' in updates) dbUpdates.cmvm_id = updates.cmvmId;
+    if ('auditor' in updates) dbUpdates.auditor = updates.auditor;
+    if ('custodian' in updates) dbUpdates.custodian = updates.custodian;
+    if ('navFrequency' in updates) dbUpdates.nav_frequency = updates.navFrequency;
+    if ('pficStatus' in updates) dbUpdates.pfic_status = updates.pficStatus;
+    if ('expectedReturnMin' in updates) dbUpdates.expected_return_min = updates.expectedReturnMin;
+    if ('expectedReturnMax' in updates) dbUpdates.expected_return_max = updates.expectedReturnMax;
+    if ('riskLevel' in updates) dbUpdates.risk_level = updates.riskLevel;
+    if ('gvEligible' in updates) dbUpdates.gv_eligible = updates.gvEligible;
+    if ('inceptionDate' in updates) dbUpdates.inception_date = updates.inceptionDate;
+    
+    // Field name changes
+    if ('websiteUrl' in updates) dbUpdates.website = updates.websiteUrl;
+    if ('team' in updates) dbUpdates.team_members = updates.team;
+    if ('documents' in updates) dbUpdates.pdf_documents = updates.documents;
+    
+    // Value transformations
+    if ('term' in updates && updates.term !== null && updates.term !== undefined) {
+      // Convert years to months
+      dbUpdates.lock_up_period_months = Math.round(updates.term * 12);
+    }
+    
+    if ('fundSize' in updates && updates.fundSize !== null && updates.fundSize !== undefined) {
+      // Convert millions to actual amount
+      dbUpdates.aum = updates.fundSize * 1000000;
+    }
+    
+    if ('established' in updates && updates.established !== null && updates.established !== undefined) {
+      // Convert year to inception_date (January 1st of that year)
+      dbUpdates.inception_date = `${updates.established}-01-01`;
+    }
+    
+    // JSONB fields (keep structure as-is)
+    if ('geographicAllocation' in updates) dbUpdates.geographic_allocation = updates.geographicAllocation;
+    if ('redemptionTerms' in updates) dbUpdates.redemption_terms = updates.redemptionTerms;
+    if ('eligibilityBasis' in updates) dbUpdates.eligibility_basis = updates.eligibilityBasis;
+    if ('historicalPerformance' in updates) dbUpdates.historical_performance = updates.historicalPerformance;
+    if ('faqs' in updates) dbUpdates.faqs = updates.faqs;
+    
+    console.log('🔄 Field transformation:', {
+      originalFields: Object.keys(updates),
+      transformedFields: Object.keys(dbUpdates),
+      updates,
+      dbUpdates
+    });
+    
+    return dbUpdates;
+  }, []);
+
   const directUpdateFund = useCallback(async (
     fundId: string,
     updates: Record<string, any>
@@ -281,10 +351,13 @@ export const useFundEditing = () => {
         throw new Error('You do not have permission to edit this fund');
       }
 
+      // Transform to database format
+      const dbUpdates = transformToDbFormat(updates);
+
       // Update the fund directly
       const { error: updateError } = await supabase
         .from('funds')
-        .update(updates)
+        .update(dbUpdates)
         .eq('id', fundId);
 
       if (updateError) throw updateError;
@@ -325,7 +398,7 @@ export const useFundEditing = () => {
     } finally {
       setLoading(false);
     }
-  }, [user, canEditFund, clearPendingChangesForFund]);
+  }, [user, canEditFund, clearPendingChangesForFund, transformToDbFormat]);
 
   return {
     user,

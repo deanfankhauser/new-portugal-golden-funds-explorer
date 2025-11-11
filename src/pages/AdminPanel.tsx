@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, Edit3, Clock, CheckCircle, XCircle, Activity, Settings, Database, FileText, TrendingUp, Mail } from 'lucide-react';
+import { Users, Edit3, Clock, CheckCircle, XCircle, Activity, Settings, Database, FileText, TrendingUp, Mail, Building2 } from 'lucide-react';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { EnhancedSuggestionsTable } from '@/components/admin/EnhancedSuggestionsTable';
@@ -20,6 +20,8 @@ import FundManagement from '@/components/admin/FundManagement';
 import FundRankingManager from '@/components/admin/FundRankingManager';
 import EmailCapturesManagement from '@/components/admin/EmailCapturesManagement';
 import { FundManagerAssignment } from '@/components/admin/FundManagerAssignment';
+import { ManagerApprovals } from '@/components/admin/ManagerApprovals';
+import { ManagerProfileAssignment } from '@/components/admin/ManagerProfileAssignment';
 
 const AdminPanel = () => {
   const { user, loading } = useEnhancedAuth();
@@ -228,7 +230,7 @@ const AdminPanel = () => {
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="suggestions" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-8">
+            <TabsList className="grid w-full grid-cols-10">
               <TabsTrigger value="suggestions" className="flex items-center gap-2">
                 <Edit3 className="h-4 w-4" />
                 Suggestions
@@ -241,9 +243,17 @@ const AdminPanel = () => {
                 <TrendingUp className="h-4 w-4" />
                 Rankings
               </TabsTrigger>
-              <TabsTrigger value="managers" className="flex items-center gap-2">
+              <TabsTrigger value="fund-managers" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 Fund Managers
+              </TabsTrigger>
+              <TabsTrigger value="approvals" className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4" />
+                Approvals
+              </TabsTrigger>
+              <TabsTrigger value="profiles" className="flex items-center gap-2">
+                <Building2 className="h-4 w-4" />
+                Profile Assignments
               </TabsTrigger>
               <TabsTrigger value="users" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
@@ -292,8 +302,16 @@ const AdminPanel = () => {
               <FundRankingManager />
             </TabsContent>
 
-            <TabsContent value="managers">
+            <TabsContent value="fund-managers">
               <FundManagerAssignment />
+            </TabsContent>
+
+            <TabsContent value="approvals">
+              <ManagerApprovals />
+            </TabsContent>
+
+            <TabsContent value="profiles">
+              <ManagerProfileAssignment />
             </TabsContent>
 
             <TabsContent value="users">

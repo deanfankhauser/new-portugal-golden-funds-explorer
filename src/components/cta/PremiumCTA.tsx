@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Crown, Users, Shield, Zap, ExternalLink } from 'lucide-react';
+import { Crown, FileCheck, Scale, FileText, ExternalLink } from 'lucide-react';
 import { analytics } from '../../utils/analytics';
 import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
 
@@ -18,7 +18,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
     analytics.trackCTAClick(location, `introduction-${variant}`, contactUrl);
     
     // Track external link click
-    analytics.trackExternalLink(contactUrl, 'Get Introduced', `cta-${location}`);
+    analytics.trackExternalLink(contactUrl, 'Get in Touch', `cta-${location}`);
     
     // Introduction CTA clicked tracking
     openExternalLink(contactUrl);
@@ -27,11 +27,11 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
   if (variant === 'compact') {
     return (
       <Button 
-        className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground font-medium shadow-lg transition-all duration-300 transform hover:scale-105"
+        className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-sm hover:shadow transition-all duration-200"
         onClick={handleCTAClick}
       >
         <Crown className="mr-2 h-4 w-4" />
-        Get Introduced
+        Get in Touch
         <ExternalLink className="ml-2 h-4 w-4" />
       </Button>
     );
@@ -62,53 +62,61 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
   }
   
   return (
-    <Card className="border-2 border-primary/20 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-background to-secondary/30">
-      <CardContent className="p-8">
-        <div className="text-center space-y-6">
+    <Card className="border border-border shadow-sm hover:shadow-md transition-all duration-200 bg-background overflow-hidden">
+      <CardContent className="p-0">
+        <div className="text-center space-y-8 p-10">
+          {/* Header with Icon */}
           <div className="flex justify-center">
-            <div className="bg-gradient-to-r from-primary to-primary/90 p-3 rounded-full">
-              <Crown className="h-8 w-8 text-primary-foreground" />
+            <div className="bg-primary rounded-full p-4 shadow-sm">
+              <Crown className="h-7 w-7 text-primary-foreground" />
             </div>
           </div>
           
-          <div>
-            <h3 className="text-2xl font-bold text-foreground mb-2">
+          {/* Title and Subtitle */}
+          <div className="space-y-3 max-w-2xl mx-auto">
+            <h3 className="text-3xl font-semibold text-foreground tracking-tight">
               Speak with Movingto
             </h3>
-            <p className="text-muted-foreground text-lg">
-              Connect with Movingto for personalized investment information
+            <p className="text-base text-muted-foreground leading-relaxed">
+              Get expert legal support for your Golden Visa application
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div className="flex items-center gap-2 bg-card p-3 rounded-lg shadow-sm">
-              <Users className="h-4 w-4 text-primary" />
-              <span>1-on-1 Consultation</span>
+          {/* Service Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-3xl mx-auto">
+            <div className="flex items-center justify-center gap-3 bg-muted/30 px-4 py-3.5 rounded-lg border border-border/50 hover:border-border transition-colors">
+              <FileCheck className="h-4 w-4 text-primary flex-shrink-0" />
+              <span className="text-sm font-medium text-foreground">1-on-1 Consultation</span>
             </div>
-            <div className="flex items-center gap-2 bg-card p-3 rounded-lg shadow-sm">
-              <Shield className="h-4 w-4 text-primary" />
-              <span>Due Diligence Reports</span>
+            <div className="flex items-center justify-center gap-3 bg-muted/30 px-4 py-3.5 rounded-lg border border-border/50 hover:border-border transition-colors">
+              <Scale className="h-4 w-4 text-primary flex-shrink-0" />
+              <span className="text-sm font-medium text-foreground">Application Support</span>
             </div>
-            <div className="flex items-center gap-2 bg-card p-3 rounded-lg shadow-sm">
-              <Zap className="h-4 w-4 text-primary" />
-              <span>Priority Fund Access</span>
+            <div className="flex items-center justify-center gap-3 bg-muted/30 px-4 py-3.5 rounded-lg border border-border/50 hover:border-border transition-colors">
+              <FileText className="h-4 w-4 text-primary flex-shrink-0" />
+              <span className="text-sm font-medium text-foreground">Legal Documentation</span>
             </div>
           </div>
           
-           <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
-            <p className="text-primary font-medium text-sm">
-              ✨ Our experts help you secure better terms and access exclusive fund opportunities
+          {/* Value Proposition */}
+          <div className="bg-accent/30 px-6 py-4 rounded-lg border border-accent/40 max-w-3xl mx-auto">
+            <p className="text-sm text-foreground/80 leading-relaxed">
+              ✨ Our experts help you navigate the Golden Visa process and secure approval efficiently
             </p>
           </div>
           
-          <Button 
-            className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 text-primary-foreground w-full md:w-auto px-8 py-6 h-auto text-lg font-semibold shadow-lg transition-all duration-300 transform hover:scale-105"
-            onClick={handleCTAClick}
-          >
-            <Crown className="mr-2 h-5 w-5" />
-             Get Introduced
-            <ExternalLink className="ml-2 h-5 w-5" />
-          </Button>
+          {/* CTA Button */}
+          <div className="pt-2">
+            <Button 
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 font-medium shadow-sm hover:shadow transition-all duration-200"
+              onClick={handleCTAClick}
+            >
+              <Crown className="mr-2 h-4 w-4" />
+              Get in Touch
+              <ExternalLink className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

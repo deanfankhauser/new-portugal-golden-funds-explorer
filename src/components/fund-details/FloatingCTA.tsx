@@ -1,19 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
-import { Calendar, BarChart3 } from 'lucide-react';
+import { MessageSquare, Heart } from 'lucide-react';
 import { Fund } from '../../data/funds';
-import { useComparison } from '../../contexts/ComparisonContext';
-import { buildBookingUrl, openExternalLink } from '../../utils/urlHelpers';
 import analytics from '../../utils/analytics';
+import { trackInteraction } from '../../utils/analyticsTracking';
+import { useSavedFunds } from '../../hooks/useSavedFunds';
 
 interface FloatingCTAProps {
   fund: Fund;
 }
 
+const scrollToEnquiry = () => {
+  const element = document.getElementById('enquiry-form');
+  if (element) {
+    const headerOffset = 100;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+    
+    setTimeout(() => {
+      const firstInput = element.querySelector('input');
+      firstInput?.focus();
+    }, 500);
+  }
+};
+
 const FloatingCTA: React.FC<FloatingCTAProps> = ({ fund }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const { isInComparison, addToComparison } = useComparison();
-  const isCompared = isInComparison(fund.id);
+  const { isFundSaved, saveFund, unsaveFund } = useSavedFunds();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,85 +43,46 @@ const FloatingCTA: React.FC<FloatingCTAProps> = ({ fund }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleBookCall = () => {
-    const bookingUrl = buildBookingUrl(fund.id, fund.name);
-    openExternalLink(bookingUrl);
-    analytics.trackCTAClick('floating_cta', 'book_call', bookingUrl);
-  };
+  const isSaved = isFundSaved(fund.id);
 
-  const handleCompareClick = () => {
-    addToComparison(fund);
-    analytics.trackEvent('add_to_comparison', {
+  const handleSaveFund = async () => {
+    if (isSaved) {
+      await unsaveFund(fund.id);
+    } else {
+      await saveFund(fund.id);
+    }
+    analytics.trackEvent('save_fund', {
       fund_id: fund.id,
       fund_name: fund.name,
+      action: isSaved ? 'unsave' : 'save',
       source: 'floating_cta'
     });
+    trackInteraction(fund.id, 'save_fund');
   };
 
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 animate-slide-in-right">
-      {/* Mobile Layout - Stacked buttons */}
-      <div className="lg:hidden bg-background/95 backdrop-blur-md border-t border-border shadow-2xl px-4 py-3">
-        <div className="flex flex-col gap-2 max-w-lg mx-auto">
-          <Button 
-            size="lg"
-            className="w-full gap-2 h-14 text-base font-semibold shadow-lg"
-            onClick={handleBookCall}
-          >
-            <Calendar className="h-5 w-5" />
-            Book 30-min Call
-          </Button>
-          
-          <Button
-            variant={isCompared ? "secondary" : "outline"}
-            size="lg"
-            onClick={handleCompareClick}
-            className="w-full gap-2 h-14 text-base font-semibold shadow-lg border-2"
-          >
-            <BarChart3 className="h-5 w-5" />
-            {isCompared ? 'In Comparison' : 'Compare Fund'}
-          </Button>
-        </div>
-      </div>
-
-      {/* Desktop Layout - Side by side buttons */}
-      <div className="hidden lg:block bg-background/95 backdrop-blur-md border-t border-border shadow-2xl">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between max-w-4xl mx-auto">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <div className="h-2 w-2 rounded-full bg-primary" />
-              </div>
-              <div>
-                <p className="font-semibold text-sm">{fund.name}</p>
-                <p className="text-xs text-muted-foreground">{fund.category}</p>
-              </div>
-            </div>
-
-            <div className="flex gap-3">
-              <Button 
-                size="lg"
-                className="gap-2 shadow-lg"
-                onClick={handleBookCall}
-              >
-                <Calendar className="h-5 w-5" />
-                Book 30-min Call
-              </Button>
-              
-              <Button
-                variant={isCompared ? "secondary" : "outline"}
-                size="lg"
-                onClick={handleCompareClick}
-                className="gap-2 shadow-lg border-2"
-              >
-                <BarChart3 className="h-5 w-5" />
-                {isCompared ? 'In Comparison' : 'Compare'}
-              </Button>
-            </div>
-          </div>
-        </div>
+    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border shadow-2xl px-4 py-3">
+      <div className="grid grid-cols-2 gap-3 max-w-lg mx-auto">
+        <Button 
+          size="lg"
+          className="w-full gap-2 h-14 text-sm font-semibold shadow-lg"
+          onClick={scrollToEnquiry}
+        >
+          <MessageSquare className="h-5 w-5" />
+          Get in Touch
+        </Button>
+        
+        <Button 
+          size="lg"
+          variant={isSaved ? "secondary" : "outline"}
+          className="w-full gap-2 h-14 text-sm font-semibold shadow-lg border-2"
+          onClick={handleSaveFund}
+        >
+          <Heart className={`h-5 w-5 ${isSaved ? 'fill-current' : ''}`} />
+          {isSaved ? 'Saved' : 'Save'}
+        </Button>
       </div>
     </div>
   );

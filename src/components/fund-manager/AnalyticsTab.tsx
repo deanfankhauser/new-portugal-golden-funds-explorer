@@ -1,89 +1,224 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart3, Eye, MousePointerClick, TrendingUp, Users } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { BarChart3, Eye, MousePointerClick, TrendingUp, Users, Bookmark } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface AnalyticsTabProps {
   fundId: string;
 }
 
+interface AnalyticsData {
+  pageViews: number;
+  uniqueVisitors: number;
+  comparisonAdds: number;
+  bookingClicks: number;
+  saveCount: number;
+  dailyViews: { date: string; count: number }[];
+}
+
 const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ fundId }) => {
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, [fundId]);
+
+  const fetchAnalytics = async () => {
+    try {
+      setLoading(true);
+      
+      // Calculate date 30 days ago
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      
+      // Fetch page views
+      const { data: pageViewsData, error: pageViewsError } = await supabase
+        .from('fund_page_views')
+        .select('*')
+        .eq('fund_id', fundId)
+        .gte('viewed_at', thirtyDaysAgo.toISOString());
+
+      if (pageViewsError) throw pageViewsError;
+
+      // Fetch interactions
+      const { data: interactionsData, error: interactionsError } = await supabase
+        .from('fund_interactions')
+        .select('*')
+        .eq('fund_id', fundId)
+        .gte('interacted_at', thirtyDaysAgo.toISOString());
+
+      if (interactionsError) throw interactionsError;
+
+      // Calculate metrics
+      const uniqueVisitors = new Set(pageViewsData?.map(v => v.session_id) || []).size;
+      const comparisonAdds = interactionsData?.filter(i => i.interaction_type === 'comparison_add').length || 0;
+      const bookingClicks = interactionsData?.filter(i => i.interaction_type === 'booking_click').length || 0;
+      const saveCount = interactionsData?.filter(i => i.interaction_type === 'save_fund').length || 0;
+
+      // Calculate daily views for chart
+      const viewsByDate: Record<string, number> = {};
+      pageViewsData?.forEach(view => {
+        const date = new Date(view.viewed_at).toLocaleDateString();
+        viewsByDate[date] = (viewsByDate[date] || 0) + 1;
+      });
+
+      const dailyViews = Object.entries(viewsByDate)
+        .map(([date, count]) => ({ date, count }))
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .slice(-30); // Last 30 days
+
+      setAnalytics({
+        pageViews: pageViewsData?.length || 0,
+        uniqueVisitors,
+        comparisonAdds,
+        bookingClicks,
+        saveCount,
+        dailyViews,
+      });
+    } catch (error) {
+      console.error('Error fetching analytics:', error);
+      toast({
+        title: 'Error loading analytics',
+        description: 'Could not load analytics data. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map(i => (
+            <Card key={i}>
+              <CardHeader className="pb-3">
+                <Skeleton className="h-4 w-24" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-16 mb-2" />
+                <Skeleton className="h-3 w-32" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (!analytics) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-muted-foreground">No analytics data available</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      <div className="text-center py-12">
-        <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-          <BarChart3 className="h-8 w-8 text-primary" />
-        </div>
-        <h3 className="text-xl font-semibold mb-2">Analytics Dashboard Coming Soon</h3>
-        <p className="text-muted-foreground max-w-md mx-auto mb-8">
-          Track how your fund page is performing with detailed metrics and insights.
-        </p>
-        <Badge variant="secondary">In Development</Badge>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="opacity-60">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Eye className="h-4 w-4" />
+              <Eye className="h-4 w-4 text-primary" />
               Page Views
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">---</div>
+            <div className="text-2xl font-bold">{analytics.pageViews}</div>
             <p className="text-xs text-muted-foreground mt-1">Last 30 days</p>
           </CardContent>
         </Card>
 
-        <Card className="opacity-60">
+        <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Users className="h-4 w-4" />
+              <Users className="h-4 w-4 text-primary" />
               Unique Visitors
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">---</div>
+            <div className="text-2xl font-bold">{analytics.uniqueVisitors}</div>
             <p className="text-xs text-muted-foreground mt-1">Last 30 days</p>
           </CardContent>
         </Card>
 
-        <Card className="opacity-60">
+        <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <MousePointerClick className="h-4 w-4" />
-              Comparison Clicks
+              <MousePointerClick className="h-4 w-4 text-primary" />
+              Comparisons
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">---</div>
-            <p className="text-xs text-muted-foreground mt-1">Times added to comparison</p>
+            <div className="text-2xl font-bold">{analytics.comparisonAdds}</div>
+            <p className="text-xs text-muted-foreground mt-1">Added to comparison</p>
           </CardContent>
         </Card>
 
-        <Card className="opacity-60">
+        <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" />
+              <TrendingUp className="h-4 w-4 text-primary" />
               Booking Requests
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">---</div>
-            <p className="text-xs text-muted-foreground mt-1">Introduction requests</p>
+            <div className="text-2xl font-bold">{analytics.bookingClicks}</div>
+            <p className="text-xs text-muted-foreground mt-1">Call requests</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <Bookmark className="h-4 w-4 text-primary" />
+              Saves
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{analytics.saveCount}</div>
+            <p className="text-xs text-muted-foreground mt-1">Fund saved</p>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="opacity-60">
+      <Card>
         <CardHeader>
           <CardTitle>Traffic Over Time</CardTitle>
           <CardDescription>Daily page views for the last 30 days</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-64 flex items-center justify-center border-2 border-dashed rounded-lg">
-            <p className="text-muted-foreground">Chart will appear here</p>
-          </div>
+          {analytics.dailyViews.length > 0 ? (
+            <div className="h-64 flex items-end gap-1">
+              {analytics.dailyViews.map((day, index) => {
+                const maxCount = Math.max(...analytics.dailyViews.map(d => d.count));
+                const heightPercent = maxCount > 0 ? (day.count / maxCount) * 100 : 0;
+                
+                return (
+                  <div key={index} className="flex-1 flex flex-col items-center gap-1 group">
+                    <div 
+                      className="w-full bg-primary rounded-t transition-all hover:bg-primary/80"
+                      style={{ height: `${heightPercent}%`, minHeight: day.count > 0 ? '4px' : '0' }}
+                      title={`${day.date}: ${day.count} views`}
+                    />
+                    <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+                      {day.count}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="h-64 flex items-center justify-center border-2 border-dashed rounded-lg">
+              <p className="text-muted-foreground">No page views yet</p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

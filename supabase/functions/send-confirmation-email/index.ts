@@ -2,6 +2,12 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Webhook } from 'https://esm.sh/standardwebhooks@1.0.0';
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 import { withSecurity, validateEmail } from '../_shared/security.ts';
+import { 
+  generateEmailWrapper, 
+  generateContentCard, 
+  generateCTAButton,
+  generatePlainTextEmail 
+} from "../_shared/email-templates.ts";
 
 interface ConfirmationEmailData {
   confirmationUrl: string;
@@ -10,71 +16,32 @@ interface ConfirmationEmailData {
 }
 
 function generateConfirmationEmailHTML({ confirmationUrl, userEmail, isRecovery }: ConfirmationEmailData): string {
-  return `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>${isRecovery ? 'Password Reset' : 'Email Confirmation'} - Investment Funds Platform</title>
-    </head>
-    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif; background-color: #f6f9fc; margin: 0; padding: 0;">
-      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; margin-bottom: 64px;">
-        <div style="padding: 32px 24px; text-align: center;">
-          <h1 style="color: #1f2937; font-size: 24px; font-weight: bold; margin: 0;">
-            ${isRecovery ? 'Password Reset Request' : 'Welcome to Investment Funds Platform'}
-          </h1>
-        </div>
-        
-        <div style="padding: 0 24px;">
-          <p style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0;">Hello,</p>
-          
-          <p style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0;">
-            ${isRecovery 
-              ? 'We received a request to reset your password for your Investment Funds Platform account.'
-              : 'Thank you for signing up for Investment Funds Platform! To complete your account setup, please confirm your email address.'
-            }
-          </p>
+  const title = isRecovery ? 'Reset Your Password' : 'Confirm Your Email';
+  const greeting = isRecovery 
+    ? 'We received a request to reset your password for your Movingto Funds account.'
+    : 'Thank you for signing up for Movingto Funds! To complete your account setup, please confirm your email address.';
+  const description = isRecovery 
+    ? 'Click the button below to reset your password. This link will expire in 1 hour.' 
+    : 'Click the button below to confirm your email address and start exploring investment opportunities.';
+  const buttonText = isRecovery ? 'Reset My Password' : 'Confirm Email Address';
 
-          <p style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0;">
-            ${isRecovery 
-              ? 'Click the button below to reset your password:' 
-              : 'Click the button below to confirm your email:'
-            }
-          </p>
+  const contentCard = generateContentCard(`
+    <p style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0;">Hello,</p>
+    <p style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0;">${greeting}</p>
+    <p style="color: #374151; font-size: 16px; line-height: 1.5; margin: 16px 0;">${description}</p>
+    ${generateCTAButton(buttonText, confirmationUrl, 'bordeaux')}
+    <p style="color: #6b7280; font-size: 14px; line-height: 1.5; margin: 24px 0 0 0; text-align: center;">
+      Or copy and paste this link in your browser:<br/>
+      <a href="${confirmationUrl}" style="color: hsl(340 66% 18%); word-break: break-all;">${confirmationUrl}</a>
+    </p>
+    <p style="color: #6b7280; font-size: 14px; line-height: 1.5; margin: 16px 0 0 0; text-align: center;">
+      <strong>Security Notice:</strong> This ${isRecovery ? 'reset' : 'confirmation'} link will expire in 1 hour. 
+      If you didn't ${isRecovery ? 'request a password reset' : 'create an account'}, 
+      please ignore this email.
+    </p>
+  `, 'bordeaux');
 
-          <div style="text-align: center; margin: 32px 0;">
-            <a href="${confirmationUrl}" style="background-color: #3b82f6; border-radius: 6px; color: #ffffff; font-size: 16px; font-weight: bold; text-decoration: none; text-align: center; display: inline-block; padding: 12px 24px; max-width: 200px;">
-              ${isRecovery ? 'Reset My Password' : 'Confirm Email Address'}
-            </a>
-          </div>
-
-          <p style="color: #6b7280; font-size: 14px; margin: 16px 0 8px;">
-            Or copy and paste this link in your browser:
-          </p>
-          <a href="${confirmationUrl}" style="color: #3b82f6; font-size: 12px; text-decoration: underline; word-break: break-all;">
-            ${confirmationUrl}
-          </a>
-
-          <hr style="border-color: #e5e7eb; margin: 32px 0;" />
-
-          <div style="margin-top: 32px;">
-            <p style="color: #6b7280; font-size: 12px; line-height: 1.4; margin: 8px 0;">
-              <strong>Security Notice:</strong> This ${isRecovery ? 'reset' : 'confirmation'} link will expire in 1 hour. 
-              If you didn't ${isRecovery ? 'request a password reset' : 'create an account'}, 
-              please ignore this email or contact support.
-            </p>
-            
-            <p style="color: #6b7280; font-size: 12px; line-height: 1.4; margin: 8px 0;">
-              Investment Funds Platform<br />
-              This email was sent to ${userEmail}
-            </p>
-          </div>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
+  return generateEmailWrapper(title, contentCard, userEmail);
 }
 
 const corsHeaders = {
@@ -172,16 +139,27 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
 
+    // Generate plain text version
+    const plainText = generatePlainTextEmail(
+      isRecovery ? 'Reset Your Password' : 'Confirm Your Email',
+      isRecovery 
+        ? 'We received a request to reset your password for your Movingto Funds account.' 
+        : 'Thank you for signing up for Movingto Funds! To complete your account setup, please confirm your email address.',
+      isRecovery ? 'Reset My Password' : 'Confirm Email Address',
+      confirmationUrl
+    );
+
     // Send the email
     const subject = isRecovery 
-      ? "Password Reset Request - Investment Funds Platform"
-      : "Confirm Your Email - Investment Funds Platform";
+      ? "Password Reset Request - Movingto Funds"
+      : "Confirm Your Email - Movingto Funds";
 
     await client.send({
-      from: `Movingto Team <${gmailEmail}>`,
+      from: `Movingto Funds <${gmailEmail}>`,
       to: user.email,
       subject,
       html,
+      plainText,
     });
 
     console.log(`✅ ${isRecovery ? 'Recovery' : 'Confirmation'} email sent successfully to:`, user.email);
