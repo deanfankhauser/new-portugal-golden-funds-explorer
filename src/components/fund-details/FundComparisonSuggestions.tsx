@@ -48,36 +48,49 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
               className="group relative block rounded-xl transition-all duration-200 hover:shadow-lg bg-card border border-border/40 hover:border-primary/20"
             >
               <div className="p-5 sm:p-6">
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex items-start justify-between gap-3">
                   {/* Left Side - Fund Names */}
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
-                    {/* Base Fund */}
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="font-semibold text-sm sm:text-base whitespace-nowrap text-foreground">
-                        {currentFund.name}
-                      </span>
-                      {currentFund.isVerified && (
-                        <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                      {/* Base Fund */}
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="font-semibold text-sm sm:text-base text-foreground break-words">
+                          {currentFund.name}
+                        </span>
+                        {currentFund.isVerified && (
+                          <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
+                        )}
+                      </div>
+
+                      {/* Verified Badge */}
+                      {currentFund.isVerified && currentFund.verifiedAt && (
+                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium shrink-0 bg-success text-white w-fit">
+                          <Sparkles className="h-3 w-3" strokeWidth={2.5} />
+                          <span>Recently Verified</span>
+                        </div>
                       )}
+
+                      {/* VS Divider */}
+                      <span className="text-xs font-medium uppercase tracking-wider shrink-0 hidden sm:inline text-muted-foreground">
+                        vs
+                      </span>
+
+                      {/* Compare Fund */}
+                      <span className="font-medium text-sm sm:text-base text-foreground break-words min-w-0">
+                        {fund.name}
+                      </span>
                     </div>
 
-                    {/* Verified Badge */}
-                    {currentFund.isVerified && currentFund.verifiedAt && (
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium shrink-0 bg-success text-white">
-                        <Sparkles className="h-3 w-3" strokeWidth={2.5} />
-                        <span>Recently Verified</span>
-                      </div>
-                    )}
-
-                    {/* VS Divider */}
-                    <span className="text-xs font-medium uppercase tracking-wider shrink-0 hidden sm:inline text-muted-foreground">
-                      vs
-                    </span>
-
-                    {/* Compare Fund */}
-                    <span className="font-medium text-sm sm:text-base truncate text-foreground">
-                      {fund.name}
-                    </span>
+                    {/* Metadata */}
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-3 text-sm">
+                      <span className="text-muted-foreground">
+                        {fund.category}
+                      </span>
+                      <span className="text-border">•</span>
+                      <span className="font-medium text-accent">
+                        Min. {fund.minimumInvestment > 0 ? `€${fund.minimumInvestment.toLocaleString()}` : 'Not provided'}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Right Side - Swap Button */}
@@ -88,17 +101,6 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
                   >
                     <ArrowLeftRight className="h-4 w-4" strokeWidth={2} />
                   </button>
-                </div>
-
-                {/* Metadata */}
-                <div className="flex items-center gap-3 mt-3 text-sm">
-                  <span className="inline-flex items-center text-muted-foreground">
-                    {fund.category}
-                  </span>
-                  <span className="text-border">•</span>
-                  <span className="inline-flex items-center font-medium text-accent">
-                    Min. {fund.minimumInvestment > 0 ? `€${fund.minimumInvestment.toLocaleString()}` : 'Not provided'}
-                  </span>
                 </div>
               </div>
 
