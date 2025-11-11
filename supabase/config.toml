@@ -85,3 +85,6 @@ verify_jwt = false
 
 [functions.weekly-lead-digest]
 verify_jwt = false
+
+[functions.request-advertising-access]
+verify_jwt = false
