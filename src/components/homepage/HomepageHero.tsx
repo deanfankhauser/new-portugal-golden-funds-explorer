@@ -3,7 +3,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, TrendingUp, Building2, Euro } from 'lucide-react';
 import { Button } from '../ui/button';
-import VerificationStats from '../common/VerificationStats';
 import { Fund } from '../../data/types/funds';
 
 interface HomepageHeroProps {
@@ -114,11 +113,6 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </a>
-          </div>
-
-          {/* Verification Stats */}
-          <div className="mt-8">
-            <VerificationStats funds={funds} variant="compact" />
           </div>
         </div>
       </div>
