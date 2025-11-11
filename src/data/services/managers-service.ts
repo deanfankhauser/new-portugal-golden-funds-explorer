@@ -1,6 +1,4 @@
-
 import { funds } from './funds-service';
-import { supabase } from '../../integrations/supabase/client';
 
 // Public manager data type (no sensitive information)
 export interface PublicManagerData {
@@ -24,6 +22,9 @@ export interface PublicManagerData {
 // Function to get all approved managers from database (public safe data only)
 export const getAllApprovedManagers = async (): Promise<PublicManagerData[]> => {
   try {
+    // Lazy load supabase only when this function is called (not during SSG)
+    const { supabase } = await import('../../integrations/supabase/client');
+    
     const { data, error } = await supabase.rpc('get_public_manager_profiles');
     
     if (error) {
