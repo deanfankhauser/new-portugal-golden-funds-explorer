@@ -1,11 +1,15 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
-import { corsHeaders } from '../_shared/cors.ts';
 import { 
   generateEmailHeader, 
   generateEmailFooter, 
   generateCTAButton, 
   BRAND_COLORS 
 } from '../_shared/email-templates.ts';
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
 
 const POSTMARK_API_URL = 'https://api.postmarkapp.com/email';
 

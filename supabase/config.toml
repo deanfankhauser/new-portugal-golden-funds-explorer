@@ -76,3 +76,6 @@ verify_jwt = false
 
 [functions.get-develop-funds]
 verify_jwt = false
+
+[functions.submit-fund-enquiry]
+verify_jwt = false
