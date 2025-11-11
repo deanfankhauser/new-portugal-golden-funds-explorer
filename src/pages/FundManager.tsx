@@ -35,14 +35,30 @@ const FundManager = () => {
   useEffect(() => {
     const checkManagerVerification = async () => {
       const approvedManagers = await getAllApprovedManagers();
-      const slugMatches = (s?: string) => (s ? managerToSlug(s) === slugName : false);
-      const verifiedManager = approvedManagers.find(
-        (m) =>
-          m.manager_name?.toLowerCase() === displayManagerName.toLowerCase() ||
-          slugMatches(m.manager_name) ||
-          slugMatches(m.company_name)
-      );
-      setIsManagerVerified(!!verifiedManager && verifiedManager.status === 'approved');
+      
+      // Normalize manager name by removing common suffixes and punctuation
+      const normalizeCompanyName = (name: string) => {
+        return name
+          .toLowerCase()
+          .replace(/[,\.]/g, '') // Remove commas and periods
+          .replace(/\b(s\.?a\.?|llc|ltd|limited|inc|incorporated|scr|sgps)\b/gi, '') // Remove company suffixes
+          .trim();
+      };
+      
+      const normalizedManagerName = normalizeCompanyName(displayManagerName);
+      
+      const isVerified = approvedManagers.some(m => {
+        const normalizedCompanyName = normalizeCompanyName(m.company_name);
+        const normalizedDbManagerName = m.manager_name ? normalizeCompanyName(m.manager_name) : '';
+        
+        // Check if either company name or manager name matches
+        return normalizedCompanyName === normalizedManagerName || 
+               normalizedDbManagerName === normalizedManagerName ||
+               normalizedCompanyName.includes(normalizedManagerName) ||
+               normalizedManagerName.includes(normalizedCompanyName);
+      });
+      
+      setIsManagerVerified(isVerified && approvedManagers.some(m => m.status === 'approved'));
     };
     
     if (displayManagerName) {

@@ -670,6 +670,91 @@ export type Database = {
         }
         Relationships: []
       }
+      manager_profile_assignments: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          created_at: string | null
+          id: string
+          notes: string | null
+          permissions: Json | null
+          profile_id: string
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          permissions?: Json | null
+          profile_id: string
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          permissions?: Json | null
+          profile_id?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manager_profile_assignments_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      manager_profile_edits: {
+        Row: {
+          changes: Json
+          created_at: string | null
+          edit_type: string
+          id: string
+          manager_user_id: string
+          previous_values: Json
+          profile_id: string
+        }
+        Insert: {
+          changes: Json
+          created_at?: string | null
+          edit_type: string
+          id?: string
+          manager_user_id: string
+          previous_values: Json
+          profile_id: string
+        }
+        Update: {
+          changes?: Json
+          created_at?: string | null
+          edit_type?: string
+          id?: string
+          manager_user_id?: string
+          previous_values?: Json
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manager_profile_edits_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           address: string | null
@@ -692,6 +777,9 @@ export type Database = {
           last_name: string | null
           license_number: string | null
           logo_url: string | null
+          manager_about: string | null
+          manager_faqs: Json | null
+          manager_highlights: Json | null
           manager_name: string | null
           net_worth_range: string | null
           phone: string | null
@@ -723,6 +811,9 @@ export type Database = {
           last_name?: string | null
           license_number?: string | null
           logo_url?: string | null
+          manager_about?: string | null
+          manager_faqs?: Json | null
+          manager_highlights?: Json | null
           manager_name?: string | null
           net_worth_range?: string | null
           phone?: string | null
@@ -754,6 +845,9 @@ export type Database = {
           last_name?: string | null
           license_number?: string | null
           logo_url?: string | null
+          manager_about?: string | null
+          manager_faqs?: Json | null
+          manager_highlights?: Json | null
           manager_name?: string | null
           net_worth_range?: string | null
           phone?: string | null
@@ -858,12 +952,29 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_approve_manager_profile: {
+        Args: { p_admin_notes?: string; p_profile_id: string }
+        Returns: Json
+      }
       admin_assign_fund_managers: {
         Args: {
           _fund_id: string
           _manager_ids: string[]
           _notes?: string
           _permissions?: Json
+          _status?: string
+        }
+        Returns: {
+          inserted: boolean
+          user_id: string
+        }[]
+      }
+      admin_assign_profile_managers: {
+        Args: {
+          _manager_ids: string[]
+          _notes?: string
+          _permissions?: Json
+          _profile_id: string
           _status?: string
         }
         Returns: {
@@ -883,12 +994,20 @@ export type Database = {
           user_id: string
         }[]
       }
+      admin_reject_manager_profile: {
+        Args: { p_profile_id: string; p_rejection_reason: string }
+        Returns: Json
+      }
       can_access_manager_sensitive_data: {
         Args: { manager_user_id?: string }
         Returns: boolean
       }
       can_user_edit_fund: {
         Args: { p_fund_id: string; p_user_id: string }
+        Returns: boolean
+      }
+      can_user_edit_profile: {
+        Args: { p_profile_id: string; p_user_id: string }
         Returns: boolean
       }
       check_sensitive_data_exposure: {
@@ -929,6 +1048,28 @@ export type Database = {
           data_type: string
           is_nullable: string
           table_name: string
+        }[]
+      }
+      get_pending_manager_profiles: {
+        Args: never
+        Returns: {
+          assets_under_management: number
+          city: string
+          company_name: string
+          country: string
+          created_at: string
+          description: string
+          email: string
+          founded_year: number
+          id: string
+          license_number: string
+          logo_url: string
+          manager_name: string
+          registration_number: string
+          status: string
+          updated_at: string
+          user_id: string
+          website: string
         }[]
       }
       get_public_manager_profiles: {
