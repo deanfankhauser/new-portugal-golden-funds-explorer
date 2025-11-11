@@ -8,11 +8,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, Edit3, Clock, CheckCircle, XCircle, Activity, Settings, Database, FileText, TrendingUp, Mail, Building2 } from 'lucide-react';
+import { Users, Edit3, Clock, CheckCircle, XCircle, Settings, Database, FileText, TrendingUp, Mail, Building2 } from 'lucide-react';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { EnhancedSuggestionsTable } from '@/components/admin/EnhancedSuggestionsTable';
-import { AdminActivityLog } from '@/components/admin/AdminActivityLog';
 import UsersManagement from '@/components/admin/UsersManagement';
 import { DataCopyButton } from '@/components/admin/DataCopyButton';
 import MigrateFundsButton from '@/components/admin/MigrateFundsButton';
@@ -230,7 +229,7 @@ const AdminPanel = () => {
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="suggestions" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-10">
+            <TabsList className="grid w-full grid-cols-9">
               <TabsTrigger value="suggestions" className="flex items-center gap-2">
                 <Edit3 className="h-4 w-4" />
                 Suggestions
@@ -258,10 +257,6 @@ const AdminPanel = () => {
               <TabsTrigger value="users" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 Users
-              </TabsTrigger>
-              <TabsTrigger value="activity" className="flex items-center gap-2">
-                <Activity className="h-4 w-4" />
-                Activity Log
               </TabsTrigger>
               <TabsTrigger value="emails" className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
@@ -316,10 +311,6 @@ const AdminPanel = () => {
 
             <TabsContent value="users">
               <UsersManagement currentUserRole={adminRole} />
-            </TabsContent>
-
-            <TabsContent value="activity">
-              <AdminActivityLog limit={50} />
             </TabsContent>
 
             <TabsContent value="emails">
