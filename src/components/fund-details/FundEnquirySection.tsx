@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { Fund } from '@/data/funds';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Mail, Phone, User, MessageSquare, CheckCircle2, Sparkles } from 'lucide-react';
+import { Loader2, CheckCircle2, Sparkles } from 'lucide-react';
 import { z } from 'zod';
 import confetti from 'canvas-confetti';
 
@@ -229,17 +229,14 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
               <Label htmlFor="firstName">
                 First Name <span className="text-destructive">*</span>
               </Label>
-              <div className="relative">
-                <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="firstName"
-                  placeholder="John"
-                  value={formData.firstName}
-                  onChange={e => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
-                  className="pl-10 px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10"
-                  disabled={isSubmitting}
-                />
-              </div>
+              <Input
+                id="firstName"
+                placeholder="John"
+                value={formData.firstName}
+                onChange={e => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                className="px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10"
+                disabled={isSubmitting}
+              />
               {errors.firstName && <p className="text-sm text-destructive">{errors.firstName}</p>}
             </div>
 
@@ -247,17 +244,14 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
               <Label htmlFor="lastName">
                 Last Name <span className="text-destructive">*</span>
               </Label>
-              <div className="relative">
-                <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="lastName"
-                  placeholder="Smith"
-                  value={formData.lastName}
-                  onChange={e => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
-                  className="pl-10 px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10"
-                  disabled={isSubmitting}
-                />
-              </div>
+              <Input
+                id="lastName"
+                placeholder="Smith"
+                value={formData.lastName}
+                onChange={e => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+                className="px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10"
+                disabled={isSubmitting}
+              />
               {errors.lastName && <p className="text-sm text-destructive">{errors.lastName}</p>}
             </div>
           </div>
@@ -267,36 +261,30 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
             <Label htmlFor="email">
               Email <span className="text-destructive">*</span>
             </Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="john.smith@example.com"
-                value={formData.email}
-                onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                className="pl-10 px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10"
-                disabled={isSubmitting}
-              />
-            </div>
+            <Input
+              id="email"
+              type="email"
+              placeholder="john.smith@example.com"
+              value={formData.email}
+              onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
+              className="px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10"
+              disabled={isSubmitting}
+            />
             {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
           </div>
 
           {/* Phone (Optional) */}
           <div className="space-y-2">
             <Label htmlFor="phone">Phone (Optional)</Label>
-            <div className="relative">
-              <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="+351 123 456 789"
-                value={formData.phone}
-                onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                className="pl-10 px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10"
-                disabled={isSubmitting}
-              />
-            </div>
+            <Input
+              id="phone"
+              type="tel"
+              placeholder="+351 123 456 789"
+              value={formData.phone}
+              onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+              className="px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10"
+              disabled={isSubmitting}
+            />
           </div>
 
           {/* Investment Range */}
@@ -356,18 +344,15 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
             <Label htmlFor="message">
               Your Message <span className="text-destructive">*</span>
             </Label>
-            <div className="relative">
-              <MessageSquare className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Textarea
-                id="message"
-                placeholder="Tell us more about your investment goals and any specific questions you have..."
-                value={formData.message}
-                onChange={e => setFormData(prev => ({ ...prev, message: e.target.value }))}
-                rows={5}
-                className="pl-10 resize-none px-4 py-4 text-lg bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10"
-                disabled={isSubmitting}
-              />
-            </div>
+            <Textarea
+              id="message"
+              placeholder="Tell us more about your investment goals and any specific questions you have..."
+              value={formData.message}
+              onChange={e => setFormData(prev => ({ ...prev, message: e.target.value }))}
+              rows={5}
+              className="resize-none px-4 py-4 text-lg bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10"
+              disabled={isSubmitting}
+            />
             {errors.message && <p className="text-sm text-destructive">{errors.message}</p>}
             <p className="text-xs text-muted-foreground">
               {formData.message.length}/2000 characters
@@ -396,10 +381,7 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
                 Sending...
               </>
             ) : (
-              <>
-                <Mail className="mr-2 h-4 w-4" />
-                Send Enquiry
-              </>
+              'Send Enquiry'
             )}
           </Button>
         </form>
