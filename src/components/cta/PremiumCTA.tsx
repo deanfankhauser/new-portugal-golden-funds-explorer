@@ -1,9 +1,10 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Crown, FileCheck, Scale, FileText, ExternalLink } from 'lucide-react';
+import { FileCheck, Scale, FileText, ExternalLink } from 'lucide-react';
 import { analytics } from '../../utils/analytics';
 import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
+import movingtocIcon from '@/assets/movingto-icon.png';
 
 interface PremiumCTAProps {
   variant?: 'compact' | 'full' | 'banner';
@@ -30,8 +31,8 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
         className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-sm hover:shadow transition-all duration-200"
         onClick={handleCTAClick}
       >
-        <Crown className="mr-2 h-4 w-4" />
-        Get in Touch
+        <img src={movingtocIcon} alt="Movingto" className="mr-2 h-4 w-4" />
+        Schedule a free call
         <ExternalLink className="ml-2 h-4 w-4" />
       </Button>
     );
@@ -42,7 +43,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
       <div className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground p-4 rounded-lg shadow-lg">
         <div className="flex items-center justify-between flex-wrap gap-4 text-left">
           <div className="flex items-center gap-3">
-            <Crown className="h-5 w-5 text-primary-foreground" />
+            <img src={movingtocIcon} alt="Movingto" className="h-5 w-5" />
             <div>
               <p className="font-semibold text-primary-foreground">Speak with Movingto</p>
               <p className="text-sm text-primary-foreground opacity-90">Personal consultation with our specialists</p>
@@ -68,7 +69,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
           {/* Header with Icon */}
           <div className="flex justify-center">
             <div className="bg-primary rounded-full p-4 shadow-sm">
-              <Crown className="h-7 w-7 text-primary-foreground" />
+              <img src={movingtocIcon} alt="Movingto" className="h-7 w-7" />
             </div>
           </div>
           
@@ -112,8 +113,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
               className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 font-medium shadow-sm hover:shadow transition-all duration-200"
               onClick={handleCTAClick}
             >
-              <Crown className="mr-2 h-4 w-4" />
-              Get in Touch
+              Schedule a free call
               <ExternalLink className="ml-2 h-4 w-4" />
             </Button>
           </div>
