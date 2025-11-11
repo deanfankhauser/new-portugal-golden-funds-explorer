@@ -22,10 +22,19 @@ const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund }) => {
   const fundId = id || potentialFundId || ssrFund?.id;
   
   // Use optimized React Query hook for single fund fetching
-  const { data: queriedFund, isLoading } = useFund(fundId);
+  const { data: queriedFund, isLoading, isFetching } = useFund(fundId);
   
   const fund = ssrFund ?? queriedFund;
   const { addToRecentlyViewed } = useRecentlyViewed();
+  
+  // Track initial mount to prevent premature 404 display
+  const [isInitialMount, setIsInitialMount] = useState(true);
+  
+  useEffect(() => {
+    if (fundId) {
+      setIsInitialMount(false);
+    }
+  }, [fundId]);
   
   useEffect(() => {
     if (fund?.id) {
@@ -43,8 +52,12 @@ const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund }) => {
     }
   }, [fund?.id, addToRecentlyViewed]); // Only depend on stable ID
 
-  // Show loading skeleton while fetching data
-  if (isLoading) {
+  // Show loading skeleton in these cases:
+  // 1. fundId hasn't been resolved yet (route params parsing)
+  // 2. React Query is loading (initial fetch)
+  // 3. React Query is fetching (refetching)
+  // 4. Initial mount without data yet
+  if (!fundId || isLoading || isFetching || (isInitialMount && !fund)) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <PageSEO pageType="fund" />
@@ -59,7 +72,8 @@ const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund }) => {
     );
   }
 
-  if (!fund) {
+  // Only show 404 when we're absolutely certain the fund doesn't exist
+  if (fundId && !fund && !isLoading && !isFetching) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <PageSEO pageType="404" />
