@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Edit3 } from 'lucide-react';
 import { useFundEditing } from '@/hooks/useFundEditing';
-import { AuthRequiredModal } from './AuthRequiredModal';
 import { FundEditModal } from './FundEditModal';
 import { Fund } from '@/data/funds';
 
@@ -20,7 +19,6 @@ export const FundEditButton: React.FC<FundEditButtonProps> = ({
   className = ''
 }) => {
   const { isAuthenticated, isHydrated, checkHydration, canEditFund } = useFundEditing();
-  const [showAuthModal, setShowAuthModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [canDirectEdit, setCanDirectEdit] = useState(false);
   const [checkingPermission, setCheckingPermission] = useState(false);
@@ -51,31 +49,16 @@ export const FundEditButton: React.FC<FundEditButtonProps> = ({
     checkPermission();
   }, [isAuthenticated, isHydrated, fund.id, canEditFund]);
 
-  // Hide button completely for users without permission
-  if (isHydrated && isAuthenticated && !canDirectEdit) {
+  // Only show button for authenticated users with edit permission
+  if (!isHydrated || !isAuthenticated || !canDirectEdit) {
     return null;
   }
 
   const handleEditClick = () => {
-    if (!isHydrated) {
-      // During SSG build or before hydration, do nothing
-      return;
-    }
-
-    if (!isAuthenticated) {
-      setShowAuthModal(true);
-    } else {
-      setShowEditModal(true);
-    }
+    setShowEditModal(true);
   };
 
-  const buttonText = checkingPermission 
-    ? 'Loading...' 
-    : !isHydrated 
-    ? 'Loading...' 
-    : canDirectEdit 
-    ? 'Edit Fund' 
-    : 'Suggest Edit';
+  const buttonText = checkingPermission ? 'Loading...' : 'Edit Fund';
 
   return (
     <>
@@ -83,20 +66,12 @@ export const FundEditButton: React.FC<FundEditButtonProps> = ({
         variant={variant}
         size={size}
         onClick={handleEditClick}
-        disabled={!isHydrated || checkingPermission}
+        disabled={checkingPermission}
         className={`gap-2 ${className}`}
       >
         <Edit3 className="h-4 w-4" />
-        <span className="hidden sm:inline">{buttonText}</span>
-        <span className="sm:hidden">
-          {canDirectEdit ? 'Edit' : 'Suggest'}
-        </span>
+        <span>{buttonText}</span>
       </Button>
-
-      <AuthRequiredModal 
-        open={showAuthModal}
-        onOpenChange={setShowAuthModal}
-      />
 
       <FundEditModal
         fund={fund}
