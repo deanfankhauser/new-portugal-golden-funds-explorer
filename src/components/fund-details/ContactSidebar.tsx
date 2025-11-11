@@ -96,6 +96,11 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
     return `€${amount.toFixed(0)}`;
   };
 
+  const formatReturnDisplay = (returnText: string): string => {
+    // Replace "annually" with "p.a." for more concise display
+    return returnText.replace('annually', 'p.a.');
+  };
+
   return (
     <Card className="sticky top-24 h-fit shadow-[0_2px_8px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.06)] border border-border/40 rounded-2xl hidden lg:block overflow-hidden">
       <CardContent className="p-7">
@@ -129,9 +134,9 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
             <p className="text-xl font-semibold text-foreground tracking-tight">{formatCurrency(fund.minimumInvestment)}</p>
           </div>
           <div className="bg-muted/20 border border-border/40 rounded-xl p-3 transition-all duration-150 hover:bg-muted/30 hover:border-border/60">
-            <p className="text-[11px] font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Target Annual Return</p>
+            <p className="text-[11px] font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Target Return</p>
             <p className="text-xl font-semibold text-foreground tracking-tight">
-              {getReturnTargetDisplay(fund)}
+              {formatReturnDisplay(getReturnTargetDisplay(fund))}
             </p>
           </div>
         </div>
