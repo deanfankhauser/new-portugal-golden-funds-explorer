@@ -783,6 +783,7 @@ export type Database = {
           phone: string | null
           registration_number: string | null
           risk_tolerance: string | null
+          team_members: Json | null
           updated_at: string
           user_id: string
           website: string | null
@@ -814,6 +815,7 @@ export type Database = {
           phone?: string | null
           registration_number?: string | null
           risk_tolerance?: string | null
+          team_members?: Json | null
           updated_at?: string
           user_id: string
           website?: string | null
@@ -845,6 +847,7 @@ export type Database = {
           phone?: string | null
           registration_number?: string | null
           risk_tolerance?: string | null
+          team_members?: Json | null
           updated_at?: string
           user_id?: string
           website?: string | null
