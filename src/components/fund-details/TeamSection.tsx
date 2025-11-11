@@ -15,31 +15,28 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
   }
 
   return (
-    <div className="bg-card border border-border/50 rounded-2xl p-8 md:p-12 shadow-sm">
+    <div className="bg-card border border-border/40 rounded-2xl p-10 shadow-sm">
       {/* Section Header */}
-      <div className="flex items-center gap-3 mb-10 pb-6 border-b border-border/50">
-        <Users className="h-6 w-6 text-muted-foreground" />
-        <h2 className="text-2xl md:text-[28px] font-semibold text-foreground tracking-tight">
-          Fund Team
-          <span className="text-muted-foreground font-normal ml-1">
-            ({team.length} {team.length === 1 ? 'member' : 'members'})
-          </span>
-        </h2>
-      </div>
+      <h2 className="text-2xl font-semibold tracking-tight mb-2">
+        Fund Team
+      </h2>
+      <p className="text-sm text-muted-foreground mb-8">
+        {team.length} {team.length === 1 ? 'team member' : 'team members'}
+      </p>
 
       <AuthGate 
         message="Sign in to see full team profiles, bios, and LinkedIn connections"
         height="300px"
       >
         {/* Team Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {team.map((member, index) => (
             <div 
               key={member.name || index} 
-              className="group relative flex gap-5 items-start p-5 rounded-xl transition-all duration-200 cursor-pointer hover:bg-muted/30 hover:translate-x-1"
+              className="group relative flex gap-4 items-start p-6 bg-muted/20 border border-border/40 rounded-xl transition-all duration-200 hover:bg-muted/30 hover:border-primary/20 hover:shadow-lg"
             >
               {/* Left border accent on hover */}
-              <div className="absolute left-0 top-5 bottom-5 w-[3px] rounded-full bg-gradient-to-b from-primary to-primary/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+              <div className="absolute left-0 top-6 bottom-6 w-[3px] rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
               
               {/* Avatar */}
               <div className="relative flex-shrink-0">

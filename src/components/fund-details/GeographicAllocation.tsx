@@ -15,25 +15,21 @@ const GeographicAllocation: React.FC<GeographicAllocationProps> = ({ allocations
   }
 
   return (
-    <Card className="shadow-lg border-2 hover:shadow-xl transition-all duration-300">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-2xl flex items-center gap-2">
-          <Globe className="h-5 w-5" />
-          Geographic Allocation
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-2.5">
+    <Card className="bg-card border border-border/40 rounded-2xl shadow-sm">
+      <CardContent className="p-10">
+        <h2 className="text-2xl font-semibold tracking-tight mb-8">Geographic Allocation</h2>
+        
+        <div className="flex flex-col gap-4">
           {allocations.map((allocation, index) => (
             <div 
-              key={allocation.region} 
-              className={`flex items-center justify-between py-2 ${index !== allocations.length - 1 ? 'border-b' : ''}`}
+              key={allocation.region}
+              className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors"
             >
-              <span className="text-sm text-muted-foreground flex items-center gap-2">
-                <Globe className="h-4 w-4" />
+              <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
+                <Globe className="h-[18px] w-[18px] text-muted-foreground" />
                 {allocation.region}
               </span>
-              <span className="text-sm font-medium">{formatPercentage(allocation.percentage)}</span>
+              <span className="text-[15px] font-semibold text-foreground">{formatPercentage(allocation.percentage)}</span>
             </div>
           ))}
         </div>
