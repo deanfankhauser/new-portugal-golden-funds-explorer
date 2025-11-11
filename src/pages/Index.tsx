@@ -27,6 +27,18 @@ const IndexPage = () => {
     error
   } = useFundFiltering();
 
+  // Show loading skeleton while fetching data
+  if (loading) {
+    return (
+      <HomepageLayout>
+        <PageSEO pageType="homepage" />
+        <div className="container mx-auto px-4 py-8">
+          <FundListSkeleton />
+        </div>
+      </HomepageLayout>
+    );
+  }
+
   return (
     <HomepageLayout>
       <PageSEO pageType="homepage" />
@@ -46,7 +58,7 @@ const IndexPage = () => {
         searchQuery={searchQuery}
         allFunds={allFunds}
         loading={loading}
-        error={error}
+        error={error ? String(error) : undefined}
       />
 
       <section className="mt-12 sm:mt-16 lg:mt-20" aria-label="Additional resources">

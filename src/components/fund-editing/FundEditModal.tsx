@@ -356,7 +356,7 @@ useEffect(() => {
         await directUpdateFund(fund.id, suggestedChanges);
         toast({
           title: "Fund Updated!",
-          description: "Your changes have been published and are now live.",
+          description: "Your changes have been saved. Please allow up to 10 minutes for updates to be reflected on the public fund profile.",
         });
       } else {
         // Suggestion workflow for non-assigned users

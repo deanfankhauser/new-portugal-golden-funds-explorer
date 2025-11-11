@@ -6,8 +6,9 @@ import Footer from '../components/Footer';
 import { PageSEO } from '../components/common/PageSEO';
 import FundDetailsContent from '../components/fund-details/FundDetailsContent';
 import FloatingCTA from '../components/fund-details/FloatingCTA';
+import { FundDetailsLoader } from '../components/common/LoadingSkeleton';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
-import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
+import { useFund } from '../hooks/useFundsQuery';
 import { trackPageView } from '../utils/analyticsTracking';
 import type { Fund } from '../data/types/funds';
 
@@ -19,19 +20,60 @@ const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund }) => {
   
   // Prefer SSR-injected fund when available; fallback to client lookup
   const fundId = id || potentialFundId || ssrFund?.id;
-  const { getFundById } = useRealTimeFunds();
-  const fund = ssrFund ?? (fundId ? getFundById(fundId) : null);
+  
+  // Use optimized React Query hook for single fund fetching
+  const { data: queriedFund, isLoading, isFetching } = useFund(fundId);
+  
+  const fund = ssrFund ?? queriedFund;
   const { addToRecentlyViewed } = useRecentlyViewed();
   
+  // Track initial mount to prevent premature 404 display
+  const [isInitialMount, setIsInitialMount] = useState(true);
+  
   useEffect(() => {
-    if (fund) {
-      addToRecentlyViewed(fund);
-      // Track page view for analytics
-      trackPageView(fund.id);
+    if (fundId) {
+      setIsInitialMount(false);
     }
-  }, [fund, addToRecentlyViewed]);
+  }, [fundId]);
+  
+  useEffect(() => {
+    if (fund?.id) {
+      addToRecentlyViewed(fund);
+      
+      // Only track if we haven't tracked this fund recently (1 minute cooldown)
+      const trackingKey = `tracked_${fund.id}`;
+      const lastTracked = sessionStorage.getItem(trackingKey);
+      const now = Date.now();
+      
+      if (!lastTracked || now - parseInt(lastTracked) > 60000) {
+        trackPageView(fund.id);
+        sessionStorage.setItem(trackingKey, now.toString());
+      }
+    }
+  }, [fund?.id, addToRecentlyViewed]); // Only depend on stable ID
 
-  if (!fund) {
+  // Show loading skeleton in these cases:
+  // 1. fundId hasn't been resolved yet (route params parsing)
+  // 2. React Query is loading (initial fetch)
+  // 3. React Query is fetching (refetching)
+  // 4. Initial mount without data yet
+  if (!fundId || isLoading || isFetching || (isInitialMount && !fund)) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <PageSEO pageType="fund" />
+        <Header />
+        <main className="flex-1 py-6 md:py-8">
+          <div className="container mx-auto px-4 max-w-7xl">
+            <FundDetailsLoader />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Only show 404 when we're absolutely certain the fund doesn't exist
+  if (fundId && !fund && !isLoading && !isFetching) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <PageSEO pageType="404" />

@@ -38,13 +38,13 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
   };
 
   return (
-    <Card className="border border-border/60 rounded-xl hover:border-primary/20 hover:shadow-lg transition-all duration-200 bg-card w-full group">
+    <Card className="border border-border/60 rounded-xl bg-card w-full group">
       <CardContent className="p-10">
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1">
             <Link to={`/${fund.id}`} className="block" onClick={() => window.scrollTo(0, 0)}>
-              <h3 className="text-[28px] font-semibold text-foreground mb-3 group-hover:text-primary transition-colors tracking-tight">
+              <h3 className="text-[28px] font-semibold text-foreground mb-3 tracking-tight">
                 {fund.name}
               </h3>
             </Link>
@@ -82,7 +82,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
         {/* Key Metrics Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
           {/* Minimum Investment */}
-          <div className="bg-muted/20 border border-border/40 rounded-[10px] p-6 hover:bg-muted/30 hover:border-border/60 transition-all">
+          <div className="bg-muted/20 border border-border/40 rounded-[10px] p-6">
             <div className="flex items-center gap-2 mb-2">
               <Euro className="w-3.5 h-3.5 text-muted-foreground/60" />
               <span className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground">
@@ -95,7 +95,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           </div>
           
           {/* Target Return */}
-          <div className="bg-muted/20 border border-border/40 rounded-[10px] p-6 hover:bg-muted/30 hover:border-border/60 transition-all">
+          <div className="bg-muted/20 border border-border/40 rounded-[10px] p-6">
             <div className="flex items-center gap-2 mb-2">
               <PieChart className="w-3.5 h-3.5 text-muted-foreground/60" />
               <span className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground">
@@ -170,7 +170,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             <Button 
               variant="outline"
               size="default"
-              className="font-medium border-border/50 hover:bg-muted/50 hover:border-border"
+              className="font-medium border-border/50"
               onClick={handleCompareClick}
             >
               <GitCompare className="mr-2 h-4 w-4" />
