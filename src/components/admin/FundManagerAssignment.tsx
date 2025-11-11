@@ -211,6 +211,7 @@ export const FundManagerAssignment: React.FC = () => {
     try {
       const permissions = { can_edit: canEdit, can_publish: canPublish };
 
+      // Assign as fund manager
       const { data: results, error } = await supabase.rpc('admin_assign_fund_managers', {
         _fund_id: selectedFund,
         _manager_ids: managerIds,
@@ -224,9 +225,41 @@ export const FundManagerAssignment: React.FC = () => {
       const insertedCount = (results || []).filter((r: any) => r.inserted).length;
       const skippedCount = (results || []).length - insertedCount;
 
+      // Also assign as company manager
+      // Find the fund's manager company
+      const selectedFundData = funds.find(f => f.id === selectedFund);
+      if (selectedFundData?.managerName) {
+        // Find matching company profile
+        const { data: companyProfiles } = await supabase.rpc('get_public_manager_profiles');
+        
+        if (companyProfiles && companyProfiles.length > 0) {
+          const matchingProfile = companyProfiles.find((p: any) => 
+            p.company_name?.toLowerCase() === selectedFundData.managerName.toLowerCase()
+          );
+
+          if (matchingProfile) {
+            // Assign to company profile with appropriate permissions
+            await supabase.rpc('admin_assign_profile_managers', {
+              _profile_id: matchingProfile.id,
+              _manager_ids: managerIds,
+              _permissions: {
+                can_edit_profile: true,
+                can_edit_funds: true,
+                can_manage_team: false,
+                can_view_analytics: true,
+              },
+              _status: 'active',
+              _notes: `Auto-assigned via fund manager assignment for ${selectedFundData.name}`,
+            });
+
+            console.log('Also assigned as company manager for:', matchingProfile.company_name);
+          }
+        }
+      }
+
       toast({
         title: 'Managers Assigned',
-        description: `Inserted ${insertedCount} manager(s)${skippedCount > 0 ? `, skipped ${skippedCount} (already assigned)` : ''}`,
+        description: `Inserted ${insertedCount} manager(s)${skippedCount > 0 ? `, skipped ${skippedCount} (already assigned)` : ''} and assigned as company managers`,
       });
 
       // Reset form and close dialog

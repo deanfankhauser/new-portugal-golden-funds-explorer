@@ -4,7 +4,7 @@ import { funds as staticFunds } from '../data/funds'; // Fallback to static data
 import { supabase } from '../integrations/supabase/client';
 
 export const useRealTimeFunds = () => {
-  const [funds, setFunds] = useState<Fund[]>(staticFunds);
+  const [funds, setFunds] = useState<Fund[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -210,7 +210,7 @@ const applyEditHistory = (
                  historicalPerformance: (() => {
                    const hp = fund.historical_performance as Record<string, { returns?: number; aum?: number; nav?: number }> | null;
                    if (hp && typeof hp === 'object' && Object.keys(hp).length > 0) return hp;
-                   return staticFunds.find(s => s.id === fund.id)?.historicalPerformance;
+                   return undefined;
                  })(),
                  datePublished: fund.created_at || new Date().toISOString(),
                  dateModified: fund.updated_at || fund.created_at || new Date().toISOString(),
@@ -230,7 +230,7 @@ const applyEditHistory = (
                        notes: rtObj.notes
                      };
                    }
-                   return staticFunds.find(s => s.id === fund.id)?.redemptionTerms;
+                   return undefined;
                  })(),
                 dataLastVerified: fund.updated_at || fund.created_at,
                 performanceDataDate: fund.updated_at || fund.created_at,
@@ -346,7 +346,7 @@ const applyEditHistory = (
           historicalPerformance: (() => {
             const hp = fund.historical_performance as Record<string, { returns?: number; aum?: number; nav?: number }> | null;
             if (hp && typeof hp === 'object' && Object.keys(hp).length > 0) return hp;
-            return staticFunds.find(s => s.id === fund.id)?.historicalPerformance;
+            return undefined;
           })(),
           // Date tracking
           datePublished: fund.created_at || new Date().toISOString(),
@@ -368,7 +368,7 @@ const applyEditHistory = (
                 notes: rtObj.notes
               };
             }
-            return staticFunds.find(s => s.id === fund.id)?.redemptionTerms;
+            return undefined;
           })(),
           dataLastVerified: fund.updated_at || fund.created_at,
           performanceDataDate: fund.updated_at || fund.created_at,

@@ -759,8 +759,6 @@ export type Database = {
         Row: {
           address: string | null
           annual_income_range: string | null
-          approved_at: string | null
-          approved_by: string | null
           assets_under_management: number | null
           avatar_url: string | null
           city: string | null
@@ -785,7 +783,6 @@ export type Database = {
           phone: string | null
           registration_number: string | null
           risk_tolerance: string | null
-          status: Database["public"]["Enums"]["manager_status"] | null
           updated_at: string
           user_id: string
           website: string | null
@@ -793,8 +790,6 @@ export type Database = {
         Insert: {
           address?: string | null
           annual_income_range?: string | null
-          approved_at?: string | null
-          approved_by?: string | null
           assets_under_management?: number | null
           avatar_url?: string | null
           city?: string | null
@@ -819,7 +814,6 @@ export type Database = {
           phone?: string | null
           registration_number?: string | null
           risk_tolerance?: string | null
-          status?: Database["public"]["Enums"]["manager_status"] | null
           updated_at?: string
           user_id: string
           website?: string | null
@@ -827,8 +821,6 @@ export type Database = {
         Update: {
           address?: string | null
           annual_income_range?: string | null
-          approved_at?: string | null
-          approved_by?: string | null
           assets_under_management?: number | null
           avatar_url?: string | null
           city?: string | null
@@ -853,7 +845,6 @@ export type Database = {
           phone?: string | null
           registration_number?: string | null
           risk_tolerance?: string | null
-          status?: Database["public"]["Enums"]["manager_status"] | null
           updated_at?: string
           user_id?: string
           website?: string | null
@@ -952,10 +943,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      admin_approve_manager_profile: {
-        Args: { p_admin_notes?: string; p_profile_id: string }
-        Returns: Json
-      }
       admin_assign_fund_managers: {
         Args: {
           _fund_id: string
@@ -993,10 +980,6 @@ export type Database = {
           status: string
           user_id: string
         }[]
-      }
-      admin_reject_manager_profile: {
-        Args: { p_profile_id: string; p_rejection_reason: string }
-        Returns: Json
       }
       can_access_manager_sensitive_data: {
         Args: { manager_user_id?: string }
@@ -1050,28 +1033,6 @@ export type Database = {
           table_name: string
         }[]
       }
-      get_pending_manager_profiles: {
-        Args: never
-        Returns: {
-          assets_under_management: number
-          city: string
-          company_name: string
-          country: string
-          created_at: string
-          description: string
-          email: string
-          founded_year: number
-          id: string
-          license_number: string
-          logo_url: string
-          manager_name: string
-          registration_number: string
-          status: string
-          updated_at: string
-          user_id: string
-          website: string
-        }[]
-      }
       get_public_manager_profiles: {
         Args: never
         Returns: {
@@ -1087,7 +1048,6 @@ export type Database = {
           logo_url: string
           manager_name: string
           registration_number: string
-          status: string
           updated_at: string
           user_id: string
           website: string
@@ -1159,7 +1119,6 @@ export type Database = {
     }
     Enums: {
       admin_role: "super_admin" | "moderator" | "admin"
-      manager_status: "pending" | "approved" | "suspended" | "rejected"
       suggestion_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
@@ -1289,7 +1248,6 @@ export const Constants = {
   public: {
     Enums: {
       admin_role: ["super_admin", "moderator", "admin"],
-      manager_status: ["pending", "approved", "suspended", "rejected"],
       suggestion_status: ["pending", "approved", "rejected"],
     },
   },

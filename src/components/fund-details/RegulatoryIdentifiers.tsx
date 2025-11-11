@@ -8,18 +8,15 @@ interface RegulatoryIdentifiersProps {
 }
 
 const RegulatoryIdentifiers: React.FC<RegulatoryIdentifiersProps> = ({ fund }) => {
-  // Extract CMVM registration number if available
-  const cmvmRegMatch = fund.regulatedBy?.match(/CMVM.*?(\d{3,})/i);
-  const cmvmRegNumber = cmvmRegMatch ? cmvmRegMatch[1] : null;
+  // Use cmvmId directly from database, no fallbacks
+  const cmvmId = fund.cmvmId;
   
   // Extract ISIN from detailed description
   const isinMatch = fund.detailedDescription?.match(/ISIN[:\s]*([A-Z]{2}[A-Z0-9]{10})/i);
   const isin = isinMatch ? isinMatch[1] : null;
   
-  // Check if fund is regulated by CMVM
-  const isCMVMRegulated = fund.regulatedBy?.toLowerCase().includes('cmvm');
-  
-  if (!isCMVMRegulated && !cmvmRegNumber && !isin) {
+  // Only show component if we have actual data
+  if (!cmvmId && !isin) {
     return null;
   }
 
@@ -32,28 +29,26 @@ const RegulatoryIdentifiers: React.FC<RegulatoryIdentifiersProps> = ({ fund }) =
           We source from CMVM-regulated managers where applicable. Verify each fund's registration and GV suitability with counsel.
         </p>
         
-        {(cmvmRegNumber || isin) && (
-          <div className="flex flex-col gap-4">
-            {cmvmRegNumber && (
-              <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors">
-                <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
-                  <Shield className="h-[18px] w-[18px] text-muted-foreground" />
-                  CMVM Registration
-                </span>
-                <span className="text-[15px] font-semibold text-foreground">{cmvmRegNumber}</span>
-              </div>
-            )}
-            {isin && (
-              <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors">
-                <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
-                  <FileText className="h-[18px] w-[18px] text-muted-foreground" />
-                  ISIN
-                </span>
-                <span className="text-[15px] font-semibold text-foreground">{isin}</span>
-              </div>
-            )}
-          </div>
-        )}
+        <div className="flex flex-col gap-4">
+          {cmvmId && (
+            <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors">
+              <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
+                <Shield className="h-[18px] w-[18px] text-muted-foreground" />
+                CMVM Registration
+              </span>
+              <span className="text-[15px] font-semibold text-foreground">{cmvmId}</span>
+            </div>
+          )}
+          {isin && (
+            <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors">
+              <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
+                <FileText className="h-[18px] w-[18px] text-muted-foreground" />
+                ISIN
+              </span>
+              <span className="text-[15px] font-semibold text-foreground">{isin}</span>
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

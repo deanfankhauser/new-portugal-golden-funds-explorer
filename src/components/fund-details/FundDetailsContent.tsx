@@ -23,7 +23,7 @@ import { tagToSlug } from '@/lib/utils';
 import { FundEnquiryModal } from './FundEnquiryModal';
 
 import FundBreadcrumbs from './FundBreadcrumbs';
-import { FundEditButton } from '../fund-editing/FundEditButton';
+
 
 // Import tab components directly
 import FundDescription from './FundDescription';
@@ -95,14 +95,10 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                     {/* Financial Details Section */}
                     <section id="financial-details" className="scroll-mt-24">
                       <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Financial Details</h2>
-                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                        <div className="space-y-6">
-                          <FeeStructure fund={fund} formatPercentage={formatPercentage} />
-                          <RedemptionTerms redemptionTerms={fund.redemptionTerms} />
-                        </div>
-                        <div className="space-y-6">
-                          <GeographicAllocation allocations={fund.geographicAllocation} formatPercentage={formatPercentage} />
-                        </div>
+                      <div className="space-y-8">
+                        <FeeStructure fund={fund} formatPercentage={formatPercentage} />
+                        <GeographicAllocation allocations={fund.geographicAllocation} formatPercentage={formatPercentage} />
+                        <RedemptionTerms redemptionTerms={fund.redemptionTerms} />
                       </div>
                     </section>
 
