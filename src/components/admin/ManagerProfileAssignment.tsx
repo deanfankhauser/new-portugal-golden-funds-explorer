@@ -98,13 +98,13 @@ export const ManagerProfileAssignment: React.FC = () => {
       }
 
       // Fetch existing assignments
-      const { data: assignmentsData, error: assignmentsError } = await supabase
-        .from('manager_profile_assignments' as any)
-        .select(`
-          *,
-          profiles (*)
-        `)
-        .order('assigned_at', { ascending: false });
+    const { data: assignmentsData, error: assignmentsError } = await supabase
+      .from('manager_profile_assignments' as any)
+      .select(`
+        *,
+        profiles:user_id(*)
+      `)
+      .order('assigned_at', { ascending: false });
 
       if (!assignmentsError && assignmentsData) {
         setAssignments(assignmentsData as any);
