@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../data/funds';
@@ -7,15 +6,13 @@ import { getFundType } from '../utils/fundTypeUtils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GitCompare, PieChart, Globe, Tag, User, Euro, CheckCircle2 } from 'lucide-react';
+import { GitCompare, PieChart, Euro, CheckCircle2 } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
-import IntroductionButton from './fund-details/IntroductionButton';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 import DataFreshnessIndicator from './common/DataFreshnessIndicator';
 import RecentlyVerifiedBadge from './common/RecentlyVerifiedBadge';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
-import { DateManagementService } from '../services/dateManagementService';
 
 import { DATA_AS_OF_LABEL } from '../utils/constants';
 import { SaveFundButton } from './common/SaveFundButton';
@@ -169,7 +166,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           
           {/* Action Buttons */}
           <div className="flex items-center gap-3">
-            <SaveFundButton fundId={fund.id} showText={false} size="md" />
+            <SaveFundButton fundId={fund.id} showText={true} size="md" />
             <Button 
               variant="outline"
               size="default"
@@ -179,7 +176,18 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
               <GitCompare className="mr-2 h-4 w-4" />
               {isSelected ? 'Added' : 'Compare'}
             </Button>
-            <IntroductionButton variant="compact" fundId={fund.id} />
+            <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
+              <Button 
+                variant="default"
+                size="default"
+                className="font-medium bg-primary hover:bg-primary/90"
+              >
+                See more
+                <svg className="ml-2 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/>
+                </svg>
+              </Button>
+            </Link>
           </div>
         </div>
       </CardContent>
