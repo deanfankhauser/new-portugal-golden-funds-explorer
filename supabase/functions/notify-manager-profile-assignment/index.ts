@@ -156,7 +156,7 @@ serve(async (req) => {
         "X-Postmark-Server-Token": postmarkToken,
       },
       body: JSON.stringify({
-        From: `Movingto <${notificationEmail}>`,
+        From: `Movingto Funds <${notificationEmail}>`,
         To: manager_email,
         Subject: subject,
         HtmlBody: htmlContent,
