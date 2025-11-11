@@ -3,8 +3,6 @@ import React from 'react';
 import { Users, Briefcase, Linkedin } from 'lucide-react';
 import { TeamMember } from '../../data/types/funds';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import AuthGate from '../auth/AuthGate';
 
 interface TeamSectionProps {
@@ -17,69 +15,88 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
   }
 
   return (
-    <Card className="shadow-lg border-2 hover:shadow-xl transition-all duration-300">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-2xl flex items-center gap-2">
-          <Users className="h-5 w-5" />
-          Fund Team ({team.length} {team.length === 1 ? 'member' : 'members'})
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <AuthGate 
-          message="Sign in to see full team profiles, bios, and LinkedIn connections"
-          height="300px"
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {team.map((member, index) => (
-              <div 
-                key={member.name || index} 
-                className="bg-gradient-to-br from-accent/5 to-accent/10 p-5 rounded-lg border border-accent/20 hover:shadow-md transition-all duration-300"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-4">
-                    <Avatar className="w-14 h-14 border-2 border-accent/30">
-                      {member.photoUrl ? (
-                        <AvatarImage 
-                          src={member.photoUrl} 
-                          alt={`${member.name} profile picture`}
-                          className="object-cover"
-                        />
-                      ) : null}
-                      <AvatarFallback className="bg-accent/20 text-accent text-base font-semibold">
-                        {member.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 space-y-1">
-                      <h3 className="font-semibold text-foreground">{member.name}</h3>
-                      <p className="text-xs text-muted-foreground flex items-center gap-1">
-                        <Briefcase className="h-3 w-3" />
-                        {member.position}
-                      </p>
-                    </div>
-                  </div>
-                  {member.bio && (
-                    <p className="text-sm text-muted-foreground leading-relaxed">{member.bio}</p>
-                  )}
-                  {member.linkedinUrl && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full text-xs gap-1 hover:bg-accent/10"
-                      asChild
-                    >
-                      <a href={member.linkedinUrl} target="_blank" rel="noopener noreferrer">
-                        <Linkedin className="h-3 w-3" />
-                        View LinkedIn
-                      </a>
-                    </Button>
-                  )}
-                </div>
+    <div className="bg-card border border-border/50 rounded-2xl p-8 md:p-12 shadow-sm">
+      {/* Section Header */}
+      <div className="flex items-center gap-3 mb-10 pb-6 border-b border-border/50">
+        <Users className="h-6 w-6 text-muted-foreground" />
+        <h2 className="text-2xl md:text-[28px] font-semibold text-foreground tracking-tight">
+          Fund Team
+          <span className="text-muted-foreground font-normal ml-1">
+            ({team.length} {team.length === 1 ? 'member' : 'members'})
+          </span>
+        </h2>
+      </div>
+
+      <AuthGate 
+        message="Sign in to see full team profiles, bios, and LinkedIn connections"
+        height="300px"
+      >
+        {/* Team Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {team.map((member, index) => (
+            <div 
+              key={member.name || index} 
+              className="group relative flex gap-5 items-start p-5 rounded-xl transition-all duration-200 cursor-pointer hover:bg-muted/30 hover:translate-x-1"
+            >
+              {/* Left border accent on hover */}
+              <div className="absolute left-0 top-5 bottom-5 w-[3px] rounded-full bg-gradient-to-b from-primary to-primary/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+              
+              {/* Avatar */}
+              <div className="relative flex-shrink-0">
+                <Avatar className="h-[72px] w-[72px] border-2 border-border transition-all duration-200 group-hover:border-primary/30 group-hover:shadow-lg group-hover:shadow-primary/10">
+                  {member.photoUrl ? (
+                    <AvatarImage 
+                      src={member.photoUrl} 
+                      alt={`${member.name} profile picture`}
+                      className="object-cover"
+                    />
+                  ) : null}
+                  <AvatarFallback className="bg-primary/10 text-primary text-xl font-semibold">
+                    {member.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                {/* Online indicator - shows on hover */}
+                <div className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-primary rounded-full border-2 border-card opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
               </div>
-            ))}
-          </div>
-        </AuthGate>
-      </CardContent>
-    </Card>
+
+              {/* Member Info */}
+              <div className="flex-1 min-w-0 space-y-2">
+                <h3 className="text-xl font-semibold text-foreground tracking-tight leading-tight">
+                  {member.name}
+                </h3>
+                
+                <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
+                  <Briefcase className="h-3.5 w-3.5 opacity-50" />
+                  {member.position}
+                </div>
+
+                {member.bio && (
+                  <p className="text-sm text-muted-foreground leading-relaxed pt-1">
+                    {member.bio}
+                  </p>
+                )}
+
+                {/* Actions */}
+                {member.linkedinUrl && (
+                  <div className="pt-3">
+                    <a
+                      href={member.linkedinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-2 px-3 py-1.5 bg-transparent border border-border/50 rounded-md text-[13px] font-medium text-[#0077b5] hover:bg-[#0077b5]/8 hover:border-[#0077b5]/30 transition-all duration-150"
+                    >
+                      <Linkedin className="h-3.5 w-3.5" />
+                      LinkedIn
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </AuthGate>
+    </div>
   );
 };
 
