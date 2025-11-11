@@ -82,3 +82,6 @@ verify_jwt = false
 
 [functions.notify-lead-status-change]
 verify_jwt = false
+
+[functions.weekly-lead-digest]
+verify_jwt = false
