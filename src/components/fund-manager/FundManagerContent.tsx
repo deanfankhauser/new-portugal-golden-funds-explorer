@@ -37,8 +37,11 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
           </div>
           
           <h1 className="text-5xl font-bold text-foreground mb-4">{managerName}</h1>
-          <p className="text-xl text-muted-foreground">
-            Managing {managerFunds.length} {managerFunds.length === 1 ? 'fund' : 'funds'}
+          <p className="text-xl text-muted-foreground max-w-3xl">
+            {managerFunds.length === 1 
+              ? "Portugal Golden Visa approved investment fund manager offering professional fund management services for international investors seeking Portuguese residency through capital transfer."
+              : `Portugal Golden Visa approved investment fund manager offering ${managerFunds.length} professional investment funds for international investors seeking Portuguese residency through capital transfer.`
+            }
           </p>
         </div>
       </div>
