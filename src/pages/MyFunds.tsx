@@ -13,6 +13,7 @@ import { PageLoader } from '@/components/common/LoadingSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 import { Fund } from '@/data/types/funds';
+import MyProfilesCard from '@/components/manager-profile/MyProfilesCard';
 
 interface FundAssignment {
   id: string;
@@ -131,6 +132,11 @@ const MyFunds = () => {
                 </div>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Company Profiles */}
+          <div className="mb-8">
+            <MyProfilesCard />
           </div>
 
           {/* Search */}

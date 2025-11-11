@@ -52,6 +52,7 @@ const SavedFunds = lazy(() => import('./pages/SavedFunds'));
 const TempMigrationPage = lazy(() => import('./pages/TempMigrationPage'));
 const MyFunds = lazy(() => import('./pages/MyFunds'));
 const ManageFund = lazy(() => import('./pages/ManageFund'));
+const ManageProfile = lazy(() => import('./pages/ManageProfile'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -315,6 +316,13 @@ function App() {
                        <Route path="/manage-fund/:fundId" element={
                          <Suspense fallback={<PageLoader />}>
                            <ManageFund />
+                         </Suspense>
+                       } />
+
+                       {/* Manage Company Profile */}
+                       <Route path="/manage-profile/:profileId" element={
+                         <Suspense fallback={<PageLoader />}>
+                           <ManageProfile />
                          </Suspense>
                        } />
 
