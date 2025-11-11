@@ -345,24 +345,41 @@ export const useFundEditing = () => {
 
     setLoading(true);
     try {
+      console.log('🔐 [directUpdateFund] Starting update for fund:', fundId);
+      console.log('👤 [directUpdateFund] User ID:', user.id);
+      console.log('📝 [directUpdateFund] Updates to apply:', updates);
+      
       // First check if user has permission
+      console.log('🔍 [directUpdateFund] Checking edit permissions...');
       const canEdit = await canEditFund(fundId);
+      console.log('✓ [directUpdateFund] Can edit:', canEdit);
+      
       if (!canEdit) {
         throw new Error('You do not have permission to edit this fund');
       }
 
       // Transform to database format
+      console.log('🔄 [directUpdateFund] Transforming to database format...');
       const dbUpdates = transformToDbFormat(updates);
+      console.log('✓ [directUpdateFund] Transformed updates:', dbUpdates);
 
       // Update the fund directly
-      const { error: updateError } = await supabase
+      console.log('💾 [directUpdateFund] Sending update to Supabase...');
+      const { data: updateData, error: updateError } = await supabase
         .from('funds')
         .update(dbUpdates)
-        .eq('id', fundId);
+        .eq('id', fundId)
+        .select();
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error('❌ [directUpdateFund] Supabase update error:', updateError);
+        throw updateError;
+      }
+      
+      console.log('✅ [directUpdateFund] Update successful:', updateData);
 
       // Log the edit
+      console.log('📋 [directUpdateFund] Logging edit to fund_manager_edits...');
       const { error: logError } = await supabase
         .from('fund_manager_edits' as any)
         .insert({
@@ -374,8 +391,10 @@ export const useFundEditing = () => {
         } as any);
 
       if (logError) {
-        console.error('Failed to log edit:', logError);
+        console.error('⚠️ [directUpdateFund] Failed to log edit:', logError);
         // Don't throw - the update was successful
+      } else {
+        console.log('✓ [directUpdateFund] Edit logged successfully');
       }
 
       toast({
@@ -388,7 +407,12 @@ export const useFundEditing = () => {
 
       return true;
     } catch (error) {
-      console.error('Error updating fund:', error);
+      console.error('❌ [directUpdateFund] Error updating fund:', error);
+      console.error('Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        error
+      });
       toast({
         title: "Update Failed",
         description: error instanceof Error ? error.message : "Failed to update fund. Please try again.",

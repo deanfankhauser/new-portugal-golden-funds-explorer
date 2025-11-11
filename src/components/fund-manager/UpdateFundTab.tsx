@@ -215,6 +215,25 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
       return value;
     };
     
+    // Special handling for array comparison - sort before comparing
+    const compareArrays = (arr1: any[], arr2: any[]): boolean => {
+      if (arr1.length !== arr2.length) return false;
+      
+      // For simple arrays (like tags), sort and compare
+      if (arr1.every(item => typeof item === 'string')) {
+        const sorted1 = [...arr1].sort();
+        const sorted2 = [...arr2].sort();
+        return JSON.stringify(sorted1) === JSON.stringify(sorted2);
+      }
+      
+      // For complex arrays, use JSON comparison
+      return JSON.stringify(arr1) === JSON.stringify(arr2);
+    };
+    
+    console.log('🔍 [getSuggestedChanges] Starting change detection');
+    console.log('Current fund data:', current);
+    console.log('Form data:', formData);
+    
     Object.keys(formData).forEach(key => {
       const currentValue = normalizeValue(current[key as keyof typeof current]);
       let newValue: any = formData[key as keyof typeof formData];
@@ -227,26 +246,54 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
         newValue = normalizeValue(newValue);
       }
       
-      const hasChanged = Array.isArray(currentValue) || (typeof currentValue === 'object' && currentValue !== null) ||
-                        Array.isArray(newValue) || (typeof newValue === 'object' && newValue !== null)
-        ? JSON.stringify(currentValue) !== JSON.stringify(newValue)
-        : currentValue !== newValue;
+      let hasChanged = false;
+      
+      // Special handling for arrays
+      if (Array.isArray(currentValue) && Array.isArray(newValue)) {
+        hasChanged = !compareArrays(currentValue, newValue);
+        
+        if (key === 'tags') {
+          console.log('🏷️ [Tags] Comparison:', {
+            currentTags: currentValue,
+            newTags: newValue,
+            hasChanged,
+            currentSorted: [...currentValue].sort(),
+            newSorted: [...newValue].sort()
+          });
+        }
+      } else if ((typeof currentValue === 'object' && currentValue !== null) || 
+                 (typeof newValue === 'object' && newValue !== null)) {
+        hasChanged = JSON.stringify(currentValue) !== JSON.stringify(newValue);
+      } else {
+        hasChanged = currentValue !== newValue;
+      }
       
       if (hasChanged) {
         if (!(currentValue === undefined && newValue === undefined)) {
           changes[key] = newValue;
+          console.log(`✏️ Change detected in "${key}":`, {
+            from: currentValue,
+            to: newValue
+          });
         }
       }
     });
+    
+    console.log('📋 Final changes object:', changes);
+    console.log(`Total fields changed: ${Object.keys(changes).length}`);
     
     return changes;
   };
 
   const handleSubmit = async () => {
     try {
+      console.log('🚀 [handleSubmit] Starting submission...');
       const suggestedChanges = getSuggestedChanges();
       
+      console.log('📊 [handleSubmit] Suggested changes:', suggestedChanges);
+      
       if (Object.keys(suggestedChanges).length === 0) {
+        console.warn('⚠️ [handleSubmit] No changes detected');
         toast({
           title: "No changes detected",
           description: "Please make changes before submitting.",
@@ -255,12 +302,14 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
       }
 
       if (canDirectEdit) {
+        console.log('✅ [handleSubmit] User has direct edit permission, updating fund...');
         await directUpdateFund(fund.id, suggestedChanges);
         toast({
           title: "Fund Updated!",
           description: "Your changes have been published and are now live.",
         });
       } else {
+        console.log('📝 [handleSubmit] Submitting as suggestion...');
         await submitFundEditSuggestion(fund.id, suggestedChanges, getCurrentValues());
         toast({
           title: "Suggestion submitted!",
@@ -268,11 +317,16 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
         });
       }
     } catch (error) {
-      console.error('Error submitting changes:', error);
+      console.error('❌ [handleSubmit] Error submitting changes:', error);
+      console.error('Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        error
+      });
       toast({
         title: "Submission failed",
         description: canDirectEdit 
-          ? "Failed to update fund. Please try again."
+          ? `Failed to update fund: ${error instanceof Error ? error.message : 'Unknown error'}`
           : "Failed to submit edit suggestion. Please try again.",
         variant: "destructive",
       });
