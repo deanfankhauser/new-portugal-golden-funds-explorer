@@ -8,7 +8,7 @@ import { trackInteraction } from '@/utils/analyticsTracking';
 import { Link } from 'react-router-dom';
 import { managerToSlug } from '@/lib/utils';
 import { getReturnTargetDisplay } from '@/utils/returnTarget';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 
 interface ContactSidebarProps {
   fund: Fund;
@@ -35,6 +35,7 @@ const scrollToEnquiry = () => {
 
 const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
   const { user } = useEnhancedAuth();
+  const { toast } = useToast();
   const { isFundSaved, saveFund, unsaveFund } = useSavedFunds();
   const isSaved = isFundSaved(fund.id);
   
@@ -49,7 +50,10 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
     console.log('💾 Save button clicked', { fundId: fund.id, isSaved, user: !!user });
 
     if (!user) {
-      toast.error('Please log in to save funds');
+      toast({
+        title: 'Please sign in to save funds',
+        variant: 'destructive'
+      });
       return;
     }
 

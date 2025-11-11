@@ -3,7 +3,7 @@ import { Bookmark } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSavedFunds } from '@/hooks/useSavedFunds';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { trackInteraction } from '@/utils/analyticsTracking';
 
@@ -26,6 +26,7 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
   if (typeof window === 'undefined') return null;
   
   const { user } = useEnhancedAuth();
+  const { toast } = useToast();
   const { isFundSaved, saveFund, unsaveFund } = useSavedFunds();
   const isSaved = isFundSaved(fundId);
   
@@ -38,7 +39,10 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
     e.stopPropagation();
 
     if (!user) {
-      toast.error('Please sign in to save funds');
+      toast({
+        title: 'Please sign in to save funds',
+        variant: 'destructive'
+      });
       return;
     }
 
@@ -90,24 +94,23 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
 
   return (
     <Button
-      variant={variant}
+      variant={showText ? variant : undefined}
       size={showText ? 'sm' : 'icon'}
       onClick={handleClick}
+      aria-pressed={displaySaved}
+      title={displaySaved ? 'Remove from saved funds' : 'Save fund'}
       className={cn(
         showText ? 'gap-2' : getSizeClasses(),
         'transition-colors duration-200',
-        displaySaved 
-          ? 'text-primary hover:text-primary/90' 
-          : 'text-muted-foreground hover:text-foreground',
+        displaySaved
+          ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+          : 'border border-border hover:bg-primary hover:text-white',
         className
       )}
-      title={displaySaved ? 'Remove from saved funds' : 'Save fund'}
     >
       <Bookmark 
-        className={cn(
-          getIconSize(),
-          displaySaved && 'fill-current'
-        )} 
+        className={getIconSize()}
+        fill={displaySaved ? 'currentColor' : 'none'}
       />
       {showText && (
         <span>{displaySaved ? 'Saved' : 'Save'}</span>
