@@ -248,19 +248,97 @@ export const useFundEditing = () => {
   }, [user]);
 
   const canEditFund = useCallback(async (fundId: string) => {
-    if (!user) return false;
+    if (!user) {
+      console.log('🔐 [canEditFund] No user authenticated');
+      return false;
+    }
+
+    console.log('🔐 [canEditFund] Checking permission for user:', user.id, 'fund:', fundId);
 
     try {
-      const { data, error } = await supabase
+      // 1. Check if user is admin (admin override)
+      console.log('🔐 [canEditFund] Step 1: Checking admin status...');
+      const { data: adminData, error: adminError } = await supabase
+        .from('admin_users')
+        .select('role')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (!adminError && adminData) {
+        console.log('✅ [canEditFund] User is admin - access granted');
+        return true;
+      }
+      console.log('ℹ️ [canEditFund] User is not admin, checking manager permissions...');
+
+      // 2. Try RPC with named parameters (p_user_id, p_fund_id)
+      console.log('🔐 [canEditFund] Step 2: Trying RPC with p_user_id, p_fund_id...');
+      const { data: rpcData1, error: rpcError1 } = await supabase
         .rpc('can_user_edit_fund' as any, {
           p_user_id: user.id,
           p_fund_id: fundId
         } as any);
 
-      if (error) throw error;
-      return !!data;
+      if (!rpcError1 && rpcData1) {
+        console.log('✅ [canEditFund] RPC check passed (variant 1) - access granted');
+        return true;
+      }
+      console.log('⚠️ [canEditFund] RPC variant 1 failed:', rpcError1);
+
+      // 3. Try RPC with alternate parameter names (user_id, fund_id)
+      console.log('🔐 [canEditFund] Step 3: Trying RPC with user_id, fund_id...');
+      const { data: rpcData2, error: rpcError2 } = await supabase
+        .rpc('can_user_edit_fund' as any, {
+          user_id: user.id,
+          fund_id: fundId
+        } as any);
+
+      if (!rpcError2 && rpcData2) {
+        console.log('✅ [canEditFund] RPC check passed (variant 2) - access granted');
+        return true;
+      }
+      console.log('⚠️ [canEditFund] RPC variant 2 failed:', rpcError2);
+
+      // 4. Fallback: Check fund_managers table directly
+      console.log('🔐 [canEditFund] Step 4: Checking fund_managers table directly...');
+      const { data: assignmentData, error: assignmentError } = await supabase
+        .from('fund_managers' as any)
+        .select('status, permissions')
+        .eq('user_id', user.id)
+        .eq('fund_id', fundId)
+        .maybeSingle() as { 
+          data: { status: string; permissions: { can_edit?: boolean } } | null; 
+          error: any 
+        };
+
+      if (assignmentError) {
+        console.error('❌ [canEditFund] fund_managers query error:', assignmentError);
+        return false;
+      }
+
+      if (!assignmentData) {
+        console.log('❌ [canEditFund] No assignment found in fund_managers table');
+        return false;
+      }
+
+      const hasPermission = 
+        assignmentData.status === 'active' && 
+        assignmentData.permissions?.can_edit === true;
+
+      console.log('🔐 [canEditFund] Assignment found:', {
+        status: assignmentData.status,
+        permissions: assignmentData.permissions,
+        hasPermission
+      });
+
+      if (hasPermission) {
+        console.log('✅ [canEditFund] Fallback check passed - access granted');
+        return true;
+      }
+
+      console.log('❌ [canEditFund] Access denied - no valid permissions found');
+      return false;
     } catch (error) {
-      console.error('Error checking edit permission:', error);
+      console.error('❌ [canEditFund] Unexpected error:', error);
       return false;
     }
   }, [user]);
