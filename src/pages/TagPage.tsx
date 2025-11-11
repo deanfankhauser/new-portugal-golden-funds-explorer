@@ -15,6 +15,7 @@ import RelatedTags from '../components/tag/RelatedTags';
 import VerificationFilterChip from '../components/common/VerificationFilterChip';
 import { FundTag } from '../data/types/funds';
 import { slugToTag, tagToSlug } from '../lib/utils';
+import { FloatingActionButton } from '../components/common/FloatingActionButton';
 
 const TagPage = () => {
   const { tag: tagSlug } = useParams<{ tag: string }>();
@@ -139,6 +140,8 @@ const TagPage = () => {
       </main>
       
       <Footer />
+      
+      <FloatingActionButton />
     </div>
   );
 };

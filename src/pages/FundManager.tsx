@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/types/profile';
 import { useAllFunds } from '../hooks/useFundsQuery';
 import { Fund } from '../data/types/funds';
+import { FloatingActionButton } from '../components/common/FloatingActionButton';
 
 const FundManager = () => {
   const { name } = useParams<{ name: string }>();
@@ -145,6 +146,8 @@ const FundManager = () => {
       </main>
       
       <Footer />
+      
+      <FloatingActionButton />
     </div>
   );
 };

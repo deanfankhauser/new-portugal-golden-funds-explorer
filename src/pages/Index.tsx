@@ -6,6 +6,7 @@ import HomepageLayout from '../components/homepage/HomepageLayout';
 import HomepageHero from '../components/homepage/HomepageHero';
 import HomepageContent from '../components/homepage/HomepageContent';
 import FundListSkeleton from '../components/common/FundListSkeleton';
+import { FloatingActionButton } from '../components/common/FloatingActionButton';
 
 // Lazy load non-critical components
 const HomepageInfoSections = lazy(() => import('../components/homepage/HomepageInfoSections'));
@@ -66,6 +67,8 @@ const IndexPage = () => {
           <HomepageInfoSections />
         </Suspense>
       </section>
+
+      <FloatingActionButton />
     </HomepageLayout>
   );
 };
