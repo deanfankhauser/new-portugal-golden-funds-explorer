@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User, LogOut, Settings } from 'lucide-react';
+import { User, LogOut, Settings, Briefcase } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const ManagerAuthButton = () => {
@@ -67,6 +67,12 @@ const ManagerAuthButton = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/my-funds">
+            <Briefcase className="mr-2 h-4 w-4" />
+            <span>Manage funds</span>
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem>
           <User className="mr-2 h-4 w-4" />
           <span>Profile</span>
