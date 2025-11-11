@@ -6,8 +6,9 @@ import Footer from '../components/Footer';
 import { PageSEO } from '../components/common/PageSEO';
 import FundDetailsContent from '../components/fund-details/FundDetailsContent';
 import FloatingCTA from '../components/fund-details/FloatingCTA';
+import { FundDetailsLoader } from '../components/common/LoadingSkeleton';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
-import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
+import { useFund } from '../hooks/useFundsQuery';
 import { trackPageView } from '../utils/analyticsTracking';
 import type { Fund } from '../data/types/funds';
 
@@ -20,13 +21,10 @@ const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund }) => {
   // Prefer SSR-injected fund when available; fallback to client lookup
   const fundId = id || potentialFundId || ssrFund?.id;
   
-  // Use selective real-time subscription for this specific fund only
-  const { getFundById } = useRealTimeFunds({ 
-    subscribeTo: fundId ? [fundId] : undefined,
-    enableRealTime: true 
-  });
+  // Use optimized React Query hook for single fund fetching
+  const { data: queriedFund, isLoading } = useFund(fundId);
   
-  const fund = ssrFund ?? (fundId ? getFundById(fundId) : null);
+  const fund = ssrFund ?? queriedFund;
   const { addToRecentlyViewed } = useRecentlyViewed();
   
   useEffect(() => {
@@ -44,6 +42,22 @@ const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund }) => {
       }
     }
   }, [fund?.id, addToRecentlyViewed]); // Only depend on stable ID
+
+  // Show loading skeleton while fetching data
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <PageSEO pageType="fund" />
+        <Header />
+        <main className="flex-1 py-6 md:py-8">
+          <div className="container mx-auto px-4 max-w-7xl">
+            <FundDetailsLoader />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!fund) {
     return (
