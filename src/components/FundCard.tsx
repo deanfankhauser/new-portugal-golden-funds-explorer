@@ -41,7 +41,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
 
   return (
     <>
-      <Card className={`h-full hover:shadow-lg transition-shadow ${
+      <Card className={`h-full ${
         fund.isVerified 
           ? 'ring-2 ring-success/30 border-success/30' 
           : ''
