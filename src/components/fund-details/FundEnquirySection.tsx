@@ -9,8 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { Fund } from '@/data/funds';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Mail, Phone, User, MessageSquare } from 'lucide-react';
+import { Loader2, Mail, Phone, User, MessageSquare, CheckCircle2, Sparkles } from 'lucide-react';
 import { z } from 'zod';
+import confetti from 'canvas-confetti';
 
 interface FundEnquirySectionProps {
   fund: Fund;
@@ -48,6 +49,7 @@ type EnquiryFormData = z.infer<typeof enquirySchema>;
 export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [formData, setFormData] = useState<EnquiryFormData>({
     firstName: '',
     lastName: '',
@@ -58,6 +60,35 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
     message: '',
   });
   const [errors, setErrors] = useState<Partial<Record<keyof EnquiryFormData, string>>>({});
+
+  const triggerConfetti = () => {
+    const duration = 3000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+    const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
+    const interval = window.setInterval(() => {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+      });
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+      });
+    }, 250);
+  };
 
   const handleInterestToggle = (interest: string) => {
     setFormData(prev => ({
@@ -114,21 +145,30 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
 
       if (error) throw error;
 
+      // Trigger confetti celebration
+      triggerConfetti();
+      
+      // Show success state
+      setShowSuccess(true);
+
       toast({
         title: 'Enquiry Sent!',
         description: 'The fund manager will contact you within 24-48 hours.',
       });
 
-      // Reset form
-      setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        investmentAmountRange: '',
-        interestAreas: [],
-        message: '',
-      });
+      // Reset form after animation
+      setTimeout(() => {
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          investmentAmountRange: '',
+          interestAreas: [],
+          message: '',
+        });
+        setShowSuccess(false);
+      }, 4000);
     } catch (error) {
       console.error('Error submitting enquiry:', error);
       toast({
@@ -149,6 +189,27 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
           <div className="flex flex-col items-center gap-4">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
             <p className="text-lg font-medium text-foreground animate-pulse">Sending your enquiry...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Success Overlay */}
+      {showSuccess && (
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-primary/10 backdrop-blur-sm z-50 flex items-center justify-center rounded-lg animate-fade-in">
+          <div className="flex flex-col items-center gap-6 text-center px-6">
+            <div className="relative">
+              <CheckCircle2 className="h-24 w-24 text-primary animate-scale-in" />
+              <Sparkles className="h-8 w-8 text-primary absolute -top-2 -right-2 animate-pulse" />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-3xl font-bold text-foreground animate-fade-in">Success!</h3>
+              <p className="text-lg text-muted-foreground animate-fade-in">
+                Your enquiry has been sent to the fund manager
+              </p>
+              <p className="text-sm text-muted-foreground animate-fade-in">
+                You'll receive a response within 24-48 hours
+              </p>
+            </div>
           </div>
         </div>
       )}
