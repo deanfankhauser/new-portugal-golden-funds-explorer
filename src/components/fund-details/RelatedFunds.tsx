@@ -2,11 +2,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund, getFundsByCategory, funds } from '../../data/funds';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
-import { ExternalLink, TrendingUp, DollarSign, CheckCircle2 } from 'lucide-react';
+import { ExternalLink, TrendingUp, DollarSign } from 'lucide-react';
 import { categoryToSlug } from '@/lib/utils';
-import RecentlyVerifiedBadge from '../common/RecentlyVerifiedBadge';
 
 interface RelatedFundsProps {
   currentFund: Fund;
@@ -27,96 +25,111 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
     .slice(0, 3);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Same Category Funds */}
       {sameCategoryFunds.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-accent" />
+        <section className="bg-background rounded-xl border border-border p-6 sm:p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <TrendingUp className="h-6 w-6 text-accent" strokeWidth={2} />
+            <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
               More {currentFund.category} Funds
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {sameCategoryFunds.map(fund => (
-                <div key={fund.id} className="border border-border rounded-lg p-4 hover:border-accent transition-colors">
-                  <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
-                    <h4 className="font-semibold text-foreground mb-2 hover:text-accent transition-colors flex items-center gap-1.5 flex-wrap">
-                      {fund.name}
-                      {fund.isVerified && (
-                        <>
-                          <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
-                          <RecentlyVerifiedBadge verifiedAt={fund.verifiedAt} className="text-[10px]" />
-                        </>
-                      )}
-                    </h4>
-                  </Link>
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{fund.description}</p>
-                  <div className="flex justify-between items-center text-xs text-muted-foreground mb-3">
-                    <span>Min: €{fund.minimumInvestment.toLocaleString()}</span>
-                    <span>Fee: {fund.managementFee}%</span>
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+            {sameCategoryFunds.map(fund => (
+              <Link 
+                key={fund.id} 
+                to={`/${fund.id}`} 
+                onClick={() => window.scrollTo(0, 0)}
+                className="group block bg-background border border-border rounded-xl p-7 transition-all duration-200 hover:border-border/80 hover:shadow-lg hover:translate-y-[-2px] relative overflow-hidden"
+              >
+                {/* Top accent border on hover */}
+                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary to-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-t-xl" />
+                
+                <h4 className="text-xl font-semibold text-foreground mb-3 leading-tight tracking-tight group-hover:text-primary transition-colors">
+                  {fund.name}
+                </h4>
+                
+                <p className="text-sm text-muted-foreground leading-relaxed mb-5 line-clamp-2 min-h-[40px]">
+                  {fund.description}
+                </p>
+                
+                <div className="flex justify-between items-center pb-5 mb-5 border-b border-border">
+                  <div>
+                    <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Min Investment</span>
+                    <span className="text-[15px] font-semibold text-foreground">€{fund.minimumInvestment.toLocaleString()}</span>
                   </div>
-                  <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
-                    <Button size="sm" variant="outline" className="w-full">
-                      <ExternalLink className="h-3 w-3 mr-1" />
-                      View Details
-                    </Button>
-                  </Link>
+                  <div className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-primary/10 text-primary">
+                    {fund.category}
+                  </div>
                 </div>
-              ))}
-            </div>
-            <div className="mt-4 text-center">
-              <Link to={`/categories/${categoryToSlug(currentFund.category)}`}>
-                <Button variant="ghost" size="sm">
-                  View All {currentFund.category} Funds →
-                </Button>
+                
+                <div className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-transparent border border-border/50 rounded-lg text-sm font-semibold text-muted-foreground group-hover:bg-muted/20 group-hover:border-border group-hover:text-foreground transition-all">
+                  View Details
+                  <ExternalLink className="h-4 w-4" strokeWidth={2} />
+                </div>
               </Link>
-            </div>
-          </CardContent>
-        </Card>
+            ))}
+          </div>
+          
+          <div className="text-center pt-2">
+            <Link to={`/categories/${categoryToSlug(currentFund.category)}`}>
+              <Button variant="ghost" className="text-primary hover:text-primary/80 font-medium">
+                View All {currentFund.category} Funds →
+              </Button>
+            </Link>
+          </div>
+        </section>
       )}
 
       {/* Similar Investment Amount Funds */}
       {similarInvestmentFunds.length > 0 && (
-        <Card className="shadow-lg border-2 hover:shadow-xl transition-all duration-300">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-3 mb-3">
-              <div className="p-2 rounded-lg bg-accent/10 shrink-0">
-                <DollarSign className="w-5 h-5 text-accent" />
-              </div>
-              <h2 className="text-2xl font-bold text-foreground pt-1">Similar Investment Range</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {similarInvestmentFunds.map(fund => (
-                <div key={fund.id} className="border border-border rounded-lg p-4 hover:border-accent transition-colors">
-                  <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
-                    <h4 className="font-semibold text-foreground mb-2 hover:text-accent transition-colors flex items-center gap-1.5 flex-wrap">
-                      {fund.name}
-                      {fund.isVerified && (
-                        <>
-                          <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
-                          <RecentlyVerifiedBadge verifiedAt={fund.verifiedAt} className="text-[10px]" />
-                        </>
-                      )}
-                    </h4>
-                  </Link>
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{fund.description}</p>
-                  <div className="flex justify-between items-center text-xs text-muted-foreground mb-3">
-                    <span>Min: €{fund.minimumInvestment.toLocaleString()}</span>
-                    <span>{fund.category}</span>
+        <section className="bg-background rounded-xl border border-border p-6 sm:p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <DollarSign className="h-6 w-6 text-accent" strokeWidth={2} />
+            <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
+              Similar Investment Range
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {similarInvestmentFunds.map(fund => (
+              <Link 
+                key={fund.id} 
+                to={`/${fund.id}`} 
+                onClick={() => window.scrollTo(0, 0)}
+                className="group block bg-background border border-border rounded-xl p-7 transition-all duration-200 hover:border-border/80 hover:shadow-lg hover:translate-y-[-2px] relative overflow-hidden"
+              >
+                {/* Top accent border on hover */}
+                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary to-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-t-xl" />
+                
+                <h4 className="text-xl font-semibold text-foreground mb-3 leading-tight tracking-tight group-hover:text-primary transition-colors">
+                  {fund.name}
+                </h4>
+                
+                <p className="text-sm text-muted-foreground leading-relaxed mb-5 line-clamp-2 min-h-[40px]">
+                  {fund.description}
+                </p>
+                
+                <div className="flex justify-between items-center pb-5 mb-5 border-b border-border">
+                  <div>
+                    <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Min Investment</span>
+                    <span className="text-[15px] font-semibold text-foreground">€{fund.minimumInvestment.toLocaleString()}</span>
                   </div>
-                  <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
-                    <Button size="sm" variant="outline" className="w-full">
-                      <ExternalLink className="h-3 w-3 mr-1" />
-                      View Details
-                    </Button>
-                  </Link>
+                  <div className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-primary/10 text-primary">
+                    {fund.category}
+                  </div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                
+                <div className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-transparent border border-border/50 rounded-lg text-sm font-semibold text-muted-foreground group-hover:bg-muted/20 group-hover:border-border group-hover:text-foreground transition-all">
+                  View Details
+                  <ExternalLink className="h-4 w-4" strokeWidth={2} />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
       )}
     </div>
   );
