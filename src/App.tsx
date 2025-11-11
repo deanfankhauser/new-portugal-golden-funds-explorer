@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from "@/components/ui/toaster";
 import { ComparisonProvider } from './contexts/ComparisonContext';
@@ -152,11 +152,7 @@ function App() {
                   <div className="min-h-screen w-full bg-background">
                     <Routes>
                       <Route path="/" element={<Index />} />
-                      <Route path="/index" element={
-                        <Suspense fallback={<FundIndexLoader />}>
-                          <FundIndex />
-                        </Suspense>
-                      } />
+                      <Route path="/index" element={<Navigate to="/" replace />} />
                       <Route path="/tags" element={
                         <Suspense fallback={<PageLoader />}>
                           <TagsHub />
