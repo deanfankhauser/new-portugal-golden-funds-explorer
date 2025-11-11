@@ -2,7 +2,7 @@ import React from 'react';
 import { Badge } from '../ui/badge';
 import { CheckCircle2 } from 'lucide-react';
 import { Fund } from '../../data/funds';
-import { FundEditButton } from '../fund-editing';
+
 
 interface DecisionBandHeaderProps {
   fund: Fund;
@@ -72,13 +72,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
           />
         </div>
         
-        {/* Edit Button */}
-        <FundEditButton 
-          fund={fund}
-          variant="outline"
-          size="sm"
-          className="shrink-0"
-        />
+        {/* Edit actions removed on public profile */}
       </div>
     </div>
   );

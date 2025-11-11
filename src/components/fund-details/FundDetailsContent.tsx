@@ -23,7 +23,7 @@ import { tagToSlug } from '@/lib/utils';
 import { FundEnquiryModal } from './FundEnquiryModal';
 
 import FundBreadcrumbs from './FundBreadcrumbs';
-import { FundEditButton } from '../fund-editing/FundEditButton';
+
 
 // Import tab components directly
 import FundDescription from './FundDescription';
