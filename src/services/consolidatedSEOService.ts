@@ -250,14 +250,6 @@ export class ConsolidatedSEOService {
           structuredData: this.getFundStructuredData(fund)
         };
 
-      case 'fund-index':
-        return {
-          title: this.optimizeText('Portugal Golden Visa Investment Fund Index 2025 | Fund Database | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Complete Portugal Golden Visa investment fund database. Compare qualified Golden Visa funds by category, fees, minimum investment, and performance metrics.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('index'),
-          structuredData: this.getFundIndexStructuredData()
-        };
-
       case 'category':
         return {
           title: this.optimizeText(`${params.categoryName} Portugal Golden Visa Investment Funds | Movingto`, this.MAX_TITLE_LENGTH),
@@ -742,8 +734,7 @@ export class ConsolidatedSEOService {
       '@type': 'BreadcrumbList',
       'itemListElement': [
         { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
-        { '@type': 'ListItem', 'position': 2, 'name': 'Fund Index', 'item': URL_CONFIG.buildUrl('/index') },
-        { '@type': 'ListItem', 'position': 3, 'name': fund.name, 'item': URL_CONFIG.buildFundUrl(fund.id) }
+        { '@type': 'ListItem', 'position': 2, 'name': fund.name, 'item': URL_CONFIG.buildFundUrl(fund.id) }
       ]
     };
     
@@ -917,73 +908,6 @@ export class ConsolidatedSEOService {
           'applicationCategory': 'FinanceApplication'
         }
       ]
-    };
-  }
-
-  private static getFundIndexStructuredData(): any {
-    // Get all funds for ranking
-    const allFunds = funds.filter((f: any) => f && f.name && f.id);
-    
-    return [
-      {
-        '@context': 'https://schema.org',
-        '@type': 'CollectionPage',
-        'name': 'Portugal Golden Visa Investment Funds Database',
-        'description': 'Complete database of Portugal Golden Visa Investment Funds',
-        'url': URL_CONFIG.buildUrl('index'),
-        'breadcrumb': {
-          '@type': 'BreadcrumbList',
-          'itemListElement': [
-            {
-              '@type': 'ListItem',
-              'position': 1,
-              'name': 'Home',
-              'item': URL_CONFIG.buildUrl('/')
-            },
-            {
-              '@type': 'ListItem',
-              'position': 2,
-              'name': 'Fund Index',
-              'item': URL_CONFIG.buildUrl('index')
-            }
-          ]
-        }
-      },
-      {
-        '@context': 'https://schema.org',
-        '@type': 'ItemList',
-        'name': 'Ranked Portugal Golden Visa Investment Funds',
-        'description': 'Complete ranked list of Portugal Golden Visa investment funds by score',
-        'numberOfItems': allFunds.length,
-        'itemListElement': allFunds.map((fund: any, index: number) => ({
-          '@type': 'ListItem',
-          'position': index + 1,
-          'item': {
-            '@type': 'FinancialProduct',
-            'name': fund.name,
-            'url': URL_CONFIG.buildFundUrl(fund.id),
-            'category': fund.category,
-            'description': fund.description?.substring(0, 200),
-            'offers': {
-              '@type': 'Offer',
-              'price': fund.minimumInvestment || 0,
-              'priceCurrency': 'EUR',
-              'availability': fund.fundStatus === 'Open' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'
-            }
-          }
-        }))
-      },
-      this.getFundIndexTableSchema(allFunds)
-    ];
-  }
-
-  private static getFundIndexTableSchema(allFunds: any[]): any {
-    return {
-      '@context': 'https://schema.org',
-      '@type': 'Table',
-      'about': 'Portugal Golden Visa Investment Funds Rankings',
-      'name': 'Fund Index Rankings Table',
-      'description': 'Comprehensive ranking table of Portugal Golden Visa investment funds with scores, categories, and minimum investment amounts'
     };
   }
 

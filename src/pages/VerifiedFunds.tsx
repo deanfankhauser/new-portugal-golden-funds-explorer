@@ -24,7 +24,7 @@ const VerifiedFunds = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <PageSEO 
-        pageType="fund-index"
+        pageType="homepage"
         fundName="Verified Funds"
       />
       <Header />
