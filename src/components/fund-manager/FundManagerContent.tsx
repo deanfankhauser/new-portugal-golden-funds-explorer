@@ -6,17 +6,23 @@ import FundListItem from '@/components/FundListItem';
 import FundManagerAbout from './FundManagerAbout';
 import FundManagerFAQs from './FundManagerFAQs';
 import ManagerVerificationBadge from './ManagerVerificationBadge';
+import ManagerAboutSection from './ManagerAboutSection';
+import ManagerTeamSection from './ManagerTeamSection';
+import ManagerHighlightsSection from './ManagerHighlightsSection';
+import { Profile } from '@/types/profile';
 
 interface FundManagerContentProps {
   managerFunds: Fund[];
   managerName: string;
   isManagerVerified?: boolean;
+  managerProfile?: Profile | null;
 }
 
 const FundManagerContent: React.FC<FundManagerContentProps> = ({ 
   managerFunds, 
   managerName, 
-  isManagerVerified = false 
+  isManagerVerified = false,
+  managerProfile
 }) => {
   return (
     <>
@@ -34,6 +40,36 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
           <FundListItem key={fund.id} fund={fund} />
         ))}
       </div>
+
+      {/* Manager-Level About Section */}
+      {managerProfile?.manager_about && (
+        <div className="mb-12">
+          <ManagerAboutSection 
+            managerName={managerName}
+            about={managerProfile.manager_about}
+          />
+        </div>
+      )}
+
+      {/* Manager Highlights Section */}
+      {managerProfile?.manager_highlights && Array.isArray(managerProfile.manager_highlights) && managerProfile.manager_highlights.length > 0 && (
+        <div className="mb-12">
+          <ManagerHighlightsSection 
+            managerName={managerName}
+            highlights={managerProfile.manager_highlights}
+          />
+        </div>
+      )}
+
+      {/* Team Members Section */}
+      {managerProfile?.team_members && Array.isArray(managerProfile.team_members) && managerProfile.team_members.length > 0 && (
+        <div className="mb-12">
+          <ManagerTeamSection 
+            managerName={managerName}
+            teamMembers={managerProfile.team_members}
+          />
+        </div>
+      )}
 
       {/* About Section for each fund */}
       <div className="space-y-8 mb-12">

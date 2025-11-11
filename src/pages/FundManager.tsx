@@ -9,6 +9,8 @@ import FundManagerContent from '../components/fund-manager/FundManagerContent';
 import FundManagerNotFound from '../components/fund-manager/FundManagerNotFound';
 import FundManagerBreadcrumbs from '../components/fund-manager/FundManagerBreadcrumbs';
 import VerificationFilterChip from '../components/common/VerificationFilterChip';
+import { supabase } from '@/integrations/supabase/client';
+import { Profile } from '@/types/profile';
 
 const FundManager = () => {
   const { name } = useParams<{ name: string }>();
@@ -17,6 +19,7 @@ const FundManager = () => {
   const allManagers = getAllFundManagers();
   const [isManagerVerified, setIsManagerVerified] = useState(false);
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
+  const [managerProfile, setManagerProfile] = useState<Profile | null>(null);
   
   // Find matching manager by checking if any manager matches when converted to slug
   const matchingManager = allManagers.find(manager => 
@@ -47,7 +50,7 @@ const FundManager = () => {
       
       const normalizedManagerName = normalizeCompanyName(displayManagerName);
       
-      const isVerified = approvedManagers.some(m => {
+      const matchingProfile = approvedManagers.find(m => {
         const normalizedCompanyName = normalizeCompanyName(m.company_name);
         const normalizedDbManagerName = m.manager_name ? normalizeCompanyName(m.manager_name) : '';
         
@@ -58,7 +61,22 @@ const FundManager = () => {
                normalizedManagerName.includes(normalizedCompanyName);
       });
       
-      setIsManagerVerified(isVerified && approvedManagers.some(m => m.status === 'approved'));
+      if (matchingProfile) {
+        setIsManagerVerified(matchingProfile.status === 'approved');
+        
+        // Fetch full profile data if manager is verified
+        if (matchingProfile.status === 'approved') {
+          const { data } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', matchingProfile.id)
+            .single();
+          
+          if (data) {
+            setManagerProfile(data);
+          }
+        }
+      }
     };
     
     if (displayManagerName) {
@@ -105,6 +123,7 @@ const FundManager = () => {
             managerFunds={managerFunds} 
             managerName={displayManagerName} 
             isManagerVerified={isManagerVerified}
+            managerProfile={managerProfile}
           />
         )}
       </main>
