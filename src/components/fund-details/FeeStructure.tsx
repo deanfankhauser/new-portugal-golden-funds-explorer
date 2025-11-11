@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Receipt, TrendingUp, ArrowDownCircle, ArrowUpCircle, Info } from 'lucide-react';
+import { ArrowDownCircle, ArrowUpCircle, Info } from 'lucide-react';
 import { Fund } from '../../data/funds';
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -58,12 +58,7 @@ const FeeStructure: React.FC<FeeStructureProps> = ({ fund, formatPercentage }) =
     <Card className="bg-card border border-border/40 rounded-2xl shadow-sm">
       <CardContent className="p-10">
         {/* Header */}
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-            <Receipt className="h-6 w-6 text-primary" />
-          </div>
-          <h2 className="text-[28px] font-semibold tracking-tight">Fees</h2>
-        </div>
+        <h2 className="text-[28px] font-semibold tracking-tight mb-8">Fees</h2>
 
         {/* Fee Structure */}
         <div className="mb-10">

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import { findAlternativeFunds } from '../../data/services/alternative-funds-service';
 import { Button } from "@/components/ui/button";
-import { ArrowRight, TrendingUp, Clock, Users, Building2, Tag } from 'lucide-react';
+import { ArrowRight, Clock, Users, Building2, Tag } from 'lucide-react';
 import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
 
 interface AlternativeFundsProps {
@@ -31,12 +31,9 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
     <section className="bg-background rounded-2xl border border-border overflow-hidden shadow-sm">
       {/* Header */}
       <div className="px-10 py-10 bg-gradient-to-b from-muted/30 to-background border-b border-border/60">
-        <div className="flex items-center gap-3 mb-3">
-          <TrendingUp className="h-6 w-6 text-primary" strokeWidth={2} />
-          <h2 className="text-2xl sm:text-[28px] font-bold text-foreground tracking-tight font-heading">
-            Alternative Fund Suggestions
-          </h2>
-        </div>
+        <h2 className="text-2xl sm:text-[28px] font-bold text-foreground tracking-tight font-heading mb-3">
+          Alternative Fund Suggestions
+        </h2>
         <p className="text-base text-muted-foreground leading-relaxed">
           If this fund is full or doesn't meet your requirements, here are similar options with comparable risk profiles and investment strategies.
         </p>
@@ -83,7 +80,6 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
               </div>
 
               <div className="flex items-center gap-2.5">
-                <TrendingUp className="h-[18px] w-[18px] text-accent shrink-0" strokeWidth={2} />
                 <div className="flex-1">
                   <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Target Return</span>
                   <span className="text-[15px] font-semibold text-foreground">{fund.returnTarget}</span>

@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund, getFundsByCategory, funds } from '../../data/funds';
 import { Button } from '../ui/button';
-import { ExternalLink, TrendingUp, DollarSign } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { categoryToSlug } from '@/lib/utils';
 
 interface RelatedFundsProps {
@@ -29,12 +29,9 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
       {/* Same Category Funds */}
       {sameCategoryFunds.length > 0 && (
         <section className="bg-background rounded-xl border border-border/40 p-10">
-          <div className="flex items-center gap-3 mb-6">
-            <TrendingUp className="h-6 w-6 text-accent" strokeWidth={2} />
-            <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
-              More {currentFund.category} Funds
-            </h2>
-          </div>
+          <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-6">
+            More {currentFund.category} Funds
+          </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
             {sameCategoryFunds.map(fund => (
@@ -86,12 +83,9 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
       {/* Similar Investment Amount Funds */}
       {similarInvestmentFunds.length > 0 && (
         <section className="bg-background rounded-xl border border-border/40 p-10">
-          <div className="flex items-center gap-3 mb-6">
-            <DollarSign className="h-6 w-6 text-accent" strokeWidth={2} />
-            <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight">
-              Similar Investment Range
-            </h2>
-          </div>
+          <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-6">
+            Similar Investment Range
+          </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {similarInvestmentFunds.map(fund => (

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { Fund } from '../../data/funds';
-import { HelpCircle } from 'lucide-react';
 interface FAQItem {
   question: string;
   answer: string;
@@ -129,21 +128,16 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
             itemType="https://schema.org/Question"
           >
             {/* Question */}
-            <div className="flex items-start gap-3 mb-4">
-              <div className="w-6 h-6 bg-primary/10 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5">
-                <HelpCircle className="h-3.5 w-3.5 text-primary" />
-              </div>
-              <h3 
-                className="text-xl font-semibold tracking-tight leading-relaxed"
-                itemProp="name"
-              >
-                {faq.question}
-              </h3>
-            </div>
+            <h3 
+              className="text-xl font-semibold tracking-tight leading-relaxed mb-4"
+              itemProp="name"
+            >
+              {faq.question}
+            </h3>
 
             {/* Answer */}
             <div 
-              className="pl-9 text-base text-muted-foreground leading-relaxed"
+              className="text-base text-muted-foreground leading-relaxed"
               itemScope
               itemType="https://schema.org/Answer"
             >

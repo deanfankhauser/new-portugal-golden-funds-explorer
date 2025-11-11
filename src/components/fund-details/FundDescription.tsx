@@ -2,7 +2,7 @@
 import React from 'react';
 import { Fund } from '../../data/funds';
 import { Card, CardContent } from "@/components/ui/card";
-import { FileText } from 'lucide-react';
+
 
 interface FundDescriptionProps {
   description: Fund['detailedDescription'];

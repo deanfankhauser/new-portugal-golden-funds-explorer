@@ -27,14 +27,9 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
     <div className="mt-12 bg-background rounded-2xl border border-border/40 shadow-sm p-10">
       {/* Header Section */}
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-            <ArrowLeftRight className="h-5 w-5 text-primary-foreground" strokeWidth={2} />
-          </div>
-          <h2 className="text-2xl sm:text-[28px] font-bold tracking-tight text-foreground font-heading">
-            Compare {currentFund.name}
-          </h2>
-        </div>
+        <h2 className="text-2xl sm:text-[28px] font-bold tracking-tight text-foreground font-heading mb-4">
+          Compare {currentFund.name}
+        </h2>
         <p className="text-base leading-relaxed text-muted-foreground">
           Compare {currentFund.name} with similar investment funds to analyze performance, fees, and investment requirements.
         </p>
