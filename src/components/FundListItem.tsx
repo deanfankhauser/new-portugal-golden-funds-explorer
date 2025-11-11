@@ -170,7 +170,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             <Button 
               variant="outline"
               size="default"
-              className="font-medium border-border/50 hover:bg-muted/50 hover:border-border"
+              className="font-medium border-border/50"
               onClick={handleCompareClick}
             >
               <GitCompare className="mr-2 h-4 w-4" />
