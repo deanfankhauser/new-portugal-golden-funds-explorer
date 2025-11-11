@@ -195,11 +195,21 @@ function generateManagerNotificationEmail(enquiry: EnquiryData, managerName: str
       
       <div style="background: ${BRAND_COLORS.bone}; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid ${BRAND_COLORS.bronze};">
         <p style="margin: 0 0 10px 0; color: ${BRAND_COLORS.textDark}; font-size: 16px; font-weight: 600;">Hello ${managerName},</p>
-        <p style="margin: 0; color: ${BRAND_COLORS.textMuted};">You have a new prospective investor! Quick response times significantly improve conversion rates.</p>
+        <p style="margin: 0; color: ${BRAND_COLORS.textMuted};">You have a new prospective investor! Sign in to your dashboard to view their complete details.</p>
+      </div>
+      
+      <div style="background: linear-gradient(135deg, ${BRAND_COLORS.bordeaux}10, ${BRAND_COLORS.bronze}10); padding: 25px; border-radius: 8px; margin: 25px 0; border: 2px solid ${BRAND_COLORS.bordeaux};">
+        <h2 style="margin-top: 0; color: ${BRAND_COLORS.bordeaux}; font-size: 18px;">⚠️ Important Reminders</h2>
+        <ul style="color: ${BRAND_COLORS.textDark}; line-height: 1.8; padding-left: 20px; margin: 10px 0 0 0;">
+          <li><strong>Sign in to your dashboard</strong> to view full lead details and contact information</li>
+          <li><strong>Update the lead status</strong> when you convert them to keep accurate records</li>
+          <li><strong>Status verification:</strong> We verify lead statuses with clients - please ensure accuracy to avoid discrepancies</li>
+          <li><strong>Direct contact:</strong> Feel free to arrange a call directly with the lead using the contact information provided</li>
+        </ul>
       </div>
       
       <div style="background: white; padding: 25px; border-radius: 8px; margin: 25px 0; border: 1px solid ${BRAND_COLORS.bone};">
-        <h2 style="margin-top: 0; color: ${BRAND_COLORS.bordeaux}; font-size: 18px;">Lead Information</h2>
+        <h2 style="margin-top: 0; color: ${BRAND_COLORS.bordeaux}; font-size: 18px;">Lead Preview</h2>
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
             <td style="padding: 8px 0; color: ${BRAND_COLORS.textMuted}; font-weight: 600; width: 40%;">Name:</td>
@@ -246,9 +256,15 @@ New Enquiry for ${enquiry.fundName}
 
 Hello ${managerName},
 
-You have a new prospective investor!
+You have a new prospective investor! Sign in to your dashboard to view their complete details.
 
-Lead Information:
+⚠️ IMPORTANT REMINDERS:
+✓ Sign in to your dashboard to view full lead details and contact information
+✓ Update the lead status when you convert them to keep accurate records
+✓ Status verification: We verify lead statuses with clients - please ensure accuracy to avoid discrepancies
+✓ Direct contact: Feel free to arrange a call directly with the lead using the contact information provided
+
+Lead Preview:
 - Name: ${enquiry.firstName} ${enquiry.lastName}
 - Email: ${enquiry.email}
 ${enquiry.phone ? `- Phone: ${enquiry.phone}` : ''}

@@ -79,3 +79,6 @@ verify_jwt = false
 
 [functions.submit-fund-enquiry]
 verify_jwt = false
+
+[functions.notify-lead-status-change]
+verify_jwt = false
