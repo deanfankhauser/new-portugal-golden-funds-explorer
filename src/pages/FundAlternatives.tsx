@@ -59,7 +59,7 @@ const FundAlternatives = () => {
               <p className="text-muted-foreground mb-4">
                 No alternative funds found similar to {fund.name}.
               </p>
-              <Link to="/index">
+              <Link to="/">
                 <Button>Browse All Funds</Button>
               </Link>
             </div>

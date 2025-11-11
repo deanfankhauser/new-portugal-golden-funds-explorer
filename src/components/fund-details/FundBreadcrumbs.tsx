@@ -45,7 +45,7 @@ const FundBreadcrumbs: React.FC<FundBreadcrumbsProps> = ({ fund }) => {
         
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link to="/index">Fund Index</Link>
+            <Link to="/">Fund Index</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
 

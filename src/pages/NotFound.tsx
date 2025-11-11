@@ -91,7 +91,7 @@ const NotFound = () => {
                       Browse categories
                     </Badge>
                   </Link>
-                  <Link to="/index">
+                  <Link to="/">
                     <Badge variant="outline" className="hover:bg-primary/10 cursor-pointer">
                       View fund index
                     </Badge>
@@ -106,7 +106,7 @@ const NotFound = () => {
                 or is temporarily unavailable.
               </p>
               <div className="flex flex-wrap gap-2 justify-center mb-6">
-                <Link to="/index">
+                <Link to="/">
                   <Badge variant="outline" className="hover:bg-primary/10 cursor-pointer">
                     Browse all funds
                   </Badge>

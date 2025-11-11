@@ -5,7 +5,7 @@ import { TrendingUp, BarChart3, Database, Award, ArrowRight } from 'lucide-react
 export const FundIndexWidget: React.FC = () => {
   return (
     <Link 
-      to="/index" 
+      to="/" 
       className="group block p-4 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg border border-primary/20 hover:border-primary/30 transition-all duration-200 hover:shadow-md"
     >
       <div className="flex items-center justify-between mb-2">

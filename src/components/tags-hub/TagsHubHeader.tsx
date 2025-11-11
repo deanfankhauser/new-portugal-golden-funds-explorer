@@ -17,7 +17,7 @@ const TagsHubHeader = () => {
       
       <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto text-center px-2 sm:px-0" itemProp="description">
         Browse all investment types, risk levels, and focus areas. 
-        Check our complete <Link to="/index" className="text-primary hover:underline">Portugal Golden Visa Investment Fund Index</Link> for detailed rankings.
+        Check our complete <Link to="/" className="text-primary hover:underline">Portugal Golden Visa Investment Fund Index</Link> for detailed rankings.
       </p>
     </div>
   );

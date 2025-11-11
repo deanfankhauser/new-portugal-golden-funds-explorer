@@ -24,7 +24,7 @@ const CategoryPageHeader: React.FC<CategoryPageHeaderProps> = ({ categoryName })
       
       <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-center" itemProp="description">
         Explore {categoryName} investment funds for Golden Visa applications and compare available options. 
-        Browse our <Link to="/index" className="text-primary hover:text-primary/80 underline">
+        Browse our <Link to="/" className="text-primary hover:text-primary/80 underline">
           complete fund database
         </Link> or explore other <Link to="/categories" className="text-primary hover:text-primary/80 underline">
           investment categories

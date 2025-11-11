@@ -430,7 +430,7 @@ const About = () => {
 
               <div className="flex flex-wrap justify-center gap-4">
                 <Button size="lg" asChild>
-                  <Link to="/index">Browse All Funds</Link>
+                  <Link to="/">Browse All Funds</Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
                   <Link to="/comparisons">Compare Funds</Link>

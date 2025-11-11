@@ -8,7 +8,7 @@ const EmptyComparison = () => {
   const navigate = useNavigate();
   
   const handleBrowseFunds = () => {
-    navigate('/index');
+    navigate('/');
   };
   
   return (

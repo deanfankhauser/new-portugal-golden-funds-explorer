@@ -13,7 +13,7 @@ const CategoryPageEmptyState: React.FC<CategoryPageEmptyStateProps> = ({ categor
       <p className="text-muted-foreground">
         No funds are currently in the {categoryName} category
       </p>
-      <Link to="/index" className="inline-block mt-4 text-primary hover:underline">
+      <Link to="/" className="inline-block mt-4 text-primary hover:underline">
         Browse Portugal Golden Visa Investment Fund Index
       </Link>
     </div>
