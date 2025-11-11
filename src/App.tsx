@@ -15,13 +15,11 @@ import Index from './pages/Index'; // Keep homepage non-lazy for instant load
 import { 
   PageLoader, 
   FundDetailsLoader, 
-  FundIndexLoader, 
   ComparisonLoader,
   ROICalculatorLoader 
 } from './components/common/LoadingSkeleton';
 
 // Lazy load all secondary pages
-const FundIndex = lazy(() => import('./pages/FundIndex'));
 const FundDetails = lazy(() => import('./pages/FundDetails'));
 const TagPage = lazy(() => import('./pages/TagPage'));
 const CategoryPage = lazy(() => import('./pages/CategoryPage'));

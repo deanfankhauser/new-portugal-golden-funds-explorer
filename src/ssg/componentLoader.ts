@@ -33,12 +33,6 @@ export const loadComponents = async () => {
         if (isDebug) console.error('   Stack:', err.stack);
         return null;
       }),
-      FundIndex: import('../pages/FundIndex').then(m => m.default).catch(err => {
-        console.error('❌ ComponentLoader: Failed to load FundIndex');
-        console.error('   Error:', err.message);
-        if (isDebug) console.error('   Stack:', err.stack);
-        return null;
-      }),
       FundDetails: import('../pages/FundDetails').then(m => m.default).catch(err => {
         console.error('❌ ComponentLoader: Failed to load FundDetails');
         console.error('   Error:', err.message);
