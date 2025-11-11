@@ -977,7 +977,6 @@ export type Database = {
           first_name: string
           last_name: string
           manager_name: string
-          status: string
           user_id: string
         }[]
       }
