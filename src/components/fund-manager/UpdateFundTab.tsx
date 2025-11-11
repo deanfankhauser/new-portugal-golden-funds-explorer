@@ -27,6 +27,7 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
   const { directUpdateFund, submitFundEditSuggestion, loading } = useFundEditing();
   const { toast } = useToast();
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
 
   const buildFormData = (f: Fund) => ({
     description: f.description ?? '',
@@ -62,15 +63,23 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
 
   const [formData, setFormData] = useState(buildFormData(fund));
 
+  // Only reset form from database if user hasn't made local changes
   useEffect(() => {
-    setFormData(buildFormData(fund));
-  }, [fund]);
+    if (!isDirty) {
+      console.log('📥 [UpdateFundTab] Syncing form data from fund prop (no local changes)');
+      setFormData(buildFormData(fund));
+    } else {
+      console.log('🔒 [UpdateFundTab] Preserving local changes, ignoring fund prop update');
+    }
+  }, [fund, isDirty]);
 
   const handleInputChange = (field: string, value: any) => {
+    setIsDirty(true);
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleNestedChange = (field: string, subField: string, value: any) => {
+    setIsDirty(true);
     setFormData(prev => {
       const fieldValue = prev[field as keyof typeof prev];
       
@@ -89,6 +98,7 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
   };
 
   const handleArrayChange = (field: string, index: number, subField: string, value: any) => {
+    setIsDirty(true);
     setFormData(prev => {
       const array = [...(prev[field as keyof typeof prev] as any[])];
       array[index] = { ...array[index], [subField]: value };
@@ -97,6 +107,7 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
   };
 
   const addArrayItem = (field: string, newItem: any) => {
+    setIsDirty(true);
     setFormData(prev => ({
       ...prev,
       [field]: [...(prev[field as keyof typeof prev] as any[]), newItem]
@@ -104,6 +115,7 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
   };
 
   const removeArrayItem = (field: string, index: number) => {
+    setIsDirty(true);
     setFormData(prev => ({
       ...prev,
       [field]: (prev[field as keyof typeof prev] as any[]).filter((_, i) => i !== index)
@@ -304,6 +316,7 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
       if (canDirectEdit) {
         console.log('✅ [handleSubmit] User has direct edit permission, updating fund...');
         await directUpdateFund(fund.id, suggestedChanges);
+        setIsDirty(false); // Clear dirty state after successful save
         toast({
           title: "Fund Updated!",
           description: "Your changes have been published and are now live.",
@@ -311,6 +324,7 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
       } else {
         console.log('📝 [handleSubmit] Submitting as suggestion...');
         await submitFundEditSuggestion(fund.id, suggestedChanges, getCurrentValues());
+        setIsDirty(false); // Clear dirty state after successful save
         toast({
           title: "Suggestion submitted!",
           description: "Thank you for your edit suggestion! We will review it and notify you by email once it's processed.",
