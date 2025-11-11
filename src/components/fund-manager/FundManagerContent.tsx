@@ -9,6 +9,7 @@ import ManagerVerificationBadge from './ManagerVerificationBadge';
 import ManagerAboutSection from './ManagerAboutSection';
 import ManagerTeamSection from './ManagerTeamSection';
 import ManagerHighlightsSection from './ManagerHighlightsSection';
+import ManagerFAQsSection from './ManagerFAQsSection';
 import { Profile } from '@/types/profile';
 
 interface FundManagerContentProps {
@@ -79,6 +80,14 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
         <ManagerTeamSection 
           managerName={managerName}
           teamMembers={managerProfile.team_members}
+        />
+      )}
+      
+      {/* Manager FAQs Section - Only show if manager profile exists and has FAQs */}
+      {isManagerVerified && managerProfile?.manager_faqs && Array.isArray(managerProfile.manager_faqs) && managerProfile.manager_faqs.length > 0 && (
+        <ManagerFAQsSection 
+          managerName={managerName}
+          faqs={managerProfile.manager_faqs}
         />
       )}
 
