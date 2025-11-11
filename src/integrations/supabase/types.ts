@@ -993,6 +993,10 @@ export type Database = {
         Args: { p_profile_id: string; p_user_id: string }
         Returns: boolean
       }
+      can_user_manage_company_funds: {
+        Args: { check_manager_name: string; check_user_id: string }
+        Returns: boolean
+      }
       check_sensitive_data_exposure: {
         Args: never
         Returns: {

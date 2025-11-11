@@ -6,29 +6,36 @@ import Footer from '@/components/Footer';
 import PageSEO from '@/components/common/PageSEO';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Building2, Edit3 } from 'lucide-react';
+import { Building2, Edit3, TrendingUp, DollarSign } from 'lucide-react';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 import { Fund } from '@/data/types/funds';
-import MyProfilesCard from '@/components/manager-profile/MyProfilesCard';
+import { Profile } from '@/types/profile';
 
-interface FundAssignment {
+interface ProfileAssignment {
   id: string;
-  fund_id: string;
+  profile_id: string;
   status: string;
   assigned_at: string;
   permissions: {
-    can_edit: boolean;
-    can_publish: boolean;
+    can_edit_profile: boolean;
+    can_edit_funds: boolean;
+    can_manage_team: boolean;
+    can_view_analytics: boolean;
   };
+}
+
+interface CompanyWithFunds {
+  profile: Profile;
+  assignment: ProfileAssignment;
+  funds: Fund[];
 }
 
 const MyFunds = () => {
   const { user, loading: authLoading } = useEnhancedAuth();
   const [loading, setLoading] = useState(true);
-  const [assignments, setAssignments] = useState<FundAssignment[]>([]);
+  const [companiesWithFunds, setCompaniesWithFunds] = useState<CompanyWithFunds[]>([]);
   const { funds } = useRealTimeFunds();
 
   useEffect(() => {
@@ -39,24 +46,52 @@ const MyFunds = () => {
       }
 
       try {
-        const { data, error } = await supabase
-          .from('fund_managers' as any)
+        // Get company-level assignments
+        const { data: assignmentsData, error: assignError } = await supabase
+          .from('manager_profile_assignments')
           .select('*')
           .eq('user_id', user.id)
           .eq('status', 'active')
           .order('assigned_at', { ascending: false });
 
-        if (error) throw error;
-        setAssignments((data as any) || []);
+        if (assignError) throw assignError;
+
+        const assignments = (assignmentsData || []) as unknown as ProfileAssignment[];
+
+        // Get full profile data for each assignment
+        if (assignments.length > 0) {
+          const profileIds = assignments.map(a => a.profile_id);
+          const { data: profilesData, error: profilesError } = await supabase
+            .from('profiles')
+            .select('*')
+            .in('id', profileIds);
+
+          if (!profilesError && profilesData) {
+            // Match profiles with their assignments and funds
+            const companiesData: CompanyWithFunds[] = profilesData.map((profile: Profile) => {
+              const assignment = assignments.find(a => a.profile_id === profile.id)!;
+              // Find all funds managed by this company
+              const companyFunds = funds.filter(f => f.managerName === profile.company_name);
+              
+              return {
+                profile,
+                assignment,
+                funds: companyFunds
+              };
+            });
+
+            setCompaniesWithFunds(companiesData);
+          }
+        }
       } catch (error) {
-        console.error('Error fetching fund assignments:', error);
+        console.error('Error fetching company assignments:', error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchAssignments();
-  }, [user]);
+  }, [user, funds]);
 
   if (authLoading || loading) {
     return <PageLoader />;
@@ -65,14 +100,6 @@ const MyFunds = () => {
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
-
-  // Get assigned funds with full fund data
-  const assignedFunds = assignments
-    .map(assignment => {
-      const fund = funds.find(f => f.id === assignment.fund_id);
-      return fund ? { ...fund, assignment } : null;
-    })
-    .filter((f): f is Fund & { assignment: FundAssignment } => f !== null);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -83,73 +110,106 @@ const MyFunds = () => {
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Header Section */}
           <div className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">My Funds</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">My Companies & Funds</h1>
             <p className="text-muted-foreground">
-              Manage and update information for funds assigned to you
+              Manage company profiles and all associated investment funds
             </p>
           </div>
 
-          {/* Company Profiles */}
-          <div className="mb-8">
-            <MyProfilesCard />
-          </div>
-
-          {/* Funds List */}
-          {assignments.length === 0 ? (
+          {/* Companies and Their Funds */}
+          {companiesWithFunds.length === 0 ? (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Building2 className="h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No Funds Assigned</h3>
+                <h3 className="text-lg font-semibold mb-2">No Companies Assigned</h3>
                 <p className="text-muted-foreground text-center max-w-md">
-                  You don't have any funds assigned to you yet. Contact an administrator if you believe this is an error.
+                  You don't have any companies assigned to you yet. Contact an administrator if you believe this is an error.
                 </p>
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {assignedFunds.map((fund) => (
-                <Card key={fund.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <CardTitle className="text-lg">{fund.name}</CardTitle>
-                      <Badge variant={fund.assignment.status === 'active' ? 'default' : 'secondary'}>
-                        {fund.assignment.status}
-                      </Badge>
-                    </div>
-                    <CardDescription className="line-clamp-2">
-                      {fund.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Category</span>
-                        <span className="font-medium">{fund.category}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Fund Size</span>
-                        <span className="font-medium">€{fund.fundSize}M</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Assigned</span>
-                        <span className="font-medium">
-                          {new Date(fund.assignment.assigned_at).toLocaleDateString()}
-                        </span>
-                      </div>
-
-                      <div className="pt-3">
-                        {fund.assignment.permissions?.can_edit && (
-                          <Link to={`/manage-fund/${fund.id}`}>
-                            <Button className="w-full" size="sm">
+            <div className="space-y-8">
+              {companiesWithFunds.map(({ profile, assignment, funds: companyFunds }) => (
+                <div key={profile.id} className="space-y-4">
+                  {/* Company Card */}
+                  <Card className="border-2">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-4">
+                          {profile.logo_url && (
+                            <img
+                              src={profile.logo_url}
+                              alt={profile.company_name}
+                              className="h-16 w-16 rounded-lg object-cover border"
+                            />
+                          )}
+                          <div>
+                            <h2 className="text-2xl font-bold flex items-center gap-2">
+                              <Building2 className="h-6 w-6 text-primary" />
+                              {profile.company_name}
+                            </h2>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              Managing {companyFunds.length} fund{companyFunds.length !== 1 ? 's' : ''}
+                            </p>
+                          </div>
+                        </div>
+                        {assignment.permissions.can_edit_profile && (
+                          <Link to={`/manage-profile/${profile.id}`}>
+                            <Button>
                               <Edit3 className="h-4 w-4 mr-2" />
-                              Manage Fund
+                              Edit Company Profile
                             </Button>
                           </Link>
                         )}
                       </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Associated Funds */}
+                  {companyFunds.length > 0 ? (
+                    <div className="pl-4 border-l-2 border-primary/20">
+                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <TrendingUp className="h-5 w-5" />
+                        Investment Funds
+                      </h3>
+                      <div className="space-y-3">
+                        {companyFunds.map((fund) => (
+                          <Card key={fund.id} className="hover:border-primary/40 transition-colors">
+                            <CardContent className="p-4">
+                              <div className="flex items-center justify-between">
+                                <div className="flex-1">
+                                  <h4 className="font-semibold text-lg mb-1">{fund.name}</h4>
+                                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                    <span className="flex items-center gap-1">
+                                      <DollarSign className="h-3 w-3" />
+                                      €{fund.fundSize}M AUM
+                                    </span>
+                                    <span>•</span>
+                                    <span>{fund.category}</span>
+                                    <span>•</span>
+                                    <span>{fund.returnTarget}</span>
+                                  </div>
+                                </div>
+                                <Link to={`/manage-fund/${fund.id}`}>
+                                  <Button variant="outline" size="sm">
+                                    <Edit3 className="h-4 w-4 mr-2" />
+                                    Manage
+                                  </Button>
+                                </Link>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
+                  ) : (
+                    <Card className="ml-4">
+                      <CardContent className="p-6 text-center text-muted-foreground">
+                        No funds associated with this company yet
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
               ))}
             </div>
           )}
