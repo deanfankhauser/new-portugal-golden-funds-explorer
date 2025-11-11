@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart } from 'lucide-react';
+import { Bookmark } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSavedFunds } from '@/hooks/useSavedFunds';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
@@ -83,7 +83,7 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
       )}
       title={isSaved ? 'Remove from saved funds' : 'Save fund'}
     >
-      <Heart 
+      <Bookmark 
         className={cn(
           getIconSize(),
           isSaved && 'fill-current'

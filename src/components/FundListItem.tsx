@@ -6,7 +6,8 @@ import { getFundType } from '../utils/fundTypeUtils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { PieChart, Euro, CheckCircle2 } from 'lucide-react';
+import { PieChart, Euro, CheckCircle2, GitCompare } from 'lucide-react';
+import { useComparison } from '../contexts/ComparisonContext';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 import DataFreshnessIndicator from './common/DataFreshnessIndicator';
@@ -21,7 +22,20 @@ interface FundListItemProps {
 }
 
 const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
+  const { addToComparison, removeFromComparison, isInComparison } = useComparison();
+  const isSelected = isInComparison(fund.id);
   const isGVEligible = isFundGVEligible(fund);
+
+  const handleCompareClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (isSelected) {
+      removeFromComparison(fund.id);
+    } else {
+      addToComparison(fund);
+    }
+  };
 
   return (
     <Card className="border border-border/60 rounded-xl bg-card w-full group">
@@ -152,7 +166,16 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           
           {/* Action Buttons */}
           <div className="flex items-center gap-3">
-            <SaveFundButton fundId={fund.id} showText={true} size="md" />
+            <SaveFundButton fundId={fund.id} showText={false} size="md" variant="outline" />
+            <Button 
+              variant="outline"
+              size="icon"
+              onClick={handleCompareClick}
+              title={isSelected ? 'Remove from comparison' : 'Add to comparison'}
+              className={isSelected ? 'bg-primary text-primary-foreground' : ''}
+            >
+              <GitCompare className="h-4 w-4" />
+            </Button>
             <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
               <Button 
                 variant="default"
