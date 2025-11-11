@@ -25,74 +25,80 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
   managerProfile
 }) => {
   return (
-    <>
-      <div className="mb-6">
-        <ManagerVerificationBadge 
-          isVerified={isManagerVerified} 
-          funds={managerFunds}
-          className="mb-4" 
-        />
-        <h1 className="text-2xl font-bold">Portugal Golden Visa Investment Funds Managed by {managerName}</h1>
+    <div className="space-y-0">
+      {/* Manager Header */}
+      <div className="py-12 px-4 sm:px-6 lg:px-8 border-b border-border">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-4 mb-6">
+            <ManagerVerificationBadge 
+              isVerified={isManagerVerified}
+              funds={managerFunds}
+            />
+          </div>
+          
+          <h1 className="text-5xl font-bold text-foreground mb-4">{managerName}</h1>
+          <p className="text-xl text-muted-foreground">
+            Managing {managerFunds.length} {managerFunds.length === 1 ? 'fund' : 'funds'}
+          </p>
+        </div>
       </div>
+
+      {/* Funds List */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-semibold text-foreground mb-8">Funds</h2>
+          <div className="space-y-6">
+            {managerFunds.map((fund) => (
+              <FundListItem key={fund.id} fund={fund} />
+            ))}
+          </div>
+        </div>
+      </section>
       
-      <div className="space-y-4 mb-12">
-        {managerFunds.map(fund => (
-          <FundListItem key={fund.id} fund={fund} />
-        ))}
-      </div>
-
-      {/* Manager-Level About Section */}
-      {managerProfile?.manager_about && (
-        <div className="mb-12">
-          <ManagerAboutSection 
-            managerName={managerName}
-            about={managerProfile.manager_about}
-          />
-        </div>
+      {/* Manager About Section - Only show if manager profile exists and has content */}
+      {isManagerVerified && managerProfile?.manager_about && (
+        <ManagerAboutSection 
+          managerName={managerName}
+          about={managerProfile.manager_about}
+        />
+      )}
+      
+      {/* Manager Highlights Section - Only show if manager profile exists and has highlights */}
+      {isManagerVerified && managerProfile?.manager_highlights && Array.isArray(managerProfile.manager_highlights) && managerProfile.manager_highlights.length > 0 && (
+        <ManagerHighlightsSection 
+          managerName={managerName}
+          highlights={managerProfile.manager_highlights}
+        />
+      )}
+      
+      {/* Manager Team Section - Only show if manager profile exists and has team members */}
+      {isManagerVerified && managerProfile?.team_members && Array.isArray(managerProfile.team_members) && managerProfile.team_members.length > 0 && (
+        <ManagerTeamSection 
+          managerName={managerName}
+          teamMembers={managerProfile.team_members}
+        />
       )}
 
-      {/* Manager Highlights Section */}
-      {managerProfile?.manager_highlights && Array.isArray(managerProfile.manager_highlights) && managerProfile.manager_highlights.length > 0 && (
-        <div className="mb-12">
-          <ManagerHighlightsSection 
-            managerName={managerName}
-            highlights={managerProfile.manager_highlights}
-          />
+      {/* About Our Funds */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30">
+        <div className="max-w-7xl mx-auto space-y-12">
+          <h2 className="text-3xl font-semibold text-foreground">About Our Funds</h2>
+          {managerFunds.map((fund) => (
+            <FundManagerAbout key={`about-${fund.id}`} fund={fund} />
+          ))}
         </div>
-      )}
+      </section>
 
-      {/* Team Members Section */}
-      {managerProfile?.team_members && Array.isArray(managerProfile.team_members) && managerProfile.team_members.length > 0 && (
-        <div className="mb-12">
-          <ManagerTeamSection 
-            managerName={managerName}
-            teamMembers={managerProfile.team_members}
-          />
+      {/* FAQs */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
+        <div className="max-w-7xl mx-auto space-y-8">
+          <h2 className="text-3xl font-semibold text-foreground">Frequently Asked Questions</h2>
+          {managerFunds.map((fund) => (
+            <FundManagerFAQs key={`faq-${fund.id}`} fund={fund} />
+          ))}
         </div>
-      )}
-
-      {/* About Section for each fund */}
-      <div className="space-y-8 mb-12">
-        <div className="flex items-center mb-6">
-          <Info className="w-6 h-6 mr-2 text-primary" />
-          <h2 className="text-2xl font-bold">About Our Funds</h2>
-        </div>
-        {managerFunds.map(fund => (
-          <FundManagerAbout key={`about-${fund.id}`} fund={fund} />
-        ))}
-      </div>
-
-      {/* FAQs Section */}
-      <div className="space-y-8">
-        <div className="flex items-center mb-6">
-          <HelpCircle className="w-6 h-6 mr-2 text-primary" />
-          <h2 className="text-2xl font-bold">Frequently Asked Questions</h2>
-        </div>
-        {managerFunds.map(fund => (
-          <FundManagerFAQs key={`faq-${fund.id}`} fund={fund} />
-        ))}
-      </div>
-    </>
+      </section>
+    </div>
   );
 };
 

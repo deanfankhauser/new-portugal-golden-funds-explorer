@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Building2 } from 'lucide-react';
 
 interface ManagerAboutSectionProps {
@@ -9,21 +8,24 @@ interface ManagerAboutSectionProps {
 
 const ManagerAboutSection: React.FC<ManagerAboutSectionProps> = ({ managerName, about }) => {
   return (
-    <Card className="border border-border shadow-sm">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-2xl flex items-center gap-2">
-          <Building2 className="h-5 w-5 text-primary" />
-          About {managerName}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="prose prose-sm max-w-none text-foreground">
-          <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+    <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Building2 className="h-5 w-5 text-primary" />
+          </div>
+          <h2 className="text-3xl font-semibold text-foreground">
+            About {managerName}
+          </h2>
+        </div>
+        
+        <div className="prose prose-lg max-w-none">
+          <p className="text-foreground/80 leading-relaxed text-lg whitespace-pre-wrap font-normal">
             {about}
           </p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 };
 

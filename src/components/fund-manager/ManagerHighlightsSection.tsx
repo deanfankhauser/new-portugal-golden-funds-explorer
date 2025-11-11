@@ -1,6 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Award, TrendingUp, Shield, Target } from 'lucide-react';
+import { Award, TrendingUp, Shield, Target, Sparkles } from 'lucide-react';
 
 interface Highlight {
   title: string;
@@ -18,7 +17,7 @@ const ManagerHighlightsSection: React.FC<ManagerHighlightsSectionProps> = ({
   highlights 
 }) => {
   const getIcon = (iconType?: string) => {
-    const iconClass = "h-6 w-6 text-primary";
+    const iconClass = "h-6 w-6";
     switch (iconType) {
       case 'award':
         return <Award className={iconClass} />;
@@ -29,41 +28,46 @@ const ManagerHighlightsSection: React.FC<ManagerHighlightsSectionProps> = ({
       case 'target':
         return <Target className={iconClass} />;
       default:
-        return <Award className={iconClass} />;
+        return <Sparkles className={iconClass} />;
     }
   };
 
   return (
-    <Card className="border border-border shadow-sm">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-2xl flex items-center gap-2">
-          <Award className="h-5 w-5 text-primary" />
-          Key Highlights & Achievements
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center gap-3 mb-12">
+          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Award className="h-5 w-5 text-primary" />
+          </div>
+          <h2 className="text-3xl font-semibold text-foreground">
+            Key Highlights
+          </h2>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {highlights.map((highlight, index) => (
-            <div
-              key={index}
-              className="flex gap-4 p-5 rounded-lg border border-border bg-gradient-to-br from-card to-muted/20 hover:shadow-md transition-shadow"
+            <div 
+              key={index} 
+              className="group relative bg-card rounded-xl border border-border p-8 hover:border-primary/20 hover:shadow-lg transition-all duration-300"
             >
-              <div className="flex-shrink-0 mt-1">
-                {getIcon(highlight.icon)}
-              </div>
-              <div className="flex-1">
-                <h4 className="font-semibold text-foreground mb-2">
-                  {highlight.title}
-                </h4>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {highlight.description}
-                </p>
+              <div className="flex items-start gap-5">
+                <div className="flex-shrink-0 h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20 transition-colors">
+                  {getIcon(highlight.icon)}
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-foreground text-xl mb-3">
+                    {highlight.title}
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {highlight.description}
+                  </p>
+                </div>
               </div>
             </div>
           ))}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 };
 
