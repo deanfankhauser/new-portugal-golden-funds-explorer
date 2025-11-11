@@ -4,9 +4,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Building2, MessageSquare, Heart, CheckCircle2 } from 'lucide-react';
 import { useSavedFunds } from '@/hooks/useSavedFunds';
+import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { trackInteraction } from '@/utils/analyticsTracking';
 import { Link } from 'react-router-dom';
 import { managerToSlug } from '@/lib/utils';
+import { getReturnTargetDisplay } from '@/utils/returnTarget';
+import { toast } from 'sonner';
 
 interface ContactSidebarProps {
   fund: Fund;
@@ -32,10 +35,19 @@ const scrollToEnquiry = () => {
 };
 
 const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
+  const { user } = useEnhancedAuth();
   const { isFundSaved, saveFund, unsaveFund } = useSavedFunds();
   const isSaved = isFundSaved(fund.id);
 
-  const handleSaveFund = async () => {
+  const handleSaveFund = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!user) {
+      toast.error('Please log in to save funds');
+      return;
+    }
+
     if (isSaved) {
       await unsaveFund(fund.id);
     } else {
@@ -90,9 +102,9 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
             <p className="text-xl font-semibold text-foreground tracking-tight">{formatCurrency(fund.minimumInvestment)}</p>
           </div>
           <div className="bg-muted/20 border border-border/40 rounded-xl p-3 transition-all duration-150 hover:bg-muted/30 hover:border-border/60">
-            <p className="text-[11px] font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Fund Size</p>
+            <p className="text-[11px] font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Target Return</p>
             <p className="text-xl font-semibold text-foreground tracking-tight">
-              {fund.fundSize ? `€${fund.fundSize.toFixed(0)}M` : 'N/A'}
+              {getReturnTargetDisplay(fund)}
             </p>
           </div>
         </div>
