@@ -142,7 +142,17 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
   };
 
   return (
-    <Card id="enquiry-form" className="shadow-lg border-2 scroll-mt-24">
+    <Card id="enquiry-form" className="shadow-lg border-2 scroll-mt-24 relative">
+      {/* Loading Overlay */}
+      {isSubmitting && (
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center rounded-lg">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <p className="text-lg font-medium text-foreground animate-pulse">Sending your enquiry...</p>
+          </div>
+        </div>
+      )}
+      
       <CardHeader>
         <CardTitle className="text-3xl">Get in Touch with Fund Manager</CardTitle>
         <CardDescription className="text-base">
