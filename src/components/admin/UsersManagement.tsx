@@ -180,7 +180,7 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
       // Get all profiles from unified table with RLS handling access control
       const { data: allProfiles, error: profileError } = await supabase
         .from('profiles')
-        .select('id, user_id, first_name, last_name, manager_name, company_name, email, created_at, city, country, status')
+        .select('id, user_id, first_name, last_name, manager_name, company_name, email, created_at, city, country')
         .order('created_at', { ascending: false });
 
       if (profileError) {
@@ -198,8 +198,7 @@ const UsersManagement: React.FC<UsersManagementProps> = ({ currentUserRole }) =>
           user_type: isManager ? 'manager' : 'investor',
           display_name: isManager 
             ? profile.manager_name || 'No name'
-            : `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'No name',
-          status: profile.status || 'active'
+            : `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'No name'
         };
       });
 

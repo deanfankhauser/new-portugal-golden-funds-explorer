@@ -304,9 +304,9 @@ export const ManagerProfileAssignment: React.FC = () => {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Manager Profile Assignments</CardTitle>
+              <CardTitle>Company Manager Assignments</CardTitle>
               <CardDescription>
-                Assign users to manage company profiles
+                Assign users to manage company-level profiles and information
               </CardDescription>
             </div>
             <Dialog open={isAssignDialogOpen} onOpenChange={setIsAssignDialogOpen}>

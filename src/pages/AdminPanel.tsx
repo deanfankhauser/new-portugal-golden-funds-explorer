@@ -19,7 +19,6 @@ import FundManagement from '@/components/admin/FundManagement';
 import FundRankingManager from '@/components/admin/FundRankingManager';
 import EmailCapturesManagement from '@/components/admin/EmailCapturesManagement';
 import { FundManagerAssignment } from '@/components/admin/FundManagerAssignment';
-import { ManagerApprovals } from '@/components/admin/ManagerApprovals';
 import { ManagerProfileAssignment } from '@/components/admin/ManagerProfileAssignment';
 
 const AdminPanel = () => {
@@ -229,7 +228,7 @@ const AdminPanel = () => {
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="suggestions" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-9">
+            <TabsList className="grid w-full grid-cols-8">
               <TabsTrigger value="suggestions" className="flex items-center gap-2">
                 <Edit3 className="h-4 w-4" />
                 Suggestions
@@ -246,13 +245,9 @@ const AdminPanel = () => {
                 <Users className="h-4 w-4" />
                 Fund Managers
               </TabsTrigger>
-              <TabsTrigger value="approvals" className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4" />
-                Approvals
-              </TabsTrigger>
               <TabsTrigger value="profiles" className="flex items-center gap-2">
                 <Building2 className="h-4 w-4" />
-                Profile Assignments
+                Company Managers
               </TabsTrigger>
               <TabsTrigger value="users" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
@@ -299,10 +294,6 @@ const AdminPanel = () => {
 
             <TabsContent value="fund-managers">
               <FundManagerAssignment />
-            </TabsContent>
-
-            <TabsContent value="approvals">
-              <ManagerApprovals />
             </TabsContent>
 
             <TabsContent value="profiles">

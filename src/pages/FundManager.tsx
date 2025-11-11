@@ -54,19 +54,17 @@ const FundManager = () => {
       });
       
       if (matchingProfile) {
-        setIsManagerVerified(matchingProfile.status === 'approved');
+        setIsManagerVerified(true);
         
-        // Fetch full profile data if manager is verified
-        if (matchingProfile.status === 'approved') {
-          const { data } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', matchingProfile.id)
-            .single();
-          
-          if (data) {
-            setManagerProfile(data);
-          }
+        // Fetch full profile data
+        const { data } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', matchingProfile.id)
+          .single();
+        
+        if (data) {
+          setManagerProfile(data);
         }
       }
     };

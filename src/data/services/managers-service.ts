@@ -17,7 +17,6 @@ export interface PublicManagerData {
   assets_under_management?: number;
   registration_number?: string;
   license_number?: string;
-  status: string;
   created_at: string;
   updated_at: string;
 }

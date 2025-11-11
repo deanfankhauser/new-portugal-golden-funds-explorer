@@ -16,11 +16,8 @@ export interface Profile {
   registration_number?: string;
   license_number?: string;
   logo_url?: string;
-  status?: 'approved' | 'pending' | 'rejected' | 'suspended';
   assets_under_management?: number;
   founded_year?: number;
-  approved_at?: string;
-  approved_by?: string;
   
   // Manager-level content
   manager_about?: string;
