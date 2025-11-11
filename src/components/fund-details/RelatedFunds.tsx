@@ -72,7 +72,7 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
           
           <div className="text-center pt-2">
             <Link to={`/categories/${categoryToSlug(currentFund.category)}`}>
-              <Button variant="ghost" className="text-primary hover:text-primary/80 font-medium">
+              <Button variant="ghost" className="text-primary hover:text-primary/80 font-medium h-11">
                 View All {currentFund.category} Funds →
               </Button>
             </Link>

@@ -371,7 +371,7 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
           {/* Submit Button */}
           <Button 
             type="submit" 
-            className="w-full shadow-sm hover:shadow-md transition-all duration-200 hover:translate-y-[-1px] font-semibold px-7 py-3 rounded-lg" 
+            className="w-full shadow-sm hover:shadow-md transition-all duration-200 hover:translate-y-[-1px] font-semibold px-7 py-3 rounded-lg h-12" 
             size="lg" 
             disabled={isSubmitting}
           >

@@ -90,7 +90,7 @@ const FundIndexMobileCard: React.FC<FundIndexMobileCardProps> = ({ score }) => {
 
         {/* Action Button */}
         <Link to={`/${fund.id}`} className="block" onClick={() => window.scrollTo(0, 0)}>
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full h-11">
             View Details
             <ExternalLink className="h-3 w-3 ml-2" />
           </Button>

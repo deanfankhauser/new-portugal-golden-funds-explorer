@@ -141,7 +141,7 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
           <Button 
             type="button"
             onClick={scrollToEnquiry}
-            className="w-full shadow-[0_2px_4px_rgba(75,15,35,0.2)] hover:shadow-[0_4px_8px_rgba(75,15,35,0.25)] hover:translate-y-[-1px] active:translate-y-0 transition-all duration-200 font-semibold text-sm h-11 rounded-xl"
+            className="w-full shadow-[0_2px_4px_rgba(75,15,35,0.2)] hover:shadow-[0_4px_8px_rgba(75,15,35,0.25)] hover:translate-y-[-1px] active:translate-y-0 transition-all duration-200 font-semibold text-sm h-12 lg:h-11 rounded-xl"
           >
             Get in Touch
           </Button>
@@ -150,7 +150,7 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
             type="button"
             onClick={handleSaveFund}
             variant="outline"
-            className="w-full hover:bg-muted/20 transition-all duration-200 font-semibold text-sm h-11 rounded-xl border-border/50 hover:border-border text-muted-foreground hover:text-foreground"
+            className="w-full hover:bg-muted/20 transition-all duration-200 font-semibold text-sm h-12 lg:h-11 rounded-xl border-border/50 hover:border-border text-muted-foreground hover:text-foreground"
             aria-pressed={displaySaved}
           >
             {displaySaved ? 'Saved' : 'Save'}

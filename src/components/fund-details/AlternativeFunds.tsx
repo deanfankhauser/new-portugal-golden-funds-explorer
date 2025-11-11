@@ -114,7 +114,7 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
               <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
                 <Button
                   variant="outline"
-                  className="gap-2 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200 font-semibold"
+                  className="gap-2 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200 font-semibold h-12"
                 >
                   View Details
                   <ArrowRight className="h-4 w-4" strokeWidth={2} />
@@ -136,11 +136,11 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
           <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2} />
         </Link>
 
-        <Button
-          size="lg"
-          onClick={() => openExternalLink(buildContactUrl('alternatives'))}
-          className="gap-2.5 shadow-sm hover:shadow-md transition-all duration-200 hover:translate-y-[-1px] font-semibold"
-        >
+          <Button
+            size="lg"
+            onClick={() => openExternalLink(buildContactUrl('alternatives'))}
+            className="gap-2.5 shadow-sm hover:shadow-md transition-all duration-200 hover:translate-y-[-1px] font-semibold h-12"
+          >
           <svg className="h-[18px] w-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
           </svg>

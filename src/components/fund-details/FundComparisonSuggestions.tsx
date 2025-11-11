@@ -116,7 +116,7 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
         <Link to="/compare">
           <Button 
             size="lg"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-sm hover:shadow transition-all duration-200 hover:translate-y-[-1px]"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-sm hover:shadow transition-all duration-200 hover:translate-y-[-1px] h-12"
           >
             <span>View All Comparisons</span>
             <ArrowLeftRight className="h-4 w-4 ml-2" strokeWidth={2} />

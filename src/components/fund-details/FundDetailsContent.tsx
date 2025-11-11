@@ -124,13 +124,13 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                         <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Want to calculate your potential returns?</h3>
                         <p className="text-xs md:text-sm text-muted-foreground mb-4">Use our ROI calculator to estimate potential returns based on historical performance</p>
                         <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                          <Button asChild className="bg-success hover:bg-success/90 text-success-foreground">
+                          <Button asChild className="bg-success hover:bg-success/90 text-success-foreground h-11">
                             <Link to="/roi-calculator">
                               <Calculator className="mr-2 h-4 w-4" />
                               Calculate Returns
                             </Link>
                           </Button>
-                          <Button asChild variant="outline" className="border-success text-success hover:bg-success/10">
+                          <Button asChild variant="outline" className="border-success text-success hover:bg-success/10 h-11">
                             <Link to="/index">
                               <TrendingUp className="mr-2 h-4 w-4" />
                               View Fund Index

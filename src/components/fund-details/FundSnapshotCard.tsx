@@ -201,7 +201,7 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
         {/* Get in Touch Button - Mobile/Tablet Only */}
         <Button 
           onClick={scrollToEnquiry}
-          className="w-full gap-2 shadow-lg lg:hidden mb-6"
+          className="w-full gap-2 shadow-lg lg:hidden mb-6 h-12"
           size="lg"
         >
           <MessageSquare className="h-5 w-5" />

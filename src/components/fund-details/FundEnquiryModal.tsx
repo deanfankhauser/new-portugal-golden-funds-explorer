@@ -319,7 +319,7 @@ export const FundEnquiryModal: React.FC<FundEnquiryModalProps> = ({ open, onOpen
           </div>
 
           {/* Submit Button */}
-          <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
+          <Button type="submit" className="w-full h-12" size="lg" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

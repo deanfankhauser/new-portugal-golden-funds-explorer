@@ -166,13 +166,13 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           
           {/* Action Buttons */}
           <div className="flex items-center gap-3">
-            <SaveFundButton fundId={fund.id} showText={false} size="md" variant="outline" />
+            <SaveFundButton fundId={fund.id} showText={false} size="md" variant="outline" className="h-11 w-11" />
             <Button 
               variant="outline"
               size="icon"
               onClick={handleCompareClick}
               title={isSelected ? 'Remove from comparison' : 'Add to comparison'}
-              className={isSelected ? 'bg-primary text-primary-foreground' : ''}
+              className={`h-11 w-11 ${isSelected ? 'bg-primary text-primary-foreground' : ''}`}
             >
               <GitCompare className="h-4 w-4" />
             </Button>
@@ -180,7 +180,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
               <Button 
                 variant="default"
                 size="default"
-                className="font-medium bg-primary hover:bg-primary/90"
+                className="font-medium bg-primary hover:bg-primary/90 h-11"
               >
                 See more
                 <svg className="ml-2 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
