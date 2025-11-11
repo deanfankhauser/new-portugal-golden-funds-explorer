@@ -16,7 +16,10 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   selectedCategory,
   setSelectedCategory
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(() => {
+    // Default to closed on mobile (< 1024px), open on desktop
+    return typeof window !== 'undefined' ? window.innerWidth >= 1024 : false;
+  });
   const { funds } = useRealTimeFunds();
   const categories = getAllCategories();
 
