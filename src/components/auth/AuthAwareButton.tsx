@@ -15,6 +15,7 @@ import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import UniversalAuthButton from './UniversalAuthButton';
 import { supabase } from '@/integrations/supabase/client';
 import { getDisplayName, getAvatarUrl, isManagerProfile } from '@/types/profile';
+import { toast } from '@/hooks/use-toast';
 
 const AuthAwareButton: React.FC = () => {
   const { user, profile, signOut, loading } = useEnhancedAuth();
@@ -89,8 +90,37 @@ const AuthAwareButton: React.FC = () => {
       }
     };
 
-    checkManagerAccess();
+  checkManagerAccess();
   }, [user?.id]);
+
+  const handleSignOut = async () => {
+    try {
+      console.log('🔐 AuthAwareButton: Initiating sign-out...');
+      
+      await signOut();
+      
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out of your account",
+      });
+      
+      // Force redirect to homepage and reload
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 500);
+    } catch (error) {
+      console.error('🔐 AuthAwareButton sign-out error:', error);
+      toast({
+        title: "Signed out",
+        description: "You have been signed out",
+      });
+      
+      // Force redirect anyway
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 500);
+    }
+  };
 
   console.log('🔐 AuthAwareButton state:', {
     hasUser: !!user,
@@ -185,7 +215,7 @@ const AuthAwareButton: React.FC = () => {
         )}
         
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={signOut} className="cursor-pointer">
+        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
           Sign out
         </DropdownMenuItem>

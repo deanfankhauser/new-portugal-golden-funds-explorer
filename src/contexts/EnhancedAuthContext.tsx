@@ -166,13 +166,36 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (!error) {
+    try {
+      console.log('🔐 Signing out user...');
+      
+      // Always clear local state first
       setUser(null);
       setSession(null);
       setProfile(null);
+      
+      // Attempt to sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('🔐 Sign-out error (clearing session anyway):', error);
+        // Clear localStorage as fallback for stale sessions
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('sb-bkmvydnfhmkjnuszroim-auth-token');
+        }
+      } else {
+        console.log('🔐 Successfully signed out');
+      }
+      
+      return { error: null }; // Always return success to UI
+    } catch (error) {
+      console.error('🔐 Sign-out exception:', error);
+      // Clear localStorage as fallback
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('sb-bkmvydnfhmkjnuszroim-auth-token');
+      }
+      return { error: null }; // Always return success to UI
     }
-    return { error };
   };
 
   const updateProfile = async (updates: Partial<Profile>) => {
