@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useDebounce } from './useDebounce';
 import { getAllCategories } from '@/data/services/categories-service';
-import { getAllFundManagers } from '@/data/services/managers-service';
 import { getAllTags } from '@/data/services/tags-service';
 import { useRealTimeFunds } from './useRealTimeFunds';
+import { managerToSlug } from '@/lib/utils';
 
 export interface SearchResult {
   type: 'fund' | 'category' | 'manager' | 'tag';
@@ -64,8 +64,17 @@ export const useGlobalSearch = (query: string) => {
         url: `/category/${cat.toLowerCase().replace(/\s+/g, '-')}`,
       }));
 
-    // Search managers
-    const managers = getAllFundManagers();
+    // Search managers - extract from database funds
+    const managersMap = new Map<string, { name: string; fundsCount: number }>();
+    funds.forEach(fund => {
+      const key = fund.managerName.toLowerCase();
+      if (!managersMap.has(key)) {
+        managersMap.set(key, { name: fund.managerName, fundsCount: 0 });
+      }
+      managersMap.get(key)!.fundsCount++;
+    });
+
+    const managers = Array.from(managersMap.values());
     const matchingManagers = managers
       .filter(mgr => mgr.name.toLowerCase().includes(searchTerm))
       .slice(0, 3)
@@ -74,7 +83,7 @@ export const useGlobalSearch = (query: string) => {
         id: mgr.name,
         name: mgr.name,
         subtitle: `${mgr.fundsCount} fund${mgr.fundsCount !== 1 ? 's' : ''}`,
-        url: `/manager/${mgr.name.toLowerCase().replace(/\s+/g, '-')}`,
+        url: `/manager/${managerToSlug(mgr.name)}`,
       }));
 
     // Search tags
