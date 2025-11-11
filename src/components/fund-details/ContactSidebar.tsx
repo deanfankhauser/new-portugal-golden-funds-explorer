@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Fund } from '@/data/funds';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
 import { useSavedFunds } from '@/hooks/useSavedFunds';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { trackInteraction } from '@/utils/analyticsTracking';
@@ -36,15 +35,14 @@ const scrollToEnquiry = () => {
 
 const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
   const { user } = useEnhancedAuth();
-  const { isFundSaved, saveFund, unsaveFund, refetch } = useSavedFunds();
+  const { isFundSaved, saveFund, unsaveFund } = useSavedFunds();
   const isSaved = isFundSaved(fund.id);
   
-  const [saving, setSaving] = useState(false);
   const [optimisticSaved, setOptimisticSaved] = useState(false);
 
   const displaySaved = optimisticSaved || isSaved;
 
-  const handleSaveFund = async (e: React.MouseEvent) => {
+  const handleSaveFund = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
@@ -55,41 +53,39 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
       return;
     }
 
-    if (saving) {
-      console.log('⏳ Already saving, ignoring click');
-      return;
-    }
+    // Immediate optimistic update
+    const newSavedState = !displaySaved;
+    setOptimisticSaved(newSavedState);
+    console.log(`${newSavedState ? '💾' : '🗑️'} Optimistic update: ${newSavedState ? 'Saved' : 'Unsaved'}`);
 
-    setSaving(true);
-
-    try {
-      if (displaySaved) {
-        console.log('🗑️ Removing saved fund...');
-        setOptimisticSaved(false);
-        await unsaveFund(fund.id);
-        await refetch();
-        toast.success('Fund removed from saved list');
-        console.log('✅ Fund removed successfully');
-      } else {
-        console.log('💾 Saving fund...');
-        setOptimisticSaved(true);
-        await saveFund(fund.id);
-        await refetch();
-        trackInteraction(fund.id, 'save_fund');
-        toast.success('Fund saved successfully');
-        console.log('✅ Fund saved successfully');
-      }
-    } catch (error: any) {
-      console.error('❌ Save/unsave failed:', error);
-      setOptimisticSaved(isSaved); // Revert optimistic update
+    // Fire-and-forget background operation
+    if (newSavedState) {
+      saveFund(fund.id)
+        .then(success => {
+          if (!success) {
+            console.error('❌ Save failed');
+            setOptimisticSaved(isSaved); // Revert
+          }
+        })
+        .catch(error => {
+          console.error('❌ Save error:', error);
+          setOptimisticSaved(isSaved); // Revert
+        });
       
-      if (error?.message?.includes('duplicate')) {
-        toast.info('Fund is already saved');
-      } else {
-        toast.error('Failed to save fund. Please try again.');
-      }
-    } finally {
-      setSaving(false);
+      // Track interaction (fire-and-forget)
+      trackInteraction(fund.id, 'save_fund');
+    } else {
+      unsaveFund(fund.id)
+        .then(success => {
+          if (!success) {
+            console.error('❌ Unsave failed');
+            setOptimisticSaved(isSaved); // Revert
+          }
+        })
+        .catch(error => {
+          console.error('❌ Unsave error:', error);
+          setOptimisticSaved(isSaved); // Revert
+        });
     }
   };
 
@@ -133,7 +129,7 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
             <p className="text-xl font-semibold text-foreground tracking-tight">{formatCurrency(fund.minimumInvestment)}</p>
           </div>
           <div className="bg-muted/20 border border-border/40 rounded-xl p-3 transition-all duration-150 hover:bg-muted/30 hover:border-border/60">
-            <p className="text-[11px] font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Target Return</p>
+            <p className="text-[11px] font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Target Annual Return</p>
             <p className="text-xl font-semibold text-foreground tracking-tight">
               {getReturnTargetDisplay(fund)}
             </p>
@@ -153,19 +149,11 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
           <Button 
             type="button"
             onClick={handleSaveFund}
-            disabled={saving}
             variant="outline"
-            className="w-full hover:bg-muted/20 transition-all duration-200 font-semibold text-sm h-11 rounded-xl border-border/50 hover:border-border text-muted-foreground hover:text-foreground disabled:opacity-50"
+            className="w-full hover:bg-muted/20 transition-all duration-200 font-semibold text-sm h-11 rounded-xl border-border/50 hover:border-border text-muted-foreground hover:text-foreground"
             aria-pressed={displaySaved}
           >
-            {saving ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                {displaySaved ? 'Removing...' : 'Saving...'}
-              </>
-            ) : (
-              displaySaved ? 'Saved' : 'Save Fund'
-            )}
+            {displaySaved ? 'Saved' : 'Save'}
           </Button>
         </div>
       </CardContent>
