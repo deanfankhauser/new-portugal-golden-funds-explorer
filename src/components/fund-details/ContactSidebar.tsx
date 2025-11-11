@@ -52,11 +52,11 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
   };
 
   return (
-    <Card className="sticky top-24 h-fit shadow-[0_2px_8px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.06)] border border-border rounded-2xl hidden lg:block overflow-hidden">
-      <CardContent className="p-8">
+    <Card className="sticky top-24 h-fit shadow-[0_2px_8px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.06)] border border-border/40 rounded-2xl hidden lg:block overflow-hidden">
+      <CardContent className="p-10">
         {/* Optional Verified Badge */}
         {fund.isVerified && (
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold mb-4 bg-success/10 text-success">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[13px] font-semibold mb-4 bg-success/10 text-success">
             <CheckCircle2 className="h-3.5 w-3.5" />
             Verified Fund
           </div>
@@ -85,11 +85,11 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
 
         {/* Metrics Grid */}
         <div className="grid grid-cols-2 gap-4 mb-8">
-          <div className="bg-muted/20 border border-border/60 rounded-xl p-4 transition-all duration-150 hover:bg-muted/30 hover:border-border/80">
+          <div className="bg-muted/20 border border-border/40 rounded-xl p-4 transition-all duration-150 hover:bg-muted/30 hover:border-border/60">
             <p className="text-[11px] font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Min Investment</p>
             <p className="text-2xl font-semibold text-foreground tracking-tight">{formatCurrency(fund.minimumInvestment)}</p>
           </div>
-          <div className="bg-muted/20 border border-border/60 rounded-xl p-4 transition-all duration-150 hover:bg-muted/30 hover:border-border/80">
+          <div className="bg-muted/20 border border-border/40 rounded-xl p-4 transition-all duration-150 hover:bg-muted/30 hover:border-border/60">
             <p className="text-[11px] font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Fund Size</p>
             <p className="text-2xl font-semibold text-foreground tracking-tight">
               {fund.fundSize ? `€${fund.fundSize.toFixed(0)}M` : 'N/A'}

@@ -24,14 +24,14 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
   if (suggestedFunds.length === 0) return null;
 
   return (
-    <div className="mt-12 bg-background rounded-2xl border border-border shadow-sm p-8 sm:p-10">
+    <div className="mt-12 bg-background rounded-2xl border border-border/40 shadow-sm p-10">
       {/* Header Section */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
             <ArrowLeftRight className="h-5 w-5 text-primary-foreground" strokeWidth={2} />
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-heading">
+          <h2 className="text-2xl sm:text-[28px] font-bold tracking-tight text-foreground font-heading">
             Compare {currentFund.name}
           </h2>
         </div>
@@ -50,7 +50,7 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
             <Link
               key={fund.id}
               to={comparisonUrl}
-              className="group relative block rounded-xl transition-all duration-200 hover:shadow-md bg-card border border-border"
+              className="group relative block rounded-xl transition-all duration-200 hover:shadow-lg bg-card border border-border/40 hover:border-primary/20"
             >
               <div className="p-5 sm:p-6">
                 <div className="flex items-center justify-between gap-4">

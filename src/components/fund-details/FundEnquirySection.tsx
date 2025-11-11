@@ -182,10 +182,10 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
   };
 
   return (
-    <Card id="enquiry-form" className="shadow-lg border-2 scroll-mt-24 relative">
+    <Card id="enquiry-form" className="bg-card border border-border/40 rounded-2xl shadow-sm scroll-mt-24 relative">
       {/* Loading Overlay */}
       {isSubmitting && (
-        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center rounded-lg">
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center rounded-2xl">
           <div className="flex flex-col items-center gap-4">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
             <p className="text-lg font-medium text-foreground animate-pulse">Sending your enquiry...</p>
@@ -195,7 +195,7 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
 
       {/* Success Overlay */}
       {showSuccess && (
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-primary/10 backdrop-blur-sm z-50 flex items-center justify-center rounded-lg animate-fade-in">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-primary/10 backdrop-blur-sm z-50 flex items-center justify-center rounded-2xl animate-fade-in">
           <div className="flex flex-col items-center gap-6 text-center px-6">
             <div className="relative">
               <CheckCircle2 className="h-24 w-24 text-primary animate-scale-in" />
@@ -214,14 +214,14 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
         </div>
       )}
       
-      <CardHeader>
-        <CardTitle className="text-3xl">Get in Touch with Fund Manager</CardTitle>
-        <CardDescription className="text-base">
+      <CardHeader className="p-10 pb-8">
+        <CardTitle className="text-[32px] font-semibold tracking-tight leading-tight mb-3">Get in Touch with Fund Manager</CardTitle>
+        <CardDescription className="text-base text-muted-foreground leading-relaxed">
           Enquire about <strong>{fund.name}</strong>. The fund manager will respond within 24-48 hours.
         </CardDescription>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="px-10 pb-10">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Name Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -236,7 +236,7 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
                   placeholder="John"
                   value={formData.firstName}
                   onChange={e => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
-                  className="pl-10"
+                  className="pl-10 px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10"
                   disabled={isSubmitting}
                 />
               </div>
@@ -254,7 +254,7 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
                   placeholder="Smith"
                   value={formData.lastName}
                   onChange={e => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
-                  className="pl-10"
+                  className="pl-10 px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10"
                   disabled={isSubmitting}
                 />
               </div>
@@ -275,7 +275,7 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
                 placeholder="john.smith@example.com"
                 value={formData.email}
                 onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                className="pl-10"
+                className="pl-10 px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10"
                 disabled={isSubmitting}
               />
             </div>
@@ -293,7 +293,7 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
                 placeholder="+351 123 456 789"
                 value={formData.phone}
                 onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                className="pl-10"
+                className="pl-10 px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10"
                 disabled={isSubmitting}
               />
             </div>
@@ -328,7 +328,7 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
             <Label>
               Areas of Interest <span className="text-destructive">*</span>
             </Label>
-            <div className="space-y-2 border rounded-lg p-4 bg-muted/30">
+            <div className="space-y-2 p-6 bg-muted/20 border border-border/40 rounded-lg">
               {INTEREST_AREAS.map(area => (
                 <div key={area} className="flex items-center space-x-2">
                   <Checkbox
@@ -364,7 +364,7 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
                 value={formData.message}
                 onChange={e => setFormData(prev => ({ ...prev, message: e.target.value }))}
                 rows={5}
-                className="pl-10 resize-none"
+                className="pl-10 resize-none px-4 py-4 text-lg bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10"
                 disabled={isSubmitting}
               />
             </div>
@@ -375,7 +375,7 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
           </div>
 
           {/* Disclaimer */}
-          <div className="bg-muted/50 p-4 rounded-lg border">
+          <div className="px-4 py-3 bg-muted/20 border border-border/40 rounded-lg">
             <p className="text-xs text-muted-foreground leading-relaxed">
               <strong>Disclaimer:</strong> This enquiry does not constitute investment advice or a commitment to invest. 
               All investments carry risk. Past performance does not guarantee future results. 
@@ -384,7 +384,12 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
           </div>
 
           {/* Submit Button */}
-          <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
+          <Button 
+            type="submit" 
+            className="w-full shadow-sm hover:shadow-md transition-all duration-200 hover:translate-y-[-1px] font-semibold px-7 py-3 rounded-lg" 
+            size="lg" 
+            disabled={isSubmitting}
+          >
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

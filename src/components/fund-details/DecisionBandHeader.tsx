@@ -18,18 +18,18 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
         <div className="flex-1 space-y-4">
           <div className="flex items-center gap-3 flex-wrap">
             {fund.isVerified && (
-              <div className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-md border border-success/70 animate-in fade-in duration-300">
+              <div className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-[13px] font-bold flex items-center gap-1.5 shadow-md border border-success/70 animate-in fade-in duration-300">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>✓ VERIFIED FUND</span>
               </div>
             )}
             {isOpenForSubscriptions && (
-              <Badge variant="success" className="text-xs font-medium">
+              <Badge variant="success" className="text-[13px] font-medium">
                 Open for subscriptions
               </Badge>
             )}
             {!fund.isVerified && (
-              <Badge variant="outline" className="text-xs font-medium">Unverified</Badge>
+              <Badge variant="outline" className="text-[13px] font-medium">Unverified</Badge>
             )}
           </div>
           
@@ -37,7 +37,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
             {fund.name}
           </h1>
           
-          <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
+          <p className="text-base text-muted-foreground max-w-2xl leading-relaxed">
             {fund.description}
           </p>
         </div>

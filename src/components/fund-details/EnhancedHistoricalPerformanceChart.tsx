@@ -26,21 +26,21 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
 
   if (!historicalPerformance || Object.keys(historicalPerformance).length === 0) {
     return (
-      <Card className="border-0 shadow-sm bg-card/30 backdrop-blur-sm">
-        <CardHeader className="pb-4">
+      <Card className="bg-card border border-border/40 rounded-2xl shadow-sm">
+        <CardHeader className="p-10 pb-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20">
+              <div className="p-2 rounded-xl bg-primary/10">
                 <BarChart3 className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-foreground">Historical Performance</h3>
+                <h3 className="text-2xl font-semibold text-foreground tracking-tight">Historical Performance</h3>
                 <p className="text-sm text-muted-foreground">Track fund performance over time</p>
               </div>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-10 pb-10">
           <div className="flex flex-col items-center justify-center h-64 text-center bg-muted/20 rounded-xl border border-dashed border-muted-foreground/20">
             <BarChart3 className="h-12 w-12 text-muted-foreground/40 mb-4" />
             <div className="text-muted-foreground">
@@ -201,16 +201,16 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
   }, [historicalPerformance, selectedRange]);
 
   return (
-    <Card className="border-0 shadow-sm bg-card/30 backdrop-blur-sm">
-      <CardHeader className="pb-6">
+    <Card className="bg-card border border-border/40 rounded-2xl shadow-sm">
+      <CardHeader className="p-10 pb-6">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
           {/* Header Section */}
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20">
+            <div className="p-2 rounded-xl bg-primary/10">
               <BarChart3 className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-foreground mb-1">Historical Performance</h3>
+              <h3 className="text-2xl font-semibold text-foreground tracking-tight mb-1">Historical Performance</h3>
               <p className="text-sm text-muted-foreground">
                 Monthly returns and fund metrics • {processedData.length} months
               </p>
@@ -330,7 +330,7 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
         )}
       </CardHeader>
       
-      <CardContent className="pt-0">
+      <CardContent className="px-10 pb-10 pt-0">
         <div className={`w-full transition-all duration-300 ${isExpanded ? 'h-96' : 'h-80'}`}>
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart 
@@ -494,9 +494,9 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
         </div>
         
         {/* Performance Disclaimer */}
-        <div className="mt-6 p-4 bg-muted/20 rounded-lg border border-border/30">
+        <div className="mt-6 px-4 py-3 bg-muted/20 border border-border/40 rounded-lg">
           <div className="flex items-start gap-3">
-            <Info className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+            <Info className="h-[18px] w-[18px] text-muted-foreground mt-0.5 flex-shrink-0" />
             <div>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 <span className="font-medium">Performance Disclaimer:</span> Historical performance is not indicative of future results. 

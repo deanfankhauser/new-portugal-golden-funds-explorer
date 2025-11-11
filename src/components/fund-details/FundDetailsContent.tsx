@@ -71,8 +71,6 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
         
             <HistoricalPerformanceChart historicalPerformance={fund.historicalPerformance} />
             
-            <TrustPracticalityCards fund={fund} />
-            
             {/* Main Content Card - Full Width */}
             <div className="bg-card rounded-xl md:rounded-2xl shadow-md border border-border overflow-hidden transition-shadow duration-300 hover:shadow-lg">
                   <div className="p-4 md:p-6 lg:p-10 space-y-8 md:space-y-12">
