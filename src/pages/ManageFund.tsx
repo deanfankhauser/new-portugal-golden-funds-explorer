@@ -35,44 +35,7 @@ const ManageFund: React.FC = () => {
       }
 
       try {
-        // 1) Permission checks: try RPC, fallback to direct assignment query
-        let access = false;
-        let direct = false;
-        try {
-          const { data: canEdit, error: permError } = await supabase.rpc('can_user_edit_fund', {
-            p_user_id: user.id,
-            p_fund_id: fundId,
-          });
-          if (permError) throw permError;
-          access = !!canEdit;
-          direct = !!canEdit;
-          console.log('[ManageFund] RPC can_user_edit_fund result', { access, direct });
-        } catch (e) {
-          console.warn('[ManageFund] RPC failed, falling back to fund_managers', e);
-          const { data: assignment, error: assignError } = await supabase
-            .from('fund_managers')
-            .select('status, permissions')
-            .eq('user_id', user.id)
-            .eq('fund_id', fundId)
-            .maybeSingle();
-          if (assignError) {
-            console.warn('[ManageFund] fund_managers fallback error', assignError);
-          }
-          access = assignment?.status === 'active';
-          // permissions is jsonb; guard optional
-          // @ts-expect-error permissions is jsonb from DB
-          direct = Boolean(assignment?.permissions?.can_edit);
-          console.log('[ManageFund] Fallback assignment result', { access, direct, assignment });
-        }
-
-        setHasAccess(access);
-        setCanDirectEdit(direct);
-        if (!access) {
-          console.warn('[ManageFund] No access to this fund', { fundId });
-          return;
-        }
-
-        // 2) Load fund: DB first, then fallback to local dataset
+        // 1) Load fund FIRST to get manager_name
         let loadedFund: any = null;
         try {
           const { data: fundData, error: fundError } = await supabase
@@ -93,6 +56,49 @@ const ManageFund: React.FC = () => {
             console.log('[ManageFund] Using fallback fund dataset', fallback.id);
             loadedFund = fallback;
           }
+        }
+
+        // If no fund found, exit early
+        if (!loadedFund) {
+          console.warn('[ManageFund] Fund not found', { fundId });
+          setLoading(false);
+          return;
+        }
+
+        // 2) Check company-level permissions using manager_name
+        let access = false;
+        let direct = false;
+
+        try {
+          // Check if user can manage this company's funds
+          const { data: hasCompanyAccess, error: companyError } = await supabase.rpc(
+            'can_user_manage_company_funds',
+            {
+              check_user_id: user.id,
+              check_manager_name: loadedFund.manager_name,
+            }
+          );
+          if (companyError) throw companyError;
+          
+          access = !!hasCompanyAccess;
+          direct = !!hasCompanyAccess; // All company managers can edit
+          console.log('[ManageFund] Company permission check', {
+            managerName: loadedFund.manager_name,
+            access,
+            direct,
+          });
+        } catch (e) {
+          console.error('[ManageFund] Permission check failed', e);
+          access = false;
+          direct = false;
+        }
+
+        setHasAccess(access);
+        setCanDirectEdit(direct);
+        if (!access) {
+          console.warn('[ManageFund] No access to this fund', { fundId, managerName: loadedFund.manager_name });
+          setLoading(false);
+          return;
         }
 
         // Transform snake_case DB fields to camelCase for UI compatibility
