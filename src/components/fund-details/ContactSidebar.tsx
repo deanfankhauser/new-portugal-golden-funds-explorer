@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Fund } from '@/data/funds';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Building2, MessageSquare, Heart, CheckCircle2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useSavedFunds } from '@/hooks/useSavedFunds';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { trackInteraction } from '@/utils/analyticsTracking';
@@ -36,23 +36,60 @@ const scrollToEnquiry = () => {
 
 const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
   const { user } = useEnhancedAuth();
-  const { isFundSaved, saveFund, unsaveFund } = useSavedFunds();
+  const { isFundSaved, saveFund, unsaveFund, refetch } = useSavedFunds();
   const isSaved = isFundSaved(fund.id);
+  
+  const [saving, setSaving] = useState(false);
+  const [optimisticSaved, setOptimisticSaved] = useState(false);
+
+  const displaySaved = optimisticSaved || isSaved;
 
   const handleSaveFund = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    console.log('💾 Save button clicked', { fundId: fund.id, isSaved, user: !!user });
 
     if (!user) {
       toast.error('Please log in to save funds');
       return;
     }
 
-    if (isSaved) {
-      await unsaveFund(fund.id);
-    } else {
-      await saveFund(fund.id);
-      trackInteraction(fund.id, 'save_fund');
+    if (saving) {
+      console.log('⏳ Already saving, ignoring click');
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      if (displaySaved) {
+        console.log('🗑️ Removing saved fund...');
+        setOptimisticSaved(false);
+        await unsaveFund(fund.id);
+        await refetch();
+        toast.success('Fund removed from saved list');
+        console.log('✅ Fund removed successfully');
+      } else {
+        console.log('💾 Saving fund...');
+        setOptimisticSaved(true);
+        await saveFund(fund.id);
+        await refetch();
+        trackInteraction(fund.id, 'save_fund');
+        toast.success('Fund saved successfully');
+        console.log('✅ Fund saved successfully');
+      }
+    } catch (error: any) {
+      console.error('❌ Save/unsave failed:', error);
+      setOptimisticSaved(isSaved); // Revert optimistic update
+      
+      if (error?.message?.includes('duplicate')) {
+        toast.info('Fund is already saved');
+      } else {
+        toast.error('Failed to save fund. Please try again.');
+      }
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -69,25 +106,19 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
         {/* Optional Verified Badge */}
         {fund.isVerified && (
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[13px] font-semibold mb-3 bg-success/10 text-success">
-            <CheckCircle2 className="h-3.5 w-3.5" />
             Verified Fund
           </div>
         )}
 
         {/* Manager Section */}
-        <div className="flex items-center gap-3 pb-5 mb-5 border-b border-border/60">
-          <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-            <Building2 className="h-6 w-6 text-primary" strokeWidth={2} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-semibold text-muted-foreground mb-1 uppercase tracking-wider">Managed by</p>
-            <Link 
-              to={`/manager/${managerToSlug(fund.managerName)}`}
-              className="font-semibold text-base text-foreground hover:text-primary transition-colors truncate block leading-tight"
-            >
-              {fund.managerName}
-            </Link>
-          </div>
+        <div className="pb-5 mb-5 border-b border-border/60">
+          <p className="text-[11px] font-semibold text-muted-foreground mb-1 uppercase tracking-wider">Managed by</p>
+          <Link 
+            to={`/manager/${managerToSlug(fund.managerName)}`}
+            className="font-semibold text-base text-foreground hover:text-primary transition-colors block leading-tight"
+          >
+            {fund.managerName}
+          </Link>
         </div>
         
         {/* Fund Title */}
@@ -112,20 +143,29 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
         {/* CTA Buttons */}
         <div className="space-y-2.5">
           <Button 
+            type="button"
             onClick={scrollToEnquiry}
-            className="w-full gap-2.5 shadow-[0_2px_4px_rgba(75,15,35,0.2)] hover:shadow-[0_4px_8px_rgba(75,15,35,0.25)] hover:translate-y-[-1px] active:translate-y-0 transition-all duration-200 font-semibold text-sm h-11 rounded-xl"
+            className="w-full shadow-[0_2px_4px_rgba(75,15,35,0.2)] hover:shadow-[0_4px_8px_rgba(75,15,35,0.25)] hover:translate-y-[-1px] active:translate-y-0 transition-all duration-200 font-semibold text-sm h-11 rounded-xl"
           >
-            <MessageSquare className="h-4 w-4" strokeWidth={2} />
             Get in Touch
           </Button>
           
           <Button 
+            type="button"
             onClick={handleSaveFund}
+            disabled={saving}
             variant="outline"
-            className="w-full gap-2.5 hover:bg-muted/20 transition-all duration-200 font-semibold text-sm h-11 rounded-xl border-border/50 hover:border-border text-muted-foreground hover:text-foreground"
+            className="w-full hover:bg-muted/20 transition-all duration-200 font-semibold text-sm h-11 rounded-xl border-border/50 hover:border-border text-muted-foreground hover:text-foreground disabled:opacity-50"
+            aria-pressed={displaySaved}
           >
-            <Heart className={`h-4 w-4 transition-colors ${isSaved ? 'fill-current text-primary' : ''}`} strokeWidth={2} />
-            {isSaved ? 'Saved' : 'Save Fund'}
+            {saving ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                {displaySaved ? 'Removing...' : 'Saving...'}
+              </>
+            ) : (
+              displaySaved ? 'Saved' : 'Save Fund'
+            )}
           </Button>
         </div>
       </CardContent>
