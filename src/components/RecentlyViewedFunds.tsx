@@ -40,7 +40,7 @@ const RecentlyViewedFunds = () => {
           <Link
             key={fund.id}
             to={`/${fund.id}`}
-            className="group relative bg-card border border-border/60 rounded-xl p-7 hover:border-border hover:shadow-lg transition-all duration-200 overflow-hidden"
+            className="group relative bg-card border border-border/60 rounded-xl p-5 lg:p-7 hover:border-border hover:shadow-lg transition-all duration-200 overflow-hidden"
             style={{
               willChange: 'transform',
             }}

@@ -39,7 +39,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
 
   return (
     <Card className="border border-border/60 rounded-xl bg-card w-full group">
-      <CardContent className="p-10">
+      <CardContent className="p-6 lg:p-10">
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1">
