@@ -8,7 +8,6 @@ import PageSEO from '../components/common/PageSEO';
 import FundManagerContent from '../components/fund-manager/FundManagerContent';
 import FundManagerNotFound from '../components/fund-manager/FundManagerNotFound';
 import FundManagerBreadcrumbs from '../components/fund-manager/FundManagerBreadcrumbs';
-import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/types/profile';
 import { useAllFunds } from '../hooks/useFundsQuery';
 import { Fund } from '../data/types/funds';
@@ -83,6 +82,9 @@ const FundManager = () => {
       
       if (matchingProfile) {
         setIsManagerVerified(true);
+        
+        // Lazy load supabase only when needed (not during SSG)
+        const { supabase } = await import('@/integrations/supabase/client');
         
         // Fetch full profile data
         const { data } = await supabase

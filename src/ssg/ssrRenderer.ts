@@ -10,7 +10,6 @@ import { StaticRoute } from './routeDiscovery';
 import { loadComponents, TooltipProvider } from './componentLoader';
 import { ComparisonProvider } from '../contexts/ComparisonContext';
 import { RecentlyViewedProvider } from '../contexts/RecentlyViewedContext';
-import { EnhancedAuthProvider } from '../contexts/EnhancedAuthContext';
 import { fundsData } from '../data/mock/funds';
 import type { Fund } from '../data/types/funds';
 
@@ -157,12 +156,21 @@ export class SSRRenderer {
       return component;
     };
 
+    // During SSG, avoid importing EnhancedAuthProvider to prevent Supabase client initialization
+    const isSSG = typeof window === 'undefined';
+    let AuthWrapper: React.ComponentType<any> = React.Fragment as any;
+    
+    if (!isSSG) {
+      // Only load auth provider in browser environments
+      const { EnhancedAuthProvider } = await import('../contexts/EnhancedAuthContext');
+      AuthWrapper = EnhancedAuthProvider;
+    }
 
     const AppRouter = () => React.createElement(
       QueryClientProvider,
       { client: queryClient },
       React.createElement(
-        EnhancedAuthProvider,
+        AuthWrapper,
         null,
         React.createElement(
           ComparisonProvider,
