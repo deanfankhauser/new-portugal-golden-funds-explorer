@@ -79,3 +79,18 @@ verify_jwt = false
 
 [functions.submit-fund-enquiry]
 verify_jwt = false
+
+[functions.notify-lead-status-change]
+verify_jwt = false
+
+[functions.weekly-lead-digest]
+verify_jwt = false
+
+[functions.request-advertising-access]
+verify_jwt = false
+
+[functions.backfill-company-assignments]
+verify_jwt = false
+
+[functions.create-company-profiles]
+verify_jwt = false

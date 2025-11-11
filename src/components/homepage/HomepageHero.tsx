@@ -1,8 +1,6 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ShieldCheck, TrendingUp, Building2, Euro } from 'lucide-react';
-import { Button } from '../ui/button';
+import { ShieldCheck } from 'lucide-react';
 import { Fund } from '../../data/types/funds';
 
 interface HomepageHeroProps {
@@ -10,32 +8,6 @@ interface HomepageHeroProps {
 }
 
 const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
-  const totalFunds = funds.length;
-  const minimumInvestment = '€500K';
-
-  const stats = [
-    {
-      value: `${totalFunds}`,
-      label: 'Golden Visa Funds',
-      icon: Building2,
-    },
-    {
-      value: 'Comprehensive',
-      label: 'Analysis & Comparison',
-      icon: TrendingUp,
-    },
-    {
-      value: minimumInvestment,
-      label: 'Standard Investment',
-      icon: Euro,
-    },
-    {
-      value: 'Updated',
-      label: 'Regularly Verified Data',
-      icon: ShieldCheck,
-    },
-  ];
-
   const scrollToFunds = () => {
     const fundsSection = document.getElementById('funds-section');
     if (fundsSection) {
@@ -75,29 +47,6 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
               Compare Portugal Golden Visa investment funds with comprehensive analysis. 
               Detailed breakdown of fees, returns, and compliance requirements.
             </p>
-          </div>
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 gap-4 sm:gap-6 mb-8 max-w-4xl mx-auto">
-            {stats.map((stat, index) => {
-              const Icon = stat.icon;
-              return (
-                <div
-                  key={index}
-                  className="bg-card rounded-2xl p-4 sm:p-6 border border-border shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <div className="flex flex-col items-center text-center">
-                    <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-accent mb-2 sm:mb-3 shrink-0" />
-                    <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-high-contrast mb-1 sm:mb-2 break-words hyphens-auto w-full">
-                      {stat.value}
-                    </div>
-                    <div className="text-xs sm:text-sm md:text-base text-medium-contrast font-medium break-words w-full">
-                      {stat.label}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
           </div>
 
           {/* Learn More Link */}

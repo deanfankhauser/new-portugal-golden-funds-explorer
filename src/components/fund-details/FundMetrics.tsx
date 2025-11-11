@@ -26,7 +26,7 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
       subtitle: fund.id === '3cc-golden-income' ? 'Class A (€300,000 for Class D)' : undefined,
     },
     {
-      label: "Target Annual Return", 
+      label: "Target Return", 
       value: `${getReturnTargetDisplay(fund)} ${DATA_AS_OF_LABEL}`,
     },
     {

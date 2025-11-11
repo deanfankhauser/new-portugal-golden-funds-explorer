@@ -99,7 +99,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             <div className="flex items-center gap-2 mb-2">
               <PieChart className="w-3.5 h-3.5 text-muted-foreground/60" />
               <span className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground">
-                Target Annual Return
+                Target Return
               </span>
             </div>
             <p className="text-[36px] font-semibold text-foreground tracking-tight leading-none">

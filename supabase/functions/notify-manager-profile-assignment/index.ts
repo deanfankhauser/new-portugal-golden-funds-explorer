@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 import {
   generateEmailWrapper,
   generateCTAButton,
@@ -46,6 +47,7 @@ serve(async (req) => {
     console.log(`Sending profile assignment notification to:`, manager_email);
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const postmarkToken = Deno.env.get("POSTMARK_SERVER_TOKEN");
     const notificationEmail = Deno.env.get("NOTIFICATION_FROM_EMAIL") || "noreply@movingto.com";
 
@@ -53,9 +55,24 @@ serve(async (req) => {
       throw new Error("POSTMARK_SERVER_TOKEN not configured");
     }
 
-    const manageProfileUrl = `${supabaseUrl.replace('.supabase.co', '.lovableproject.com')}/manage-profile/${profile_id}`;
+    // Create Supabase client to fetch associated funds
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Fetch all funds associated with this company
+    const { data: associatedFunds, error: fundsError } = await supabase
+      .from('funds')
+      .select('id, name')
+      .eq('manager_name', company_name)
+      .order('name');
+
+    if (fundsError) {
+      console.error('Error fetching associated funds:', fundsError);
+    }
+
+    const fundCount = associatedFunds?.length || 0;
+    const myFundsUrl = `${supabaseUrl.replace('.supabase.co', '.lovableproject.com')}/my-funds`;
     
-    const subject = `🎯 You've Been Assigned to Manage ${company_name}`;
+    const subject = `🎯 You've Been Assigned to Manage ${company_name} and ${fundCount} Fund${fundCount !== 1 ? 's' : ''}`;
 
     // Format permissions list
     const permissionsList = [];
@@ -64,16 +81,31 @@ serve(async (req) => {
     if (permissions.can_manage_team) permissionsList.push('✓ Manage team members');
     if (permissions.can_view_analytics) permissionsList.push('✓ View analytics');
 
+    // Build funds list HTML
+    const fundsListHtml = associatedFunds && associatedFunds.length > 0 ? `
+      <div style="margin: 32px 0; padding: 20px; background: #F8FAFC; border-radius: 8px; border: 1px solid #E5E7EB;">
+        <h3 style="color: #4B0F23; margin: 0 0 16px 0; font-size: 18px;">Associated Funds (${fundCount})</h3>
+        <ul style="margin: 0; padding-left: 20px; line-height: 2;">
+          ${associatedFunds.map(fund => `<li style="color: #64748b;">${fund.name}</li>`).join('')}
+        </ul>
+      </div>
+    ` : '';
+
     const bodyContent = `
       ${generateContentCard(`
-        <h2 style="color: #4B0F23; margin: 0 0 16px 0; font-size: 24px;">Manager Profile Assignment</h2>
+        <h2 style="color: #4B0F23; margin: 0 0 16px 0; font-size: 24px;">Company Manager Assignment</h2>
         <p style="margin: 0 0 16px 0; line-height: 1.6;">
           Hello ${manager_name},
         </p>
         <p style="margin: 0 0 16px 0; line-height: 1.6;">
-          You have been assigned to manage the profile for <strong>${company_name}</strong> on Movingto Funds.
+          You have been assigned to manage <strong>${company_name}</strong> and all associated funds on Movingto Funds.
+        </p>
+        <p style="margin: 0 0 0 0; line-height: 1.6;">
+          This gives you access to manage <strong>${fundCount} fund${fundCount !== 1 ? 's' : ''}</strong> under this company.
         </p>
       `, 'bordeaux')}
+
+      ${fundsListHtml}
       
       <div style="margin: 32px 0;">
         <h3 style="color: #4B0F23; margin: 0 0 16px 0; font-size: 18px;">Your Permissions</h3>
@@ -89,11 +121,11 @@ serve(async (req) => {
       </div>
       ` : ''}
 
-      ${generateCTAButton('Manage Profile', manageProfileUrl, 'bordeaux')}
+      ${generateCTAButton('View My Funds', myFundsUrl, 'bordeaux')}
 
       <div style="margin: 32px 0; padding: 16px; background: #F8FAFC; border-radius: 8px;">
         <p style="margin: 0 0 8px 0; font-size: 14px; color: #64748b;">
-          <strong>💡 Tip:</strong> Keep your company profile up-to-date to attract more investors and improve your visibility on the platform.
+          <strong>💡 Tip:</strong> Keep your company profile and fund information up-to-date to attract more investors and improve your visibility on the platform.
         </p>
       </div>
 
@@ -103,11 +135,16 @@ serve(async (req) => {
     `;
 
     const htmlContent = generateEmailWrapper(subject, bodyContent, manager_email);
+    
+    const fundsListText = associatedFunds && associatedFunds.length > 0 
+      ? `\n\nAssociated Funds (${fundCount}):\n${associatedFunds.map(f => `- ${f.name}`).join('\n')}\n`
+      : '';
+    
     const plainTextContent = generatePlainTextEmail(
       subject,
-      `Hello ${manager_name},\n\nYou have been assigned to manage the profile for ${company_name} on Movingto Funds.\n\nYour permissions:\n${permissionsList.map(p => `- ${p}`).join('\n')}\n\n${notes ? `Notes: ${notes}\n\n` : ''}Best regards,\nThe Movingto Funds Team`,
-      'Manage Profile',
-      manageProfileUrl
+      `Hello ${manager_name},\n\nYou have been assigned to manage ${company_name} and all associated funds on Movingto Funds.\n\nThis gives you access to manage ${fundCount} fund${fundCount !== 1 ? 's' : ''} under this company.${fundsListText}\n\nYour permissions:\n${permissionsList.map(p => `- ${p}`).join('\n')}\n\n${notes ? `Notes: ${notes}\n\n` : ''}Best regards,\nThe Movingto Funds Team`,
+      'View My Funds',
+      myFundsUrl
     );
 
     // Send via Postmark

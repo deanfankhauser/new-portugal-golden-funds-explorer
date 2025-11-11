@@ -75,7 +75,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             <StandardRow 
               funds={funds}
               field={(fund) => getReturnTargetDisplay(fund)}
-              label="Target Annual Return"
+              label="Target Return"
               allSame={allSame}
             />
 
