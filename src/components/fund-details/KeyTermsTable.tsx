@@ -12,26 +12,26 @@ interface KeyTermsTableProps {
 const KeyTermsTable: React.FC<KeyTermsTableProps> = ({ fund }) => {
   const getIcon = (label: string) => {
     const iconMap: Record<string, React.ReactNode> = {
-      'Minimum Investment': <Building className="h-4 w-4" />,
-      'Fund Structure': <FileText className="h-4 w-4" />,
-      'Domicile': <MapPin className="h-4 w-4" />,
-      'Custodian': <Shield className="h-4 w-4" />,
-      'Auditor': <FileCheck className="h-4 w-4" />,
-      'ISIN': <Hash className="h-4 w-4" />,
-      'Reporting': <FileText className="h-4 w-4" />,
-      'Documentation Cadence': <Calendar className="h-4 w-4" />,
-      'Fund Status': <Shield className="h-4 w-4" />,
-      'Inception Date': <Calendar className="h-4 w-4" />,
+      'Minimum Investment': <Building className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Fund Structure': <FileText className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Domicile': <MapPin className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Custodian': <Shield className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Auditor': <FileCheck className="h-[18px] w-[18px] text-muted-foreground" />,
+      'ISIN': <Hash className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Reporting': <FileText className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Documentation Cadence': <Calendar className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Fund Status': <Shield className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Inception Date': <Calendar className="h-[18px] w-[18px] text-muted-foreground" />,
     };
-    return iconMap[label] || <FileText className="h-4 w-4" />;
+    return iconMap[label] || <FileText className="h-[18px] w-[18px] text-muted-foreground" />;
   };
 
   const keyTerms = [
-    { label: "Minimum Investment", value: fund.minimumInvestment ? formatCurrency(fund.minimumInvestment) : "Contact Manager", type: "currency" },
-    { label: "Fund Structure", value: fund.category || "Investment Fund", type: "text" },
+    { label: "Minimum Investment", value: fund.minimumInvestment ? formatCurrency(fund.minimumInvestment) : "N/A", type: "currency" },
+    { label: "Fund Structure", value: fund.category || "N/A", type: "text" },
     { label: "Domicile", value: "Portugal", type: "text" },
-    { label: "Custodian", value: fund.custodian || "Banco BPI", type: "text" },
-    { label: "Auditor", value: fund.auditor || "PwC Portugal", type: "text" },
+    { label: "Custodian", value: fund.custodian || "N/A", type: "text" },
+    { label: "Auditor", value: fund.auditor || "N/A", type: "text" },
     { label: "ISIN", value: fund.cmvmId || "N/A", type: "text" },
     { label: "Reporting", value: "Monthly NAV, Quarterly Reports", type: "text" },
     { label: "Documentation Cadence", value: "Monthly", type: "text" },
@@ -47,22 +47,19 @@ const KeyTermsTable: React.FC<KeyTermsTableProps> = ({ fund }) => {
         </Badge>
       );
     }
-    return <span className="text-sm font-medium">{term.value}</span>;
+    return <span className="text-[15px] font-semibold text-foreground">{term.value}</span>;
   };
 
   return (
-    <Card className="shadow-lg border-2 hover:shadow-xl transition-all duration-300">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-2xl flex items-center gap-2">
-          <FileText className="h-5 w-5" />
-          Key Terms
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-2.5">
+    <Card className="bg-card border border-border/40 rounded-2xl shadow-sm">
+      <CardContent className="p-10">
+        <h2 className="text-2xl font-semibold tracking-tight mb-8">Key Terms</h2>
+        
+        {/* Main Terms */}
+        <div className="flex flex-col gap-4">
           {keyTerms.map((term, index) => (
-            <div key={index} className={`flex items-center justify-between py-2 ${index !== keyTerms.length - 1 ? 'border-b' : ''}`}>
-              <span className="text-sm text-muted-foreground flex items-center gap-2">
+            <div key={index} className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors">
+              <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
                 {getIcon(term.label)}
                 {term.label}
               </span>
@@ -71,42 +68,7 @@ const KeyTermsTable: React.FC<KeyTermsTableProps> = ({ fund }) => {
           ))}
         </div>
 
-        {/* Expandable Details */}
-        <details className="group">
-          <summary className="flex items-center justify-between cursor-pointer py-3 border-t hover:bg-accent/5 transition-colors px-2 -mx-2 rounded">
-            <span className="text-sm font-medium">Service Providers & Compliance</span>
-            <svg className="h-4 w-4 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </summary>
-          <div className="pt-4 space-y-4 pb-2">
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between py-2 border-b">
-                <span className="text-sm text-muted-foreground flex items-center gap-2">
-                  <Briefcase className="h-4 w-4" />
-                  Administrator
-                </span>
-                <span className="text-sm font-medium">Fund Admin Portugal</span>
-              </div>
-              <div className="flex items-center justify-between py-2 border-b">
-                <span className="text-sm text-muted-foreground flex items-center gap-2">
-                  <Shield className="h-4 w-4" />
-                  Legal Counsel
-                </span>
-                <span className="text-sm font-medium">Morais Leitão</span>
-              </div>
-              <div className="flex items-center justify-between py-2">
-                <span className="text-sm text-muted-foreground flex items-center gap-2">
-                  <FileCheck className="h-4 w-4" />
-                  Tax Advisor
-                </span>
-                <span className="text-sm font-medium">Deloitte Portugal</span>
-              </div>
-            </div>
-          </div>
-        </details>
-
-        <p className="text-xs text-muted-foreground pt-4 border-t">
+        <p className="text-xs leading-relaxed text-muted-foreground mt-8 pt-8 border-t border-border/60">
           Information as reported by fund manager. Terms may vary by investor class.
         </p>
       </CardContent>

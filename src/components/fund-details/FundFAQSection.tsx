@@ -1,13 +1,7 @@
-
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Fund } from '../../data/funds';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-
+import { Button } from '@/components/ui/button';
+import { HelpCircle, MessageSquare } from 'lucide-react';
 interface FAQItem {
   question: string;
   answer: string;
@@ -18,27 +12,62 @@ interface FundFAQSectionProps {
 }
 
 const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
+  const faqRefs = useRef<(HTMLDivElement | null)[]>([]);
+
   // Default FAQs if none provided in fund data
   const defaultFAQs: FAQItem[] = [
     {
-      question: `What is the minimum investment for ${fund.name}?`,
-      answer: `The minimum investment amount for ${fund.name} varies. Please contact the fund manager for specific details about minimum investment requirements.`
+      question: `What makes ${fund.name} unique?`,
+      answer: `${fund.name} offers a distinctive investment approach with carefully selected strategies designed to achieve optimal returns while managing risk. The fund combines experienced management with rigorous investment processes to deliver value to investors.`
     },
     {
-      question: `What are the fees associated with ${fund.name}?`,
-      answer: `${fund.name} has management fees and performance fees. Please refer to the fund documentation or contact the manager for detailed fee information.`
+      question: `How is risk managed?`,
+      answer: `${fund.name} employs a multi-layered risk management approach designed to protect capital while pursuing growth opportunities. This includes asset diversification, rigorous selection processes, regular portfolio rebalancing, and professional oversight by experienced managers with proven track records.`
     },
     {
-      question: `How can I invest in ${fund.name}?`,
-      answer: `To invest in ${fund.name}, you can contact the fund manager directly or use our introduction service to get connected with the appropriate representative.`
+      question: `What are the investment requirements?`,
+      answer: `The minimum investment for ${fund.name} is ${fund.minimumInvestment ? `€${fund.minimumInvestment.toLocaleString()}` : 'available upon request'}. The fund features ${fund.redemptionTerms?.frequency || 'periodic'} redemptions with ${fund.redemptionTerms?.minimumHoldingPeriod ? `a ${fund.redemptionTerms.minimumHoldingPeriod}-month` : 'a'} lock-up period. ${fund.redemptionTerms?.noticePeriod ? `${fund.redemptionTerms.noticePeriod} days notice` : 'Advance notice'} is required for redemptions.`
+    },
+    {
+      question: fund.tags?.includes('Golden Visa Eligible') 
+        ? `How does the Golden Visa qualification work?`
+        : `What are the regulatory requirements?`,
+      answer: fund.tags?.includes('Golden Visa Eligible')
+        ? `${fund.name} is approved by Portuguese authorities as a Golden Visa qualifying investment. By investing the minimum amount, you become eligible to apply for Portuguese residency through the Golden Visa program. The fund maintains full compliance with CMVM regulations${fund.cmvmId ? ` and is registered under CMVM #${fund.cmvmId}` : ''}. Our team works closely with investors to ensure all documentation meets Golden Visa requirements.`
+        : `${fund.name} operates under strict regulatory oversight${fund.regulatedBy ? ` by ${fund.regulatedBy}` : ''}${fund.cmvmId ? ` and is registered with CMVM #${fund.cmvmId}` : ''}. The fund maintains full compliance with all applicable securities regulations and reporting requirements.`
+    },
+    {
+      question: `What are the expected returns?`,
+      answer: `${fund.name} ${fund.returnTarget ? `targets ${fund.returnTarget}` : 'aims to deliver competitive returns'}${fund.historicalPerformance ? `, with historical performance demonstrating the fund's ability to achieve its objectives` : ''}. However, past performance is not indicative of future results. The fund's investments carry inherent market risks. Capital is at risk, and investors should carefully consider their investment objectives and risk tolerance.`
     }
   ];
 
   // Use fund-specific FAQs if available, otherwise use default FAQs
   const activeFAQs = (fund as any).faqs && (fund as any).faqs.length > 0 ? (fund as any).faqs : defaultFAQs;
 
+  // Entrance animations
   useEffect(() => {
-    // Create FAQ Page schema for SEO
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('opacity-100', 'translate-y-0');
+            entry.target.classList.remove('opacity-0', 'translate-y-5');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    faqRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, [activeFAQs]);
+
+  // Schema markup
+  useEffect(() => {
     const faqSchema = {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
@@ -52,20 +81,17 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
       }))
     };
 
-    // Remove existing FAQ schema
     const existingFAQSchema = document.querySelector('script[data-schema="faq"]');
     if (existingFAQSchema) {
       existingFAQSchema.remove();
     }
 
-    // Add new FAQ schema with unified data-schema="faq"
     const script = document.createElement('script');
     script.type = 'application/ld+json';
     script.setAttribute('data-schema', 'faq');
     script.textContent = JSON.stringify(faqSchema);
     document.head.appendChild(script);
 
-    // Cleanup function
     return () => {
       const schemaScript = document.querySelector('script[data-schema="faq"]');
       if (schemaScript) {
@@ -78,37 +104,96 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
     return null;
   }
 
-  return (
-    <section className="bg-muted rounded-lg p-6" itemScope itemType="https://schema.org/FAQPage">
-      <h2 className="text-xl font-bold mb-6 text-foreground">
-        Frequently Asked Questions about {fund.name}
-      </h2>
+  const scrollToEnquiry = () => {
+    const element = document.getElementById('enquiry-form');
+    if (element) {
+      const headerOffset = 100;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
       
-      <Accordion type="single" collapsible className="w-full space-y-4">
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+      
+      setTimeout(() => {
+        const firstInput = element.querySelector('input');
+        firstInput?.focus();
+      }, 500);
+    }
+  };
+
+  return (
+    <section className="container mx-auto max-w-4xl" itemScope itemType="https://schema.org/FAQPage">
+      {/* Section Header */}
+      <div className="mb-10">
+        <h2 className="text-[32px] font-semibold tracking-tight leading-tight mb-3">
+          Frequently Asked Questions about {fund.name}
+        </h2>
+        <p className="text-base text-muted-foreground max-w-2xl">
+          Everything you need to know about investing in {fund.name}
+        </p>
+      </div>
+
+      {/* FAQ List */}
+      <div className="flex flex-col gap-8">
         {activeFAQs.map((faq: FAQItem, index: number) => (
-          <AccordionItem 
-            key={index} 
-            value={`item-${index}`}
-            className="bg-card rounded-lg border border-border"
-            itemScope 
+          <div
+            key={index}
+            ref={(el) => (faqRefs.current[index] = el)}
+            className="bg-card border border-border/40 rounded-xl p-8 shadow-sm hover:border-primary/20 hover:shadow-lg transition-all duration-200 opacity-0 translate-y-5"
+            style={{
+              transitionDelay: `${index * 0.1}s`
+            }}
+            itemScope
             itemType="https://schema.org/Question"
           >
-            <AccordionTrigger 
-              className="px-6 py-3 text-left hover:no-underline hover:bg-muted rounded-t-lg text-sm"
-              itemProp="name"
-            >
-              <span className="font-medium text-foreground">{faq.question}</span>
-            </AccordionTrigger>
-            <AccordionContent 
-              className="px-6 pb-4 text-sm text-muted-foreground leading-relaxed"
-              itemScope 
+            {/* Question */}
+            <div className="flex items-start gap-3 mb-4">
+              <div className="w-6 h-6 bg-primary/10 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5">
+                <HelpCircle className="h-3.5 w-3.5 text-primary" />
+              </div>
+              <h3 
+                className="text-xl font-semibold tracking-tight leading-relaxed"
+                itemProp="name"
+              >
+                {faq.question}
+              </h3>
+            </div>
+
+            {/* Answer */}
+            <div 
+              className="pl-9 text-base text-muted-foreground leading-relaxed"
+              itemScope
               itemType="https://schema.org/Answer"
             >
-              <div itemProp="text">{faq.answer}</div>
-            </AccordionContent>
-          </AccordionItem>
+              <div itemProp="text">
+                {faq.answer.split('\n\n').map((paragraph, pIndex) => (
+                  <p key={pIndex} className={pIndex < faq.answer.split('\n\n').length - 1 ? 'mb-3' : ''}>
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
         ))}
-      </Accordion>
+      </div>
+
+      {/* CTA Section */}
+      <div className="bg-gradient-to-br from-primary/5 to-primary/[0.02] border border-primary/15 rounded-xl p-8 text-center mt-12">
+        <h3 className="text-xl font-semibold mb-2">Still have questions?</h3>
+        <p className="text-[15px] text-muted-foreground mb-5">
+          Our team is here to help you understand how {fund.name} can support your investment goals
+        </p>
+        <Button 
+          onClick={scrollToEnquiry}
+          className="gap-2"
+          size="lg"
+        >
+          <MessageSquare className="h-5 w-5" />
+          Get in Touch
+        </Button>
+      </div>
     </section>
   );
 };

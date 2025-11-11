@@ -18,45 +18,40 @@ const RedemptionTerms: React.FC<RedemptionTermsProps> = ({ redemptionTerms }) =>
   const isLocked = redemptionTerms.frequency === 'End of Term' && !redemptionTerms.redemptionOpen;
 
   return (
-    <Card className="shadow-lg border-2 hover:shadow-xl transition-all duration-300">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-2xl flex items-center gap-2">
-          <Calendar className="h-5 w-5" />
-          Redemption Terms
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Main redemption details */}
-        <div className="space-y-2.5">
-          <div className="flex items-center justify-between py-2 border-b">
-            <span className="text-sm text-muted-foreground flex items-center gap-2">
-              <AlertCircle className="h-4 w-4" />
+    <Card className="bg-card border border-border/40 rounded-2xl shadow-sm">
+      <CardContent className="p-10">
+        <h2 className="text-2xl font-semibold tracking-tight mb-8">Redemption Terms</h2>
+        
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors">
+            <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
+              <AlertCircle className="h-[18px] w-[18px] text-muted-foreground" />
               Redemption Status
             </span>
             {isLocked ? (
-              <Badge variant="outline" className="text-xs">Locked Until Maturity</Badge>
+              <Badge variant="outline" className="text-[13px]">Locked Until Maturity</Badge>
             ) : (
-              <Badge variant={redemptionTerms.redemptionOpen ? "default" : "outline"} className="text-xs">
+              <Badge variant={redemptionTerms.redemptionOpen ? "default" : "outline"} className="text-[13px]">
                 {redemptionTerms.redemptionOpen ? "Open" : "Closed"}
               </Badge>
             )}
           </div>
 
-          <div className="flex items-center justify-between py-2 border-b">
-            <span className="text-sm text-muted-foreground flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
+          <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors">
+            <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
+              <Calendar className="h-[18px] w-[18px] text-muted-foreground" />
               Frequency
             </span>
-            <span className="text-sm font-medium">{redemptionTerms.frequency}</span>
+            <span className="text-[15px] font-semibold text-foreground">{redemptionTerms.frequency}</span>
           </div>
 
           {redemptionTerms.noticePeriod !== undefined && redemptionTerms.noticePeriod > 0 && (
-            <div className="flex items-center justify-between py-2 border-b">
-              <span className="text-sm text-muted-foreground flex items-center gap-2">
-                <Clock className="h-4 w-4" />
+            <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors">
+              <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
+                <Clock className="h-[18px] w-[18px] text-muted-foreground" />
                 Notice Period
               </span>
-              <span className="text-sm font-medium">
+              <span className="text-[15px] font-semibold text-foreground">
                 {redemptionTerms.frequency === 'Daily' && redemptionTerms.noticePeriod <= 5 
                   ? `${redemptionTerms.noticePeriod} business days` 
                   : `${redemptionTerms.noticePeriod} days`}
@@ -65,12 +60,12 @@ const RedemptionTerms: React.FC<RedemptionTermsProps> = ({ redemptionTerms }) =>
           )}
 
           {redemptionTerms.minimumHoldingPeriod !== undefined && (
-            <div className="flex items-center justify-between py-2 border-b">
-              <span className="text-sm text-muted-foreground flex items-center gap-2">
-                <Lock className="h-4 w-4" />
+            <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors">
+              <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
+                <Lock className="h-[18px] w-[18px] text-muted-foreground" />
                 Lock-up Period
               </span>
-              <span className="text-sm font-medium">
+              <span className="text-[15px] font-semibold text-foreground">
                 {redemptionTerms.minimumHoldingPeriod} months
                 {redemptionTerms.minimumHoldingPeriod >= 12 && 
                   ` (${Math.floor(redemptionTerms.minimumHoldingPeriod / 12)}y${redemptionTerms.minimumHoldingPeriod % 12 > 0 ? ` ${redemptionTerms.minimumHoldingPeriod % 12}m` : ''})`
@@ -80,19 +75,19 @@ const RedemptionTerms: React.FC<RedemptionTermsProps> = ({ redemptionTerms }) =>
           )}
 
           {redemptionTerms.earlyRedemptionFee !== undefined && (
-            <div className="flex items-center justify-between py-2">
-              <span className="text-sm text-muted-foreground flex items-center gap-2">
-                <AlertCircle className="h-4 w-4" />
+            <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors">
+              <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
+                <AlertCircle className="h-[18px] w-[18px] text-muted-foreground" />
                 Early Redemption Fee
               </span>
-              <span className="text-sm font-medium text-destructive">
+              <span className="text-[15px] font-semibold text-destructive">
                 {formatPercentage(redemptionTerms.earlyRedemptionFee)}
               </span>
             </div>
           )}
         </div>
 
-        <p className="text-xs text-muted-foreground pt-4 border-t">
+        <p className="text-xs leading-relaxed text-muted-foreground mt-8 pt-8 border-t border-border/60">
           Redemption terms may vary by investor class. Verify details with the fund manager.
         </p>
       </CardContent>

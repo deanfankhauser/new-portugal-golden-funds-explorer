@@ -24,45 +24,36 @@ const RegulatoryIdentifiers: React.FC<RegulatoryIdentifiersProps> = ({ fund }) =
   }
 
   return (
-    <Card className="shadow-lg border-2 hover:shadow-xl transition-all duration-300">
-      <CardContent className="p-6">
-        <div className="flex items-start gap-3 mb-3">
-          <div className="p-2 rounded-lg bg-accent/10 shrink-0">
-            <Shield className="w-5 h-5 text-accent" />
-          </div>
-          <h2 className="text-2xl font-bold text-foreground pt-1">Regulatory Identifiers</h2>
-        </div>
-        <div className="space-y-4 ml-[44px]">
-          <p className="text-foreground leading-relaxed">
-            We source from CMVM-regulated managers where applicable. Verify each fund's registration and GV suitability with counsel.
-          </p>
-          
-          {(cmvmRegNumber || isin) && (
-            <div className="mt-4 p-4 bg-gradient-to-br from-accent/5 to-accent/10 border border-accent/20 rounded-lg">
-              <h3 className="font-semibold text-foreground mb-3 text-sm uppercase tracking-wide">Regulatory Identifiers</h3>
-              <div className="space-y-2.5">
-                {cmvmRegNumber && (
-                  <div className="flex items-center justify-between py-2 border-b border-accent/10">
-                    <span className="text-sm text-muted-foreground flex items-center gap-2">
-                      <Shield className="h-4 w-4" />
-                      CMVM Registration
-                    </span>
-                    <span className="text-sm font-medium">{cmvmRegNumber}</span>
-                  </div>
-                )}
-                {isin && (
-                  <div className="flex items-center justify-between py-2">
-                    <span className="text-sm text-muted-foreground flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      ISIN
-                    </span>
-                    <span className="text-sm font-medium">{isin}</span>
-                  </div>
-                )}
+    <Card className="bg-card border border-border/40 rounded-2xl shadow-sm">
+      <CardContent className="p-10">
+        <h2 className="text-2xl font-semibold tracking-tight mb-5">Regulatory Identifiers</h2>
+        
+        <p className="text-base text-muted-foreground leading-relaxed mb-8">
+          We source from CMVM-regulated managers where applicable. Verify each fund's registration and GV suitability with counsel.
+        </p>
+        
+        {(cmvmRegNumber || isin) && (
+          <div className="flex flex-col gap-4">
+            {cmvmRegNumber && (
+              <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors">
+                <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
+                  <Shield className="h-[18px] w-[18px] text-muted-foreground" />
+                  CMVM Registration
+                </span>
+                <span className="text-[15px] font-semibold text-foreground">{cmvmRegNumber}</span>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+            {isin && (
+              <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors">
+                <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
+                  <FileText className="h-[18px] w-[18px] text-muted-foreground" />
+                  ISIN
+                </span>
+                <span className="text-[15px] font-semibold text-foreground">{isin}</span>
+              </div>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
