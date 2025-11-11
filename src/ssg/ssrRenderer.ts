@@ -134,7 +134,7 @@ export class SSRRenderer {
           'ul',
           { className: 'flex flex-wrap justify-center gap-3 text-sm' },
           React.createElement('li', null, React.createElement('a', { href: '/' }, 'Home')),
-          React.createElement('li', null, React.createElement('a', { href: '/index' }, 'All Funds')),
+          React.createElement('li', null, React.createElement('a', { href: '/' }, 'All Funds')),
           React.createElement('li', null, React.createElement('a', { href: '/comparisons' }, 'Comparisons')),
           React.createElement('li', null, React.createElement('a', { href: '/alternatives' }, 'Alternatives')),
           React.createElement('li', null, React.createElement('a', { href: '/categories' }, 'Categories')),
@@ -337,7 +337,7 @@ export class SSRRenderer {
             <nav aria-label="Continue exploring" class="mt-2">
               <ul class="flex flex-wrap justify-center gap-3 text-sm">
                 <li><a href="/">Home</a></li>
-                <li><a href="/index">All Funds</a></li>
+                <li><a href="/">All Funds</a></li>
                 <li><a href="/comparisons">Comparisons</a></li>
                 <li><a href="/alternatives">Alternatives</a></li>
                 <li><a href="/categories">Categories</a></li>
