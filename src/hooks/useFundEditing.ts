@@ -343,6 +343,27 @@ export const useFundEditing = () => {
     }
   }, [user]);
 
+  // Explicit manager-only edit permission (no admin override)
+  const canDirectEditAssigned = useCallback(async (fundId: string) => {
+    if (!user) return false;
+    try {
+      const { data, error } = await supabase
+        .from('fund_managers' as any)
+        .select('status, permissions')
+        .eq('user_id', user.id)
+        .eq('fund_id', fundId)
+        .maybeSingle() as {
+          data: { status: string; permissions: { can_edit?: boolean } } | null;
+          error: any;
+        };
+      if (error || !data) return false;
+      return data.status === 'active' && data.permissions?.can_edit === true;
+    } catch (e) {
+      console.error('[canDirectEditAssigned] error:', e);
+      return false;
+    }
+  }, [user]);
+
   // Transform camelCase form fields to snake_case database columns
   const transformToDbFormat = useCallback((updates: Record<string, any>) => {
     const dbUpdates: Record<string, any> = {};
@@ -518,6 +539,7 @@ export const useFundEditing = () => {
     clearAllPendingChanges,
     getAssignedFunds,
     canEditFund,
+    canDirectEditAssigned,
     directUpdateFund,
   };
 };
