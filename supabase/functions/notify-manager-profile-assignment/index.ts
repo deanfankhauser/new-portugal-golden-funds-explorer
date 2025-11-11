@@ -58,16 +58,16 @@ serve(async (req) => {
     // Create Supabase client to fetch associated funds
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Fetch all funds associated with this company
+    // Fetch all funds associated with this company using smart matching
     const { data: associatedFunds, error: fundsError } = await supabase
-      .from('funds')
-      .select('id, name')
-      .eq('manager_name', company_name)
-      .order('name');
+      .rpc('get_funds_by_company_name', { company_name_param: company_name });
 
     if (fundsError) {
       console.error('Error fetching associated funds:', fundsError);
+      console.error('Company name:', company_name);
     }
+
+    console.log(`Found ${associatedFunds?.length || 0} funds for company: ${company_name}`);
 
     const fundCount = associatedFunds?.length || 0;
     const myFundsUrl = `${supabaseUrl.replace('.supabase.co', '.lovableproject.com')}/my-funds`;
@@ -156,7 +156,7 @@ serve(async (req) => {
         "X-Postmark-Server-Token": postmarkToken,
       },
       body: JSON.stringify({
-        From: `${COMPANY_INFO.TRADING_NAME} <${notificationEmail}>`,
+        From: `Movingto <${notificationEmail}>`,
         To: manager_email,
         Subject: subject,
         HtmlBody: htmlContent,

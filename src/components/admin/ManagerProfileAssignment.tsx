@@ -158,11 +158,23 @@ export const ManagerProfileAssignment: React.FC = () => {
         for (const managerId of selectedManagers) {
           const manager = managers.find((m) => m.user_id === managerId);
           if (manager) {
+            // Construct the assigned user's name from their profile
+            const assignedUserName = manager.first_name && manager.last_name
+              ? `${manager.first_name} ${manager.last_name}`
+              : manager.first_name || manager.email.split('@')[0];
+            
+            console.log('Sending assignment email:', {
+              profile_id: profile.id,
+              company_name: profile.company_name,
+              assigned_user_name: assignedUserName,
+              assigned_user_email: manager.email,
+            });
+            
             await supabase.functions.invoke('notify-manager-profile-assignment', {
               body: {
                 profile_id: profile.id,
                 company_name: profile.company_name,
-                manager_name: profile.manager_name || 'Manager',
+                manager_name: assignedUserName,
                 manager_email: manager.email,
                 permissions,
                 notes: assignmentNotes,

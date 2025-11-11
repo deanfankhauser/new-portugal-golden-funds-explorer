@@ -1036,6 +1036,13 @@ export type Database = {
           table_name: string
         }[]
       }
+      get_funds_by_company_name: {
+        Args: { company_name_param: string }
+        Returns: {
+          id: string
+          name: string
+        }[]
+      }
       get_public_manager_profiles: {
         Args: never
         Returns: {
