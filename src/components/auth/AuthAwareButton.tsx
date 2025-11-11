@@ -55,27 +55,41 @@ const AuthAwareButton: React.FC = () => {
   }, [user?.id]);
 
   useEffect(() => {
-    const checkAssignedFunds = async () => {
+    const checkManagerAccess = async () => {
       if (!user?.id) {
         setHasAssignedFunds(false);
         return;
       }
 
       try {
-        const { count } = await supabase
-          .from('fund_managers' as any)
+        // Primary: Check company-level assignments
+        const { count: companyCount, error: companyErr } = await supabase
+          .from('manager_profile_assignments')
           .select('*', { count: 'exact', head: true })
           .eq('user_id', user.id)
           .eq('status', 'active');
 
-        setHasAssignedFunds((count || 0) > 0);
+        let hasAccess = (companyCount || 0) > 0;
+
+        // Legacy fallback: Check fund-level assignments
+        if (!hasAccess) {
+          const { count: fundCount } = await supabase
+            .from('fund_managers' as any)
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', user.id)
+            .eq('status', 'active');
+
+          hasAccess = (fundCount || 0) > 0;
+        }
+
+        setHasAssignedFunds(hasAccess);
       } catch (error) {
-        console.error('Error checking assigned funds:', error);
+        console.error('Error checking manager access:', error);
         setHasAssignedFunds(false);
       }
     };
 
-    checkAssignedFunds();
+    checkManagerAccess();
   }, [user?.id]);
 
   console.log('🔐 AuthAwareButton state:', {
