@@ -40,7 +40,7 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
       </div>
 
       {/* Alternative Funds List */}
-      <div className="p-6 lg:p-10 space-y-4">
+      <div className="p-6 lg:p-10 space-y-3 md:space-y-4">
         {alternativeFunds.map((fund) => (
           <article
             key={fund.id}

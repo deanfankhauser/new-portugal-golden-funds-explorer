@@ -36,7 +36,7 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
       </div>
 
       {/* Comparison Cards */}
-      <div className="space-y-3">
+      <div className="space-y-3 md:space-y-4">
         {suggestedFunds.map((fund) => {
           const comparisonSlug = normalizeComparisonSlug(`${currentFund.id}-vs-${fund.id}`);
           const comparisonUrl = URL_CONFIG.buildUrl(`compare/${comparisonSlug}`);

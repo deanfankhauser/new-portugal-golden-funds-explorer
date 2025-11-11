@@ -25,7 +25,7 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
     .slice(0, 3);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8">
       {/* Same Category Funds */}
       {sameCategoryFunds.length > 0 && (
         <section className="bg-background rounded-xl border border-border/40 p-6 lg:p-10">
@@ -33,7 +33,7 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
             More {currentFund.category} Funds
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-4">
             {sameCategoryFunds.map(fund => (
               <Link 
                 key={fund.id} 
@@ -87,7 +87,7 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
             Similar Investment Range
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {similarInvestmentFunds.map(fund => (
               <Link 
                 key={fund.id} 
