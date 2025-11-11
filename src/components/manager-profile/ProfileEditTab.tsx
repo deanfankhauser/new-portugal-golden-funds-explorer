@@ -14,7 +14,7 @@ interface TeamMember {
   name: string;
   role: string;
   bio?: string;
-  photo?: string;
+  photoUrl?: string;
 }
 
 interface ProfileEditTabProps {
@@ -39,6 +39,7 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingTeamPhoto, setUploadingTeamPhoto] = useState<number | null>(null);
   
   const [companyName, setCompanyName] = useState(profile.company_name || '');
   const [managerName, setManagerName] = useState(profile.manager_name || '');
@@ -144,6 +145,83 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
     const updated = [...teamMembers];
     updated[index] = { ...updated[index], [field]: value };
     setTeamMembers(updated);
+  };
+
+  const handleTeamMemberPhotoUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: 'Invalid File',
+        description: 'Please upload an image file',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: 'File Too Large',
+        description: 'Photo must be less than 5MB',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setUploadingTeamPhoto(index);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}_team_${index}.${fileExt}`;
+      const filePath = `${user.id}/team/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile-photos')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('profile-photos')
+        .getPublicUrl(filePath);
+
+      const updated = [...teamMembers];
+      updated[index] = { ...updated[index], photoUrl: publicUrl };
+      setTeamMembers(updated);
+
+      toast({
+        title: 'Photo Uploaded',
+        description: 'Team member photo has been uploaded successfully',
+      });
+    } catch (error: any) {
+      console.error('Error uploading team photo:', error);
+      toast({
+        title: 'Upload Failed',
+        description: error.message || 'Failed to upload photo',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploadingTeamPhoto(null);
+    }
+  };
+
+  const handleRemoveTeamMemberPhoto = (index: number) => {
+    const updated = [...teamMembers];
+    updated[index] = { ...updated[index], photoUrl: undefined };
+    setTeamMembers(updated);
+    toast({
+      title: 'Photo Removed',
+      description: 'Photo will be removed when you save changes.',
+    });
   };
 
   const handleSave = async () => {
@@ -458,6 +536,50 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
+                    
+                    {/* Photo Upload */}
+                    <div>
+                      <Label>Profile Photo (Optional)</Label>
+                      <div className="flex items-center gap-4 mt-2">
+                        {member.photoUrl ? (
+                          <div className="relative">
+                            <img
+                              src={member.photoUrl}
+                              alt={member.name || 'Team member'}
+                              className="h-20 w-20 rounded-full object-cover border-2 border-border"
+                            />
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              className="absolute -top-1 -right-1 h-6 w-6 rounded-full"
+                              onClick={() => handleRemoveTeamMemberPhoto(index)}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="h-20 w-20 rounded-full border-2 border-dashed border-border flex items-center justify-center">
+                            <Upload className="h-6 w-6 text-muted-foreground" />
+                          </div>
+                        )}
+                        <div className="flex-1">
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleTeamMemberPhotoUpload(index, e)}
+                            disabled={uploadingTeamPhoto === index}
+                            className="max-w-xs"
+                          />
+                          {uploadingTeamPhoto === index && (
+                            <p className="text-sm text-muted-foreground mt-1">Uploading...</p>
+                          )}
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Max 5MB. Recommended: Square photo
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
                         <Label>Name</Label>
