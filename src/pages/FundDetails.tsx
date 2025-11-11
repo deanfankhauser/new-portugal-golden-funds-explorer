@@ -24,12 +24,20 @@ const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund }) => {
   const { addToRecentlyViewed } = useRecentlyViewed();
   
   useEffect(() => {
-    if (fund) {
+    if (fund?.id) {
       addToRecentlyViewed(fund);
-      // Track page view for analytics
-      trackPageView(fund.id);
+      
+      // Only track if we haven't tracked this fund recently (1 minute cooldown)
+      const trackingKey = `tracked_${fund.id}`;
+      const lastTracked = sessionStorage.getItem(trackingKey);
+      const now = Date.now();
+      
+      if (!lastTracked || now - parseInt(lastTracked) > 60000) {
+        trackPageView(fund.id);
+        sessionStorage.setItem(trackingKey, now.toString());
+      }
     }
-  }, [fund, addToRecentlyViewed]);
+  }, [fund?.id, addToRecentlyViewed]); // Only depend on stable ID
 
   if (!fund) {
     return (

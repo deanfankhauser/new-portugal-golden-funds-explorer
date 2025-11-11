@@ -1,5 +1,8 @@
 import { supabase } from '@/integrations/supabase/client';
 
+// Track in-flight requests to prevent duplicates
+const inFlightRequests = new Map<string, Promise<void>>();
+
 // Get or create session ID for unique visitor tracking
 export const getSessionId = (): string => {
   const STORAGE_KEY = 'fund_analytics_session';
@@ -20,21 +23,36 @@ export const getSessionId = (): string => {
 export const trackPageView = async (fundId: string) => {
   if (typeof window === 'undefined') return;
   
-  try {
-    const sessionId = getSessionId();
-    
-    await supabase.functions.invoke('track-fund-event', {
-      body: {
-        type: 'page_view',
-        fund_id: fundId,
-        session_id: sessionId,
-        referrer: document.referrer || null,
-        user_agent: navigator.userAgent || null,
-      }
-    });
-  } catch (error) {
-    console.error('Error tracking page view:', error);
+  const requestKey = `page_view_${fundId}`;
+  
+  // Return existing in-flight request if one exists
+  if (inFlightRequests.has(requestKey)) {
+    return inFlightRequests.get(requestKey);
   }
+  
+  const requestPromise = (async () => {
+    try {
+      const sessionId = getSessionId();
+      
+      await supabase.functions.invoke('track-fund-event', {
+        body: {
+          type: 'page_view',
+          fund_id: fundId,
+          session_id: sessionId,
+          referrer: document.referrer || null,
+          user_agent: navigator.userAgent || null,
+        }
+      });
+    } catch (error) {
+      console.error('Error tracking page view:', error);
+    } finally {
+      // Remove from in-flight requests after completion
+      inFlightRequests.delete(requestKey);
+    }
+  })();
+  
+  inFlightRequests.set(requestKey, requestPromise);
+  return requestPromise;
 };
 
 // Track interaction (comparison add, booking click, etc.)
@@ -44,17 +62,32 @@ export const trackInteraction = async (
 ) => {
   if (typeof window === 'undefined') return;
   
-  try {
-    const sessionId = getSessionId();
-    
-    await supabase.functions.invoke('track-fund-event', {
-      body: {
-        type,
-        fund_id: fundId,
-        session_id: sessionId,
-      }
-    });
-  } catch (error) {
-    console.error('Error tracking interaction:', error);
+  const requestKey = `${type}_${fundId}`;
+  
+  // Return existing in-flight request if one exists
+  if (inFlightRequests.has(requestKey)) {
+    return inFlightRequests.get(requestKey);
   }
+  
+  const requestPromise = (async () => {
+    try {
+      const sessionId = getSessionId();
+      
+      await supabase.functions.invoke('track-fund-event', {
+        body: {
+          type,
+          fund_id: fundId,
+          session_id: sessionId,
+        }
+      });
+    } catch (error) {
+      console.error('Error tracking interaction:', error);
+    } finally {
+      // Remove from in-flight requests after completion
+      inFlightRequests.delete(requestKey);
+    }
+  })();
+  
+  inFlightRequests.set(requestKey, requestPromise);
+  return requestPromise;
 };
