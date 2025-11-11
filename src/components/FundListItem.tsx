@@ -6,8 +6,7 @@ import { getFundType } from '../utils/fundTypeUtils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GitCompare, PieChart, Euro, CheckCircle2 } from 'lucide-react';
-import { useComparison } from '../contexts/ComparisonContext';
+import { PieChart, Euro, CheckCircle2 } from 'lucide-react';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 import DataFreshnessIndicator from './common/DataFreshnessIndicator';
@@ -22,20 +21,7 @@ interface FundListItemProps {
 }
 
 const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
-  const { addToComparison, removeFromComparison, isInComparison } = useComparison();
-  
-  const isSelected = isInComparison(fund.id);
   const isGVEligible = isFundGVEligible(fund);
-  
-  const handleCompareClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    
-    if (isSelected) {
-      removeFromComparison(fund.id);
-    } else {
-      addToComparison(fund);
-    }
-  };
 
   return (
     <Card className="border border-border/60 rounded-xl bg-card w-full group">
@@ -167,15 +153,6 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           {/* Action Buttons */}
           <div className="flex items-center gap-3">
             <SaveFundButton fundId={fund.id} showText={true} size="md" />
-            <Button 
-              variant="outline"
-              size="default"
-              className="font-medium border-border/50"
-              onClick={handleCompareClick}
-            >
-              <GitCompare className="mr-2 h-4 w-4" />
-              {isSelected ? 'Added' : 'Compare'}
-            </Button>
             <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
               <Button 
                 variant="default"
