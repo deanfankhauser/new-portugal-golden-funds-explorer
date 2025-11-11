@@ -393,6 +393,12 @@
   }
 }
 
+/* Mobile table scroll improvements */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .card-modern {
