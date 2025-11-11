@@ -89,7 +89,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 Minimum Investment
               </span>
             </div>
-            <p className="text-[36px] font-semibold text-foreground tracking-tight leading-none">
+            <p className="text-[24px] font-semibold text-foreground tracking-tight leading-none">
               €{fund.minimumInvestment?.toLocaleString() || '—'}
             </p>
           </div>
@@ -102,7 +102,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 Target Return
               </span>
             </div>
-            <p className="text-[36px] font-semibold text-foreground tracking-tight leading-none">
+            <p className="text-[24px] font-semibold text-foreground tracking-tight leading-none">
               {getReturnTargetDisplay(fund)}
             </p>
           </div>
