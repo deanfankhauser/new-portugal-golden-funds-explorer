@@ -319,7 +319,7 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
         setIsDirty(false); // Clear dirty state after successful save
         toast({
           title: "Fund Updated!",
-          description: "Your changes have been published and are now live.",
+          description: "Your changes have been saved. Please allow up to 10 minutes for updates to be reflected on the public fund profile.",
         });
       } else {
         console.log('📝 [handleSubmit] Submitting as suggestion...');
