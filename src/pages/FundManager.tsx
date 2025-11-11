@@ -1,7 +1,7 @@
-
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { getFundsByManager, getAllFundManagers, getAllApprovedManagers } from '../data/services/managers-service';
+import { slugToManager, managerToSlug } from '../lib/utils';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -9,7 +9,6 @@ import FundManagerContent from '../components/fund-manager/FundManagerContent';
 import FundManagerNotFound from '../components/fund-manager/FundManagerNotFound';
 import FundManagerBreadcrumbs from '../components/fund-manager/FundManagerBreadcrumbs';
 import VerificationFilterChip from '../components/common/VerificationFilterChip';
-import { slugToManager, managerToSlug } from '../lib/utils';
 
 const FundManager = () => {
   const { name } = useParams<{ name: string }>();
