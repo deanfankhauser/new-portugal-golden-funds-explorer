@@ -1,16 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import FundListItem from '../components/FundListItem';
-import VerificationFilterChip from '../components/common/VerificationFilterChip';
 import { useSavedFunds } from '../hooks/useSavedFunds';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import { useEnhancedAuth } from '../contexts/EnhancedAuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Bookmark, ArrowLeft, Heart } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { PageLoader } from '../components/common/LoadingSkeleton';
 
 const SavedFunds = () => {
@@ -18,7 +17,6 @@ const SavedFunds = () => {
   const { user, loading: authLoading } = useEnhancedAuth();
   const { savedFunds, loading: savedLoading } = useSavedFunds();
   const { getFundById, loading: fundsLoading } = useRealTimeFunds();
-  const [showOnlyVerified, setShowOnlyVerified] = useState(false);
 
   // Redirect if not authenticated (wait for auth to finish)
   if (!authLoading && !user) {
@@ -29,15 +27,11 @@ const SavedFunds = () => {
   const loading = savedLoading || fundsLoading;
 
   // Get the actual fund objects for saved fund IDs
-  const allSavedFundObjects = savedFunds
-    .map(saved => getFundById(saved.fund_id))
-    .filter(fund => fund !== undefined);
-  
-  // Filter by verification status
   const savedFundObjects = useMemo(() => {
-    if (!showOnlyVerified) return allSavedFundObjects;
-    return allSavedFundObjects.filter(fund => fund.isVerified);
-  }, [allSavedFundObjects, showOnlyVerified]);
+    return savedFunds
+      .map(saved => getFundById(saved.fund_id))
+      .filter(fund => fund !== undefined);
+  }, [savedFunds, getFundById]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -48,81 +42,64 @@ const SavedFunds = () => {
       
       <Header />
       
-      <main className="flex-1 py-6 md:py-8">
-        <div className="container mx-auto px-4 max-w-7xl">
-          {/* Header Section */}
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate('/')}
-                className="flex items-center space-x-2"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Back to Funds</span>
-              </Button>
-              
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-accent/10 rounded-lg">
-                  <Heart className="w-6 h-6 text-accent" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-bold text-foreground">Saved Funds</h1>
-                  <p className="text-muted-foreground">
-                    {savedFundObjects.length} saved fund{savedFundObjects.length !== 1 ? 's' : ''}
-                  </p>
-                </div>
-              </div>
-            </div>
+      <main className="flex-1 py-12 md:py-16">
+        <div className="container mx-auto px-4 max-w-5xl">
+          {/* Back Button */}
+          <div className="mb-8">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground -ml-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Funds</span>
+            </Button>
           </div>
 
-          {/* Verification Filter */}
-          <div className="mb-6">
-            <VerificationFilterChip 
-              showOnlyVerified={showOnlyVerified}
-              setShowOnlyVerified={setShowOnlyVerified}
-            />
+          {/* Header Section */}
+          <div className="mb-12 text-center">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-3">
+              Saved Funds
+            </h1>
+            <p className="text-base text-muted-foreground">
+              {loading ? (
+                'Loading your saved funds...'
+              ) : (
+                `${savedFundObjects.length} saved fund${savedFundObjects.length !== 1 ? 's' : ''}`
+              )}
+            </p>
           </div>
 
           {/* Content */}
           {loading ? (
             <div className="space-y-4">
               {[...Array(3)].map((_, i) => (
-                <PageLoader key={i} />
+                <div key={i} className="h-48 bg-muted/20 rounded-xl animate-pulse" />
               ))}
             </div>
-          ) : savedFundObjects.length === 0 && !showOnlyVerified ? (
-            <Card className="border border-border">
-              <CardContent className="py-16 px-8 text-center">
-                <div className="flex flex-col items-center space-y-4">
-                  <div className="p-4 bg-muted rounded-full">
-                    <Bookmark className="w-8 h-8 text-muted-foreground" />
+          ) : savedFundObjects.length === 0 ? (
+            <Card className="border border-border/40 rounded-2xl shadow-sm">
+              <CardContent className="py-20 px-8 text-center">
+                <div className="flex flex-col items-center space-y-5 max-w-md mx-auto">
+                  <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center">
+                    <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground">No Saved Funds</h3>
-                  <p className="text-muted-foreground max-w-md">
-                    You haven't saved any funds yet. Browse funds and click the heart icon to save them here.
-                  </p>
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-semibold text-foreground">No saved funds yet</h3>
+                    <p className="text-base text-muted-foreground leading-relaxed">
+                      Start building your watchlist by saving funds that interest you. Click the "Save" button on any fund profile to add it here.
+                    </p>
+                  </div>
                   <Button
                     onClick={() => navigate('/')}
+                    size="lg"
                     className="mt-4"
                   >
                     Browse Funds
                   </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ) : savedFundObjects.length === 0 && showOnlyVerified && allSavedFundObjects.length > 0 ? (
-            <Card className="border border-border">
-              <CardContent className="py-16 px-8 text-center">
-                <div className="flex flex-col items-center space-y-4">
-                  <div className="p-4 bg-muted rounded-full">
-                    <Bookmark className="w-8 h-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-foreground">No Verified Saved Funds</h3>
-                  <p className="text-muted-foreground max-w-md">
-                    None of your {allSavedFundObjects.length} saved fund{allSavedFundObjects.length !== 1 ? 's are' : ' is'} verified. Try disabling the verification filter.
-                  </p>
                 </div>
               </CardContent>
             </Card>
