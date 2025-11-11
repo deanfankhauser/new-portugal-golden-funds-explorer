@@ -88,3 +88,6 @@ verify_jwt = false
 
 [functions.request-advertising-access]
 verify_jwt = false
+
+[functions.backfill-company-assignments]
+verify_jwt = false
