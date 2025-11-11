@@ -1,12 +1,27 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Fund, FundTag, FundCategory, GeographicAllocation, TeamMember, PdfDocument, FAQItem, RedemptionFrequency } from '../data/types/funds';
 import { funds as staticFunds } from '../data/funds'; // Fallback to static data
 import { supabase } from '../integrations/supabase/client';
 
-export const useRealTimeFunds = () => {
+// Options for selective real-time subscriptions
+interface UseRealTimeFundsOptions {
+  // Subscribe to specific fund IDs only (for fund detail pages)
+  subscribeTo?: string[];
+  // Enable/disable real-time updates
+  enableRealTime?: boolean;
+}
+
+export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
+  const { subscribeTo, enableRealTime = true } = options;
+  
   const [funds, setFunds] = useState<Fund[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Refs for debouncing and preventing duplicate requests
+  const fetchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isFetchingRef = useRef(false);
+  const lastFetchTimeRef = useRef<number>(0);
 
 // Helper to apply approved edit history changes on top of base funds
 const applyEditHistory = (
@@ -106,36 +121,37 @@ const applyEditHistory = (
   return Object.values(map);
 };
 
-// Function to fetch funds from Supabase
-  const fetchFunds = async () => {
+// Function to fetch funds from Supabase with smart caching
+  const fetchFunds = useCallback(async (forceRefresh: boolean = false) => {
+    // Prevent duplicate fetches within 1 second
+    const now = Date.now();
+    if (!forceRefresh && now - lastFetchTimeRef.current < 1000) {
+      console.log('⏭️ Skipping fetch - too recent');
+      return;
+    }
+    
+    // Prevent concurrent fetches
+    if (isFetchingRef.current) {
+      console.log('⏭️ Skipping fetch - already in progress');
+      return;
+    }
+    
     try {
+      isFetchingRef.current = true;
+      lastFetchTimeRef.current = now;
       setLoading(true);
-      console.log('🔍 Attempting to fetch funds from Supabase...');
-      console.log('🔗 Environment variables check:', {
-        hasSupabaseUrl: !!import.meta.env.VITE_SUPABASE_URL,
-        hasSupabaseKey: !!import.meta.env.VITE_SUPABASE_ANON_KEY,
-        supabaseUrlPrefix: import.meta.env.VITE_SUPABASE_URL?.substring(0, 50),
-        anonKeyPrefix: import.meta.env.VITE_SUPABASE_ANON_KEY?.substring(0, 20) + '...'
-      });
+      console.log('🔍 Fetching funds from Supabase...');
       
-      // Test basic connection first
-      const { data: testData, error: testError } = await supabase
-        .from('funds')
-        .select('id, name')
-        .limit(1);
-      
-      console.log('🧪 Basic connection test:', { testData, testError });
-      
-      // Fetch funds with rankings
+      // Optimized: Fetch funds with rankings in a single query using JOIN
       const { data: supabaseFunds, error: fetchError } = await supabase
         .from('funds')
-        .select('*')
+        .select(`
+          *,
+          fund_rankings (
+            manual_rank
+          )
+        `)
         .order('created_at', { ascending: true });
-      
-      // Fetch rankings separately
-      const { data: rankingsData } = await supabase
-        .from('fund_rankings')
-        .select('fund_id, manual_rank');
 
       console.log('📊 Supabase response:', { 
         supabaseFunds: supabaseFunds?.length, 
@@ -296,13 +312,14 @@ const applyEditHistory = (
       }
 
       if (supabaseFunds && supabaseFunds.length > 0) {
-        // Create ranking map for quick lookup
-        const rankingMap = new Map(
-          rankingsData?.map(r => [r.fund_id, r.manual_rank ?? 999]) || []
-        );
-        
         // Transform Supabase data to match our Fund interface
-        const transformedFunds: Fund[] = supabaseFunds.map(fund => ({
+        const transformedFunds: Fund[] = supabaseFunds.map(fund => {
+          // Get ranking from joined data
+          const ranking = Array.isArray(fund.fund_rankings) && fund.fund_rankings.length > 0
+            ? fund.fund_rankings[0].manual_rank
+            : 999;
+          
+          return {
           id: fund.id,
           name: fund.name,
           description: fund.description || '',
@@ -395,14 +412,15 @@ const applyEditHistory = (
             }
             return undefined;
           })(),
-          finalRank: rankingMap.get(fund.id) || 999,
+          finalRank: ranking,
           updatedAt: fund.updated_at || fund.created_at || undefined,
           
           // Admin verification
           isVerified: fund.is_verified || false,
           verifiedAt: fund.verified_at || undefined,
           verifiedBy: fund.verified_by || undefined
-        }));
+        };
+        });
 
         // Also fetch edit history and apply approved changes as an overlay
         const { data: editsData, error: editsError } = await supabase
@@ -457,8 +475,166 @@ const applyEditHistory = (
       setError('Failed to fetch funds');
     } finally {
       setLoading(false);
+      isFetchingRef.current = false;
     }
-  };
+  }, []); // Empty deps - fetchFunds is stable
+  
+  // Smart update for single fund changes
+  const updateSingleFund = useCallback(async (fundId: string) => {
+    console.log('🔄 Updating single fund:', fundId);
+    
+    try {
+      const { data: fundData, error: fetchError } = await supabase
+        .from('funds')
+        .select(`
+          *,
+          fund_rankings (
+            manual_rank
+          )
+        `)
+        .eq('id', fundId)
+        .single();
+      
+      if (fetchError || !fundData) {
+        console.error('Error fetching single fund:', fetchError);
+        return;
+      }
+      
+      // Get ranking from joined data
+      const ranking = Array.isArray(fundData.fund_rankings) && fundData.fund_rankings.length > 0
+        ? fundData.fund_rankings[0].manual_rank
+        : 999;
+      
+      // Transform single fund
+      const transformedFund: Fund = {
+        id: fundData.id,
+        name: fundData.name,
+        description: fundData.description || '',
+        detailedDescription: fundData.detailed_description || '',
+        managerName: fundData.manager_name || '',
+        minimumInvestment: Number(fundData.minimum_investment) || 0,
+        fundSize: Number(fundData.aum) / 1000000 || 0,
+        managementFee: Number(fundData.management_fee) || 0,
+        performanceFee: Number(fundData.performance_fee) || 0,
+        term: Math.round((fundData.lock_up_period_months || 0) / 12) || 5,
+        returnTarget: fundData.expected_return_min && fundData.expected_return_max 
+          ? (fundData.expected_return_min === fundData.expected_return_max 
+              ? `${fundData.expected_return_min}% annually` 
+              : `${fundData.expected_return_min}-${fundData.expected_return_max}% annually`)
+          : fundData.expected_return_min 
+            ? `${fundData.expected_return_min}% annually`
+            : 'Target returns not specified',
+        expectedReturnMin: fundData.expected_return_min || undefined,
+        expectedReturnMax: fundData.expected_return_max || undefined,
+        fundStatus: 'Open' as const,
+        established: fundData.inception_date 
+          ? new Date(fundData.inception_date).getFullYear() 
+          : new Date().getFullYear(),
+        regulatedBy: fundData.regulated_by || undefined,
+        location: fundData.location || undefined,
+        tags: (fundData.tags || []) as FundTag[],
+        category: (fundData.category || 'Mixed') as FundCategory,
+        websiteUrl: fundData.website || undefined,
+        geographicAllocation: Array.isArray(fundData.geographic_allocation) 
+          ? (fundData.geographic_allocation as unknown as GeographicAllocation[])
+          : undefined,
+        team: Array.isArray(fundData.team_members) 
+          ? (fundData.team_members as unknown as TeamMember[])
+          : undefined,
+        documents: Array.isArray(fundData.pdf_documents) 
+          ? (fundData.pdf_documents as unknown as PdfDocument[])
+          : undefined,
+        faqs: Array.isArray(fundData.faqs) 
+          ? (fundData.faqs as unknown as FAQItem[])
+          : undefined,
+        historicalPerformance: (() => {
+          const hp = fundData.historical_performance as Record<string, { returns?: number; aum?: number; nav?: number }> | null;
+          if (hp && typeof hp === 'object' && Object.keys(hp).length > 0) return hp;
+          return undefined;
+        })(),
+        datePublished: fundData.created_at || new Date().toISOString(),
+        dateModified: fundData.updated_at || fundData.created_at || new Date().toISOString(),
+        subscriptionFee: fundData.subscription_fee ? Number(fundData.subscription_fee) : undefined,
+        redemptionFee: fundData.redemption_fee ? Number(fundData.redemption_fee) : undefined,
+        redemptionTerms: (() => {
+          const rt = fundData.redemption_terms;
+          if (rt && typeof rt === 'object' && !Array.isArray(rt)) {
+            const rtObj = rt as Record<string, any>;
+            return {
+              frequency: rtObj.frequency as RedemptionFrequency || 'Quarterly',
+              redemptionOpen: Boolean(rtObj.redemptionOpen ?? rtObj.redemption_open ?? true),
+              noticePeriod: rtObj.noticePeriod ?? rtObj.notice_period,
+              earlyRedemptionFee: rtObj.earlyRedemptionFee ?? rtObj.early_redemption_fee,
+              minimumHoldingPeriod: rtObj.minimumHoldingPeriod ?? rtObj.minimum_holding_period,
+              notes: rtObj.notes
+            };
+          }
+          return undefined;
+        })(),
+        dataLastVerified: fundData.updated_at || fundData.created_at,
+        performanceDataDate: fundData.updated_at || fundData.created_at,
+        feeLastUpdated: fundData.updated_at || fundData.created_at,
+        statusLastUpdated: fundData.updated_at || fundData.created_at,
+        cmvmId: fundData.cmvm_id || undefined,
+        auditor: fundData.auditor || undefined,
+        custodian: fundData.custodian || undefined,
+        navFrequency: fundData.nav_frequency || undefined,
+        pficStatus: fundData.pfic_status as 'QEF available' | 'MTM only' | 'Not provided' || undefined,
+        hurdleRate: fundData.hurdle_rate ? Number(fundData.hurdle_rate) : undefined,
+        eligibilityBasis: (() => {
+          if (!fundData.gv_eligible) return undefined;
+          const eb = fundData.eligibility_basis;
+          if (eb && typeof eb === 'object' && !Array.isArray(eb)) {
+            const ebObj = eb as Record<string, any>;
+            return {
+              portugalAllocation: ebObj.portugalAllocation ?? ebObj.portugal_allocation ?? undefined,
+              maturityYears: ebObj.maturityYears ?? ebObj.maturity_years ?? undefined,
+              realEstateExposure: ebObj.realEstateExposure ?? ebObj.real_estate_exposure ?? undefined,
+              managerAttestation: ebObj.managerAttestation ?? ebObj.manager_attestation ?? false
+            };
+          }
+          return undefined;
+        })(),
+        finalRank: ranking,
+        updatedAt: fundData.updated_at || fundData.created_at || undefined,
+        isVerified: fundData.is_verified || false,
+        verifiedAt: fundData.verified_at || undefined,
+        verifiedBy: fundData.verified_by || undefined
+      };
+      
+      // Update fund in state
+      setFunds(prevFunds => {
+        const existingIndex = prevFunds.findIndex(f => f.id === fundId);
+        if (existingIndex === -1) {
+          // New fund - add it
+          return [...prevFunds, transformedFund].sort((a, b) => {
+            if (a.isVerified && !b.isVerified) return -1;
+            if (!a.isVerified && b.isVerified) return 1;
+            return (a.finalRank ?? 999) - (b.finalRank ?? 999);
+          });
+        } else {
+          // Update existing fund
+          const newFunds = [...prevFunds];
+          newFunds[existingIndex] = transformedFund;
+          return newFunds;
+        }
+      });
+    } catch (err) {
+      console.error('Error updating single fund:', err);
+    }
+  }, []);
+  
+  // Debounced refetch to batch rapid changes
+  const debouncedRefetch = useCallback(() => {
+    if (fetchTimeoutRef.current) {
+      clearTimeout(fetchTimeoutRef.current);
+    }
+    
+    fetchTimeoutRef.current = setTimeout(() => {
+      console.log('⏱️ Debounced refetch executing');
+      fetchFunds(true);
+    }, 500); // 500ms debounce
+  }, [fetchFunds]);
 
   useEffect(() => {
     fetchFunds();
@@ -478,46 +654,102 @@ const applyEditHistory = (
     window.addEventListener('funds:refetch' as any, refetchHandler as any);
     window.addEventListener('funds:apply-overlay' as any, applyOverlayHandler as any);
 
-    // Set up real-time subscription
-    const channel = supabase
-      .channel('schema-db-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'funds'
-        },
-        (payload) => {
-          console.log('🔄 Real-time fund update detected:', payload);
-          console.log('Event type:', payload.eventType);
-          console.log('Changed fund ID:', (payload.new as any)?.id || (payload.old as any)?.id);
-          console.log('Changed data:', payload.new);
-          console.log('Triggering funds refetch due to funds table change...');
-          fetchFunds();
+    // Set up smart real-time subscription
+    if (enableRealTime) {
+      const channel = supabase.channel('funds-realtime-updates');
+      
+      // If subscribeTo is specified, only listen to those specific funds
+      if (subscribeTo && subscribeTo.length > 0) {
+        console.log('🎯 Subscribing to specific funds:', subscribeTo);
+        
+        // Subscribe to specific fund changes only
+        subscribeTo.forEach(fundId => {
+          channel.on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'funds',
+              filter: `id=eq.${fundId}`
+            },
+            (payload) => {
+              console.log('🔄 Selective fund update:', fundId);
+              const changedFundId = (payload.new as any)?.id || (payload.old as any)?.id;
+              
+              if (payload.eventType === 'DELETE') {
+                // Remove deleted fund
+                setFunds(prev => prev.filter(f => f.id !== changedFundId));
+              } else {
+                // Update single fund instead of refetching all
+                updateSingleFund(changedFundId);
+              }
+            }
+          );
+        });
+      } else {
+        // General subscription for homepage - use debounced refetch
+        channel.on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'funds'
+          },
+          (payload) => {
+            console.log('🔄 General fund update detected');
+            const changedFundId = (payload.new as any)?.id || (payload.old as any)?.id;
+            
+            if (payload.eventType === 'DELETE') {
+              // Remove deleted fund immediately
+              setFunds(prev => prev.filter(f => f.id !== changedFundId));
+            } else if (changedFundId) {
+              // Try selective update first
+              updateSingleFund(changedFundId);
+            } else {
+              // Fall back to debounced full refetch
+              debouncedRefetch();
+            }
+          }
+        );
+        
+        // Listen to edit history changes with debouncing
+        channel.on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'fund_edit_history'
+          },
+          () => {
+            console.log('📝 Edit history changed - debounced refetch');
+            debouncedRefetch();
+          }
+        );
+      }
+      
+      channel.subscribe();
+
+      return () => {
+        window.removeEventListener('funds:refetch' as any, refetchHandler as any);
+        window.removeEventListener('funds:apply-overlay' as any, applyOverlayHandler as any);
+        if (fetchTimeoutRef.current) {
+          clearTimeout(fetchTimeoutRef.current);
         }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'fund_edit_history'
-        },
-        (payload) => {
-          fetchFunds();
-        }
-      )
-      .subscribe();
+        supabase.removeChannel(channel);
+      };
+    }
 
     return () => {
       window.removeEventListener('funds:refetch' as any, refetchHandler as any);
       window.removeEventListener('funds:apply-overlay' as any, applyOverlayHandler as any);
-      supabase.removeChannel(channel);
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
+      }
     };
-  }, []);
+  }, [enableRealTime, subscribeTo, updateSingleFund, debouncedRefetch, fetchFunds]);
 
-  const filterFunds = (tags: FundTag[], searchQuery: string) => {
+  // Memoized filter function
+  const filterFunds = useCallback((tags: FundTag[], searchQuery: string) => {
     let result = [...funds];
     
     // Apply tag filtering
@@ -538,17 +770,20 @@ const applyEditHistory = (
     }
     
     return result;
-  };
+  }, [funds]);
 
-  const getFundById = (id: string): Fund | undefined => {
+  // Memoized fund lookup
+  const getFundById = useCallback((id: string): Fund | undefined => {
     return funds.find(fund => fund.id === id);
-  };
+  }, [funds]);
 
-  const getFundsByManager = (managerName: string): Fund[] => {
+  // Memoized manager funds lookup
+  const getFundsByManager = useCallback((managerName: string): Fund[] => {
     return funds.filter(fund => fund.managerName === managerName);
-  };
+  }, [funds]);
 
-  return {
+  // Memoized return object to prevent unnecessary re-renders
+  return useMemo(() => ({
     funds,
     loading,
     error,
@@ -556,5 +791,5 @@ const applyEditHistory = (
     getFundById,
     getFundsByManager,
     refetch: fetchFunds
-  };
+  }), [funds, loading, error, filterFunds, getFundById, getFundsByManager, fetchFunds]);
 };

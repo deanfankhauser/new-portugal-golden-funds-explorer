@@ -19,7 +19,13 @@ const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund }) => {
   
   // Prefer SSR-injected fund when available; fallback to client lookup
   const fundId = id || potentialFundId || ssrFund?.id;
-  const { getFundById } = useRealTimeFunds();
+  
+  // Use selective real-time subscription for this specific fund only
+  const { getFundById } = useRealTimeFunds({ 
+    subscribeTo: fundId ? [fundId] : undefined,
+    enableRealTime: true 
+  });
+  
   const fund = ssrFund ?? (fundId ? getFundById(fundId) : null);
   const { addToRecentlyViewed } = useRecentlyViewed();
   
