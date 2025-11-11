@@ -98,16 +98,35 @@ export const ManagerProfileAssignment: React.FC = () => {
       }
 
       // Fetch existing assignments
-    const { data: assignmentsData, error: assignmentsError } = await supabase
-      .from('manager_profile_assignments' as any)
-      .select(`
-        *,
-        profiles:user_id(*)
-      `)
-      .order('assigned_at', { ascending: false });
+      const { data: assignmentsData, error: assignmentsError } = await supabase
+        .from('manager_profile_assignments' as any)
+        .select('*')
+        .order('assigned_at', { ascending: false });
 
-      if (!assignmentsError && assignmentsData) {
-        setAssignments(assignmentsData as any);
+      if (assignmentsError) {
+        console.error('Error fetching assignments:', assignmentsError);
+        throw assignmentsError;
+      }
+
+      // Fetch all user profiles for joining
+      const { data: userProfilesData, error: userProfilesError } = await supabase
+        .from('profiles')
+        .select('*');
+
+      if (userProfilesError) {
+        console.error('Error fetching user profiles:', userProfilesError);
+        throw userProfilesError;
+      }
+
+      // Manually join assignments with user profiles
+      if (assignmentsData && userProfilesData) {
+        const enrichedAssignments = (assignmentsData as any[]).map((assignment: any) => ({
+          ...assignment,
+          profiles: (userProfilesData as any[]).find((p: any) => p.user_id === assignment.user_id)
+        }));
+        setAssignments(enrichedAssignments as any);
+      } else {
+        setAssignments([]);
       }
     } catch (error: any) {
       console.error('Error fetching data:', error);
