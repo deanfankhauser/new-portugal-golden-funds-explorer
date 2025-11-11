@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Fund } from '@/data/funds';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Building2, MessageSquare, Heart } from 'lucide-react';
 import { useSavedFunds } from '@/hooks/useSavedFunds';
+import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { trackInteraction } from '@/utils/analyticsTracking';
 import { Link } from 'react-router-dom';
 import { managerToSlug } from '@/lib/utils';
+import { getReturnTargetDisplay } from '@/utils/returnTarget';
+import { toast } from 'sonner';
 
 interface ContactSidebarProps {
   fund: Fund;
@@ -32,15 +34,58 @@ const scrollToEnquiry = () => {
 };
 
 const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
+  const { user } = useEnhancedAuth();
   const { isFundSaved, saveFund, unsaveFund } = useSavedFunds();
   const isSaved = isFundSaved(fund.id);
+  
+  const [optimisticSaved, setOptimisticSaved] = useState(false);
 
-  const handleSaveFund = async () => {
-    if (isSaved) {
-      await unsaveFund(fund.id);
-    } else {
-      await saveFund(fund.id);
+  const displaySaved = optimisticSaved || isSaved;
+
+  const handleSaveFund = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    console.log('💾 Save button clicked', { fundId: fund.id, isSaved, user: !!user });
+
+    if (!user) {
+      toast.error('Please log in to save funds');
+      return;
+    }
+
+    // Immediate optimistic update
+    const newSavedState = !displaySaved;
+    setOptimisticSaved(newSavedState);
+    console.log(`${newSavedState ? '💾' : '🗑️'} Optimistic update: ${newSavedState ? 'Saved' : 'Unsaved'}`);
+
+    // Fire-and-forget background operation
+    if (newSavedState) {
+      saveFund(fund.id)
+        .then(success => {
+          if (!success) {
+            console.error('❌ Save failed');
+            setOptimisticSaved(isSaved); // Revert
+          }
+        })
+        .catch(error => {
+          console.error('❌ Save error:', error);
+          setOptimisticSaved(isSaved); // Revert
+        });
+      
+      // Track interaction (fire-and-forget)
       trackInteraction(fund.id, 'save_fund');
+    } else {
+      unsaveFund(fund.id)
+        .then(success => {
+          if (!success) {
+            console.error('❌ Unsave failed');
+            setOptimisticSaved(isSaved); // Revert
+          }
+        })
+        .catch(error => {
+          console.error('❌ Unsave error:', error);
+          setOptimisticSaved(isSaved); // Revert
+        });
     }
   };
 
@@ -52,72 +97,64 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
   };
 
   return (
-    <Card className="sticky top-24 h-fit shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-border/60 hidden lg:block overflow-hidden">
-      <CardContent className="p-0">
-        {/* Fund Manager Section */}
-        <div className="p-6 pb-5 bg-gradient-to-b from-muted/30 to-transparent">
-          <div className="flex items-start gap-4 mb-4">
-            <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 ring-1 ring-primary/20">
-              <Building2 className="h-7 w-7 text-primary" />
-            </div>
-            <div className="flex-1 min-w-0 pt-1">
-              <p className="text-xs font-medium text-muted-foreground mb-1 uppercase tracking-wide">Managed by</p>
-              <Link 
-                to={`/manager/${managerToSlug(fund.managerName)}`}
-                className="font-semibold text-base text-foreground hover:text-primary transition-colors truncate block leading-tight"
-              >
-                {fund.managerName}
-              </Link>
-            </div>
+    <Card className="sticky top-24 h-fit shadow-[0_2px_8px_rgba(0,0,0,0.04),0_1px_2px_rgba(0,0,0,0.06)] border border-border/40 rounded-2xl hidden lg:block overflow-hidden">
+      <CardContent className="p-7">
+        {/* Optional Verified Badge */}
+        {fund.isVerified && (
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[13px] font-semibold mb-3 bg-success/10 text-success">
+            Verified Fund
           </div>
-          
-          {/* Fund Name */}
-          <h3 className="font-semibold text-foreground line-clamp-2 leading-snug text-base">
-            {fund.name}
-          </h3>
-        </div>
+        )}
 
-        {/* Quick Stats */}
-        <div className="px-6 py-5 bg-muted/20">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">Min Investment</p>
-              <p className="text-base font-bold text-foreground">{formatCurrency(fund.minimumInvestment)}</p>
-            </div>
-            <div>
-              <p className="text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">Fund Size</p>
-              <p className="text-base font-bold text-foreground">
-                {fund.fundSize ? `€${fund.fundSize.toFixed(0)}M` : 'N/A'}
-              </p>
-            </div>
+        {/* Manager Section */}
+        <div className="pb-5 mb-5 border-b border-border/60">
+          <p className="text-[11px] font-semibold text-muted-foreground mb-1 uppercase tracking-wider">Managed by</p>
+          <Link 
+            to={`/manager/${managerToSlug(fund.managerName)}`}
+            className="font-semibold text-base text-foreground hover:text-primary transition-colors block leading-tight"
+          >
+            {fund.managerName}
+          </Link>
+        </div>
+        
+        {/* Fund Title */}
+        <h3 className="font-bold text-foreground text-2xl leading-tight tracking-tight mb-6 font-heading">
+          {fund.name}
+        </h3>
+
+        {/* Metrics Grid */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <div className="bg-muted/20 border border-border/40 rounded-xl p-3 transition-all duration-150 hover:bg-muted/30 hover:border-border/60">
+            <p className="text-[11px] font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Min Investment</p>
+            <p className="text-xl font-semibold text-foreground tracking-tight">{formatCurrency(fund.minimumInvestment)}</p>
+          </div>
+          <div className="bg-muted/20 border border-border/40 rounded-xl p-3 transition-all duration-150 hover:bg-muted/30 hover:border-border/60">
+            <p className="text-[11px] font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Target Annual Return</p>
+            <p className="text-xl font-semibold text-foreground tracking-tight">
+              {getReturnTargetDisplay(fund)}
+            </p>
           </div>
         </div>
 
         {/* CTA Buttons */}
-        <div className="p-6 space-y-3">
+        <div className="space-y-2.5">
           <Button 
+            type="button"
             onClick={scrollToEnquiry}
-            className="w-full gap-2 shadow-sm hover:shadow-md transition-all duration-300 font-semibold h-12"
+            className="w-full shadow-[0_2px_4px_rgba(75,15,35,0.2)] hover:shadow-[0_4px_8px_rgba(75,15,35,0.25)] hover:translate-y-[-1px] active:translate-y-0 transition-all duration-200 font-semibold text-sm h-11 rounded-xl"
           >
-            <MessageSquare className="h-5 w-5" />
             Get in Touch
           </Button>
           
           <Button 
+            type="button"
             onClick={handleSaveFund}
             variant="outline"
-            className="w-full gap-2 hover:bg-muted/50 transition-all duration-300 font-medium h-12 border-border/60"
+            className="w-full hover:bg-muted/20 transition-all duration-200 font-semibold text-sm h-11 rounded-xl border-border/50 hover:border-border text-muted-foreground hover:text-foreground"
+            aria-pressed={displaySaved}
           >
-            <Heart className={`h-5 w-5 transition-colors ${isSaved ? 'fill-current text-primary' : ''}`} />
-            {isSaved ? 'Saved' : 'Save Fund'}
+            {displaySaved ? 'Saved' : 'Save'}
           </Button>
-        </div>
-
-        {/* Disclaimer */}
-        <div className="px-6 pb-6 pt-2">
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            Capital at risk. Past performance isn't indicative of future returns. This is not investment advice.
-          </p>
         </div>
       </CardContent>
     </Card>

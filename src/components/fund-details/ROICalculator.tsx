@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Fund } from '../../data/funds';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -69,28 +68,44 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
   };
 
   return (
-    <Card id="roi-calculator" className="border border-border shadow-sm hover:shadow-md transition-all duration-300">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calculator className="h-5 w-5" />
-          ROI Calculator for {fund.name}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="investment-amount">Investment Amount (EUR)</Label>
+    <div id="roi-calculator" className="bg-card border border-border/40 rounded-2xl shadow-sm p-10">
+      {/* Header */}
+      <div className="mb-8 pb-8 border-b border-border/60">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+            <Calculator className="h-5 w-5 text-primary" />
+          </div>
+          <h2 className="text-2xl font-semibold tracking-tight">ROI Calculator</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Project potential returns for {fund.name} based on your investment parameters
+        </p>
+      </div>
+
+      {/* Input Section */}
+      <div className="mb-8 pb-8 border-b border-border/60">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-6">
+          Investment Parameters
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-3">
+            <Label htmlFor="investment-amount" className="text-sm font-medium text-foreground/70">
+              Investment Amount (EUR)
+            </Label>
             <Input
               id="investment-amount"
               type="number"
               value={investmentAmount}
               onChange={(e) => setInvestmentAmount(Number(e.target.value))}
               min={fund.minimumInvestment}
+              className="px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all"
             />
           </div>
           
-          <div className="space-y-2">
-            <Label htmlFor="holding-period">Holding Period (Years)</Label>
+          <div className="space-y-3">
+            <Label htmlFor="holding-period" className="text-sm font-medium text-foreground/70">
+              Holding Period (Years)
+            </Label>
             <Input
               id="holding-period"
               type="number"
@@ -98,11 +113,14 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
               onChange={(e) => setHoldingPeriod(Number(e.target.value))}
               min={1}
               max={20}
+              className="px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all"
             />
           </div>
           
-          <div className="space-y-2">
-            <Label htmlFor="expected-return">Expected Annual Return (%)</Label>
+          <div className="space-y-3">
+            <Label htmlFor="expected-return" className="text-sm font-medium text-foreground/70">
+              Expected Annual Return (%)
+            </Label>
             <Input
               id="expected-return"
               type="number"
@@ -111,41 +129,66 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
               step={0.1}
               min={0}
               max={50}
+              className="px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all"
             />
           </div>
         </div>
         
-        <Button onClick={calculateROI} className="w-full">
-          Calculate ROI
+        <Button 
+          onClick={calculateROI} 
+          className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground px-7 py-6 rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 text-base font-semibold"
+        >
+          Calculate Projected Returns
         </Button>
+      </div>
         
-        {results && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted rounded-lg">
-            <div className="text-center">
-              <div className="text-sm text-muted-foreground">Total Value</div>
-              <div className="text-xl font-bold text-primary">{formatCurrency(results.totalValue)}</div>
+      {/* Results Section */}
+      {results && (
+        <div className="mb-8 pb-8 border-b border-border/60">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-6">
+            Projected Results
+          </h3>
+          <div className="bg-gradient-to-br from-primary/5 to-primary/[0.02] border border-primary/20 rounded-xl p-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                  Total Value
+                </div>
+                <div className="text-[28px] font-bold tracking-tight text-primary">
+                  {formatCurrency(results.totalValue)}
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                  Total Return
+                </div>
+                <div className="text-[28px] font-bold tracking-tight text-green-600">
+                  {formatCurrency(results.totalReturn)}
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                  Annualized Return
+                </div>
+                <div className="text-[28px] font-bold tracking-tight text-foreground">
+                  {formatPercentage(results.annualizedReturn)}
+                </div>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-sm text-muted-foreground">Total Return</div>
-              <div className="text-xl font-bold text-success">{formatCurrency(results.totalReturn)}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-sm text-muted-foreground">Annualized Return</div>
-              <div className="text-xl font-bold text-accent">{formatPercentage(results.annualizedReturn)}</div>
-            </div>
-          </div>
-        )}
-        
-        <div className="flex items-start gap-2 p-4 bg-warning/10 rounded-lg border border-warning/20">
-          <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-black">
-            <strong>Investment Risk Disclaimer:</strong> Past performance does not guarantee future results. 
-            This calculation is for illustrative purposes only and actual returns may vary significantly. 
-            Always consult with qualified financial professionals before making investment decisions.
           </div>
         </div>
-      </CardContent>
-    </Card>
+      )}
+        
+      {/* Disclaimer */}
+      <div className="flex items-start gap-3 p-6 bg-warning/10 rounded-xl border border-warning/20">
+        <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
+        <div className="text-sm text-foreground/80 leading-relaxed">
+          <strong className="font-semibold">Investment Risk Disclaimer:</strong> Past performance does not guarantee future results. 
+          This calculation is for illustrative purposes only and actual returns may vary significantly. 
+          Always consult with qualified financial professionals before making investment decisions.
+        </div>
+      </div>
+    </div>
   );
 };
 
