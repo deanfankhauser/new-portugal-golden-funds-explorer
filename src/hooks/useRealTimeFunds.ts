@@ -92,7 +92,7 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
                   : `${fund.expected_return_min}-${fund.expected_return_max}% annually`)
               : fund.expected_return_min 
                 ? `${fund.expected_return_min}% annually`
-                : 'Target returns not specified',
+                : 'Unspecified',
             expectedReturnMin: fund.expected_return_min || undefined,
             expectedReturnMax: fund.expected_return_max || undefined,
             fundStatus: 'Open' as const,
@@ -239,7 +239,7 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
               : `${fundData.expected_return_min}-${fundData.expected_return_max}% annually`)
           : fundData.expected_return_min 
             ? `${fundData.expected_return_min}% annually`
-            : 'Target returns not specified',
+            : 'Unspecified',
         expectedReturnMin: fundData.expected_return_min || undefined,
         expectedReturnMax: fundData.expected_return_max || undefined,
         fundStatus: 'Open' as const,

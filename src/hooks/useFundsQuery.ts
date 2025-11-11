@@ -28,7 +28,7 @@ const transformFund = ({ fund, ranking = 999 }: TransformFundParams): Fund => {
           : `${fund.expected_return_min}-${fund.expected_return_max}% annually`)
       : fund.expected_return_min 
         ? `${fund.expected_return_min}% annually`
-        : 'Target returns not specified',
+        : 'Unspecified',
     expectedReturnMin: fund.expected_return_min || undefined,
     expectedReturnMax: fund.expected_return_max || undefined,
     fundStatus: 'Open' as const,
