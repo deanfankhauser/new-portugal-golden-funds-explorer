@@ -28,8 +28,12 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
   const { user } = useEnhancedAuth();
   const { isFundSaved, saveFund, unsaveFund } = useSavedFunds();
   const isSaved = isFundSaved(fundId);
+  
+  // Optimistic UI state for instant feedback
+  const [optimisticSaved, setOptimisticSaved] = React.useState<boolean | null>(null);
+  const displaySaved = optimisticSaved !== null ? optimisticSaved : isSaved;
 
-  const handleClick = async (e: React.MouseEvent) => {
+  const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -38,11 +42,27 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
       return;
     }
 
-    if (isSaved) {
-      await unsaveFund(fundId);
+    // Optimistic update - instant feedback
+    const newSavedState = !displaySaved;
+    setOptimisticSaved(newSavedState);
+
+    // Perform save/unsave in background
+    if (displaySaved) {
+      unsaveFund(fundId).then(success => {
+        if (!success) {
+          // Revert on failure
+          setOptimisticSaved(!newSavedState);
+        }
+      });
     } else {
-      await saveFund(fundId);
-      trackInteraction(fundId, 'save_fund');
+      saveFund(fundId).then(success => {
+        if (success) {
+          trackInteraction(fundId, 'save_fund');
+        } else {
+          // Revert on failure
+          setOptimisticSaved(!newSavedState);
+        }
+      });
     }
   };
 
@@ -76,21 +96,21 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
       className={cn(
         showText ? 'gap-2' : getSizeClasses(),
         'transition-colors duration-200',
-        isSaved 
-          ? 'text-red-500 hover:text-red-600' 
-          : 'text-muted-foreground hover:text-red-500',
+        displaySaved 
+          ? 'text-primary hover:text-primary/90' 
+          : 'text-muted-foreground hover:text-foreground',
         className
       )}
-      title={isSaved ? 'Remove from saved funds' : 'Save fund'}
+      title={displaySaved ? 'Remove from saved funds' : 'Save fund'}
     >
       <Bookmark 
         className={cn(
           getIconSize(),
-          isSaved && 'fill-current'
+          displaySaved && 'fill-current'
         )} 
       />
       {showText && (
-        <span>{isSaved ? 'Saved' : 'Save'}</span>
+        <span>{displaySaved ? 'Saved' : 'Save'}</span>
       )}
     </Button>
   );
