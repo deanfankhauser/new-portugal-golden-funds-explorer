@@ -996,6 +996,10 @@ export type Database = {
         Args: { check_manager_name: string; check_user_id: string }
         Returns: boolean
       }
+      can_user_view_profile: {
+        Args: { _profile_id: string; _user_id: string }
+        Returns: boolean
+      }
       check_sensitive_data_exposure: {
         Args: never
         Returns: {
