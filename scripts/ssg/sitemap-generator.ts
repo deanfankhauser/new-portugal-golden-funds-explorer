@@ -27,9 +27,6 @@ export function generateSitemap(routes: StaticRoute[], distDir: string): void {
         lastmod = DateManagementService.formatSitemapDate(contentDates.dateModified);
         changefreq = contentDates.changeFrequency;
       }
-    } else if (route.pageType === 'fund-index') {
-      priority = '0.9';
-      changefreq = 'daily';
     } else if (route.pageType === 'fund-comparison') {
       priority = '0.85';
       changefreq = 'weekly';

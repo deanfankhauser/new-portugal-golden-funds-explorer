@@ -18,9 +18,6 @@ export class RouteDiscovery {
 
     // Homepage (also serves as fund index)
     routes.push({ path: '/', pageType: 'homepage' });
-    
-    // Fund index page
-    routes.push({ path: '/index', pageType: 'fund-index' });
 
     // Static pages
     routes.push({ path: '/about', pageType: 'about' });

@@ -181,7 +181,6 @@ export class SSRRenderer {
                 null,
                 // Main routes
                 React.createElement(Route, { path: '/', element: React.createElement(getComponent('Index')) }),
-                React.createElement(Route, { path: '/index', element: React.createElement(getComponent('FundIndex')) }),
                 
                 // Hub pages
                 React.createElement(Route, { path: '/tags', element: React.createElement(getComponent('TagsHub')) }),
