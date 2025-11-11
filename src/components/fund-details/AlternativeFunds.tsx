@@ -31,7 +31,7 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
     <section className="bg-background rounded-2xl border border-border overflow-hidden shadow-sm">
       {/* Header */}
       <div className="px-6 py-8 lg:px-10 lg:py-10 bg-gradient-to-b from-muted/30 to-background border-b border-border/60">
-        <h2 className="text-2xl sm:text-[28px] font-bold text-foreground tracking-tight font-heading mb-3">
+        <h2 className="text-xl sm:text-2xl md:text-[28px] font-bold text-foreground tracking-tight font-heading mb-3">
           Alternative Fund Suggestions
         </h2>
         <p className="text-base text-muted-foreground leading-relaxed">

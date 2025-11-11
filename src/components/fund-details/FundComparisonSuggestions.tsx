@@ -27,7 +27,7 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
     <div className="mt-12 bg-background rounded-2xl border border-border/40 shadow-sm p-6 lg:p-10">
       {/* Header Section */}
       <div className="mb-8">
-        <h2 className="text-2xl sm:text-[28px] font-bold tracking-tight text-foreground font-heading mb-4">
+        <h2 className="text-xl sm:text-2xl md:text-[28px] font-bold tracking-tight text-foreground font-heading mb-4">
           Compare {currentFund.name}
         </h2>
         <p className="text-base leading-relaxed text-muted-foreground">

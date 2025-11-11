@@ -61,7 +61,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
           </div>
           
           {/* Fund Name */}
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight">
+          <h1 className="text-2xl md:text-4xl font-bold tracking-tight leading-tight">
             {fund.name}
           </h1>
           

@@ -118,7 +118,7 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
         </div>
         
         {/* Fund Title */}
-        <h3 className="font-bold text-foreground text-2xl leading-tight tracking-tight mb-6 font-heading">
+        <h3 className="font-bold text-foreground text-xl md:text-2xl leading-tight tracking-tight mb-6 font-heading">
           {fund.name}
         </h3>
 

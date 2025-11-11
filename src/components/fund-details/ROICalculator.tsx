@@ -75,7 +75,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
           <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
             <Calculator className="h-5 w-5 text-primary" />
           </div>
-          <h2 className="text-2xl font-semibold tracking-tight">ROI Calculator</h2>
+          <h2 className="text-xl md:text-2xl font-semibold tracking-tight">ROI Calculator</h2>
         </div>
         <p className="text-sm text-muted-foreground">
           Project potential returns for {fund.name} based on your investment parameters

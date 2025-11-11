@@ -17,7 +17,7 @@ const GeographicAllocation: React.FC<GeographicAllocationProps> = ({ allocations
   return (
     <Card className="bg-card border border-border/40 rounded-2xl shadow-sm">
       <CardContent className="p-10">
-        <h2 className="text-2xl font-semibold tracking-tight mb-8">Geographic Allocation</h2>
+        <h2 className="text-xl md:text-2xl font-semibold tracking-tight mb-8">Geographic Allocation</h2>
         
         <div className="flex flex-col gap-4">
           {allocations.map((allocation, index) => (

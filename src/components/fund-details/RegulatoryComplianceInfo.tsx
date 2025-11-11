@@ -16,7 +16,7 @@ const RegulatoryComplianceInfo: React.FC<RegulatoryComplianceInfoProps> = ({ fun
   return (
     <Card className="bg-card border border-border/40 rounded-2xl shadow-sm">
       <CardContent className="p-10">
-        <h2 className="text-2xl font-semibold tracking-tight mb-8">Regulatory & Compliance</h2>
+        <h2 className="text-xl md:text-2xl font-semibold tracking-tight mb-8">Regulatory & Compliance</h2>
         
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors">
