@@ -182,7 +182,7 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
   };
 
   return (
-    <Card id="enquiry-form" className="bg-card border border-border/40 rounded-2xl shadow-sm scroll-mt-24 relative">
+    <Card id="enquiry-form" className="bg-card border border-border/40 rounded-2xl shadow-sm scroll-mt-28 md:scroll-mt-24 relative">
       {/* Loading Overlay */}
       {isSubmitting && (
         <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center rounded-2xl">

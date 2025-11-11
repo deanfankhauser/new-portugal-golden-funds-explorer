@@ -12,6 +12,19 @@
 }
 
 @layer base {
+  /* Smooth scroll behavior globally */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 100px; /* Account for fixed headers */
+  }
+  
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  
   h1 {
     font-family: 'Cheltenham', serif;
   }
