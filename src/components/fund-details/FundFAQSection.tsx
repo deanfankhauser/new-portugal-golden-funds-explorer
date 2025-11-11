@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Fund } from '../../data/funds';
-import { Button } from '@/components/ui/button';
-import { HelpCircle, MessageSquare } from 'lucide-react';
+import { HelpCircle } from 'lucide-react';
 interface FAQItem {
   question: string;
   answer: string;
@@ -104,25 +103,6 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
     return null;
   }
 
-  const scrollToEnquiry = () => {
-    const element = document.getElementById('enquiry-form');
-    if (element) {
-      const headerOffset = 100;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-      
-      setTimeout(() => {
-        const firstInput = element.querySelector('input');
-        firstInput?.focus();
-      }, 500);
-    }
-  };
-
   return (
     <section className="container mx-auto max-w-4xl" itemScope itemType="https://schema.org/FAQPage">
       {/* Section Header */}
@@ -177,22 +157,6 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* CTA Section */}
-      <div className="bg-gradient-to-br from-primary/5 to-primary/[0.02] border border-primary/15 rounded-xl p-8 text-center mt-12">
-        <h3 className="text-xl font-semibold mb-2">Still have questions?</h3>
-        <p className="text-[15px] text-muted-foreground mb-5">
-          Our team is here to help you understand how {fund.name} can support your investment goals
-        </p>
-        <Button 
-          onClick={scrollToEnquiry}
-          className="gap-2"
-          size="lg"
-        >
-          <MessageSquare className="h-5 w-5" />
-          Get in Touch
-        </Button>
       </div>
     </section>
   );
