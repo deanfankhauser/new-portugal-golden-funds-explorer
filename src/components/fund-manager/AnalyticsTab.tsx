@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Eye, MousePointerClick, Bookmark } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -11,8 +11,6 @@ interface AnalyticsTabProps {
 
 interface AnalyticsData {
   pageViews: number;
-  comparisonAdds: number;
-  saveCount: number;
   dailyViews: { date: string; count: number }[];
 }
 
@@ -42,19 +40,6 @@ const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ fundId }) => {
 
       if (pageViewsError) throw pageViewsError;
 
-      // Fetch interactions
-      const { data: interactionsData, error: interactionsError } = await supabase
-        .from('fund_interactions')
-        .select('*')
-        .eq('fund_id', fundId)
-        .gte('interacted_at', thirtyDaysAgo.toISOString());
-
-      if (interactionsError) throw interactionsError;
-
-      // Calculate metrics
-      const comparisonAdds = interactionsData?.filter(i => i.interaction_type === 'comparison_add').length || 0;
-      const saveCount = interactionsData?.filter(i => i.interaction_type === 'save_fund').length || 0;
-
       // Calculate daily views for chart
       const viewsByDate: Record<string, number> = {};
       pageViewsData?.forEach(view => {
@@ -69,8 +54,6 @@ const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ fundId }) => {
 
       setAnalytics({
         pageViews: pageViewsData?.length || 0,
-        comparisonAdds,
-        saveCount,
         dailyViews,
       });
     } catch (error) {
@@ -88,19 +71,15 @@ const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ fundId }) => {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[1, 2, 3].map(i => (
-            <Card key={i}>
-              <CardHeader className="pb-3">
-                <Skeleton className="h-4 w-24" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-8 w-16 mb-2" />
-                <Skeleton className="h-3 w-32" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <Card>
+          <CardHeader className="pb-3">
+            <Skeleton className="h-4 w-24" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-8 w-16 mb-2" />
+            <Skeleton className="h-3 w-32" />
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -115,47 +94,19 @@ const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ fundId }) => {
 
   return (
     <div className="space-y-6">
-      {/* Engagement Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Eye className="h-4 w-4 text-primary" />
-              Page Views
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{analytics.pageViews}</div>
-            <p className="text-xs text-muted-foreground mt-1">Last 30 days</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Bookmark className="h-4 w-4 text-primary" />
-              Saves
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{analytics.saveCount}</div>
-            <p className="text-xs text-muted-foreground mt-1">Fund saved</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <MousePointerClick className="h-4 w-4 text-primary" />
-              Comparisons
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{analytics.comparisonAdds}</div>
-            <p className="text-xs text-muted-foreground mt-1">Added to comparison</p>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Page Views Metric */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-medium flex items-center gap-2">
+            <Eye className="h-4 w-4 text-primary" />
+            Page Views
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">{analytics.pageViews}</div>
+          <p className="text-xs text-muted-foreground mt-1">Last 30 days</p>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
