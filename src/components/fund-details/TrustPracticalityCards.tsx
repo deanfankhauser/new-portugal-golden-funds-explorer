@@ -14,16 +14,16 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
   const [investmentAmount, setInvestmentAmount] = useState(500000);
   
   // Enhanced hurdle rate calculation with priority
-  const getHurdleRate = (fund: Fund): number => {
+  const getHurdleRate = (fund: Fund): number | null => {
     // 1. Explicit hurdle rate (highest priority)
     if (fund.hurdleRate != null) return fund.hurdleRate;
     
-    // 2. Derive from target return (current behavior)
+    // 2. Derive from target return
     const { min } = getReturnTargetNumbers(fund);
     if (min != null) return min;
     
-    // 3. Default fallback
-    return 8;
+    // 3. No fallback - return null if no data
+    return null;
   };
 
   const hurdle = getHurdleRate(fund);
@@ -31,7 +31,8 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
   // Calculate estimated annual fees
   const calculateEstimatedFees = (amount: number) => {
     const managementFee = (amount * (fund.managementFee || 0)) / 100;
-    const performanceFee = fund.performanceFee ? (amount * 0.15 * (fund.performanceFee || 0)) / 100 : 0; // Assuming 15% return for calculation
+    // Performance fee cannot be calculated without actual return data
+    const performanceFee = 0;
     return {
       management: managementFee,
       performance: performanceFee,
@@ -72,11 +73,9 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
                   {fund.performanceFee ? `${fund.performanceFee}%` : 'None'}
                 </span>
               </div>
-              {fund.performanceFee && (
+              {fund.performanceFee && hurdle && (
                 <div className="text-xs text-muted-foreground pl-2">
-                  • Subject to high-water mark
-                  <br />
-                   • {hurdle}% preferred return hurdle
+                  • {hurdle}% preferred return hurdle
                 </div>
               )}
             </div>
@@ -94,7 +93,7 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
                     <Info className="h-4 w-4 text-muted-foreground" />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Estimated annual cost calculation<br />Performance fee assumes 15% return</p>
+                    <p>Estimated annual management fee cost</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -121,19 +120,10 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
                   <span className="font-medium">€{fees.management.toLocaleString()}</span>
                 </div>
                 {fund.performanceFee && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Performance fee*:</span>
-                    <span className="font-medium">€{fees.performance.toLocaleString()}</span>
+                  <div className="text-xs text-muted-foreground mt-2">
+                    Note: Performance fee of {fund.performanceFee}% applies to returns{hurdle ? ` above ${hurdle}% hurdle` : ''}. Actual cost depends on fund performance.
                   </div>
                 )}
-                <Separator />
-                <div className="flex justify-between font-semibold">
-                  <span>Estimated annual cost:</span>
-                  <span>€{fees.total.toLocaleString()}</span>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  *Performance fee only applies if returns exceed hurdle
-                </p>
               </div>
             </div>
           </div>
