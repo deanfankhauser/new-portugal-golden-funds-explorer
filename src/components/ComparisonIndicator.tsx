@@ -25,7 +25,7 @@ const ComparisonIndicator = () => {
     <Button
       variant="ghost"
       size="icon"
-      className="text-background hover:bg-background/10 hover:!text-background relative"
+      className="bg-transparent text-background hover:bg-background/10 hover:!text-background relative"
       onClick={handleCompareClick}
       aria-label={`Compare funds (${count})`}
     >
