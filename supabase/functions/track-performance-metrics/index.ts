@@ -25,12 +25,12 @@ Deno.serve(async (req) => {
         .insert({
           page_path: data.pagePath,
           page_type: data.pageType,
-          lcp: data.lcp,
-          fcp: data.fcp,
-          cls: data.cls,
-          fid: data.fid,
-          ttfb: data.ttfb,
-          total_load_time: data.totalLoadTime,
+          lcp: data.lcp ? Math.round(data.lcp) : null,
+          fcp: data.fcp ? Math.round(data.fcp) : null,
+          cls: data.cls ? Math.round(data.cls * 1000) : null, // CLS is typically 0-1, scale to integer
+          fid: data.fid ? Math.round(data.fid) : null,
+          ttfb: data.ttfb ? Math.round(data.ttfb) : null,
+          total_load_time: data.totalLoadTime ? Math.round(data.totalLoadTime) : null,
           session_id: data.sessionId,
           user_id: data.userId || null,
           user_agent: data.userAgent,
