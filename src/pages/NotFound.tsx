@@ -6,18 +6,21 @@ import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import { Badge } from '@/components/ui/badge';
 import { Tag } from 'lucide-react';
-import { getAllTags } from '@/data/funds';
+import { getAllTags } from '@/data/services/tags-service';
 import { tagToSlug, categoryToSlug } from '@/lib/utils';
+import { useAllFunds } from '@/hooks/useFundsQuery';
 
 const NotFound = () => {
   const location = useLocation();
+  const { data: allFundsData } = useAllFunds();
+  const allDatabaseFunds = allFundsData || [];
   
   // Dynamically suggest tag or category page based on actual data
   const suggestedUrl = useMemo(() => {
     const path = location.pathname.toLowerCase().replace(/^\//, '').replace(/\/$/, '');
     
     // Get all actual tags and convert to slugs
-    const allTags = getAllTags();
+    const allTags = getAllTags(allDatabaseFunds);
     const tagSlugs = allTags.map(tag => tagToSlug(tag));
     
     // Check if path matches a tag slug
@@ -37,7 +40,7 @@ const NotFound = () => {
     }
     
     return null;
-  }, [location.pathname]);
+  }, [location.pathname, allDatabaseFunds]);
 
   useEffect(() => {
     console.error(

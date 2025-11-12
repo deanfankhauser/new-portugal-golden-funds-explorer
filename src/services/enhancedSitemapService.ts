@@ -36,8 +36,9 @@ export class EnhancedSitemapService extends SitemapService {
 
   // Enhanced sitemap generation with all pages
   static async generateEnhancedSitemapEntries(): Promise<SitemapEntry[]> {
+    const funds = await fetchAllFundsForBuild();
     const [baseEntries, comparisonPages, alternativesPages] = await Promise.all([
-      super.generateSitemapEntries(),
+      Promise.resolve(super.generateSitemapEntries(funds)),
       this.getComparisonPages(),
       this.getAlternativesPages()
     ]);

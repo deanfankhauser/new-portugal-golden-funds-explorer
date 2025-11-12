@@ -1,16 +1,20 @@
 
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getFundsByCategory, getAllCategories } from '../../data/funds';
+import { getFundsByCategory } from '../../data/services/categories-service';
+import { getAllCategories } from '../../data/services/categories-service';
 import { slugToCategory } from '@/lib/utils';
+import { useAllFunds } from '../../hooks/useFundsQuery';
 
 const CategoryPageContainer = () => {
   const { category: categorySlug } = useParams<{ category: string }>();
   const navigate = useNavigate();
+  const { data: allFundsData } = useAllFunds();
+  const allDatabaseFunds = allFundsData || [];
   
   // Convert URL slug to actual category
   const category = categorySlug ? slugToCategory(categorySlug) : '';
-  const allCategories = getAllCategories();
+  const allCategories = getAllCategories(allDatabaseFunds);
   
   // Check if the category exists
   const categoryExists = allCategories.includes(category as any);

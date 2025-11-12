@@ -53,7 +53,7 @@ export const useGlobalSearch = (query: string) => {
       }));
 
     // Search categories
-    const categories = getAllCategories();
+    const categories = getAllCategories(funds);
     const matchingCategories = categories
       .filter(cat => cat.toLowerCase().includes(searchTerm))
       .slice(0, 3)
@@ -87,7 +87,7 @@ export const useGlobalSearch = (query: string) => {
       }));
 
     // Search tags
-    const allTags = getAllTags();
+    const allTags = getAllTags(funds);
     const matchingTags = allTags
       .filter(tag => tag.toLowerCase().includes(searchTerm))
       .slice(0, 3)

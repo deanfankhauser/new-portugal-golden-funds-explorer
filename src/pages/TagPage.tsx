@@ -1,7 +1,8 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { getFundsByTag, getAllTags } from '../data/funds';
+import { getFundsByTag } from '../data/services/tags-service';
+import { getAllTags } from '../data/services/tags-service';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -16,11 +17,16 @@ import VerificationFilterChip from '../components/common/VerificationFilterChip'
 import { FundTag } from '../data/types/funds';
 import { slugToTag, tagToSlug } from '../lib/utils';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
+import { useAllFunds } from '../hooks/useFundsQuery';
+import FundListSkeleton from '../components/common/FundListSkeleton';
 
 const TagPage = () => {
   const { tag: tagSlug } = useParams<{ tag: string }>();
-  const allTags = getAllTags();
+  const { data: allFundsData, isLoading } = useAllFunds();
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
+  
+  const allDatabaseFunds = allFundsData || [];
+  const allTags = getAllTags(allDatabaseFunds);
   
   // Processing tag slug and available tags
   
@@ -70,7 +76,7 @@ const TagPage = () => {
   }
   
   const tagExists = !!matchingTag;
-  const allFunds = tagExists ? getFundsByTag(matchingTag as FundTag) : [];
+  const allFunds = tagExists ? getFundsByTag(allDatabaseFunds, matchingTag as FundTag) : [];
   
   // Filter funds by verification status
   const funds = useMemo(() => {
@@ -83,6 +89,20 @@ const TagPage = () => {
     
     // Final processing completed
   }, [tagSlug, matchingTag, displayTagName, tagExists]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header />
+        <main className="flex-1 py-8">
+          <div className="container mx-auto px-4">
+            <FundListSkeleton count={6} />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!tagExists) {
     // Tag not found, showing empty state

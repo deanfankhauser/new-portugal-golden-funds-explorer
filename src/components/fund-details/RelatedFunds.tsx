@@ -1,11 +1,13 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Fund, getFundsByCategory, funds } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
+import { getFundsByCategory } from '../../data/services/categories-service';
 import { Button } from '../ui/button';
 import { ExternalLink, Building2 } from 'lucide-react';
 import { categoryToSlug } from '@/lib/utils';
 import { useManagerProfile } from '../../hooks/useManagerProfile';
+import { useAllFunds } from '../../hooks/useFundsQuery';
 
 const RelatedFundCard: React.FC<{ fund: Fund }> = ({ fund }) => {
   const managerProfile = useManagerProfile(fund.managerName);
@@ -64,13 +66,16 @@ interface RelatedFundsProps {
 }
 
 const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
+  const { data: allFundsData } = useAllFunds();
+  const allDatabaseFunds = allFundsData || [];
+  
   // Get funds from the same category
-  const sameCategoryFunds = getFundsByCategory(currentFund.category)
+  const sameCategoryFunds = getFundsByCategory(allDatabaseFunds, currentFund.category)
     .filter(fund => fund.id !== currentFund.id)
     .slice(0, 3);
 
   // Get funds with similar minimum investment
-  const similarInvestmentFunds = funds
+  const similarInvestmentFunds = allDatabaseFunds
     .filter(fund => 
       fund.id !== currentFund.id &&
       Math.abs(fund.minimumInvestment - currentFund.minimumInvestment) <= 100000

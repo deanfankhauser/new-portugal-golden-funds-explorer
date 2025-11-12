@@ -17,6 +17,7 @@ import { useFundEditing } from '@/hooks/useFundEditing';
 import { uploadTeamMemberPhoto, deleteTeamMemberPhoto } from '@/utils/imageUpload';
 import { useToast } from '@/hooks/use-toast';
 import HistoricalPerformanceEditor from '../fund-editing/HistoricalPerformanceEditor';
+import { useAllFunds } from '@/hooks/useFundsQuery';
 
 interface UpdateFundTabProps {
   fund: Fund;
@@ -26,6 +27,8 @@ interface UpdateFundTabProps {
 const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) => {
   const { directUpdateFund, submitFundEditSuggestion, loading } = useFundEditing();
   const { toast } = useToast();
+  const { data: allFundsData } = useAllFunds();
+  const allDatabaseFunds = allFundsData || [];
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
 
@@ -653,7 +656,7 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
               <div className="space-y-3">
                 <Label className="text-sm font-medium">Available Tags</Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-64 overflow-y-auto p-3 border rounded-md">
-                  {getAllTags().map((tag) => {
+                  {getAllTags(allDatabaseFunds).map((tag) => {
                     const isSelected = formData.tags?.includes(tag) || false;
                     return (
                       <div key={tag} className="flex items-center space-x-2">
