@@ -5,18 +5,18 @@ import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import FundListItem from '../components/FundListItem';
 import { useSavedFunds } from '../hooks/useSavedFunds';
-import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
+import { useAllFunds } from '../hooks/useFundsQuery';
 import { useEnhancedAuth } from '../contexts/EnhancedAuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
-import { PageLoader } from '../components/common/LoadingSkeleton';
+import FundListSkeleton from '../components/common/FundListSkeleton';
 
 const SavedFunds = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useEnhancedAuth();
   const { savedFunds, loading: savedLoading } = useSavedFunds();
-  const { getFundById, loading: fundsLoading } = useRealTimeFunds();
+  const { data: allFunds, isLoading: fundsLoading, isError, isFetching } = useAllFunds();
 
   // Redirect if not authenticated (wait for auth to finish)
   if (!authLoading && !user) {
@@ -24,14 +24,16 @@ const SavedFunds = () => {
     return null;
   }
 
-  const loading = savedLoading || fundsLoading;
+  // Show loading during any loading/error state (allows React Query retry)
+  const loading = savedLoading || fundsLoading || isFetching || isError;
 
   // Get the actual fund objects for saved fund IDs
   const savedFundObjects = useMemo(() => {
+    if (!allFunds) return [];
     return savedFunds
-      .map(saved => getFundById(saved.fund_id))
+      .map(saved => allFunds.find(fund => fund.id === saved.fund_id))
       .filter(fund => fund !== undefined);
-  }, [savedFunds, getFundById]);
+  }, [savedFunds, allFunds]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -73,11 +75,7 @@ const SavedFunds = () => {
 
           {/* Content */}
           {loading ? (
-            <div className="space-y-4">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-48 bg-muted/20 rounded-xl animate-pulse" />
-              ))}
-            </div>
+            <FundListSkeleton count={3} />
           ) : savedFundObjects.length === 0 ? (
             <Card className="border border-border/40 rounded-2xl shadow-sm">
               <CardContent className="py-20 px-8 text-center">

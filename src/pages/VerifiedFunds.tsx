@@ -1,6 +1,6 @@
 import React from 'react';
 import { CheckCircle2, Shield, Award, TrendingUp } from 'lucide-react';
-import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
+import { useAllFunds } from '../hooks/useFundsQuery';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -14,12 +14,16 @@ import { Link } from 'react-router-dom';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 
 const VerifiedFunds = () => {
-  const { funds: allFunds, loading: isLoading, error } = useRealTimeFunds();
+  const { data: allFunds, isLoading, isError, isFetching } = useAllFunds();
   
   // Filter for verified funds only
   const verifiedFunds = React.useMemo(() => {
-    return allFunds?.filter(fund => fund.isVerified) || [];
+    if (!allFunds) return [];
+    return allFunds.filter(fund => fund.isVerified);
   }, [allFunds]);
+
+  // Show loading during any loading/error state (allows React Query retry)
+  const loading = isLoading || isFetching || isError;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -171,14 +175,8 @@ const VerifiedFunds = () => {
             All Verified Funds
           </h2>
           
-          {isLoading ? (
+          {loading ? (
             <FundListSkeleton />
-          ) : error ? (
-            <Card className="border-destructive">
-              <CardContent className="pt-6">
-                <p className="text-destructive">Error loading funds. Please try again later.</p>
-              </CardContent>
-            </Card>
           ) : verifiedFunds.length === 0 ? (
             <Card>
               <CardContent className="pt-6">
