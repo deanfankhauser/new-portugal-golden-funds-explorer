@@ -85,6 +85,18 @@ const RedemptionTerms: React.FC<RedemptionTermsProps> = ({ redemptionTerms }) =>
               </span>
             </div>
           )}
+
+          {redemptionTerms.notes && (
+            <div className="flex items-start justify-between px-4 py-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <span className="flex items-center gap-2.5 text-sm text-amber-800 font-medium">
+                <AlertCircle className="h-[18px] w-[18px] text-amber-600 flex-shrink-0 mt-0.5" />
+                Additional Terms
+              </span>
+              <span className="text-[15px] font-semibold text-amber-900 text-right">
+                {redemptionTerms.notes}
+              </span>
+            </div>
+          )}
         </div>
 
         <p className="text-xs leading-relaxed text-muted-foreground mt-8 pt-8 border-t border-border/60">
