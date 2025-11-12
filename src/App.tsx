@@ -54,8 +54,8 @@ const ManageProfile = lazy(() => import('./pages/ManageProfile'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
-// Import funds data to validate direct fund routes
-import { fundsData } from './data/mock/funds/index';
+// Import hook to fetch funds from database
+import { useAllFunds } from './hooks/useFundsQuery';
 
 import './App.css';
 import SEODebugger from './components/common/SEODebugger';
@@ -95,6 +95,7 @@ const ScrollToTop = () => {
 const DirectFundRoute = () => {
   const location = useLocation();
   const pathname = location.pathname;
+  const { data: funds, isLoading } = useAllFunds();
   
   // Extract potential fund ID from pathname (remove leading slash)
   const potentialFundId = pathname.slice(1);
@@ -102,8 +103,13 @@ const DirectFundRoute = () => {
   // Debug: Log to understand routing behavior
   console.log('[DirectFundRoute] Checking pathname:', pathname, 'fundId:', potentialFundId);
   
+  // Show loading while fetching funds
+  if (isLoading) {
+    return <FundDetailsLoader />;
+  }
+  
   // Check if this path matches a fund ID
-  const fund = fundsData.find(f => f.id === potentialFundId);
+  const fund = funds?.find(f => f.id === potentialFundId);
   
   if (fund) {
     console.log('[DirectFundRoute] Fund found:', fund.id);
