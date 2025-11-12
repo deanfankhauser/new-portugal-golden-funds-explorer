@@ -13,18 +13,27 @@ import {
 import { Heart, User, Settings, LogOut, Shield, Building, TrendingUp } from 'lucide-react';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import UniversalAuthButton from './UniversalAuthButton';
-import { supabase } from '@/integrations/supabase/client';
 import { getDisplayName, getAvatarUrl, isManagerProfile } from '@/types/profile';
 import { toast } from '@/hooks/use-toast';
 
+const getSupabase = async () => (await import('@/integrations/supabase/client')).supabase;
+
 const AuthAwareButton: React.FC = () => {
-  const { user, profile, signOut, loading } = useEnhancedAuth();
+  // Safely access auth context with SSR guard
+  let auth;
+  try {
+    auth = useEnhancedAuth();
+  } catch {
+    // During SSG, provider isn't mounted - fall back to guest state
+    auth = { user: null, profile: null, signOut: async () => {}, loading: false };
+  }
+  const { user, profile, signOut, loading } = auth;
   const [isAdmin, setIsAdmin] = useState(false);
   const [hasAssignedFunds, setHasAssignedFunds] = useState(false);
 
   useEffect(() => {
     const checkAdminStatus = async () => {
-      if (!user?.id) {
+      if (!user?.id || typeof window === 'undefined') {
         setIsAdmin(false);
         return;
       }
@@ -32,6 +41,7 @@ const AuthAwareButton: React.FC = () => {
       console.log('🔐 Checking admin status for user:', user.id);
       
       try {
+        const supabase = await getSupabase();
         const { data, error } = await supabase
           .from('admin_users')
           .select('id')
@@ -57,12 +67,13 @@ const AuthAwareButton: React.FC = () => {
 
   useEffect(() => {
     const checkManagerAccess = async () => {
-      if (!user?.id) {
+      if (!user?.id || typeof window === 'undefined') {
         setHasAssignedFunds(false);
         return;
       }
 
       try {
+        const supabase = await getSupabase();
         // Primary: Check company-level assignments
         const { count: companyCount, error: companyErr } = await supabase
           .from('manager_profile_assignments')
@@ -104,10 +115,12 @@ const AuthAwareButton: React.FC = () => {
         description: "You have been signed out of your account",
       });
       
-      // Force redirect to homepage and reload
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 500);
+      // Force redirect to homepage and reload (browser only)
+      if (typeof window !== 'undefined') {
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
+      }
     } catch (error) {
       console.error('🔐 AuthAwareButton sign-out error:', error);
       toast({
@@ -115,10 +128,12 @@ const AuthAwareButton: React.FC = () => {
         description: "You have been signed out",
       });
       
-      // Force redirect anyway
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 500);
+      // Force redirect anyway (browser only)
+      if (typeof window !== 'undefined') {
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
+      }
     }
   };
 

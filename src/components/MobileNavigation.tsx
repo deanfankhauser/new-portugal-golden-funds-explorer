@@ -7,7 +7,8 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Menu, Calculator, ClipboardCheck, Mail, ExternalLink, Users, FileText, Heart, User, Settings, LogOut, Building, TrendingUp, Shield, LogIn } from 'lucide-react';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
-import { supabase } from '@/integrations/supabase/client';
+
+const getSupabase = async () => (await import('@/integrations/supabase/client')).supabase;
 
 const MobileNavigation = () => {
   const [open, setOpen] = React.useState(false);
@@ -27,12 +28,13 @@ const MobileNavigation = () => {
   // Check admin status
   useEffect(() => {
     const checkAdminStatus = async () => {
-      if (!user?.id) {
+      if (!user?.id || typeof window === 'undefined') {
         setIsAdmin(false);
         return;
       }
 
       try {
+        const supabase = await getSupabase();
         const { data, error } = await supabase
           .from('admin_users')
           .select('role')
