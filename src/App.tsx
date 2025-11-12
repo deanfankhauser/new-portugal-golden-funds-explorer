@@ -95,24 +95,27 @@ const ScrollToTop = () => {
 const DirectFundRoute = () => {
   const location = useLocation();
   const pathname = location.pathname;
-  const { data: funds, isLoading } = useAllFunds();
+  const { data: funds, isLoading, isError, isFetching } = useAllFunds();
   
   // Extract potential fund ID from pathname (remove leading slash)
   const potentialFundId = pathname.slice(1);
   
-  // Debug: Log to understand routing behavior
-  console.log('[DirectFundRoute] Checking pathname:', pathname, 'fundId:', potentialFundId);
+  // Show loading while fetching funds OR during error retry states
+  // This prevents false 404s during slow connections or Supabase issues
+  if (isLoading || isFetching) {
+    return <FundDetailsLoader />;
+  }
   
-  // Show loading while fetching funds
-  if (isLoading) {
+  // If there was an error fetching funds, show loader instead of 404
+  // React Query will retry, so we wait instead of showing false 404
+  if (isError || !funds) {
     return <FundDetailsLoader />;
   }
   
   // Check if this path matches a fund ID
-  const fund = funds?.find(f => f.id === potentialFundId);
+  const fund = funds.find(f => f.id === potentialFundId);
   
   if (fund) {
-    console.log('[DirectFundRoute] Fund found:', fund.id);
     // Valid fund found, render fund details with lazy loading
     return (
       <Suspense fallback={<FundDetailsLoader />}>
@@ -121,8 +124,7 @@ const DirectFundRoute = () => {
     );
   }
   
-  // No fund found, show 404 with lazy loading
-  console.log('[DirectFundRoute] No fund found, showing 404');
+  // Only show 404 when we successfully loaded funds AND confirmed no match
   return (
     <Suspense fallback={<PageLoader />}>
       <NotFound />

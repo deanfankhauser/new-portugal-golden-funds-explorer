@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Building2, Edit3, TrendingUp, Eye, Users } from 'lucide-react';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 import { supabase } from '@/integrations/supabase/client';
-import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
+import { useAllFunds } from '@/hooks/useFundsQuery';
 import { useFundEngagementMetrics } from '@/hooks/useFundEngagementMetrics';
 import { Fund } from '@/data/types/funds';
 import { Profile } from '@/types/profile';
@@ -35,9 +35,12 @@ interface CompanyWithFunds {
 
 const MyFunds = () => {
   const { user, loading: authLoading } = useEnhancedAuth();
-  const [loading, setLoading] = useState(true);
+  const [assignmentsLoading, setAssignmentsLoading] = useState(true);
   const [companiesWithFunds, setCompaniesWithFunds] = useState<CompanyWithFunds[]>([]);
-  const { funds } = useRealTimeFunds();
+  const { data: allFunds, isLoading: fundsLoading, isError, isFetching } = useAllFunds();
+  
+  // Show loading during any loading/error state (allows React Query retry)
+  const loading = assignmentsLoading || fundsLoading || isFetching || isError;
   
   // Get all fund IDs for metrics
   const allFundIds = companiesWithFunds.flatMap(c => c.funds.map(f => f.id));
@@ -45,8 +48,8 @@ const MyFunds = () => {
 
   useEffect(() => {
     const fetchAssignments = async () => {
-      if (!user) {
-        setLoading(false);
+      if (!user || !allFunds) {
+        setAssignmentsLoading(false);
         return;
       }
 
@@ -76,7 +79,7 @@ const MyFunds = () => {
             const companiesData: CompanyWithFunds[] = profilesData.map((profile: Profile) => {
               const assignment = assignments.find(a => a.profile_id === profile.id)!;
               // Find all funds managed by this company
-              const companyFunds = funds.filter(f => f.managerName === profile.company_name);
+              const companyFunds = allFunds.filter(f => f.managerName === profile.company_name);
               
               return {
                 profile,
@@ -91,12 +94,12 @@ const MyFunds = () => {
       } catch (error) {
         console.error('Error fetching company assignments:', error);
       } finally {
-        setLoading(false);
+        setAssignmentsLoading(false);
       }
     };
 
     fetchAssignments();
-  }, [user, funds]);
+  }, [user, allFunds]);
 
   if (authLoading || loading) {
     return <PageLoader />;

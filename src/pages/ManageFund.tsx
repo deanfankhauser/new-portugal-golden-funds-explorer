@@ -13,138 +13,57 @@ import AnalyticsTab from '@/components/fund-manager/AnalyticsTab';
 import LeadsTab from '@/components/fund-manager/LeadsTab';
 import AdvertisingTab from '@/components/fund-manager/AdvertisingTab';
 import { Fund } from '@/data/types/funds';
-import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
+import { useFund } from '@/hooks/useFundsQuery';
 
 const ManageFund: React.FC = () => {
   const { fundId } = useParams<{ fundId: string }>();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useEnhancedAuth();
-  const [fund, setFund] = useState<Fund | null>(null);
-  const [loading, setLoading] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
   const [canDirectEdit, setCanDirectEdit] = useState(false);
-  const { getFundById } = useRealTimeFunds();
+  const { data: fund, isLoading: fundLoading, isFetching, isError } = useFund(fundId);
+  
+  // Show loading during any loading/error state (allows React Query retry)
+  const loading = fundLoading || isFetching || isError;
 
   useEffect(() => {
-    const checkAccessAndLoadFund = async () => {
-      console.log('[ManageFund] init', { fundId, userId: user?.id });
-
-      if (!user || !fundId) {
-        setLoading(false);
+    const checkAccess = async () => {
+      if (!user || !fund) {
         return;
       }
 
       try {
-        // 1) Load fund FIRST to get manager_name
-        let loadedFund: any = null;
-        try {
-          const { data: fundData, error: fundError } = await supabase
-            .from('funds')
-            .select('*')
-            .eq('id', fundId)
-            .maybeSingle();
-          if (fundError) throw fundError;
-          loadedFund = fundData ?? null;
-          console.log('[ManageFund] Fund from DB', loadedFund?.id);
-        } catch (dbErr) {
-          console.warn('[ManageFund] DB fund fetch failed, will try fallback', dbErr);
-        }
-
-        if (!loadedFund) {
-          const fallback = getFundById(fundId);
-          if (fallback) {
-            console.log('[ManageFund] Using fallback fund dataset', fallback.id);
-            loadedFund = fallback;
+        // Check company-level permissions using manager_name
+        const { data: hasCompanyAccess, error: companyError } = await supabase.rpc(
+          'can_user_manage_company_funds',
+          {
+            check_user_id: user.id,
+            check_manager_name: fund.managerName,
           }
-        }
-
-        // If no fund found, exit early
-        if (!loadedFund) {
-          console.warn('[ManageFund] Fund not found', { fundId });
-          setLoading(false);
-          return;
-        }
-
-        // 2) Check company-level permissions using manager_name
-        let access = false;
-        let direct = false;
-
-        try {
-          // Check if user can manage this company's funds
-          const { data: hasCompanyAccess, error: companyError } = await supabase.rpc(
-            'can_user_manage_company_funds',
-            {
-              check_user_id: user.id,
-              check_manager_name: loadedFund.manager_name,
-            }
-          );
-          if (companyError) throw companyError;
-          
-          access = !!hasCompanyAccess;
-          direct = !!hasCompanyAccess; // All company managers can edit
-          console.log('[ManageFund] Company permission check', {
-            managerName: loadedFund.manager_name,
-            access,
-            direct,
-          });
-        } catch (e) {
-          console.error('[ManageFund] Permission check failed', e);
-          access = false;
-          direct = false;
-        }
-
+        );
+        if (companyError) throw companyError;
+        
+        const access = !!hasCompanyAccess;
+        const direct = !!hasCompanyAccess; // All company managers can edit
+        
         setHasAccess(access);
         setCanDirectEdit(direct);
-        if (!access) {
-          console.warn('[ManageFund] No access to this fund', { fundId, managerName: loadedFund.manager_name });
-          setLoading(false);
-          return;
-        }
-
-        // Transform snake_case DB fields to camelCase for UI compatibility
-        if (loadedFund) {
-          loadedFund = {
-            ...loadedFund,
-            detailedDescription: loadedFund.detailed_description || loadedFund.detailedDescription,
-            managerName: loadedFund.manager_name || loadedFund.managerName,
-            minimumInvestment: loadedFund.minimum_investment || loadedFund.minimumInvestment,
-            expectedReturnMin: loadedFund.expected_return_min || loadedFund.expectedReturnMin,
-            expectedReturnMax: loadedFund.expected_return_max || loadedFund.expectedReturnMax,
-            managementFee: loadedFund.management_fee || loadedFund.managementFee,
-            performanceFee: loadedFund.performance_fee || loadedFund.performanceFee,
-            lockUpPeriodMonths: loadedFund.lock_up_period_months || loadedFund.lockUpPeriodMonths,
-            websiteUrl: loadedFund.website || loadedFund.websiteUrl,
-            cmvmId: loadedFund.cmvm_id || loadedFund.cmvmId,
-            inceptionDate: loadedFund.inception_date || loadedFund.inceptionDate,
-            navFrequency: loadedFund.nav_frequency || loadedFund.navFrequency,
-            pficStatus: loadedFund.pfic_status || loadedFund.pficStatus,
-            regulatedBy: loadedFund.regulated_by || loadedFund.regulatedBy,
-            riskLevel: loadedFund.risk_level || loadedFund.riskLevel,
-            fundStatus: loadedFund.fund_status || loadedFund.fundStatus,
-            eligibilityBasis: loadedFund.eligibility_basis || loadedFund.eligibilityBasis,
-            redemptionTerms: loadedFund.redemption_terms || loadedFund.redemptionTerms,
-            geographicAllocation: loadedFund.geographic_allocation || loadedFund.geographicAllocation,
-            teamMembers: loadedFund.team_members || loadedFund.teamMembers,
-            pdfDocuments: loadedFund.pdf_documents || loadedFund.pdfDocuments,
-            historicalPerformance: loadedFund.historical_performance || loadedFund.historicalPerformance,
-            gvEligible: loadedFund.gv_eligible !== undefined ? loadedFund.gv_eligible : loadedFund.gvEligible,
-            isVerified: loadedFund.is_verified !== undefined ? loadedFund.is_verified : loadedFund.isVerified,
-            subscriptionFee: loadedFund.subscription_fee || loadedFund.subscriptionFee,
-            redemptionFee: loadedFund.redemption_fee || loadedFund.redemptionFee,
-            hurdleRate: loadedFund.hurdle_rate || loadedFund.hurdleRate,
-          };
-        }
-
-        setFund(loadedFund as any);
-      } catch (error) {
-        console.error('[ManageFund] Unexpected error', error);
-      } finally {
-        setLoading(false);
+        
+        console.log('[ManageFund] Permission check', {
+          fundId,
+          managerName: fund.managerName,
+          access,
+          direct,
+        });
+      } catch (e) {
+        console.error('[ManageFund] Permission check failed', e);
+        setHasAccess(false);
+        setCanDirectEdit(false);
       }
     };
 
-    checkAccessAndLoadFund();
-  }, [user, fundId, getFundById]);
+    checkAccess();
+  }, [user, fund, fundId]);
 
   if (authLoading || loading) {
     return (
