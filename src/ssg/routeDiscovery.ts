@@ -1,8 +1,4 @@
-
-import { fundsData } from '../data/mock/funds';
-import { getAllFundManagers } from '../data/services/managers-service';
-import { getAllCategories } from '../data/services/categories-service';
-import { getAllTags } from '../data/services/tags-service';
+import { fetchAllBuildDataCached } from '../lib/build-data-fetcher';
 import { generateComparisonsFromFunds } from '../data/services/comparison-service';
 import { categoryToSlug, tagToSlug, managerToSlug } from '../lib/utils';
 
@@ -16,6 +12,11 @@ export interface StaticRoute {
 export class RouteDiscovery {
   static async getAllStaticRoutes(): Promise<StaticRoute[]> {
     const routes: StaticRoute[] = [];
+
+    console.log('🔍 RouteDiscovery: Fetching data from database for route generation...');
+    
+    // Fetch all data from database (cached for efficiency)
+    const { funds, categories, tags, managers } = await fetchAllBuildDataCached();
 
     // Homepage (also serves as fund index)
     routes.push({ path: '/', pageType: 'homepage' });
@@ -36,7 +37,7 @@ export class RouteDiscovery {
     routes.push({ path: '/alternatives', pageType: 'alternatives-hub' });
 
     // Fund detail pages - ONLY the direct route pattern
-    fundsData.forEach(fund => {
+    funds.forEach(fund => {
       // Only use the new direct route: /fund-id
       routes.push({
         path: `/${fund.id}`,
@@ -47,7 +48,6 @@ export class RouteDiscovery {
     });
 
     // Manager pages
-    const managers = getAllFundManagers();
     managers.forEach(manager => {
       const slug = managerToSlug(manager.name);
       routes.push({
@@ -58,7 +58,6 @@ export class RouteDiscovery {
     });
 
     // Category pages
-    const categories = getAllCategories();
     categories.forEach(category => {
       const slug = categoryToSlug(category);
       routes.push({
@@ -69,7 +68,6 @@ export class RouteDiscovery {
     });
 
     // Tag pages
-    const tags = getAllTags();
     tags.forEach(tag => {
       const slug = tagToSlug(tag);
       routes.push({
@@ -80,7 +78,7 @@ export class RouteDiscovery {
     });
 
     // Fund comparison pages
-    const comparisons = generateComparisonsFromFunds(fundsData);
+    const comparisons = generateComparisonsFromFunds(funds);
     comparisons.forEach(comparison => {
       routes.push({
         path: `/compare/${comparison.slug}`,
@@ -90,7 +88,7 @@ export class RouteDiscovery {
     });
 
     // Fund alternatives pages (always generate for all funds)
-    fundsData.forEach(fund => {
+    funds.forEach(fund => {
       routes.push({
         path: `/${fund.id}/alternatives`,
         pageType: 'fund-alternatives',
@@ -110,7 +108,7 @@ export class RouteDiscovery {
       return true;
     });
 
-    console.log(`🔍 RouteDiscovery: Generated ${filteredRoutes.length} static routes (filtered from ${routes.length} total, including ${comparisons.length} comparisons and ${fundsData.length} alternatives pages)`);
+    console.log(`🔍 RouteDiscovery: Generated ${filteredRoutes.length} static routes from database (filtered from ${routes.length} total, including ${comparisons.length} comparisons and ${funds.length} alternatives pages)`);
     return filteredRoutes;
   }
 

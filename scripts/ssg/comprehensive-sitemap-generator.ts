@@ -7,12 +7,12 @@ import fs from 'fs';
  * Generate comprehensive sitemaps for the application
  * This replaces the existing problematic sitemap generation
  */
-export function generateComprehensiveSitemaps(distDir: string): void {
-  console.log('🗺️  Starting comprehensive sitemap generation...');
+export async function generateComprehensiveSitemaps(distDir: string): Promise<void> {
+  console.log('🗺️  Starting comprehensive sitemap generation from database...');
   
   try {
-    // Generate sitemaps
-    const result = ComprehensiveSitemapService.generateSitemaps(distDir);
+    // Generate sitemaps (now async)
+    const result = await ComprehensiveSitemapService.generateSitemaps(distDir);
     
     console.log(`✅ Sitemap generation completed successfully!`);
     console.log(`   📊 Total URLs: ${result.totalURLs}`);
@@ -66,7 +66,7 @@ export function generateComprehensiveSitemaps(distDir: string): void {
         const hasTags = content.includes('/tags/');
         if (!hasCategories || !hasTags) {
           console.warn('⚠️  Public sitemap missing categories/tags. Regenerating sitemap directly into /public...');
-          const direct = ComprehensiveSitemapService.generateSitemaps(publicDir);
+          const direct = await ComprehensiveSitemapService.generateSitemaps(publicDir);
           console.log(`✅ Regenerated ${direct.sitemapFiles.length} sitemap file(s) directly in /public with full categories/tags coverage`);
         }
       }
