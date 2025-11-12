@@ -183,8 +183,8 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             </tr>
 
             {/* Data Freshness - Always visible */}
-            <tr className="border-b bg-accent/10">
-              <td className="py-3 px-4 font-medium text-accent-foreground">Data Last Verified</td>
+            <tr className="border-b bg-muted/30">
+              <td className="py-3 px-4 font-medium text-foreground">Data Last Verified</td>
               {funds.map(fund => (
                 <td key={fund.id} className="py-3 px-4">
                   <DataFreshnessIndicator fund={fund} variant="full" className="justify-start" />
