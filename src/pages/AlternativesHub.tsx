@@ -32,7 +32,7 @@ const AlternativesHub: React.FC = () => {
   const fundsWithAlternatives = allFunds
     .map(fund => {
       try {
-        const alternatives = findAlternativeFunds(fund, 3).filter(
+        const alternatives = findAlternativeFunds(allFunds, fund, 3).filter(
           (alt): alt is typeof alt & { name: string; id: string } => 
             !!alt && typeof alt.name === 'string' && typeof alt.id === 'string'
         );
