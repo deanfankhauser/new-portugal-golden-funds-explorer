@@ -4,7 +4,7 @@ import { Fund } from '../../data/types/funds';
 import { funds } from '../../data/funds';
 import { normalizeComparisonSlug } from '../../utils/comparisonUtils';
 import { URL_CONFIG } from '../../utils/urlConfig';
-import { ArrowLeftRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { ArrowLeftRight, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface FundComparisonSuggestionsProps {
@@ -61,14 +61,6 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
                           <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
                         )}
                       </div>
-
-                      {/* Verified Badge */}
-                      {currentFund.isVerified && currentFund.verifiedAt && (
-                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium shrink-0 bg-success text-white w-fit">
-                          <Sparkles className="h-3 w-3" strokeWidth={2.5} />
-                          <span>Recently Verified</span>
-                        </div>
-                      )}
 
                       {/* VS Divider */}
                       <span className="text-xs font-medium uppercase tracking-wider shrink-0 hidden sm:inline text-muted-foreground">
