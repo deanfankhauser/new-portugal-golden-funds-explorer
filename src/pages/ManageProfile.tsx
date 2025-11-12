@@ -2,16 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
-import { Building2, BarChart3, Users, Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Building2, Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Profile } from '@/types/profile';
 import ProfileEditTab from '@/components/manager-profile/ProfileEditTab';
-import ProfileAnalyticsTab from '@/components/manager-profile/ProfileAnalyticsTab';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 
 const ManageProfile: React.FC = () => {
@@ -25,7 +23,6 @@ const ManageProfile: React.FC = () => {
     can_edit_profile: false,
     can_edit_funds: false,
     can_manage_team: false,
-    can_view_analytics: false,
   });
 
   useEffect(() => {
@@ -44,7 +41,6 @@ const ManageProfile: React.FC = () => {
           can_edit_profile: false,
           can_edit_funds: false,
           can_manage_team: false,
-          can_view_analytics: false,
         };
 
         try {
@@ -202,46 +198,23 @@ const ManageProfile: React.FC = () => {
             </p>
           </div>
 
-          {/* Tabs */}
-          <Tabs defaultValue="edit" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="edit" className="flex items-center gap-2">
-                <Building2 className="h-4 w-4" />
-                Edit Profile
-              </TabsTrigger>
-              {permissions.can_view_analytics && (
-                <TabsTrigger value="analytics" className="flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4" />
-                  Analytics
-                </TabsTrigger>
-              )}
-            </TabsList>
-
-            <TabsContent value="edit">
-              {permissions.can_edit_profile ? (
-                <ProfileEditTab
-                  profile={profile}
-                  onProfileUpdate={(updatedProfile) => setProfile(updatedProfile)}
-                  canManageTeam={permissions.can_manage_team}
-                />
-              ) : (
-                <Card className="p-6">
-                  <Alert>
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>
-                      You don't have permission to edit this profile. Your access is view-only.
-                    </AlertDescription>
-                  </Alert>
-                </Card>
-              )}
-            </TabsContent>
-
-            {permissions.can_view_analytics && (
-              <TabsContent value="analytics">
-                <ProfileAnalyticsTab profileId={profile.id!} />
-              </TabsContent>
-            )}
-          </Tabs>
+          {/* Profile Edit Section */}
+          {permissions.can_edit_profile ? (
+            <ProfileEditTab
+              profile={profile}
+              onProfileUpdate={(updatedProfile) => setProfile(updatedProfile)}
+              canManageTeam={permissions.can_manage_team}
+            />
+          ) : (
+            <Card className="p-6">
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  You don't have permission to edit this profile. Your access is view-only.
+                </AlertDescription>
+              </Alert>
+            </Card>
+          )}
         </div>
       </main>
 
