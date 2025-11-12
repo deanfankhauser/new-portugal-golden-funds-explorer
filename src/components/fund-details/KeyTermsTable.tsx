@@ -39,13 +39,11 @@ const KeyTermsTable: React.FC<KeyTermsTableProps> = ({ fund }) => {
     { label: "Minimum Investment", value: fund.minimumInvestment ? formatCurrency(fund.minimumInvestment) : "N/A", type: "currency" },
     { label: "Fund Structure", value: fund.category || "N/A", type: "text" },
     { label: "Fund Term", value: getFundTermValue(), type: "text" },
-    { label: "Domicile", value: "Portugal", type: "text" },
+    { label: "Domicile", value: fund.location || "N/A", type: "text" },
     { label: "Custodian", value: fund.custodian || "N/A", type: "text" },
     { label: "Auditor", value: fund.auditor || "N/A", type: "text" },
     { label: "ISIN", value: fund.cmvmId || "N/A", type: "text" },
-    { label: "Reporting", value: "Monthly NAV, Quarterly Reports", type: "text" },
-    { label: "Documentation Cadence", value: "Monthly", type: "text" },
-    { label: "Fund Status", value: fund.fundStatus || "Active", type: "status" },
+    { label: "Fund Status", value: fund.fundStatus || "N/A", type: "status" },
     { label: "Inception Date", value: fund.established ? `${fund.established}` : "N/A", type: "date" },
   ];
 
