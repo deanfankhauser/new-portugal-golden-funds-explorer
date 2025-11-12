@@ -37,7 +37,15 @@ Deno.serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const postmarkApiKey = Deno.env.get('POSTMARK_API_KEY')!;
+    const postmarkApiKey = Deno.env.get('POSTMARK_SERVER_TOKEN') || Deno.env.get('POSTMARK_API_KEY');
+    
+    if (!postmarkApiKey) {
+      console.error('Missing Postmark API token');
+      return new Response(
+        JSON.stringify({ error: 'Email service configuration error' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
@@ -126,11 +134,12 @@ Deno.serve(async (req) => {
         console.error('Error fetching company profile:', companyError);
       }
       
-      // Then get all users assigned to this company
+      // Then get all users assigned to this company (two-step approach)
       if (companyProfile) {
+        // Step 1: Get user_ids from assignments
         const { data: assignments, error: assignmentsError } = await supabase
           .from('manager_profile_assignments')
-          .select('user_id, profiles:user_id(email)')
+          .select('user_id')
           .eq('profile_id', companyProfile.id)
           .eq('status', 'active');
         
@@ -138,12 +147,25 @@ Deno.serve(async (req) => {
           console.error('Error fetching assigned managers:', assignmentsError);
         }
         
-        // Add assigned manager emails
+        // Step 2: Get emails from profiles using the user_ids
         if (assignments && assignments.length > 0) {
-          for (const assignment of assignments) {
-            const profile = assignment.profiles as any;
-            if (profile && profile.email) {
-              recipientEmails.push(profile.email);
+          const userIds = assignments.map(a => a.user_id);
+          
+          const { data: managerProfiles, error: profilesError } = await supabase
+            .from('profiles')
+            .select('email')
+            .in('user_id', userIds);
+          
+          if (profilesError) {
+            console.error('Error fetching manager profiles:', profilesError);
+          }
+          
+          // Add manager emails to recipient list
+          if (managerProfiles && managerProfiles.length > 0) {
+            for (const profile of managerProfiles) {
+              if (profile.email) {
+                recipientEmails.push(profile.email);
+              }
             }
           }
         }
@@ -193,7 +215,7 @@ Deno.serve(async (req) => {
       
       for (const email of uniqueEmails) {
         try {
-          await fetch(POSTMARK_API_URL, {
+          const response = await fetch(POSTMARK_API_URL, {
             method: 'POST',
             headers: {
               'Accept': 'application/json',
@@ -209,7 +231,13 @@ Deno.serve(async (req) => {
               MessageStream: 'outbound',
             }),
           });
-          console.log(`Notification sent to: ${email}`);
+          
+          if (!response.ok) {
+            const errorBody = await response.text();
+            console.error(`Postmark error for ${email}:`, { status: response.status, body: errorBody });
+          } else {
+            console.log(`Notification sent to: ${email}`);
+          }
         } catch (emailError) {
           console.error(`Error sending email to ${email}:`, emailError);
         }
@@ -222,7 +250,7 @@ Deno.serve(async (req) => {
     const investorEmail = generateInvestorConfirmationEmail(enquiryData);
     
     try {
-      await fetch(POSTMARK_API_URL, {
+      const response = await fetch(POSTMARK_API_URL, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -238,6 +266,13 @@ Deno.serve(async (req) => {
           MessageStream: 'outbound',
         }),
       });
+      
+      if (!response.ok) {
+        const errorBody = await response.text();
+        console.error('Postmark error for investor confirmation:', { status: response.status, body: errorBody });
+      } else {
+        console.log('Investor confirmation sent');
+      }
     } catch (emailError) {
       console.error('Error sending investor confirmation:', emailError);
     }
