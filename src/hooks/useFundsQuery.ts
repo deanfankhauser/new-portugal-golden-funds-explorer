@@ -1,5 +1,5 @@
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
-import { supabase } from '../integrations/supabase/client';
+const getSupabase = async () => (await import('../integrations/supabase/client')).supabase;
 import { Fund, FundTag, FundCategory, GeographicAllocation, TeamMember, PdfDocument, FAQItem, RedemptionFrequency } from '../data/types/funds';
 
 const FUNDS_PER_PAGE = 30;
@@ -115,6 +115,7 @@ const fetchFundsPage = async ({ pageParam = 0 }) => {
   
   console.log(`📊 Fetching funds page ${pageParam} (${from}-${to})`);
   
+  const supabase = await getSupabase();
   const { data, error, count } = await supabase
     .from('funds')
     .select(`
@@ -156,6 +157,7 @@ const fetchFundsPage = async ({ pageParam = 0 }) => {
 const fetchFundById = async (fundId: string): Promise<Fund | null> => {
   console.log('🔍 Fetching single fund:', fundId);
   
+  const supabase = await getSupabase();
   const { data, error } = await supabase
     .from('funds')
     .select(`
@@ -211,6 +213,7 @@ export const useAllFunds = () => {
   return useQuery({
     queryKey: ['funds-all'],
     queryFn: async () => {
+      const supabase = await getSupabase();
       const { data, error } = await supabase
         .from('funds')
         .select(`

@@ -120,8 +120,29 @@ export class SSRRenderer {
       });
     }
 
-    // Load all components
-    const components = await loadComponents();
+    // Load components specific to this route
+    const needed: string[] = (() => {
+      switch (route.pageType) {
+        case 'homepage': return ['Index'];
+        case 'fund': return ['FundDetails'];
+        case 'manager': return ['FundManager'];
+        case 'tags_hub': return ['TagsHub'];
+        case 'tag': return ['TagPage'];
+        case 'categories_hub': return ['CategoriesHub'];
+        case 'category': return ['CategoryPage'];
+        case 'comparisons_hub': return ['ComparisonsHub'];
+        case 'comparison': return ['FundComparison'];
+        case 'alternatives_hub': return ['AlternativesHub'];
+        case 'fund_alternatives': return ['FundAlternatives'];
+        case 'faqs': return ['FAQs'];
+        case 'privacy': return ['Privacy'];
+        case 'disclaimer': return ['Disclaimer'];
+        case 'about': return ['About'];
+        case 'auth': return ['Auth'];
+        default: return ['Index'];
+      }
+    })();
+    const components = await loadComponents(needed);
     const FallbackComponent = () => React.createElement(
       'div',
       { className: 'p-8 text-center' },
