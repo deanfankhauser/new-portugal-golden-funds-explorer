@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
 import {
   generateEmailHeader,
@@ -39,8 +38,6 @@ const handler = async (req: Request): Promise<Response> => {
     if (!postmarkToken) {
       throw new Error('POSTMARK_SERVER_TOKEN is not configured');
     }
-
-    const resend = new Resend(postmarkToken);
 
     const {
       leadId,
@@ -204,14 +201,23 @@ const handler = async (req: Request): Promise<Response> => {
       bodyContent
     );
 
-    // Send email to all managers
+    // Send email to all managers using Postmark
     const emailPromises = uniqueEmails.map(email => 
-      resend.emails.send({
-        from: "Movingto Funds <noreply@movingto.com>",
-        to: [email],
-        subject: `Please Verify Lead Status: ${leadName} - ${fundName}`,
-        html: htmlContent,
-      })
+      fetch('https://api.postmarkapp.com/email', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-Postmark-Server-Token': postmarkToken,
+        },
+        body: JSON.stringify({
+          From: 'noreply@movingto.com',
+          To: email,
+          Subject: `Please Verify Lead Status: ${leadName} - ${fundName}`,
+          HtmlBody: htmlContent,
+          MessageStream: 'outbound',
+        }),
+      }).then(res => res.json())
     );
 
     const results = await Promise.allSettled(emailPromises);
