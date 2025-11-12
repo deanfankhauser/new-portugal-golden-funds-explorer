@@ -129,7 +129,7 @@ export async function generateStaticFiles() {
 
   // Validate sitemap URLs
   console.log('\n🔍 Validating sitemap URLs...');
-  const sitemapValidation = validateSitemapURLs(distDir);
+  const sitemapValidation = await validateSitemapURLs(distDir);
   
   // Only fail on errors, not warnings (warnings are informational)
   const errors = sitemapValidation.issues.filter(i => i.type === 'error');

@@ -14,9 +14,18 @@ export class RouteDiscovery {
     const routes: StaticRoute[] = [];
 
     console.log('🔍 RouteDiscovery: Fetching data from database for route generation...');
+    console.log('🔌 Environment check:');
+    console.log(`   VITE_SUPABASE_URL: ${process.env.VITE_SUPABASE_URL ? '✅ Set' : '❌ Missing'}`);
+    console.log(`   VITE_SUPABASE_ANON_KEY: ${process.env.VITE_SUPABASE_ANON_KEY ? '✅ Set' : '❌ Missing'}`);
     
     // Fetch all data from database (cached for efficiency)
     const { funds, categories, tags, managers } = await fetchAllBuildDataCached();
+    
+    console.log('📊 Data fetched successfully:');
+    console.log(`   Funds: ${funds.length}`);
+    console.log(`   Categories: ${categories.length}`);
+    console.log(`   Tags: ${tags.length}`);
+    console.log(`   Managers: ${managers.length}`);
 
     // Homepage (main fund listing)
     routes.push({ path: '/', pageType: 'homepage' });
