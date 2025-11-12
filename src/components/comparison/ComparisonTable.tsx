@@ -95,7 +95,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
                 if (fund.hurdleRate != null) return `${fund.hurdleRate}%`;
                 const { min } = getReturnTargetNumbers(fund);
                 if (min != null) return `${min}%`;
-                return "8%";
+                return "N/A";
               }}
               label="Performance Fee Hurdle"
               allSame={allSame}

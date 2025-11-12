@@ -50,8 +50,8 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
       return max;
     }
     
-    console.log('ROI Form - No parseable return found for fund, using default 8%');
-    return 8;
+    console.log('ROI Form - No parseable return found for fund');
+    return 0;
   };
 
   // Update expected return and investment amount when selected fund changes
