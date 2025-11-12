@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { getAllTags } from '../../src/data/services/tags-service';
-import { getAllCategories } from '../../src/data/services/categories-service';
+import { fetchAllTagsForBuild, fetchAllCategoriesForBuild } from '../../src/lib/build-data-fetcher';
 import { tagToSlug, categoryToSlug } from '../../src/lib/utils';
 
 interface ValidationIssue {
@@ -10,7 +9,7 @@ interface ValidationIssue {
   url?: string;
 }
 
-export function validateSitemapURLs(distDir: string): { valid: boolean; issues: ValidationIssue[] } {
+export async function validateSitemapURLs(distDir: string): Promise<{ valid: boolean; issues: ValidationIssue[] }> {
   const sitemapPath = path.join(distDir, 'sitemap.xml');
   const issues: ValidationIssue[] = [];
   
@@ -30,11 +29,12 @@ export function validateSitemapURLs(distDir: string): { valid: boolean; issues: 
   
   console.log(`\n🔍 Validating ${urls.length} URLs in sitemap...\n`);
   
-  // Get all valid tag and category slugs
-  const tags = getAllTags();
-  const tagSlugs = tags.map(tag => tagToSlug(tag));
-  const categories = getAllCategories();
-  const categorySlugs = categories.map(cat => categoryToSlug(cat));
+  try {
+    // Get all valid tag and category slugs from database
+    const tags = await fetchAllTagsForBuild();
+    const tagSlugs = tags.map(tag => tagToSlug(tag));
+    const categories = await fetchAllCategoriesForBuild();
+    const categorySlugs = categories.map(cat => categoryToSlug(cat));
   
   // Check for incorrect bare slug URLs
   const baseUrl = 'https://funds.movingto.com';
@@ -93,44 +93,55 @@ export function validateSitemapURLs(distDir: string): { valid: boolean; issues: 
   });
   
   // Report results
-  const errors = issues.filter(i => i.type === 'error');
-  const warnings = issues.filter(i => i.type === 'warning');
-  
-  if (errors.length > 0) {
-    console.error('❌ Sitemap validation FAILED:\n');
-    errors.forEach(issue => {
-      console.error(`   ❌ ${issue.message}`);
-      if (issue.url) console.error(`      URL: ${issue.url}`);
+    const errors = issues.filter(i => i.type === 'error');
+    const warnings = issues.filter(i => i.type === 'warning');
+    
+    if (errors.length > 0) {
+      console.error('❌ Sitemap validation FAILED:\n');
+      errors.forEach(issue => {
+        console.error(`   ❌ ${issue.message}`);
+        if (issue.url) console.error(`      URL: ${issue.url}`);
+      });
+    }
+    
+    if (warnings.length > 0) {
+      console.warn('\n⚠️  Sitemap validation warnings:\n');
+      warnings.forEach(issue => {
+        console.warn(`   ⚠️  ${issue.message}`);
+        if (issue.url) console.warn(`      URL: ${issue.url}`);
+      });
+    }
+    
+    if (errors.length === 0 && warnings.length === 0) {
+      console.log('✅ Sitemap validation passed - all URLs are correctly formatted\n');
+    }
+    
+    return {
+      valid: errors.length === 0,
+      issues
+    };
+  } catch (error) {
+    console.error('❌ Sitemap validation failed with error:', error);
+    issues.push({
+      type: 'error',
+      message: `Validation error: ${error instanceof Error ? error.message : 'Unknown error'}`
     });
+    return { valid: false, issues };
   }
-  
-  if (warnings.length > 0) {
-    console.warn('\n⚠️  Sitemap validation warnings:\n');
-    warnings.forEach(issue => {
-      console.warn(`   ⚠️  ${issue.message}`);
-      if (issue.url) console.warn(`      URL: ${issue.url}`);
-    });
-  }
-  
-  if (errors.length === 0 && warnings.length === 0) {
-    console.log('✅ Sitemap validation passed - all URLs are correctly formatted\n');
-  }
-  
-  return {
-    valid: errors.length === 0,
-    issues
-  };
 }
 
 // Allow direct execution
 if (import.meta.url === `file://${process.argv[1]}`) {
   const distDir = path.join(process.cwd(), 'dist');
-  const result = validateSitemapURLs(distDir);
-  
-  if (!result.valid) {
-    console.error('\n💥 Sitemap validation failed. Build should not proceed.\n');
+  validateSitemapURLs(distDir).then(result => {
+    if (!result.valid) {
+      console.error('\n💥 Sitemap validation failed. Build should not proceed.\n');
+      process.exit(1);
+    }
+    
+    console.log('🎉 Sitemap validation complete!\n');
+  }).catch(error => {
+    console.error('\n💥 Sitemap validation crashed:', error);
     process.exit(1);
-  }
-  
-  console.log('🎉 Sitemap validation complete!\n');
+  });
 }

@@ -5,39 +5,70 @@ import path from 'path';
 
 // Compile TypeScript files to JavaScript for SSG
 export function compileSSGFiles() {
-  console.log('\n🏗️  Compiling SSG files...');
+  console.log('\n🏗️  SSG Compilation Pipeline Starting...\n');
+  console.log('═'.repeat(60));
   
   try {
-    // Generate dynamic redirects first
-    console.log('🔀 Generating dynamic redirects...');
+    // Step 1: Generate dynamic redirects first
+    console.log('\n📍 STEP 1: Generating dynamic redirects...');
+    console.log('─'.repeat(60));
     execSync('npx tsx scripts/ssg/generate-redirects.ts', {
       stdio: 'inherit'
     });
     
-    // Generate fund slug redirects (legacy URLs → current fundId routes)
-    console.log('🔀 Generating fund slug redirects...');
+    // Step 2: Generate fund slug redirects (legacy URLs → current fundId routes)
+    console.log('\n📍 STEP 2: Generating fund slug redirects...');
+    console.log('─'.repeat(60));
     execSync('npx tsx scripts/ssg/generate-fund-slug-redirects.ts', {
       stdio: 'inherit'
     });
     
-    // Execute the SSG runner with debug mode if requested
+    // Step 3: Execute the SSG runner with debug mode if requested
+    console.log('\n📍 STEP 3: Running SSG generation...');
+    console.log('─'.repeat(60));
     const ssgEnv = {
       ...process.env,
       SSG_DEBUG: process.env.SSG_DEBUG || '0'
     };
     
-    console.log('🔧 SSG_DEBUG=' + ssgEnv.SSG_DEBUG);
+    console.log('🔧 Environment: SSG_DEBUG=' + ssgEnv.SSG_DEBUG);
+    console.log('🔌 Supabase URL:', process.env.VITE_SUPABASE_URL ? '✅ Set' : '❌ MISSING');
+    console.log('🔑 Supabase Key:', process.env.VITE_SUPABASE_ANON_KEY ? '✅ Set' : '❌ MISSING');
     
+    if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) {
+      throw new Error('CRITICAL: Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY - cannot fetch data during build');
+    }
+    
+    console.log('');
     execSync('npx tsx scripts/ssg-runner.ts', {
       stdio: 'inherit',
       env: ssgEnv
     });
     
-    // Verify that static files were generated with proper SEO
+    // Step 4: Generate legacy slug aliases
+    console.log('\n📍 STEP 4: Generating legacy slug aliases...');
+    console.log('─'.repeat(60));
+    try {
+      execSync('npx tsx scripts/ssg/generate-legacy-slug-aliases.ts', { stdio: 'inherit' });
+    } catch (aliasError) {
+      console.warn('⚠️  Legacy slug alias generation failed (non-critical):', aliasError.message);
+    }
+
+    // Step 5: Log dist tree for diagnostics
+    console.log('\n📍 STEP 5: Dist directory diagnostics...');
+    console.log('─'.repeat(60));
+    try {
+      execSync('npx tsx scripts/ssg/log-dist-tree.ts', { stdio: 'inherit' });
+    } catch (treeError) {
+      console.warn('⚠️  Dist tree logging failed (non-critical)');
+    }
+
+    // Step 6: Verify that static files were generated with proper SEO
+    console.log('\n📍 STEP 6: Verifying generated pages...');
+    console.log('─'.repeat(60));
     const distDir = path.join(process.cwd(), 'dist');
     
-    // Step 4: Verify critical pages with strict checks
-    console.log('\n🔍 Verifying critical pages...');
+    // Verify critical pages with strict checks
     
     const criticalPages = [
       { path: path.join(distDir, 'index.html'), name: 'homepage' },
@@ -128,19 +159,24 @@ export function compileSSGFiles() {
       console.warn('⚠️  No category pages detected in dist/categories. Reloads for /categories/* will 404.');
     }
 
-    // Also copy enhanced sitemap files from dist to public so /sitemap.xml resolves correctly in dev/preview
+    // Step 7: Copy enhanced sitemap files from dist to public
+    console.log('\n📍 STEP 7: Copying sitemaps to public...');
+    console.log('─'.repeat(60));
     try {
       const publicDir = path.join(process.cwd(), 'public');
       const distDir = path.join(process.cwd(), 'dist');
       const filesToCopy = ['sitemap.xml', 'sitemap-index.xml', 'sitemap-funds.xml', 'sitemap-enhanced.xml', 'robots.txt'];
+      
+      let copiedCount = 0;
       filesToCopy.forEach((file) => {
         const src = path.join(distDir, file);
         if (fs.existsSync(src)) {
           const dest = path.join(publicDir, file);
           fs.copyFileSync(src, dest);
+          copiedCount++;
         }
       });
-      console.log('🗺️  SSG: Copied enhanced sitemaps to /public');
+      console.log(`✅ Copied ${copiedCount} sitemap files to /public`);
 
       // Fallback: if consolidated sitemap lacks categories/tags, use enhanced sitemap which includes them
       try {
@@ -160,8 +196,20 @@ export function compileSSGFiles() {
         console.warn('⚠️  SSG: Failed fallback to enhanced sitemap:', fallbackErr.message);
       }
     } catch (copyErr) {
-      console.warn('⚠️  SSG: Could not copy enhanced sitemap files to /public:', copyErr.message);
+      console.warn('⚠️  Could not copy sitemap files to /public:', copyErr.message);
     }
+    
+    // Final summary
+    console.log('\n' + '═'.repeat(60));
+    console.log('🎉 SSG COMPILATION PIPELINE COMPLETED SUCCESSFULLY!');
+    console.log('═'.repeat(60));
+    console.log('');
+    console.log('📊 Next Steps:');
+    console.log('   1. Check dist/ssg-manifest.json for route generation details');
+    console.log('   2. Check dist/ssg-presence.json for tags/categories verification');
+    console.log('   3. Deploy to Vercel and verify production URLs');
+    console.log('   4. Test sample URLs with curl after deployment');
+    console.log('');
     
   } catch (error) {
     console.warn('⚠️  SSG compilation failed, falling back to basic build');
