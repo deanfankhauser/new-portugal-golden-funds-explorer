@@ -257,6 +257,13 @@ export class ConsolidatedSEOService {
           title: this.optimizeText(`${params.categoryName} Portugal Golden Visa Investment Funds | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(`Discover ${params.categoryName} Portugal Golden Visa investment funds. Compare minimum investments, returns, fees, and eligibility for residency applications.`, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildCategoryUrl(params.categoryName),
+          keywords: [
+            `${params.categoryName} Golden Visa funds`,
+            `${params.categoryName} investment Portugal`,
+            `Portugal ${params.categoryName} funds`,
+            'Golden Visa investment categories',
+            `${params.categoryName} fund comparison`
+          ],
           structuredData: this.getCategoryStructuredData(params.categoryName, params.funds || [])
         };
 
@@ -265,6 +272,13 @@ export class ConsolidatedSEOService {
           title: this.optimizeText(`${params.tagName} Portugal Golden Visa Investment Funds | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(`Explore ${params.tagName} Portugal Golden Visa investment funds. Compare minimum investments, returns, and Golden Visa eligibility requirements.`, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildTagUrl(params.tagName),
+          keywords: [
+            `${params.tagName} Golden Visa funds`,
+            `${params.tagName} investment funds Portugal`,
+            'Golden Visa fund characteristics',
+            `${params.tagName} fund features`,
+            'Portugal investment fund tags'
+          ],
           structuredData: this.getTagStructuredData(params.tagName, params.funds || [])
         };
 
@@ -273,6 +287,14 @@ export class ConsolidatedSEOService {
           title: this.optimizeText(`${params.managerName} | Portugal Golden Visa Fund Manager | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(`Profile and Portugal Golden Visa investment funds managed by ${params.managerName}. Track record, investment philosophy, and fund performance.`, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildManagerUrl(params.managerName),
+          keywords: [
+            `${params.managerName}`,
+            'Portugal fund manager',
+            'Golden Visa fund manager',
+            'investment fund management Portugal',
+            'fund manager profile',
+            'Golden Visa investment professionals'
+          ],
           structuredData: this.getManagerStructuredData(params.managerName)
         };
 
@@ -281,6 +303,14 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('Portugal Golden Visa Fund Comparison Tool | Compare Investment Funds | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Compare Portugal Golden Visa investment funds side by side. Analyze performance, fees, risk profiles and make informed Golden Visa investment decisions.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/compare'),
+          keywords: [
+            'Golden Visa fund comparison',
+            'compare investment funds Portugal',
+            'fund comparison tool',
+            'investment fund analysis',
+            'Golden Visa fund comparison tool',
+            'side-by-side fund comparison'
+          ],
           structuredData: this.getComparisonStructuredData()
         };
 
@@ -297,6 +327,14 @@ export class ConsolidatedSEOService {
               title: this.optimizeText(`${fund1.name} vs ${fund2.name} Comparison | Portugal Golden Visa Funds 2025`, this.MAX_TITLE_LENGTH),
               description: this.optimizeText(`Compare ${fund1.name} (${fund1.managerName}) vs ${fund2.name} (${fund2.managerName}) Portugal Golden Visa funds. Side-by-side analysis of fees, minimum investment, returns, and performance metrics.`, this.MAX_DESCRIPTION_LENGTH),
               url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
+              keywords: [
+                `${fund1.name} vs ${fund2.name}`,
+                'Golden Visa fund comparison',
+                'investment fund analysis',
+                `${fund1.managerName}`,
+                `${fund2.managerName}`,
+                'fund performance comparison'
+              ],
               structuredData: this.getFundComparisonStructuredData(fund1, fund2)
             };
           }
@@ -306,6 +344,13 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('Portugal Golden Visa Fund Comparison | Investment Analysis 2025', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Compare Portugal Golden Visa investment funds side-by-side. Detailed analysis of fees, returns, minimum investment, and fund performance metrics.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('compare'),
+          keywords: [
+            'Golden Visa fund comparison',
+            'investment fund analysis',
+            'compare funds Portugal',
+            'fund comparison tool',
+            'investment analysis'
+          ],
           structuredData: this.getGenericComparisonStructuredData()
         };
 
@@ -314,6 +359,14 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('Portugal Golden Visa Fund ROI Calculator | Investment Returns | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Calculate potential returns on Portugal Golden Visa investment funds. Compare different funds and investment scenarios for Golden Visa investments.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('roi-calculator'),
+          keywords: [
+            'ROI calculator',
+            'investment returns calculator',
+            'Golden Visa ROI',
+            'fund returns calculation',
+            'investment calculator Portugal',
+            'Golden Visa returns'
+          ],
           structuredData: this.getCalculatorStructuredData()
         };
 
@@ -330,6 +383,14 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('Portugal Golden Visa Fund Managers | Investment Professionals | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Directory of Portugal Golden Visa fund managers. Find experienced investment professionals managing Golden Visa eligible funds.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('managers'),
+          keywords: [
+            'fund managers Portugal',
+            'Golden Visa fund managers',
+            'investment professionals Portugal',
+            'fund management companies',
+            'Portuguese fund managers directory',
+            'investment fund professionals'
+          ],
           structuredData: this.getManagersHubStructuredData()
         };
 
@@ -338,6 +399,14 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('Portugal Golden Visa Fund Categories | Investment Types | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Browse Portugal Golden Visa investment fund categories. Explore different investment types and strategies for Golden Visa programs.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('categories'),
+          keywords: [
+            'fund categories',
+            'investment types Portugal',
+            'Golden Visa fund categories',
+            'fund classification',
+            'investment strategies Portugal',
+            'fund types'
+          ],
           structuredData: this.getCategoriesHubStructuredData()
         };
 
@@ -346,6 +415,14 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('Portugal Golden Visa Fund Tags | Investment Characteristics | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Explore Portugal Golden Visa investment funds by characteristics and tags. Find Golden Visa funds that match your criteria.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('tags'),
+          keywords: [
+            'fund characteristics',
+            'investment tags',
+            'fund features',
+            'Golden Visa fund attributes',
+            'investment fund filters',
+            'fund search criteria'
+          ],
           structuredData: this.getTagsHubStructuredData()
         };
 
@@ -354,6 +431,14 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('Portugal Golden Visa Fund Alternatives Hub | Compare Investment Options | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Explore alternative Portugal Golden Visa investment funds for every fund in our database. Find similar Golden Visa fund options based on category, risk level, and investment requirements.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/alternatives'),
+          keywords: [
+            'fund alternatives',
+            'similar investment funds',
+            'alternative funds Portugal',
+            'comparable Golden Visa funds',
+            'fund substitutes',
+            'investment alternatives'
+          ],
           structuredData: this.getAlternativesHubStructuredData(funds)
         };
 
@@ -362,6 +447,14 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('Portugal Golden Visa Fund Comparisons | Investment Analysis Hub | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Hub for comparing Portugal Golden Visa investment funds. Access Golden Visa fund comparison tools and analysis.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('comparisons'),
+          keywords: [
+            'fund comparison hub',
+            'investment analysis tools',
+            'Golden Visa comparisons',
+            'fund analysis hub',
+            'comparison tools Portugal',
+            'investment fund comparisons'
+          ],
           structuredData: this.getComparisonsHubStructuredData(funds)
         };
 
@@ -370,6 +463,14 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('About | Portugal Golden Visa Investment Fund Analysis Platform | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Learn about our platform for analyzing Portugal Golden Visa investment funds. Expert Golden Visa fund analysis.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('about'),
+          keywords: [
+            'about Movingto',
+            'Portugal Golden Visa platform',
+            'investment fund comparison platform',
+            'Golden Visa analysis tool',
+            'fund research platform',
+            'investment platform Portugal'
+          ],
           structuredData: this.getAboutStructuredData()
         };
 
@@ -378,6 +479,14 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('Disclaimer | Portugal Golden Visa Investment Information | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Important disclaimer regarding Portugal Golden Visa investment information. Please read our terms.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('disclaimer'),
+          keywords: [
+            'investment disclaimer',
+            'Golden Visa terms',
+            'fund information disclaimer',
+            'investment risk warning',
+            'legal disclaimer Portugal',
+            'investment terms conditions'
+          ],
           structuredData: this.getDisclaimerStructuredData()
         };
 
@@ -386,6 +495,14 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('FAQs | Portugal Golden Visa Investment Fund Questions | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Frequently asked questions about Portugal Golden Visa investment funds. Get answers about Golden Visa programs.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('faqs'),
+          keywords: [
+            'Golden Visa FAQs',
+            'investment fund questions',
+            'Portugal residency FAQ',
+            'Golden Visa answers',
+            'fund investment questions',
+            'Portugal visa questions'
+          ],
           structuredData: this.getFAQStructuredData()
         };
 
@@ -394,6 +511,14 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('Privacy Policy | Portugal Golden Visa Investment Fund Platform | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Privacy policy for our Portugal Golden Visa investment fund platform. Learn how we protect your data while helping you find the right investment funds.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('privacy'),
+          keywords: [
+            'privacy policy',
+            'data protection',
+            'investor privacy',
+            'GDPR compliance',
+            'data security Portugal',
+            'privacy terms'
+          ],
           structuredData: this.getPrivacyStructuredData()
         };
 
@@ -405,7 +530,62 @@ export class ConsolidatedSEOService {
           title: this.optimizeText(`${altFund.name} Alternatives | Similar Portugal Golden Visa Funds | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(`Discover investment alternatives to ${altFund.name}. Compare similar Portugal Golden Visa eligible funds with matching investment profiles and characteristics.`, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildFundUrl(altFund.id) + '/alternatives',
+          keywords: [
+            `${altFund.name} alternatives`,
+            'similar funds',
+            'comparable investment funds',
+            'alternative Golden Visa funds',
+            `${altFund.category} alternatives`,
+            'fund substitutes Portugal'
+          ],
           structuredData: this.getFundAlternativesStructuredData(altFund)
+        };
+
+      case 'verified-funds':
+        return {
+          title: this.optimizeText('Verified Portugal Golden Visa Funds | Fully Documented Investments | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Browse verified Portugal Golden Visa investment funds with complete regulatory documentation, CMVM registration, and third-party validation. All funds independently verified for transparency and investor confidence.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('/verified-funds'),
+          keywords: [
+            'verified Golden Visa funds',
+            'Portugal verified investments',
+            'CMVM registered funds',
+            'documented investment funds',
+            'transparent Golden Visa funds',
+            'validated investment funds Portugal'
+          ],
+          structuredData: this.getVerifiedFundsStructuredData(funds)
+        };
+
+      case 'verification-program':
+        return {
+          title: this.optimizeText('Fund Verification Program | Independent Investment Validation | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Learn about our independent verification program for Portugal Golden Visa funds. 6-point verification process including regulatory status, documentation review, and Golden Visa eligibility validation.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('/verification-program'),
+          keywords: [
+            'fund verification program',
+            'investment validation',
+            'due diligence process',
+            'fund documentation review',
+            'CMVM verification',
+            'investment transparency Portugal'
+          ],
+          structuredData: this.getVerificationProgramStructuredData()
+        };
+
+      case 'saved-funds':
+        return {
+          title: this.optimizeText('My Saved Funds | Portugal Golden Visa Investment Portfolio | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Access your saved Portugal Golden Visa investment funds. Compare your shortlisted funds and track your investment research progress.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('/saved-funds'),
+          robots: 'noindex, follow', // User-specific page
+          keywords: [
+            'saved investment funds',
+            'investment portfolio tracker',
+            'Golden Visa fund comparison',
+            'shortlisted funds Portugal'
+          ],
+          structuredData: this.getSavedFundsStructuredData()
         };
 
       case 'auth':
@@ -922,10 +1102,61 @@ export class ConsolidatedSEOService {
   private static getCalculatorStructuredData(): any {
     return {
       '@context': 'https://schema.org',
-      '@type': 'WebApplication',
-      'name': 'ROI Calculator',
-      'description': 'Calculate potential investment returns',
-      'url': URL_CONFIG.buildUrl('roi-calculator')
+      '@graph': [
+        {
+          '@type': 'WebApplication',
+          '@id': URL_CONFIG.buildUrl('roi-calculator') + '#webapp',
+          'name': 'Portugal Golden Visa Fund ROI Calculator',
+          'description': 'Interactive calculator for estimating investment returns on Portugal Golden Visa funds over time with compound growth projections',
+          'url': URL_CONFIG.buildUrl('roi-calculator'),
+          'applicationCategory': 'FinanceApplication',
+          'operatingSystem': 'Web Browser',
+          'offers': {
+            '@type': 'Offer',
+            'price': '0',
+            'priceCurrency': 'EUR'
+          },
+          'featureList': [
+            'Calculate compound returns',
+            'Compare multiple investment scenarios',
+            'Project returns over custom time periods',
+            'Adjust for management fees',
+            'Visualize growth projections'
+          ]
+        },
+        {
+          '@type': 'FinancialService',
+          'name': 'Investment Return Calculator',
+          'description': 'Free online tool for calculating potential returns on Portugal Golden Visa investment funds',
+          'url': URL_CONFIG.buildUrl('roi-calculator'),
+          'provider': {
+            '@type': 'Organization',
+            'name': 'Movingto'
+          },
+          'areaServed': {
+            '@type': 'Country',
+            'name': 'Portugal'
+          }
+        },
+        {
+          '@type': 'HowTo',
+          'name': 'How to Calculate Investment Returns',
+          'description': 'Step-by-step guide to calculating ROI on Portugal Golden Visa funds',
+          'step': [
+            { '@type': 'HowToStep', 'position': 1, 'name': 'Enter Investment Amount', 'text': 'Input your intended investment amount in EUR' },
+            { '@type': 'HowToStep', 'position': 2, 'name': 'Set Time Horizon', 'text': 'Choose your investment duration (typically 5-10 years)' },
+            { '@type': 'HowToStep', 'position': 3, 'name': 'Input Expected Return', 'text': 'Enter the fund\'s target annual return percentage' },
+            { '@type': 'HowToStep', 'position': 4, 'name': 'Review Results', 'text': 'Analyze projected returns and total portfolio value over time' }
+          ]
+        },
+        {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+            { '@type': 'ListItem', 'position': 2, 'name': 'ROI Calculator', 'item': URL_CONFIG.buildUrl('roi-calculator') }
+          ]
+        }
+      ]
     };
   }
 
@@ -978,8 +1209,8 @@ export class ConsolidatedSEOService {
         {
           '@type': 'CollectionPage',
           '@id': URL_CONFIG.buildUrl('comparisons'),
-          'name': 'Fund Comparisons Hub',
-          'description': 'Comprehensive hub for comparing investment funds with tools and featured comparisons',
+          'name': 'Portugal Golden Visa Fund Comparisons Hub',
+          'description': 'Comprehensive hub for comparing Portugal Golden Visa investment funds side-by-side. Access comparison tools, featured fund matchups, and detailed performance analysis.',
           'url': URL_CONFIG.buildUrl('comparisons'),
           'breadcrumb': {
             '@type': 'BreadcrumbList',
@@ -1000,9 +1231,45 @@ export class ConsolidatedSEOService {
           },
           'mainEntity': {
             '@type': 'ItemList',
-            'name': 'Featured Fund Comparisons',
+            'name': 'Featured Portugal Golden Visa Fund Comparisons',
+            'description': 'Popular fund comparison matchups for Golden Visa investors',
             'numberOfItems': topComparisons.length,
             'itemListElement': topComparisons
+          }
+        },
+        {
+          '@type': 'WebApplication',
+          'name': 'Fund Comparison Tool',
+          'description': 'Interactive application for comparing Portugal Golden Visa investment funds side-by-side with detailed metrics',
+          'url': URL_CONFIG.buildUrl('comparisons'),
+          'applicationCategory': 'FinanceApplication',
+          'operatingSystem': 'Web Browser',
+          'offers': {
+            '@type': 'Offer',
+            'price': '0',
+            'priceCurrency': 'EUR'
+          },
+          'featureList': [
+            'Side-by-side fund comparison',
+            'Performance metrics analysis',
+            'Fee structure comparison',
+            'Risk profile assessment',
+            'Investment requirements comparison',
+            'Golden Visa eligibility verification'
+          ]
+        },
+        {
+          '@type': 'Service',
+          'name': 'Investment Fund Comparison Service',
+          'description': 'Free comparison service for analyzing Portugal Golden Visa investment funds',
+          'provider': {
+            '@type': 'Organization',
+            'name': 'Movingto'
+          },
+          'serviceType': 'Financial Analysis',
+          'areaServed': {
+            '@type': 'Country',
+            'name': 'Portugal'
           }
         }
       ]
@@ -1175,25 +1442,151 @@ export class ConsolidatedSEOService {
 
     return {
       "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": "Fund Alternatives Hub",
-      "description": "Comprehensive directory of investment fund alternatives and similar options",
-      "url": URL_CONFIG.buildUrl('/alternatives'),
-      "mainEntity": {
-        "@type": "ItemList",
-        "name": "Funds",
-        "numberOfItems": topFunds.length,
-        "itemListElement": topFunds.map((item: any, index: number) => ({
-          "@type": "ListItem",
-          "position": index + 1,
-          "item": {
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          "@id": URL_CONFIG.buildUrl('/alternatives'),
+          "name": "Portugal Golden Visa Fund Alternatives Hub",
+          "description": "Comprehensive directory of alternative Portugal Golden Visa investment funds. Find similar funds based on category, risk level, investment amount, and returns.",
+          "url": URL_CONFIG.buildUrl('/alternatives'),
+          "breadcrumb": {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": URL_CONFIG.BASE_URL },
+              { "@type": "ListItem", "position": 2, "name": "Fund Alternatives", "item": URL_CONFIG.buildUrl('/alternatives') }
+            ]
+          },
+          "mainEntity": {
+            "@type": "ItemList",
+            "name": "Portugal Golden Visa Investment Funds",
+            "description": "All available funds with alternatives and similar options",
+            "numberOfItems": topFunds.length,
+            "itemListElement": topFunds.map((item: any, index: number) => ({
+              "@type": "ListItem",
+              "position": index + 1,
+              "item": {
+                "@type": "FinancialProduct",
+                "name": item.name,
+                "category": item.category,
+                "url": URL_CONFIG.buildFundUrl(item.id),
+                "offers": item.minimumInvestment ? {
+                  "@type": "Offer",
+                  "price": item.minimumInvestment,
+                  "priceCurrency": "EUR"
+                } : undefined
+              }
+            }))
+          }
+        },
+        {
+          "@type": "WebPage",
+          "name": "Fund Alternatives Finder",
+          "description": "Tool for discovering alternative investment funds similar to your preferred options",
+          "url": URL_CONFIG.buildUrl('/alternatives'),
+          "about": {
             "@type": "FinancialProduct",
-            "name": item.name,
-            "category": item.category,
-            "url": URL_CONFIG.buildFundUrl(item.id)
+            "name": "Portugal Golden Visa Investment Funds"
+          }
+        }
+      ]
+    };
+  }
+
+  // Verified Funds structured data
+  private static getVerifiedFundsStructuredData(funds: Fund[] = []): any {
+    const verifiedFunds = funds.filter(f => f.isVerified);
+    
+    return [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        'name': 'Verified Portugal Golden Visa Investment Funds',
+        'description': 'Collection of independently verified Portugal Golden Visa investment funds',
+        'url': URL_CONFIG.buildUrl('/verified-funds'),
+        'about': {
+          '@type': 'FinancialProduct',
+          'name': 'Portugal Golden Visa Investment Funds'
+        }
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        'name': 'Verified Golden Visa Funds',
+        'numberOfItems': verifiedFunds.length,
+        'itemListElement': verifiedFunds.slice(0, 20).map((fund, index) => ({
+          '@type': 'ListItem',
+          'position': index + 1,
+          'item': {
+            '@type': 'FinancialProduct',
+            'name': fund.name,
+            'url': URL_CONFIG.buildFundUrl(fund.id),
+            'category': fund.category
           }
         }))
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Verified Funds', 'item': URL_CONFIG.buildUrl('/verified-funds') }
+        ]
       }
+    ];
+  }
+
+  // Verification Program structured data
+  private static getVerificationProgramStructuredData(): any {
+    return [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        'name': 'Fund Verification Program',
+        'description': 'Independent verification service for Portugal Golden Visa investment funds',
+        'provider': {
+          '@type': 'Organization',
+          'name': 'Movingto'
+        },
+        'serviceType': 'Investment Fund Verification',
+        'areaServed': {
+          '@type': 'Country',
+          'name': 'Portugal'
+        },
+        'url': URL_CONFIG.buildUrl('/verification-program')
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'HowTo',
+        'name': 'Fund Verification Process',
+        'description': '6-point verification process for Portugal Golden Visa funds',
+        'step': [
+          { '@type': 'HowToStep', 'position': 1, 'name': 'Regulatory Status Check', 'text': 'Verify CMVM registration and regulatory compliance' },
+          { '@type': 'HowToStep', 'position': 2, 'name': 'Entity Name Matching', 'text': 'Ensure fund names and entities are consistent across documentation' },
+          { '@type': 'HowToStep', 'position': 3, 'name': 'Documentation Review', 'text': 'Review prospectus, subscription docs, and company extracts' },
+          { '@type': 'HowToStep', 'position': 4, 'name': 'Custodian Verification', 'text': 'Confirm safekeeping relationship with custodian/depositary' },
+          { '@type': 'HowToStep', 'position': 5, 'name': 'Audit Evidence', 'text': 'Review latest auditor letters when available' },
+          { '@type': 'HowToStep', 'position': 6, 'name': 'Golden Visa Consistency', 'text': 'Verify Golden Visa eligibility claims are consistent' }
+        ]
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Verification Program', 'item': URL_CONFIG.buildUrl('/verification-program') }
+        ]
+      }
+    ];
+  }
+
+  // Saved Funds structured data (user-specific, minimal schema)
+  private static getSavedFundsStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'Saved Investment Funds',
+      'description': 'User\'s saved Portugal Golden Visa investment funds',
+      'url': URL_CONFIG.buildUrl('/saved-funds')
     };
   }
 

@@ -50,6 +50,8 @@ export const loadComponents = async (only?: string[]) => {
       ResetPassword: () => import('../pages/ResetPassword').then(m => m.default),
       SavedFunds: () => import('../pages/SavedFunds').then(m => m.default),
       EmailConfirmation: () => import('../pages/EmailConfirmation').then(m => m.default),
+      VerifiedFunds: () => import('../pages/VerifiedFunds').then(m => m.default),
+      VerificationProgram: () => import('../pages/VerificationProgram').then(m => m.default),
     };
 
     const names = only && only.length ? only : Object.keys(loaders);

@@ -267,11 +267,45 @@ ${sitemapElements}
   }
 
   /**
+   * Extract canonical URL from HTML content
+   */
+  private static extractCanonicalURL(htmlContent: string): string | null {
+    const canonicalMatch = htmlContent.match(/<link\s+rel=["']canonical["']\s+href=["']([^"']+)["']/i);
+    return canonicalMatch ? canonicalMatch[1] : null;
+  }
+
+  /**
+   * Check if a page has a non-self-referencing canonical tag
+   * Returns true if the page should be excluded from sitemap
+   */
+  private static hasNonSelfReferencingCanonical(htmlPath: string, expectedURL: string): boolean {
+    try {
+      const htmlContent = fs.readFileSync(htmlPath, 'utf-8');
+      const canonicalURL = this.extractCanonicalURL(htmlContent);
+      
+      if (!canonicalURL) {
+        return false; // No canonical tag, include in sitemap
+      }
+      
+      // Normalize both URLs for comparison (remove trailing slashes, ensure lowercase)
+      const normalizedCanonical = canonicalURL.toLowerCase().replace(/\/$/, '');
+      const normalizedExpected = expectedURL.toLowerCase().replace(/\/$/, '');
+      
+      // If canonical points to a different URL, exclude from sitemap
+      return normalizedCanonical !== normalizedExpected;
+    } catch (error) {
+      console.warn(`⚠️  Could not read HTML file: ${htmlPath}`, error);
+      return false; // If we can't read it, include it (fail-safe)
+    }
+  }
+
+  /**
    * Discover dynamic routes from built dist folder, e.g., /categories/* and /tags/*
    * This ensures nested or dynamically generated paths are always included.
+   * EXCLUDES pages with non-self-referencing canonical tags (legacy slug aliases).
    */
   private static discoverDynamicPathsFromDist(outputDir: string, subdirs: string[]): string[] {
-    const found: string[] = [];
+    const found: Array<{ path: string; htmlPath: string }> = [];
     const PRODUCTION_BASE_URL = 'https://funds.movingto.com';
 
     const hasIndexHtml = (dir: string) => fs.existsSync(path.join(dir, 'index.html'));
@@ -281,7 +315,8 @@ ${sitemapElements}
       if (rel && hasIndexHtml(baseAbs)) {
         // Prefix the path with the subdirectory to ensure proper URL structure
         const fullPath = `${subdir}/${rel}`.replace(/\\/g, '/');
-        found.push(fullPath);
+        const htmlPath = path.join(baseAbs, 'index.html');
+        found.push({ path: fullPath, htmlPath });
       }
       const entries = fs.existsSync(baseAbs) ? fs.readdirSync(baseAbs, { withFileTypes: true }) : [];
       for (const entry of entries) {
@@ -297,8 +332,26 @@ ${sitemapElements}
       walk(root, '', sub);
     });
 
+    // Filter out pages with non-self-referencing canonical tags (legacy slug aliases)
+    let excludedCount = 0;
+    const validPaths = found.filter(({ path: relPath, htmlPath }) => {
+      const expectedURL = `${PRODUCTION_BASE_URL}/${relPath}`;
+      const shouldExclude = this.hasNonSelfReferencingCanonical(htmlPath, expectedURL);
+      
+      if (shouldExclude) {
+        excludedCount++;
+        console.log(`🚫 Excluding legacy slug alias from sitemap: ${expectedURL}`);
+      }
+      
+      return !shouldExclude;
+    });
+
+    if (excludedCount > 0) {
+      console.log(`✅ Excluded ${excludedCount} legacy slug alias pages from sitemap (non-self-referencing canonical tags)`);
+    }
+
     // Convert discovered relative paths into absolute canonical URLs under BASE_URL
-    const urls = found.map(rel => `${PRODUCTION_BASE_URL}/${rel}`);
+    const urls = validPaths.map(({ path: relPath }) => `${PRODUCTION_BASE_URL}/${relPath}`);
 
     return Array.from(new Set(urls));
   }
@@ -434,6 +487,7 @@ Allow: /alternatives
     let allURLs = await this.collectAllURLs();
 
     // Discover dynamic category/tag paths from built dist to ensure full coverage
+    // This will automatically filter out pages with non-self-referencing canonical tags (legacy slug aliases)
     const discoveredFromDist = this.discoverDynamicPathsFromDist(outputDir, ['categories', 'tags']);
     discoveredFromDist.forEach(loc => {
       allURLs.push({

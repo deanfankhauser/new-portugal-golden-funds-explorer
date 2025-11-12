@@ -101,15 +101,19 @@ export class SSRRenderer {
         managerName: route.params?.managerName,
         categoryName: route.params?.categoryName,
         tagName: route.params?.tagName,
+        comparisonSlug: route.params?.slug,
       });
     }
 
+    // Fetch comprehensive SEO data from ConsolidatedSEOService
+    // This data will be injected into static HTML <head> during build
     const seoData = ConsolidatedSEOService.getSEOData(route.pageType as any, {
       fundName: route.params?.fundName,
       managerName: route.params?.managerName,
       categoryName: route.params?.categoryName,
       tagName: route.params?.tagName,
       comparisonSlug: route.params?.slug,
+      funds: allFunds, // Pass funds for comparison pages
     });
 
     // Handle 404 pages with noindex
@@ -183,6 +187,8 @@ export class SSRRenderer {
         case 'auth': return ['Auth'];
         case 'roi-calculator': return ['ROICalculator'];
         case 'saved-funds': return ['SavedFunds'];
+        case 'verified-funds': return ['VerifiedFunds'];
+        case 'verification-program': return ['VerificationProgram'];
         case 'compare': return ['ComparisonPage'];
         
         default: return ['Index'];
@@ -315,13 +321,15 @@ export class SSRRenderer {
     // Clear any previous helmet data
     Helmet.rewind();
     
-    // Ensure we have complete SEO data
+    // Ensure we have complete SEO data with all required fields for meta tag injection
     const finalSeoData = {
       title: seoData.title || 'Portugal Golden Visa Investment Funds | Eligible Investments 2025',
       description: seoData.description || 'Compare and discover the best Golden Visa-eligible investment funds in Portugal.',
       url: seoData.url || `https://funds.movingto.com${route.path}`,
       structuredData: seoData.structuredData || {},
-      robots: seoData.robots,
+      keywords: seoData.keywords || ['Portugal Golden Visa', 'investment funds', 'Portuguese residency', 'Golden Visa funds 2025'],
+      robots: seoData.robots || 'index, follow, max-image-preview:large',
+      canonical: seoData.canonical || seoData.url || `https://funds.movingto.com${route.path}`,
       helmetData: {
         title: '',
         meta: '',
@@ -329,6 +337,17 @@ export class SSRRenderer {
         script: ''
       }
     };
+    
+    if (shouldLog) {
+      console.log(`🔥 SSR: Final SEO data prepared for meta tag injection:`, {
+        title: finalSeoData.title.substring(0, 60) + '...',
+        description: finalSeoData.description.substring(0, 100) + '...',
+        url: finalSeoData.url,
+        keywords: finalSeoData.keywords.slice(0, 3).join(', '),
+        robots: finalSeoData.robots,
+        hasStructuredData: !!finalSeoData.structuredData && Object.keys(finalSeoData.structuredData).length > 0
+      });
+    }
     
     try {
       // Log before rendering comparison routes

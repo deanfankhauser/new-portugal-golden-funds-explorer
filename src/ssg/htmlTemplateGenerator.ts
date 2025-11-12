@@ -1,5 +1,55 @@
 import { SEOData } from '../types/seo';
 
+/**
+ * Generate comprehensive meta tags HTML for SSR/SSG
+ * This function creates all SEO-critical meta tags that will be injected into static HTML
+ * 
+ * @param seoData - SEO data from ConsolidatedSEOService
+ * @returns HTML string containing all meta tags
+ */
+export function generateMetaTagsHTML(seoData: SEOData): string {
+  const title = seoData.title || 'Portugal Golden Visa Investment Funds | Eligible Investments 2025';
+  const description = seoData.description || 'Compare and discover the best Golden Visa-eligible investment funds in Portugal. Expert analysis, comprehensive data, and personalized recommendations.';
+  const url = seoData.url || 'https://funds.movingto.com';
+  const keywords = seoData.keywords?.join(', ') || 'Portugal Golden Visa, investment funds, Portuguese residency, Golden Visa funds 2025, fund comparison, investment migration';
+  const robots = seoData.robots || 'index, follow, max-image-preview:large';
+  
+  // Determine Open Graph type based on URL and structured data
+  const ogType = (() => {
+    if (url.includes('/compare/') && url.includes('-vs-')) return 'article';
+    if (seoData.structuredData?.['@type'] === 'FinancialProduct') return 'product';
+    if (seoData.structuredData?.['@type'] === 'Person') return 'profile';
+    return 'website';
+  })();
+  
+  return `
+  <!-- Critical SEO Meta Tags - Injected during SSR/SSG Build -->
+  <title>${title}</title>
+  <meta name="description" content="${description}" />
+  
+  <!-- Open Graph Meta Tags for Social Sharing -->
+  <meta property="og:title" content="${title}" />
+  <meta property="og:description" content="${description}" />
+  <meta property="og:url" content="${url}" />
+  <meta property="og:type" content="${ogType}" />
+  <meta property="og:site_name" content="Movingto - Portugal Golden Visa Funds" />
+  <meta property="og:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@movingtoio" />
+  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:description" content="${description}" />
+  <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
+  
+  <!-- SEO Enhancement Meta Tags -->
+  <link rel="canonical" href="${url}" />
+  <meta name="keywords" content="${keywords}" />
+  <meta name="author" content="Dean Fankhauser, CEO - Movingto" />
+  <meta name="robots" content="${robots}" />
+  `;
+}
+
 export function generateHTMLTemplate(
   appHtml: string, 
   seoData: SEOData, 
@@ -43,39 +93,18 @@ export function generateHTMLTemplate(
     ? appHtml
     : `<main><h1 class="text-2xl font-bold text-foreground mb-4">${title}</h1>${appHtml || ''}</main>`;
 
+  // Generate comprehensive meta tags using the dedicated function
+  const metaTagsHTML = generateMetaTagsHTML(seoData);
+  
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <base href="/" />
+  ${metaTagsHTML}
   
-  <!-- Critical SEO Meta Tags -->
-  <title>${title}</title>
-  <meta name="description" content="${description}" />
-  <meta property="og:title" content="${title}" />  
-  <meta property="og:description" content="${description}" />
-  <meta property="og:url" content="${url}" />
-  <meta property="og:type" content="${(() => {
-    // Align og:type logic with ConsolidatedSEOService
-    if (url.includes('/compare/') && url.includes('-vs-')) return 'article';
-    if (seoData.structuredData?.['@type'] === 'FinancialProduct') return 'product';
-    if (seoData.structuredData?.['@type'] === 'Person') return 'profile';
-    return 'website';
-  })()}" />
-  <meta property="og:site_name" content="Movingto - Portugal Golden Visa Funds" />
-  <meta property="og:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@movingtoio" />
-  <meta name="twitter:title" content="${title}" />
-  <meta name="twitter:description" content="${description}" />
-  <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
-  <link rel="canonical" href="${url}" />
-  
-  <!-- Enhanced Meta Tags -->
-  <meta name="keywords" content="${seoData.keywords?.join(', ') || 'Portugal Golden Visa, investment funds, Portuguese residency, Golden Visa funds 2025, fund comparison, investment migration'}" />
-  <meta name="author" content="Dean Fankhauser, CEO - Movingto" />
-  <meta name="robots" content="${seoData.robots || 'index, follow, max-image-preview:large'}" />
+  <!-- Additional Meta Tags -->
   <meta name="theme-color" content="#C5A46D" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
