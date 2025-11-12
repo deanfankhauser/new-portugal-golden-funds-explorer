@@ -32,8 +32,8 @@ const FeeStructure: React.FC<FeeStructureProps> = ({ fund, formatPercentage }) =
 
   const calculateFees = (amount: number) => {
     const mgmtFee = amount * ((fund.managementFee || 0) / 100);
-    // Estimate performance fee at 3% (assuming 15% return * 20% fee)
-    const perfFee = amount * 0.03;
+    // Only calculate performance fee if it exists in the fund data
+    const perfFee = fund.performanceFee ? amount * (fund.performanceFee / 100) : 0;
     const total = mgmtFee + perfFee;
 
     setManagementFee(mgmtFee);
@@ -79,20 +79,12 @@ const FeeStructure: React.FC<FeeStructureProps> = ({ fund, formatPercentage }) =
             </div>
           </div>
 
-          {(fund.hurdleRate || fund.performanceFee) && (
+          {fund.hurdleRate && (
             <div className="flex flex-col gap-2 px-5 py-4 bg-muted/20 rounded-lg">
-              {fund.performanceFee && (
-                <div className="flex items-start gap-2 text-[13px] text-muted-foreground leading-relaxed">
-                  <span className="text-primary font-bold mt-0.5">•</span>
-                  Subject to high-water mark
-                </div>
-              )}
-              {fund.hurdleRate && (
-                <div className="flex items-start gap-2 text-[13px] text-muted-foreground leading-relaxed">
-                  <span className="text-primary font-bold mt-0.5">•</span>
-                  {fund.hurdleRate}% preferred return hurdle
-                </div>
-              )}
+              <div className="flex items-start gap-2 text-[13px] text-muted-foreground leading-relaxed">
+                <span className="text-primary font-bold mt-0.5">•</span>
+                {fund.hurdleRate}% preferred return hurdle
+              </div>
             </div>
           )}
         </div>
@@ -165,17 +157,21 @@ const FeeStructure: React.FC<FeeStructureProps> = ({ fund, formatPercentage }) =
               <span className="text-[15px] text-foreground/70 font-medium">Management fee:</span>
               <span className="text-lg font-bold text-foreground tracking-tight">{formatCurrency(managementFee)}</span>
             </div>
-            <div className="flex justify-between items-center py-3.5 border-b border-border/60">
-              <span className="text-[15px] text-foreground/70 font-medium">Performance fee*:</span>
-              <span className="text-lg font-bold text-foreground tracking-tight">{formatCurrency(performanceFee)}</span>
-            </div>
+            {fund.performanceFee && (
+              <div className="flex justify-between items-center py-3.5 border-b border-border/60">
+                <span className="text-[15px] text-foreground/70 font-medium">Performance fee*:</span>
+                <span className="text-lg font-bold text-foreground tracking-tight">{formatCurrency(performanceFee)}</span>
+              </div>
+            )}
             <div className="flex justify-between items-center pt-5 mt-5 border-t-2 border-primary/25">
               <span className="text-base font-semibold text-foreground">Estimated annual cost:</span>
               <span className="text-[28px] font-bold text-primary tracking-tight">{formatCurrency(totalCost)}</span>
             </div>
-            <div className="mt-4 pt-4 border-t border-border/60 text-xs text-muted-foreground leading-relaxed">
-              *Performance fee only applies if returns exceed hurdle
-            </div>
+            {fund.performanceFee && fund.hurdleRate && (
+              <div className="mt-4 pt-4 border-t border-border/60 text-xs text-muted-foreground leading-relaxed">
+                *Performance fee only applies if returns exceed {fund.hurdleRate}% hurdle
+              </div>
+            )}
           </div>
         </div>
       </CardContent>

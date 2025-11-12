@@ -87,11 +87,11 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Fund Size</p>
-              <p className="font-medium">{fund.fundSize}M EUR</p>
+              <p className="font-medium">{fund.fundSize ? `${fund.fundSize}M EUR` : 'N/A'}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Term</p>
-              <p className="font-medium">{fund.term} years</p>
+              <p className="font-medium">{fund.term ? `${fund.term} years` : 'N/A'}</p>
             </div>
           </div>
 
@@ -102,14 +102,14 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
                 <Euro className="w-3 h-3 text-accent" />
                 <p className="text-sm text-muted-foreground">Mgmt Fee</p>
               </div>
-              <p className="font-medium">{fund.managementFee}%</p>
+              <p className="font-medium">{fund.managementFee != null ? `${fund.managementFee}%` : 'N/A'}</p>
             </div>
             <div>
               <div className="flex items-center gap-1 mb-1">
                 <Euro className="w-3 h-3 text-accent" />
                 <p className="text-sm text-muted-foreground">Perf Fee</p>
               </div>
-              <p className="font-medium">{fund.performanceFee}%</p>
+              <p className="font-medium">{fund.performanceFee != null ? `${fund.performanceFee}%` : 'N/A'}</p>
             </div>
           </div>
 
