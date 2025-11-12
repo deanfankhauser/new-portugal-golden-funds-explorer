@@ -8,7 +8,7 @@ import { TrendingUp, Calculator, ClipboardCheck, Users, BarChart3, ExternalLink,
 const HomepageInfoSections = () => {
   return (
     <div className="space-y-12">
-      {/* Fund Index CTA Section */}
+      {/* Browse Funds CTA Section */}
       <section className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-xl p-8 border border-primary/20">
         <div className="text-center max-w-3xl mx-auto">
           <div className="flex justify-center mb-4">

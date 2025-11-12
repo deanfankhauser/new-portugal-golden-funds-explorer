@@ -34,10 +34,10 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const postmarkApiKey = Deno.env.get('POSTMARK_API_KEY');
+    const postmarkApiKey = Deno.env.get('POSTMARK_SERVER_TOKEN') || Deno.env.get('POSTMARK_API_KEY');
     
     if (!postmarkApiKey) {
-      console.error('POSTMARK_API_KEY not found');
+      console.error('POSTMARK_SERVER_TOKEN not found');
       return new Response(
         JSON.stringify({ error: 'Email service not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

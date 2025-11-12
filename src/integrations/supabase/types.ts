@@ -346,6 +346,38 @@ export type Database = {
           },
         ]
       }
+      fund_lead_notification_emails: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          email: string
+          fund_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          email: string
+          fund_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          email?: string
+          fund_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_lead_notification_emails_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "funds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fund_manager_edits: {
         Row: {
           changes: Json

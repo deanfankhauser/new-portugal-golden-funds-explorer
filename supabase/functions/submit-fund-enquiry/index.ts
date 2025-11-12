@@ -37,7 +37,15 @@ Deno.serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const postmarkApiKey = Deno.env.get('POSTMARK_API_KEY')!;
+    const postmarkApiKey = Deno.env.get('POSTMARK_SERVER_TOKEN') || Deno.env.get('POSTMARK_API_KEY');
+    
+    if (!postmarkApiKey) {
+      console.error('Missing Postmark API token');
+      return new Response(
+        JSON.stringify({ error: 'Email service configuration error' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
@@ -99,56 +107,150 @@ Deno.serve(async (req) => {
       );
     }
     
-    // Get fund manager emails
-    const { data: managers, error: managersError } = await supabase
-      .from('fund_managers')
-      .select('user_id, profiles(email, manager_name)')
-      .eq('fund_id', enquiryData.fundId)
-      .eq('status', 'active');
+    // Get fund details to find manager_name
+    const { data: fund, error: fundError } = await supabase
+      .from('funds')
+      .select('manager_name')
+      .eq('id', enquiryData.fundId)
+      .single();
     
-    if (managersError) {
-      console.error('Error fetching managers:', managersError);
+    if (fundError || !fund) {
+      console.error('Error fetching fund:', fundError);
     }
     
-    // Send emails to fund managers
-    if (managers && managers.length > 0) {
-      for (const manager of managers) {
-        const profile = manager.profiles as any;
-        if (profile && profile.email) {
-          const managerEmail = generateManagerNotificationEmail(
-            enquiryData,
-            profile.manager_name || 'Fund Manager'
-          );
+    // Collect all recipient emails
+    const recipientEmails: string[] = [];
+    
+    // Get assigned managers using company-centric model
+    if (fund?.manager_name) {
+      // First, find the company profile
+      const { data: companyProfile, error: companyError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('company_name', fund.manager_name)
+        .single();
+      
+      if (companyError) {
+        console.error('Error fetching company profile:', companyError);
+      }
+      
+      // Then get all users assigned to this company (two-step approach)
+      if (companyProfile) {
+        // Step 1: Get user_ids from assignments
+        const { data: assignments, error: assignmentsError } = await supabase
+          .from('manager_profile_assignments')
+          .select('user_id')
+          .eq('profile_id', companyProfile.id)
+          .eq('status', 'active');
+        
+        if (assignmentsError) {
+          console.error('Error fetching assigned managers:', assignmentsError);
+        }
+        
+        // Step 2: Get emails from profiles using the user_ids
+        if (assignments && assignments.length > 0) {
+          const userIds = assignments.map(a => a.user_id);
           
-          try {
-            await fetch(POSTMARK_API_URL, {
-              method: 'POST',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'X-Postmark-Server-Token': postmarkApiKey,
-              },
-              body: JSON.stringify({
-                From: 'noreply@movingto.com',
-                To: profile.email,
-                Subject: `🚀 New Enquiry for ${enquiryData.fundName}`,
-                HtmlBody: managerEmail.html,
-                TextBody: managerEmail.text,
-                MessageStream: 'outbound',
-              }),
-            });
-          } catch (emailError) {
-            console.error('Error sending manager email:', emailError);
+          const { data: managerProfiles, error: profilesError } = await supabase
+            .from('profiles')
+            .select('email')
+            .in('user_id', userIds);
+          
+          if (profilesError) {
+            console.error('Error fetching manager profiles:', profilesError);
+          }
+          
+          // Add manager emails to recipient list
+          if (managerProfiles && managerProfiles.length > 0) {
+            for (const profile of managerProfiles) {
+              if (profile.email) {
+                recipientEmails.push(profile.email);
+              }
+            }
           }
         }
       }
+    }
+    
+    // Get additional notification emails
+    const { data: additionalEmails, error: additionalEmailsError } = await supabase
+      .from('fund_lead_notification_emails')
+      .select('email')
+      .eq('fund_id', enquiryData.fundId);
+    
+    if (additionalEmailsError) {
+      console.error('Error fetching additional notification emails:', additionalEmailsError);
+    }
+    
+    // Add additional notification emails
+    if (additionalEmails && additionalEmails.length > 0) {
+      for (const item of additionalEmails) {
+        if (item.email) {
+          recipientEmails.push(item.email);
+        }
+      }
+    }
+    
+    // Normalize and deduplicate emails
+    const uniqueEmails = [...new Set(
+      recipientEmails
+        .map(email => email.trim().toLowerCase())
+        .filter(email => email.length > 0)
+    )];
+    
+    console.log('Email recipients:', { 
+      fundId: enquiryData.fundId, 
+      fundName: enquiryData.fundName,
+      managerName: fund?.manager_name,
+      recipientCount: uniqueEmails.length,
+      recipients: uniqueEmails 
+    });
+    
+    // Send emails to all recipients
+    if (uniqueEmails.length > 0) {
+      const managerEmail = generateManagerNotificationEmail(
+        enquiryData,
+        'Fund Manager'
+      );
+      
+      for (const email of uniqueEmails) {
+        try {
+          const response = await fetch(POSTMARK_API_URL, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'X-Postmark-Server-Token': postmarkApiKey,
+            },
+            body: JSON.stringify({
+              From: 'noreply@movingto.com',
+              To: email,
+              Subject: `🚀 New Enquiry for ${enquiryData.fundName}`,
+              HtmlBody: managerEmail.html,
+              TextBody: managerEmail.text,
+              MessageStream: 'outbound',
+            }),
+          });
+          
+          if (!response.ok) {
+            const errorBody = await response.text();
+            console.error(`Postmark error for ${email}:`, { status: response.status, body: errorBody });
+          } else {
+            console.log(`Notification sent to: ${email}`);
+          }
+        } catch (emailError) {
+          console.error(`Error sending email to ${email}:`, emailError);
+        }
+      }
+    } else {
+      console.warn('No recipients found for fund lead notification');
     }
     
     // Send confirmation email to investor
     const investorEmail = generateInvestorConfirmationEmail(enquiryData);
     
     try {
-      await fetch(POSTMARK_API_URL, {
+      const response = await fetch(POSTMARK_API_URL, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -164,6 +266,13 @@ Deno.serve(async (req) => {
           MessageStream: 'outbound',
         }),
       });
+      
+      if (!response.ok) {
+        const errorBody = await response.text();
+        console.error('Postmark error for investor confirmation:', { status: response.status, body: errorBody });
+      } else {
+        console.log('Investor confirmation sent');
+      }
     } catch (emailError) {
       console.error('Error sending investor confirmation:', emailError);
     }
@@ -188,7 +297,7 @@ Deno.serve(async (req) => {
 
 function generateManagerNotificationEmail(enquiry: EnquiryData, managerName: string) {
   const html = `
-    ${generateEmailHeader()}
+    ${generateEmailHeader('')}
     
     <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
       <h1 style="color: ${BRAND_COLORS.bordeaux}; margin-top: 0;">🚀 New Enquiry for ${enquiry.fundName}</h1>
@@ -202,7 +311,7 @@ function generateManagerNotificationEmail(enquiry: EnquiryData, managerName: str
         <h2 style="margin-top: 0; color: ${BRAND_COLORS.bordeaux}; font-size: 18px;">⚠️ Important Reminders</h2>
         <ul style="color: ${BRAND_COLORS.textDark}; line-height: 1.8; padding-left: 20px; margin: 10px 0 0 0;">
           <li><strong>Sign in to your dashboard</strong> to view full lead details and contact information</li>
-          <li><strong>Update the lead status</strong> when you convert them to keep accurate records</li>
+          <li><strong>Update the lead status</strong> (Open, Closed Lost, or Won) to keep accurate records</li>
           <li><strong>Status verification:</strong> We verify lead statuses with clients - please ensure accuracy to avoid discrepancies</li>
           <li><strong>Direct contact:</strong> Feel free to arrange a call directly with the lead using the contact information provided</li>
         </ul>
@@ -260,7 +369,7 @@ You have a new prospective investor! Sign in to your dashboard to view their com
 
 ⚠️ IMPORTANT REMINDERS:
 ✓ Sign in to your dashboard to view full lead details and contact information
-✓ Update the lead status when you convert them to keep accurate records
+✓ Update the lead status (Open, Closed Lost, or Won) to keep accurate records
 ✓ Status verification: We verify lead statuses with clients - please ensure accuracy to avoid discrepancies
 ✓ Direct contact: Feel free to arrange a call directly with the lead using the contact information provided
 
@@ -288,7 +397,7 @@ Moving To Global Pte Ltd
 
 function generateInvestorConfirmationEmail(enquiry: EnquiryData) {
   const html = `
-    ${generateEmailHeader()}
+    ${generateEmailHeader('')}
     
     <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
       <h1 style="color: ${BRAND_COLORS.bordeaux}; margin-top: 0;">Thank you for your enquiry</h1>

@@ -18,7 +18,7 @@ export class RouteDiscovery {
     // Fetch all data from database (cached for efficiency)
     const { funds, categories, tags, managers } = await fetchAllBuildDataCached();
 
-    // Homepage (also serves as fund index)
+    // Homepage (main fund listing)
     routes.push({ path: '/', pageType: 'homepage' });
 
     // Static pages
