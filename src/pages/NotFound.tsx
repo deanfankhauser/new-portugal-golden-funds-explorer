@@ -96,7 +96,7 @@ const NotFound = () => {
                   </Link>
                   <Link to="/">
                     <Badge variant="outline" className="hover:bg-primary/10 cursor-pointer">
-                      View fund index
+                      Browse funds
                     </Badge>
                   </Link>
                 </div>

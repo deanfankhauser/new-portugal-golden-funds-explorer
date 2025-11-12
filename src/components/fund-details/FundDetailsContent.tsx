@@ -133,7 +133,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                           <Button asChild variant="outline" className="border-success text-success hover:bg-success/10 h-11">
                             <Link to="/">
                               <TrendingUp className="mr-2 h-4 w-4" />
-                              View Fund Index
+                              Browse All Funds
                             </Link>
                           </Button>
                         </div>

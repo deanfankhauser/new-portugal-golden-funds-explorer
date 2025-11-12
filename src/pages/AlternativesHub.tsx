@@ -193,7 +193,7 @@ const AlternativesHub: React.FC = () => {
                   Looking for Something Specific?
                 </h3>
                 <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                  Use our comprehensive fund index to filter by category, investment amount, 
+                  Use our comprehensive fund directory to filter by category, investment amount, 
                   risk level, and more to find the perfect fund for your needs.
                 </p>
                 <Link 
