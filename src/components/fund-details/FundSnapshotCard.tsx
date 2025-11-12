@@ -48,7 +48,7 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
     if (min != null) return `${min}%`;
     
     // 3. Default fallback
-    return "8%";
+    return "N/A";
   };
 
   // Helper function to format currency amounts
@@ -150,7 +150,7 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
     if (fund.redemptionTerms?.frequency) {
       return fund.redemptionTerms.frequency;
     }
-    return isOpenEnded() ? 'Available' : 'Restricted';
+    return "N/A";
   };
 
   // Helper function to get subscription deadline

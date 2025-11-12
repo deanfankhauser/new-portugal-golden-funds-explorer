@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { fundsData } from '../data/mock/funds';
+import { useAllFunds } from '../hooks/useFundsQuery';
 import { findAlternativeFunds } from '../data/services/alternative-funds-service';
 import { isFundGVEligible } from '../data/services/gv-eligibility-service';
 import { PageSEO } from '../components/common/PageSEO';
@@ -11,12 +11,13 @@ import { ArrowRight, TrendingUp } from 'lucide-react';
 
 const AlternativesHub: React.FC = () => {
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
+  const { data: fundsData = [], isLoading } = useAllFunds();
   
   // Filter funds by verification status
   const filteredFunds = useMemo(() => {
     if (!showOnlyVerified) return fundsData;
     return fundsData.filter(fund => fund.isVerified);
-  }, [showOnlyVerified]);
+  }, [showOnlyVerified, fundsData]);
   
   // All funds are now GV eligible, so show general alternatives
   // Filter out any invalid fund entries
@@ -43,6 +44,19 @@ const AlternativesHub: React.FC = () => {
     })
     .filter(item => item.alternatives.length > 0)
     .sort((a, b) => b.alternatives.length - a.alternatives.length);
+
+  if (isLoading) {
+    return (
+      <>
+        <PageSEO pageType="alternatives-hub" />
+        <div className="min-h-screen bg-background">
+          <div className="container mx-auto px-4 py-8 max-w-6xl">
+            <div className="text-center py-12">Loading funds data...</div>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

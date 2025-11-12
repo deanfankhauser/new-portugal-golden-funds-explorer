@@ -11,6 +11,15 @@ interface ROICalculatorProps {
 }
 
 const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
+  // Check if fund has return target data
+  const { min, max } = getReturnTargetNumbers(fund);
+  const hasReturnData = min != null || max != null;
+
+  // Don't render if no return data
+  if (!hasReturnData) {
+    return null;
+  }
+
   const [investmentAmount, setInvestmentAmount] = useState<number>(fund.minimumInvestment);
   const [holdingPeriod, setHoldingPeriod] = useState<number>(5);
   const [expectedReturn, setExpectedReturn] = useState<number>(0);
@@ -23,19 +32,14 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
   // Extract numeric return using utility
   useEffect(() => {
     const { min, max } = getReturnTargetNumbers(fund);
-    let returnRate = 8; // default
+    let returnRate = 0;
 
     if (min != null && max != null) {
       returnRate = (min + max) / 2;
-      console.log('Fund ROI Calculator - Using return target average:', returnRate);
     } else if (min != null) {
       returnRate = min;
-      console.log('Fund ROI Calculator - Using return target min:', returnRate);
     } else if (max != null) {
       returnRate = max;
-      console.log('Fund ROI Calculator - Using return target max:', returnRate);
-    } else {
-      console.log('Fund ROI Calculator - No return data found, using default:', returnRate);
     }
     
     setExpectedReturn(returnRate);

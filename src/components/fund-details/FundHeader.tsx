@@ -10,6 +10,7 @@ import IntroductionButton from './IntroductionButton';
 import EnhancedGVEligibilityBadge from './EnhancedGVEligibilityBadge';
 import RecentlyUpdatedBadge from './RecentlyUpdatedBadge';
 import RecentlyVerifiedBadge from '../common/RecentlyVerifiedBadge';
+import { getReturnTargetNumbers } from '../../utils/returnTarget';
 
 interface FundHeaderProps {
   fund: Fund;
@@ -38,6 +39,10 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
       });
     }
   };
+
+  // Check if fund has return data for ROI calculator
+  const { min, max } = getReturnTargetNumbers(fund);
+  const hasReturnData = min != null || max != null;
 
   return (
     <>
@@ -81,26 +86,28 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
 
         <p className="text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-3xl leading-relaxed">{fund.description}</p>
         
-        {/* Subtle ROI Calculator CTA */}
-        <div className="bg-gradient-to-r from-primary/5 to-accent/5 p-4 rounded-lg border border-primary/20">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="font-medium text-foreground text-sm mb-1">Calculate Your Portugal Golden Visa Investment Returns</h2>
-              <p className="text-xs text-muted-foreground">
-                See projected ROI based on your investment amount and timeline
-              </p>
+        {/* Subtle ROI Calculator CTA - only show if fund has return data */}
+        {hasReturnData && (
+          <div className="bg-gradient-to-r from-primary/5 to-accent/5 p-4 rounded-lg border border-primary/20">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="font-medium text-foreground text-sm mb-1">Calculate Your Portugal Golden Visa Investment Returns</h2>
+                <p className="text-xs text-muted-foreground">
+                  See projected ROI based on your investment amount and timeline
+                </p>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={scrollToROICalculator}
+                className="ml-4"
+              >
+                <Calculator className="w-4 h-4 mr-1" />
+                Calculate ROI
+              </Button>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={scrollToROICalculator}
-              className="ml-4"
-            >
-              <Calculator className="w-4 h-4 mr-1" />
-              Calculate ROI
-            </Button>
           </div>
-        </div>
+        )}
       </div>
     </>
   );

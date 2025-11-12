@@ -69,9 +69,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
         <div className="text-center space-y-8 p-10">
           {/* Header with Icon */}
           <div className="flex justify-center">
-            <div className="bg-primary rounded-full p-4 shadow-sm">
-              <img src={movingtocIcon} alt="Movingto" className="h-7 w-7" />
-            </div>
+            <img src={movingtocIcon} alt="Movingto" className="h-12 w-auto" />
           </div>
           
           {/* Title and Subtitle */}

@@ -233,14 +233,36 @@ export const useFundEditing = () => {
     if (!user) return [];
 
     try {
-      const { data, error } = await supabase
-        .from('fund_managers' as any)
-        .select('fund_id')
+      // Get all company profiles user is assigned to
+      const { data: assignments, error: assignError } = await supabase
+        .from('manager_profile_assignments')
+        .select('profile_id')
         .eq('user_id', user.id)
         .eq('status', 'active');
 
-      if (error) throw error;
-      return data?.map((d: any) => d.fund_id) || [];
+      if (assignError) throw assignError;
+      if (!assignments || assignments.length === 0) return [];
+
+      // Get company names from profiles
+      const { data: profiles, error: profileError } = await supabase
+        .from('profiles')
+        .select('company_name')
+        .in('id', assignments.map(a => a.profile_id));
+
+      if (profileError) throw profileError;
+      if (!profiles || profiles.length === 0) return [];
+
+      const companyNames = profiles.map(p => p.company_name).filter(Boolean);
+      if (companyNames.length === 0) return [];
+
+      // Get all funds for these companies
+      const { data: funds, error: fundsError } = await supabase
+        .from('funds')
+        .select('id')
+        .in('manager_name', companyNames);
+
+      if (fundsError) throw fundsError;
+      return funds?.map((f: any) => f.id) || [];
     } catch (error) {
       console.error('Error fetching assigned funds:', error);
       return [];
@@ -268,75 +290,42 @@ export const useFundEditing = () => {
         console.log('✅ [canEditFund] User is admin - access granted');
         return true;
       }
-      console.log('ℹ️ [canEditFund] User is not admin, checking manager permissions...');
+      console.log('ℹ️ [canEditFund] User is not admin, checking company permissions...');
 
-      // 2. Try RPC with named parameters (p_user_id, p_fund_id)
-      console.log('🔐 [canEditFund] Step 2: Trying RPC with p_user_id, p_fund_id...');
-      const { data: rpcData1, error: rpcError1 } = await supabase
-        .rpc('can_user_edit_fund' as any, {
-          p_user_id: user.id,
-          p_fund_id: fundId
-        } as any);
+      // 2. Get the fund's manager_name first
+      console.log('🔐 [canEditFund] Step 2: Fetching fund details...');
+      const { data: fundData, error: fundError } = await supabase
+        .from('funds')
+        .select('manager_name')
+        .eq('id', fundId)
+        .maybeSingle();
 
-      if (!rpcError1 && rpcData1) {
-        console.log('✅ [canEditFund] RPC check passed (variant 1) - access granted');
-        return true;
-      }
-      console.log('⚠️ [canEditFund] RPC variant 1 failed:', rpcError1);
-
-      // 3. Try RPC with alternate parameter names (user_id, fund_id)
-      console.log('🔐 [canEditFund] Step 3: Trying RPC with user_id, fund_id...');
-      const { data: rpcData2, error: rpcError2 } = await supabase
-        .rpc('can_user_edit_fund' as any, {
-          user_id: user.id,
-          fund_id: fundId
-        } as any);
-
-      if (!rpcError2 && rpcData2) {
-        console.log('✅ [canEditFund] RPC check passed (variant 2) - access granted');
-        return true;
-      }
-      console.log('⚠️ [canEditFund] RPC variant 2 failed:', rpcError2);
-
-      // 4. Fallback: Check fund_managers table directly
-      console.log('🔐 [canEditFund] Step 4: Checking fund_managers table directly...');
-      const { data: assignmentData, error: assignmentError } = await supabase
-        .from('fund_managers' as any)
-        .select('status, permissions')
-        .eq('user_id', user.id)
-        .eq('fund_id', fundId)
-        .maybeSingle() as { 
-          data: { status: string; permissions: { can_edit?: boolean } } | null; 
-          error: any 
-        };
-
-      if (assignmentError) {
-        console.error('❌ [canEditFund] fund_managers query error:', assignmentError);
+      if (fundError || !fundData) {
+        console.error('❌ [canEditFund] Failed to fetch fund:', fundError);
         return false;
       }
 
-      if (!assignmentData) {
-        console.log('❌ [canEditFund] No assignment found in fund_managers table');
+      console.log('✓ [canEditFund] Fund manager_name:', fundData.manager_name);
+
+      // 3. Check company-level permissions using manager_name
+      console.log('🔐 [canEditFund] Step 3: Checking company permissions...');
+      const { data: hasCompanyAccess, error: companyError } = await supabase.rpc(
+        'can_user_manage_company_funds',
+        {
+          check_user_id: user.id,
+          check_manager_name: fundData.manager_name,
+        }
+      );
+
+      if (companyError) {
+        console.error('❌ [canEditFund] Company permission check failed:', companyError);
         return false;
       }
 
-      const hasPermission = 
-        assignmentData.status === 'active' && 
-        assignmentData.permissions?.can_edit === true;
-
-      console.log('🔐 [canEditFund] Assignment found:', {
-        status: assignmentData.status,
-        permissions: assignmentData.permissions,
-        hasPermission
-      });
-
-      if (hasPermission) {
-        console.log('✅ [canEditFund] Fallback check passed - access granted');
-        return true;
-      }
-
-      console.log('❌ [canEditFund] Access denied - no valid permissions found');
-      return false;
+      const hasAccess = !!hasCompanyAccess;
+      console.log(hasAccess ? '✅ [canEditFund] Company access granted' : '❌ [canEditFund] No company access');
+      
+      return hasAccess;
     } catch (error) {
       console.error('❌ [canEditFund] Unexpected error:', error);
       return false;
@@ -346,20 +335,37 @@ export const useFundEditing = () => {
   // Explicit manager-only edit permission (no admin override)
   const canDirectEditAssigned = useCallback(async (fundId: string) => {
     if (!user) return false;
+    
     try {
-      const { data, error } = await supabase
-        .from('fund_managers' as any)
-        .select('status, permissions')
-        .eq('user_id', user.id)
-        .eq('fund_id', fundId)
-        .maybeSingle() as {
-          data: { status: string; permissions: { can_edit?: boolean } } | null;
-          error: any;
-        };
-      if (error || !data) return false;
-      return data.status === 'active' && data.permissions?.can_edit === true;
-    } catch (e) {
-      console.error('[canDirectEditAssigned] error:', e);
+      // Get fund's manager_name
+      const { data: fundData, error: fundError } = await supabase
+        .from('funds')
+        .select('manager_name')
+        .eq('id', fundId)
+        .maybeSingle();
+
+      if (fundError || !fundData) {
+        console.error('[canDirectEditAssigned] Failed to fetch fund:', fundError);
+        return false;
+      }
+
+      // Check company-level permissions (no admin override for this check)
+      const { data: hasCompanyAccess, error: companyError } = await supabase.rpc(
+        'can_user_manage_company_funds',
+        {
+          check_user_id: user.id,
+          check_manager_name: fundData.manager_name,
+        }
+      );
+
+      if (companyError) {
+        console.error('[canDirectEditAssigned] Permission check failed:', companyError);
+        return false;
+      }
+
+      return !!hasCompanyAccess;
+    } catch (error) {
+      console.error('[canDirectEditAssigned] Error:', error);
       return false;
     }
   }, [user]);

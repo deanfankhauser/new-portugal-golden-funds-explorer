@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Fund } from '../../data/funds';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { Building, MapPin, Shield, FileCheck, Calendar, Hash, FileText, Briefcase } from 'lucide-react';
+import { Building, MapPin, Shield, FileCheck, Calendar, Hash, FileText, Briefcase, Clock } from 'lucide-react';
 import { formatCurrency } from './utils/formatters';
+import { getFundType } from '../../utils/fundTypeUtils';
 
 interface KeyTermsTableProps {
   fund: Fund;
@@ -14,6 +15,7 @@ const KeyTermsTable: React.FC<KeyTermsTableProps> = ({ fund }) => {
     const iconMap: Record<string, React.ReactNode> = {
       'Minimum Investment': <Building className="h-[18px] w-[18px] text-muted-foreground" />,
       'Fund Structure': <FileText className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Fund Term': <Clock className="h-[18px] w-[18px] text-muted-foreground" />,
       'Domicile': <MapPin className="h-[18px] w-[18px] text-muted-foreground" />,
       'Custodian': <Shield className="h-[18px] w-[18px] text-muted-foreground" />,
       'Auditor': <FileCheck className="h-[18px] w-[18px] text-muted-foreground" />,
@@ -26,16 +28,22 @@ const KeyTermsTable: React.FC<KeyTermsTableProps> = ({ fund }) => {
     return iconMap[label] || <FileText className="h-[18px] w-[18px] text-muted-foreground" />;
   };
 
+  const fundType = getFundType(fund);
+  const getFundTermValue = () => {
+    if (fundType === 'Open-Ended') return 'Perpetual';
+    if (fund.term) return `${fund.term} years`;
+    return 'N/A';
+  };
+
   const keyTerms = [
     { label: "Minimum Investment", value: fund.minimumInvestment ? formatCurrency(fund.minimumInvestment) : "N/A", type: "currency" },
     { label: "Fund Structure", value: fund.category || "N/A", type: "text" },
-    { label: "Domicile", value: "Portugal", type: "text" },
+    { label: "Fund Term", value: getFundTermValue(), type: "text" },
+    { label: "Domicile", value: fund.location || "N/A", type: "text" },
     { label: "Custodian", value: fund.custodian || "N/A", type: "text" },
     { label: "Auditor", value: fund.auditor || "N/A", type: "text" },
     { label: "ISIN", value: fund.cmvmId || "N/A", type: "text" },
-    { label: "Reporting", value: "Monthly NAV, Quarterly Reports", type: "text" },
-    { label: "Documentation Cadence", value: "Monthly", type: "text" },
-    { label: "Fund Status", value: fund.fundStatus || "Active", type: "status" },
+    { label: "Fund Status", value: fund.fundStatus || "N/A", type: "status" },
     { label: "Inception Date", value: fund.established ? `${fund.established}` : "N/A", type: "date" },
   ];
 
