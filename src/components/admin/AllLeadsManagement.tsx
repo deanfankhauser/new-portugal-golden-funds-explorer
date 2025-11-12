@@ -22,7 +22,7 @@ interface Lead {
   manager_name: string;
   investment_amount_range: string;
   status: string;
-  interest_areas: string[];
+  interest_areas: any;
   created_at: string;
   updated_at: string;
 }
