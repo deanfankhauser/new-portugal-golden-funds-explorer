@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getAllApprovedManagers } from '../data/services/managers-service';
 import { slugToManager, managerToSlug } from '../lib/utils';
 import Header from '../components/Header';
@@ -13,8 +13,11 @@ import { useAllFunds } from '../hooks/useFundsQuery';
 import { Fund } from '../data/types/funds';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
 
+const isSSG = typeof window === 'undefined';
+
 const FundManager = () => {
   const { name } = useParams<{ name: string }>();
+  const navigate = useNavigate();
   const slugName = name || '';
   const managerName = slugToManager(slugName);
   const [isManagerVerified, setIsManagerVerified] = useState(false);
@@ -104,9 +107,37 @@ const FundManager = () => {
     }
   }, [displayManagerName]);
 
+  // Canonicalize manager slug
+  useEffect(() => {
+    if (!name || isSSG) return;
+    const expected = managerToSlug(slugToManager(name));
+    if (name !== expected) {
+      navigate(`/manager/${expected}`, { replace: true });
+    }
+  }, [name, navigate]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [name]);
+
+  // Return minimal shell during SSG
+  if (isSSG) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <PageSEO pageType="manager" managerName={displayManagerName} />
+        <Header />
+        <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading fund manager...</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   // Show loading state
   if (isLoading) {
