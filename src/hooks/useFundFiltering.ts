@@ -1,8 +1,8 @@
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { FundTag, FundCategory } from '../data/types/funds';
-import { useRealTimeFunds } from './useRealTimeFunds';
+import { FundTag, FundCategory, Fund } from '../data/types/funds';
+import { useAllFunds } from './useFundsQuery';
 
 export const useFundFiltering = () => {
   const [searchParams] = useSearchParams();
@@ -10,13 +10,42 @@ export const useFundFiltering = () => {
   const [selectedCategory, setSelectedCategory] = useState<FundCategory | null>(null);
   const [selectedManager, setSelectedManager] = useState<string | null>(null);
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
-  const { funds, filterFunds, loading, error } = useRealTimeFunds();
+  const { data: funds, isLoading, isError, isFetching } = useAllFunds();
 
   // Get search query from URL params
   const searchQuery = searchParams.get('search') || '';
 
   const filteredFunds = useMemo(() => {
-    let result = filterFunds(selectedTags, searchQuery);
+    // Return empty array while loading or on error
+    if (!funds || funds.length === 0) {
+      return [];
+    }
+
+    // Apply tag filter (search query and tags)
+    let result = funds.filter(fund => {
+      // Search query filter
+      if (searchQuery) {
+        const searchLower = searchQuery.toLowerCase();
+        const matchesSearch = 
+          fund.name.toLowerCase().includes(searchLower) ||
+          fund.managerName.toLowerCase().includes(searchLower) ||
+          fund.category.toLowerCase().includes(searchLower) ||
+          fund.tags.some(tag => tag.toLowerCase().includes(searchLower));
+        
+        if (!matchesSearch) return false;
+      }
+
+      // Tag filter
+      if (selectedTags.length > 0) {
+        const fundTagsLower = fund.tags.map(t => t.toLowerCase());
+        const hasAllTags = selectedTags.every(selectedTag => 
+          fundTagsLower.includes(selectedTag.toLowerCase())
+        );
+        if (!hasAllTags) return false;
+      }
+
+      return true;
+    });
     
     // Apply category filter
     if (selectedCategory) {
@@ -45,18 +74,8 @@ export const useFundFiltering = () => {
       return (a.finalRank ?? 999) - (b.finalRank ?? 999);
     });
     
-    console.log('🔍 Filtering debug:', {
-      totalFunds: funds.length,
-      selectedTags,
-      selectedCategory,
-      selectedManager,
-      searchQuery,
-      filteredCount: result.length,
-      loading,
-      error
-    });
     return sorted;
-  }, [selectedTags, selectedCategory, selectedManager, searchQuery, filterFunds, funds.length, loading, error]);
+  }, [selectedTags, selectedCategory, selectedManager, searchQuery, showOnlyVerified, funds]);
 
   return {
     selectedTags,
@@ -69,8 +88,8 @@ export const useFundFiltering = () => {
     setShowOnlyVerified,
     searchQuery,
     filteredFunds,
-    allFunds: funds,
-    loading,
-    error
+    allFunds: funds || [],
+    loading: isLoading || isFetching,
+    error: isError ? 'Failed to load funds' : undefined
   };
 };
