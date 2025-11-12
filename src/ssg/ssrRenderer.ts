@@ -171,6 +171,7 @@ export class SSRRenderer {
         case 'tag': return ['TagPage'];
         case 'category': return ['CategoryPage'];
         case 'comparison': return ['FundComparison'];
+        case 'fund-comparison': return ['FundComparison'];
         case 'fund-alternatives':
         case 'fund_alternatives': return ['FundAlternatives'];
         
