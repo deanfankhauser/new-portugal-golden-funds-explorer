@@ -6,7 +6,6 @@ import FeeStructure from '../FeeStructure';
 import GeographicAllocation from '../GeographicAllocation';
 import RedemptionTerms from '../RedemptionTerms';
 import KeyTermsTable from '../KeyTermsTable';
-import RiskAssessmentSection from '../RiskAssessmentSection';
 import RegulatoryComplianceInfo from '../RegulatoryComplianceInfo';
 import EligibilityBasisInfo from '../EligibilityBasisInfo';
 import { formatPercentage } from '../utils/formatters';
@@ -20,9 +19,6 @@ const FundStructureTab: React.FC<FundStructureTabProps> = ({ fund }) => {
     <div className="animate-fade-in space-y-8">
       {/* Key Terms Section */}
       <KeyTermsTable fund={fund} />
-      
-      {/* Risk Assessment Section */}
-      <RiskAssessmentSection fund={fund} />
       
       {/* Fund Category Section */}
       <FundCategory category={fund.category} />
