@@ -1,6 +1,6 @@
 import { SEOData } from '../types/seo';
 import { URL_CONFIG } from '../utils/urlConfig';
-import { funds } from '../data/funds';
+import { Fund } from '../data/types/funds';
 import { normalizeComparisonSlug } from '../utils/comparisonUtils';
 import { parseComparisonSlug } from '../data/services/comparison-service';
 import { InvestmentFundStructuredDataService } from './investmentFundStructuredDataService';
@@ -220,7 +220,7 @@ export class ConsolidatedSEOService {
   }
 
   // Get SEO data for different page types
-  static getSEOData(pageType: string, params: any = {}): SEOData {
+  static getSEOData(pageType: string, params: any = {}, funds?: Fund[]): SEOData {
     const baseUrl = URL_CONFIG.BASE_URL;
     
     switch (pageType) {
@@ -229,13 +229,15 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('Portugal Golden Visa Funds 2025 | Compare 28+ Investment Options', 60),
           description: this.optimizeText('Discover and compare Portugal Golden Visa Investment Funds. Comprehensive analysis, performance data, and expert insights for qualified Golden Visa investment decisions.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/'),
-          structuredData: this.getHomepageStructuredData()
+          structuredData: this.getHomepageStructuredData(funds)
         };
 
       case 'fund':
       case 'fund-details':
-        const fund = this.getFundByName(params.fundName);
-        if (!fund) return this.getSEOData('homepage');
+        const fund = funds 
+          ? funds.find(f => f.id === params.fundName || f.name === params.fundName)
+          : this.getFundByName(params.fundName);
+        if (!fund) return this.getSEOData('homepage', {}, funds);
         
         // Generate dynamic, metric-rich title and description
         const fundTitle = this.generateFundTitle(fund);
@@ -286,7 +288,7 @@ export class ConsolidatedSEOService {
         const normalizedSlug = normalizeComparisonSlug(params.comparisonSlug || '');
         const slugData = parseComparisonSlug(normalizedSlug);
         
-        if (slugData) {
+        if (slugData && funds) {
           const fund1 = funds.find(f => f.id === slugData.fund1Id);
           const fund2 = funds.find(f => f.id === slugData.fund2Id);
           
@@ -352,7 +354,7 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('Portugal Golden Visa Fund Alternatives Hub | Compare Investment Options | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Explore alternative Portugal Golden Visa investment funds for every fund in our database. Find similar Golden Visa fund options based on category, risk level, and investment requirements.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/alternatives'),
-          structuredData: this.getAlternativesHubStructuredData()
+          structuredData: this.getAlternativesHubStructuredData(funds)
         };
 
       case 'comparisons-hub':
@@ -360,7 +362,7 @@ export class ConsolidatedSEOService {
           title: this.optimizeText('Portugal Golden Visa Fund Comparisons | Investment Analysis Hub | Movingto', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Hub for comparing Portugal Golden Visa investment funds. Access Golden Visa fund comparison tools and analysis.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('comparisons'),
-          structuredData: this.getComparisonsHubStructuredData()
+          structuredData: this.getComparisonsHubStructuredData(funds)
         };
 
       case 'about':
@@ -627,7 +629,10 @@ export class ConsolidatedSEOService {
     });
   }
 
-  private static getFundByName(fundNameOrId: string): any {
+  private static getFundByName(fundNameOrId: string, funds?: Fund[]): Fund | undefined {
+    // If no funds provided, return undefined (runtime will handle via React Query)
+    if (!funds || funds.length === 0) return undefined;
+    
     // Search by both fund ID and name for maximum compatibility
     return funds.find(fund => 
       fund.id === fundNameOrId || 
@@ -641,9 +646,9 @@ export class ConsolidatedSEOService {
   }
 
   // Structured data generators
-  private static getHomepageStructuredData(): any {
+  private static getHomepageStructuredData(funds?: Fund[]): any {
     // Get top funds for ItemList schema
-    const topFunds = funds.filter((f: any) => f && f.name && f.id).slice(0, 10);
+    const topFunds = funds ? funds.filter((f: any) => f && f.name && f.id).slice(0, 10) : [];
     
     return [
       {
@@ -954,16 +959,18 @@ export class ConsolidatedSEOService {
     };
   }
 
-  private static getComparisonsHubStructuredData(): any {
+  private static getComparisonsHubStructuredData(funds?: Fund[]): any {
     // Get top 10 fund pairs for featured comparisons
-    const topComparisons = funds.slice(0, 10).flatMap((fund, i) => 
-      funds.slice(i + 1, i + 3).map((otherFund, j) => ({
-        '@type': 'ListItem',
-        'position': i * 2 + j + 1,
-        'name': `${fund.name} vs ${otherFund.name}`,
-        'item': URL_CONFIG.buildUrl(`compare/${normalizeComparisonSlug(`${fund.id}-vs-${otherFund.id}`)}`)
-      }))
-    ).slice(0, 10);
+    const topComparisons = funds && funds.length > 0 
+      ? funds.slice(0, 10).flatMap((fund, i) => 
+          funds.slice(i + 1, i + 3).map((otherFund, j) => ({
+            '@type': 'ListItem',
+            'position': i * 2 + j + 1,
+            'name': `${fund.name} vs ${otherFund.name}`,
+            'item': URL_CONFIG.buildUrl(`compare/${normalizeComparisonSlug(`${fund.id}-vs-${otherFund.id}`)}`)
+          }))
+        ).slice(0, 10)
+      : [];
 
     return {
       '@context': 'https://schema.org',
@@ -1162,9 +1169,9 @@ export class ConsolidatedSEOService {
     };
   }
 
-  private static getAlternativesHubStructuredData() {
+  private static getAlternativesHubStructuredData(funds?: Fund[]) {
     // Use a simple list of funds for structured data to avoid SSR issues
-    const topFunds = funds.filter((f: any) => f && typeof f.name === 'string' && typeof f.id === 'string').slice(0, 20);
+    const topFunds = funds ? funds.filter((f: any) => f && typeof f.name === 'string' && typeof f.id === 'string').slice(0, 20) : [];
 
     return {
       "@context": "https://schema.org",

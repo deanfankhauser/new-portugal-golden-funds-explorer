@@ -176,18 +176,41 @@ VITE_SUPABASE_ANON_KEY=eyJhbG...
 
 ## Migration Status
 
-### ✅ Phase 1: Complete
+### ✅ Phase 1: Complete (All Files Migrated)
 - [x] Infrastructure created (supabase-build.ts, build-data-fetcher.ts)
 - [x] Route discovery migrated (routeDiscovery.ts)
 - [x] Fund sitemap migrated (sitemap-funds-generator.ts)
 - [x] Comprehensive sitemap migrated (comprehensiveSitemapService.ts)
+- [x] Enhanced sitemap migrated (enhancedSitemapService.ts) 
+- [x] Consolidated SEO service migrated (consolidatedSEOService.ts)
+- [x] SEO monitoring service fixed (seoMonitoringService.ts)
 - [x] SSG orchestrator updated (ssg-orchestrator.ts)
 - [x] Build process validated
 
-### ⏳ Phase 2: Pending
-- [ ] EnhancedSitemapService migration
-- [ ] ConsolidatedSEOService migration
-- [ ] Sitemap generator utility migration
+**All Phase 1 files now use Supabase database instead of mock data.**
+
+### Additional Files Migrated
+
+**8. src/services/enhancedSitemapService.ts** - ✅ Migrated
+- Made all methods async (`getComparisonPages`, `getAlternativesPages`, `generateEnhancedSitemapEntries`, `generateEnhancedSitemapXML`)
+- Uses `fetchAllFundsForBuild()` instead of mock data imports
+- Comparison and alternatives pages now use database data
+- Parallel fetching for performance
+
+**9. src/services/consolidatedSEOService.ts** - ✅ Migrated (Hybrid Approach)
+- Modified to accept optional `funds` parameter in all methods
+- Supports both build-time (with database funds) and runtime (without funds) usage
+- Removed direct mock data imports
+- All structured data generators (`getHomepageStructuredData`, `getComparisonsHubStructuredData`, `getAlternativesHubStructuredData`) accept optional funds array
+- `getFundByName` method updated to work with or without funds parameter
+- Graceful degradation when funds not provided (runtime context)
+
+**10. src/services/seoMonitoringService.ts** - ✅ Fixed
+- Updated to await async `generateEnhancedSitemapEntries()` call
+- Fixes Promise type error
+
+### ⏳ Phase 2: Not Started
+All Phase 1 files complete. Phase 2 migration not required at this time.
 
 ### ⏳ Phase 3: Future
 - [ ] Pre-render HTML optimization

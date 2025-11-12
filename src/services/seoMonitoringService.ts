@@ -239,7 +239,7 @@ export class SEOMonitoringService {
   }> {
     try {
       const validation = await EnhancedSitemapService.validateSitemapAccess();
-      const entries = EnhancedSitemapService.generateEnhancedSitemapEntries();
+      const entries = await EnhancedSitemapService.generateEnhancedSitemapEntries();
       
       return {
         accessible: validation.accessible,
