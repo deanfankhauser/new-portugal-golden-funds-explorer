@@ -2,10 +2,10 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Bookmark } from "lucide-react";
 import AuthAwareButton from "./auth/AuthAwareButton";
 import GlobalSearch from "./GlobalSearch";
 import ComparisonIndicator from "./ComparisonIndicator";
+import SavedFundsIndicator from "./SavedFundsIndicator";
 import MobileNavigation from "./MobileNavigation";
 import DisclaimerBanner from "./common/DisclaimerBanner";
 
@@ -35,16 +35,8 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-4 flex-shrink-0">
-            <Button 
-              variant="secondary" 
-              asChild
-            >
-              <Link to="/saved-funds">
-                <Bookmark className="mr-2 h-4 w-4" />
-                <span>Saved Funds</span>
-              </Link>
-            </Button>
+          <div className="hidden md:flex items-center gap-2 flex-shrink-0">
+            <SavedFundsIndicator />
             <ComparisonIndicator />
             <AuthAwareButton />
           </div>

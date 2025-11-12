@@ -1,24 +1,19 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useComparison } from '../contexts/ComparisonContext';
+import { useSavedFunds } from '../hooks/useSavedFunds';
 import { Button } from '@/components/ui/button';
-import { GitCompare } from 'lucide-react';
+import { Bookmark } from 'lucide-react';
 
-const ComparisonIndicator = () => {
+const SavedFundsIndicator = () => {
   const navigate = useNavigate();
-  const { compareFunds } = useComparison();
-  const count = compareFunds.length;
+  const { savedFunds } = useSavedFunds();
+  const count = savedFunds.length;
 
   // SSR-safe: Don't render during server-side rendering
   if (typeof window === 'undefined') return null;
 
-  if (count === 0) {
-    return null;
-  }
-
-  const handleCompareClick = () => {
-    navigate('/compare');
+  const handleClick = () => {
+    navigate('/saved-funds');
   };
 
   return (
@@ -26,10 +21,10 @@ const ComparisonIndicator = () => {
       variant="ghost"
       size="icon"
       className="text-background hover:bg-background/10 relative"
-      onClick={handleCompareClick}
-      aria-label={`Compare funds (${count})`}
+      onClick={handleClick}
+      aria-label={`Saved funds (${count})`}
     >
-      <GitCompare className="h-5 w-5" />
+      <Bookmark className="h-5 w-5" />
       {count > 0 && (
         <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
           {count}
@@ -39,4 +34,4 @@ const ComparisonIndicator = () => {
   );
 };
 
-export default ComparisonIndicator;
+export default SavedFundsIndicator;
