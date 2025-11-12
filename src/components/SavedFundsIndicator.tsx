@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSavedFunds } from '../hooks/useSavedFunds';
-import { Button } from '@/components/ui/button';
 import { Bookmark } from 'lucide-react';
+import HeaderIconButton from '@/components/common/HeaderIconButton';
 
 const SavedFundsIndicator = () => {
   const navigate = useNavigate();
@@ -17,20 +17,13 @@ const SavedFundsIndicator = () => {
   };
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="text-background hover:bg-background/10 active:bg-background/20 transition-colors relative"
+    <HeaderIconButton
       onClick={handleSavedClick}
-      aria-label={`Saved funds (${count})`}
+      ariaLabel={`Saved funds (${count})`}
+      badgeCount={count}
     >
       <Bookmark className="h-5 w-5" />
-      {count > 0 && (
-        <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-          {count}
-        </span>
-      )}
-    </Button>
+    </HeaderIconButton>
   );
 };
 
