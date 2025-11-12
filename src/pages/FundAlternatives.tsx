@@ -1,6 +1,7 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
-import { getFundById } from '../data/funds';
+import { useParams, Link } from 'react-router-dom';
+import { useAllFunds } from '../hooks/useFundsQuery';
+import { addTagsToFunds } from '../data/services/funds-service';
 import { findAlternativeFunds } from '../data/services/alternative-funds-service';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -9,14 +10,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { ArrowLeft, ExternalLink, CheckCircle2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { Alert, AlertDescription } from '../components/ui/alert';
 
 const FundAlternatives = () => {
   const { id } = useParams<{ id: string }>();
-  const fund = id ? getFundById(id) : null;
+  const { data: allFunds = [], isLoading } = useAllFunds();
+  const fundsWithTags = addTagsToFunds(allFunds);
+  const fund = fundsWithTags.find(f => f.id === id);
 
-  if (!fund) {
+  if (isLoading || !fund) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <PageSEO pageType="404" />
@@ -32,7 +34,7 @@ const FundAlternatives = () => {
     );
   }
 
-  const alternativeFunds = findAlternativeFunds(fund, 6);
+  const alternativeFunds = findAlternativeFunds(fundsWithTags, fund, 6);
 
   if (alternativeFunds.length === 0) {
     return (

@@ -1,6 +1,7 @@
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 const getSupabase = async () => (await import('../integrations/supabase/client')).supabase;
 import { Fund, FundTag, FundCategory, GeographicAllocation, TeamMember, PdfDocument, FAQItem, RedemptionFrequency } from '../data/types/funds';
+import { addTagsToFunds } from '../data/services/funds-service';
 
 const FUNDS_PER_PAGE = 30;
 const isSSG = typeof window === 'undefined';
@@ -145,8 +146,11 @@ const fetchFundsPage = async ({ pageParam = 0 }) => {
     return transformFund({ fund, ranking });
   });
   
+  // Apply tag generation logic
+  const fundsWithTags = addTagsToFunds(transformedFunds);
+  
   // Sort by verification status then rank
-  const sortedFunds = transformedFunds.sort((a, b) => {
+  const sortedFunds = fundsWithTags.sort((a, b) => {
     if (a.isVerified && !b.isVerified) return -1;
     if (!a.isVerified && b.isVerified) return 1;
     return (a.finalRank ?? 999) - (b.finalRank ?? 999);
@@ -248,7 +252,10 @@ export const useAllFunds = () => {
         return transformFund({ fund, ranking });
       });
       
-      return transformedFunds.sort((a, b) => {
+      // Apply tag generation logic
+      const fundsWithTags = addTagsToFunds(transformedFunds);
+      
+      return fundsWithTags.sort((a, b) => {
         if (a.isVerified && !b.isVerified) return -1;
         if (!a.isVerified && b.isVerified) return 1;
         return (a.finalRank ?? 999) - (b.finalRank ?? 999);

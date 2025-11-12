@@ -4,6 +4,8 @@ import { FundTag } from '../../data/types/funds';
 import { Button } from "@/components/ui/button";
 import { X, ChevronDown } from 'lucide-react';
 import { getMeaningfulFilters } from '../../services/filterDataService';
+import { useAllFunds } from '../../hooks/useFundsQuery';
+import { addTagsToFunds } from '../../data/services/funds-service';
 import {
   Collapsible,
   CollapsibleContent,
@@ -28,7 +30,9 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
     return typeof window !== 'undefined' ? window.innerWidth >= 1024 : true;
   });
   
-  const allFilters = getMeaningfulFilters();
+  const { data: funds = [], isLoading } = useAllFunds();
+  const fundsWithTags = addTagsToFunds(funds);
+  const allFilters = getMeaningfulFilters(fundsWithTags);
 
   const toggleTag = (tag: FundTag) => {
     if (selectedTags.includes(tag)) {

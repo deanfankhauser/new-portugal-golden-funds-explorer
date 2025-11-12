@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Fund, FundTag, FundCategory, GeographicAllocation, TeamMember, PdfDocument, FAQItem, RedemptionFrequency } from '../data/types/funds';
-import { funds as staticFunds } from '../data/funds'; // Fallback to static data
 // Supabase client is lazy-loaded to keep SSR safe
 const getSupabase = async () => (await import('../integrations/supabase/client')).supabase;
 
