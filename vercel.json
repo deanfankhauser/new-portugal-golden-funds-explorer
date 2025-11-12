@@ -7,27 +7,27 @@
   "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/sitemap.xml",
-      "destination": "/sitemap.xml"
+      "source": "/admin/(.*)",
+      "destination": "/index.html"
     },
     {
-      "source": "/sitemap-index.xml",
-      "destination": "/sitemap-index.xml"
+      "source": "/account/(.*)",
+      "destination": "/index.html"
     },
     {
-      "source": "/sitemap-funds.xml",
-      "destination": "/sitemap-funds.xml"
+      "source": "/auth/(.*)",
+      "destination": "/index.html"
     },
     {
-      "source": "/sitemap-enhanced.xml",
-      "destination": "/sitemap-enhanced.xml"
+      "source": "/my-funds",
+      "destination": "/index.html"
     },
     {
-      "source": "/robots.txt",
-      "destination": "/robots.txt"
+      "source": "/manage-fund/(.*)",
+      "destination": "/index.html"
     },
     {
-      "source": "/(.*)",
+      "source": "/manage-profile/(.*)",
       "destination": "/index.html"
     }
   ],

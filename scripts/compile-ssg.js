@@ -14,6 +14,12 @@ export function compileSSGFiles() {
       stdio: 'inherit'
     });
     
+    // Generate fund slug redirects (legacy URLs → current fundId routes)
+    console.log('🔀 Generating fund slug redirects...');
+    execSync('npx tsx scripts/ssg/generate-fund-slug-redirects.ts', {
+      stdio: 'inherit'
+    });
+    
     // Execute the SSG runner with debug mode if requested
     const ssgEnv = {
       ...process.env,
