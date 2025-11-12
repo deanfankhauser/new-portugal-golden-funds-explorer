@@ -12,7 +12,7 @@ const SavedFundsIndicator = () => {
   // SSR-safe: Don't render during server-side rendering
   if (typeof window === 'undefined') return null;
 
-  const handleClick = () => {
+  const handleSavedClick = () => {
     navigate('/saved-funds');
   };
 
@@ -20,8 +20,8 @@ const SavedFundsIndicator = () => {
     <Button
       variant="ghost"
       size="icon"
-      className="text-background hover:bg-background/10 relative"
-      onClick={handleClick}
+      className="text-background hover:bg-background/10 hover:text-background relative"
+      onClick={handleSavedClick}
       aria-label={`Saved funds (${count})`}
     >
       <Bookmark className="h-5 w-5" />
