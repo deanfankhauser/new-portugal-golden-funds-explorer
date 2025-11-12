@@ -47,7 +47,7 @@ const ConfirmEmailCapture = lazy(() => import('./pages/ConfirmEmailCapture'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const SavedFunds = lazy(() => import('./pages/SavedFunds'));
-const TempMigrationPage = lazy(() => import('./pages/TempMigrationPage'));
+
 const MyFunds = lazy(() => import('./pages/MyFunds'));
 const ManageFund = lazy(() => import('./pages/ManageFund'));
 const ManageProfile = lazy(() => import('./pages/ManageProfile'));
@@ -282,12 +282,6 @@ function App() {
                          </Suspense>
                        } />
 
-                       {/* Temporary Migration Page */}
-                       <Route path="/migrate-funds" element={
-                         <Suspense fallback={<PageLoader />}>
-                           <TempMigrationPage />
-                         </Suspense>
-                       } />
 
                        {/* Saved Funds */}
                        <Route path="/saved-funds" element={

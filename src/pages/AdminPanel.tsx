@@ -14,7 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { EnhancedSuggestionsTable } from '@/components/admin/EnhancedSuggestionsTable';
 import UsersManagement from '@/components/admin/UsersManagement';
 import { DataCopyButton } from '@/components/admin/DataCopyButton';
-import MigrateFundsButton from '@/components/admin/MigrateFundsButton';
+
 import FundManagement from '@/components/admin/FundManagement';
 import FundRankingManager from '@/components/admin/FundRankingManager';
 import EmailCapturesManagement from '@/components/admin/EmailCapturesManagement';
@@ -301,8 +301,6 @@ const AdminPanel = () => {
 
             <TabsContent value="settings">
               <div className="space-y-6">
-                <MigrateFundsButton />
-                
                 <Card>
                   <CardHeader>
                     <CardTitle>System Settings</CardTitle>
