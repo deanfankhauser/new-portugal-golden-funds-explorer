@@ -10,6 +10,17 @@ interface PageSEOComponentProps extends PageSEOProps {
   children?: React.ReactNode;
 }
 
+/**
+ * PageSEO Component
+ * 
+ * IMPORTANT: This component runs ONLY in the browser after initial page load (client-side).
+ * During SSR/SSG build time, meta tags are injected directly into static HTML by:
+ * - src/ssg/ssrRenderer.ts (fetches SEO data)
+ * - src/ssg/htmlTemplateGenerator.ts (injects meta tags into <head>)
+ * 
+ * This component updates meta tags during client-side navigation between pages.
+ * The useEffect hook does NOT execute during server-side rendering.
+ */
 export const PageSEO: React.FC<PageSEOComponentProps> = ({ 
   pageType, 
   fundName, 
@@ -21,6 +32,7 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
   funds,
   children 
 }) => {
+  // This useEffect only runs in the browser after hydration, NOT during SSR/SSG build
   useEffect(() => {
     try {
       // Apply SEO meta tags
