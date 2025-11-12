@@ -3,7 +3,7 @@ import path from 'path';
 import { StaticRoute } from '../../src/ssg/routeDiscovery';
 import { DateManagementService } from '../../src/services/dateManagementService';
 import { fetchAllFundsForBuild, fetchAllCategoriesForBuild, fetchAllTagsForBuild } from '../../src/lib/build-data-fetcher';
-import { getAllComparisonSlugs } from '../../src/data/services/comparison-service';
+import { generateComparisonsFromFunds } from '../../src/data/services/comparison-service';
 import { EnhancedSitemapService } from '../../src/services/enhancedSitemapService';
 import { categoryToSlug, tagToSlug } from '../../src/lib/utils';
 
@@ -130,7 +130,8 @@ ${urlElements}
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap);
 
   // Coverage logs
-  const comparisonSlugs = getAllComparisonSlugs();
+  const allComparisons = generateComparisonsFromFunds(funds);
+  const comparisonSlugs = allComparisons.map(c => c.slug);
   const comparisonRoutesInSitemap = routes.filter(r => r.pageType === 'fund-comparison').length;
   const alternativesRoutesInSitemap = routes.filter(r => r.pageType === 'fund-alternatives').length;
   const categoryRoutesInSitemap = routes.filter(r => r.pageType === 'category').length;
