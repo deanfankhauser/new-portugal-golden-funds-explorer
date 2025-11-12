@@ -65,7 +65,7 @@ const ManagersList: React.FC<ManagersListProps> = ({ managers, funds }) => {
           to="/" 
           className="text-primary hover:underline flex items-center"
         >
-          Browse all funds
+          Browse All Funds
         </Link>
       </div>
     </section>

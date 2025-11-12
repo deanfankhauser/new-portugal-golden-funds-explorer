@@ -1,21 +1,27 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 interface CategoryPageEmptyStateProps {
   categoryName: string;
 }
 
 const CategoryPageEmptyState: React.FC<CategoryPageEmptyStateProps> = ({ categoryName }) => {
+  const navigate = useNavigate();
+  
   return (
-    <div className="text-center py-10 bg-card rounded-lg shadow-sm">
-      <h3 className="text-xl font-medium mb-2">No funds found</h3>
-      <p className="text-muted-foreground">
+    <div className="bg-card rounded-lg shadow-sm border border-border/40 p-10 text-center">
+      <h3 className="text-2xl font-semibold mb-3">No funds found</h3>
+      <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
         No funds are currently in the {categoryName} category
       </p>
-      <Link to="/" className="inline-block mt-4 text-primary hover:underline">
-        Browse our fund directory
-      </Link>
+      <Button
+        onClick={() => navigate('/')}
+        size="lg"
+      >
+        Browse All Funds
+      </Button>
     </div>
   );
 };

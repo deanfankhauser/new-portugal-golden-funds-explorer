@@ -341,9 +341,9 @@ const LeadsTab: React.FC<LeadsTabProps> = ({ fundId }) => {
 
           {/* Leads Table */}
           {filteredEnquiries.length === 0 ? (
-            <div className="text-center py-12 border rounded-lg">
+            <div className="text-center py-12 border border-border/40 rounded-lg shadow-sm bg-card">
               <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No Leads Yet</h3>
+              <h3 className="text-2xl font-semibold mb-3">No Leads Yet</h3>
               <p className="text-muted-foreground max-w-md mx-auto">
                 Leads will appear here once prospective investors enquire about your fund.
               </p>
