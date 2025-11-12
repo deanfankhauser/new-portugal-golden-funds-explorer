@@ -13,10 +13,6 @@ const ComparisonIndicator = () => {
   // SSR-safe: Don't render during server-side rendering
   if (typeof window === 'undefined') return null;
 
-  if (count === 0) {
-    return null;
-  }
-
   const handleCompareClick = () => {
     navigate('/compare');
   };
@@ -25,7 +21,7 @@ const ComparisonIndicator = () => {
     <Button
       variant="ghost"
       size="icon"
-      className="bg-transparent text-background hover:bg-background/10 hover:!text-background relative"
+      className="text-background hover:bg-background/10 active:bg-background/20 transition-colors relative"
       onClick={handleCompareClick}
       aria-label={`Compare funds (${count})`}
     >
