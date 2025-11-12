@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Fund, FundTag, FundCategory, GeographicAllocation, TeamMember, PdfDocument, FAQItem, RedemptionFrequency } from '../data/types/funds';
 import { funds as staticFunds } from '../data/funds'; // Fallback to static data
-import { supabase } from '../integrations/supabase/client';
+// Supabase client is lazy-loaded to keep SSR safe
+const getSupabase = async () => (await import('../integrations/supabase/client')).supabase;
 
 // Options for selective real-time subscriptions
 interface UseRealTimeFundsOptions {
@@ -45,6 +46,7 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
       console.log('🔍 Fetching funds from Supabase...');
       
       // Optimized: Fetch funds with rankings in a single query using JOIN
+      const supabase = await getSupabase();
       const { data: supabaseFunds, error: fetchError } = await supabase
         .from('funds')
         .select(`
@@ -201,6 +203,7 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
     console.log('🔄 Updating single fund:', fundId);
     
     try {
+      const supabase = await getSupabase();
       const { data: fundData, error: fetchError } = await supabase
         .from('funds')
         .select(`
@@ -360,29 +363,27 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
       fetchFunds();
     };
 
-    window.addEventListener('funds:refetch' as any, refetchHandler as any);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('funds:refetch' as any, refetchHandler as any);
+    }
 
-    // Set up smart real-time subscription
-    if (enableRealTime) {
-      const channel = supabase.channel('funds-realtime-updates');
-      
+    let channel: any;
+
+    const setupRealtime = async () => {
+      if (!enableRealTime) return;
+      const supabase = await getSupabase();
+      channel = supabase.channel('funds-realtime-updates');
+
       // If subscribeTo is specified, only listen to those specific funds
       if (subscribeTo && subscribeTo.length > 0) {
         console.log('🎯 Subscribing to specific funds:', subscribeTo);
-        
         subscribeTo.forEach(fundId => {
           channel.on(
             'postgres_changes',
-            {
-              event: '*',
-              schema: 'public',
-              table: 'funds',
-              filter: `id=eq.${fundId}`
-            },
+            { event: '*', schema: 'public', table: 'funds', filter: `id=eq.${fundId}` },
             (payload) => {
               console.log('🔄 Selective fund update:', fundId);
               const changedFundId = (payload.new as any)?.id || (payload.old as any)?.id;
-              
               if (payload.eventType === 'DELETE') {
                 setFunds(prev => prev.filter(f => f.id !== changedFundId));
               } else {
@@ -395,15 +396,10 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
         // General subscription for homepage - use debounced refetch
         channel.on(
           'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'funds'
-          },
+          { event: '*', schema: 'public', table: 'funds' },
           (payload) => {
             console.log('🔄 General fund update detected');
             const changedFundId = (payload.new as any)?.id || (payload.old as any)?.id;
-            
             if (payload.eventType === 'DELETE') {
               setFunds(prev => prev.filter(f => f.id !== changedFundId));
             } else if (changedFundId) {
@@ -414,22 +410,21 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
           }
         );
       }
-      
-      channel.subscribe();
 
-      return () => {
-        window.removeEventListener('funds:refetch' as any, refetchHandler as any);
-        if (fetchTimeoutRef.current) {
-          clearTimeout(fetchTimeoutRef.current);
-        }
-        supabase.removeChannel(channel);
-      };
-    }
+      channel.subscribe();
+    };
+
+    setupRealtime();
 
     return () => {
-      window.removeEventListener('funds:refetch' as any, refetchHandler as any);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('funds:refetch' as any, refetchHandler as any);
+      }
       if (fetchTimeoutRef.current) {
         clearTimeout(fetchTimeoutRef.current);
+      }
+      if (channel) {
+        getSupabase().then((supabase) => supabase.removeChannel(channel)).catch(() => {});
       }
     };
   }, [enableRealTime, subscribeTo, updateSingleFund, debouncedRefetch, fetchFunds]);

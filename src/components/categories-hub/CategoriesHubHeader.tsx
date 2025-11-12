@@ -17,7 +17,7 @@ const CategoriesHubHeader = () => {
       
       <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-center" itemProp="description">
         Browse all investment categories for Portugal Golden Visa Funds. 
-        Visit our <Link to="/index" className="text-primary hover:underline">Portugal Golden Visa Investment Fund Index</Link> to see complete rankings and comparisons.
+        Visit our <Link to="/" className="text-primary hover:underline">Portugal Golden Visa Investment Fund Index</Link> to see complete rankings and comparisons.
       </p>
     </div>
   );

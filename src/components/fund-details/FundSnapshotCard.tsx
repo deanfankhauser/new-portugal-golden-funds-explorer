@@ -195,13 +195,13 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
 
   return (
     <Card className="bg-card border border-border/40 rounded-2xl shadow-sm">
-      <CardContent className="p-10">
-        <h2 className="text-2xl font-semibold tracking-tight mb-8">Fund Snapshot</h2>
+      <CardContent className="p-6 lg:p-10">
+        <h2 className="text-xl md:text-2xl font-semibold tracking-tight mb-8">Fund Snapshot</h2>
 
         {/* Get in Touch Button - Mobile/Tablet Only */}
         <Button 
           onClick={scrollToEnquiry}
-          className="w-full gap-2 shadow-lg lg:hidden mb-6"
+          className="w-full gap-2 shadow-lg lg:hidden mb-6 h-12"
           size="lg"
         >
           <MessageSquare className="h-5 w-5" />

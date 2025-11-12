@@ -783,6 +783,7 @@ export type Database = {
           phone: string | null
           registration_number: string | null
           risk_tolerance: string | null
+          team_members: Json | null
           updated_at: string
           user_id: string
           website: string | null
@@ -814,6 +815,7 @@ export type Database = {
           phone?: string | null
           registration_number?: string | null
           risk_tolerance?: string | null
+          team_members?: Json | null
           updated_at?: string
           user_id: string
           website?: string | null
@@ -845,6 +847,7 @@ export type Database = {
           phone?: string | null
           registration_number?: string | null
           risk_tolerance?: string | null
+          team_members?: Json | null
           updated_at?: string
           user_id?: string
           website?: string | null
@@ -996,6 +999,10 @@ export type Database = {
         Args: { check_manager_name: string; check_user_id: string }
         Returns: boolean
       }
+      can_user_view_profile: {
+        Args: { _profile_id: string; _user_id: string }
+        Returns: boolean
+      }
       check_sensitive_data_exposure: {
         Args: never
         Returns: {
@@ -1034,6 +1041,13 @@ export type Database = {
           data_type: string
           is_nullable: string
           table_name: string
+        }[]
+      }
+      get_funds_by_company_name: {
+        Args: { company_name_param: string }
+        Returns: {
+          id: string
+          name: string
         }[]
       }
       get_public_manager_profiles: {

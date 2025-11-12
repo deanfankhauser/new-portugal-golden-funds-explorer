@@ -10,7 +10,6 @@ import { StaticRoute } from './routeDiscovery';
 import { loadComponents, TooltipProvider } from './componentLoader';
 import { ComparisonProvider } from '../contexts/ComparisonContext';
 import { RecentlyViewedProvider } from '../contexts/RecentlyViewedContext';
-import { EnhancedAuthProvider } from '../contexts/EnhancedAuthContext';
 import { fundsData } from '../data/mock/funds';
 import type { Fund } from '../data/types/funds';
 
@@ -121,8 +120,50 @@ export class SSRRenderer {
       });
     }
 
-    // Load all components
-    const components = await loadComponents();
+    // Load components specific to this route
+    const needed: string[] = (() => {
+      switch (route.pageType) {
+        case 'homepage': return ['Index'];
+        case 'fund': return ['FundDetails'];
+        case 'manager': return ['FundManager'];
+        
+        // Hub pages - support both hyphenated and underscore variants
+        case 'tags-hub':
+        case 'tags_hub': return ['TagsHub'];
+        
+        case 'categories-hub':
+        case 'categories_hub': return ['CategoriesHub'];
+        
+        case 'comparisons-hub':
+        case 'comparisons_hub': return ['ComparisonsHub'];
+        
+        case 'alternatives-hub':
+        case 'alternatives_hub': return ['AlternativesHub'];
+        
+        case 'managers-hub':
+        case 'managers_hub': return ['ManagersHub'];
+        
+        // Individual pages
+        case 'tag': return ['TagPage'];
+        case 'category': return ['CategoryPage'];
+        case 'comparison': return ['FundComparison'];
+        case 'fund-alternatives':
+        case 'fund_alternatives': return ['FundAlternatives'];
+        
+        // Static pages
+        case 'faqs': return ['FAQs'];
+        case 'privacy': return ['Privacy'];
+        case 'disclaimer': return ['Disclaimer'];
+        case 'about': return ['About'];
+        case 'auth': return ['Auth'];
+        case 'roi-calculator': return ['ROICalculator'];
+        case 'saved-funds': return ['SavedFunds'];
+        case 'compare': return ['ComparisonPage'];
+        
+        default: return ['Index'];
+      }
+    })();
+    const components = await loadComponents(needed);
     const FallbackComponent = () => React.createElement(
       'div',
       { className: 'p-8 text-center' },
@@ -134,7 +175,7 @@ export class SSRRenderer {
           'ul',
           { className: 'flex flex-wrap justify-center gap-3 text-sm' },
           React.createElement('li', null, React.createElement('a', { href: '/' }, 'Home')),
-          React.createElement('li', null, React.createElement('a', { href: '/index' }, 'All Funds')),
+          React.createElement('li', null, React.createElement('a', { href: '/' }, 'All Funds')),
           React.createElement('li', null, React.createElement('a', { href: '/comparisons' }, 'Comparisons')),
           React.createElement('li', null, React.createElement('a', { href: '/alternatives' }, 'Alternatives')),
           React.createElement('li', null, React.createElement('a', { href: '/categories' }, 'Categories')),
@@ -157,12 +198,21 @@ export class SSRRenderer {
       return component;
     };
 
+    // During SSG, avoid importing EnhancedAuthProvider to prevent Supabase client initialization
+    const isSSG = typeof window === 'undefined';
+    let AuthWrapper: React.ComponentType<any> = React.Fragment as any;
+    
+    if (!isSSG) {
+      // Only load auth provider in browser environments
+      const { EnhancedAuthProvider } = await import('../contexts/EnhancedAuthContext');
+      AuthWrapper = EnhancedAuthProvider;
+    }
 
     const AppRouter = () => React.createElement(
       QueryClientProvider,
       { client: queryClient },
       React.createElement(
-        EnhancedAuthProvider,
+        AuthWrapper,
         null,
         React.createElement(
           ComparisonProvider,
@@ -181,7 +231,6 @@ export class SSRRenderer {
                 null,
                 // Main routes
                 React.createElement(Route, { path: '/', element: React.createElement(getComponent('Index')) }),
-                React.createElement(Route, { path: '/index', element: React.createElement(getComponent('FundIndex')) }),
                 
                 // Hub pages
                 React.createElement(Route, { path: '/tags', element: React.createElement(getComponent('TagsHub')) }),
@@ -338,7 +387,7 @@ export class SSRRenderer {
             <nav aria-label="Continue exploring" class="mt-2">
               <ul class="flex flex-wrap justify-center gap-3 text-sm">
                 <li><a href="/">Home</a></li>
-                <li><a href="/index">All Funds</a></li>
+                <li><a href="/">All Funds</a></li>
                 <li><a href="/comparisons">Comparisons</a></li>
                 <li><a href="/alternatives">Alternatives</a></li>
                 <li><a href="/categories">Categories</a></li>

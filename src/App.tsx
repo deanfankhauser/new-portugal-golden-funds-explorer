@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from "@/components/ui/toaster";
 import { ComparisonProvider } from './contexts/ComparisonContext';
@@ -15,13 +15,11 @@ import Index from './pages/Index'; // Keep homepage non-lazy for instant load
 import { 
   PageLoader, 
   FundDetailsLoader, 
-  FundIndexLoader, 
   ComparisonLoader,
   ROICalculatorLoader 
 } from './components/common/LoadingSkeleton';
 
 // Lazy load all secondary pages
-const FundIndex = lazy(() => import('./pages/FundIndex'));
 const FundDetails = lazy(() => import('./pages/FundDetails'));
 const TagPage = lazy(() => import('./pages/TagPage'));
 const CategoryPage = lazy(() => import('./pages/CategoryPage'));
@@ -152,11 +150,7 @@ function App() {
                   <div className="min-h-screen w-full bg-background">
                     <Routes>
                       <Route path="/" element={<Index />} />
-                      <Route path="/index" element={
-                        <Suspense fallback={<FundIndexLoader />}>
-                          <FundIndex />
-                        </Suspense>
-                      } />
+                      <Route path="/index" element={<Navigate to="/" replace />} />
                       <Route path="/tags" element={
                         <Suspense fallback={<PageLoader />}>
                           <TagsHub />

@@ -23,7 +23,7 @@ const RegulatoryIdentifiers: React.FC<RegulatoryIdentifiersProps> = ({ fund }) =
   return (
     <Card className="bg-card border border-border/40 rounded-2xl shadow-sm">
       <CardContent className="p-10">
-        <h2 className="text-2xl font-semibold tracking-tight mb-5">Regulatory Identifiers</h2>
+        <h2 className="text-xl md:text-2xl font-semibold tracking-tight mb-5">Regulatory Identifiers</h2>
         
         <p className="text-base text-muted-foreground leading-relaxed mb-8">
           We source from CMVM-regulated managers where applicable. Verify each fund's registration and GV suitability with counsel.

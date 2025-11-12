@@ -30,7 +30,7 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
         <CardHeader className="p-10 pb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-2xl font-semibold text-foreground tracking-tight">Historical Performance</h3>
+              <h3 className="text-xl md:text-2xl font-semibold text-foreground tracking-tight">Historical Performance</h3>
               <p className="text-sm text-muted-foreground">Track fund performance over time</p>
             </div>
           </div>
@@ -200,7 +200,7 @@ const EnhancedHistoricalPerformanceChart: React.FC<HistoricalPerformanceChartPro
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
           {/* Header Section */}
           <div>
-            <h3 className="text-2xl font-semibold text-foreground tracking-tight mb-1">Historical Performance</h3>
+            <h3 className="text-xl md:text-2xl font-semibold text-foreground tracking-tight mb-1">Historical Performance</h3>
             <p className="text-sm text-muted-foreground">
               Monthly returns and fund metrics • {processedData.length} months
             </p>

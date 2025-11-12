@@ -18,7 +18,7 @@ import ShortlistIndicator from "./ShortlistIndicator";
 import MobileNavigation from "./MobileNavigation";
 import DisclaimerBanner from "./common/DisclaimerBanner";
 import { ArrowLeft, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3, GitCompareArrows } from "lucide-react";
-import { FundIndexWidget, ComparisonWidget } from "./navigation/IndexWidgets";
+import { FundBrowseWidget, ComparisonWidget } from "./navigation/IndexWidgets";
 
 const Header = () => {
   return (
@@ -57,7 +57,7 @@ const Header = () => {
                   <NavigationMenuContent>
                     <div className="w-80 p-4 bg-card">
                       <div className="space-y-3">
-                        <FundIndexWidget />
+                        <FundBrowseWidget />
                         <ComparisonWidget />
                         <NavigationMenuLink asChild>
                           <Link to="/alternatives" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">

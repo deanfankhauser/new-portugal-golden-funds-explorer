@@ -15,6 +15,7 @@ import CategoryPageEmptyState from '../components/category/CategoryPageEmptyStat
 import RelatedCategories from '../components/category/RelatedCategories';
 import CategoryCrossLinks from '../components/category/CategoryCrossLinks';
 import VerificationFilterChip from '../components/common/VerificationFilterChip';
+import { FloatingActionButton } from '../components/common/FloatingActionButton';
 
 const CategoryPage = () => {
   const { category: categorySlug } = useParams<{ category: string }>();
@@ -103,6 +104,8 @@ const CategoryPage = () => {
       </main>
       
       <Footer />
+      
+      <FloatingActionButton />
     </div>
   );
 };

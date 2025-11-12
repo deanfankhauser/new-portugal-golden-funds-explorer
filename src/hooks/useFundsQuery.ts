@@ -1,8 +1,9 @@
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
-import { supabase } from '../integrations/supabase/client';
+const getSupabase = async () => (await import('../integrations/supabase/client')).supabase;
 import { Fund, FundTag, FundCategory, GeographicAllocation, TeamMember, PdfDocument, FAQItem, RedemptionFrequency } from '../data/types/funds';
 
 const FUNDS_PER_PAGE = 30;
+const isSSG = typeof window === 'undefined';
 
 interface TransformFundParams {
   fund: any;
@@ -110,11 +111,17 @@ const transformFund = ({ fund, ranking = 999 }: TransformFundParams): Fund => {
 
 // Fetch all funds with pagination
 const fetchFundsPage = async ({ pageParam = 0 }) => {
+  // Skip network calls during SSG
+  if (isSSG) {
+    return { funds: [], nextPage: undefined, totalCount: 0 };
+  }
+  
   const from = pageParam * FUNDS_PER_PAGE;
   const to = from + FUNDS_PER_PAGE - 1;
   
   console.log(`📊 Fetching funds page ${pageParam} (${from}-${to})`);
   
+  const supabase = await getSupabase();
   const { data, error, count } = await supabase
     .from('funds')
     .select(`
@@ -154,8 +161,14 @@ const fetchFundsPage = async ({ pageParam = 0 }) => {
 
 // Fetch single fund by ID
 const fetchFundById = async (fundId: string): Promise<Fund | null> => {
+  // Skip network calls during SSG
+  if (isSSG) {
+    return null;
+  }
+  
   console.log('🔍 Fetching single fund:', fundId);
   
+  const supabase = await getSupabase();
   const { data, error } = await supabase
     .from('funds')
     .select(`
@@ -190,6 +203,7 @@ export const useInfiniteFunds = () => {
     queryFn: fetchFundsPage,
     getNextPageParam: (lastPage) => lastPage.nextPage,
     initialPageParam: 0,
+    enabled: !isSSG,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
   });
@@ -200,7 +214,7 @@ export const useFund = (fundId: string | undefined) => {
   return useQuery({
     queryKey: ['fund', fundId],
     queryFn: () => fundId ? fetchFundById(fundId) : Promise.resolve(null),
-    enabled: !!fundId,
+    enabled: !!fundId && !isSSG,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
   });
@@ -211,6 +225,7 @@ export const useAllFunds = () => {
   return useQuery({
     queryKey: ['funds-all'],
     queryFn: async () => {
+      const supabase = await getSupabase();
       const { data, error } = await supabase
         .from('funds')
         .select(`
@@ -239,6 +254,7 @@ export const useAllFunds = () => {
         return (a.finalRank ?? 999) - (b.finalRank ?? 999);
       });
     },
+    enabled: !isSSG,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
   });

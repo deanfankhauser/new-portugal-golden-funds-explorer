@@ -14,7 +14,18 @@ interface TeamMember {
   name: string;
   role: string;
   bio?: string;
-  photo?: string;
+  photoUrl?: string;
+}
+
+interface ManagerHighlight {
+  title: string;
+  description: string;
+  icon?: string;
+}
+
+interface ManagerFAQ {
+  question: string;
+  answer: string;
 }
 
 interface ProfileEditTabProps {
@@ -33,12 +44,15 @@ const profileSchema = z.object({
   founded_year: z.number().int().min(1800).max(new Date().getFullYear()).optional().nullable(),
   assets_under_management: z.number().int().min(0).optional().nullable(),
   manager_about: z.string().trim().max(3000).optional(),
+  registration_number: z.string().trim().max(100).optional(),
+  license_number: z.string().trim().max(100).optional(),
 });
 
 const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdate, canManageTeam }) => {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingTeamPhoto, setUploadingTeamPhoto] = useState<number | null>(null);
   
   const [companyName, setCompanyName] = useState(profile.company_name || '');
   const [managerName, setManagerName] = useState(profile.manager_name || '');
@@ -50,10 +64,28 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
   const [aum, setAum] = useState(profile.assets_under_management?.toString() || '');
   const [about, setAbout] = useState(profile.manager_about || '');
   const [logoUrl, setLogoUrl] = useState(profile.logo_url || '');
+  const [registrationNumber, setRegistrationNumber] = useState(profile.registration_number || '');
+  const [licenseNumber, setLicenseNumber] = useState(profile.license_number || '');
   
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>(() => {
     try {
       return profile.team_members ? JSON.parse(JSON.stringify(profile.team_members)) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [highlights, setHighlights] = useState<ManagerHighlight[]>(() => {
+    try {
+      return profile.manager_highlights ? JSON.parse(JSON.stringify(profile.manager_highlights)) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [faqs, setFaqs] = useState<ManagerFAQ[]>(() => {
+    try {
+      return profile.manager_faqs ? JSON.parse(JSON.stringify(profile.manager_faqs)) : [];
     } catch {
       return [];
     }
@@ -146,6 +178,111 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
     setTeamMembers(updated);
   };
 
+  const handleTeamMemberPhotoUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: 'Invalid File',
+        description: 'Please upload an image file',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: 'File Too Large',
+        description: 'Photo must be less than 5MB',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setUploadingTeamPhoto(index);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}_team_${index}.${fileExt}`;
+      const filePath = `${user.id}/team/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile-photos')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('profile-photos')
+        .getPublicUrl(filePath);
+
+      const updated = [...teamMembers];
+      updated[index] = { ...updated[index], photoUrl: publicUrl };
+      setTeamMembers(updated);
+
+      toast({
+        title: 'Photo Uploaded',
+        description: 'Team member photo has been uploaded successfully',
+      });
+    } catch (error: any) {
+      console.error('Error uploading team photo:', error);
+      toast({
+        title: 'Upload Failed',
+        description: error.message || 'Failed to upload photo',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploadingTeamPhoto(null);
+    }
+  };
+
+  const handleRemoveTeamMemberPhoto = (index: number) => {
+    const updated = [...teamMembers];
+    updated[index] = { ...updated[index], photoUrl: undefined };
+    setTeamMembers(updated);
+    toast({
+      title: 'Photo Removed',
+      description: 'Photo will be removed when you save changes.',
+    });
+  };
+
+  const handleAddHighlight = () => {
+    setHighlights([...highlights, { title: '', description: '', icon: '' }]);
+  };
+
+  const handleRemoveHighlight = (index: number) => {
+    setHighlights(highlights.filter((_, i) => i !== index));
+  };
+
+  const handleHighlightChange = (index: number, field: keyof ManagerHighlight, value: string) => {
+    const updated = [...highlights];
+    updated[index] = { ...updated[index], [field]: value };
+    setHighlights(updated);
+  };
+
+  const handleAddFAQ = () => {
+    setFaqs([...faqs, { question: '', answer: '' }]);
+  };
+
+  const handleRemoveFAQ = (index: number) => {
+    setFaqs(faqs.filter((_, i) => i !== index));
+  };
+
+  const handleFAQChange = (index: number, field: keyof ManagerFAQ, value: string) => {
+    const updated = [...faqs];
+    updated[index] = { ...updated[index], [field]: value };
+    setFaqs(updated);
+  };
+
   const handleSave = async () => {
     setSaving(true);
 
@@ -161,6 +298,8 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
         founded_year: foundedYear ? parseInt(foundedYear) : null,
         assets_under_management: aum ? parseInt(aum) : null,
         manager_about: about || undefined,
+        registration_number: registrationNumber || undefined,
+        license_number: licenseNumber || undefined,
       };
 
       const result = profileSchema.safeParse(validationData);
@@ -190,7 +329,11 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
         assets_under_management: aum ? parseInt(aum) : null,
         manager_about: about.trim() || null,
         logo_url: logoUrl || null,
+        registration_number: registrationNumber.trim() || null,
+        license_number: licenseNumber.trim() || null,
         team_members: teamMembers.length > 0 ? teamMembers : null,
+        manager_highlights: highlights.length > 0 ? highlights : null,
+        manager_faqs: faqs.length > 0 ? faqs : null,
         updated_at: new Date().toISOString(),
       };
 
@@ -374,6 +517,29 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
               Total assets under management in EUR
             </p>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="registration_number">Registration Number</Label>
+              <Input
+                id="registration_number"
+                value={registrationNumber}
+                onChange={(e) => setRegistrationNumber(e.target.value)}
+                placeholder="e.g., 123456"
+                maxLength={100}
+              />
+            </div>
+            <div>
+              <Label htmlFor="license_number">License Number</Label>
+              <Input
+                id="license_number"
+                value={licenseNumber}
+                onChange={(e) => setLicenseNumber(e.target.value)}
+                placeholder="e.g., CMVM-987654"
+                maxLength={100}
+              />
+            </div>
+          </div>
         </CardContent>
       </Card>
 
@@ -422,6 +588,140 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
         </CardContent>
       </Card>
 
+      {/* Manager Highlights */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Company Highlights</CardTitle>
+              <CardDescription>
+                Add awards, certifications, and key achievements
+              </CardDescription>
+            </div>
+            <Button onClick={handleAddHighlight} size="sm">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Highlight
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {highlights.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">
+              No highlights added yet. Click "Add Highlight" to get started.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {highlights.map((highlight, index) => (
+                <div key={index} className="p-4 border rounded-lg space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium">Highlight {index + 1}</h4>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleRemoveHighlight(index)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div>
+                    <Label>Title</Label>
+                    <Input
+                      value={highlight.title}
+                      onChange={(e) => handleHighlightChange(index, 'title', e.target.value)}
+                      placeholder="e.g., CMVM Certified Fund"
+                      maxLength={100}
+                    />
+                  </div>
+                  <div>
+                    <Label>Description</Label>
+                    <Textarea
+                      value={highlight.description}
+                      onChange={(e) => handleHighlightChange(index, 'description', e.target.value)}
+                      placeholder="Brief description of this achievement..."
+                      rows={2}
+                      maxLength={500}
+                    />
+                  </div>
+                  <div>
+                    <Label>Icon (Optional)</Label>
+                    <Input
+                      value={highlight.icon || ''}
+                      onChange={(e) => handleHighlightChange(index, 'icon', e.target.value)}
+                      placeholder="e.g., Award, Star, Shield (Lucide icon name)"
+                      maxLength={50}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Enter a Lucide icon name for display
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Manager FAQs */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Company FAQs</CardTitle>
+              <CardDescription>
+                Add frequently asked questions about your company (shown on your manager page)
+              </CardDescription>
+            </div>
+            <Button onClick={handleAddFAQ} size="sm">
+              <Plus className="h-4 w-4 mr-2" />
+              Add FAQ
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {faqs.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">
+              No FAQs added yet. Click "Add FAQ" to get started.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {faqs.map((faq, index) => (
+                <div key={index} className="p-4 border rounded-lg space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium">FAQ {index + 1}</h4>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleRemoveFAQ(index)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div>
+                    <Label>Question</Label>
+                    <Input
+                      value={faq.question}
+                      onChange={(e) => handleFAQChange(index, 'question', e.target.value)}
+                      placeholder="e.g., What types of investments do you specialize in?"
+                      maxLength={200}
+                    />
+                  </div>
+                  <div>
+                    <Label>Answer</Label>
+                    <Textarea
+                      value={faq.answer}
+                      onChange={(e) => handleFAQChange(index, 'answer', e.target.value)}
+                      placeholder="Provide a detailed answer to this question..."
+                      rows={4}
+                      maxLength={2000}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Team Members */}
       {canManageTeam && (
         <Card>
@@ -458,6 +758,50 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
+                    
+                    {/* Photo Upload */}
+                    <div>
+                      <Label>Profile Photo (Optional)</Label>
+                      <div className="flex items-center gap-4 mt-2">
+                        {member.photoUrl ? (
+                          <div className="relative">
+                            <img
+                              src={member.photoUrl}
+                              alt={member.name || 'Team member'}
+                              className="h-20 w-20 rounded-full object-cover border-2 border-border"
+                            />
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              className="absolute -top-1 -right-1 h-6 w-6 rounded-full"
+                              onClick={() => handleRemoveTeamMemberPhoto(index)}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="h-20 w-20 rounded-full border-2 border-dashed border-border flex items-center justify-center">
+                            <Upload className="h-6 w-6 text-muted-foreground" />
+                          </div>
+                        )}
+                        <div className="flex-1">
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleTeamMemberPhotoUpload(index, e)}
+                            disabled={uploadingTeamPhoto === index}
+                            className="max-w-xs"
+                          />
+                          {uploadingTeamPhoto === index && (
+                            <p className="text-sm text-muted-foreground mt-1">Uploading...</p>
+                          )}
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Max 5MB. Recommended: Square photo
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
                         <Label>Name</Label>

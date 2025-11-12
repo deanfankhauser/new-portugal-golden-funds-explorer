@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+// Supabase is loaded dynamically in browser when needed
 
 // Track in-flight requests to prevent duplicates
 const inFlightRequests = new Map<string, Promise<void>>();
@@ -33,7 +33,7 @@ export const trackPageView = async (fundId: string) => {
   const requestPromise = (async () => {
     try {
       const sessionId = getSessionId();
-      
+      const { supabase } = await import('@/integrations/supabase/client');
       await supabase.functions.invoke('track-fund-event', {
         body: {
           type: 'page_view',
@@ -72,7 +72,7 @@ export const trackInteraction = async (
   const requestPromise = (async () => {
     try {
       const sessionId = getSessionId();
-      
+      const { supabase } = await import('@/integrations/supabase/client');
       await supabase.functions.invoke('track-fund-event', {
         body: {
           type,

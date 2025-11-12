@@ -13,17 +13,27 @@ import {
 import { Heart, User, Settings, LogOut, Shield, Building, TrendingUp } from 'lucide-react';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import UniversalAuthButton from './UniversalAuthButton';
-import { supabase } from '@/integrations/supabase/client';
 import { getDisplayName, getAvatarUrl, isManagerProfile } from '@/types/profile';
+import { toast } from '@/hooks/use-toast';
+
+const getSupabase = async () => (await import('@/integrations/supabase/client')).supabase;
 
 const AuthAwareButton: React.FC = () => {
-  const { user, profile, signOut, loading } = useEnhancedAuth();
+  // Safely access auth context with SSR guard
+  let auth;
+  try {
+    auth = useEnhancedAuth();
+  } catch {
+    // During SSG, provider isn't mounted - fall back to guest state
+    auth = { user: null, profile: null, signOut: async () => {}, loading: false };
+  }
+  const { user, profile, signOut, loading } = auth;
   const [isAdmin, setIsAdmin] = useState(false);
   const [hasAssignedFunds, setHasAssignedFunds] = useState(false);
 
   useEffect(() => {
     const checkAdminStatus = async () => {
-      if (!user?.id) {
+      if (!user?.id || typeof window === 'undefined') {
         setIsAdmin(false);
         return;
       }
@@ -31,6 +41,7 @@ const AuthAwareButton: React.FC = () => {
       console.log('🔐 Checking admin status for user:', user.id);
       
       try {
+        const supabase = await getSupabase();
         const { data, error } = await supabase
           .from('admin_users')
           .select('id')
@@ -55,28 +66,76 @@ const AuthAwareButton: React.FC = () => {
   }, [user?.id]);
 
   useEffect(() => {
-    const checkAssignedFunds = async () => {
-      if (!user?.id) {
+    const checkManagerAccess = async () => {
+      if (!user?.id || typeof window === 'undefined') {
         setHasAssignedFunds(false);
         return;
       }
 
       try {
-        const { count } = await supabase
-          .from('fund_managers' as any)
+        const supabase = await getSupabase();
+        // Primary: Check company-level assignments
+        const { count: companyCount, error: companyErr } = await supabase
+          .from('manager_profile_assignments')
           .select('*', { count: 'exact', head: true })
           .eq('user_id', user.id)
           .eq('status', 'active');
 
-        setHasAssignedFunds((count || 0) > 0);
+        let hasAccess = (companyCount || 0) > 0;
+
+        // Legacy fallback: Check fund-level assignments
+        if (!hasAccess) {
+          const { count: fundCount } = await supabase
+            .from('fund_managers' as any)
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', user.id)
+            .eq('status', 'active');
+
+          hasAccess = (fundCount || 0) > 0;
+        }
+
+        setHasAssignedFunds(hasAccess);
       } catch (error) {
-        console.error('Error checking assigned funds:', error);
+        console.error('Error checking manager access:', error);
         setHasAssignedFunds(false);
       }
     };
 
-    checkAssignedFunds();
+  checkManagerAccess();
   }, [user?.id]);
+
+  const handleSignOut = async () => {
+    try {
+      console.log('🔐 AuthAwareButton: Initiating sign-out...');
+      
+      await signOut();
+      
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out of your account",
+      });
+      
+      // Force redirect to homepage and reload (browser only)
+      if (typeof window !== 'undefined') {
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
+      }
+    } catch (error) {
+      console.error('🔐 AuthAwareButton sign-out error:', error);
+      toast({
+        title: "Signed out",
+        description: "You have been signed out",
+      });
+      
+      // Force redirect anyway (browser only)
+      if (typeof window !== 'undefined') {
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
+      }
+    }
+  };
 
   console.log('🔐 AuthAwareButton state:', {
     hasUser: !!user,
@@ -171,7 +230,7 @@ const AuthAwareButton: React.FC = () => {
         )}
         
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={signOut} className="cursor-pointer">
+        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
           Sign out
         </DropdownMenuItem>

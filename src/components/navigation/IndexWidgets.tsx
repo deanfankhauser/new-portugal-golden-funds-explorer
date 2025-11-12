@@ -2,10 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { TrendingUp, BarChart3, Database, Award, ArrowRight } from 'lucide-react';
 
-export const FundIndexWidget: React.FC = () => {
+export const FundBrowseWidget: React.FC = () => {
   return (
     <Link 
-      to="/index" 
+      to="/" 
       className="group block p-4 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg border border-primary/20 hover:border-primary/30 transition-all duration-200 hover:shadow-md"
     >
       <div className="flex items-center justify-between mb-2">
@@ -13,12 +13,12 @@ export const FundIndexWidget: React.FC = () => {
           <div className="p-1.5 bg-primary/10 rounded-md group-hover:bg-primary/20 transition-colors">
             <TrendingUp className="h-4 w-4 text-primary" />
           </div>
-          <span className="font-semibold text-gray-900">Fund Index</span>
+          <span className="font-semibold text-gray-900">Browse Funds</span>
         </div>
         <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
       </div>
       <p className="text-sm text-gray-600 mb-2">
-        Complete Portugal Golden Visa fund rankings
+        Explore Portugal Golden Visa investment funds
       </p>
       <div className="flex items-center gap-4 text-xs text-gray-500">
         <div className="flex items-center gap-1">
@@ -33,6 +33,9 @@ export const FundIndexWidget: React.FC = () => {
     </Link>
   );
 };
+
+// Legacy export for backwards compatibility
+export const FundIndexWidget = FundBrowseWidget;
 
 export const ComparisonWidget: React.FC = () => {
   return (

@@ -100,14 +100,33 @@ export const ManagerProfileAssignment: React.FC = () => {
       // Fetch existing assignments
       const { data: assignmentsData, error: assignmentsError } = await supabase
         .from('manager_profile_assignments' as any)
-        .select(`
-          *,
-          profiles (*)
-        `)
+        .select('*')
         .order('assigned_at', { ascending: false });
 
-      if (!assignmentsError && assignmentsData) {
-        setAssignments(assignmentsData as any);
+      if (assignmentsError) {
+        console.error('Error fetching assignments:', assignmentsError);
+        throw assignmentsError;
+      }
+
+      // Fetch all user profiles for joining
+      const { data: userProfilesData, error: userProfilesError } = await supabase
+        .from('profiles')
+        .select('*');
+
+      if (userProfilesError) {
+        console.error('Error fetching user profiles:', userProfilesError);
+        throw userProfilesError;
+      }
+
+      // Manually join assignments with user profiles
+      if (assignmentsData && userProfilesData) {
+        const enrichedAssignments = (assignmentsData as any[]).map((assignment: any) => ({
+          ...assignment,
+          profiles: (userProfilesData as any[]).find((p: any) => p.user_id === assignment.user_id)
+        }));
+        setAssignments(enrichedAssignments as any);
+      } else {
+        setAssignments([]);
       }
     } catch (error: any) {
       console.error('Error fetching data:', error);
@@ -131,6 +150,30 @@ export const ManagerProfileAssignment: React.FC = () => {
       return;
     }
 
+    // Defensive validation: check profile exists
+    const profile = approvedProfiles.find((p) => p.id === selectedProfile);
+    if (!profile) {
+      toast({
+        title: 'Invalid Profile',
+        description: 'Selected profile no longer exists',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Defensive validation: check managers exist
+    const validManagerIds = selectedManagers.filter((id) => 
+      managers.some((m) => m.user_id === id)
+    );
+    if (validManagerIds.length === 0) {
+      toast({
+        title: 'Invalid Managers',
+        description: 'None of the selected managers exist',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setAssigning(true);
     try {
       const permissions = {
@@ -140,9 +183,16 @@ export const ManagerProfileAssignment: React.FC = () => {
         can_view_analytics: canViewAnalytics,
       };
 
+      console.info('🎯 Assigning managers:', {
+        profile_id: selectedProfile,
+        company_name: profile.company_name,
+        manager_ids: validManagerIds,
+        permissions,
+      });
+
       const { data: results, error } = await supabase.rpc('admin_assign_profile_managers', {
         _profile_id: selectedProfile,
-        _manager_ids: selectedManagers,
+        _manager_ids: validManagerIds,
         _permissions: permissions,
         _status: 'active',
         _notes: assignmentNotes || null,
@@ -150,32 +200,60 @@ export const ManagerProfileAssignment: React.FC = () => {
 
       if (error) throw error;
 
-      const insertedCount = (results || []).filter((r: any) => r.inserted).length;
+      console.info('📊 Assignment results:', results);
 
-      // Send notification emails
-      const profile = approvedProfiles.find((p) => p.id === selectedProfile);
-      if (profile) {
-        for (const managerId of selectedManagers) {
-          const manager = managers.find((m) => m.user_id === managerId);
-          if (manager) {
-            await supabase.functions.invoke('notify-manager-profile-assignment', {
-              body: {
-                profile_id: profile.id,
-                company_name: profile.company_name,
-                manager_name: profile.manager_name || 'Manager',
-                manager_email: manager.email,
-                permissions,
-                notes: assignmentNotes,
-                assigned_at: new Date().toISOString(),
-              },
-            });
-          }
+      // Filter for successfully inserted assignments
+      const insertedIds = (results || [])
+        .filter((r: any) => r.inserted)
+        .map((r: any) => r.user_id);
+      
+      const skippedCount = validManagerIds.length - insertedIds.length;
+
+      // Early exit if nothing was inserted
+      if (insertedIds.length === 0) {
+        toast({
+          title: 'No New Assignments',
+          description: 'All selected managers are already assigned to this company',
+        });
+        setIsAssignDialogOpen(false);
+        return;
+      }
+
+      // Send notification emails ONLY for successfully inserted assignments
+      for (const managerId of insertedIds) {
+        const manager = managers.find((m) => m.user_id === managerId);
+        if (manager) {
+          // Construct the assigned user's name from their profile
+          const assignedUserName = manager.first_name && manager.last_name
+            ? `${manager.first_name} ${manager.last_name}`
+            : manager.first_name || manager.email.split('@')[0];
+          
+          console.info('📧 Sending assignment email:', {
+            profile_id: profile.id,
+            company_name: profile.company_name,
+            assigned_user_name: assignedUserName,
+            assigned_user_email: manager.email,
+          });
+          
+          await supabase.functions.invoke('notify-manager-profile-assignment', {
+            body: {
+              profile_id: profile.id,
+              company_name: profile.company_name,
+              manager_name: assignedUserName,
+              manager_email: manager.email,
+              permissions,
+              notes: assignmentNotes,
+              assigned_at: new Date().toISOString(),
+            },
+          });
         }
       }
 
       toast({
         title: 'Managers Assigned',
-        description: `Assigned ${insertedCount} manager(s) to ${profile?.company_name}`,
+        description: `Assigned ${insertedIds.length} manager(s) to ${profile.company_name}${
+          skippedCount > 0 ? `. Skipped ${skippedCount} (already assigned)` : ''
+        }`,
       });
 
       // Reset form

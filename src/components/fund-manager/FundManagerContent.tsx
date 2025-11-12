@@ -9,6 +9,7 @@ import ManagerVerificationBadge from './ManagerVerificationBadge';
 import ManagerAboutSection from './ManagerAboutSection';
 import ManagerTeamSection from './ManagerTeamSection';
 import ManagerHighlightsSection from './ManagerHighlightsSection';
+import ManagerFAQsSection from './ManagerFAQsSection';
 import { Profile } from '@/types/profile';
 
 interface FundManagerContentProps {
@@ -29,20 +30,33 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
       {/* Manager Header */}
       <div className="py-12 px-4 sm:px-6 lg:px-8 border-b border-border">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-4 mb-6">
-            <ManagerVerificationBadge 
-              isVerified={isManagerVerified}
-              funds={managerFunds}
-            />
+          <div className="flex items-start gap-6 mb-6">
+            {managerProfile?.logo_url && (
+              <img 
+                src={managerProfile.logo_url} 
+                alt={`${managerName} logo`}
+                className="w-24 h-24 rounded-xl object-cover border border-border/40"
+              />
+            )}
+            <div className="flex-1">
+              <div className="flex items-center gap-4 mb-4">
+                <ManagerVerificationBadge 
+                  isVerified={isManagerVerified}
+                  funds={managerFunds}
+                />
+              </div>
+              <h1 className="text-5xl font-bold text-foreground mb-4">{managerName}</h1>
+            </div>
           </div>
           
-          <h1 className="text-5xl font-bold text-foreground mb-4">{managerName}</h1>
-          <p className="text-xl text-muted-foreground max-w-3xl">
-            {managerFunds.length === 1 
-              ? "Portugal Golden Visa approved investment fund manager offering professional fund management services for international investors seeking Portuguese residency through capital transfer."
-              : `Portugal Golden Visa approved investment fund manager offering ${managerFunds.length} professional investment funds for international investors seeking Portuguese residency through capital transfer.`
-            }
-          </p>
+          <div className={managerProfile?.logo_url ? "pl-[120px]" : ""}>
+            <p className="text-xl text-muted-foreground max-w-3xl">
+              {managerFunds.length === 1 
+                ? "Portugal Golden Visa approved investment fund manager offering professional fund management services for international investors seeking Portuguese residency through capital transfer."
+                : `Portugal Golden Visa approved investment fund manager offering ${managerFunds.length} professional investment funds for international investors seeking Portuguese residency through capital transfer.`
+              }
+            </p>
+          </div>
         </div>
       </div>
 
@@ -79,6 +93,14 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
         <ManagerTeamSection 
           managerName={managerName}
           teamMembers={managerProfile.team_members}
+        />
+      )}
+      
+      {/* Manager FAQs Section - Only show if manager profile exists and has FAQs */}
+      {isManagerVerified && managerProfile?.manager_faqs && Array.isArray(managerProfile.manager_faqs) && managerProfile.manager_faqs.length > 0 && (
+        <ManagerFAQsSection 
+          managerName={managerName}
+          faqs={managerProfile.manager_faqs}
         />
       )}
 

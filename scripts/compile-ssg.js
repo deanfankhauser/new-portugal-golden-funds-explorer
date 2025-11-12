@@ -36,8 +36,7 @@ export function compileSSGFiles() {
     const criticalPages = [
       { path: path.join(distDir, 'index.html'), name: 'homepage' },
       { path: path.join(distDir, 'disclaimer', 'index.html'), name: 'disclaimer' },
-      { path: path.join(distDir, 'privacy', 'index.html'), name: 'privacy' },
-      { path: path.join(distDir, 'index', 'index.html'), name: 'fund index' }
+      { path: path.join(distDir, 'privacy', 'index.html'), name: 'privacy' }
     ];
     
     let verificationFailed = false;
@@ -77,7 +76,7 @@ export function compileSSGFiles() {
     const fundDirs = fs.readdirSync(distDir).filter(f => {
       const fullPath = path.join(distDir, f);
       const stat = fs.statSync(fullPath);
-      return stat.isDirectory() && !['assets', 'categories', 'tags', 'managers', 'compare', 'comparisons', 'alternatives', 'index', 'disclaimer', 'privacy', 'about'].includes(f);
+      return stat.isDirectory() && !['assets', 'categories', 'tags', 'managers', 'compare', 'comparisons', 'alternatives', 'disclaimer', 'privacy', 'about'].includes(f);
     });
     
     const sampleSize = Math.min(3, fundDirs.length);

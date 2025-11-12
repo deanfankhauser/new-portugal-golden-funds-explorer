@@ -343,7 +343,6 @@ Disallow: /auth
 Disallow: /api/
 
 # Allow important pages
-Allow: /index
 Allow: /categories
 Allow: /tags
 Allow: /managers

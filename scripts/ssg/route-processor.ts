@@ -79,7 +79,7 @@ export async function processRoute(
     }
     
     // Fail build if critical pages lack H1
-    if (!finalHasH1 && ['/', '/index', '/disclaimer', '/privacy'].includes(route.path)) {
+    if (!finalHasH1 && ['/', '/disclaimer', '/privacy'].includes(route.path)) {
       console.error(`❌ BUILD FAILURE: Critical page ${route.path} missing H1 tag`);
       return { success: false };
     }

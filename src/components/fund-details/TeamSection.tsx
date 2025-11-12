@@ -17,7 +17,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
   return (
     <div className="bg-card border border-border/40 rounded-2xl p-10 shadow-sm">
       {/* Section Header */}
-      <h2 className="text-2xl font-semibold tracking-tight mb-2">
+      <h2 className="text-xl md:text-2xl font-semibold tracking-tight mb-2">
         Fund Team
       </h2>
       <p className="text-sm text-muted-foreground mb-8">

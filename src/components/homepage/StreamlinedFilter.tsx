@@ -23,7 +23,10 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
   showOnlyVerified,
   setShowOnlyVerified
 }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(() => {
+    // Default to closed on mobile (< 1024px), open on desktop
+    return typeof window !== 'undefined' ? window.innerWidth >= 1024 : true;
+  });
   
   const allFilters = getMeaningfulFilters();
 

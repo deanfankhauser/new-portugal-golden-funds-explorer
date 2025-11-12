@@ -56,7 +56,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       {/* Sticky Navigation */}
       <StickyNavigation fund={fund} />
       
-      <div className="space-y-8">
+      <div className="space-y-6 md:space-y-8">
         {/* Breadcrumbs */}
         <FundBreadcrumbs fund={fund} />
 
@@ -64,21 +64,21 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
         <DecisionBandHeader fund={fund} />
 
         {/* Two Column Layout - Main Content + Sticky Sidebar */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 md:gap-8">
           {/* Left Column - Main Content */}
-          <div className="space-y-6">
+          <div className="space-y-6 md:space-y-8">
             <FundSnapshotCard fund={fund} />
         
             <HistoricalPerformanceChart historicalPerformance={fund.historicalPerformance} />
             
             {/* Main Content Card - Full Width */}
             <div className="bg-card rounded-xl md:rounded-2xl shadow-md border border-border overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-                  <div className="p-4 md:p-6 lg:p-10 space-y-8 md:space-y-12">
+                  <div className="p-4 md:p-6 lg:p-10 space-y-6 md:space-y-8 lg:space-y-12">
                     
                     {/* Fund Overview Section */}
-                    <section id="fund-overview" className="scroll-mt-24">
+                    <section id="fund-overview" className="scroll-mt-28 md:scroll-mt-24">
                       <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Fund Overview</h2>
-                      <div className="space-y-6">
+                      <div className="space-y-4 md:space-y-6">
                         <FundDescription description={fund.detailedDescription} />
                         <RegulatoryIdentifiers fund={fund} />
                         <FundManager managerName={fund.managerName} />
@@ -86,16 +86,16 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                     </section>
 
                     {/* Key Terms Section */}
-                    <section id="key-terms-strategy" className="scroll-mt-24">
+                    <section id="key-terms-strategy" className="scroll-mt-28 md:scroll-mt-24">
                       <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Key Terms</h2>
                       <KeyTermsTable fund={fund} />
                     </section>
 
 
                     {/* Financial Details Section */}
-                    <section id="financial-details" className="scroll-mt-24">
+                    <section id="financial-details" className="scroll-mt-28 md:scroll-mt-24">
                       <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Financial Details</h2>
-                      <div className="space-y-8">
+                      <div className="space-y-6 md:space-y-8">
                         <FeeStructure fund={fund} formatPercentage={formatPercentage} />
                         <GeographicAllocation allocations={fund.geographicAllocation} formatPercentage={formatPercentage} />
                         <RedemptionTerms redemptionTerms={fund.redemptionTerms} />
@@ -103,16 +103,16 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                     </section>
 
                     {/* Fund Structure Section */}
-                    <section id="fund-structure" className="scroll-mt-24">
+                    <section id="fund-structure" className="scroll-mt-28 md:scroll-mt-24">
                       <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Fund Structure</h2>
-                      <div className="space-y-6">
+                      <div className="space-y-4 md:space-y-6">
                         <FundCategory category={fund.category} />
                         <RegulatoryComplianceInfo fund={fund} />
                       </div>
                     </section>
 
                     {/* Team Information Section */}
-                    <section id="team-information" className="scroll-mt-24">
+                    <section id="team-information" className="scroll-mt-28 md:scroll-mt-24">
                       <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Team Information</h2>
                       <TeamSection team={fund.team} />
                     </section>
@@ -124,14 +124,14 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                         <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Want to calculate your potential returns?</h3>
                         <p className="text-xs md:text-sm text-muted-foreground mb-4">Use our ROI calculator to estimate potential returns based on historical performance</p>
                         <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                          <Button asChild className="bg-success hover:bg-success/90 text-success-foreground">
+                          <Button asChild className="bg-success hover:bg-success/90 text-success-foreground h-11">
                             <Link to="/roi-calculator">
                               <Calculator className="mr-2 h-4 w-4" />
                               Calculate Returns
                             </Link>
                           </Button>
-                          <Button asChild variant="outline" className="border-success text-success hover:bg-success/10">
-                            <Link to="/index">
+                          <Button asChild variant="outline" className="border-success text-success hover:bg-success/10 h-11">
+                            <Link to="/">
                               <TrendingUp className="mr-2 h-4 w-4" />
                               View Fund Index
                             </Link>
@@ -171,7 +171,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       
       
       {/* Bottom Sections with Proper Spacing */}
-      <div className="space-y-8 md:space-y-12">
+      <div className="space-y-8 md:space-y-12 mt-8 md:mt-12">
         {/* Related Funds Section */}
         <RelatedFunds currentFund={fund} />
         

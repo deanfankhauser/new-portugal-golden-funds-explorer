@@ -67,7 +67,7 @@ const FloatingCTA: React.FC<FloatingCTAProps> = ({ fund }) => {
       <div className="grid grid-cols-2 gap-3 max-w-lg mx-auto">
         <Button 
           size="lg"
-          className="w-full gap-2 h-14 text-sm font-semibold shadow-lg"
+          className="w-full gap-2 h-12 text-sm font-semibold shadow-lg"
           onClick={scrollToEnquiry}
         >
           <MessageSquare className="h-5 w-5" />
@@ -77,7 +77,7 @@ const FloatingCTA: React.FC<FloatingCTAProps> = ({ fund }) => {
         <Button 
           size="lg"
           variant={isSaved ? "secondary" : "outline"}
-          className="w-full gap-2 h-14 text-sm font-semibold shadow-lg border-2"
+          className="w-full gap-2 h-12 text-sm font-semibold shadow-lg border-2"
           onClick={handleSaveFund}
         >
           <Heart className={`h-5 w-5 ${isSaved ? 'fill-current' : ''}`} />

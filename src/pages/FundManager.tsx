@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getFundsByManager, getAllFundManagers, getAllApprovedManagers } from '../data/services/managers-service';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getAllApprovedManagers } from '../data/services/managers-service';
 import { slugToManager, managerToSlug } from '../lib/utils';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -8,24 +8,54 @@ import PageSEO from '../components/common/PageSEO';
 import FundManagerContent from '../components/fund-manager/FundManagerContent';
 import FundManagerNotFound from '../components/fund-manager/FundManagerNotFound';
 import FundManagerBreadcrumbs from '../components/fund-manager/FundManagerBreadcrumbs';
-import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/types/profile';
+import { useAllFunds } from '../hooks/useFundsQuery';
+import { Fund } from '../data/types/funds';
+import { FloatingActionButton } from '../components/common/FloatingActionButton';
+
+const isSSG = typeof window === 'undefined';
 
 const FundManager = () => {
   const { name } = useParams<{ name: string }>();
+  const navigate = useNavigate();
   const slugName = name || '';
   const managerName = slugToManager(slugName);
-  const allManagers = getAllFundManagers();
   const [isManagerVerified, setIsManagerVerified] = useState(false);
   const [managerProfile, setManagerProfile] = useState<Profile | null>(null);
+  const [displayManagerName, setDisplayManagerName] = useState(managerName);
+  const [managerFunds, setManagerFunds] = useState<Fund[]>([]);
   
-  // Find matching manager by checking if any manager matches when converted to slug
-  const matchingManager = allManagers.find(manager => 
-    managerToSlug(manager.name) === slugName
-  );
-  
-  const displayManagerName = matchingManager ? matchingManager.name : managerName;
-  const managerFunds = matchingManager ? getFundsByManager(matchingManager.name) : [];
+  // Fetch all funds from database
+  const { data: allFunds, isLoading } = useAllFunds();
+
+  // Find matching manager and their funds from database
+  useEffect(() => {
+    if (!allFunds || allFunds.length === 0) return;
+    
+    // Get all unique managers from database funds
+    const managersMap = new Map<string, string>();
+    allFunds.forEach(fund => {
+      const normalizedKey = fund.managerName.toLowerCase();
+      if (!managersMap.has(normalizedKey)) {
+        managersMap.set(normalizedKey, fund.managerName);
+      }
+    });
+    
+    // Find manager whose slug matches the URL
+    const matchingManager = Array.from(managersMap.values()).find(manager => 
+      managerToSlug(manager) === slugName
+    );
+    
+    if (matchingManager) {
+      setDisplayManagerName(matchingManager);
+      
+      // Get all funds for this manager
+      const funds = allFunds.filter(fund =>
+        fund.managerName.toLowerCase() === matchingManager.toLowerCase()
+      );
+      setManagerFunds(funds);
+    }
+  }, [allFunds, slugName]);
 
   useEffect(() => {
     const checkManagerVerification = async () => {
@@ -56,6 +86,9 @@ const FundManager = () => {
       if (matchingProfile) {
         setIsManagerVerified(true);
         
+        // Lazy load supabase only when needed (not during SSG)
+        const { supabase } = await import('@/integrations/supabase/client');
+        
         // Fetch full profile data
         const { data } = await supabase
           .from('profiles')
@@ -72,13 +105,59 @@ const FundManager = () => {
     if (displayManagerName) {
       checkManagerVerification();
     }
-  }, [displayManagerName, slugName]);
+  }, [displayManagerName]);
+
+  // Canonicalize manager slug
+  useEffect(() => {
+    if (!name || isSSG) return;
+    const expected = managerToSlug(slugToManager(name));
+    if (name !== expected) {
+      navigate(`/manager/${expected}`, { replace: true });
+    }
+  }, [name, navigate]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [name]);
 
-  if (!matchingManager || managerFunds.length === 0) {
+  // Return minimal shell during SSG
+  if (isSSG) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <PageSEO pageType="manager" managerName={displayManagerName} />
+        <Header />
+        <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading fund manager...</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header />
+        <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading fund manager...</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (managerFunds.length === 0) {
     return <FundManagerNotFound managerName={displayManagerName} />;
   }
 
@@ -100,6 +179,8 @@ const FundManager = () => {
       </main>
       
       <Footer />
+      
+      <FloatingActionButton />
     </div>
   );
 };

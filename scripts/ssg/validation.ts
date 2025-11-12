@@ -97,7 +97,6 @@ export function verifyCriticalPages(distDir: string): void {
   const expectedBaseUrl = getBaseUrl();
   const criticalPages = [
     { file: 'index.html', name: 'Homepage' },
-    { file: 'index/index.html', name: 'Fund Index' },
     { file: 'about/index.html', name: 'About Page' }
   ];
   

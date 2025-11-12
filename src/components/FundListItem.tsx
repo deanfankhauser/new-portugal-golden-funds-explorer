@@ -6,7 +6,7 @@ import { getFundType } from '../utils/fundTypeUtils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GitCompare, PieChart, Euro, CheckCircle2 } from 'lucide-react';
+import { PieChart, Euro, CheckCircle2, GitCompare } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
@@ -23,12 +23,12 @@ interface FundListItemProps {
 
 const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
   const { addToComparison, removeFromComparison, isInComparison } = useComparison();
-  
   const isSelected = isInComparison(fund.id);
   const isGVEligible = isFundGVEligible(fund);
-  
+
   const handleCompareClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     
     if (isSelected) {
       removeFromComparison(fund.id);
@@ -39,7 +39,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
 
   return (
     <Card className="border border-border/60 rounded-xl bg-card w-full group">
-      <CardContent className="p-10">
+      <CardContent className="p-6 lg:p-10">
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1">
@@ -89,7 +89,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 Minimum Investment
               </span>
             </div>
-            <p className="text-[36px] font-semibold text-foreground tracking-tight leading-none">
+            <p className="text-[24px] font-semibold text-foreground tracking-tight leading-none">
               €{fund.minimumInvestment?.toLocaleString() || '—'}
             </p>
           </div>
@@ -102,7 +102,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 Target Return
               </span>
             </div>
-            <p className="text-[36px] font-semibold text-foreground tracking-tight leading-none">
+            <p className="text-[24px] font-semibold text-foreground tracking-tight leading-none">
               {getReturnTargetDisplay(fund)}
             </p>
           </div>
@@ -166,21 +166,21 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           
           {/* Action Buttons */}
           <div className="flex items-center gap-3">
-            <SaveFundButton fundId={fund.id} showText={true} size="md" />
+            <SaveFundButton fundId={fund.id} showText={false} size="md" variant="outline" className="h-11 w-11" />
             <Button 
               variant="outline"
-              size="default"
-              className="font-medium border-border/50"
+              size="icon"
               onClick={handleCompareClick}
+              title={isSelected ? 'Remove from comparison' : 'Add to comparison'}
+              className={`h-11 w-11 ${isSelected ? 'bg-primary text-primary-foreground' : ''}`}
             >
-              <GitCompare className="mr-2 h-4 w-4" />
-              {isSelected ? 'Added' : 'Compare'}
+              <GitCompare className="h-4 w-4" />
             </Button>
             <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
               <Button 
                 variant="default"
                 size="default"
-                className="font-medium bg-primary hover:bg-primary/90"
+                className="font-medium bg-primary hover:bg-primary/90 h-11"
               >
                 See more
                 <svg className="ml-2 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">

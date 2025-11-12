@@ -20,7 +20,7 @@ export async function generate404Page(distDir: string): Promise<void> {
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
               <div class="flex-shrink-0">
-                <a href="/index" class="text-2xl font-bold text-portugal-blue">Movingto</a>
+                <a href="/" class="text-2xl font-bold text-portugal-blue">Movingto</a>
               </div>
             </div>
           </div>
@@ -34,8 +34,8 @@ export async function generate404Page(distDir: string): Promise<void> {
               The page you are looking for might have been removed, had its name changed, 
               or is temporarily unavailable.
             </p>
-            <a href="/index" class="inline-block bg-portugal-blue hover:bg-portugal-darkblue text-white px-6 py-3 rounded-md font-medium transition-colors">
-              Browse Portugal Golden Visa Investment Fund Index
+            <a href="/" class="inline-block bg-portugal-blue hover:bg-portugal-darkblue text-white px-6 py-3 rounded-md font-medium transition-colors">
+              Browse Portugal Golden Visa Investment Funds
             </a>
           </div>
         </main>

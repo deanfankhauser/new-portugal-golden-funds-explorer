@@ -4,7 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FileCheck, Scale, FileText, ExternalLink } from 'lucide-react';
 import { analytics } from '../../utils/analytics';
 import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
-import movingtocIcon from '@/assets/movingto-icon.png';
+
+const movingtocIcon = '/lovable-uploads/9bdf45a5-6a2f-466e-8c2d-b8ba65863e8a.png';
 
 interface PremiumCTAProps {
   variant?: 'compact' | 'full' | 'banner';
