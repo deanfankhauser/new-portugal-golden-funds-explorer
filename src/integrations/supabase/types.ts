@@ -787,6 +787,96 @@ export type Database = {
           },
         ]
       }
+      page_errors: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          error_type: string
+          id: string
+          page_path: string
+          referrer: string | null
+          session_id: string | null
+          timestamp: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          error_type: string
+          id?: string
+          page_path: string
+          referrer?: string | null
+          session_id?: string | null
+          timestamp?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          error_type?: string
+          id?: string
+          page_path?: string
+          referrer?: string | null
+          session_id?: string | null
+          timestamp?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      page_performance_metrics: {
+        Row: {
+          cls: number | null
+          created_at: string | null
+          fcp: number | null
+          fid: number | null
+          id: string
+          lcp: number | null
+          page_path: string
+          page_type: string
+          session_id: string | null
+          timestamp: string
+          total_load_time: number | null
+          ttfb: number | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          cls?: number | null
+          created_at?: string | null
+          fcp?: number | null
+          fid?: number | null
+          id?: string
+          lcp?: number | null
+          page_path: string
+          page_type: string
+          session_id?: string | null
+          timestamp?: string
+          total_load_time?: number | null
+          ttfb?: number | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          cls?: number | null
+          created_at?: string | null
+          fcp?: number | null
+          fid?: number | null
+          id?: string
+          lcp?: number | null
+          page_path?: string
+          page_type?: string
+          session_id?: string | null
+          timestamp?: string
+          total_load_time?: number | null
+          ttfb?: number | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address: string | null
@@ -1043,6 +1133,7 @@ export type Database = {
           view_name: string
         }[]
       }
+      cleanup_old_performance_data: { Args: never; Returns: undefined }
       copy_funds_to_develop: {
         Args: never
         Returns: {

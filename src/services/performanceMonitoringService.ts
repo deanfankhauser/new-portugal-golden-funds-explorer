@@ -193,16 +193,69 @@ export class PerformanceMonitoringService {
   }
 
   // Report all collected metrics
-  static reportMetrics(): void {
-    // Only log in development environment
+  static async reportMetrics() {
     const isDev = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false;
     if (isDev) {
       console.log('📊 Core Web Vitals Report:', this.metrics);
-      
-      // Evaluate performance
       const evaluation = this.evaluatePerformance();
       console.log('📈 Performance Evaluation:', evaluation);
+      this.trackOptimizationImpact();
     }
+
+    // Send metrics to backend for monitoring
+    await this.sendMetricsToBackend();
+  }
+
+  private static async sendMetricsToBackend() {
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const sessionId = sessionStorage.getItem('session_id') || 
+        `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      if (!sessionStorage.getItem('session_id')) {
+        sessionStorage.setItem('session_id', sessionId);
+      }
+
+      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      const totalLoadTime = navigation ? Math.round(navigation.loadEventEnd - navigation.fetchStart) : 0;
+      
+      const path = window.location.pathname;
+      const pageType = this.getPageType(path);
+
+      await supabase.functions.invoke('track-performance-metrics', {
+        body: {
+          type: 'performance',
+          data: {
+            pagePath: path,
+            pageType,
+            lcp: this.metrics.LCP,
+            fcp: this.metrics.FCP,
+            cls: this.metrics.CLS,
+            fid: this.metrics.FID,
+            ttfb: this.metrics.TTFB,
+            totalLoadTime,
+            sessionId,
+            userId: user?.id,
+            userAgent: navigator.userAgent,
+          },
+        },
+      });
+    } catch (error) {
+      console.error('Failed to send metrics to backend:', error);
+    }
+  }
+
+  private static getPageType(path: string): string {
+    if (path === '/') return 'homepage';
+    if (path.startsWith('/funds/')) return 'fund_details';
+    if (path.startsWith('/categories/')) return 'category';
+    if (path.startsWith('/tags/')) return 'tag';
+    if (path.startsWith('/manager/')) return 'manager';
+    if (path.startsWith('/compare/')) return 'comparison';
+    if (path.startsWith('/admin')) return 'admin';
+    return 'other';
   }
 
   // Evaluate performance based on Core Web Vitals thresholds

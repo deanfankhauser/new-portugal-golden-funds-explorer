@@ -1,4 +1,3 @@
-
 import { useLocation, Link } from "react-router-dom";
 import { useEffect, useMemo } from "react";
 import Header from '../components/Header';
@@ -9,6 +8,7 @@ import { Tag } from 'lucide-react';
 import { getAllTags } from '@/data/services/tags-service';
 import { tagToSlug, categoryToSlug } from '@/lib/utils';
 import { useAllFunds } from '@/hooks/useFundsQuery';
+import { track404Error } from '@/utils/errorTracking';
 
 const NotFound = () => {
   const location = useLocation();
@@ -47,6 +47,7 @@ const NotFound = () => {
       "404 Error: User attempted to access non-existent route:",
       location.pathname
     );
+    track404Error(location.pathname, document.referrer);
   }, [location.pathname]);
 
   return (
