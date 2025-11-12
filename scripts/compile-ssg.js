@@ -9,19 +9,27 @@ export function compileSSGFiles() {
   console.log('═'.repeat(60));
   
   try {
-    // Step 1: Generate dynamic redirects first
-    console.log('\n📍 STEP 1: Generating dynamic redirects...');
-    console.log('─'.repeat(60));
-    execSync('npx tsx scripts/ssg/generate-redirects.ts', {
-      stdio: 'inherit'
-    });
-    
-    // Step 2: Generate fund slug redirects (legacy URLs → current fundId routes)
-    console.log('\n📍 STEP 2: Generating fund slug redirects...');
-    console.log('─'.repeat(60));
-    execSync('npx tsx scripts/ssg/generate-fund-slug-redirects.ts', {
-      stdio: 'inherit'
-    });
+    // Step 1 & 2: Skip redirect generation on Vercel (modifying vercel.json during build doesn't apply)
+    if (process.env.VERCEL === '1') {
+      console.log('\n📍 STEP 1-2: Skipped (CI environment - redirect generation disabled on Vercel)');
+      console.log('─'.repeat(60));
+      console.log('ℹ️  Dynamic redirects and fund slug aliases are skipped in CI builds');
+      console.log('   (Modifying vercel.json during deployment has no effect)');
+    } else {
+      // Step 1: Generate dynamic redirects first
+      console.log('\n📍 STEP 1: Generating dynamic redirects...');
+      console.log('─'.repeat(60));
+      execSync('npx tsx scripts/ssg/generate-redirects.ts', {
+        stdio: 'inherit'
+      });
+      
+      // Step 2: Generate fund slug redirects (legacy URLs → current fundId routes)
+      console.log('\n📍 STEP 2: Generating fund slug redirects...');
+      console.log('─'.repeat(60));
+      execSync('npx tsx scripts/ssg/generate-fund-slug-redirects.ts', {
+        stdio: 'inherit'
+      });
+    }
     
     // Step 3: Execute the SSG runner with debug mode if requested
     console.log('\n📍 STEP 3: Running SSG generation...');
@@ -212,33 +220,15 @@ export function compileSSGFiles() {
     console.log('');
     
   } catch (error) {
-    console.warn('⚠️  SSG compilation failed, falling back to basic build');
+    console.error('\n' + '═'.repeat(60));
+    console.error('❌ SSG COMPILATION FAILED');
+    console.error('═'.repeat(60));
+    console.error('Error:', error.message);
+    console.error('\n🚨 Build aborted: SSG must complete successfully to deploy');
+    console.error('   No fallback SPA-only build will be created.');
+    console.error('   Fix the SSG error above and redeploy.\n');
     
-    // Create basic sitemap as fallback
-    const distDir = path.join(process.cwd(), 'dist');
-    if (!fs.existsSync(distDir)) {
-      fs.mkdirSync(distDir, { recursive: true });
-    }
-    
-    const basicSitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://funds.movingto.com</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-</urlset>`;
-    
-    const sitemapOutPath = path.join(distDir, 'sitemap.xml');
-    // Do NOT overwrite an existing sitemap copied from /public
-    if (!fs.existsSync(sitemapOutPath)) {
-      fs.writeFileSync(sitemapOutPath, basicSitemap);
-    }
-    const indexPath = path.join(distDir, 'index.html');
-    if (!fs.existsSync(indexPath)) {
-      // Copy the original Vite-built index.html as fallback
-      console.log('⚠️  Creating fallback SPA index.html for Vercel');
-    }
+    // Exit with error code to fail the Vercel deployment
+    process.exit(1);
   }
 }
