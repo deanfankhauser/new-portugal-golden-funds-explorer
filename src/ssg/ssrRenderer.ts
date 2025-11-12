@@ -183,6 +183,8 @@ export class SSRRenderer {
         case 'auth': return ['Auth'];
         case 'roi-calculator': return ['ROICalculator'];
         case 'saved-funds': return ['SavedFunds'];
+        case 'verified-funds': return ['VerifiedFunds'];
+        case 'verification-program': return ['VerificationProgram'];
         case 'compare': return ['ComparisonPage'];
         
         default: return ['Index'];
