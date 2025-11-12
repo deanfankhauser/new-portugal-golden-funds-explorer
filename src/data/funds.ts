@@ -71,10 +71,3 @@ export {
   generateAudienceTags,
   getFundsByAudienceSegment
 } from './services/audience-tags-service';
-
-// Re-export comparison-related functions
-export {
-  generateFundComparisons,
-  getComparisonBySlug,
-  getAllComparisonSlugs
-} from './services/comparison-service';

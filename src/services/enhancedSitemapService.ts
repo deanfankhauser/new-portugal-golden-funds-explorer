@@ -1,5 +1,5 @@
 import { SitemapService, SitemapEntry } from './sitemapService';
-import { getAllComparisonSlugs } from '../data/services/comparison-service';
+import { generateComparisonsFromFunds } from '../data/services/comparison-service';
 import { URL_CONFIG } from '../utils/urlConfig';
 import { DateManagementService } from './dateManagementService';
 import { funds } from '../data/funds';
@@ -8,11 +8,11 @@ export class EnhancedSitemapService extends SitemapService {
   
   // Generate comparison pages for sitemap
   private static getComparisonPages(): SitemapEntry[] {
-    const comparisonSlugs = getAllComparisonSlugs();
+    const comparisons = generateComparisonsFromFunds(funds);
     const contentDates = DateManagementService.getContentDates('comparison');
     
-    return comparisonSlugs.map(slug => ({
-      url: URL_CONFIG.buildComparisonUrl(slug),
+    return comparisons.map(comparison => ({
+      url: URL_CONFIG.buildComparisonUrl(comparison.slug),
       lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
       changefreq: 'weekly' as const,
       priority: 0.85

@@ -8,13 +8,17 @@ import ComparisonTable from '../components/comparison/ComparisonTable';
 import FundComparisonBreadcrumbs from '../components/comparison/FundComparisonBreadcrumbs';
 import RelatedComparisons from '../components/comparison/RelatedComparisons';
 import FundComparisonFAQ from '../components/comparison/FundComparisonFAQ';
-import { getComparisonBySlug } from '../data/services/comparison-service';
+import { parseComparisonSlug } from '../data/services/comparison-service';
 import { normalizeComparisonSlug, isCanonicalComparisonSlug } from '../utils/comparisonUtils';
+import { useAllFunds } from '@/hooks/useFundsQuery';
 import { Card, CardContent } from '@/components/ui/card';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 
 const FundComparison = () => {
   const { slug } = useParams<{ slug: string }>();
+  
+  // Fetch all funds from database
+  const { data: allFunds, isLoading, error } = useAllFunds();
   
   // Check if slug needs canonicalization (redirect to normalized version)
   if (slug && !isCanonicalComparisonSlug(slug)) {
@@ -22,17 +26,42 @@ const FundComparison = () => {
     return <Navigate to={`/compare/${normalizedSlug}`} replace />;
   }
   
-  // Get the comparison data using the slug
-  const comparisonData = slug ? getComparisonBySlug(slug) : null;
+  // Parse slug to get fund IDs
+  const slugData = slug ? parseComparisonSlug(slug) : null;
   
+  // Find the two funds from database data
+  const fund1 = slugData && allFunds ? allFunds.find(f => f.id === slugData.fund1Id) : null;
+  const fund2 = slugData && allFunds ? allFunds.find(f => f.id === slugData.fund2Id) : null;
+  
+  const comparisonData = fund1 && fund2 ? { fund1, fund2 } : null;
   const comparisonTitle = slug?.replace(/-/g, ' ') || '';
   
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
 
-  // If no comparison data found, show error
-  if (!comparisonData) {
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <PageSEO pageType="fund-comparison" comparisonTitle={comparisonTitle} comparisonSlug={slug} />
+        
+        <Header />
+        
+        <main className="container mx-auto px-4 py-8 flex-1 flex items-center justify-center">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Loader2 className="w-6 h-6 animate-spin" />
+            <span>Loading comparison...</span>
+          </div>
+        </main>
+        
+        <Footer />
+      </div>
+    );
+  }
+
+  // If no comparison data found or error, show error
+  if (error || !comparisonData) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <PageSEO pageType="404" />

@@ -2,7 +2,7 @@ import { SEOData } from '../types/seo';
 import { URL_CONFIG } from '../utils/urlConfig';
 import { funds } from '../data/funds';
 import { normalizeComparisonSlug } from '../utils/comparisonUtils';
-import { getComparisonBySlug } from '../data/services/comparison-service';
+import { parseComparisonSlug } from '../data/services/comparison-service';
 import { InvestmentFundStructuredDataService } from './investmentFundStructuredDataService';
 import { EnhancedStructuredDataService } from './enhancedStructuredDataService';
 
@@ -284,17 +284,20 @@ export class ConsolidatedSEOService {
 
       case 'fund-comparison':
         const normalizedSlug = normalizeComparisonSlug(params.comparisonSlug || '');
-        const comparisonData = getComparisonBySlug(normalizedSlug);
+        const slugData = parseComparisonSlug(normalizedSlug);
         
-        if (comparisonData) {
-          const { fund1, fund2 } = comparisonData;
+        if (slugData) {
+          const fund1 = funds.find(f => f.id === slugData.fund1Id);
+          const fund2 = funds.find(f => f.id === slugData.fund2Id);
           
-          return {
-            title: this.optimizeText(`${fund1.name} vs ${fund2.name} Comparison | Portugal Golden Visa Funds 2025`, this.MAX_TITLE_LENGTH),
-            description: this.optimizeText(`Compare ${fund1.name} (${fund1.managerName}) vs ${fund2.name} (${fund2.managerName}) Portugal Golden Visa funds. Side-by-side analysis of fees, minimum investment, returns, and performance metrics.`, this.MAX_DESCRIPTION_LENGTH),
-            url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
-            structuredData: this.getFundComparisonStructuredData(fund1, fund2)
-          };
+          if (fund1 && fund2) {
+            return {
+              title: this.optimizeText(`${fund1.name} vs ${fund2.name} Comparison | Portugal Golden Visa Funds 2025`, this.MAX_TITLE_LENGTH),
+              description: this.optimizeText(`Compare ${fund1.name} (${fund1.managerName}) vs ${fund2.name} (${fund2.managerName}) Portugal Golden Visa funds. Side-by-side analysis of fees, minimum investment, returns, and performance metrics.`, this.MAX_DESCRIPTION_LENGTH),
+              url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
+              structuredData: this.getFundComparisonStructuredData(fund1, fund2)
+            };
+          }
         }
         
         return {

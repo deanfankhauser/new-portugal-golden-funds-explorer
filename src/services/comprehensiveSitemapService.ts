@@ -4,7 +4,7 @@ import { funds } from '../data/services/funds-service';
 import { getAllCategories } from '../data/services/categories-service';
 import { getAllTags } from '../data/services/tags-service';
 import { getAllFundManagers } from '../data/services/managers-service';
-import { getAllComparisonSlugs } from '../data/services/comparison-service';
+import { generateComparisonsFromFunds } from '../data/services/comparison-service';
 import { categoryToSlug, tagToSlug, managerToSlug } from '../lib/utils';
 import { URL_CONFIG } from '../utils/urlConfig';
 
@@ -251,10 +251,10 @@ ${sitemapElements}
 
     // Comparison pages
     try {
-      const comparisonSlugs = getAllComparisonSlugs();
-      comparisonSlugs.forEach(slug => {
+      const comparisons = generateComparisonsFromFunds(funds);
+      comparisons.forEach(comparison => {
         urls.push({
-          loc: `${PRODUCTION_BASE_URL}/compare/${slug}`,
+          loc: `${PRODUCTION_BASE_URL}/compare/${comparison.slug}`,
           lastmod: currentDate,
           changefreq: 'weekly',
           priority: 0.85

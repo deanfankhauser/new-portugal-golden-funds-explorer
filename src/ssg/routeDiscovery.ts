@@ -3,6 +3,7 @@ import { fundsData } from '../data/mock/funds';
 import { getAllFundManagers } from '../data/services/managers-service';
 import { getAllCategories } from '../data/services/categories-service';
 import { getAllTags } from '../data/services/tags-service';
+import { generateComparisonsFromFunds } from '../data/services/comparison-service';
 import { categoryToSlug, tagToSlug, managerToSlug } from '../lib/utils';
 
 export interface StaticRoute {
@@ -79,13 +80,12 @@ export class RouteDiscovery {
     });
 
     // Fund comparison pages
-    const { getAllComparisonSlugs } = await import('../data/services/comparison-service');
-    const comparisonSlugs = getAllComparisonSlugs();
-    comparisonSlugs.forEach(slug => {
+    const comparisons = generateComparisonsFromFunds(fundsData);
+    comparisons.forEach(comparison => {
       routes.push({
-        path: `/compare/${slug}`,
+        path: `/compare/${comparison.slug}`,
         pageType: 'fund-comparison',
-        params: { slug }
+        params: { slug: comparison.slug }
       });
     });
 
@@ -110,7 +110,7 @@ export class RouteDiscovery {
       return true;
     });
 
-    console.log(`🔍 RouteDiscovery: Generated ${filteredRoutes.length} static routes (filtered from ${routes.length} total, including ${comparisonSlugs.length} comparisons and ${fundsData.length} alternatives pages)`);
+    console.log(`🔍 RouteDiscovery: Generated ${filteredRoutes.length} static routes (filtered from ${routes.length} total, including ${comparisons.length} comparisons and ${fundsData.length} alternatives pages)`);
     return filteredRoutes;
   }
 
