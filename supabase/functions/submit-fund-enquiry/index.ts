@@ -110,38 +110,70 @@ Deno.serve(async (req) => {
       console.error('Error fetching managers:', managersError);
     }
     
-    // Send emails to fund managers
+    // Get additional notification emails
+    const { data: additionalEmails, error: additionalEmailsError } = await supabase
+      .from('fund_lead_notification_emails')
+      .select('email')
+      .eq('fund_id', enquiryData.fundId);
+    
+    if (additionalEmailsError) {
+      console.error('Error fetching additional notification emails:', additionalEmailsError);
+    }
+    
+    // Collect all recipient emails
+    const recipientEmails: string[] = [];
+    
+    // Add fund manager emails
     if (managers && managers.length > 0) {
       for (const manager of managers) {
         const profile = manager.profiles as any;
         if (profile && profile.email) {
-          const managerEmail = generateManagerNotificationEmail(
-            enquiryData,
-            profile.manager_name || 'Fund Manager'
-          );
-          
-          try {
-            await fetch(POSTMARK_API_URL, {
-              method: 'POST',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'X-Postmark-Server-Token': postmarkApiKey,
-              },
-              body: JSON.stringify({
-                From: 'noreply@movingto.com',
-                To: profile.email,
-                Subject: `🚀 New Enquiry for ${enquiryData.fundName}`,
-                HtmlBody: managerEmail.html,
-                TextBody: managerEmail.text,
-                MessageStream: 'outbound',
-              }),
-            });
-          } catch (emailError) {
-            console.error('Error sending manager email:', emailError);
-          }
+          recipientEmails.push(profile.email);
         }
       }
+    }
+    
+    // Add additional notification emails
+    if (additionalEmails && additionalEmails.length > 0) {
+      for (const item of additionalEmails) {
+        if (item.email) {
+          recipientEmails.push(item.email);
+        }
+      }
+    }
+    
+    // Send emails to all recipients
+    if (recipientEmails.length > 0) {
+      const managerEmail = generateManagerNotificationEmail(
+        enquiryData,
+        'Fund Manager'
+      );
+      
+      for (const email of recipientEmails) {
+        try {
+          await fetch(POSTMARK_API_URL, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'X-Postmark-Server-Token': postmarkApiKey,
+            },
+            body: JSON.stringify({
+              From: 'noreply@movingto.com',
+              To: email,
+              Subject: `🚀 New Enquiry for ${enquiryData.fundName}`,
+              HtmlBody: managerEmail.html,
+              TextBody: managerEmail.text,
+              MessageStream: 'outbound',
+            }),
+          });
+          console.log(`Notification sent to: ${email}`);
+        } catch (emailError) {
+          console.error(`Error sending email to ${email}:`, emailError);
+        }
+      }
+    } else {
+      console.warn('No recipients found for fund lead notification');
     }
     
     // Send confirmation email to investor

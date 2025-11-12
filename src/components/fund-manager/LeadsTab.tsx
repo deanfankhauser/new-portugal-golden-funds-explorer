@@ -12,6 +12,7 @@ import { Users, Mail, Calendar, TrendingUp, Search, Download, ChevronDown, Chevr
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
+import LeadNotificationEmails from './LeadNotificationEmails';
 
 interface LeadsTabProps {
   fundId: string;
@@ -236,6 +237,9 @@ const LeadsTab: React.FC<LeadsTabProps> = ({ fundId }) => {
 
   return (
     <div className="space-y-6">
+      {/* Lead Notification Emails */}
+      <LeadNotificationEmails fundId={fundId} />
+
       {/* Summary Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
