@@ -115,7 +115,7 @@ export async function generateStaticFiles() {
     await generateFundsSitemap(distDir);
     
     // Generate enhanced sitemap as a supplemental file
-    const enhancedSitemapXML = EnhancedSitemapService.generateEnhancedSitemapXML();
+    const enhancedSitemapXML = await EnhancedSitemapService.generateEnhancedSitemapXML();
     fs.writeFileSync(path.join(distDir, 'sitemap-enhanced.xml'), enhancedSitemapXML);
     
     // Generate sitemap index
