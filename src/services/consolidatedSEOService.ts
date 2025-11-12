@@ -408,6 +408,53 @@ export class ConsolidatedSEOService {
           structuredData: this.getFundAlternativesStructuredData(altFund)
         };
 
+      case 'verified-funds':
+        return {
+          title: this.optimizeText('Verified Portugal Golden Visa Funds | Fully Documented Investments | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Browse verified Portugal Golden Visa investment funds with complete regulatory documentation, CMVM registration, and third-party validation. All funds independently verified for transparency and investor confidence.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('/verified-funds'),
+          keywords: [
+            'verified Golden Visa funds',
+            'Portugal verified investments',
+            'CMVM registered funds',
+            'documented investment funds',
+            'transparent Golden Visa funds',
+            'validated investment funds Portugal'
+          ],
+          structuredData: this.getVerifiedFundsStructuredData(funds)
+        };
+
+      case 'verification-program':
+        return {
+          title: this.optimizeText('Fund Verification Program | Independent Investment Validation | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Learn about our independent verification program for Portugal Golden Visa funds. 6-point verification process including regulatory status, documentation review, and Golden Visa eligibility validation.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('/verification-program'),
+          keywords: [
+            'fund verification program',
+            'investment validation',
+            'due diligence process',
+            'fund documentation review',
+            'CMVM verification',
+            'investment transparency Portugal'
+          ],
+          structuredData: this.getVerificationProgramStructuredData()
+        };
+
+      case 'saved-funds':
+        return {
+          title: this.optimizeText('My Saved Funds | Portugal Golden Visa Investment Portfolio | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Access your saved Portugal Golden Visa investment funds. Compare your shortlisted funds and track your investment research progress.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('/saved-funds'),
+          robots: 'noindex, follow', // User-specific page
+          keywords: [
+            'saved investment funds',
+            'investment portfolio tracker',
+            'Golden Visa fund comparison',
+            'shortlisted funds Portugal'
+          ],
+          structuredData: this.getSavedFundsStructuredData()
+        };
+
       case 'auth':
         return {
           title: this.optimizeText('Login / Register | Portugal Golden Visa Investment Funds | Movingto', this.MAX_TITLE_LENGTH),
@@ -1194,6 +1241,104 @@ export class ConsolidatedSEOService {
           }
         }))
       }
+    };
+  }
+
+  // Verified Funds structured data
+  private static getVerifiedFundsStructuredData(funds: Fund[] = []): any {
+    const verifiedFunds = funds.filter(f => f.isVerified);
+    
+    return [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        'name': 'Verified Portugal Golden Visa Investment Funds',
+        'description': 'Collection of independently verified Portugal Golden Visa investment funds',
+        'url': URL_CONFIG.buildUrl('/verified-funds'),
+        'about': {
+          '@type': 'FinancialProduct',
+          'name': 'Portugal Golden Visa Investment Funds'
+        }
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        'name': 'Verified Golden Visa Funds',
+        'numberOfItems': verifiedFunds.length,
+        'itemListElement': verifiedFunds.slice(0, 20).map((fund, index) => ({
+          '@type': 'ListItem',
+          'position': index + 1,
+          'item': {
+            '@type': 'FinancialProduct',
+            'name': fund.name,
+            'url': URL_CONFIG.buildFundUrl(fund.id),
+            'category': fund.category
+          }
+        }))
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Verified Funds', 'item': URL_CONFIG.buildUrl('/verified-funds') }
+        ]
+      }
+    ];
+  }
+
+  // Verification Program structured data
+  private static getVerificationProgramStructuredData(): any {
+    return [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        'name': 'Fund Verification Program',
+        'description': 'Independent verification service for Portugal Golden Visa investment funds',
+        'provider': {
+          '@type': 'Organization',
+          'name': 'Movingto'
+        },
+        'serviceType': 'Investment Fund Verification',
+        'areaServed': {
+          '@type': 'Country',
+          'name': 'Portugal'
+        },
+        'url': URL_CONFIG.buildUrl('/verification-program')
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'HowTo',
+        'name': 'Fund Verification Process',
+        'description': '6-point verification process for Portugal Golden Visa funds',
+        'step': [
+          { '@type': 'HowToStep', 'position': 1, 'name': 'Regulatory Status Check', 'text': 'Verify CMVM registration and regulatory compliance' },
+          { '@type': 'HowToStep', 'position': 2, 'name': 'Entity Name Matching', 'text': 'Ensure fund names and entities are consistent across documentation' },
+          { '@type': 'HowToStep', 'position': 3, 'name': 'Documentation Review', 'text': 'Review prospectus, subscription docs, and company extracts' },
+          { '@type': 'HowToStep', 'position': 4, 'name': 'Custodian Verification', 'text': 'Confirm safekeeping relationship with custodian/depositary' },
+          { '@type': 'HowToStep', 'position': 5, 'name': 'Audit Evidence', 'text': 'Review latest auditor letters when available' },
+          { '@type': 'HowToStep', 'position': 6, 'name': 'Golden Visa Consistency', 'text': 'Verify Golden Visa eligibility claims are consistent' }
+        ]
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Verification Program', 'item': URL_CONFIG.buildUrl('/verification-program') }
+        ]
+      }
+    ];
+  }
+
+  // Saved Funds structured data (user-specific, minimal schema)
+  private static getSavedFundsStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'Saved Investment Funds',
+      'description': 'User\'s saved Portugal Golden Visa investment funds',
+      'url': URL_CONFIG.buildUrl('/saved-funds')
     };
   }
 

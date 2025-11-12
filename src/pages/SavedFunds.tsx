@@ -38,8 +38,7 @@ const SavedFunds = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <PageSEO 
-        pageType="category"
-        categoryName="Saved Funds"
+        pageType="saved-funds"
       />
       
       <Header />
