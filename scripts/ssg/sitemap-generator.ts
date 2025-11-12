@@ -2,14 +2,14 @@ import fs from 'fs';
 import path from 'path';
 import { StaticRoute } from '../../src/ssg/routeDiscovery';
 import { DateManagementService } from '../../src/services/dateManagementService';
-import { funds } from '../../src/data/services/funds-service';
+import { fetchAllFundsForBuild, fetchAllCategoriesForBuild, fetchAllTagsForBuild } from '../../src/lib/build-data-fetcher';
 import { getAllComparisonSlugs } from '../../src/data/services/comparison-service';
 import { EnhancedSitemapService } from '../../src/services/enhancedSitemapService';
-import { getAllCategories } from '../../src/data/services/categories-service';
-import { getAllTags } from '../../src/data/services/tags-service';
 import { categoryToSlug, tagToSlug } from '../../src/lib/utils';
 
-export function generateSitemap(routes: StaticRoute[], distDir: string): void {
+export async function generateSitemap(routes: StaticRoute[], distDir: string): Promise<void> {
+  // Fetch fund data for accurate lastmod dates
+  const funds = await fetchAllFundsForBuild();
   // Build route-derived entries first
   const routeEntries = routes.map(route => {
     let priority = '0.8';
@@ -93,14 +93,15 @@ export function generateSitemap(routes: StaticRoute[], distDir: string): void {
 
   // Also force include using direct data (independent of route discovery)
   try {
-    const categoriesList = getAllCategories();
+    const categoriesList = await fetchAllCategoriesForBuild();
     categoriesList.forEach(cat => addIfMissing({
       url: `https://funds.movingto.com/categories/${categoryToSlug(cat as any)}`,
       lastmod: now,
       changefreq: 'weekly',
       priority: '0.8'
     }));
-    const tagsList = getAllTags();
+    
+    const tagsList = await fetchAllTagsForBuild();
     tagsList.forEach(tag => addIfMissing({
       url: `https://funds.movingto.com/tags/${tagToSlug(tag as any)}`,
       lastmod: now,
