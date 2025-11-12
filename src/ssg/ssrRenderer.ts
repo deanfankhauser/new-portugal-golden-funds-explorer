@@ -297,7 +297,12 @@ export class SSRRenderer {
                 // Use SSR-compatible wrapper with direct fund data injection
                 React.createElement(Route, { 
                   path: '/:id', 
-                  element: React.createElement(getComponent('FundDetails'), fundDataForSSR ? { fund: fundDataForSSR } : null)
+                  element: isSSG && fundDataForSSR
+                    ? React.createElement(getComponent('FundDetails'), { 
+                        fund: fundDataForSSR, 
+                        initialId: fundDataForSSR.id 
+                      })
+                    : React.createElement(getComponent('FundDetails'), fundDataForSSR ? { fund: fundDataForSSR } : null)
                 })
               )
             )
@@ -331,6 +336,11 @@ export class SSRRenderer {
         console.log(`🔥 SSR: About to render FundComparison, slug: ${route.params?.slug}`);
       }
       
+      // Log before rendering fund detail routes
+      if (route.pageType === 'fund' && fundDataForSSR) {
+        console.log(`🔥 SSR: About to render FundDetails, id: ${fundDataForSSR.id}, name: ${fundDataForSSR.name}`);
+      }
+      
       // Wait for any lazy components to initialize
       await new Promise(resolve => setTimeout(resolve, 100));
       
@@ -339,6 +349,11 @@ export class SSRRenderer {
       // Log after rendering comparison routes
       if (route.pageType === 'fund-comparison' || route.pageType === 'comparison') {
         console.log(`🔥 SSR: Finished rendering FundComparison, content length: ${html.length}`);
+      }
+      
+      // Log after rendering fund detail routes
+      if (route.pageType === 'fund' && fundDataForSSR) {
+        console.log(`🔥 SSR: Finished rendering FundDetails (${fundDataForSSR.id}), content length: ${html.length}`);
       }
       
       // Ensure the HTML has substantial content - if not, it might be a lazy loading issue

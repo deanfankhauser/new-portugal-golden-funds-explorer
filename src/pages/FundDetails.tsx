@@ -12,14 +12,22 @@ import { useFund } from '../hooks/useFundsQuery';
 import { trackPageView } from '../utils/analyticsTracking';
 import type { Fund } from '../data/types/funds';
 
-interface FundDetailsProps { fund?: Fund }
+interface FundDetailsProps { 
+  fund?: Fund;
+  initialId?: string; // For SSR
+}
 
-const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund }) => {
+const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund, initialId }) => {
+  const isSSR = typeof window === 'undefined';
   const { id, potentialFundId } = useParams<{ id?: string; potentialFundId?: string }>();
   const location = useLocation();
   
-  // Prefer SSR-injected fund when available; fallback to client lookup
-  const fundId = id || potentialFundId || ssrFund?.id;
+  // During SSR, prefer initialId; in browser, use route params
+  const fundId = isSSR ? initialId : (id || potentialFundId || ssrFund?.id);
+  
+  if (isSSR && initialId) {
+    console.log('🔥 SSR FundDetails: initialId=%s, ssrFund=%s', initialId, ssrFund ? ssrFund.name : 'not provided');
+  }
   
   // Use optimized React Query hook for single fund fetching
   const { data: queriedFund, isLoading, isFetching } = useFund(fundId);
@@ -52,12 +60,9 @@ const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund }) => {
     }
   }, [fund?.id, addToRecentlyViewed]); // Only depend on stable ID
 
-  // Show loading skeleton in these cases:
-  // 1. fundId hasn't been resolved yet (route params parsing)
-  // 2. React Query is loading (initial fetch)
-  // 3. React Query is fetching (refetching)
-  // 4. Initial mount without data yet
-  if (!fundId || isLoading || isFetching || (isInitialMount && !fund)) {
+  // Show loading skeleton only in browser when actually loading
+  // During SSR, skip loading state if we have ssrFund data
+  if (!isSSR && (!fundId || isLoading || isFetching || (isInitialMount && !fund))) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <PageSEO pageType="fund" />
