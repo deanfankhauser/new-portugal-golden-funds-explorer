@@ -21,6 +21,16 @@ Disallow: /manager-auth
 Disallow: /investor-auth
 Disallow: /api/
 
+# Private user pages
+Disallow: /account-settings
+Disallow: /my-funds
+Disallow: /manage-fund/
+Disallow: /manage-profile/
+Disallow: /confirm
+Disallow: /confirm-email
+Disallow: /reset-password
+Disallow: /saved-funds
+
 # Allow important pages
 Allow: /index
 Allow: /categories
