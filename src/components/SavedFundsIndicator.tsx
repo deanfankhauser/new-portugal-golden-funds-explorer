@@ -20,7 +20,7 @@ const SavedFundsIndicator = () => {
     <Button
       variant="ghost"
       size="icon"
-      className="text-background hover:bg-background/10 hover:text-background relative"
+      className="text-background hover:bg-background/10 hover:!text-background relative"
       onClick={handleSavedClick}
       aria-label={`Saved funds (${count})`}
     >
