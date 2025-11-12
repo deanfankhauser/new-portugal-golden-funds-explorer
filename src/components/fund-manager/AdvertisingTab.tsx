@@ -48,12 +48,11 @@ const AdvertisingTab: React.FC<AdvertisingTabProps> = ({ fundId, fundName }) => 
           <Megaphone className="h-8 w-8 text-primary" />
         </div>
         <h3 className="text-xl font-semibold mb-2">Advertising & Promotion Coming Soon</h3>
-        <p className="text-muted-foreground max-w-md mx-auto mb-6">
+        <p className="text-muted-foreground max-w-md mx-auto mb-8">
           Boost your fund's visibility with premium placement and advertising options.
         </p>
-        <Badge variant="secondary" className="mb-8">In Development</Badge>
         
-        <Button 
+        <Button
           onClick={handleRequestAccess}
           disabled={isRequesting || hasRequested}
           size="lg"
