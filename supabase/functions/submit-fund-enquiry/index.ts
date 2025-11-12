@@ -99,15 +99,55 @@ Deno.serve(async (req) => {
       );
     }
     
-    // Get fund manager emails
-    const { data: managers, error: managersError } = await supabase
-      .from('fund_managers')
-      .select('user_id, profiles(email, manager_name)')
-      .eq('fund_id', enquiryData.fundId)
-      .eq('status', 'active');
+    // Get fund details to find manager_name
+    const { data: fund, error: fundError } = await supabase
+      .from('funds')
+      .select('manager_name')
+      .eq('id', enquiryData.fundId)
+      .single();
     
-    if (managersError) {
-      console.error('Error fetching managers:', managersError);
+    if (fundError || !fund) {
+      console.error('Error fetching fund:', fundError);
+    }
+    
+    // Collect all recipient emails
+    const recipientEmails: string[] = [];
+    
+    // Get assigned managers using company-centric model
+    if (fund?.manager_name) {
+      // First, find the company profile
+      const { data: companyProfile, error: companyError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('company_name', fund.manager_name)
+        .single();
+      
+      if (companyError) {
+        console.error('Error fetching company profile:', companyError);
+      }
+      
+      // Then get all users assigned to this company
+      if (companyProfile) {
+        const { data: assignments, error: assignmentsError } = await supabase
+          .from('manager_profile_assignments')
+          .select('user_id, profiles:user_id(email)')
+          .eq('profile_id', companyProfile.id)
+          .eq('status', 'active');
+        
+        if (assignmentsError) {
+          console.error('Error fetching assigned managers:', assignmentsError);
+        }
+        
+        // Add assigned manager emails
+        if (assignments && assignments.length > 0) {
+          for (const assignment of assignments) {
+            const profile = assignment.profiles as any;
+            if (profile && profile.email) {
+              recipientEmails.push(profile.email);
+            }
+          }
+        }
+      }
     }
     
     // Get additional notification emails
@@ -120,19 +160,6 @@ Deno.serve(async (req) => {
       console.error('Error fetching additional notification emails:', additionalEmailsError);
     }
     
-    // Collect all recipient emails
-    const recipientEmails: string[] = [];
-    
-    // Add fund manager emails
-    if (managers && managers.length > 0) {
-      for (const manager of managers) {
-        const profile = manager.profiles as any;
-        if (profile && profile.email) {
-          recipientEmails.push(profile.email);
-        }
-      }
-    }
-    
     // Add additional notification emails
     if (additionalEmails && additionalEmails.length > 0) {
       for (const item of additionalEmails) {
@@ -142,14 +169,29 @@ Deno.serve(async (req) => {
       }
     }
     
+    // Normalize and deduplicate emails
+    const uniqueEmails = [...new Set(
+      recipientEmails
+        .map(email => email.trim().toLowerCase())
+        .filter(email => email.length > 0)
+    )];
+    
+    console.log('Email recipients:', { 
+      fundId: enquiryData.fundId, 
+      fundName: enquiryData.fundName,
+      managerName: fund?.manager_name,
+      recipientCount: uniqueEmails.length,
+      recipients: uniqueEmails 
+    });
+    
     // Send emails to all recipients
-    if (recipientEmails.length > 0) {
+    if (uniqueEmails.length > 0) {
       const managerEmail = generateManagerNotificationEmail(
         enquiryData,
         'Fund Manager'
       );
       
-      for (const email of recipientEmails) {
+      for (const email of uniqueEmails) {
         try {
           await fetch(POSTMARK_API_URL, {
             method: 'POST',
