@@ -1,6 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -13,12 +14,30 @@ import { normalizeComparisonSlug, isCanonicalComparisonSlug } from '../utils/com
 import { useAllFunds } from '@/hooks/useFundsQuery';
 import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle, Loader2 } from 'lucide-react';
+import type { Fund } from '@/data/types/funds';
 
 const FundComparison = () => {
   const { slug } = useParams<{ slug: string }>();
+  const queryClient = useQueryClient();
   
-  // Fetch all funds from database
-  const { data: allFunds, isLoading, error } = useAllFunds();
+  // During SSR, directly access prefetched cache data
+  // During client-side, use the hook normally
+  const isSSR = typeof window === 'undefined';
+  
+  let allFunds: Fund[] | undefined;
+  let isLoading = false;
+  let error = null;
+  
+  if (isSSR) {
+    // SSR: Direct cache access
+    allFunds = queryClient.getQueryData<Fund[]>(['funds-all']);
+  } else {
+    // Client-side: Use React Query hook
+    const queryResult = useAllFunds();
+    allFunds = queryResult.data;
+    isLoading = queryResult.isLoading;
+    error = queryResult.error;
+  }
   
   // Check if slug needs canonicalization (redirect to normalized version)
   if (slug && !isCanonicalComparisonSlug(slug)) {
