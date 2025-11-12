@@ -280,7 +280,12 @@ export class SSRRenderer {
                 React.createElement(Route, { path: '/reset-password', element: React.createElement(getComponent('ResetPassword')) }),
                 React.createElement(Route, { path: '/confirm', element: React.createElement(getComponent('EmailConfirmation')) }),
                 
-                React.createElement(Route, { path: '/compare/:slug', element: React.createElement(getComponent('FundComparison')) }),
+                React.createElement(Route, { 
+                  path: '/compare/:slug', 
+                  element: isSSG 
+                    ? React.createElement(getComponent('FundComparison'), { initialSlug: route.params?.slug })
+                    : React.createElement(getComponent('FundComparison'))
+                }),
                 
                 // Alternatives hub
                 React.createElement(Route, { path: '/alternatives', element: React.createElement(getComponent('AlternativesHub')) }),
@@ -321,10 +326,20 @@ export class SSRRenderer {
     };
     
     try {
+      // Log before rendering comparison routes
+      if (route.pageType === 'fund-comparison' || route.pageType === 'comparison') {
+        console.log(`🔥 SSR: About to render FundComparison, slug: ${route.params?.slug}`);
+      }
+      
       // Wait for any lazy components to initialize
       await new Promise(resolve => setTimeout(resolve, 100));
       
       const html = renderToString(React.createElement(AppRouter));
+      
+      // Log after rendering comparison routes
+      if (route.pageType === 'fund-comparison' || route.pageType === 'comparison') {
+        console.log(`🔥 SSR: Finished rendering FundComparison, content length: ${html.length}`);
+      }
       
       // Ensure the HTML has substantial content - if not, it might be a lazy loading issue
       if (html.length < 500) {

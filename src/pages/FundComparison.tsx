@@ -16,13 +16,20 @@ import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import type { Fund } from '@/data/types/funds';
 
-const FundComparison = () => {
-  const { slug } = useParams<{ slug: string }>();
+interface FundComparisonProps {
+  initialSlug?: string;
+}
+
+const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug }) => {
+  const { slug: routerSlug } = useParams<{ slug: string }>();
   const queryClient = useQueryClient();
   
   // During SSR, directly access prefetched cache data
   // During client-side, use the hook normally
   const isSSR = typeof window === 'undefined';
+  
+  // Use initialSlug during SSR, routerSlug on client
+  const slug = isSSR ? initialSlug : routerSlug;
   
   let allFunds: Fund[] | undefined;
   let isLoading = false;
@@ -31,6 +38,7 @@ const FundComparison = () => {
   if (isSSR) {
     // SSR: Direct cache access
     allFunds = queryClient.getQueryData<Fund[]>(['funds-all']);
+    console.log('🔥 SSR FundComparison: slug=%s, funds-all length=%s', slug, allFunds?.length ?? 'undefined');
   } else {
     // Client-side: Use React Query hook
     const queryResult = useAllFunds();
