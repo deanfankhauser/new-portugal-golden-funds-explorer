@@ -94,3 +94,6 @@ verify_jwt = false
 
 [functions.create-company-profiles]
 verify_jwt = false
+
+[functions.request-lead-status-check]
+verify_jwt = false

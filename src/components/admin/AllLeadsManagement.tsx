@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Download, Eye, Users, TrendingUp } from 'lucide-react';
+import { Download, Eye, Users, TrendingUp, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
@@ -35,6 +35,7 @@ export function AllLeadsManagement() {
   const [isLoading, setIsLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [checkingStatus, setCheckingStatus] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     fetchAllLeads();
@@ -169,6 +170,43 @@ export function AllLeadsManagement() {
     }
   };
 
+  const handleCheckStatus = async (lead: Lead) => {
+    try {
+      setCheckingStatus(prev => ({ ...prev, [lead.id]: true }));
+      
+      const { error } = await supabase.functions.invoke('request-lead-status-check', {
+        body: {
+          leadId: lead.id,
+          leadName: `${lead.first_name} ${lead.last_name}`,
+          leadEmail: lead.email,
+          leadPhone: lead.phone,
+          fundId: lead.fund_id,
+          fundName: lead.fund_name,
+          managerName: lead.manager_name,
+          currentStatus: lead.status,
+          investmentRange: lead.investment_amount_range,
+          createdAt: lead.created_at,
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Status check sent',
+        description: `Email sent to ${lead.fund_name} managers`,
+      });
+    } catch (error) {
+      console.error('Error sending status check:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to send status check email',
+        variant: 'destructive',
+      });
+    } finally {
+      setCheckingStatus(prev => ({ ...prev, [lead.id]: false }));
+    }
+  };
+
   const totalLeads = leads.length;
   const wonLeads = leads.filter(l => l.status === 'won').length;
   const conversionRate = totalLeads > 0 ? ((wonLeads / totalLeads) * 100).toFixed(1) : '0';
@@ -265,12 +303,13 @@ export function AllLeadsManagement() {
                 <TableHead>Status</TableHead>
                 <TableHead>Created</TableHead>
                 <TableHead>Last Updated</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredLeads.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={10} className="text-center text-muted-foreground py-8">
                     No leads found
                   </TableCell>
                 </TableRow>
@@ -294,6 +333,17 @@ export function AllLeadsManagement() {
                     </TableCell>
                     <TableCell>{format(new Date(lead.created_at), 'MMM d, yyyy')}</TableCell>
                     <TableCell>{format(new Date(lead.updated_at), 'MMM d, yyyy')}</TableCell>
+                    <TableCell>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleCheckStatus(lead)}
+                        disabled={checkingStatus[lead.id]}
+                      >
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        {checkingStatus[lead.id] ? 'Sending...' : 'Check status'}
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))
               )}
