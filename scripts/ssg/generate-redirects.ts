@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { getAllTags } from '../../src/data/services/tags-service';
-import { getAllCategories } from '../../src/data/services/categories-service';
+import { fetchAllTagsForBuild, fetchAllCategoriesForBuild } from '../../src/lib/build-data-fetcher';
 import { tagToSlug, categoryToSlug } from '../../src/lib/utils';
 
 /**
@@ -38,15 +37,15 @@ function createChunkedRedirects(slugs: string[], destination: string) {
  * Generate dynamic redirect rules for vercel.json
  * This ensures all tag and category slugs are properly redirected
  */
-export function generateRedirectRules() {
+export async function generateRedirectRules() {
   console.log('🔀 Generating redirect rules...');
   
-  // Get all tags and convert to slugs
-  const allTags = getAllTags();
+  // Get all tags and convert to slugs (using build-time data fetcher)
+  const allTags = await fetchAllTagsForBuild();
   const tagSlugs = allTags.map(tag => tagToSlug(tag));
   
-  // Get all categories dynamically and convert to slugs
-  const categories = getAllCategories();
+  // Get all categories dynamically and convert to slugs (using build-time data fetcher)
+  const categories = await fetchAllCategoriesForBuild();
   const categorySlugs = categories.map(cat => categoryToSlug(cat));
   
   // Check for overlaps between tags and categories (informational only)
@@ -102,7 +101,7 @@ export function generateRedirectRules() {
 /**
  * Update vercel.json with generated redirects
  */
-export function updateVercelConfig() {
+export async function updateVercelConfig() {
   const vercelConfigPath = path.join(process.cwd(), 'vercel.json');
   
   if (!fs.existsSync(vercelConfigPath)) {
@@ -111,7 +110,7 @@ export function updateVercelConfig() {
   }
   
   const config = JSON.parse(fs.readFileSync(vercelConfigPath, 'utf-8'));
-  const { tagRedirects, categoryRedirects, legacyRedirects, stats } = generateRedirectRules();
+  const { tagRedirects, categoryRedirects, legacyRedirects, stats } = await generateRedirectRules();
   
   // Remove old individual tag/category redirects
   const existingRedirects = config.redirects || [];
@@ -143,5 +142,5 @@ export function updateVercelConfig() {
 
 // Allow direct execution
 if (import.meta.url === `file://${process.argv[1]}`) {
-  updateVercelConfig();
+  await updateVercelConfig();
 }

@@ -111,7 +111,7 @@ export async function generateStaticFiles() {
     console.warn('⚠️  Comprehensive sitemap generation failed, falling back to legacy generators');
     
     // Fallback to existing generators
-    generateSitemap(routes, distDir);
+    await generateSitemap(routes, distDir);
     await generateFundsSitemap(distDir);
     
     // Generate enhanced sitemap as a supplemental file
