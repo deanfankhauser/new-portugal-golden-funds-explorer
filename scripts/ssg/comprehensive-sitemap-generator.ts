@@ -1,5 +1,7 @@
 import { ComprehensiveSitemapService } from '../../src/services/comprehensiveSitemapService';
 import path from 'path';
+import { execSync } from 'child_process';
+import fs from 'fs';
 
 /**
  * Generate comprehensive sitemaps for the application
@@ -31,8 +33,6 @@ export function generateComprehensiveSitemaps(distDir: string): void {
     // Copy to public directory for preview/development
     try {
       const publicDir = path.join(process.cwd(), 'public');
-      const { execSync } = require('child_process');
-      const fs = require('fs');
       
       result.sitemapFiles.forEach(filename => {
         const src = path.join(distDir, filename);

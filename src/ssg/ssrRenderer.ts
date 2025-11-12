@@ -126,19 +126,40 @@ export class SSRRenderer {
         case 'homepage': return ['Index'];
         case 'fund': return ['FundDetails'];
         case 'manager': return ['FundManager'];
+        
+        // Hub pages - support both hyphenated and underscore variants
+        case 'tags-hub':
         case 'tags_hub': return ['TagsHub'];
-        case 'tag': return ['TagPage'];
+        
+        case 'categories-hub':
         case 'categories_hub': return ['CategoriesHub'];
-        case 'category': return ['CategoryPage'];
+        
+        case 'comparisons-hub':
         case 'comparisons_hub': return ['ComparisonsHub'];
-        case 'comparison': return ['FundComparison'];
+        
+        case 'alternatives-hub':
         case 'alternatives_hub': return ['AlternativesHub'];
+        
+        case 'managers-hub':
+        case 'managers_hub': return ['ManagersHub'];
+        
+        // Individual pages
+        case 'tag': return ['TagPage'];
+        case 'category': return ['CategoryPage'];
+        case 'comparison': return ['FundComparison'];
+        case 'fund-alternatives':
         case 'fund_alternatives': return ['FundAlternatives'];
+        
+        // Static pages
         case 'faqs': return ['FAQs'];
         case 'privacy': return ['Privacy'];
         case 'disclaimer': return ['Disclaimer'];
         case 'about': return ['About'];
         case 'auth': return ['Auth'];
+        case 'roi-calculator': return ['ROICalculator'];
+        case 'saved-funds': return ['SavedFunds'];
+        case 'compare': return ['ComparisonPage'];
+        
         default: return ['Index'];
       }
     })();
