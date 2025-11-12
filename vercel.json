@@ -3,7 +3,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install",
-  "cleanUrls": false,
+  "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
     {
@@ -11,8 +11,24 @@
       "destination": "/sitemap.xml"
     },
     {
+      "source": "/sitemap-index.xml",
+      "destination": "/sitemap-index.xml"
+    },
+    {
+      "source": "/sitemap-funds.xml",
+      "destination": "/sitemap-funds.xml"
+    },
+    {
+      "source": "/sitemap-enhanced.xml",
+      "destination": "/sitemap-enhanced.xml"
+    },
+    {
       "source": "/robots.txt",
       "destination": "/robots.txt"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "redirects": [

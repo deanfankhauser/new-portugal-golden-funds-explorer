@@ -112,8 +112,9 @@ const transformFund = ({ fund, ranking = 999 }: TransformFundParams): Fund => {
 
 // Fetch all funds with pagination
 const fetchFundsPage = async ({ pageParam = 0 }) => {
-  // Skip network calls during SSG
+  // During SSG, data should be provided via cache, not fetched
   if (isSSG) {
+    console.log('⚠️  SSG: fetchFundsPage called during SSG - data should be in cache');
     return { funds: [], nextPage: undefined, totalCount: 0 };
   }
   
@@ -165,8 +166,10 @@ const fetchFundsPage = async ({ pageParam = 0 }) => {
 
 // Fetch single fund by ID
 const fetchFundById = async (fundId: string): Promise<Fund | null> => {
-  // Skip network calls during SSG
+  // During SSG, data should be provided via cache, not fetched
+  // This function won't be called during SSG if cache is populated
   if (isSSG) {
+    console.log('⚠️  SSG: fetchFundById called during SSG - data should be in cache');
     return null;
   }
   
@@ -207,6 +210,8 @@ export const useInfiniteFunds = () => {
     queryFn: fetchFundsPage,
     getNextPageParam: (lastPage) => lastPage.nextPage,
     initialPageParam: 0,
+    // During SSG, pagination doesn't work - use useAllFunds instead
+    // In browser, this works normally with pagination
     enabled: !isSSG,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
@@ -218,7 +223,9 @@ export const useFund = (fundId: string | undefined) => {
   return useQuery({
     queryKey: ['fund', fundId],
     queryFn: () => fundId ? fetchFundById(fundId) : Promise.resolve(null),
-    enabled: !!fundId && !isSSG,
+    // During SSG, data is pre-populated in cache so query won't run
+    // In browser, query runs normally
+    enabled: !!fundId,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
   });
@@ -229,6 +236,12 @@ export const useAllFunds = () => {
   return useQuery({
     queryKey: ['funds-all'],
     queryFn: async () => {
+      // During SSG, this should never run because data is pre-populated
+      if (isSSG) {
+        console.log('⚠️  SSG: useAllFunds queryFn called during SSG - should use cached data');
+        return [];
+      }
+      
       const supabase = await getSupabase();
       const { data, error } = await supabase
         .from('funds')
@@ -261,7 +274,9 @@ export const useAllFunds = () => {
         return (a.finalRank ?? 999) - (b.finalRank ?? 999);
       });
     },
-    enabled: !isSSG,
+    // During SSG, data is pre-populated in cache so query won't run
+    // In browser, query runs normally to fetch fresh data
+    enabled: true,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
   });

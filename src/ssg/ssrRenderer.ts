@@ -40,38 +40,61 @@ if (typeof window !== 'undefined' && !window.localStorage) {
 
 export class SSRRenderer {
   static async renderRoute(route: StaticRoute): Promise<{ html: string; seoData: any }> {
-    // Check if we're in development mode safely for SSG environments
+    // Enable debug logging in production builds to diagnose SSG issues
     const isDev = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false;
+    const isSSGDebug = typeof process !== 'undefined' ? process.env.SSG_DEBUG === '1' : false;
+    const shouldLog = isDev || isSSGDebug;
     
-    // For SSG, we need to include the real auth provider but with initial loading state
-    // This ensures proper hydration when JavaScript loads on the client side
-    
-    console.log(`\n🔥 SSR: Starting render for route ${route.path} (type: ${route.pageType})`);
+    if (shouldLog) {
+      console.log(`\n🔥 SSR: Starting render for route ${route.path} (type: ${route.pageType})`);
+      console.log(`🔥 SSR: Environment - isDev: ${isDev}, SSG_DEBUG: ${isSSGDebug}`);
+    }
     
     // Extract fund ID and find fund data for SSR injection
     let fundDataForSSR: Fund | null = null;
     if (route.path.match(/^\/[^\/]+$/)) {
       const fundId = route.path.replace('/', '');
-      console.log(`🔥 SSR: Detected potential fund page. Fund ID: "${fundId}"`);
-      console.log(`🔥 SSR: Route params passed:`, route.params);
+      if (shouldLog) {
+        console.log(`🔥 SSR: Detected potential fund page. Fund ID: "${fundId}"`);
+        console.log(`🔥 SSR: Route params passed:`, route.params);
+      }
       
       // Fetch fund data from database during build
       const allFunds = await fetchAllFundsForBuild();
       fundDataForSSR = allFunds.find(f => f.id === fundId) || null;
-      console.log(`🔥 SSR: Fund data found for SSR:`, fundDataForSSR ? `✅ ${fundDataForSSR.name}` : '❌ Not found');
+      
+      if (shouldLog) {
+        console.log(`🔥 SSR: Fund data found for SSR:`, fundDataForSSR ? `✅ ${fundDataForSSR.name}` : '❌ Not found');
+      }
     }
     
+    // Create query client and prefetch data for SSG
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {
           staleTime: Infinity,
           retry: false,
+          enabled: true, // Always enable queries during SSG
         },
       },
     });
 
+    // Prefetch data for SSG to populate React Query cache
+    console.log(`🔥 SSR: Prefetching data for SSG...`);
+    const allFunds = await fetchAllFundsForBuild();
+    console.log(`🔥 SSR: Prefetched ${allFunds.length} funds for SSG`);
+    
+    // Populate the React Query cache with SSG data
+    queryClient.setQueryData(['funds-all'], allFunds);
+    
+    // For fund detail pages, also set the specific fund in cache
+    if (fundDataForSSR) {
+      queryClient.setQueryData(['fund', fundDataForSSR.id], fundDataForSSR);
+      console.log(`🔥 SSR: Cached fund data for ${fundDataForSSR.id}`);
+    }
+
     // Get SEO data for this route with detailed logging
-    if (isDev) {
+    if (shouldLog) {
       console.log(`🔥 SSR: Requesting SEO data with params:`, {
         pageType: route.pageType,
         fundName: route.params?.fundName,
@@ -99,7 +122,7 @@ export class SSRRenderer {
       ? seoData.structuredData.length > 0 
       : !!seoData.structuredData && Object.keys(seoData.structuredData).length > 0;
 
-    if (isDev) {
+    if (shouldLog) {
       const seoValidation = {
         hasTitle: !!seoData.title,
         hasDescription: !!seoData.description,
@@ -191,7 +214,7 @@ export class SSRRenderer {
     const getComponent = (componentName: string) => {
       const component = components[componentName];
       if (!component) {
-        if (isDev) {
+        if (shouldLog) {
           console.warn(`🔥 SSR: Component ${componentName} not available, using fallback`);
         }
         return FallbackComponent;
@@ -304,14 +327,14 @@ export class SSRRenderer {
       
       // Ensure the HTML has substantial content - if not, it might be a lazy loading issue
       if (html.length < 500) {
-        if (isDev) {
+        if (shouldLog) {
           console.warn(`🔥 SSR: Short HTML content for ${route.path} (${html.length} chars), possible lazy loading issue`);
         }
         // Try again after a longer wait
         await new Promise(resolve => setTimeout(resolve, 500));
         const retryHtml = renderToString(React.createElement(AppRouter));
         if (retryHtml.length > html.length) {
-          if (isDev) {
+          if (shouldLog) {
             console.log(`🔥 SSR: Retry successful for ${route.path}, improved from ${html.length} to ${retryHtml.length} chars`);
           }
           const helmet = Helmet.rewind();
@@ -325,20 +348,26 @@ export class SSRRenderer {
         }
       }
       
-      if (isDev) {
-        console.log(`🔥 SSR: Successfully rendered HTML for ${route.path}, length: ${html.length} chars`);
-        
-        // Check for content quality indicators
-        const hasH1 = html.includes('<h1');
-        const hasMainContent = html.includes('main') || html.includes('article') || html.includes('section');
-        const hasLinks = html.includes('<a href');
-        
-        console.log(`🔥 SSR: Content quality for ${route.path}:`, {
-          hasH1,
-          hasMainContent,
-          hasLinks,
-          contentLength: html.length
-        });
+      // Always log content quality for debugging SSG issues
+      console.log(`🔥 SSR: Successfully rendered HTML for ${route.path}, length: ${html.length} chars`);
+      
+      // Check for content quality indicators
+      const hasH1 = html.includes('<h1');
+      const hasMainContent = html.includes('main') || html.includes('article') || html.includes('section');
+      const hasLinks = html.includes('<a href');
+      const hasFundCards = html.includes('fund-card') || html.includes('FundCard');
+      
+      console.log(`🔥 SSR: Content quality for ${route.path}:`, {
+        hasH1,
+        hasMainContent,
+        hasLinks,
+        hasFundCards,
+        contentLength: html.length
+      });
+      
+      // Warn if content is suspiciously short
+      if (html.length < 2000) {
+        console.warn(`⚠️  SSR: HTML content for ${route.path} is very short (${html.length} chars) - may indicate rendering issue`);
       }
       
       const helmet = Helmet.rewind();
@@ -351,7 +380,7 @@ export class SSRRenderer {
         script: helmet.script.toString()
       };
 
-      if (isDev) {
+      if (shouldLog) {
         const finalHasStructuredData = Array.isArray(finalSeoData.structuredData) 
           ? finalSeoData.structuredData.length > 0 
           : !!finalSeoData.structuredData && Object.keys(finalSeoData.structuredData).length > 0;
