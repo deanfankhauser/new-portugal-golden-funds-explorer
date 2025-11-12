@@ -1,17 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../../data/types/funds';
-import { funds } from '../../data/funds';
 import { normalizeComparisonSlug } from '../../utils/comparisonUtils';
 import { URL_CONFIG } from '../../utils/urlConfig';
-import { ArrowLeftRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { ArrowLeftRight, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAllFunds } from '../../hooks/useFundsQuery';
 
 interface FundComparisonSuggestionsProps {
   currentFund: Fund;
 }
 
 const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ currentFund }) => {
+  const { data: funds = [], isLoading } = useAllFunds();
+
   // Find similar funds based on category and size
   const suggestedFunds = funds
     .filter(fund => 
@@ -21,7 +23,7 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
     )
     .slice(0, 3);
 
-  if (suggestedFunds.length === 0) return null;
+  if (isLoading || suggestedFunds.length === 0) return null;
 
   return (
     <div className="mt-12 bg-background rounded-2xl border border-border/40 shadow-sm p-6 lg:p-10">
@@ -61,14 +63,6 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
                           <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
                         )}
                       </div>
-
-                      {/* Verified Badge */}
-                      {currentFund.isVerified && currentFund.verifiedAt && (
-                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium shrink-0 bg-success text-white w-fit">
-                          <Sparkles className="h-3 w-3" strokeWidth={2.5} />
-                          <span>Recently Verified</span>
-                        </div>
-                      )}
 
                       {/* VS Divider */}
                       <span className="text-xs font-medium uppercase tracking-wider shrink-0 hidden sm:inline text-muted-foreground">

@@ -23,7 +23,7 @@ const EmptyComparison = () => {
           onClick={handleBrowseFunds}
           className="bg-primary hover:bg-primary/90 text-primary-foreground"
         >
-          Browse Portugal Golden Visa Investment Fund Index
+          Browse All Funds
         </Button>
       </div>
       

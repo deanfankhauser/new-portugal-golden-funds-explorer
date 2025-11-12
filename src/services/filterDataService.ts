@@ -1,5 +1,4 @@
-import { funds } from '../data/services/funds-service';
-import { FundTag } from '../data/types/funds';
+import { Fund, FundTag } from '../data/types/funds';
 
 export interface FilterOption {
   tag: FundTag;
@@ -18,7 +17,7 @@ const MIN_FUND_COUNT = 3;
  * Get only meaningful filters (those with 3+ funds)
  * Sorted by fund count descending
  */
-export const getMeaningfulFilters = (): FilterOption[] => {
+export const getMeaningfulFilters = (funds: Fund[]): FilterOption[] => {
   const tagCounts = new Map<FundTag, number>();
   
   // Count occurrences of each tag
@@ -42,15 +41,15 @@ export const getMeaningfulFilters = (): FilterOption[] => {
 /**
  * Get top filters by category
  */
-export const getTopFilters = (limit: number = 8): FilterOption[] => {
-  return getMeaningfulFilters().slice(0, limit);
+export const getTopFilters = (funds: Fund[], limit: number = 8): FilterOption[] => {
+  return getMeaningfulFilters(funds).slice(0, limit);
 };
 
 /**
  * Get categorized filters for expanded view
  */
-export const getCategorizedFilters = (): FilterGroup[] => {
-  const allFilters = getMeaningfulFilters();
+export const getCategorizedFilters = (funds: Fund[]): FilterGroup[] => {
+  const allFilters = getMeaningfulFilters(funds);
   
   const categoryTags = ['Venture Capital', 'Private Equity', 'Mixed', 'Infrastructure', 'Debt'];
   const eligibilityTags = ['Golden Visa Eligible', 'Portugal'];

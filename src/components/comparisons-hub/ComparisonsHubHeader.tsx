@@ -13,7 +13,7 @@ const ComparisonsHubHeader = () => {
       <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
         Compare different Portugal Golden Visa investment funds side by side. 
         Analyze fees, returns, minimum investments, and more to make informed decisions.
-        View our comprehensive <Link to="/" className="text-primary hover:underline">Portugal Golden Visa Investment Fund Index</Link> for complete rankings.
+        View our comprehensive <Link to="/" className="text-primary hover:underline">complete fund list</Link> for rankings.
       </p>
     </div>
   );

@@ -6,10 +6,11 @@ import Footer from '@/components/Footer';
 import PageSEO from '@/components/common/PageSEO';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Building2, Edit3, TrendingUp, DollarSign } from 'lucide-react';
+import { Building2, Edit3, TrendingUp, Eye, Users } from 'lucide-react';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
+import { useFundEngagementMetrics } from '@/hooks/useFundEngagementMetrics';
 import { Fund } from '@/data/types/funds';
 import { Profile } from '@/types/profile';
 
@@ -37,6 +38,10 @@ const MyFunds = () => {
   const [loading, setLoading] = useState(true);
   const [companiesWithFunds, setCompaniesWithFunds] = useState<CompanyWithFunds[]>([]);
   const { funds } = useRealTimeFunds();
+  
+  // Get all fund IDs for metrics
+  const allFundIds = companiesWithFunds.flatMap(c => c.funds.map(f => f.id));
+  const metrics = useFundEngagementMetrics(allFundIds);
 
   useEffect(() => {
     const fetchAssignments = async () => {
@@ -181,13 +186,14 @@ const MyFunds = () => {
                                   <h4 className="font-semibold text-lg mb-1">{fund.name}</h4>
                                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                     <span className="flex items-center gap-1">
-                                      <DollarSign className="h-3 w-3" />
-                                      €{fund.fundSize}M AUM
+                                      <Eye className="h-4 w-4" />
+                                      {metrics[fund.id]?.loading ? '—' : metrics[fund.id]?.monthlyViews ?? 0} impressions (30d)
                                     </span>
                                     <span>•</span>
-                                    <span>{fund.category}</span>
-                                    <span>•</span>
-                                    <span>{fund.returnTarget}</span>
+                                    <span className="flex items-center gap-1">
+                                      <Users className="h-4 w-4" />
+                                      {metrics[fund.id]?.loading ? '—' : metrics[fund.id]?.totalLeads ?? 0} total leads
+                                    </span>
                                   </div>
                                 </div>
                                 <Link to={`/manage-fund/${fund.id}`}>

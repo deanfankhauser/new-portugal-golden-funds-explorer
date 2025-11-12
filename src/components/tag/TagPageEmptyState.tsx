@@ -14,7 +14,7 @@ const TagPageEmptyState = ({ tagName }: TagPageEmptyStateProps) => {
         No funds are currently tagged with {tagName}
       </p>
       <Link to="/" className="inline-block mt-4 text-primary hover:underline">
-        Browse Portugal Golden Visa Investment Fund Index
+        Browse our fund directory
       </Link>
     </div>
   );

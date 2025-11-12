@@ -1,18 +1,19 @@
 import { SitemapService, SitemapEntry } from './sitemapService';
-import { getAllComparisonSlugs } from '../data/services/comparison-service';
+import { generateComparisonsFromFunds } from '../data/services/comparison-service';
 import { URL_CONFIG } from '../utils/urlConfig';
 import { DateManagementService } from './dateManagementService';
-import { funds } from '../data/funds';
+import { fetchAllFundsForBuild } from '../lib/build-data-fetcher';
 
 export class EnhancedSitemapService extends SitemapService {
   
   // Generate comparison pages for sitemap
-  private static getComparisonPages(): SitemapEntry[] {
-    const comparisonSlugs = getAllComparisonSlugs();
+  private static async getComparisonPages(): Promise<SitemapEntry[]> {
+    const funds = await fetchAllFundsForBuild();
+    const comparisons = generateComparisonsFromFunds(funds);
     const contentDates = DateManagementService.getContentDates('comparison');
     
-    return comparisonSlugs.map(slug => ({
-      url: URL_CONFIG.buildComparisonUrl(slug),
+    return comparisons.map(comparison => ({
+      url: URL_CONFIG.buildComparisonUrl(comparison.slug),
       lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
       changefreq: 'weekly' as const,
       priority: 0.85
@@ -20,7 +21,8 @@ export class EnhancedSitemapService extends SitemapService {
   }
 
   // Generate alternatives pages for sitemap
-  private static getAlternativesPages(): SitemapEntry[] {
+  private static async getAlternativesPages(): Promise<SitemapEntry[]> {
+    const funds = await fetchAllFundsForBuild();
     return funds.map(fund => {
       const contentDates = DateManagementService.getFundContentDates(fund);
       return {
@@ -33,11 +35,18 @@ export class EnhancedSitemapService extends SitemapService {
   }
 
   // Enhanced sitemap generation with all pages
-  static generateEnhancedSitemapEntries(): SitemapEntry[] {
+  static async generateEnhancedSitemapEntries(): Promise<SitemapEntry[]> {
+    const funds = await fetchAllFundsForBuild();
+    const [baseEntries, comparisonPages, alternativesPages] = await Promise.all([
+      Promise.resolve(super.generateSitemapEntries(funds)),
+      this.getComparisonPages(),
+      this.getAlternativesPages()
+    ]);
+    
     return [
-      ...super.generateSitemapEntries(),
-      ...this.getComparisonPages(),
-      ...this.getAlternativesPages()
+      ...baseEntries,
+      ...comparisonPages,
+      ...alternativesPages
     ];
   }
 
@@ -72,8 +81,8 @@ Allow: /alternatives`;
   }
 
   // Generate enhanced XML sitemap with proper indexing hints
-  static generateEnhancedSitemapXML(): string {
-    const entries = this.generateEnhancedSitemapEntries();
+  static async generateEnhancedSitemapXML(): Promise<string> {
+    const entries = await this.generateEnhancedSitemapEntries();
     
     const urlElements = entries.map(entry => `  <url>
     <loc>${entry.url}</loc>

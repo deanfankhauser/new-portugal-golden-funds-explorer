@@ -25,6 +25,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import HistoricalPerformanceEditor from './HistoricalPerformanceEditor';
+import { useAllFunds } from '@/hooks/useFundsQuery';
 
 interface FundEditModalProps {
   fund: Fund;
@@ -39,6 +40,8 @@ export const FundEditModal: React.FC<FundEditModalProps> = ({
 }) => {
   const { submitFundEditSuggestion, canEditFund, directUpdateFund, loading, user } = useFundEditing();
   const { toast } = useToast();
+  const { data: allFundsData } = useAllFunds();
+  const allDatabaseFunds = allFundsData || [];
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [hasDirectEditAccess, setHasDirectEditAccess] = useState(false);
   const [checkingPermission, setCheckingPermission] = useState(true);
@@ -717,7 +720,7 @@ useEffect(() => {
                 <div className="space-y-3">
                   <Label className="text-sm font-medium">Available Tags</Label>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-64 overflow-y-auto p-3 border rounded-md">
-                    {getAllTags().map((tag) => {
+                    {getAllTags(allDatabaseFunds).map((tag) => {
                       const isSelected = formData.tags?.includes(tag) || false;
                       return (
                         <div key={tag} className="flex items-center space-x-2">

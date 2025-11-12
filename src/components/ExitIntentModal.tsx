@@ -37,6 +37,7 @@ export default function ExitIntentModal() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [hasClosedThisSession, setHasClosedThisSession] = useState(false);
   const location = useLocation();
   const { user, loading } = useEnhancedAuth();
 
@@ -75,6 +76,12 @@ export default function ExitIntentModal() {
       return false;
     }
 
+    // Check if closed this session
+    if (hasClosedThisSession) {
+      console.log('[ExitIntent] Not showing: closed this session');
+      return false;
+    }
+
     // Check session storage (once per session)
     if (sessionStorage.getItem('exitIntentShownThisSession') === 'true') {
       console.log('[ExitIntent] Not showing: already shown this session');
@@ -93,11 +100,12 @@ export default function ExitIntentModal() {
 
     console.log('[ExitIntent] All checks passed, ready to show on exit');
     return true;
-  }, [location.pathname, user, loading]);
+  }, [location.pathname, user, loading, hasClosedThisSession]);
 
   // Exit intent detection
   useEffect(() => {
-    if (!shouldShowModal()) {
+    // Don't set up listener if modal is already open or was closed
+    if (isOpen || hasClosedThisSession || !shouldShowModal()) {
       return;
     }
 
@@ -131,10 +139,11 @@ export default function ExitIntentModal() {
       clearTimeout(timeoutId);
       clearTimeout(pageTimerId);
     };
-  }, [shouldShowModal]);
+  }, [shouldShowModal, isOpen, hasClosedThisSession]);
 
   const handleClose = () => {
     setIsOpen(false);
+    setHasClosedThisSession(true);
     // Set cooldown when closing
     localStorage.setItem('exitIntentLastClosed', Date.now().toString());
   };

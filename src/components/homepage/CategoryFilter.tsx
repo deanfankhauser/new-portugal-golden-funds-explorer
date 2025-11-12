@@ -21,7 +21,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
     return typeof window !== 'undefined' ? window.innerWidth >= 1024 : false;
   });
   const { funds } = useRealTimeFunds();
-  const categories = getAllCategories();
+  const categories = getAllCategories(funds);
 
   const getCategoryCount = (category: FundCategory): number => {
     return funds.filter(fund => fund.category === category).length;

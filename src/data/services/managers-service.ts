@@ -1,4 +1,4 @@
-import { funds } from './funds-service';
+import { Fund } from '../types/funds';
 
 // Public manager data type (no sensitive information)
 export interface PublicManagerData {
@@ -39,8 +39,8 @@ export const getAllApprovedManagers = async (): Promise<PublicManagerData[]> => 
   }
 };
 
-// Function to get all unique fund managers with funds count (legacy from static data)
-export const getAllFundManagers = (): { name: string; fundsCount: number }[] => {
+// Function to get all unique fund managers with funds count
+export const getAllFundManagers = (funds: Fund[]): { name: string; fundsCount: number }[] => {
   const managersMap = new Map<string, { name: string; fundsCount: number }>();
   
   funds.forEach(fund => {
@@ -61,21 +61,21 @@ export const getAllFundManagers = (): { name: string; fundsCount: number }[] => 
 };
 
 // Function to get funds by manager name
-export const getFundsByManager = (managerName: string) => {
+export const getFundsByManager = (funds: Fund[], managerName: string): Fund[] => {
   return funds.filter(fund =>
     fund.managerName.toLowerCase() === managerName.toLowerCase()
   );
 };
 
 // Function to get count of funds by manager
-export const getFundsCountByManager = (managerName: string): number => {
+export const getFundsCountByManager = (funds: Fund[], managerName: string): number => {
   return funds.filter(fund =>
     fund.managerName.toLowerCase() === managerName.toLowerCase()
   ).length;
 };
 
 // Function to get total fund size managed by a manager
-export const getTotalFundSizeByManager = (managerName: string): number => {
+export const getTotalFundSizeByManager = (funds: Fund[], managerName: string): number => {
   return funds
     .filter(fund => fund.managerName.toLowerCase() === managerName.toLowerCase())
     .reduce((sum, fund) => sum + fund.fundSize, 0);

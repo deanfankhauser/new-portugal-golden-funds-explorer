@@ -10,7 +10,7 @@ import { StaticRoute } from './routeDiscovery';
 import { loadComponents, TooltipProvider } from './componentLoader';
 import { ComparisonProvider } from '../contexts/ComparisonContext';
 import { RecentlyViewedProvider } from '../contexts/RecentlyViewedContext';
-import { fundsData } from '../data/mock/funds';
+import { fetchAllFundsForBuild } from '../lib/build-data-fetcher';
 import type { Fund } from '../data/types/funds';
 
 // Ensure React is available globally for SSR
@@ -55,8 +55,9 @@ export class SSRRenderer {
       console.log(`🔥 SSR: Detected potential fund page. Fund ID: "${fundId}"`);
       console.log(`🔥 SSR: Route params passed:`, route.params);
       
-      // Find the fund directly from fundsData
-      fundDataForSSR = fundsData.find(f => f.id === fundId) || null;
+      // Fetch fund data from database during build
+      const allFunds = await fetchAllFundsForBuild();
+      fundDataForSSR = allFunds.find(f => f.id === fundId) || null;
       console.log(`🔥 SSR: Fund data found for SSR:`, fundDataForSSR ? `✅ ${fundDataForSSR.name}` : '❌ Not found');
     }
     

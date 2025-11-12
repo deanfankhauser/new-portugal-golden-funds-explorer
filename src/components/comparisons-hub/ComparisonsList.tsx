@@ -1,19 +1,37 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { generateFundComparisons } from '../../data/services/comparison-service';
+import { generateComparisonsFromFunds } from '../../data/services/comparison-service';
+import { useAllFunds } from '@/hooks/useFundsQuery';
 import { Button } from '@/components/ui/button';
-import { GitCompare } from 'lucide-react';
+import { GitCompare, Loader2 } from 'lucide-react';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
 
 const ComparisonsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const comparisonsPerPage = 24;
-  const comparisons = generateFundComparisons();
+  
+  // Fetch all funds from database
+  const { data: allFunds, isLoading } = useAllFunds();
+  
+  // Generate comparisons from database funds
+  const comparisons = allFunds ? generateComparisonsFromFunds(allFunds) : [];
   
   const totalPages = Math.ceil(comparisons.length / comparisonsPerPage);
   const startIndex = (currentPage - 1) * comparisonsPerPage;
   const currentComparisons = comparisons.slice(startIndex, startIndex + comparisonsPerPage);
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Loader2 className="w-6 h-6 animate-spin" />
+          <span>Loading comparisons...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

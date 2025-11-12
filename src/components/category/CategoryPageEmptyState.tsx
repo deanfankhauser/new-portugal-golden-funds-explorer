@@ -14,7 +14,7 @@ const CategoryPageEmptyState: React.FC<CategoryPageEmptyStateProps> = ({ categor
         No funds are currently in the {categoryName} category
       </p>
       <Link to="/" className="inline-block mt-4 text-primary hover:underline">
-        Browse Portugal Golden Visa Investment Fund Index
+        Browse our fund directory
       </Link>
     </div>
   );

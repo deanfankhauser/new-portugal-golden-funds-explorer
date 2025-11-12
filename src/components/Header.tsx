@@ -2,23 +2,12 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-
 import AuthAwareButton from "./auth/AuthAwareButton";
 import GlobalSearch from "./GlobalSearch";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
 import ComparisonIndicator from "./ComparisonIndicator";
-import ShortlistIndicator from "./ShortlistIndicator";
+import SavedFundsIndicator from "./SavedFundsIndicator";
 import MobileNavigation from "./MobileNavigation";
 import DisclaimerBanner from "./common/DisclaimerBanner";
-import { ArrowLeft, Calculator, ClipboardCheck, Users, ExternalLink, TrendingUp, BarChart3, GitCompareArrows } from "lucide-react";
-import { FundBrowseWidget, ComparisonWidget } from "./navigation/IndexWidgets";
 
 const Header = () => {
   return (
@@ -46,135 +35,14 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6 flex-shrink-0">
-            <NavigationMenu>
-              <NavigationMenuList>
-                {/* Analysis Dropdown */}
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent text-background hover:bg-background/10 data-[state=open]:bg-background/10">
-                    Analysis
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="w-80 p-4 bg-card">
-                      <div className="space-y-3">
-                        <FundBrowseWidget />
-                        <ComparisonWidget />
-                        <NavigationMenuLink asChild>
-                          <Link to="/alternatives" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
-                            <GitCompareArrows className="h-5 w-5 text-primary flex-shrink-0" />
-                            <div>
-                              <div className="font-medium text-foreground">Fund Alternatives</div>
-                              <div className="text-sm text-muted-foreground">Find alternative funds</div>
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                      </div>
-                    </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-
-                {/* Tools Dropdown */}
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent text-background hover:bg-background/10 data-[state=open]:bg-background/10">
-                    Tools
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="w-64 p-4 bg-card">
-                      <div className="space-y-2">
-                        <NavigationMenuLink asChild>
-                          <Link to="/roi-calculator" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
-                            <Calculator className="h-5 w-5 text-primary flex-shrink-0" />
-                            <div>
-                              <div className="font-medium text-foreground">ROI Calculator</div>
-                              <div className="text-sm text-muted-foreground">Calculate returns</div>
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                          <a href="https://www.movingto.com/tools/golden-visa-cost-calculator" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
-                            <Calculator className="h-5 w-5 text-primary flex-shrink-0" />
-                            <div>
-                              <div className="font-medium text-foreground">Golden Visa Cost Calculator</div>
-                              <div className="text-sm text-muted-foreground">Calculate total investment costs</div>
-                            </div>
-                            <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
-                          </a>
-                        </NavigationMenuLink>
-                    </div>
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-
-                {/* Browse Dropdown */}
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent text-background hover:bg-background/10 data-[state=open]:bg-background/10">
-                    Browse
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="w-64 p-4 bg-card">
-                      <div className="space-y-2">
-                         <NavigationMenuLink asChild>
-                           <Link to="/managers" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
-                             <Users className="h-5 w-5 text-primary flex-shrink-0" />
-                             <div>
-                               <div className="font-medium text-foreground">Fund Managers</div>
-                               <div className="text-sm text-muted-foreground">Explore managers</div>
-                             </div>
-                           </Link>
-                         </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                          <Link to="/categories" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
-                            <ExternalLink className="h-5 w-5 text-primary flex-shrink-0" />
-                            <div>
-                              <div className="font-medium text-foreground">Categories</div>
-                              <div className="text-sm text-muted-foreground">Browse by category</div>
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                          <Link to="/tags" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
-                            <ExternalLink className="h-5 w-5 text-primary flex-shrink-0" />
-                            <div>
-                              <div className="font-medium text-foreground">Tags</div>
-                              <div className="text-sm text-muted-foreground">Browse by tags</div>
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                          <Link to="/verified-funds" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
-                            <ClipboardCheck className="h-5 w-5 text-success flex-shrink-0" />
-                            <div>
-                              <div className="font-medium text-foreground">Verified Funds</div>
-                              <div className="text-sm text-muted-foreground">Trusted & verified</div>
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                        <NavigationMenuLink asChild>
-                          <Link to="/verification-program" className="flex items-center gap-3 p-3 rounded-md hover:bg-muted transition-colors">
-                            <ExternalLink className="h-5 w-5 text-primary flex-shrink-0" />
-                            <div>
-                              <div className="font-medium text-foreground">Verification Program</div>
-                              <div className="text-sm text-muted-foreground">How verification works</div>
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                      </div>
-                    </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
-
-            {/* Direct Actions */}
-
-            <AuthAwareButton />
-            <ShortlistIndicator />
+          <div className="hidden md:flex items-center gap-2 flex-shrink-0">
+            <SavedFundsIndicator />
             <ComparisonIndicator />
+            <AuthAwareButton />
           </div>
 
           {/* Mobile Navigation and Comparison */}
           <div className="flex md:hidden items-center gap-2 flex-shrink-0">
-            <ShortlistIndicator />
             <ComparisonIndicator />
             <MobileNavigation />
           </div>

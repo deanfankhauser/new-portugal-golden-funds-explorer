@@ -1,10 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { funds } from '../data/services/funds-service';
-import { getAllCategories } from '../data/services/categories-service';
-import { getAllTags } from '../data/services/tags-service';
-import { getAllFundManagers } from '../data/services/managers-service';
-import { getAllComparisonSlugs } from '../data/services/comparison-service';
+import { fetchAllBuildDataCached } from '../lib/build-data-fetcher';
+import { generateComparisonsFromFunds } from '../data/services/comparison-service';
 import { categoryToSlug, tagToSlug, managerToSlug } from '../lib/utils';
 import { URL_CONFIG } from '../utils/urlConfig';
 
@@ -128,7 +125,7 @@ ${sitemapElements}
   /**
    * Collect all URLs from the application
    */
-  private static collectAllURLs(): SitemapURL[] {
+  private static async collectAllURLs(): Promise<SitemapURL[]> {
     const urls: SitemapURL[] = [];
     const currentDate = new Date().toISOString().split('T')[0];
     
@@ -136,6 +133,11 @@ ${sitemapElements}
     const PRODUCTION_BASE_URL = 'https://funds.movingto.com';
     
     console.log(`🗺️  Generating sitemap URLs with BASE_URL: ${PRODUCTION_BASE_URL}`);
+    
+    // Fetch all data from database (cached)
+    console.log('📊 Fetching data from database for sitemap generation...');
+    const { funds, categories, tags, managers } = await fetchAllBuildDataCached();
+    console.log(`✅ Loaded ${funds.length} funds, ${categories.length} categories, ${tags.length} tags, ${managers.length} managers from database`);
 
     // Homepage
     urls.push({
@@ -203,7 +205,6 @@ ${sitemapElements}
 
     // Category pages
     try {
-      const categories = getAllCategories();
       categories.forEach(category => {
         const slug = categoryToSlug(category);
         urls.push({
@@ -219,7 +220,6 @@ ${sitemapElements}
 
     // Tag pages
     try {
-      const tags = getAllTags();
       tags.forEach(tag => {
         const slug = tagToSlug(tag);
         urls.push({
@@ -235,7 +235,6 @@ ${sitemapElements}
 
     // Manager pages
     try {
-      const managers = getAllFundManagers();
       managers.forEach(manager => {
         const slug = managerToSlug(manager.name);
         urls.push({
@@ -251,10 +250,10 @@ ${sitemapElements}
 
     // Comparison pages
     try {
-      const comparisonSlugs = getAllComparisonSlugs();
-      comparisonSlugs.forEach(slug => {
+      const comparisons = generateComparisonsFromFunds(funds);
+      comparisons.forEach(comparison => {
         urls.push({
-          loc: `${PRODUCTION_BASE_URL}/compare/${slug}`,
+          loc: `${PRODUCTION_BASE_URL}/compare/${comparison.slug}`,
           lastmod: currentDate,
           changefreq: 'weekly',
           priority: 0.85
@@ -362,15 +361,17 @@ Allow: /alternatives
   /**
    * Verify all expected dynamic routes are included
    */
-  private static verifyAndAddMissingRoutes(allURLs: SitemapURL[]): SitemapURL[] {
+  private static async verifyAndAddMissingRoutes(allURLs: SitemapURL[]): Promise<SitemapURL[]> {
     const currentDate = new Date().toISOString().split('T')[0];
     const existingURLs = new Set(allURLs.map(url => url.loc));
     const missingURLs: SitemapURL[] = [];
     const PRODUCTION_BASE_URL = 'https://funds.movingto.com';
+    
+    // Fetch data from database (cached)
+    const { categories, tags } = await fetchAllBuildDataCached();
 
     // Verify all categories are included
     try {
-      const categories = getAllCategories();
       categories.forEach(category => {
         const slug = categoryToSlug(category);
         const expectedURL = `${PRODUCTION_BASE_URL}/categories/${slug}`;
@@ -390,7 +391,6 @@ Allow: /alternatives
 
     // Verify all tags are included
     try {
-      const tags = getAllTags();
       tags.forEach(tag => {
         const slug = tagToSlug(tag);
         const expectedURL = `${PRODUCTION_BASE_URL}/tags/${slug}`;
@@ -420,18 +420,18 @@ Allow: /alternatives
   /**
    * Generate comprehensive sitemap(s) and save to directory
    */
-  public static generateSitemaps(outputDir: string): {
+  public static async generateSitemaps(outputDir: string): Promise<{
     sitemapFiles: string[];
     totalURLs: number;
     robotsTxtGenerated: boolean;
-  } {
+  }> {
     // Ensure output directory exists
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    // Collect all URLs
-    let allURLs = this.collectAllURLs();
+    // Collect all URLs from database
+    let allURLs = await this.collectAllURLs();
 
     // Discover dynamic category/tag paths from built dist to ensure full coverage
     const discoveredFromDist = this.discoverDynamicPathsFromDist(outputDir, ['categories', 'tags']);
@@ -444,10 +444,10 @@ Allow: /alternatives
       });
     });
 
-    console.log(`📊 Collected ${allURLs.length} URLs for sitemap generation (including ${discoveredFromDist.length} discovered from dist)`);
+    console.log(`📊 Collected ${allURLs.length} URLs for sitemap generation from database (including ${discoveredFromDist.length} discovered from dist)`);
 
     // Verify and add any missing dynamic routes
-    allURLs = this.verifyAndAddMissingRoutes(allURLs);
+    allURLs = await this.verifyAndAddMissingRoutes(allURLs);
 
     // Remove duplicates
     const uniqueURLs = allURLs.filter((url, index, self) => 

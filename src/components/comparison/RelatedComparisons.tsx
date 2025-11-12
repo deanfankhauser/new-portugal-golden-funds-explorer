@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../../data/types/funds';
-import { generateFundComparisons } from '../../data/services/comparison-service';
+import { generateComparisonsFromFunds } from '../../data/services/comparison-service';
+import { useAllFunds } from '@/hooks/useFundsQuery';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { TrendingUp, ArrowRight } from 'lucide-react';
 
@@ -16,8 +17,11 @@ const RelatedComparisons: React.FC<RelatedComparisonsProps> = ({
   currentFund2, 
   maxComparisons = 6 
 }) => {
-  // Get all possible comparisons
-  const allComparisons = generateFundComparisons();
+  // Fetch all funds from database
+  const { data: allFunds } = useAllFunds();
+  
+  // Generate all comparisons from database funds
+  const allComparisons = allFunds ? generateComparisonsFromFunds(allFunds) : [];
   
   // Filter out the current comparison and find related ones
   const currentSlug = `${[currentFund1.id, currentFund2.id].sort().join('-vs-')}`;

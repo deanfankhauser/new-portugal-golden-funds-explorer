@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Fund, FundTag, FundCategory, GeographicAllocation, TeamMember, PdfDocument, FAQItem, RedemptionFrequency } from '../data/types/funds';
-import { funds as staticFunds } from '../data/funds'; // Fallback to static data
 // Supabase client is lazy-loaded to keep SSR safe
 const getSupabase = async () => (await import('../integrations/supabase/client')).supabase;
 
@@ -65,7 +64,7 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
       if (fetchError) {
         console.error('❌ Error fetching funds:', fetchError);
         setError('Failed to fetch funds');
-        setFunds(staticFunds); // Simple fallback to static data
+        setFunds([]);
         return;
       }
 
@@ -184,13 +183,13 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
         setFunds(sortedFunds);
         setError(null);
       } else {
-        // No funds in database, use static funds as fallback
-        console.log('📝 No funds in database, using static data');
-        setFunds(staticFunds);
+        // No funds in database
+        console.log('📝 No funds in database');
+        setFunds([]);
       }
     } catch (err) {
       console.error('Error in fetchFunds:', err);
-      setFunds(staticFunds);
+      setFunds([]);
       setError('Failed to fetch funds');
     } finally {
       setLoading(false);

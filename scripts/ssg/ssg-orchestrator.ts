@@ -106,16 +106,16 @@ export async function generateStaticFiles() {
   
   // Use the new comprehensive sitemap generator
   try {
-    generateComprehensiveSitemaps(distDir);
+    await generateComprehensiveSitemaps(distDir);
   } catch (sitemapError) {
     console.warn('⚠️  Comprehensive sitemap generation failed, falling back to legacy generators');
     
     // Fallback to existing generators
     generateSitemap(routes, distDir);
-    generateFundsSitemap(distDir);
+    await generateFundsSitemap(distDir);
     
     // Generate enhanced sitemap as a supplemental file
-    const enhancedSitemapXML = EnhancedSitemapService.generateEnhancedSitemapXML();
+    const enhancedSitemapXML = await EnhancedSitemapService.generateEnhancedSitemapXML();
     fs.writeFileSync(path.join(distDir, 'sitemap-enhanced.xml'), enhancedSitemapXML);
     
     // Generate sitemap index

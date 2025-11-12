@@ -35,26 +35,14 @@ const FundManagementHeader: React.FC<FundManagementHeaderProps> = ({ fund, canDi
                 <h1 className="text-2xl font-bold text-foreground mb-2">
                   {fund.name}
                 </h1>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Badge variant="secondary" className="text-xs">
-                    {fund.category}
-                  </Badge>
-                  {fund.isVerified && (
+                {fund.isVerified && (
+                  <div className="flex items-center gap-2 flex-wrap">
                     <Badge variant="default" className="text-xs gap-1">
                       <CheckCircle2 className="h-3 w-3" />
                       Verified
                     </Badge>
-                  )}
-                  {canDirectEdit ? (
-                    <Badge variant="default" className="text-xs bg-green-600 hover:bg-green-700">
-                      Direct Edit Access
-                    </Badge>
-                  ) : (
-                    <Badge variant="outline" className="text-xs">
-                      Suggest Edits Only
-                    </Badge>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
