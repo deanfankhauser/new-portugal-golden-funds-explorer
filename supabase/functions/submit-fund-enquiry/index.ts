@@ -297,7 +297,7 @@ Deno.serve(async (req) => {
 
 function generateManagerNotificationEmail(enquiry: EnquiryData, managerName: string) {
   const html = `
-    ${generateEmailHeader()}
+    ${generateEmailHeader('')}
     
     <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
       <h1 style="color: ${BRAND_COLORS.bordeaux}; margin-top: 0;">🚀 New Enquiry for ${enquiry.fundName}</h1>
@@ -311,7 +311,7 @@ function generateManagerNotificationEmail(enquiry: EnquiryData, managerName: str
         <h2 style="margin-top: 0; color: ${BRAND_COLORS.bordeaux}; font-size: 18px;">⚠️ Important Reminders</h2>
         <ul style="color: ${BRAND_COLORS.textDark}; line-height: 1.8; padding-left: 20px; margin: 10px 0 0 0;">
           <li><strong>Sign in to your dashboard</strong> to view full lead details and contact information</li>
-          <li><strong>Update the lead status</strong> when you convert them to keep accurate records</li>
+          <li><strong>Update the lead status</strong> (Open, Closed Lost, or Won) to keep accurate records</li>
           <li><strong>Status verification:</strong> We verify lead statuses with clients - please ensure accuracy to avoid discrepancies</li>
           <li><strong>Direct contact:</strong> Feel free to arrange a call directly with the lead using the contact information provided</li>
         </ul>
@@ -369,7 +369,7 @@ You have a new prospective investor! Sign in to your dashboard to view their com
 
 ⚠️ IMPORTANT REMINDERS:
 ✓ Sign in to your dashboard to view full lead details and contact information
-✓ Update the lead status when you convert them to keep accurate records
+✓ Update the lead status (Open, Closed Lost, or Won) to keep accurate records
 ✓ Status verification: We verify lead statuses with clients - please ensure accuracy to avoid discrepancies
 ✓ Direct contact: Feel free to arrange a call directly with the lead using the contact information provided
 
@@ -397,7 +397,7 @@ Moving To Global Pte Ltd
 
 function generateInvestorConfirmationEmail(enquiry: EnquiryData) {
   const html = `
-    ${generateEmailHeader()}
+    ${generateEmailHeader('')}
     
     <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
       <h1 style="color: ${BRAND_COLORS.bordeaux}; margin-top: 0;">Thank you for your enquiry</h1>
