@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Preconnect to external domains for performance -->
+    <link rel="preconnect" href="https://bkmvydnfhmkjnuszroim.supabase.co" />
+    <link rel="preconnect" href="https://server.fillout.com" />
     <link rel="preconnect" href="https://www.googletagmanager.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -60,9 +62,8 @@
       setTimeout(loadGtag, 3000);
     </script>
     
-    <!-- Security headers -->
+    <!-- Security headers (X-Frame-Options removed - must be set via HTTP headers only) -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     

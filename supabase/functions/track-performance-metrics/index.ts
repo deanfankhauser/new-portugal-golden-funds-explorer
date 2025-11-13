@@ -5,6 +5,20 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Validation thresholds for performance metrics (in milliseconds)
+const MAX_LCP = 60000;   // 60 seconds max - anything beyond likely a backgrounded tab
+const MAX_FCP = 60000;   // 60 seconds max
+const MAX_FID = 10000;   // 10 seconds max
+const MAX_TTFB = 10000;  // 10 seconds max
+const MAX_LOAD_TIME = 120000; // 2 minutes max
+
+// Validate and sanitize metric values
+const validateMetric = (value: number | null | undefined, max: number): number | null => {
+  if (!value) return null;
+  const rounded = Math.round(value);
+  return rounded > 0 && rounded <= max ? rounded : null;
+};
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -25,12 +39,12 @@ Deno.serve(async (req) => {
         .insert({
           page_path: data.pagePath,
           page_type: data.pageType,
-          lcp: data.lcp ? Math.round(data.lcp) : null,
-          fcp: data.fcp ? Math.round(data.fcp) : null,
+          lcp: validateMetric(data.lcp, MAX_LCP),
+          fcp: validateMetric(data.fcp, MAX_FCP),
           cls: data.cls ? Math.round(data.cls * 1000) : null, // CLS is typically 0-1, scale to integer
-          fid: data.fid ? Math.round(data.fid) : null,
-          ttfb: data.ttfb ? Math.round(data.ttfb) : null,
-          total_load_time: data.totalLoadTime ? Math.round(data.totalLoadTime) : null,
+          fid: validateMetric(data.fid, MAX_FID),
+          ttfb: validateMetric(data.ttfb, MAX_TTFB),
+          total_load_time: validateMetric(data.totalLoadTime, MAX_LOAD_TIME),
           session_id: data.sessionId,
           user_id: data.userId || null,
           user_agent: data.userAgent,

@@ -193,14 +193,6 @@ ${sitemapElements}
         changefreq: 'weekly',
         priority: fund.fundStatus === 'Open' ? 0.9 : fund.fundStatus === 'Closing Soon' ? 0.95 : 0.8
       });
-
-      // Fund alternatives pages
-      urls.push({
-        loc: `${PRODUCTION_BASE_URL}/${fund.id}/alternatives`,
-        lastmod: fund.dateModified || currentDate,
-        changefreq: 'weekly',
-        priority: 0.8
-      });
     });
 
     // Category pages
@@ -486,19 +478,19 @@ Allow: /alternatives
     // Collect all URLs from database
     let allURLs = await this.collectAllURLs();
 
-    // Discover dynamic category/tag paths from built dist to ensure full coverage
-    // This will automatically filter out pages with non-self-referencing canonical tags (legacy slug aliases)
-    const discoveredFromDist = this.discoverDynamicPathsFromDist(outputDir, ['categories', 'tags']);
-    discoveredFromDist.forEach(loc => {
-      allURLs.push({
-        loc,
-        lastmod: new Date().toISOString().split('T')[0],
-        changefreq: 'weekly',
-        priority: loc.includes('/categories/') ? 0.8 : 0.7
-      });
-    });
+    // DISABLED: Dist discovery to ensure 100% database-driven sitemap
+    // This prevents non-canonical variants or legacy routes from being included
+    // const discoveredFromDist = this.discoverDynamicPathsFromDist(outputDir, ['categories', 'tags']);
+    // discoveredFromDist.forEach(loc => {
+    //   allURLs.push({
+    //     loc,
+    //     lastmod: new Date().toISOString().split('T')[0],
+    //     changefreq: 'weekly',
+    //     priority: loc.includes('/categories/') ? 0.8 : 0.7
+    //   });
+    // });
 
-    console.log(`📊 Collected ${allURLs.length} URLs for sitemap generation from database (including ${discoveredFromDist.length} discovered from dist)`);
+    console.log(`📊 Collected ${allURLs.length} URLs for sitemap generation from database (100% database-driven)`);
 
     // Verify and add any missing dynamic routes
     allURLs = await this.verifyAndAddMissingRoutes(allURLs);

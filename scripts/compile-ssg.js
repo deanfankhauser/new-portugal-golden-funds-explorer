@@ -167,8 +167,18 @@ export function compileSSGFiles() {
       console.warn('⚠️  No category pages detected in dist/categories. Reloads for /categories/* will 404.');
     }
 
-    // Step 7: Copy enhanced sitemap files from dist to public
-    console.log('\n📍 STEP 7: Copying sitemaps to public...');
+    // Step 7: Validate sitemap canonical tags
+    console.log('\n📍 STEP 7: Validating sitemap canonical tags...');
+    console.log('─'.repeat(60));
+    try {
+      execSync('npx tsx scripts/ssg/validate-sitemap-canonical.ts', { stdio: 'inherit' });
+    } catch (validationError) {
+      console.error('❌ Sitemap canonical validation failed');
+      throw validationError;
+    }
+
+    // Step 8: Copy enhanced sitemap files from dist to public
+    console.log('\n📍 STEP 8: Copying sitemaps to public...');
     console.log('─'.repeat(60));
     try {
       const publicDir = path.join(process.cwd(), 'public');

@@ -43,9 +43,9 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1">
             <Link to={`/${fund.id}`} className="block" onClick={() => window.scrollTo(0, 0)}>
-              <h3 className="text-[28px] font-semibold text-foreground mb-3 tracking-tight">
+              <h2 className="text-[28px] font-semibold text-foreground mb-3 tracking-tight">
                 {fund.name}
-              </h3>
+              </h2>
             </Link>
             <div className="flex items-center gap-2 flex-wrap">
               {fund.isVerified && (

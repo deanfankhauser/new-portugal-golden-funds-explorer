@@ -27,14 +27,21 @@ export const getEnv = (key: string): string | undefined => {
 };
 
 export const getBaseUrl = (): string => {
-  // During SSG/production build, always use production URL
-  const isProduction = isSSR && process.env.NODE_ENV === 'production';
+  // CRITICAL: During ANY build process, ALWAYS use production URL for SSG
+  // This prevents Vercel environment variables from accidentally overriding production URLs
+  const isBuild = isSSR && (
+    process.env.NODE_ENV === 'production' || 
+    process.env.VERCEL === '1' ||
+    process.env.CI === 'true'
+  );
   
-  if (isProduction) {
-    // Force production URL during SSG build
+  if (isBuild) {
+    // Force production URL during ANY build (local or Vercel)
+    console.log('🔒 SSG: Forcing production URL for build process');
     return 'https://funds.movingto.com';
   }
   
+  // Only use environment variable overrides in dev/local mode
   return (
     getEnv('VITE_APP_BASE_URL') ||
     getEnv('APP_BASE_URL') ||

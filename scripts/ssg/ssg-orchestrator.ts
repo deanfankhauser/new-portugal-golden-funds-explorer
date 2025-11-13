@@ -10,6 +10,7 @@ import { EnhancedSitemapService } from '../../src/services/enhancedSitemapServic
 import { generate404Page } from './404-generator';
 import { generateComprehensiveSitemaps } from './comprehensive-sitemap-generator';
 import { validateSitemapURLs } from './validate-sitemap-urls';
+import { validateSitemapCanonical } from './validate-sitemap-canonical';
 
 export async function generateStaticFiles() {
   const distDir = path.join(process.cwd(), 'dist');
@@ -144,10 +145,20 @@ export async function generateStaticFiles() {
     console.log(`\n📝 Note: ${warnings.length} sitemap validation warnings (non-blocking)`);
   }
 
+  // Validate canonical tags in sitemap
+  console.log('\n🔍 Validating canonical tags in sitemap...');
+  try {
+    await validateSitemapCanonical(distDir);
+  } catch (canonicalError) {
+    console.error('\n❌ BUILD FAILED: Sitemap canonical validation failed');
+    throw canonicalError;
+  }
+
   // Final report
   console.log('\n🎉 SSG: Static site generation completed!');
   console.log(`🗺️  Comprehensive sitemap generated with full URL coverage`);
-  console.log(`✅ Sitemap validation passed`);
+  console.log(`✅ Sitemap URL validation passed`);
+  console.log(`✅ Sitemap canonical validation passed`);
   
   if (failedRoutes.length > 0) {
     console.log(`   ⚠️  Warning: ${failedRoutes.length} routes had issues but build continued`);
