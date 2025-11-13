@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { HelpCircle } from 'lucide-react';
 
 interface FAQ {
@@ -15,6 +15,37 @@ const ManagerFAQsSection: React.FC<ManagerFAQsSectionProps> = ({
   managerName, 
   faqs 
 }) => {
+  useEffect(() => {
+    if (!faqs || faqs.length === 0) return;
+
+    const faqSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'mainEntity': faqs.map(faq => ({
+        '@type': 'Question',
+        'name': faq.question,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': faq.answer
+        }
+      }))
+    };
+    
+    const existingFAQSchema = document.querySelector('script[data-schema="manager-faq"]');
+    if (existingFAQSchema) existingFAQSchema.remove();
+    
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-schema', 'manager-faq');
+    script.textContent = JSON.stringify(faqSchema);
+    document.head.appendChild(script);
+    
+    return () => {
+      const schemaScript = document.querySelector('script[data-schema="manager-faq"]');
+      if (schemaScript) schemaScript.remove();
+    };
+  }, [faqs]);
+
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30">
       <div className="max-w-7xl mx-auto">
