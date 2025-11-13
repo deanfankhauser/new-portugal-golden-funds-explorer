@@ -343,7 +343,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Portugal Golden Visa Fund Comparison | Investment Analysis 2025', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Compare Portugal Golden Visa investment funds side-by-side. Detailed analysis of fees, returns, minimum investment, and fund performance metrics.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('compare'),
+          url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
           keywords: [
             'Golden Visa fund comparison',
             'investment fund analysis',
@@ -529,7 +529,9 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText(`${altFund.name} Alternatives | Similar Portugal Golden Visa Funds | Movingto`, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(`Discover investment alternatives to ${altFund.name}. Compare similar Portugal Golden Visa eligible funds with matching investment profiles and characteristics.`, this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildFundUrl(altFund.id) + '/alternatives',
+          url: URL_CONFIG.buildFundUrl(altFund.id),
+          canonical: URL_CONFIG.buildFundUrl(altFund.id),
+          robots: 'noindex,follow',
           keywords: [
             `${altFund.name} alternatives`,
             'similar funds',

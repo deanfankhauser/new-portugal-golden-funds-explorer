@@ -193,14 +193,6 @@ ${sitemapElements}
         changefreq: 'weekly',
         priority: fund.fundStatus === 'Open' ? 0.9 : fund.fundStatus === 'Closing Soon' ? 0.95 : 0.8
       });
-
-      // Fund alternatives pages
-      urls.push({
-        loc: `${PRODUCTION_BASE_URL}/${fund.id}/alternatives`,
-        lastmod: fund.dateModified || currentDate,
-        changefreq: 'weekly',
-        priority: 0.8
-      });
     });
 
     // Category pages
