@@ -139,10 +139,40 @@ export async function validateSitemapCanonical(distDir: string): Promise<void> {
     }
   }
 
+  // Write canonical report JSON for debugging
+  const reportDir = path.join(distDir, 'validation');
+  if (!fs.existsSync(reportDir)) {
+    fs.mkdirSync(reportDir, { recursive: true });
+  }
+  
+  const reportPath = path.join(reportDir, 'canonical-report.json');
+  const report = {
+    timestamp: new Date().toISOString(),
+    summary: {
+      total: urls.length,
+      valid: validCount,
+      invalid: invalidCount,
+      missing: missingHtmlCount
+    },
+    invalidEntries: invalidEntries.map(e => ({
+      url: e.url,
+      canonical: e.canonicalUrl,
+      message: e.message
+    })),
+    missingEntries: missingEntries.map(e => ({
+      url: e.url,
+      message: e.message
+    }))
+  };
+  
+  fs.writeFileSync(reportPath, JSON.stringify(report, null, 2), 'utf-8');
+  console.log(`📝 Wrote canonical validation report to dist/validation/canonical-report.json`);
+
   // Fail build if invalid canonicals found
   if (invalidCount > 0) {
     console.error(`\n❌ VALIDATION FAILED: ${invalidCount} non-canonical pages found in sitemap`);
     console.error('   Sitemaps must only contain pages with self-referencing canonical tags');
+    console.error(`   Full report available at: ${reportPath}`);
     throw new Error(`Sitemap validation failed: ${invalidCount} non-canonical pages found`);
   }
 
