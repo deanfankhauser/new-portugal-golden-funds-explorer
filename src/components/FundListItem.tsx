@@ -49,10 +49,12 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             </Link>
             <div className="flex items-center gap-2 flex-wrap">
               {fund.isVerified && (
-                <Badge variant="outline" className="bg-success/10 text-success border-success/20 px-3 py-1 text-[13px] font-medium">
-                  <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
-                  Verified
-                </Badge>
+                <Link to="/verification-program" onClick={(e) => e.stopPropagation()} className="hover:opacity-80 transition-opacity">
+                  <Badge variant="outline" className="bg-success/10 text-success border-success/20 px-3 py-1 text-[13px] font-medium">
+                    <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
+                    Verified
+                  </Badge>
+                </Link>
               )}
               {fund.isVerified && isGVEligible && (
                 <Badge variant="outline" className="bg-primary/8 text-primary border-primary/20 px-3 py-1 text-[13px] font-medium">

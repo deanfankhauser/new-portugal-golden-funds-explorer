@@ -136,10 +136,12 @@ const FundAlternatives = () => {
                       <CardTitle className="text-xl text-foreground mb-2 flex items-center gap-2">
                         {alternativeFund.name}
                         {alternativeFund.isVerified && (
-                          <span className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-md border-2 border-success/70 ring-2 ring-success/20">
-                            <CheckCircle2 className="w-3.5 h-3.5" />
-                            ✓ VERIFIED
-                          </span>
+                          <Link to="/verification-program" className="inline-block hover:opacity-80 transition-opacity">
+                            <span className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-md border-2 border-success/70 ring-2 ring-success/20">
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              ✓ VERIFIED
+                            </span>
+                          </Link>
                         )}
                       </CardTitle>
                       <Badge className={`${getStatusColor(alternativeFund.fundStatus)} mb-3`}>

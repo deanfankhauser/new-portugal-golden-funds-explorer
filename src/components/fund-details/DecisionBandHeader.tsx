@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Badge } from '../ui/badge';
 import { CheckCircle2 } from 'lucide-react';
 import { Fund } from '../../data/funds';
@@ -43,10 +44,12 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
           {/* Badges */}
           <div className="flex items-center gap-3 flex-wrap">
             {fund.isVerified && (
-              <div className="bg-success/10 text-success px-4 py-2 rounded-xl text-[13px] font-semibold flex items-center gap-2 border border-success/20">
-                <CheckCircle2 className="w-4 h-4" />
-                Verified Fund
-              </div>
+              <Link to="/verification-program" className="inline-block hover:opacity-80 transition-opacity">
+                <div className="bg-success/10 text-success px-4 py-2 rounded-xl text-[13px] font-semibold flex items-center gap-2 border border-success/20">
+                  <CheckCircle2 className="w-4 h-4" />
+                  Verified Fund
+                </div>
+              </Link>
             )}
             {isOpenForSubscriptions && (
               <div className="bg-primary/10 text-primary px-4 py-2 rounded-xl text-[13px] font-semibold border border-primary/20">

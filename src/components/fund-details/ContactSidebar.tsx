@@ -105,9 +105,11 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
       <CardContent className="p-7">
         {/* Optional Verified Badge */}
         {fund.isVerified && (
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[13px] font-semibold mb-3 bg-success/10 text-success">
-            Verified Fund
-          </div>
+          <Link to="/verification-program" className="hover:opacity-80 transition-opacity">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[13px] font-semibold mb-3 bg-success/10 text-success">
+              Verified Fund
+            </div>
+          </Link>
         )}
 
         {/* Manager Section */}
