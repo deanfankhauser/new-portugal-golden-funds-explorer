@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Accordion,
@@ -48,6 +48,35 @@ const FAQsContent = () => {
       answer: "Early exit terms vary by fund. Some funds offer liquidity windows at specific intervals, while others may have lock-up periods. Early withdrawal may result in penalties or reduced returns. Review the fund's redemption terms carefully before investing."
     }
   ];
+
+  useEffect(() => {
+    const faqSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'mainEntity': faqs.map(faq => ({
+        '@type': 'Question',
+        'name': faq.question,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': faq.answer
+        }
+      }))
+    };
+    
+    const existingFAQSchema = document.querySelector('script[data-schema="global-faq"]');
+    if (existingFAQSchema) existingFAQSchema.remove();
+    
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-schema', 'global-faq');
+    script.textContent = JSON.stringify(faqSchema);
+    document.head.appendChild(script);
+    
+    return () => {
+      const schemaScript = document.querySelector('script[data-schema="global-faq"]');
+      if (schemaScript) schemaScript.remove();
+    };
+  }, [faqs]);
 
   return (
     <div className="bg-card p-8 rounded-lg shadow-sm">

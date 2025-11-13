@@ -233,14 +233,35 @@ export class ConsolidatedSEOService {
           structuredData: this.getHomepageStructuredData(funds)
         };
 
-case 'fund':
+      case 'fund':
       case 'fund-details':
         const targetIdOrName = params.fundId || params.fundName;
+        
+        // DIAGNOSTIC: Log fund lookup attempt
+        console.log('🔍 [SEO] Fund lookup attempt:', {
+          targetIdOrName,
+          pageType: params.pageType,
+          hasFundsArray: !!funds,
+          fundsArrayLength: funds?.length || 0,
+          firstFiveFundIds: funds?.slice(0, 5).map(f => f.id) || []
+        });
+        
         const fund = funds 
           ? funds.find(f => f.id === targetIdOrName || f.name === targetIdOrName)
           : this.getFundByName(targetIdOrName);
+        
         if (!fund) {
+          // DIAGNOSTIC: Log fund matching failure
+          console.error('❌ [SEO] Fund NOT FOUND:', {
+            targetIdOrName,
+            searchedInArray: !!funds,
+            fundsAvailable: funds?.length || 0,
+            allFundIds: funds?.map(f => f.id) || [],
+            willUseFallback: !!targetIdOrName
+          });
+          
           if (targetIdOrName) {
+            console.log('⚠️ [SEO] Using self-referencing canonical fallback for:', targetIdOrName);
             return {
               title: this.optimizeText(`${targetIdOrName} | Portugal Golden Visa Investment Fund | Movingto`, this.MAX_TITLE_LENGTH),
               description: this.optimizeText('Explore details for this Portugal Golden Visa investment fund on Movingto.', this.MAX_DESCRIPTION_LENGTH),
@@ -249,8 +270,17 @@ case 'fund':
               structuredData: []
             };
           }
+          
+          console.error('💥 [SEO] No targetIdOrName - falling back to homepage SEO');
           return this.getSEOData('homepage', {}, funds);
         }
+        
+        // DIAGNOSTIC: Log successful fund match
+        console.log('✅ [SEO] Fund FOUND:', {
+          fundId: fund.id,
+          fundName: fund.name,
+          targetIdOrName
+        });
         
         // Generate dynamic, metric-rich title and description
         const fundTitle = this.generateFundTitle(fund);
@@ -402,8 +432,8 @@ case 'fund':
 
       case 'managers-hub':
         return {
-          title: this.optimizeText('Portugal Golden Visa Fund Managers | Investment Professionals | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Directory of Portugal Golden Visa fund managers. Find experienced investment professionals managing Golden Visa eligible funds.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('28+ Portugal Golden Visa Fund Managers | Verified Professionals | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare 28+ verified Portugal Golden Visa fund managers. View track records, total AUM, and fund offerings. Find the right investment professional for your €500k+ Golden Visa application.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('managers'),
           canonical: URL_CONFIG.buildUrl('managers'),
           keywords: [
@@ -412,15 +442,19 @@ case 'fund':
             'investment professionals Portugal',
             'fund management companies',
             'Portuguese fund managers directory',
-            'investment fund professionals'
+            'investment fund professionals',
+            'best Golden Visa fund managers',
+            'top rated fund managers Portugal',
+            'verified fund management companies',
+            'experienced Golden Visa managers'
           ],
           structuredData: this.getManagersHubStructuredData()
         };
 
       case 'categories-hub':
         return {
-          title: this.optimizeText('Portugal Golden Visa Fund Categories | Investment Types | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Browse Portugal Golden Visa investment fund categories. Explore different investment types and strategies for Golden Visa programs.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Browse 8 Golden Visa Fund Categories | Debt, Equity & More | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Discover 8 Portugal Golden Visa fund categories: Debt, Equity, Venture Capital, Infrastructure & more. Compare €500k+ investment options across categories with detailed performance metrics and risk profiles.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('categories'),
           canonical: URL_CONFIG.buildUrl('categories'),
           keywords: [
@@ -429,15 +463,19 @@ case 'fund':
             'Golden Visa fund categories',
             'fund classification',
             'investment strategies Portugal',
-            'fund types'
+            'fund types',
+            'debt funds Portugal',
+            'equity funds Golden Visa',
+            'venture capital funds Portugal',
+            'what types of Golden Visa funds'
           ],
           structuredData: this.getCategoriesHubStructuredData()
         };
 
       case 'tags-hub':
         return {
-          title: this.optimizeText('Portugal Golden Visa Fund Tags | Investment Characteristics | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Explore Portugal Golden Visa investment funds by characteristics and tags. Find Golden Visa funds that match your criteria.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Filter Funds by 40+ Tags | Find Your Perfect Golden Visa Match | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Filter 40+ Portugal Golden Visa funds by APY, risk level, lockup period, minimum investment, and more. Find funds matching your exact requirements with advanced filtering and instant comparisons.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('tags'),
           canonical: URL_CONFIG.buildUrl('tags'),
           keywords: [
@@ -446,15 +484,19 @@ case 'fund':
             'fund features',
             'Golden Visa fund attributes',
             'investment fund filters',
-            'fund search criteria'
+            'fund search criteria',
+            'filter Golden Visa funds',
+            'find funds by characteristics',
+            'Golden Visa fund finder',
+            'investment fund search'
           ],
           structuredData: this.getTagsHubStructuredData()
         };
 
       case 'alternatives-hub':
         return {
-          title: this.optimizeText('Portugal Golden Visa Fund Alternatives Hub | Compare Investment Options | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Explore alternative Portugal Golden Visa investment funds for every fund in our database. Find similar Golden Visa fund options based on category, risk level, and investment requirements.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Find Fund Alternatives | Explore Similar Golden Visa Investments | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Discover alternative Portugal Golden Visa funds with similar risk profiles, returns, and investment amounts. Compare matching funds across all categories to find the perfect fit for your €500k visa investment.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/alternatives'),
           canonical: URL_CONFIG.buildUrl('/alternatives'),
           keywords: [
@@ -463,15 +505,19 @@ case 'fund':
             'alternative funds Portugal',
             'comparable Golden Visa funds',
             'fund substitutes',
-            'investment alternatives'
+            'investment alternatives',
+            'find similar Golden Visa funds',
+            'alternative investment options Portugal',
+            'comparable investment funds',
+            'funds like'
           ],
           structuredData: this.getAlternativesHubStructuredData(funds)
         };
 
       case 'comparisons-hub':
         return {
-          title: this.optimizeText('Portugal Golden Visa Fund Comparisons | Investment Analysis Hub | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Hub for comparing Portugal Golden Visa investment funds. Access Golden Visa fund comparison tools and analysis.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Compare 435+ Golden Visa Fund Pairs | Side-by-Side Analysis | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare 435+ Portugal Golden Visa fund combinations side-by-side. Analyze fees, returns, risk profiles, minimum investments, and Golden Visa eligibility requirements to make informed investment decisions.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('comparisons'),
           canonical: URL_CONFIG.buildUrl('comparisons'),
           keywords: [
@@ -480,7 +526,11 @@ case 'fund':
             'Golden Visa comparisons',
             'fund analysis hub',
             'comparison directory',
-            'investment fund comparisons'
+            'investment fund comparisons',
+            'compare Golden Visa funds',
+            'side by side fund comparison',
+            'which Golden Visa fund is best',
+            'fund comparison tool Portugal'
           ],
           structuredData: this.getComparisonsHubStructuredData(funds)
         };
@@ -521,8 +571,8 @@ case 'fund':
 
       case 'faqs':
         return {
-          title: this.optimizeText('FAQs | Portugal Golden Visa Investment Fund Questions | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Frequently asked questions about Portugal Golden Visa investment funds. Get answers about Golden Visa programs.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Golden Visa FAQs | Get Instant Answers to 8 Common Questions | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Get instant answers to 8 most common Portugal Golden Visa investment questions. Learn about €500k minimums, processing times, tax implications, and family inclusion requirements.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('faqs'),
           canonical: URL_CONFIG.buildUrl('faqs'),
           keywords: [
@@ -531,7 +581,11 @@ case 'fund':
             'Golden Visa questions',
             'investment fund FAQs',
             'Portugal Golden Visa FAQ',
-            'Portugal visa questions'
+            'Portugal visa questions',
+            'how long Golden Visa process',
+            'Golden Visa minimum investment 2025',
+            'can family get Golden Visa',
+            'Golden Visa tax implications'
           ],
           structuredData: this.getFAQStructuredData()
         };
@@ -578,8 +632,8 @@ case 'fund':
 
       case 'verified-funds':
         return {
-          title: this.optimizeText('Verified Portugal Golden Visa Funds | Fully Documented Investments | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Browse verified Portugal Golden Visa investment funds with complete regulatory documentation, CMVM registration, and third-party validation. All funds independently verified for transparency and investor confidence.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('12+ CMVM-Verified Golden Visa Funds | Guaranteed Compliance | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Discover 12+ CMVM-verified Portugal Golden Visa funds with guaranteed regulatory compliance. Independent validation, transparent fees, and confirmed eligibility for €500k visa applications.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/verified-funds'),
           canonical: URL_CONFIG.buildUrl('/verified-funds'),
           keywords: [
@@ -588,7 +642,10 @@ case 'fund':
             'verified investment funds Portugal',
             'documented Golden Visa funds',
             'regulated investment funds',
-            'validated investment funds Portugal'
+            'validated investment funds Portugal',
+            'CMVM verified funds',
+            'compliance verified Golden Visa',
+            'independently validated funds Portugal'
           ],
           structuredData: this.getVerifiedFundsStructuredData(funds)
         };
@@ -650,7 +707,7 @@ case 'fund':
       // Basic meta tags
       document.title = seoData.title;
       this.setOrUpdateMeta('description', seoData.description);
-      this.setCanonical(seoData.url);
+      this.setCanonical(seoData.canonical || seoData.url);
       this.setRobots(seoData.robots);
       
       // Keywords meta tag
@@ -716,8 +773,8 @@ case 'fund':
   }
 
   private static setRobots(robotsDirective?: string): void {
-    // Ensure fund pages are always indexable - never use noindex for funds
-    const robots = robotsDirective === 'noindex, follow' ? 'index, follow' : (robotsDirective || 'index, follow, max-image-preview:large');
+    // Respect SSR-provided robots directive without overriding
+    const robots = robotsDirective || 'index, follow, max-image-preview:large';
     this.setOrUpdateMeta('robots', robots);
   }
 
@@ -1203,30 +1260,93 @@ case 'fund':
   private static getManagersHubStructuredData(): any {
     return {
       '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      'name': 'Fund Managers Directory',
-      'description': 'Directory of investment fund managers',
-      'url': URL_CONFIG.buildUrl('managers')
+      '@graph': [
+        {
+          '@type': 'CollectionPage',
+          'name': 'Fund Managers Directory',
+          'description': 'Directory of investment fund managers',
+          'url': URL_CONFIG.buildUrl('managers')
+        },
+        {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': URL_CONFIG.BASE_URL
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Fund Managers',
+              'item': URL_CONFIG.buildUrl('managers')
+            }
+          ]
+        }
+      ]
     };
   }
 
   private static getCategoriesHubStructuredData(): any {
     return {
       '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      'name': 'Fund Categories',
-      'description': 'Browse investment fund categories',
-      'url': URL_CONFIG.buildUrl('categories')
+      '@graph': [
+        {
+          '@type': 'CollectionPage',
+          'name': 'Fund Categories',
+          'description': 'Browse investment fund categories',
+          'url': URL_CONFIG.buildUrl('categories')
+        },
+        {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': URL_CONFIG.BASE_URL
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Categories',
+              'item': URL_CONFIG.buildUrl('categories')
+            }
+          ]
+        }
+      ]
     };
   }
 
   private static getTagsHubStructuredData(): any {
     return {
       '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      'name': 'Fund Tags',
-      'description': 'Explore funds by characteristics',
-      'url': URL_CONFIG.buildUrl('tags')
+      '@graph': [
+        {
+          '@type': 'CollectionPage',
+          'name': 'Fund Tags',
+          'description': 'Explore funds by characteristics',
+          'url': URL_CONFIG.buildUrl('tags')
+        },
+        {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': URL_CONFIG.BASE_URL
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Tags',
+              'item': URL_CONFIG.buildUrl('tags')
+            }
+          ]
+        }
+      ]
     };
   }
 
@@ -1319,40 +1439,190 @@ case 'fund':
   private static getAboutStructuredData(): any {
     return {
       '@context': 'https://schema.org',
-      '@type': 'AboutPage',
-      'name': 'About Movingto',
-      'description': 'About our investment fund analysis platform',
-      'url': URL_CONFIG.buildUrl('about')
+      '@graph': [
+        {
+          '@type': 'AboutPage',
+          'name': 'About Movingto',
+          'description': 'About our investment fund analysis platform',
+          'url': URL_CONFIG.buildUrl('about')
+        },
+        {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': URL_CONFIG.BASE_URL
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'About',
+              'item': URL_CONFIG.buildUrl('about')
+            }
+          ]
+        }
+      ]
     };
   }
 
   private static getDisclaimerStructuredData(): any {
     return {
       '@context': 'https://schema.org',
-      '@type': 'WebPage',
-      'name': 'Disclaimer',
-      'description': 'Investment information disclaimer',
-      'url': URL_CONFIG.buildUrl('disclaimer')
+      '@graph': [
+        {
+          '@type': 'WebPage',
+          'name': 'Disclaimer',
+          'description': 'Investment information disclaimer',
+          'url': URL_CONFIG.buildUrl('disclaimer')
+        },
+        {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': URL_CONFIG.BASE_URL
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Disclaimer',
+              'item': URL_CONFIG.buildUrl('disclaimer')
+            }
+          ]
+        }
+      ]
     };
   }
 
   private static getFAQStructuredData(): any {
     return {
       '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      'name': 'Frequently Asked Questions',
-      'description': 'Common questions about investment funds',
-      'url': URL_CONFIG.buildUrl('faqs')
+      '@graph': [
+        {
+          '@type': 'FAQPage',
+          'name': 'Portugal Golden Visa Investment Fund FAQs',
+          'description': 'Frequently asked questions about Portugal Golden Visa investment funds',
+          'url': URL_CONFIG.buildUrl('faqs'),
+          'mainEntity': [
+            {
+              '@type': 'Question',
+              'name': 'What is a Golden Visa investment fund?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'A Golden Visa investment fund is a regulated investment vehicle that allows foreign investors to obtain Portuguese residency by making a qualifying investment. For Portugal\'s Golden Visa program, eligible funds must focus on private equity/venture capital with €500,000 minimum investment and cannot be linked to real estate (rule changed October 2023). Sources: Nomad Gate Guide & IMI Daily change documentation.'
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'What are the minimum investment amounts?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'Portugal Golden Visa fund route requires €500,000 total investment (post-October 2023 changes), with no real estate exposure permitted. Individual fund subscription minimums may be lower, but total qualifying investment must reach €500,000. Sources: Nomad Gate analysis and IMI Daily regulatory updates.'
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'How long does the Golden Visa process take?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'The processing time varies by country and fund. Typically, it takes 3-12 months from application submission to approval. This includes due diligence, document verification, and government processing. Some countries offer expedited processing for additional fees.'
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'What are the tax implications of Golden Visa investments?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'Tax implications depend on your country of residence, the fund\'s jurisdiction, and the type of investment. Generally, you may be subject to capital gains tax, income tax on distributions, and potentially wealth taxes. We recommend consulting with a tax advisor familiar with international tax law.'
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'Can family members be included in the Golden Visa application?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'Most Golden Visa programs allow inclusion of family members, typically including spouse, dependent children, and sometimes parents or grandparents. Each family member may require additional investment or fees. Check specific program requirements for eligibility criteria.'
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'What are the ongoing obligations after obtaining a Golden Visa?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'Ongoing obligations typically include maintaining the investment for a minimum period (usually 5 years), meeting minimum residency requirements, and complying with tax obligations. Some programs require periodic renewals and proof of continued investment.'
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'How do I compare different Golden Visa funds?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'When comparing funds, consider factors such as minimum investment amount, expected returns, risk level, management fees, fund track record, liquidity terms, and the specific Golden Visa program requirements. Our comparison tools help you evaluate these factors side by side.'
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'What happens if I want to exit my investment early?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'Early exit terms vary by fund. Some funds offer liquidity windows at specific intervals, while others may have lock-up periods. Early withdrawal may result in penalties or reduced returns. Review the fund\'s redemption terms carefully before investing.'
+              }
+            }
+          ]
+        },
+        {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': URL_CONFIG.BASE_URL
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'FAQs',
+              'item': URL_CONFIG.buildUrl('faqs')
+            }
+          ]
+        }
+      ]
     };
   }
 
   private static getPrivacyStructuredData(): any {
     return {
       '@context': 'https://schema.org',
-      '@type': 'WebPage',
-      'name': 'Privacy Policy',
-      'description': 'Privacy policy for our platform',
-      'url': URL_CONFIG.buildUrl('privacy')
+      '@graph': [
+        {
+          '@type': 'WebPage',
+          'name': 'Privacy Policy',
+          'description': 'Privacy policy for our platform',
+          'url': URL_CONFIG.buildUrl('privacy')
+        },
+        {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': URL_CONFIG.BASE_URL
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Privacy Policy',
+              'item': URL_CONFIG.buildUrl('privacy')
+            }
+          ]
+        }
+      ]
     };
   }
 

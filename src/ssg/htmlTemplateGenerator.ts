@@ -7,6 +7,77 @@ import { SEOData } from '../types/seo';
  * @param seoData - SEO data from ConsolidatedSEOService
  * @returns HTML string containing all meta tags
  */
+/**
+ * Extract FAQ data from structured data (handles both single schema and @graph arrays)
+ * @param structuredData - Structured data from SEOData
+ * @returns FAQ data or null if no FAQPage found
+ */
+function extractFAQData(structuredData: any): { mainEntity: any[] } | null {
+  if (!structuredData) return null;
+  
+  // Handle @graph array (Phase 2 breadcrumb implementation)
+  if (structuredData['@graph'] && Array.isArray(structuredData['@graph'])) {
+    const faqPage = structuredData['@graph'].find((schema: any) => schema['@type'] === 'FAQPage');
+    if (faqPage && faqPage.mainEntity) {
+      return { mainEntity: faqPage.mainEntity };
+    }
+  }
+  
+  // Handle array of schemas (Phase 1 implementation)
+  if (Array.isArray(structuredData)) {
+    const faqPage = structuredData.find((schema: any) => schema['@type'] === 'FAQPage');
+    if (faqPage && faqPage.mainEntity) {
+      return { mainEntity: faqPage.mainEntity };
+    }
+  }
+  
+  // Handle single FAQPage schema
+  if (structuredData['@type'] === 'FAQPage' && structuredData.mainEntity) {
+    return { mainEntity: structuredData.mainEntity };
+  }
+  
+  return null;
+}
+
+/**
+ * Generate hidden FAQ HTML content for search engine crawlers
+ * Uses schema.org microdata attributes for maximum crawlability
+ * @param faqData - FAQ data extracted from structured data
+ * @returns HTML string with FAQ content
+ */
+function generateFAQContentHTML(faqData: { mainEntity: any[] }): string {
+  if (!faqData || !faqData.mainEntity || faqData.mainEntity.length === 0) {
+    return '';
+  }
+  
+  const faqHTML = faqData.mainEntity.map((question: any) => {
+    const questionText = question.name || '';
+    const answerText = question.acceptedAnswer?.text || '';
+    
+    // Escape HTML entities in content
+    const escapeHtml = (text: string) => text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+    
+    return `
+    <div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <h3 itemprop="name">${escapeHtml(questionText)}</h3>
+      <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <div itemprop="text">${escapeHtml(answerText)}</div>
+      </div>
+    </div>`;
+  }).join('\n');
+  
+  return `
+  <!-- FAQ Content for Search Engine Crawlers (Hidden) -->
+  <div itemscope itemtype="https://schema.org/FAQPage" style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;" aria-hidden="true">
+    ${faqHTML}
+  </div>`;
+}
+
 export function generateMetaTagsHTML(seoData: SEOData): string {
   const title = seoData.title || 'Portugal Golden Visa Investment Funds | Eligible Investments 2025';
   const description = seoData.description || 'Compare and discover the best Golden Visa-eligible investment funds in Portugal. Expert analysis, comprehensive data, and personalized recommendations.';
@@ -18,8 +89,24 @@ export function generateMetaTagsHTML(seoData: SEOData): string {
   // Determine Open Graph type based on URL and structured data
   const ogType = (() => {
     if (url.includes('/compare/') && url.includes('-vs-')) return 'article';
-    if (seoData.structuredData?.['@type'] === 'FinancialProduct') return 'product';
-    if (seoData.structuredData?.['@type'] === 'Person') return 'profile';
+    
+    // Handle both single structured data object and arrays
+    const structuredData = seoData.structuredData;
+    if (structuredData) {
+      // If it's an array, check the first schema or look for FinancialProduct/Person
+      if (Array.isArray(structuredData)) {
+        const primarySchema = structuredData.find((s: any) => 
+          s['@type'] === 'FinancialProduct' || s['@type'] === 'Person'
+        ) || structuredData[0];
+        if (primarySchema?.['@type'] === 'FinancialProduct') return 'product';
+        if (primarySchema?.['@type'] === 'Person') return 'profile';
+      } else {
+        // Single object
+        if (structuredData['@type'] === 'FinancialProduct') return 'product';
+        if (structuredData['@type'] === 'Person') return 'profile';
+      }
+    }
+    
     return 'website';
   })();
   
@@ -96,6 +183,10 @@ export function generateHTMLTemplate(
 
   // Generate comprehensive meta tags using the dedicated function
   const metaTagsHTML = generateMetaTagsHTML(seoData);
+  
+  // Extract and generate FAQ content for crawlers if FAQPage schema exists
+  const faqData = extractFAQData(structuredData);
+  const faqContentHTML = faqData ? generateFAQContentHTML(faqData) : '';
   
   return `<!DOCTYPE html>
 <html lang="en">
@@ -250,6 +341,7 @@ export function generateHTMLTemplate(
 </head>
 <body>
   <div id="root">${contentWithH1}</div>
+  ${faqContentHTML}
   
   <!-- Built JavaScript Files - Only load main entry -->
   ${(() => {

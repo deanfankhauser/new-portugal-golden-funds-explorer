@@ -147,14 +147,13 @@ ${sitemapElements}
       priority: 1.0
     });
 
-    // Static pages
+    // Static pages (excluding noindex pages like /saved-funds)
     const staticPages = [
       { path: '/about', priority: 0.6, changefreq: 'monthly' as const },
       { path: '/disclaimer', priority: 0.3, changefreq: 'monthly' as const },
       { path: '/privacy', priority: 0.3, changefreq: 'monthly' as const },
       { path: '/faqs', priority: 0.7, changefreq: 'monthly' as const },
-      { path: '/roi-calculator', priority: 0.6, changefreq: 'monthly' as const },
-      { path: '/saved-funds', priority: 0.6, changefreq: 'weekly' as const }
+      { path: '/roi-calculator', priority: 0.6, changefreq: 'monthly' as const }
     ];
 
     staticPages.forEach(page => {
