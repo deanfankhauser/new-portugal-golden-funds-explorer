@@ -7,6 +7,7 @@ export interface StaticRoute {
   pageType: string;
   params?: Record<string, string>;
   fundId?: string;
+  isCanonical?: boolean; // true = include in sitemap, false = exclude (non-canonical pages)
 }
 
 export class RouteDiscovery {
@@ -54,7 +55,8 @@ export class RouteDiscovery {
         path: `/${fund.id}`,
         pageType: 'fund',
         params: { fundName: fund.name },
-        fundId: fund.id
+        fundId: fund.id,
+        isCanonical: true
       });
     });
 
@@ -88,23 +90,25 @@ export class RouteDiscovery {
       });
     });
 
-    // Fund comparison pages
+    // Fund comparison pages (canonical - keep in sitemap)
     const comparisons = generateComparisonsFromFunds(funds);
     comparisons.forEach(comparison => {
       routes.push({
         path: `/compare/${comparison.slug}`,
         pageType: 'fund-comparison',
-        params: { slug: comparison.slug }
+        params: { slug: comparison.slug },
+        isCanonical: true
       });
     });
 
-    // Fund alternatives pages (always generate for all funds)
+    // Fund alternatives pages (non-canonical - exclude from sitemap, canonical points to main fund page)
     funds.forEach(fund => {
       routes.push({
         path: `/${fund.id}/alternatives`,
         pageType: 'fund-alternatives',
         params: { fundName: fund.name },
-        fundId: fund.id
+        fundId: fund.id,
+        isCanonical: false
       });
     });
 

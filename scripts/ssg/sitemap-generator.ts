@@ -10,8 +10,15 @@ import { categoryToSlug, tagToSlug } from '../../src/lib/utils';
 export async function generateSitemap(routes: StaticRoute[], distDir: string): Promise<void> {
   // Fetch fund data for accurate lastmod dates
   const funds = await fetchAllFundsForBuild();
+  
+  // Filter to only canonical routes (exclude legacy slug aliases, alternatives pages)
+  const canonicalRoutes = routes.filter(route => route.isCanonical !== false);
+  const excludedCount = routes.length - canonicalRoutes.length;
+  
+  console.log(`📊 Sitemap: Processing ${canonicalRoutes.length} canonical routes (excluded ${excludedCount} non-canonical)`);
+  
   // Build route-derived entries first
-  const routeEntries = routes.map(route => {
+  const routeEntries = canonicalRoutes.map(route => {
     let priority = '0.8';
     let changefreq = 'weekly';
     let lastmod = DateManagementService.getCurrentISODate();
@@ -132,11 +139,12 @@ ${urlElements}
   // Coverage logs
   const allComparisons = generateComparisonsFromFunds(funds);
   const comparisonSlugs = allComparisons.map(c => c.slug);
-  const comparisonRoutesInSitemap = routes.filter(r => r.pageType === 'fund-comparison').length;
-  const alternativesRoutesInSitemap = routes.filter(r => r.pageType === 'fund-alternatives').length;
-  const categoryRoutesInSitemap = routes.filter(r => r.pageType === 'category').length;
+  const comparisonRoutesInSitemap = canonicalRoutes.filter(r => r.pageType === 'fund-comparison').length;
+  const alternativesRoutesInSitemap = canonicalRoutes.filter(r => r.pageType === 'fund-alternatives').length;
+  const categoryRoutesInSitemap = canonicalRoutes.filter(r => r.pageType === 'category').length;
 
-  console.log(`✅ Sitemap: Generated ${byUrl.size} URLs including ${comparisonRoutesInSitemap} comparison pages, ${alternativesRoutesInSitemap} alternatives pages, and ${categoryRoutesInSitemap} category pages`);
+  console.log(`✅ Sitemap: Generated ${byUrl.size} URLs (${comparisonRoutesInSitemap} comparisons, ${alternativesRoutesInSitemap} alternatives, ${categoryRoutesInSitemap} categories)`);
+  console.log(`   Excluded ${excludedCount} non-canonical routes from sitemap`);
   if (comparisonRoutesInSitemap < comparisonSlugs.length) {
     console.warn(`⚠️  Sitemap: Missing ${comparisonSlugs.length - comparisonRoutesInSitemap} comparison URLs`);
   }

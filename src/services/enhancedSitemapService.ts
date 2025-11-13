@@ -6,7 +6,7 @@ import { fetchAllFundsForBuild } from '../lib/build-data-fetcher';
 
 export class EnhancedSitemapService extends SitemapService {
   
-  // Generate comparison pages for sitemap
+  // Generate comparison pages for sitemap (canonical with self-referencing canonical tags)
   private static async getComparisonPages(): Promise<SitemapEntry[]> {
     const funds = await fetchAllFundsForBuild();
     const comparisons = generateComparisonsFromFunds(funds);
@@ -20,33 +20,18 @@ export class EnhancedSitemapService extends SitemapService {
     }));
   }
 
-  // Generate alternatives pages for sitemap
-  private static async getAlternativesPages(): Promise<SitemapEntry[]> {
-    const funds = await fetchAllFundsForBuild();
-    return funds.map(fund => {
-      const contentDates = DateManagementService.getFundContentDates(fund);
-      return {
-        url: `${URL_CONFIG.buildFundUrl(fund.id)}/alternatives`,
-        lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
-        changefreq: contentDates.changeFrequency,
-        priority: 0.8
-      };
-    });
-  }
-
-  // Enhanced sitemap generation with all pages
+  // Enhanced sitemap generation with canonical pages only
+  // NOTE: Alternatives pages excluded - they have non-self-referencing canonical tags
   static async generateEnhancedSitemapEntries(): Promise<SitemapEntry[]> {
     const funds = await fetchAllFundsForBuild();
-    const [baseEntries, comparisonPages, alternativesPages] = await Promise.all([
+    const [baseEntries, comparisonPages] = await Promise.all([
       Promise.resolve(super.generateSitemapEntries(funds)),
-      this.getComparisonPages(),
-      this.getAlternativesPages()
+      this.getComparisonPages()
     ]);
     
     return [
       ...baseEntries,
-      ...comparisonPages,
-      ...alternativesPages
+      ...comparisonPages
     ];
   }
 
