@@ -680,7 +680,7 @@ export class ConsolidatedSEOService {
       // Basic meta tags
       document.title = seoData.title;
       this.setOrUpdateMeta('description', seoData.description);
-      this.setCanonical(seoData.url);
+      this.setCanonical(seoData.canonical || seoData.url);
       this.setRobots(seoData.robots);
       
       // Keywords meta tag
@@ -746,8 +746,8 @@ export class ConsolidatedSEOService {
   }
 
   private static setRobots(robotsDirective?: string): void {
-    // Ensure fund pages are always indexable - never use noindex for funds
-    const robots = robotsDirective === 'noindex, follow' ? 'index, follow' : (robotsDirective || 'index, follow, max-image-preview:large');
+    // Respect SSR-provided robots directive without overriding
+    const robots = robotsDirective || 'index, follow, max-image-preview:large';
     this.setOrUpdateMeta('robots', robots);
   }
 

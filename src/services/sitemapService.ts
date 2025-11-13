@@ -99,12 +99,6 @@ export class SitemapService {
         lastmod: currentDate,
         changefreq: 'monthly',
         priority: 0.6
-      },
-      {
-        url: URL_CONFIG.buildUrl('/saved-funds'),
-        lastmod: currentDate,
-        changefreq: 'weekly',
-        priority: 0.6
       }
     ];
   }

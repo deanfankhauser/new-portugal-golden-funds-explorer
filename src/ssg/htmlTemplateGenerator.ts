@@ -18,8 +18,24 @@ export function generateMetaTagsHTML(seoData: SEOData): string {
   // Determine Open Graph type based on URL and structured data
   const ogType = (() => {
     if (url.includes('/compare/') && url.includes('-vs-')) return 'article';
-    if (seoData.structuredData?.['@type'] === 'FinancialProduct') return 'product';
-    if (seoData.structuredData?.['@type'] === 'Person') return 'profile';
+    
+    // Handle both single structured data object and arrays
+    const structuredData = seoData.structuredData;
+    if (structuredData) {
+      // If it's an array, check the first schema or look for FinancialProduct/Person
+      if (Array.isArray(structuredData)) {
+        const primarySchema = structuredData.find((s: any) => 
+          s['@type'] === 'FinancialProduct' || s['@type'] === 'Person'
+        ) || structuredData[0];
+        if (primarySchema?.['@type'] === 'FinancialProduct') return 'product';
+        if (primarySchema?.['@type'] === 'Person') return 'profile';
+      } else {
+        // Single object
+        if (structuredData['@type'] === 'FinancialProduct') return 'product';
+        if (structuredData['@type'] === 'Person') return 'profile';
+      }
+    }
+    
     return 'website';
   })();
   
