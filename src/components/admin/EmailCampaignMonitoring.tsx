@@ -4,9 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Mail, TrendingUp, MousePointer, Eye, CheckCircle, XCircle } from 'lucide-react';
-import { format } from 'date-fns';
+import { Mail, TrendingUp, MousePointer, Eye, CheckCircle, XCircle, BarChart3 } from 'lucide-react';
+import { format, subDays, startOfDay } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface EmailStats {
   email_type: string;
@@ -45,12 +46,22 @@ interface ManagerEngagement {
   total_clicks: number;
 }
 
+interface DailyTrend {
+  date: string;
+  sent: number;
+  opened: number;
+  clicked: number;
+  open_rate: number;
+  click_rate: number;
+}
+
 export function EmailCampaignMonitoring() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [emailStats, setEmailStats] = useState<EmailStats[]>([]);
   const [recentEmails, setRecentEmails] = useState<RecentEmail[]>([]);
   const [managerEngagement, setManagerEngagement] = useState<ManagerEngagement[]>([]);
+  const [dailyTrends, setDailyTrends] = useState<DailyTrend[]>([]);
 
   useEffect(() => {
     fetchAllData();
@@ -63,6 +74,7 @@ export function EmailCampaignMonitoring() {
         fetchEmailStats(),
         fetchRecentEmails(),
         fetchManagerEngagement(),
+        fetchDailyTrends(),
       ]);
     } catch (error) {
       console.error('Error fetching email campaign data:', error);
@@ -185,6 +197,58 @@ export function EmailCampaignMonitoring() {
     setManagerEngagement(managers);
   };
 
+  const fetchDailyTrends = async () => {
+    // Get last 14 days of data
+    const { data, error } = await supabase
+      .from('fund_manager_email_logs')
+      .select('*')
+      .eq('test_mode', false)
+      .gte('sent_at', subDays(new Date(), 14).toISOString());
+
+    if (error) {
+      console.error('Error fetching daily trends:', error);
+      return;
+    }
+
+    // Group by date
+    const trendMap = new Map<string, DailyTrend>();
+    
+    (data || []).forEach((email) => {
+      const date = format(startOfDay(new Date(email.sent_at)), 'MMM dd');
+      
+      if (!trendMap.has(date)) {
+        trendMap.set(date, {
+          date,
+          sent: 0,
+          opened: 0,
+          clicked: 0,
+          open_rate: 0,
+          click_rate: 0,
+        });
+      }
+
+      const trend = trendMap.get(date)!;
+      trend.sent++;
+      if (email.opened_at) trend.opened++;
+      if (email.first_click_at) trend.clicked++;
+    });
+
+    // Calculate rates and sort by date
+    const trends = Array.from(trendMap.values())
+      .map(t => ({
+        ...t,
+        open_rate: t.sent > 0 ? Number(((t.opened / t.sent) * 100).toFixed(1)) : 0,
+        click_rate: t.sent > 0 ? Number(((t.clicked / t.sent) * 100).toFixed(1)) : 0,
+      }))
+      .sort((a, b) => {
+        const dateA = new Date(a.date + ' 2024');
+        const dateB = new Date(b.date + ' 2024');
+        return dateA.getTime() - dateB.getTime();
+      });
+
+    setDailyTrends(trends);
+  };
+
   const getEmailTypeLabel = (type: string) => {
     return type === 'weekly_digest' ? 'Weekly Digest' : 'Monthly Reminder';
   };
@@ -277,6 +341,10 @@ export function EmailCampaignMonitoring() {
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="charts">
+            <BarChart3 className="h-4 w-4 mr-2" />
+            Charts
+          </TabsTrigger>
           <TabsTrigger value="recent">Recent Emails</TabsTrigger>
           <TabsTrigger value="managers">Manager Engagement</TabsTrigger>
         </TabsList>
@@ -325,6 +393,167 @@ export function EmailCampaignMonitoring() {
                   ))}
                 </TableBody>
               </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Charts Tab */}
+        <TabsContent value="charts" className="space-y-4">
+          {/* Daily Engagement Trend */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Daily Engagement Trends</CardTitle>
+              <CardDescription>Email opens and clicks over the last 14 days</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={350}>
+                <LineChart data={dailyTrends}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="date" 
+                    className="text-xs"
+                    tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                  />
+                  <YAxis 
+                    className="text-xs"
+                    tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                  />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--background))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '6px',
+                    }}
+                  />
+                  <Legend />
+                  <Line 
+                    type="monotone" 
+                    dataKey="sent" 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth={2}
+                    name="Emails Sent"
+                    dot={{ fill: 'hsl(var(--primary))' }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="opened" 
+                    stroke="#10b981" 
+                    strokeWidth={2}
+                    name="Opened"
+                    dot={{ fill: '#10b981' }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="clicked" 
+                    stroke="#3b82f6" 
+                    strokeWidth={2}
+                    name="Clicked"
+                    dot={{ fill: '#3b82f6' }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          {/* Engagement Rates Chart */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Engagement Rates Over Time</CardTitle>
+              <CardDescription>Open rate and click rate trends (last 14 days)</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={350}>
+                <LineChart data={dailyTrends}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="date" 
+                    className="text-xs"
+                    tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                  />
+                  <YAxis 
+                    className="text-xs"
+                    tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                    label={{ value: 'Rate (%)', angle: -90, position: 'insideLeft' }}
+                  />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--background))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '6px',
+                    }}
+                    formatter={(value: number) => `${value}%`}
+                  />
+                  <Legend />
+                  <Line 
+                    type="monotone" 
+                    dataKey="open_rate" 
+                    stroke="#10b981" 
+                    strokeWidth={2}
+                    name="Open Rate (%)"
+                    dot={{ fill: '#10b981' }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="click_rate" 
+                    stroke="#3b82f6" 
+                    strokeWidth={2}
+                    name="Click Rate (%)"
+                    dot={{ fill: '#3b82f6' }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          {/* Email Type Performance Comparison */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Email Type Performance Comparison</CardTitle>
+              <CardDescription>Weekly digest vs monthly reminder engagement</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={350}>
+                <BarChart data={emailStats}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="email_type" 
+                    className="text-xs"
+                    tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                    tickFormatter={(value) => value === 'weekly_digest' ? 'Weekly Digest' : 'Monthly Reminder'}
+                  />
+                  <YAxis 
+                    className="text-xs"
+                    tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                  />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--background))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '6px',
+                    }}
+                    labelFormatter={(value) => value === 'weekly_digest' ? 'Weekly Digest' : 'Monthly Reminder'}
+                  />
+                  <Legend />
+                  <Bar 
+                    dataKey="total_sent" 
+                    fill="hsl(var(--primary))" 
+                    name="Total Sent"
+                    radius={[8, 8, 0, 0]}
+                  />
+                  <Bar 
+                    dataKey="total_opened" 
+                    fill="#10b981" 
+                    name="Opened"
+                    radius={[8, 8, 0, 0]}
+                  />
+                  <Bar 
+                    dataKey="total_clicked" 
+                    fill="#3b82f6" 
+                    name="Clicked"
+                    radius={[8, 8, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
         </TabsContent>
