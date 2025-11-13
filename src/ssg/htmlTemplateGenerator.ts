@@ -11,6 +11,7 @@ export function generateMetaTagsHTML(seoData: SEOData): string {
   const title = seoData.title || 'Portugal Golden Visa Investment Funds | Eligible Investments 2025';
   const description = seoData.description || 'Compare and discover the best Golden Visa-eligible investment funds in Portugal. Expert analysis, comprehensive data, and personalized recommendations.';
   const url = seoData.url || 'https://funds.movingto.com';
+  const canonicalUrl = seoData.canonical || url; // Prefer explicit canonical if provided
   const keywords = seoData.keywords?.join(', ') || 'Portugal Golden Visa, investment funds, Portuguese residency, Golden Visa funds 2025, fund comparison, investment migration';
   const robots = seoData.robots || 'index, follow, max-image-preview:large';
   
@@ -43,7 +44,7 @@ export function generateMetaTagsHTML(seoData: SEOData): string {
   <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
   
   <!-- SEO Enhancement Meta Tags -->
-  <link rel="canonical" href="${url}" />
+  <link rel="canonical" href="${canonicalUrl}" />
   <meta name="keywords" content="${keywords}" />
   <meta name="author" content="Dean Fankhauser, CEO - Movingto" />
   <meta name="robots" content="${robots}" />

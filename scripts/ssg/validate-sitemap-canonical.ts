@@ -116,8 +116,10 @@ export async function validateSitemapCanonical(distDir: string): Promise<void> {
   if (invalidEntries.length > 0) {
     console.log(`\n❌ Non-canonical pages found in sitemap (showing first 10):`);
     invalidEntries.slice(0, 10).forEach(entry => {
-      console.log(`   ${entry.url}`);
-      console.log(`      → ${entry.message}`);
+      console.log(`   Sitemap URL: ${entry.url}`);
+      console.log(`   Canonical:   ${entry.canonicalUrl || 'N/A'}`);
+      console.log(`   Issue:       ${entry.message}`);
+      console.log('');
     });
     
     if (invalidEntries.length > 10) {
