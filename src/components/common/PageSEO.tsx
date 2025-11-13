@@ -36,15 +36,18 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
   useEffect(() => {
     try {
       // Apply SEO meta tags
-      const seoData = ConsolidatedSEOService.getSEOData(pageType, {
-        fundName,
-        managerName,
-        categoryName,
-        tagName,
-        comparisonTitle,
-        comparisonSlug,
+const seoData = ConsolidatedSEOService.getSEOData(
+        pageType,
+        {
+          fundName,
+          managerName,
+          categoryName,
+          tagName,
+          comparisonTitle,
+          comparisonSlug,
+        },
         funds
-      });
+      );
 
       ConsolidatedSEOService.applyMetaTags(seoData);
       

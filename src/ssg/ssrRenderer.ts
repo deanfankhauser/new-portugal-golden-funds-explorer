@@ -107,14 +107,18 @@ export class SSRRenderer {
 
     // Fetch comprehensive SEO data from ConsolidatedSEOService
     // This data will be injected into static HTML <head> during build
-    const seoData = ConsolidatedSEOService.getSEOData(route.pageType as any, {
-      fundName: route.params?.fundName,
-      managerName: route.params?.managerName,
-      categoryName: route.params?.categoryName,
-      tagName: route.params?.tagName,
-      comparisonSlug: route.params?.slug,
-      funds: allFunds, // Pass funds for comparison pages
-    });
+const seoData = ConsolidatedSEOService.getSEOData(
+  route.pageType as any,
+  {
+    fundId: route.fundId ?? fundDataForSSR?.id,
+    fundName: route.params?.fundName,
+    managerName: route.params?.managerName,
+    categoryName: route.params?.categoryName,
+    tagName: route.params?.tagName,
+    comparisonSlug: route.params?.slug,
+  },
+  allFunds
+);
 
     // Handle 404 pages with noindex
     if (route.pageType === '404') {

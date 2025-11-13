@@ -233,12 +233,24 @@ export class ConsolidatedSEOService {
           structuredData: this.getHomepageStructuredData(funds)
         };
 
-      case 'fund':
+case 'fund':
       case 'fund-details':
+        const targetIdOrName = params.fundId || params.fundName;
         const fund = funds 
-          ? funds.find(f => f.id === params.fundName || f.name === params.fundName)
-          : this.getFundByName(params.fundName);
-        if (!fund) return this.getSEOData('homepage', {}, funds);
+          ? funds.find(f => f.id === targetIdOrName || f.name === targetIdOrName)
+          : this.getFundByName(targetIdOrName);
+        if (!fund) {
+          if (targetIdOrName) {
+            return {
+              title: this.optimizeText(`${targetIdOrName} | Portugal Golden Visa Investment Fund | Movingto`, this.MAX_TITLE_LENGTH),
+              description: this.optimizeText('Explore details for this Portugal Golden Visa investment fund on Movingto.', this.MAX_DESCRIPTION_LENGTH),
+              url: URL_CONFIG.buildFundUrl(targetIdOrName),
+              canonical: URL_CONFIG.buildFundUrl(targetIdOrName),
+              structuredData: []
+            };
+          }
+          return this.getSEOData('homepage', {}, funds);
+        }
         
         // Generate dynamic, metric-rich title and description
         const fundTitle = this.generateFundTitle(fund);
