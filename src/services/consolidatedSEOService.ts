@@ -233,14 +233,35 @@ export class ConsolidatedSEOService {
           structuredData: this.getHomepageStructuredData(funds)
         };
 
-case 'fund':
+      case 'fund':
       case 'fund-details':
         const targetIdOrName = params.fundId || params.fundName;
+        
+        // DIAGNOSTIC: Log fund lookup attempt
+        console.log('🔍 [SEO] Fund lookup attempt:', {
+          targetIdOrName,
+          pageType: params.pageType,
+          hasFundsArray: !!funds,
+          fundsArrayLength: funds?.length || 0,
+          firstFiveFundIds: funds?.slice(0, 5).map(f => f.id) || []
+        });
+        
         const fund = funds 
           ? funds.find(f => f.id === targetIdOrName || f.name === targetIdOrName)
           : this.getFundByName(targetIdOrName);
+        
         if (!fund) {
+          // DIAGNOSTIC: Log fund matching failure
+          console.error('❌ [SEO] Fund NOT FOUND:', {
+            targetIdOrName,
+            searchedInArray: !!funds,
+            fundsAvailable: funds?.length || 0,
+            allFundIds: funds?.map(f => f.id) || [],
+            willUseFallback: !!targetIdOrName
+          });
+          
           if (targetIdOrName) {
+            console.log('⚠️ [SEO] Using self-referencing canonical fallback for:', targetIdOrName);
             return {
               title: this.optimizeText(`${targetIdOrName} | Portugal Golden Visa Investment Fund | Movingto`, this.MAX_TITLE_LENGTH),
               description: this.optimizeText('Explore details for this Portugal Golden Visa investment fund on Movingto.', this.MAX_DESCRIPTION_LENGTH),
@@ -249,8 +270,17 @@ case 'fund':
               structuredData: []
             };
           }
+          
+          console.error('💥 [SEO] No targetIdOrName - falling back to homepage SEO');
           return this.getSEOData('homepage', {}, funds);
         }
+        
+        // DIAGNOSTIC: Log successful fund match
+        console.log('✅ [SEO] Fund FOUND:', {
+          fundId: fund.id,
+          fundName: fund.name,
+          targetIdOrName
+        });
         
         // Generate dynamic, metric-rich title and description
         const fundTitle = this.generateFundTitle(fund);

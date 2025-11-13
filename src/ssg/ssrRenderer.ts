@@ -105,20 +105,45 @@ export class SSRRenderer {
       });
     }
 
+    // DIAGNOSTIC: Log SSR rendering context
+    if (route.pageType === 'fund' || route.pageType === 'fund-details') {
+      console.log('🔧 [SSR] Rendering fund page:', {
+        routePath: route.path,
+        pageType: route.pageType,
+        routeFundId: route.fundId,
+        fundDataForSSRId: fundDataForSSR?.id,
+        fundDataForSSRName: fundDataForSSR?.name,
+        paramsKeys: Object.keys(route.params || {}),
+        allFundsLength: allFunds?.length || 0,
+        allFundsFirstFive: allFunds?.slice(0, 5).map(f => f.id) || []
+      });
+    }
+
     // Fetch comprehensive SEO data from ConsolidatedSEOService
     // This data will be injected into static HTML <head> during build
-const seoData = ConsolidatedSEOService.getSEOData(
-  route.pageType as any,
-  {
-    fundId: route.fundId ?? fundDataForSSR?.id,
-    fundName: route.params?.fundName,
-    managerName: route.params?.managerName,
-    categoryName: route.params?.categoryName,
-    tagName: route.params?.tagName,
-    comparisonSlug: route.params?.slug,
-  },
-  allFunds
-);
+    const seoData = ConsolidatedSEOService.getSEOData(
+      route.pageType as any,
+      {
+        fundId: route.fundId ?? fundDataForSSR?.id,
+        fundName: route.params?.fundName,
+        managerName: route.params?.managerName,
+        categoryName: route.params?.categoryName,
+        tagName: route.params?.tagName,
+        comparisonSlug: route.params?.slug,
+      },
+      allFunds
+    );
+    
+    // DIAGNOSTIC: Log SEO data result
+    if (route.pageType === 'fund' || route.pageType === 'fund-details') {
+      console.log('📊 [SSR] SEO data generated:', {
+        routePath: route.path,
+        seoDataUrl: seoData.url,
+        seoDataCanonical: seoData.canonical,
+        isHomepageCanonical: seoData.canonical === 'https://funds.movingto.com/',
+        titleIncludesMovingto: seoData.title.includes('Movingto')
+      });
+    }
 
     // Handle 404 pages with noindex
     if (route.pageType === '404') {
