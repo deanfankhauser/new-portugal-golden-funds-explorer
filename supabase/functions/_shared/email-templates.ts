@@ -154,3 +154,299 @@ export function generatePlainTextEmail(
   
   return text;
 }
+
+/**
+ * Weekly Digest Email - Verified Funds
+ */
+export function generateWeeklyDigestEmail(data: {
+  fundName: string;
+  weeklyImpressions: number;
+  weeklyLeads: number;
+  managerName: string;
+  fundUrl: string;
+  recipientEmail: string;
+}): { html: string; text: string } {
+  const { fundName, weeklyImpressions, weeklyLeads, managerName, fundUrl, recipientEmail } = data;
+  
+  const bodyContent = `
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+      Hi ${managerName},
+    </p>
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+      Here's your weekly performance summary for <strong>${fundName}</strong>:
+    </p>
+    
+    ${generateContentCard(`
+      <div style="display: flex; justify-content: space-around; text-align: center; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 150px; margin: 10px;">
+          <div style="font-size: 36px; font-weight: 700; color: ${BRAND_COLORS.bordeaux}; margin-bottom: 8px;">
+            👁️ ${weeklyImpressions.toLocaleString()}
+          </div>
+          <div style="font-size: 14px; color: ${BRAND_COLORS.textMuted}; text-transform: uppercase; letter-spacing: 0.5px;">
+            Page Views
+          </div>
+        </div>
+        <div style="flex: 1; min-width: 150px; margin: 10px;">
+          <div style="font-size: 36px; font-weight: 700; color: ${BRAND_COLORS.bronze}; margin-bottom: 8px;">
+            👥 ${weeklyLeads.toLocaleString()}
+          </div>
+          <div style="font-size: 14px; color: ${BRAND_COLORS.textMuted}; text-transform: uppercase; letter-spacing: 0.5px;">
+            New Leads
+          </div>
+        </div>
+      </div>
+    `, 'bronze')}
+    
+    <h3 style="color: ${BRAND_COLORS.bordeaux}; font-size: 18px; margin: 30px 0 15px 0;">
+      📈 Keep Your Profile Fresh
+    </h3>
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
+      Regular updates to your fund profile and performance data directly impact your rankings on our platform. Funds with up-to-date information receive:
+    </p>
+    <ul style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.8; margin-bottom: 25px;">
+      <li>Higher visibility in search results</li>
+      <li>Better positioning in category rankings</li>
+      <li>Increased investor confidence</li>
+      <li>More quality leads</li>
+    </ul>
+    
+    ${generateCTAButton('Update Fund Profile', fundUrl, 'bordeaux')}
+    
+    <p style="color: ${BRAND_COLORS.textMuted}; font-size: 14px; line-height: 1.6; margin-top: 30px; text-align: center;">
+      Questions? Reply to this email or contact our support team.
+    </p>
+  `;
+  
+  const html = generateEmailWrapper('Weekly Performance Summary', bodyContent, recipientEmail);
+  
+  const text = generatePlainTextEmail(
+    'Weekly Performance Summary',
+    `Hi ${managerName},\n\nHere's your weekly performance summary for ${fundName}:\n\nPage Views: ${weeklyImpressions}\nNew Leads: ${weeklyLeads}\n\nKeep your profile fresh! Regular updates impact your rankings and lead to higher visibility, better positioning, and more quality leads.`,
+    'Update Fund Profile',
+    fundUrl
+  );
+  
+  return { html, text };
+}
+
+/**
+ * Weekly Digest Email - Unverified Funds
+ */
+export function generateWeeklyDigestEmailUnverified(data: {
+  fundName: string;
+  weeklyImpressions: number;
+  weeklyLeads: number;
+  managerName: string;
+  fundUrl: string;
+  recipientEmail: string;
+}): { html: string; text: string } {
+  const { fundName, weeklyImpressions, weeklyLeads, managerName, fundUrl, recipientEmail } = data;
+  
+  const bodyContent = `
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+      Hi ${managerName},
+    </p>
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+      Here's your weekly performance summary for <strong>${fundName}</strong>:
+    </p>
+    
+    ${generateContentCard(`
+      <div style="display: flex; justify-content: space-around; text-align: center; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 150px; margin: 10px;">
+          <div style="font-size: 36px; font-weight: 700; color: ${BRAND_COLORS.bordeaux}; margin-bottom: 8px;">
+            👁️ ${weeklyImpressions.toLocaleString()}
+          </div>
+          <div style="font-size: 14px; color: ${BRAND_COLORS.textMuted}; text-transform: uppercase; letter-spacing: 0.5px;">
+            Page Views
+          </div>
+        </div>
+        <div style="flex: 1; min-width: 150px; margin: 10px;">
+          <div style="font-size: 36px; font-weight: 700; color: ${BRAND_COLORS.bronze}; margin-bottom: 8px;">
+            👥 ${weeklyLeads.toLocaleString()}
+          </div>
+          <div style="font-size: 14px; color: ${BRAND_COLORS.textMuted}; text-transform: uppercase; letter-spacing: 0.5px;">
+            New Leads
+          </div>
+        </div>
+      </div>
+    `, 'bronze')}
+    
+    ${generateContentCard(`
+      <h3 style="color: ${BRAND_COLORS.bronze}; font-size: 18px; margin: 0 0 15px 0;">
+        ✨ Get 3x More Leads with Verification
+      </h3>
+      <p style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
+        Verified funds on our platform receive <strong>3x more investor enquiries</strong> on average. Verification shows:
+      </p>
+      <ul style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.8; margin-bottom: 20px;">
+        <li><strong>CMVM registration</strong> - Regulatory compliance confirmed</li>
+        <li><strong>Fund documentation</strong> - Prospectus and key facts verified</li>
+        <li><strong>Performance data</strong> - Historical returns authenticated</li>
+        <li><strong>Management team</strong> - Leadership credentials validated</li>
+      </ul>
+      <p style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.6; margin-bottom: 0;">
+        Verification is free and takes 2-3 business days.
+      </p>
+    `, 'bronze')}
+    
+    ${generateCTAButton('Get Your Fund Verified', 'https://verify.movingto.com', 'bronze')}
+    
+    <h3 style="color: ${BRAND_COLORS.bordeaux}; font-size: 18px; margin: 30px 0 15px 0;">
+      📈 Keep Your Profile Fresh
+    </h3>
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
+      Regular updates to your fund profile and performance data directly impact your rankings. Updated profiles receive higher visibility and more quality leads.
+    </p>
+    
+    ${generateCTAButton('Update Fund Profile', fundUrl, 'bordeaux')}
+  `;
+  
+  const html = generateEmailWrapper('Weekly Performance Summary', bodyContent, recipientEmail);
+  
+  const text = generatePlainTextEmail(
+    'Weekly Performance Summary',
+    `Hi ${managerName},\n\nHere's your weekly performance summary for ${fundName}:\n\nPage Views: ${weeklyImpressions}\nNew Leads: ${weeklyLeads}\n\nGET 3X MORE LEADS: Verified funds receive 3x more enquiries. Verification confirms CMVM registration, fund docs, performance data, and management team. It's free and takes 2-3 days.\n\nVerify now: https://verify.movingto.com\n\nKeep your profile fresh! Regular updates impact your rankings.`,
+    'Update Fund Profile',
+    fundUrl
+  );
+  
+  return { html, text };
+}
+
+/**
+ * Monthly Performance Reminder - Verified Funds
+ */
+export function generateMonthlyPerformanceReminderEmail(data: {
+  fundName: string;
+  monthYear: string;
+  managerName: string;
+  fundUrl: string;
+  recipientEmail: string;
+}): { html: string; text: string } {
+  const { fundName, monthYear, managerName, fundUrl, recipientEmail } = data;
+  
+  const bodyContent = `
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+      Hi ${managerName},
+    </p>
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+      It's time to update the performance data for <strong>${fundName}</strong> for ${monthYear}.
+    </p>
+    
+    ${generateContentCard(`
+      <h3 style="color: ${BRAND_COLORS.bordeaux}; font-size: 18px; margin: 0 0 15px 0;">
+        📊 Why Monthly Updates Matter
+      </h3>
+      <p style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
+        Keeping your performance data current is crucial for:
+      </p>
+      <ul style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.8; margin-bottom: 0;">
+        <li><strong>Investor Confidence</strong> - Up-to-date returns show transparency</li>
+        <li><strong>Higher Rankings</strong> - Fresh data improves platform visibility</li>
+        <li><strong>Regulatory Compliance</strong> - Meet disclosure requirements</li>
+        <li><strong>Competitive Edge</strong> - Stand out with current performance</li>
+      </ul>
+    `, 'bordeaux')}
+    
+    <h3 style="color: ${BRAND_COLORS.bronze}; font-size: 18px; margin: 30px 0 15px 0;">
+      ⏱️ Update Takes Just 2 Minutes
+    </h3>
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.6; margin-bottom: 20px;">
+      Simply add your latest NAV and return figures for ${monthYear}. Our system automatically calculates year-to-date and cumulative returns.
+    </p>
+    
+    ${generateCTAButton('Update Performance Data', fundUrl, 'bordeaux')}
+    
+    <p style="color: ${BRAND_COLORS.textMuted}; font-size: 14px; line-height: 1.6; margin-top: 30px; text-align: center;">
+      Need help? Reply to this email and our team will assist you.
+    </p>
+  `;
+  
+  const html = generateEmailWrapper(`Monthly Performance Update - ${monthYear}`, bodyContent, recipientEmail);
+  
+  const text = generatePlainTextEmail(
+    `Monthly Performance Update - ${monthYear}`,
+    `Hi ${managerName},\n\nIt's time to update the performance data for ${fundName} for ${monthYear}.\n\nWhy monthly updates matter:\n- Investor confidence through transparency\n- Higher platform rankings\n- Regulatory compliance\n- Competitive edge\n\nUpdating takes just 2 minutes. Add your latest NAV and return figures - we calculate the rest automatically.`,
+    'Update Performance Data',
+    fundUrl
+  );
+  
+  return { html, text };
+}
+
+/**
+ * Monthly Performance Reminder - Unverified Funds
+ */
+export function generateMonthlyPerformanceReminderEmailUnverified(data: {
+  fundName: string;
+  monthYear: string;
+  managerName: string;
+  fundUrl: string;
+  recipientEmail: string;
+}): { html: string; text: string } {
+  const { fundName, monthYear, managerName, fundUrl, recipientEmail } = data;
+  
+  const bodyContent = `
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+      Hi ${managerName},
+    </p>
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+      It's time to update the performance data for <strong>${fundName}</strong> for ${monthYear}.
+    </p>
+    
+    ${generateContentCard(`
+      <h3 style="color: ${BRAND_COLORS.bordeaux}; font-size: 18px; margin: 0 0 15px 0;">
+        📊 Why Monthly Updates Matter
+      </h3>
+      <p style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
+        Keeping your performance data current is crucial for:
+      </p>
+      <ul style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.8; margin-bottom: 0;">
+        <li><strong>Investor Confidence</strong> - Up-to-date returns show transparency</li>
+        <li><strong>Higher Rankings</strong> - Fresh data improves platform visibility</li>
+        <li><strong>Regulatory Compliance</strong> - Meet disclosure requirements</li>
+        <li><strong>Competitive Edge</strong> - Stand out with current performance</li>
+      </ul>
+    `, 'bordeaux')}
+    
+    ${generateContentCard(`
+      <h3 style="color: ${BRAND_COLORS.bronze}; font-size: 18px; margin: 0 0 15px 0;">
+        ✨ Verified Funds Get 3x More Leads
+      </h3>
+      <p style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
+        Verification increases investor trust and dramatically boosts enquiries. Our verification process confirms:
+      </p>
+      <ul style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.8; margin-bottom: 20px;">
+        <li><strong>CMVM registration</strong> - Regulatory compliance</li>
+        <li><strong>Fund documentation</strong> - Prospectus verification</li>
+        <li><strong>Performance data</strong> - Historical returns authenticated</li>
+        <li><strong>Management credentials</strong> - Leadership validated</li>
+      </ul>
+      <p style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.6; margin-bottom: 0;">
+        <strong>Free verification in 2-3 business days.</strong>
+      </p>
+    `, 'bronze')}
+    
+    ${generateCTAButton('Get Your Fund Verified', 'https://verify.movingto.com', 'bronze')}
+    
+    <h3 style="color: ${BRAND_COLORS.bordeaux}; font-size: 18px; margin: 30px 0 15px 0;">
+      ⏱️ Update Takes Just 2 Minutes
+    </h3>
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.6; margin-bottom: 20px;">
+      Simply add your latest NAV and return figures for ${monthYear}. Our system automatically calculates year-to-date and cumulative returns.
+    </p>
+    
+    ${generateCTAButton('Update Performance Data', fundUrl, 'bordeaux')}
+  `;
+  
+  const html = generateEmailWrapper(`Monthly Performance Update - ${monthYear}`, bodyContent, recipientEmail);
+  
+  const text = generatePlainTextEmail(
+    `Monthly Performance Update - ${monthYear}`,
+    `Hi ${managerName},\n\nIt's time to update the performance data for ${fundName} for ${monthYear}.\n\nWhy monthly updates matter: investor confidence, higher rankings, regulatory compliance, competitive edge.\n\nVERIFICATION BOOST: Verified funds get 3x more leads. We confirm CMVM registration, fund docs, performance, and management credentials. Free, takes 2-3 days.\n\nVerify: https://verify.movingto.com\n\nUpdate performance (2 min): Add NAV and returns - we calculate the rest.`,
+    'Update Performance Data',
+    fundUrl
+  );
+  
+  return { html, text };
+}
