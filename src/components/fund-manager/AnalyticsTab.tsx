@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Eye } from 'lucide-react';
+import { Eye, Download } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Button } from '@/components/ui/button';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { format, subDays, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, eachMonthOfInterval } from 'date-fns';
 
@@ -65,6 +66,43 @@ const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ fundId }) => {
       case '30d': return 'Last 30 days';
       case '12m': return 'Last 12 months';
     }
+  };
+
+  const exportToCSV = () => {
+    if (!analytics) return;
+
+    // Create CSV header
+    const header = ['Date', 'Page Views'];
+    
+    // Create CSV rows
+    const rows = analytics.chartData.map(item => [
+      item.label,
+      item.count.toString()
+    ]);
+
+    // Combine header and rows
+    const csvContent = [
+      header.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `fund-analytics-${timeRange}-${format(new Date(), 'yyyy-MM-dd')}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: 'Export successful',
+      description: 'Analytics data has been exported to CSV.',
+    });
   };
 
   const fetchAnalytics = async (range: TimeRange) => {
@@ -144,8 +182,8 @@ const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ fundId }) => {
 
   return (
     <div className="space-y-6">
-      {/* Time Range Selector */}
-      <div className="flex justify-center">
+      {/* Time Range Selector and Export */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <ToggleGroup type="single" value={timeRange} onValueChange={(value) => value && setTimeRange(value as TimeRange)}>
           <ToggleGroupItem value="7d" aria-label="7 Days">
             7 Days
@@ -157,6 +195,16 @@ const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ fundId }) => {
             Yearly
           </ToggleGroupItem>
         </ToggleGroup>
+        
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={exportToCSV}
+          disabled={!analytics || analytics.chartData.length === 0}
+        >
+          <Download className="h-4 w-4 mr-2" />
+          Export CSV
+        </Button>
       </div>
 
       {/* Page Views Metric */}
