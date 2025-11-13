@@ -101,7 +101,16 @@ export function AllLeadsManagement() {
   const filterLeads = () => {
     let filtered = [...leads];
 
-    if (statusFilter !== 'all') {
+    if (statusFilter === 'stale') {
+      // Stale leads: Open leads not updated in 7+ days
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      
+      filtered = filtered.filter(lead => 
+        lead.status === 'open' && 
+        new Date(lead.updated_at) < sevenDaysAgo
+      );
+    } else if (statusFilter !== 'all') {
       filtered = filtered.filter(lead => lead.status === statusFilter);
     }
 
@@ -117,6 +126,13 @@ export function AllLeadsManagement() {
     }
 
     setFilteredLeads(filtered);
+  };
+
+  const isLeadStale = (lead: Lead) => {
+    if (lead.status !== 'open') return false;
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    return new Date(lead.updated_at) < sevenDaysAgo;
   };
 
   const exportToCSV = () => {
@@ -275,6 +291,7 @@ export function AllLeadsManagement() {
               <SelectContent>
                 <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="open">Open</SelectItem>
+                <SelectItem value="stale">Stale (7+ days)</SelectItem>
                 <SelectItem value="won">Won</SelectItem>
                 <SelectItem value="closed_lost">Closed Lost</SelectItem>
               </SelectContent>
@@ -327,9 +344,16 @@ export function AllLeadsManagement() {
                     <TableCell>{lead.manager_name}</TableCell>
                     <TableCell>{lead.investment_amount_range}</TableCell>
                     <TableCell>
-                      <Badge variant={getStatusBadgeVariant(lead.status)} className={getStatusColor(lead.status)}>
-                        {lead.status.replace('_', ' ').toUpperCase()}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={getStatusBadgeVariant(lead.status)} className={getStatusColor(lead.status)}>
+                          {lead.status.replace('_', ' ').toUpperCase()}
+                        </Badge>
+                        {isLeadStale(lead) && (
+                          <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+                            Stale
+                          </Badge>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell>{format(new Date(lead.created_at), 'MMM d, yyyy')}</TableCell>
                     <TableCell>{format(new Date(lead.updated_at), 'MMM d, yyyy')}</TableCell>
