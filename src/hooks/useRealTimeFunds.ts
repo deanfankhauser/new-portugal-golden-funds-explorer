@@ -370,47 +370,54 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
 
     const setupRealtime = async () => {
       if (!enableRealTime) return;
-      const supabase = await getSupabase();
-      channel = supabase.channel('funds-realtime-updates');
+      
+      try {
+        const supabase = await getSupabase();
+        channel = supabase.channel('funds-realtime-updates');
 
-      // If subscribeTo is specified, only listen to those specific funds
-      if (subscribeTo && subscribeTo.length > 0) {
-        console.log('🎯 Subscribing to specific funds:', subscribeTo);
-        subscribeTo.forEach(fundId => {
+        // If subscribeTo is specified, only listen to those specific funds
+        if (subscribeTo && subscribeTo.length > 0) {
+          console.log('🎯 Subscribing to specific funds:', subscribeTo);
+          subscribeTo.forEach(fundId => {
+            channel.on(
+              'postgres_changes',
+              { event: '*', schema: 'public', table: 'funds', filter: `id=eq.${fundId}` },
+              (payload) => {
+                console.log('🔄 Selective fund update:', fundId);
+                const changedFundId = (payload.new as any)?.id || (payload.old as any)?.id;
+                if (payload.eventType === 'DELETE') {
+                  setFunds(prev => prev.filter(f => f.id !== changedFundId));
+                } else {
+                  updateSingleFund(changedFundId);
+                }
+              }
+            );
+          });
+        } else {
+          // General subscription for homepage - use debounced refetch
           channel.on(
             'postgres_changes',
-            { event: '*', schema: 'public', table: 'funds', filter: `id=eq.${fundId}` },
+            { event: '*', schema: 'public', table: 'funds' },
             (payload) => {
-              console.log('🔄 Selective fund update:', fundId);
+              console.log('🔄 General fund update detected');
               const changedFundId = (payload.new as any)?.id || (payload.old as any)?.id;
               if (payload.eventType === 'DELETE') {
                 setFunds(prev => prev.filter(f => f.id !== changedFundId));
-              } else {
+              } else if (changedFundId) {
                 updateSingleFund(changedFundId);
+              } else {
+                debouncedRefetch();
               }
             }
           );
-        });
-      } else {
-        // General subscription for homepage - use debounced refetch
-        channel.on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'funds' },
-          (payload) => {
-            console.log('🔄 General fund update detected');
-            const changedFundId = (payload.new as any)?.id || (payload.old as any)?.id;
-            if (payload.eventType === 'DELETE') {
-              setFunds(prev => prev.filter(f => f.id !== changedFundId));
-            } else if (changedFundId) {
-              updateSingleFund(changedFundId);
-            } else {
-              debouncedRefetch();
-            }
-          }
-        );
-      }
+        }
 
-      channel.subscribe();
+        channel.subscribe();
+      } catch (error) {
+        // Silently handle WebSocket connection errors to prevent console noise
+        // The app will still function without realtime updates
+        console.debug('Realtime subscription unavailable, continuing without live updates');
+      }
     };
 
     setupRealtime();
