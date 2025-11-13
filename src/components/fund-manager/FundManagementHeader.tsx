@@ -37,10 +37,12 @@ const FundManagementHeader: React.FC<FundManagementHeaderProps> = ({ fund, canDi
                 </h1>
                 {fund.isVerified && (
                   <div className="flex items-center gap-2 flex-wrap">
-                    <Badge variant="default" className="text-xs gap-1">
-                      <CheckCircle2 className="h-3 w-3" />
-                      Verified
-                    </Badge>
+                    <Link to="/verification-program" className="hover:opacity-80 transition-opacity">
+                      <Badge variant="default" className="text-xs gap-1">
+                        <CheckCircle2 className="h-3 w-3" />
+                        Verified
+                      </Badge>
+                    </Link>
                   </div>
                 )}
               </div>

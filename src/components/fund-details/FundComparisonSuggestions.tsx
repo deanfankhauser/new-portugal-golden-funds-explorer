@@ -60,7 +60,9 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
                           {currentFund.name}
                         </span>
                         {currentFund.isVerified && (
-                          <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
+                          <Link to="/verification-program" onClick={(e) => e.stopPropagation()} className="hover:opacity-80 transition-opacity">
+                            <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
+                          </Link>
                         )}
                       </div>
 

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Fund } from '../../data/funds';
 import { formatCurrency } from '../fund-details/utils/formatters';
 import { getFundType } from '../../utils/fundTypeUtils';
@@ -34,10 +35,12 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
               {funds.map(fund => (
                 <td key={fund.id} className="py-3 px-4">
                   {fund.isVerified ? (
-                    <div className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold inline-flex items-center gap-1.5 shadow-md border-2 border-success/70 ring-2 ring-success/20 w-fit">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      ✓ VERIFIED
-                    </div>
+                    <Link to="/verification-program" className="inline-block hover:opacity-80 transition-opacity">
+                      <div className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold inline-flex items-center gap-1.5 shadow-md border-2 border-success/70 ring-2 ring-success/20 w-fit">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        ✓ VERIFIED
+                      </div>
+                    </Link>
                   ) : (
                     <span className="text-sm text-muted-foreground">Not verified</span>
                   )}
