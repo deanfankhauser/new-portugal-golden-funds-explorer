@@ -148,7 +148,7 @@ export async function validateSitemapCanonical(distDir: string): Promise<void> {
 }
 
 // Run validation if called directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const distDir = path.join(process.cwd(), 'dist');
   validateSitemapCanonical(distDir).catch(error => {
     console.error('Validation error:', error.message);
