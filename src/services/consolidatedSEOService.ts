@@ -432,8 +432,8 @@ export class ConsolidatedSEOService {
 
       case 'managers-hub':
         return {
-          title: this.optimizeText('Portugal Golden Visa Fund Managers | Investment Professionals | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Directory of Portugal Golden Visa fund managers. Find experienced investment professionals managing Golden Visa eligible funds.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('28+ Portugal Golden Visa Fund Managers | Verified Professionals | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare 28+ verified Portugal Golden Visa fund managers. View track records, total AUM, and fund offerings. Find the right investment professional for your €500k+ Golden Visa application.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('managers'),
           canonical: URL_CONFIG.buildUrl('managers'),
           keywords: [
@@ -442,15 +442,19 @@ export class ConsolidatedSEOService {
             'investment professionals Portugal',
             'fund management companies',
             'Portuguese fund managers directory',
-            'investment fund professionals'
+            'investment fund professionals',
+            'best Golden Visa fund managers',
+            'top rated fund managers Portugal',
+            'verified fund management companies',
+            'experienced Golden Visa managers'
           ],
           structuredData: this.getManagersHubStructuredData()
         };
 
       case 'categories-hub':
         return {
-          title: this.optimizeText('Portugal Golden Visa Fund Categories | Investment Types | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Browse Portugal Golden Visa investment fund categories. Explore different investment types and strategies for Golden Visa programs.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Browse 8 Golden Visa Fund Categories | Debt, Equity & More | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Discover 8 Portugal Golden Visa fund categories: Debt, Equity, Venture Capital, Infrastructure & more. Compare €500k+ investment options across categories with detailed performance metrics and risk profiles.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('categories'),
           canonical: URL_CONFIG.buildUrl('categories'),
           keywords: [
@@ -459,15 +463,19 @@ export class ConsolidatedSEOService {
             'Golden Visa fund categories',
             'fund classification',
             'investment strategies Portugal',
-            'fund types'
+            'fund types',
+            'debt funds Portugal',
+            'equity funds Golden Visa',
+            'venture capital funds Portugal',
+            'what types of Golden Visa funds'
           ],
           structuredData: this.getCategoriesHubStructuredData()
         };
 
       case 'tags-hub':
         return {
-          title: this.optimizeText('Portugal Golden Visa Fund Tags | Investment Characteristics | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Explore Portugal Golden Visa investment funds by characteristics and tags. Find Golden Visa funds that match your criteria.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Filter Funds by 40+ Tags | Find Your Perfect Golden Visa Match | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Filter 40+ Portugal Golden Visa funds by APY, risk level, lockup period, minimum investment, and more. Find funds matching your exact requirements with advanced filtering and instant comparisons.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('tags'),
           canonical: URL_CONFIG.buildUrl('tags'),
           keywords: [
@@ -476,15 +484,19 @@ export class ConsolidatedSEOService {
             'fund features',
             'Golden Visa fund attributes',
             'investment fund filters',
-            'fund search criteria'
+            'fund search criteria',
+            'filter Golden Visa funds',
+            'find funds by characteristics',
+            'Golden Visa fund finder',
+            'investment fund search'
           ],
           structuredData: this.getTagsHubStructuredData()
         };
 
       case 'alternatives-hub':
         return {
-          title: this.optimizeText('Portugal Golden Visa Fund Alternatives Hub | Compare Investment Options | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Explore alternative Portugal Golden Visa investment funds for every fund in our database. Find similar Golden Visa fund options based on category, risk level, and investment requirements.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Find Fund Alternatives | Explore Similar Golden Visa Investments | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Discover alternative Portugal Golden Visa funds with similar risk profiles, returns, and investment amounts. Compare matching funds across all categories to find the perfect fit for your €500k visa investment.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/alternatives'),
           canonical: URL_CONFIG.buildUrl('/alternatives'),
           keywords: [
@@ -493,15 +505,19 @@ export class ConsolidatedSEOService {
             'alternative funds Portugal',
             'comparable Golden Visa funds',
             'fund substitutes',
-            'investment alternatives'
+            'investment alternatives',
+            'find similar Golden Visa funds',
+            'alternative investment options Portugal',
+            'comparable investment funds',
+            'funds like'
           ],
           structuredData: this.getAlternativesHubStructuredData(funds)
         };
 
       case 'comparisons-hub':
         return {
-          title: this.optimizeText('Portugal Golden Visa Fund Comparisons | Investment Analysis Hub | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Hub for comparing Portugal Golden Visa investment funds. Access Golden Visa fund comparison tools and analysis.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Compare 435+ Golden Visa Fund Pairs | Side-by-Side Analysis | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare 435+ Portugal Golden Visa fund combinations side-by-side. Analyze fees, returns, risk profiles, minimum investments, and Golden Visa eligibility requirements to make informed investment decisions.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('comparisons'),
           canonical: URL_CONFIG.buildUrl('comparisons'),
           keywords: [
@@ -510,7 +526,11 @@ export class ConsolidatedSEOService {
             'Golden Visa comparisons',
             'fund analysis hub',
             'comparison directory',
-            'investment fund comparisons'
+            'investment fund comparisons',
+            'compare Golden Visa funds',
+            'side by side fund comparison',
+            'which Golden Visa fund is best',
+            'fund comparison tool Portugal'
           ],
           structuredData: this.getComparisonsHubStructuredData(funds)
         };
@@ -551,8 +571,8 @@ export class ConsolidatedSEOService {
 
       case 'faqs':
         return {
-          title: this.optimizeText('FAQs | Portugal Golden Visa Investment Fund Questions | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Frequently asked questions about Portugal Golden Visa investment funds. Get answers about Golden Visa programs.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Golden Visa FAQs | Get Instant Answers to 8 Common Questions | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Get instant answers to 8 most common Portugal Golden Visa investment questions. Learn about €500k minimums, processing times, tax implications, and family inclusion requirements.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('faqs'),
           canonical: URL_CONFIG.buildUrl('faqs'),
           keywords: [
@@ -561,7 +581,11 @@ export class ConsolidatedSEOService {
             'Golden Visa questions',
             'investment fund FAQs',
             'Portugal Golden Visa FAQ',
-            'Portugal visa questions'
+            'Portugal visa questions',
+            'how long Golden Visa process',
+            'Golden Visa minimum investment 2025',
+            'can family get Golden Visa',
+            'Golden Visa tax implications'
           ],
           structuredData: this.getFAQStructuredData()
         };
@@ -608,8 +632,8 @@ export class ConsolidatedSEOService {
 
       case 'verified-funds':
         return {
-          title: this.optimizeText('Verified Portugal Golden Visa Funds | Fully Documented Investments | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Browse verified Portugal Golden Visa investment funds with complete regulatory documentation, CMVM registration, and third-party validation. All funds independently verified for transparency and investor confidence.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('12+ CMVM-Verified Golden Visa Funds | Guaranteed Compliance | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Discover 12+ CMVM-verified Portugal Golden Visa funds with guaranteed regulatory compliance. Independent validation, transparent fees, and confirmed eligibility for €500k visa applications.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/verified-funds'),
           canonical: URL_CONFIG.buildUrl('/verified-funds'),
           keywords: [
@@ -618,7 +642,10 @@ export class ConsolidatedSEOService {
             'verified investment funds Portugal',
             'documented Golden Visa funds',
             'regulated investment funds',
-            'validated investment funds Portugal'
+            'validated investment funds Portugal',
+            'CMVM verified funds',
+            'compliance verified Golden Visa',
+            'independently validated funds Portugal'
           ],
           structuredData: this.getVerifiedFundsStructuredData(funds)
         };
