@@ -21,7 +21,8 @@ import EmailCapturesManagement from '@/components/admin/EmailCapturesManagement'
 import { ManagerProfileAssignment } from '@/components/admin/ManagerProfileAssignment';
 import { AllLeadsManagement } from '@/components/admin/AllLeadsManagement';
 import { PerformanceMonitoring } from '@/components/admin/PerformanceMonitoring';
-import { EmailCampaignMonitoring } from '@/components/admin/EmailCampaignMonitoring';
+// Temporarily disabled until types are regenerated
+// import { EmailCampaignMonitoring } from '@/components/admin/EmailCampaignMonitoring';
 
 const AdminPanel = () => {
   const { user, loading } = useEnhancedAuth();
@@ -257,7 +258,7 @@ const AdminPanel = () => {
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="suggestions" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-10">
+            <TabsList className="grid w-full grid-cols-9">
               <TabsTrigger value="suggestions" className="flex items-center gap-2">
                 <Edit3 className="h-4 w-4" />
                 Suggestions
@@ -290,10 +291,11 @@ const AdminPanel = () => {
                 <Activity className="h-4 w-4" />
                 Performance
               </TabsTrigger>
-              <TabsTrigger value="email-campaigns" className="flex items-center gap-2">
+              {/* Temporarily disabled until types are regenerated */}
+              {/* <TabsTrigger value="email-campaigns" className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
                 Email Campaigns
-              </TabsTrigger>
+              </TabsTrigger> */}
               <TabsTrigger value="settings" className="flex items-center gap-2">
                 <Settings className="h-4 w-4" />
                 Settings
@@ -349,9 +351,10 @@ const AdminPanel = () => {
               <PerformanceMonitoring />
             </TabsContent>
 
-            <TabsContent value="email-campaigns">
+            {/* Temporarily disabled until types are regenerated */}
+            {/* <TabsContent value="email-campaigns">
               <EmailCampaignMonitoring />
-            </TabsContent>
+            </TabsContent> */}
 
             <TabsContent value="settings">
               <div className="space-y-6">
