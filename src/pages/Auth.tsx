@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { Button } from '@/components/ui/button';
@@ -12,10 +12,19 @@ import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useInvitationValidation, useInvitationAcceptance } from '@/hooks/useInvitationAcceptance';
+import { InvitationBanner } from '@/components/auth/InvitationBanner';
 
 const Auth = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user, signIn, signUp, signOut } = useEnhancedAuth();
+  
+  // Invitation handling
+  const invitationToken = searchParams.get('invite');
+  const { isValidating, invitation, error: invitationError } = useInvitationValidation(invitationToken);
+  const { acceptInvitation, isAccepting } = useInvitationAcceptance();
+  const [activeTab, setActiveTab] = useState('login');
 
   // Login state
   const [loginEmail, setLoginEmail] = useState('');
@@ -33,6 +42,23 @@ const Auth = () => {
   const [signupError, setSignupError] = useState('');
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [needsConfirmation, setNeedsConfirmation] = useState(false);
+  
+  // Pre-fill email from invitation and switch to signup tab
+  useEffect(() => {
+    if (invitation?.email) {
+      setSignupEmail(invitation.email);
+      setActiveTab('signup');
+    }
+  }, [invitation]);
+  
+  // Show error for invalid invitations
+  useEffect(() => {
+    if (invitationError) {
+      toast.error('Invalid Invitation', {
+        description: invitationError,
+      });
+    }
+  }, [invitationError]);
 
   // Already logged in
   if (user) {
@@ -110,6 +136,12 @@ const Auth = () => {
       setSignupError('Password must be at least 6 characters long');
       return;
     }
+    
+    // Validate email matches invitation if present
+    if (invitation && signupEmail !== invitation.email) {
+      setSignupError(`Please use the invited email address: ${invitation.email}`);
+      return;
+    }
 
     setSignupLoading(true);
 
@@ -117,6 +149,7 @@ const Auth = () => {
       const { error } = await signUp(signupEmail, signupPassword, {
         first_name: signupFirstName.trim(),
         last_name: signupLastName.trim(),
+        invitation_token: invitationToken || undefined,
       });
 
       if (error) {
@@ -127,7 +160,10 @@ const Auth = () => {
         }
       } else {
         setShowSuccessMessage(true);
-        toast.success('Account created! Please check your email to confirm your account.');
+        const message = invitationToken 
+          ? 'Account created! Please check your email to confirm and complete your team invitation.'
+          : 'Account created! Please check your email to confirm your account.';
+        toast.success(message);
       }
     } catch (error: any) {
       setSignupError('An unexpected error occurred. Please try again.');
@@ -136,6 +172,22 @@ const Auth = () => {
       setSignupLoading(false);
     }
   };
+  
+  // Handle invitation acceptance when user becomes authenticated
+  useEffect(() => {
+    const handleInvitationAcceptance = async () => {
+      if (user && invitationToken && invitation && !isAccepting) {
+        const result = await acceptInvitation(invitationToken, user.id);
+        if (result.success) {
+          toast.success('Team invitation accepted!');
+          // Remove invite param from URL
+          navigate('/', { replace: true });
+        }
+      }
+    };
+    
+    handleInvitationAcceptance();
+  }, [user, invitationToken, invitation, isAccepting, acceptInvitation, navigate]);
 
   if (showSuccessMessage) {
     return (
@@ -178,13 +230,34 @@ const Auth = () => {
       </Helmet>
       <Header />
       <div className="container mx-auto px-4 py-16">
+        {isValidating && (
+          <div className="max-w-2xl mx-auto mb-6 flex items-center justify-center">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            <span className="ml-2">Validating invitation...</span>
+          </div>
+        )}
+        
+        {invitation && (
+          <div className="max-w-2xl mx-auto mb-6">
+            <InvitationBanner
+              companyName={invitation.companyName}
+              inviterName={invitation.inviterName}
+              personalMessage={invitation.personalMessage}
+              expiresAt={invitation.expiresAt}
+              email={invitation.email}
+            />
+          </div>
+        )}
+        
         <Card className="max-w-md mx-auto">
           <CardHeader>
             <CardTitle>Welcome</CardTitle>
-            <CardDescription>Sign in or create an account to continue</CardDescription>
+            <CardDescription>
+              {invitation ? 'Complete your signup to join the team' : 'Sign in or create an account to continue'}
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="login" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login">Login</TabsTrigger>
                 <TabsTrigger value="signup">Sign Up</TabsTrigger>
@@ -193,6 +266,14 @@ const Auth = () => {
               {/* Login Tab */}
               <TabsContent value="login">
                 <form onSubmit={handleLogin} className="space-y-4">
+                  {invitation && (
+                    <Alert>
+                      <AlertDescription>
+                        You have a team invitation. Please use the <strong>Sign Up</strong> tab to create your account with the invited email address.
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                  
                   {loginError && (
                     <Alert variant="destructive">
                       <AlertDescription>{loginError}</AlertDescription>
@@ -295,6 +376,8 @@ const Auth = () => {
                       onChange={(e) => setSignupEmail(e.target.value)}
                       required
                       disabled={signupLoading}
+                      readOnly={!!invitation}
+                      className={invitation ? 'bg-muted' : ''}
                     />
                   </div>
 
