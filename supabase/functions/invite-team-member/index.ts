@@ -1,6 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
 import { corsHeaders } from '../_shared/cors.ts';
-import { Resend } from 'npm:resend@2.0.0';
+import { ServerClient } from 'npm:postmark@4.0.0';
 import { generateEmailWrapper, generateContentCard, generateCTAButton, COMPANY_INFO } from '../_shared/email-templates.ts';
 
 interface InviteRequest {
@@ -10,7 +10,7 @@ interface InviteRequest {
   personalMessage?: string;
 }
 
-const resend = new Resend(Deno.env.get('POSTMARK_SERVER_TOKEN'));
+const postmark = new ServerClient(Deno.env.get('POSTMARK_SERVER_TOKEN')!);
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -162,13 +162,15 @@ Deno.serve(async (req) => {
       );
 
       try {
-        await resend.emails.send({
-          from: `Movingto Funds <${COMPANY_INFO.email}>`,
-          to: [inviteeEmail],
-          subject: `You've been added to ${companyName} team`,
-          html: existingUserHtml,
+        await postmark.sendEmail({
+          From: COMPANY_INFO.email,
+          To: inviteeEmail,
+          Subject: `You've been added to ${companyName} team`,
+          HtmlBody: existingUserHtml,
+          TextBody: `You've been added to ${companyName} team\n\n${inviterName} has added you to the team.\n\nYou now have full access to manage the company's fund profiles.\n\nVisit: https://funds.movingto.com/my-funds`,
+          MessageStream: 'outbound',
         });
-      } catch (emailError) {
+      } catch (emailError: any) {
         console.error('[invite-team-member] Failed to send notification email', emailError);
         // Don't fail the request if email fails, user is already assigned
       }
@@ -241,13 +243,15 @@ Deno.serve(async (req) => {
       );
 
       try {
-        await resend.emails.send({
-          from: `Movingto Funds <${COMPANY_INFO.email}>`,
-          to: [inviteeEmail],
-          subject: `You've been invited to join ${companyName} on Movingto Funds`,
-          html: newUserHtml,
+        await postmark.sendEmail({
+          From: COMPANY_INFO.email,
+          To: inviteeEmail,
+          Subject: `You've been invited to join ${companyName} on Movingto Funds`,
+          HtmlBody: newUserHtml,
+          TextBody: `You've been invited to join ${companyName} on Movingto Funds\n\n${inviterName} has invited you to join the team.\n\nClick here to accept: ${invitationUrl}\n\nThis invitation expires in 7 days.`,
+          MessageStream: 'outbound',
         });
-      } catch (emailError) {
+      } catch (emailError: any) {
         console.error('[invite-team-member] Failed to send invitation email', emailError);
         
         // Clean up invitation if email fails

@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
 import { corsHeaders } from '../_shared/cors.ts';
-import { Resend } from 'npm:resend@2.0.0';
+import { ServerClient } from 'npm:postmark@4.0.0';
 import { generateEmailWrapper, generateContentCard, generateCTAButton, COMPANY_INFO } from '../_shared/email-templates.ts';
 
-const resend = new Resend(Deno.env.get('POSTMARK_SERVER_TOKEN'));
+const postmark = new ServerClient(Deno.env.get('POSTMARK_SERVER_TOKEN')!);
 
 interface BulkInviteRequest {
   companyName: string;
