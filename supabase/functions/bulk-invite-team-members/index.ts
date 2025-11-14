@@ -148,9 +148,9 @@ serve(async (req) => {
         }
 
         // Assign user to profile
-        const { error: assignError } = await supabase.rpc('admin_assign_profile_managers', {
+        const { error: assignError } = await supabase.rpc('assign_company_team_member', {
           _profile_id: profile.id,
-          _manager_ids: [assignedUserId],
+          _manager_id: assignedUserId,
           _permissions: {
             can_edit_profile: true,
             can_edit_funds: true,
