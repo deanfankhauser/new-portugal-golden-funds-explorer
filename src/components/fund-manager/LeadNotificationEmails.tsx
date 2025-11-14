@@ -142,11 +142,11 @@ export const LeadNotificationEmails: React.FC<LeadNotificationEmailsProps> = ({ 
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center gap-2">
-          <Bell className="h-5 w-5 text-primary" />
-          <div>
+        <div className="flex items-start gap-3">
+          <Bell className="h-5 w-5 text-primary mt-0.5" />
+          <div className="flex-1">
             <CardTitle className="text-lg">Lead Notification Emails</CardTitle>
-            <CardDescription className="text-sm">
+            <CardDescription className="text-sm mt-1.5">
               Additional email addresses that will receive notifications when new leads enquire about this fund
             </CardDescription>
           </div>
