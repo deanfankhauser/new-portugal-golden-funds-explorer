@@ -1326,6 +1326,7 @@ export type Database = {
           company_name: string
           fund_id: string
           fund_name: string
+          last_email_sent_at: string
           last_sign_in_at: string
           manager_email: string
           manager_name: string
