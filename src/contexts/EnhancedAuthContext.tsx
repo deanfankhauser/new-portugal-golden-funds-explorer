@@ -70,7 +70,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
           fetchProfile(session.user!.id).catch(console.error);
           // Check for pending invitations after auth
           if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-            checkPendingInvitations(session.user.email!).catch(console.error);
+            checkPendingInvitations(session.user.email!, session.user.id).catch(console.error);
           }
         }, 100);
       } else {
@@ -113,12 +113,12 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     };
   }, [isHydrated]);
 
-  const checkPendingInvitations = async (email: string) => {
+  const checkPendingInvitations = async (email: string, userId: string) => {
     try {
-      console.log('🎫 Checking pending invitations for:', email);
+      console.log('🎫 Checking pending invitations for:', email, 'userId:', userId);
       
       const { data, error } = await supabase.functions.invoke('check-pending-invitations', {
-        body: { email },
+        body: { email, userId },
       });
 
       if (error) {
@@ -184,7 +184,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const signUp = async (email: string, password: string, metadata?: any) => {
     const redirectUrl = getEmailRedirectUrl();
     
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -198,9 +198,9 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     });
 
     // Check for pending invitations after signup
-    if (!error && email) {
+    if (!error && email && data?.user?.id) {
       setTimeout(() => {
-        checkPendingInvitations(email).catch(console.error);
+        checkPendingInvitations(email, data.user!.id).catch(console.error);
       }, 1000);
     }
 
@@ -208,15 +208,15 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     
     // Check for pending invitations after signin
-    if (!error && email) {
+    if (!error && email && data?.user?.id) {
       setTimeout(() => {
-        checkPendingInvitations(email).catch(console.error);
+        checkPendingInvitations(email, data.user!.id).catch(console.error);
       }, 500);
     }
     

@@ -3,6 +3,7 @@ import { corsHeaders } from '../_shared/cors.ts';
 
 interface CheckInvitationsRequest {
   email: string;
+  userId: string;
 }
 
 interface InvitationResult {
@@ -21,27 +22,14 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { email }: CheckInvitationsRequest = await req.json();
+    const { email, userId }: CheckInvitationsRequest = await req.json();
 
-    console.log('[check-pending-invitations] Checking invitations for:', email);
+    console.log('[check-pending-invitations] Checking invitations for:', email, 'userId:', userId);
 
-    if (!email) {
+    if (!email || !userId) {
       return new Response(
-        JSON.stringify({ error: 'Email is required' }),
+        JSON.stringify({ error: 'Email and userId are required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Find user by email
-    const { data: userId } = await supabase.rpc('find_user_by_email', {
-      user_email: email,
-    });
-
-    if (!userId) {
-      console.log('[check-pending-invitations] User not found:', email);
-      return new Response(
-        JSON.stringify({ error: 'User not found' }),
-        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
