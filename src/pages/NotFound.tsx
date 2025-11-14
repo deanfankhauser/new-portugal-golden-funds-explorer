@@ -1,4 +1,4 @@
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useEffect, useMemo } from "react";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -12,6 +12,7 @@ import { track404Error } from '@/utils/errorTracking';
 
 const NotFound = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { data: allFundsData } = useAllFunds();
   const allDatabaseFunds = allFundsData || [];
   
@@ -41,6 +42,16 @@ const NotFound = () => {
     
     return null;
   }, [location.pathname, allDatabaseFunds]);
+
+  // Defensive fallback: if there's an invite token in the query, redirect to /auth
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const inviteToken = searchParams.get('invite');
+    if (inviteToken) {
+      console.log('🎫 Found invite token on 404 page, redirecting to /auth');
+      navigate(`/auth?invite=${inviteToken}`, { replace: true });
+    }
+  }, [location.search, navigate]);
 
   useEffect(() => {
     console.error(

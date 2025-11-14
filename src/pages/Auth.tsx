@@ -22,6 +22,7 @@ const Auth = () => {
   
   // Invitation handling
   const invitationToken = searchParams.get('invite');
+  console.log('🎫 Auth page loaded with invitation token:', invitationToken);
   const { isValidating, invitation, error: invitationError } = useInvitationValidation(invitationToken);
   const [activeTab, setActiveTab] = useState('login');
 

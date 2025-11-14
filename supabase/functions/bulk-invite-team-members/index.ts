@@ -156,7 +156,7 @@ Deno.serve(async (req) => {
             continue;
           }
 
-          const invitationUrl = `https://funds.movingto.com/auth?invite=${invitation.invitation_token}`;
+          const invitationUrl = `https://funds.movingto.com/invite/${invitation.invitation_token}`;
 
           // Send invitation email
           const newUserEmailContent = `
