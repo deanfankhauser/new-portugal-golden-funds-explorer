@@ -149,6 +149,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         data: {
           first_name: metadata?.first_name || '',
           last_name: metadata?.last_name || '',
+          invitation_token: metadata?.invitation_token || undefined,
         },
       },
     });
