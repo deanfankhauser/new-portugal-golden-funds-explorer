@@ -299,8 +299,8 @@ function App() {
                          </Suspense>
                        } />
 
-                       {/* Manage Individual Fund */}
-                       <Route path="/manage-fund/:fundId" element={
+                       {/* Manage Individual Fund with nested routes */}
+                       <Route path="/manage-fund/:fundId/*" element={
                          <Suspense fallback={<PageLoader />}>
                            <ManageFund />
                          </Suspense>
