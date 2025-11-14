@@ -109,3 +109,6 @@ verify_jwt = false
 
 [functions.postmark-webhook]
 verify_jwt = false
+
+[functions.weekly-stale-lead-reminder]
+verify_jwt = false
