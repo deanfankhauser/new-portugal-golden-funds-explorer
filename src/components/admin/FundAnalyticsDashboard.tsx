@@ -238,16 +238,16 @@ export default function FundAnalyticsDashboard() {
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
-                    <TableHead className="w-[250px] font-semibold">Fund Details</TableHead>
-                    <TableHead className="font-semibold">Manager</TableHead>
-                    <TableHead className="text-center font-semibold">Team</TableHead>
-                    <TableHead className="text-center font-semibold">Last Sign-In</TableHead>
-                    <TableHead className="text-center font-semibold">Last Email</TableHead>
-                    <TableHead className="text-right font-semibold">30d Leads</TableHead>
-                    <TableHead className="text-right font-semibold">Total Leads</TableHead>
-                    <TableHead className="text-right font-semibold">30d Views</TableHead>
-                    <TableHead className="text-right font-semibold">Total Views</TableHead>
-                    <TableHead className="text-right font-semibold">Actions</TableHead>
+                    <TableHead className="w-[250px] font-semibold whitespace-nowrap">Fund Details</TableHead>
+                    <TableHead className="font-semibold whitespace-nowrap">Manager</TableHead>
+                    <TableHead className="text-center font-semibold whitespace-nowrap">Team</TableHead>
+                    <TableHead className="text-center font-semibold whitespace-nowrap">Last Sign-In</TableHead>
+                    <TableHead className="text-center font-semibold whitespace-nowrap">Last Email</TableHead>
+                    <TableHead className="text-right font-semibold whitespace-nowrap">30d Leads</TableHead>
+                    <TableHead className="text-right font-semibold whitespace-nowrap">Total Leads</TableHead>
+                    <TableHead className="text-right font-semibold whitespace-nowrap">30d Views</TableHead>
+                    <TableHead className="text-right font-semibold whitespace-nowrap">Total Views</TableHead>
+                    <TableHead className="text-right font-semibold whitespace-nowrap">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -260,7 +260,7 @@ export default function FundAnalyticsDashboard() {
                   ) : (
                     filteredAndSorted?.map((fund) => (
                       <TableRow key={fund.fund_id} className="hover:bg-muted/50">
-                        <TableCell className="py-4">
+                        <TableCell className="py-4 whitespace-nowrap">
                           <Link 
                             to={`/funds/${fund.fund_id}`} 
                             className="font-medium hover:underline text-primary flex items-center gap-2"
@@ -269,7 +269,7 @@ export default function FundAnalyticsDashboard() {
                             <ExternalLink className="h-3 w-3" />
                           </Link>
                         </TableCell>
-                        <TableCell className="py-4">
+                        <TableCell className="py-4 whitespace-nowrap">
                           <div className="space-y-1">
                             <div className="font-medium text-sm">{fund.company_name || fund.manager_name}</div>
                             {fund.manager_email && (
@@ -277,12 +277,12 @@ export default function FundAnalyticsDashboard() {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className="text-center py-4">
+                        <TableCell className="text-center py-4 whitespace-nowrap">
                           <Badge variant="secondary" className="font-semibold">
                             {fund.team_members_count}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-center py-4">
+                        <TableCell className="text-center py-4 whitespace-nowrap">
                           {fund.last_sign_in_at ? (
                             <Badge variant={
                               new Date(fund.last_sign_in_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
@@ -297,7 +297,7 @@ export default function FundAnalyticsDashboard() {
                             <Badge variant="outline">Never</Badge>
                           )}
                         </TableCell>
-                        <TableCell className="text-center py-4">
+                        <TableCell className="text-center py-4 whitespace-nowrap">
                           {fund.last_email_sent_at ? (
                             <div className="flex items-center justify-center gap-1.5">
                               <Mail className="h-3.5 w-3.5 text-muted-foreground" />
@@ -309,23 +309,23 @@ export default function FundAnalyticsDashboard() {
                             <Badge variant="outline">No emails</Badge>
                           )}
                         </TableCell>
-                        <TableCell className="text-right py-4">
+                        <TableCell className="text-right py-4 whitespace-nowrap">
                           <span className={fund.recent_leads > 0 ? "font-semibold text-green-600 dark:text-green-400" : "text-muted-foreground"}>
                             {fund.recent_leads}
                           </span>
                         </TableCell>
-                        <TableCell className="text-right py-4">
+                        <TableCell className="text-right py-4 whitespace-nowrap">
                           <span className="font-medium">{fund.total_leads}</span>
                         </TableCell>
-                        <TableCell className="text-right py-4">
+                        <TableCell className="text-right py-4 whitespace-nowrap">
                           <span className={fund.recent_impressions > 0 ? "font-semibold" : "text-muted-foreground"}>
                             {fund.recent_impressions.toLocaleString()}
                           </span>
                         </TableCell>
-                        <TableCell className="text-right py-4">
+                        <TableCell className="text-right py-4 whitespace-nowrap">
                           <span className="font-medium">{fund.total_impressions.toLocaleString()}</span>
                         </TableCell>
-                        <TableCell className="text-right py-4">
+                        <TableCell className="text-right py-4 whitespace-nowrap">
                           <Button variant="ghost" size="sm" asChild>
                             <Link to={`/admin/funds/${fund.fund_id}`}>
                               View
