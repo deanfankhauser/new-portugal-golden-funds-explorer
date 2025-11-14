@@ -3,6 +3,7 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { getEmailRedirectUrl } from '@/utils/authRedirect';
 import { Profile } from '@/types/profile';
+import { queryClient } from '@/providers/QueryProvider';
 
 interface EnhancedAuthContextType {
   user: User | null;
@@ -131,6 +132,11 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         
         // Show success toast for each accepted invitation
         const companies = data.acceptedInvitations.map((inv: any) => inv.companyName);
+        
+        // Invalidate team member queries for all affected companies
+        companies.forEach((companyName: string) => {
+          queryClient.invalidateQueries({ queryKey: ['team-members', companyName] });
+        });
         
         if (typeof window !== 'undefined') {
           const { toast } = await import('@/hooks/use-toast');
