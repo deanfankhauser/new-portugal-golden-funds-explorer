@@ -43,15 +43,29 @@ const NotFound = () => {
     return null;
   }, [location.pathname, allDatabaseFunds]);
 
-  // Defensive fallback: if there's an invite token in the query, redirect to /auth
+  // Defensive fallback: if there's an invite token in the query or path, redirect to /auth
   useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const inviteToken = searchParams.get('invite');
-    if (inviteToken) {
-      console.log('🎫 Found invite token on 404 page, redirecting to /auth');
-      navigate(`/auth?invite=${inviteToken}`, { replace: true });
+    const { pathname, search } = location;
+    const searchParams = new URLSearchParams(search);
+    const inviteParam = searchParams.get('invite') || searchParams.get('token');
+    
+    console.log('🎫 404 page - pathname:', pathname, 'search:', search);
+
+    // Check for invite/token in query params
+    if (inviteParam) {
+      console.log('🎫 Found invite/token in query on 404, redirecting to /auth');
+      navigate(`/auth?invite=${inviteParam}`, { replace: true });
+      return;
     }
-  }, [location.search, navigate]);
+
+    // Check for path-based invite (e.g., /invite/TOKEN or /invite/TOKEN/)
+    const invitePathMatch = pathname.match(/^\/invite\/([^/?#]+)/i);
+    if (invitePathMatch?.[1]) {
+      const token = invitePathMatch[1];
+      console.log('🎫 Found invite token in path on 404, redirecting to /auth');
+      navigate(`/auth?invite=${token}`, { replace: true });
+    }
+  }, [location.pathname, location.search, navigate]);
 
   useEffect(() => {
     console.error(
