@@ -70,7 +70,6 @@ serve(async (req) => {
     console.log(`Found ${associatedFunds?.length || 0} funds for company: ${company_name}`);
 
     const fundCount = associatedFunds?.length || 0;
-    const myFundsUrl = `${supabaseUrl.replace('.supabase.co', '.lovableproject.com')}/my-funds`;
     
     const subject = `🎯 You've Been Assigned to Manage ${company_name} and ${fundCount} Fund${fundCount !== 1 ? 's' : ''}`;
 
@@ -121,7 +120,14 @@ serve(async (req) => {
       </div>
       ` : ''}
 
-      ${generateCTAButton('View My Funds', myFundsUrl, 'bordeaux')}
+      <div style="margin: 32px 0; padding: 20px; background: #F8FAFC; border-radius: 8px; border: 1px solid #E5E7EB;">
+        <p style="margin: 0 0 12px 0; font-weight: 600; color: #4B0F23;">To access your funds:</p>
+        <ol style="margin: 0; padding-left: 20px; color: #64748b; line-height: 1.8;">
+          <li>Sign in to your account</li>
+          <li>Click on your account icon in the top right</li>
+          <li>Click "Manage funds"</li>
+        </ol>
+      </div>
 
       <div style="margin: 32px 0; padding: 16px; background: #F8FAFC; border-radius: 8px;">
         <p style="margin: 0 0 8px 0; font-size: 14px; color: #64748b;">
@@ -142,9 +148,9 @@ serve(async (req) => {
     
     const plainTextContent = generatePlainTextEmail(
       subject,
-      `Hello ${manager_name},\n\nYou have been assigned to manage ${company_name} and all associated funds on Movingto Funds.\n\nThis gives you access to manage ${fundCount} fund${fundCount !== 1 ? 's' : ''} under this company.${fundsListText}\n\nYour permissions:\n${permissionsList.map(p => `- ${p}`).join('\n')}\n\n${notes ? `Notes: ${notes}\n\n` : ''}Best regards,\nThe Movingto Funds Team`,
-      'View My Funds',
-      myFundsUrl
+      `Hello ${manager_name},\n\nYou have been assigned to manage ${company_name} and all associated funds on Movingto Funds.\n\nThis gives you access to manage ${fundCount} fund${fundCount !== 1 ? 's' : ''} under this company.${fundsListText}\n\nYour permissions:\n${permissionsList.map(p => `- ${p}`).join('\n')}\n\n${notes ? `Notes: ${notes}\n\n` : ''}To access your funds:\n1. Sign in to your account\n2. Click on your account icon in the top right\n3. Click "Manage funds"\n\nBest regards,\nThe Movingto Funds Team`,
+      undefined,
+      undefined
     );
 
     // Send via Postmark
@@ -174,6 +180,14 @@ serve(async (req) => {
     const result = await postmarkResponse.json();
     console.log("Profile assignment email sent successfully:", result);
 
+    // Get the newly assigned user's ID to exclude from team notifications
+    const { data: assignedUserId, error: userIdError } = await supabase
+      .rpc('find_user_by_email', { user_email: manager_email });
+
+    if (userIdError) {
+      console.error('Error finding user by email:', userIdError);
+    }
+
     // Notify all other active team members about the new member
     const { data: otherTeamMembers, error: teamError } = await supabase
       .from('manager_profile_assignments')
@@ -183,7 +197,7 @@ serve(async (req) => {
       `)
       .eq('profile_id', profile_id)
       .eq('status', 'active')
-      .neq('user_id', (await supabase.rpc('find_user_by_email', { user_email: manager_email })));
+      .neq('user_id', assignedUserId);
 
     if (teamError) {
       console.error('Error fetching other team members:', teamError);
@@ -226,7 +240,14 @@ serve(async (req) => {
             </ul>
           </div>
 
-          ${generateCTAButton('View Team', myFundsUrl + '/team', 'bordeaux')}
+          <div style="margin: 32px 0; padding: 20px; background: #F8FAFC; border-radius: 8px; border: 1px solid #E5E7EB;">
+            <p style="margin: 0 0 12px 0; font-weight: 600; color: #4B0F23;">To view your team:</p>
+            <ol style="margin: 0; padding-left: 20px; color: #64748b; line-height: 1.8;">
+              <li>Sign in to your account</li>
+              <li>Click on your account icon in the top right</li>
+              <li>Click "Manage funds"</li>
+            </ol>
+          </div>
 
           <p style="margin: 24px 0 0 0; color: #64748b; font-size: 14px; line-height: 1.6;">
             This is an automated notification to keep you informed about team changes.
@@ -236,9 +257,9 @@ serve(async (req) => {
         const teamHtmlContent = generateEmailWrapper(teamNotificationSubject, teamBodyContent, memberEmail);
         const teamPlainTextContent = generatePlainTextEmail(
           teamNotificationSubject,
-          `Hello ${memberName},\n\n${manager_name} has been added to your team for ${company_name}.\n\nThey now have access to manage ${fundCount} fund${fundCount !== 1 ? 's' : ''} under this company.${fundsListHtml ? '\n\nAssociated Funds:\n' + associatedFunds.map(f => `- ${f.name}`).join('\n') : ''}\n\nTheir permissions:\n${permissionsList.map(p => `- ${p}`).join('\n')}\n\nBest regards,\nThe Movingto Funds Team`,
-          'View Team',
-          myFundsUrl + '/team'
+          `Hello ${memberName},\n\n${manager_name} has been added to your team for ${company_name}.\n\nThey now have access to manage ${fundCount} fund${fundCount !== 1 ? 's' : ''} under this company.${fundsListHtml ? '\n\nAssociated Funds:\n' + associatedFunds.map(f => `- ${f.name}`).join('\n') : ''}\n\nTheir permissions:\n${permissionsList.map(p => `- ${p}`).join('\n')}\n\nTo view your team:\n1. Sign in to your account\n2. Click on your account icon in the top right\n3. Click "Manage funds"\n\nBest regards,\nThe Movingto Funds Team`,
+          undefined,
+          undefined
         );
 
         try {
