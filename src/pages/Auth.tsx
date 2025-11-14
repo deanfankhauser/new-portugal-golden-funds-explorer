@@ -12,7 +12,7 @@ import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { useInvitationValidation, useInvitationAcceptance } from '@/hooks/useInvitationAcceptance';
+import { useInvitationValidation } from '@/hooks/useInvitationAcceptance';
 import { InvitationBanner } from '@/components/auth/InvitationBanner';
 
 const Auth = () => {
@@ -23,7 +23,6 @@ const Auth = () => {
   // Invitation handling
   const invitationToken = searchParams.get('invite');
   const { isValidating, invitation, error: invitationError } = useInvitationValidation(invitationToken);
-  const { acceptInvitation, isAccepting } = useInvitationAcceptance();
   const [activeTab, setActiveTab] = useState('login');
 
   // Login state
