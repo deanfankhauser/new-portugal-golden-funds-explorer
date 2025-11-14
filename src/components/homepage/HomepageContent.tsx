@@ -66,8 +66,8 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
         setShowOnlyVerified={setShowOnlyVerified}
       />
 
-      {/* Mobile filter - always visible */}
-      <div className="lg:hidden mb-6 space-y-4">
+      {/* Mobile filter - hidden on all screens (using floating action button instead) */}
+      <div className="hidden mb-6 space-y-4">
         <div className="bg-card rounded-lg shadow-sm border p-4">
           <CategoryFilter
             selectedCategory={selectedCategory}
