@@ -110,6 +110,11 @@ export function useInviteTeamMember() {
       });
 
       if (error) throw error;
+      if (data?.error) {
+        const err = new Error(data.error);
+        (err as any).code = data.code;
+        throw err;
+      }
       return data;
     },
     onSuccess: (data, variables) => {
@@ -129,9 +134,15 @@ export function useInviteTeamMember() {
     },
     onError: (error: any) => {
       console.error('Failed to invite team member:', error);
+      
+      let description = error.message || 'Please try again later.';
+      if (error.code === 'RATE_LIMIT_EXCEEDED') {
+        description = 'Email rate limit exceeded. Please wait a few minutes before sending more invitations.';
+      }
+      
       toast({
         title: 'Failed to invite team member',
-        description: error.message || 'Please try again later.',
+        description,
         variant: 'destructive',
       });
     },
