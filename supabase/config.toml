@@ -112,3 +112,9 @@ verify_jwt = false
 
 [functions.weekly-stale-lead-reminder]
 verify_jwt = false
+
+[functions.invite-team-member]
+verify_jwt = false
+
+[functions.remove-team-member]
+verify_jwt = false
