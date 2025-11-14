@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
@@ -7,6 +7,14 @@ import { Building2, Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 import FundManagerSidebar from '@/components/fund-manager/FundManagerSidebar';
 import { Profile } from '@/types/profile';
 import ProfileEditTab from '@/components/manager-profile/ProfileEditTab';
@@ -162,34 +170,37 @@ const ManageProfile: React.FC = () => {
         <FundManagerSidebar />
         <div className="flex-1 flex flex-col">
           <header className="h-14 flex items-center border-b px-4 lg:px-6">
-            <div className="flex items-center gap-4">
-              <SidebarTrigger />
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate('/my-funds')}
-                className="gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to My Companies
-              </Button>
+            <div className="flex items-center gap-3">
+              <SidebarTrigger className="-ml-1" />
+              <h1 className="text-xl font-semibold">{profile.company_name}</h1>
             </div>
           </header>
           
+          {/* Breadcrumb Navigation */}
+          <div className="border-b bg-muted/30 px-4 lg:px-6 py-2">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/my-funds">My Companies</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/my-funds">{profile.company_name}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Edit Profile</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+          
           <main className="flex-1 p-4 lg:p-6 overflow-auto">
             <div className="max-w-5xl mx-auto">
-              <div className="mb-6">
-                <div className="flex items-center gap-4 mb-2">
-                  <Building2 className="h-8 w-8 text-primary" />
-                  <h1 className="text-2xl font-bold">
-                    Manage Profile: {profile.company_name}
-                  </h1>
-                </div>
-                <p className="text-muted-foreground">
-                  Update your company profile information and manage your team
-                </p>
-              </div>
-
               {permissions.can_edit_profile ? (
                 <ProfileEditTab
                   profile={profile}
