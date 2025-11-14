@@ -180,6 +180,23 @@ serve(async (req) => {
     const result = await postmarkResponse.json();
     console.log("Profile assignment email sent successfully:", result);
 
+    // Log email to tracking table
+    try {
+      await supabase.from('fund_manager_email_logs').insert({
+        postmark_message_id: result.MessageId,
+        email_type: 'profile_assignment',
+        fund_id: null,
+        manager_email: manager_email,
+        manager_name: manager_name,
+        subject: subject,
+        is_verified_fund: false,
+        sent_at: new Date().toISOString(),
+        test_mode: false,
+      });
+    } catch (logError) {
+      console.error("Failed to log email:", logError);
+    }
+
     // Get the newly assigned user's ID to exclude from team notifications
     const { data: assignedUserId, error: userIdError } = await supabase
       .rpc('find_user_by_email', { user_email: manager_email });
@@ -263,7 +280,7 @@ serve(async (req) => {
         );
 
         try {
-          await fetch("https://api.postmarkapp.com/email", {
+          const teamResponse = await fetch("https://api.postmarkapp.com/email", {
             method: "POST",
             headers: {
               "Accept": "application/json",
@@ -279,7 +296,26 @@ serve(async (req) => {
               MessageStream: "outbound",
             }),
           });
+          
+          const teamResult = await teamResponse.json();
           console.log(`Team notification sent to: ${memberEmail}`);
+          
+          // Log team notification email
+          try {
+            await supabase.from('fund_manager_email_logs').insert({
+              postmark_message_id: teamResult.MessageId,
+              email_type: 'team_notification',
+              fund_id: null,
+              manager_email: memberEmail,
+              manager_name: memberName,
+              subject: teamNotificationSubject,
+              is_verified_fund: false,
+              sent_at: new Date().toISOString(),
+              test_mode: false,
+            });
+          } catch (logError) {
+            console.error(`Failed to log team notification for ${memberEmail}:`, logError);
+          }
         } catch (emailError) {
           console.error(`Failed to send team notification to ${memberEmail}:`, emailError);
           // Continue with other emails even if one fails

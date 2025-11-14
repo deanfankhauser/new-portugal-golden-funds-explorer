@@ -227,6 +227,28 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Status check emails sent: ${successful} successful, ${failed} failed`);
 
+    // Log successful emails to tracking table
+    for (let i = 0; i < results.length; i++) {
+      if (results[i].status === 'fulfilled') {
+        try {
+          const result = (results[i] as any).value;
+          await supabase.from('fund_manager_email_logs').insert({
+            postmark_message_id: result.MessageId,
+            email_type: 'lead_status_check',
+            fund_id: fundId,
+            manager_email: uniqueEmails[i],
+            manager_name: companyProfile?.company_name || 'Unknown',
+            subject: `Please Verify Lead Status: ${leadName} - ${fundName}`,
+            is_verified_fund: false,
+            sent_at: new Date().toISOString(),
+            test_mode: false,
+          });
+        } catch (logError) {
+          console.error(`Failed to log email for ${uniqueEmails[i]}:`, logError);
+        }
+      }
+    }
+
     if (failed > 0) {
       console.error('Some emails failed:', results.filter(r => r.status === 'rejected'));
     }
