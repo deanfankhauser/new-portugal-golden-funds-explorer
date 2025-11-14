@@ -32,14 +32,18 @@ export default function FundAnalyticsDashboard() {
   const [sortField, setSortField] = useState<SortField>("recent_impressions");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
-  const { data: analytics, isLoading, refetch } = useQuery({
+  const { data: analytics, isLoading, error, refetch } = useQuery({
     queryKey: ["fund-analytics"],
     queryFn: async () => {
       const { data, error } = await supabase.rpc("get_fund_manager_sign_ins");
-      if (error) throw error;
+      if (error) {
+        console.error('RPC Error:', error);
+        throw error;
+      }
       return data as FundAnalytics[];
     },
     refetchInterval: 60000, // Auto-refresh every 60 seconds
+    retry: 1, // Don't retry auth errors multiple times
   });
 
   const handleSort = (field: SortField) => {
@@ -76,6 +80,40 @@ export default function FundAnalyticsDashboard() {
     totalLeads30Days: analytics.reduce((sum, a) => sum + (a.recent_leads || 0), 0),
     totalImpressions30Days: analytics.reduce((sum, a) => sum + (a.recent_impressions || 0), 0),
   } : null;
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-destructive">Unable to Load Analytics</CardTitle>
+            <CardDescription>
+              There was an error loading fund analytics data
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                {error instanceof Error ? error.message : 'Unknown error occurred'}
+              </p>
+              <div className="text-sm text-muted-foreground space-y-2">
+                <p>Common causes:</p>
+                <ul className="list-disc list-inside space-y-1 ml-2">
+                  <li>You may not be logged in as an admin user</li>
+                  <li>Your session may have expired</li>
+                  <li>You may not have the required permissions</li>
+                </ul>
+              </div>
+              <Button onClick={() => refetch()} variant="outline">
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Try Again
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
