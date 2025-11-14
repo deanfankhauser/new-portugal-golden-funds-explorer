@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { ServerClient } from "npm:postmark@4.0.0";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
 import { 
   BRAND_COLORS, 
   COMPANY_INFO, 
@@ -177,6 +178,28 @@ If you have any questions or need assistance, please don't hesitate to reach out
     });
 
     console.log("Fund assignment notification sent successfully:", emailResponse);
+
+    // Log email to tracking table
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+      const supabase = createClient(supabaseUrl, supabaseServiceKey);
+      
+      await supabase.from('fund_manager_email_logs').insert({
+        postmark_message_id: emailResponse.MessageID,
+        email_type: 'fund_assignment',
+        fund_id: fund_id,
+        manager_email: manager_email,
+        manager_name: manager_name,
+        subject: `You've Been Assigned to Manage ${fund_name}`,
+        is_verified_fund: false,
+        sent_at: new Date().toISOString(),
+        test_mode: false,
+      });
+    } catch (logError) {
+      console.error("Failed to log email:", logError);
+      // Don't fail the response if logging fails
+    }
 
     return new Response(
       JSON.stringify({
