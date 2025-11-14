@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import PageSEO from '@/components/common/PageSEO';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import FundManagerSidebar from '@/components/fund-manager/FundManagerSidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Building2, Edit3, TrendingUp, Eye, Users } from 'lucide-react';
@@ -110,22 +110,29 @@ const MyFunds = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <PageSEO pageType="about" />
-      <Header />
-      
-      <main className="flex-1 py-8 md:py-12">
-        <div className="container mx-auto px-4 max-w-7xl">
-          {/* Header Section */}
-          <div className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">My Companies & Funds</h1>
-            <p className="text-muted-foreground">
-              Manage company profiles and all associated investment funds
-            </p>
-          </div>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <FundManagerSidebar />
+        <div className="flex-1 flex flex-col">
+          <header className="h-14 flex items-center border-b px-4 lg:px-6">
+            <SidebarTrigger />
+            <h1 className="text-lg font-semibold ml-4">My Companies</h1>
+          </header>
+          
+          <PageSEO
+            pageType="about"
+          />
+          
+          <main className="flex-1 p-4 lg:p-6 overflow-auto">
+            <div className="max-w-7xl mx-auto">
+              <div className="mb-6">
+                <p className="text-muted-foreground">
+                  Manage your assigned companies and their investment funds
+                </p>
+              </div>
 
-          {/* Companies and Their Funds */}
-          {companiesWithFunds.length === 0 ? (
+              {/* Companies and Their Funds */}
+              {companiesWithFunds.length === 0 ? (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Building2 className="h-12 w-12 text-muted-foreground mb-4" />
@@ -222,11 +229,11 @@ const MyFunds = () => {
               ))}
             </div>
           )}
+            </div>
+          </main>
         </div>
-      </main>
-      
-      <Footer />
-    </div>
+      </div>
+    </SidebarProvider>
   );
 };
 
