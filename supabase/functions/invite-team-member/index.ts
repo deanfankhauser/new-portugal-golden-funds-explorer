@@ -107,8 +107,23 @@ Deno.serve(async (req) => {
 
       if (inviteError) {
         console.error('[invite-team-member] Failed to invite user', inviteError);
+        
+        // Handle rate limiting specifically
+        if (inviteError.status === 429) {
+          return new Response(
+            JSON.stringify({ 
+              error: 'Email rate limit exceeded. Please wait a few minutes before sending more invitations.',
+              code: 'RATE_LIMIT_EXCEEDED'
+            }),
+            { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        
         return new Response(
-          JSON.stringify({ error: 'Failed to send invitation email' }),
+          JSON.stringify({ 
+            error: 'Failed to send invitation email',
+            details: inviteError.message 
+          }),
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
