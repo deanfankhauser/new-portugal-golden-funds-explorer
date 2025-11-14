@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation, Navigate, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate, useParams, useSearchParams } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from "@/components/ui/toaster";
 import { ComparisonProvider } from './contexts/ComparisonContext';
@@ -95,6 +95,14 @@ const InviteRedirect = () => {
   const { token } = useParams<{ token: string }>();
   console.log('🎫 Redirecting invite token:', token);
   return <Navigate to={`/auth?invite=${token}`} replace />;
+};
+
+// Component to handle legacy invitation URLs with query params
+const LegacyInviteRedirect = () => {
+  const [searchParams] = useSearchParams();
+  const invite = searchParams.get('invite') || searchParams.get('token');
+  console.log('🎫 LegacyRedirect saw invite/token:', invite);
+  return <Navigate to={invite ? `/auth?invite=${invite}` : '/auth'} replace />;
 };
 
 
@@ -244,8 +252,14 @@ function App() {
                           </Suspense>
                         } />
                         
-                        {/* Invitation redirect route */}
+                        {/* Invitation redirect routes - handle all possible URL patterns */}
                         <Route path="/invite/:token" element={<InviteRedirect />} />
+                        <Route path="/invite/:token/*" element={<InviteRedirect />} />
+                        <Route path="/invite" element={<LegacyInviteRedirect />} />
+                        <Route path="/auth/accept" element={<LegacyInviteRedirect />} />
+                        <Route path="/accept-invitation" element={<LegacyInviteRedirect />} />
+                        <Route path="/team-invite" element={<LegacyInviteRedirect />} />
+                        <Route path="/api/accept-team-invitation" element={<LegacyInviteRedirect />} />
                         
                         {/* Legacy auth routes - redirect to unified auth */}
                         <Route path="/manager-auth" element={
