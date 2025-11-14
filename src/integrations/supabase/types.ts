@@ -1263,6 +1263,10 @@ export type Database = {
         Args: { _profile_id: string; _user_id: string }
         Returns: boolean
       }
+      can_view_profile_assignments: {
+        Args: { _profile: string; _user: string }
+        Returns: boolean
+      }
       check_sensitive_data_exposure: {
         Args: never
         Returns: {
