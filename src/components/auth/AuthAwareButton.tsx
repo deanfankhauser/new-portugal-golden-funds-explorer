@@ -94,6 +94,12 @@ const AuthAwareButton: React.FC = () => {
           hasAccess = (fundCount || 0) > 0;
         }
 
+        // Grant access to all admins
+        if (!hasAccess && isAdmin) {
+          hasAccess = true;
+          console.log('🔐 Admin user detected - granting access to all funds');
+        }
+
         setHasAssignedFunds(hasAccess);
       } catch (error) {
         console.error('Error checking manager access:', error);
@@ -102,7 +108,7 @@ const AuthAwareButton: React.FC = () => {
     };
 
   checkManagerAccess();
-  }, [user?.id]);
+  }, [user?.id, isAdmin]);
 
   const handleSignOut = async () => {
     try {
