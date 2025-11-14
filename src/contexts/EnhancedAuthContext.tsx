@@ -60,21 +60,25 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     
     const initializeAuth = async () => {
       try {
-        const authListener = supabase.auth.onAuthStateChange((event, session) => {
-          console.log('🔐 Auth state change:', event, session?.user?.email || 'no user');
-          setSession(session);
-          setUser(session?.user ?? null);
-          
-          if (session?.user) {
-            setTimeout(() => {
-              fetchProfile(session.user!.id).catch(console.error);
-            }, 100);
-          } else {
-            setProfile(null);
+    const authListener = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('🔐 Auth state change:', event, session?.user?.email || 'no user');
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        setTimeout(() => {
+          fetchProfile(session.user!.id).catch(console.error);
+          // Check for pending invitations after auth
+          if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+            checkPendingInvitations(session.user.email!).catch(console.error);
           }
-          
-          setLoading(false);
-        });
+        }, 100);
+      } else {
+        setProfile(null);
+      }
+      
+      setLoading(false);
+    });
 
         subscription = authListener.data.subscription;
 
@@ -108,6 +112,45 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       if (timeoutId) clearTimeout(timeoutId);
     };
   }, [isHydrated]);
+
+  const checkPendingInvitations = async (email: string) => {
+    try {
+      console.log('🎫 Checking pending invitations for:', email);
+      
+      const { data, error } = await supabase.functions.invoke('check-pending-invitations', {
+        body: { email },
+      });
+
+      if (error) {
+        console.error('🎫 Error checking invitations:', error);
+        return;
+      }
+
+      if (data?.acceptedInvitations && data.acceptedInvitations.length > 0) {
+        console.log('🎫 Auto-accepted invitations:', data.acceptedInvitations);
+        
+        // Show success toast for each accepted invitation
+        const companies = data.acceptedInvitations.map((inv: any) => inv.companyName);
+        
+        if (typeof window !== 'undefined') {
+          const { toast } = await import('@/hooks/use-toast');
+          toast({
+            title: companies.length === 1 ? 'Team Access Granted!' : 'Multiple Team Invitations Accepted!',
+            description: companies.length === 1 
+              ? `You now have access to ${companies[0]}.`
+              : `You now have access to: ${companies.join(', ')}`,
+          });
+        }
+
+        // Refresh profile to get updated permissions
+        if (user?.id) {
+          await fetchProfile(user.id);
+        }
+      }
+    } catch (error) {
+      console.error('🎫 Error in checkPendingInvitations:', error);
+    }
+  };
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -154,6 +197,13 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       },
     });
 
+    // Check for pending invitations after signup
+    if (!error && email) {
+      setTimeout(() => {
+        checkPendingInvitations(email).catch(console.error);
+      }, 1000);
+    }
+
     return { error };
   };
 
@@ -162,6 +212,13 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       email,
       password,
     });
+    
+    // Check for pending invitations after signin
+    if (!error && email) {
+      setTimeout(() => {
+        checkPendingInvitations(email).catch(console.error);
+      }, 500);
+    }
     
     return { error };
   };

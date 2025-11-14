@@ -161,7 +161,7 @@ Deno.serve(async (req) => {
           // Send invitation email
           const newUserEmailContent = `
             <p style="font-size: 16px; line-height: 24px; color: #374151; margin-bottom: 24px;">
-              ${inviterName} has invited you to join the <strong>${companyName}</strong> team on <strong>Movingto Funds</strong>.
+              Great news! ${inviterName} has added you to the <strong>${companyName}</strong> team on <strong>Movingto Funds</strong>.
             </p>
             ${personalMessage ? generateContentCard(`
               <p style="font-size: 14px; line-height: 20px; color: #6B7280; margin: 0;">
@@ -182,9 +182,17 @@ Deno.serve(async (req) => {
               <li>Receive and manage investor leads</li>
               <li>Collaborate with your team members</li>
             </ul>
-            ${generateCTAButton('Accept Invitation & Create Account', invitationUrl, 'bordeaux')}
-            <p style="font-size: 14px; line-height: 20px; color: #9CA3AF; margin-top: 32px; text-align: center;">
-              This invitation will expire in 7 days. If you didn't expect this invitation, you can safely ignore this email.
+            ${generateContentCard(`
+              <p style="font-size: 16px; line-height: 22px; color: #374151; margin: 0; text-align: center;">
+                <strong>To get started:</strong><br/>
+                Sign in or create an account at <a href="https://funds.movingto.com/auth" style="color: #9333EA;">funds.movingto.com</a> using <strong>${inviteeEmail}</strong>
+              </p>
+            `)}
+            <p style="font-size: 14px; line-height: 20px; color: #9CA3AF; margin-top: 24px; text-align: center;">
+              Your email has been pre-authorized for the ${companyName} team. Once you sign in, you'll automatically have full access.
+            </p>
+            <p style="font-size: 14px; line-height: 20px; color: #9CA3AF; margin-top: 16px; text-align: center;">
+              If you didn't expect this invitation, you can safely ignore this email.
             </p>
           `;
 
@@ -198,9 +206,9 @@ Deno.serve(async (req) => {
             await postmark.sendEmail({
               From: COMPANY_INFO.email,
               To: inviteeEmail,
-              Subject: `You've been invited to join ${companyName} on Movingto Funds`,
+              Subject: `You've been added to ${companyName} team on Movingto Funds`,
               HtmlBody: newUserHtml,
-              TextBody: `You've been invited to join ${companyName} on Movingto Funds\n\n${inviterName} has invited you to join the team.\n\nClick here to accept: ${invitationUrl}\n\nThis invitation expires in 7 days.`,
+              TextBody: `You've been added to ${companyName} team on Movingto Funds\n\n${inviterName} has added you to the team.\n\nTo get started, sign in or create an account at funds.movingto.com/auth using ${inviteeEmail}.\n\nYour email has been pre-authorized and you'll automatically have full access once you sign in.`,
               MessageStream: 'outbound',
             });
 
