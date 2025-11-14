@@ -174,6 +174,98 @@ serve(async (req) => {
     const result = await postmarkResponse.json();
     console.log("Profile assignment email sent successfully:", result);
 
+    // Notify all other active team members about the new member
+    const { data: otherTeamMembers, error: teamError } = await supabase
+      .from('manager_profile_assignments')
+      .select(`
+        user_id,
+        profiles!inner(email, manager_name, first_name, last_name)
+      `)
+      .eq('profile_id', profile_id)
+      .eq('status', 'active')
+      .neq('user_id', (await supabase.rpc('find_user_by_email', { user_email: manager_email })));
+
+    if (teamError) {
+      console.error('Error fetching other team members:', teamError);
+    }
+
+    if (otherTeamMembers && otherTeamMembers.length > 0) {
+      console.log(`Notifying ${otherTeamMembers.length} existing team members about new member`);
+
+      const teamNotificationSubject = `👥 New Team Member Joined: ${manager_name} added to ${company_name}`;
+
+      // Send emails to all other team members
+      for (const member of otherTeamMembers) {
+        const memberEmail = member.profiles?.email;
+        const memberName = member.profiles?.manager_name || 
+                          `${member.profiles?.first_name || ''} ${member.profiles?.last_name || ''}`.trim() ||
+                          memberEmail?.split('@')[0];
+
+        if (!memberEmail) continue;
+
+        const teamBodyContent = `
+          ${generateContentCard(`
+            <h2 style="color: #4B0F23; margin: 0 0 16px 0; font-size: 24px;">New Team Member Joined</h2>
+            <p style="margin: 0 0 16px 0; line-height: 1.6;">
+              Hello ${memberName},
+            </p>
+            <p style="margin: 0 0 16px 0; line-height: 1.6;">
+              <strong>${manager_name}</strong> has been added to your team for <strong>${company_name}</strong>.
+            </p>
+            <p style="margin: 0 0 0 0; line-height: 1.6;">
+              They now have access to manage <strong>${fundCount} fund${fundCount !== 1 ? 's' : ''}</strong> under this company.
+            </p>
+          `, 'bordeaux')}
+
+          ${fundsListHtml}
+
+          <div style="margin: 32px 0;">
+            <h3 style="color: #4B0F23; margin: 0 0 16px 0; font-size: 18px;">Their Permissions</h3>
+            <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+              ${permissionsList.map(p => `<li>${p}</li>`).join('')}
+            </ul>
+          </div>
+
+          ${generateCTAButton('View Team', myFundsUrl + '/team', 'bordeaux')}
+
+          <p style="margin: 24px 0 0 0; color: #64748b; font-size: 14px; line-height: 1.6;">
+            This is an automated notification to keep you informed about team changes.
+          </p>
+        `;
+
+        const teamHtmlContent = generateEmailWrapper(teamNotificationSubject, teamBodyContent, memberEmail);
+        const teamPlainTextContent = generatePlainTextEmail(
+          teamNotificationSubject,
+          `Hello ${memberName},\n\n${manager_name} has been added to your team for ${company_name}.\n\nThey now have access to manage ${fundCount} fund${fundCount !== 1 ? 's' : ''} under this company.${fundsListHtml ? '\n\nAssociated Funds:\n' + associatedFunds.map(f => `- ${f.name}`).join('\n') : ''}\n\nTheir permissions:\n${permissionsList.map(p => `- ${p}`).join('\n')}\n\nBest regards,\nThe Movingto Funds Team`,
+          'View Team',
+          myFundsUrl + '/team'
+        );
+
+        try {
+          await fetch("https://api.postmarkapp.com/email", {
+            method: "POST",
+            headers: {
+              "Accept": "application/json",
+              "Content-Type": "application/json",
+              "X-Postmark-Server-Token": postmarkToken,
+            },
+            body: JSON.stringify({
+              From: `Movingto Funds <${notificationEmail}>`,
+              To: memberEmail,
+              Subject: teamNotificationSubject,
+              HtmlBody: teamHtmlContent,
+              TextBody: teamPlainTextContent,
+              MessageStream: "outbound",
+            }),
+          });
+          console.log(`Team notification sent to: ${memberEmail}`);
+        } catch (emailError) {
+          console.error(`Failed to send team notification to ${memberEmail}:`, emailError);
+          // Continue with other emails even if one fails
+        }
+      }
+    }
+
     return new Response(
       JSON.stringify({ success: true, messageId: result.MessageId }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
