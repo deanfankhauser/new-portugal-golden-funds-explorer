@@ -35,16 +35,22 @@ export default function FundAnalyticsDashboard() {
   const { data: analytics, isLoading, error, refetch } = useQuery({
     queryKey: ["fund-analytics"],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_fund_manager_sign_ins");
-      if (error) {
-        console.error('RPC Error:', error);
-        throw error;
+      const { data, error: rpcError } = await supabase.rpc("get_fund_manager_sign_ins");
+      if (rpcError) {
+        const msg = rpcError.message || rpcError.details || rpcError.hint || "RPC failed";
+        console.error('RPC Error (fund-analytics):', rpcError);
+        throw new Error(msg);
       }
       return data as FundAnalytics[];
     },
     refetchInterval: 60000, // Auto-refresh every 60 seconds
     retry: 1, // Don't retry auth errors multiple times
   });
+
+  const getErrorMessage = (e: unknown): string => {
+    const anyE = e as any;
+    return anyE?.message || anyE?.details || anyE?.error_description || anyE?.hint || 'Unknown error occurred';
+  };
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -82,28 +88,43 @@ export default function FundAnalyticsDashboard() {
   } : null;
 
   if (error) {
+    const errorMsg = getErrorMessage(error);
+    const isAccessDenied = errorMsg.toLowerCase().includes('access denied');
+    
     return (
       <div className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle className="text-destructive">Unable to Load Analytics</CardTitle>
             <CardDescription>
-              There was an error loading fund analytics data
+              {isAccessDenied 
+                ? "You don't have permission to view this data" 
+                : "There was an error loading fund analytics data"}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                {error instanceof Error ? error.message : 'Unknown error occurred'}
+              <p className="text-sm text-muted-foreground font-mono bg-muted p-3 rounded">
+                {errorMsg}
               </p>
-              <div className="text-sm text-muted-foreground space-y-2">
-                <p>Common causes:</p>
-                <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>You may not be logged in as an admin user</li>
-                  <li>Your session may have expired</li>
-                  <li>You may not have the required permissions</li>
-                </ul>
-              </div>
+              {isAccessDenied ? (
+                <div className="text-sm text-muted-foreground space-y-2">
+                  <p className="font-medium">This usually means:</p>
+                  <ul className="list-disc list-inside space-y-1 ml-2">
+                    <li>You're not signed in as an admin user on this environment</li>
+                    <li>Please sign in with an admin account or contact support</li>
+                  </ul>
+                </div>
+              ) : (
+                <div className="text-sm text-muted-foreground space-y-2">
+                  <p>Common causes:</p>
+                  <ul className="list-disc list-inside space-y-1 ml-2">
+                    <li>Your session may have expired</li>
+                    <li>You may not have the required permissions</li>
+                    <li>There may be a database configuration issue</li>
+                  </ul>
+                </div>
+              )}
               <Button onClick={() => refetch()} variant="outline">
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Try Again
