@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Routes, Route, Navigate } from 'react-router-dom';
+import { useParams, useNavigate, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, AlertCircle, ExternalLink } from 'lucide-react';
@@ -7,6 +7,14 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 import FundManagerSidebar from '@/components/fund-manager/FundManagerSidebar';
 import { Link } from 'react-router-dom';
 import UpdateFundTab from '@/components/fund-manager/UpdateFundTab';
@@ -18,6 +26,7 @@ import { useFund } from '@/hooks/useFundsQuery';
 
 const ManageFund: React.FC = () => {
   const { fundId, '*': subRoute } = useParams<{ fundId: string; '*': string }>();
+  const location = useLocation();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useEnhancedAuth();
   const [hasAccess, setHasAccess] = useState(false);
@@ -65,6 +74,18 @@ const ManageFund: React.FC = () => {
 
     checkAccess();
   }, [user, fund, fundId]);
+
+  // Get current section from location
+  const getCurrentSection = () => {
+    const path = location.pathname;
+    if (path.includes('/update')) return { label: 'Update Fund', path: 'update' };
+    if (path.includes('/analytics')) return { label: 'Analytics', path: 'analytics' };
+    if (path.includes('/leads')) return { label: 'Leads', path: 'leads' };
+    if (path.includes('/advertising')) return { label: 'Advertising', path: 'advertising' };
+    return { label: 'Update Fund', path: 'update' };
+  };
+
+  const currentSection = getCurrentSection();
 
   if (authLoading || loading) {
     return (
@@ -163,6 +184,29 @@ const ManageFund: React.FC = () => {
               </Link>
             </Button>
           </header>
+          
+          {/* Breadcrumb Navigation */}
+          <div className="border-b bg-muted/30 px-4 lg:px-6 py-2">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/my-funds">My Companies</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/my-funds">{fund.name}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{currentSection.label}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
           
           <main className="flex-1 p-4 lg:p-6 overflow-auto">
             <div className="max-w-6xl mx-auto">
