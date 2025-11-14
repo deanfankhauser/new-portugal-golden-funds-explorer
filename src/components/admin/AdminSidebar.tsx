@@ -66,19 +66,11 @@ export function AdminSidebar() {
           to="/" 
           className="flex items-center px-4 py-4 hover:opacity-80 transition-opacity"
         >
-          {isCollapsed ? (
-            <img 
-              src="/lovable-uploads/ab17d046-1cb9-44fd-aa6d-c4d338e11090.png" 
-              alt="Movingto" 
-              className="h-8 w-8 object-contain"
-            />
-          ) : (
-            <img 
-              src="/lovable-uploads/ab17d046-1cb9-44fd-aa6d-c4d338e11090.png" 
-              alt="Movingto" 
-              className="h-8 object-contain"
-            />
-          )}
+          <img 
+            src="/lovable-uploads/9bdf45a5-6a2f-466e-8c2d-b8ba65863e8a.png" 
+            alt="Movingto" 
+            className={isCollapsed ? "h-8 w-8 object-contain" : "h-8 object-contain"}
+          />
         </Link>
       </SidebarHeader>
       
