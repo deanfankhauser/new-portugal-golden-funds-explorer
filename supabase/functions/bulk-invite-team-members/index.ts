@@ -1,10 +1,9 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
+import { corsHeaders } from '../_shared/cors.ts';
+import { Resend } from 'npm:resend@2.0.0';
+import { generateEmailWrapper, generateContentCard, generateCTAButton, COMPANY_INFO } from '../_shared/email-templates.ts';
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const resend = new Resend(Deno.env.get('POSTMARK_SERVER_TOKEN'));
 
 interface BulkInviteRequest {
   companyName: string;
@@ -20,12 +19,16 @@ interface InviteResult {
   userExists?: boolean;
 }
 
-serve(async (req) => {
-  if (req.method === "OPTIONS") {
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
     const { companyName, emails, inviterUserId, personalMessage }: BulkInviteRequest = await req.json();
 
     console.log(`[bulk-invite] Processing ${emails.length} invitations for company: ${companyName}`);
@@ -57,10 +60,6 @@ serve(async (req) => {
       );
     }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
     // Verify inviter has permission
     const { data: canManage } = await supabase.rpc('can_user_manage_company_funds', {
       check_user_id: inviterUserId,
@@ -77,9 +76,9 @@ serve(async (req) => {
     // Get company profile
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .select('id, company_name')
+      .select('id, company_name, manager_name')
       .eq('company_name', companyName)
-      .maybeSingle();
+      .single();
 
     if (profileError || !profile) {
       console.error('[bulk-invite] Profile lookup error:', profileError);
@@ -88,6 +87,18 @@ serve(async (req) => {
         { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    // Get inviter details
+    const { data: inviterProfile } = await supabase
+      .from('profiles')
+      .select('manager_name, first_name, last_name, email')
+      .eq('user_id', inviterUserId)
+      .single();
+
+    const inviterName = inviterProfile?.manager_name || 
+                       `${inviterProfile?.first_name || ''} ${inviterProfile?.last_name || ''}`.trim() ||
+                       inviterProfile?.email?.split('@')[0] || 
+                       'A team member';
 
     // Process each email
     const results: InviteResult[] = [];
