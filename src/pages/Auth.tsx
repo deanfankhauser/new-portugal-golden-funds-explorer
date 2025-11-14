@@ -173,21 +173,9 @@ const Auth = () => {
     }
   };
   
-  // Handle invitation acceptance when user becomes authenticated
-  useEffect(() => {
-    const handleInvitationAcceptance = async () => {
-      if (user && invitationToken && invitation && !isAccepting) {
-        const result = await acceptInvitation(invitationToken, user.id);
-        if (result.success) {
-          toast.success('Team invitation accepted!');
-          // Remove invite param from URL
-          navigate('/', { replace: true });
-        }
-      }
-    };
-    
-    handleInvitationAcceptance();
-  }, [user, invitationToken, invitation, isAccepting, acceptInvitation, navigate]);
+  // Note: Invitation acceptance is now handled automatically by the database trigger
+  // when the user signs up with an invitation_token in their metadata.
+  // The trigger creates the profile AND assigns the user to the company automatically.
 
   if (showSuccessMessage) {
     return (
