@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, Link } from "react-router-dom";
 import { 
   LayoutDashboard, 
   FileEdit, 
@@ -16,13 +16,15 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface NavItem {
   title: string;
@@ -47,6 +49,7 @@ const navItems: NavItem[] = [
 export function AdminSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
+  const isMobile = useIsMobile();
   const isCollapsed = state === "collapsed";
 
   const isActive = (path: string) => {
@@ -56,13 +59,31 @@ export function AdminSidebar() {
     return location.pathname.startsWith(path);
   };
 
-  return (
-    <Sidebar collapsible="icon" className="border-r border-border">
+  const sidebarContent = (
+    <>
+      <SidebarHeader className="border-b border-border">
+        <Link 
+          to="/" 
+          className="flex items-center px-4 py-4 hover:opacity-80 transition-opacity"
+        >
+          {isCollapsed ? (
+            <img 
+              src="/lovable-uploads/ab17d046-1cb9-44fd-aa6d-c4d338e11090.png" 
+              alt="Movingto" 
+              className="h-8 w-8 object-contain"
+            />
+          ) : (
+            <img 
+              src="/lovable-uploads/ab17d046-1cb9-44fd-aa6d-c4d338e11090.png" 
+              alt="Movingto" 
+              className="h-8 object-contain"
+            />
+          )}
+        </Link>
+      </SidebarHeader>
+      
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className={isCollapsed ? "justify-center" : ""}>
-            {!isCollapsed && "Admin Panel"}
-          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => (
@@ -100,6 +121,20 @@ export function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+    </>
+  );
+
+  if (isMobile) {
+    return (
+      <Sidebar collapsible="offcanvas" className="border-r border-border">
+        {sidebarContent}
+      </Sidebar>
+    );
+  }
+
+  return (
+    <Sidebar collapsible="icon" className="border-r border-border">
+      {sidebarContent}
     </Sidebar>
   );
 }
