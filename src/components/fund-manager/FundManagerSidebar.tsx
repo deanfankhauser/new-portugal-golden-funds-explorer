@@ -1,4 +1,4 @@
-import { Building2, BarChart3, User, LogOut, Home, Edit3, Users, Megaphone, ArrowLeft } from "lucide-react";
+import { Building2, BarChart3, User, LogOut, Home, Edit3, Users, Megaphone, ArrowLeft, UserPlus } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -60,6 +60,11 @@ const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
       title: "Advertising",
       url: `/manage-fund/${fundId}/advertising`,
       icon: Megaphone,
+    },
+    {
+      title: "Team Access",
+      url: `/manage-fund/${fundId}/team`,
+      icon: UserPlus,
     },
   ] : [];
 
