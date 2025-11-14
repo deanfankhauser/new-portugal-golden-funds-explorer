@@ -70,7 +70,6 @@ serve(async (req) => {
     console.log(`Found ${associatedFunds?.length || 0} funds for company: ${company_name}`);
 
     const fundCount = associatedFunds?.length || 0;
-    const myFundsUrl = `${supabaseUrl.replace('.supabase.co', '.lovableproject.com')}/my-funds`;
     
     const subject = `🎯 You've Been Assigned to Manage ${company_name} and ${fundCount} Fund${fundCount !== 1 ? 's' : ''}`;
 
@@ -142,9 +141,9 @@ serve(async (req) => {
     
     const plainTextContent = generatePlainTextEmail(
       subject,
-      `Hello ${manager_name},\n\nYou have been assigned to manage ${company_name} and all associated funds on Movingto Funds.\n\nThis gives you access to manage ${fundCount} fund${fundCount !== 1 ? 's' : ''} under this company.${fundsListText}\n\nYour permissions:\n${permissionsList.map(p => `- ${p}`).join('\n')}\n\n${notes ? `Notes: ${notes}\n\n` : ''}Best regards,\nThe Movingto Funds Team`,
-      'View My Funds',
-      myFundsUrl
+      `Hello ${manager_name},\n\nYou have been assigned to manage ${company_name} and all associated funds on Movingto Funds.\n\nThis gives you access to manage ${fundCount} fund${fundCount !== 1 ? 's' : ''} under this company.${fundsListText}\n\nYour permissions:\n${permissionsList.map(p => `- ${p}`).join('\n')}\n\n${notes ? `Notes: ${notes}\n\n` : ''}To access your funds:\n1. Sign in to your account\n2. Click on your account icon in the top right\n3. Click "Manage funds"\n\nBest regards,\nThe Movingto Funds Team`,
+      undefined,
+      undefined
     );
 
     // Send via Postmark
@@ -244,9 +243,9 @@ serve(async (req) => {
         const teamHtmlContent = generateEmailWrapper(teamNotificationSubject, teamBodyContent, memberEmail);
         const teamPlainTextContent = generatePlainTextEmail(
           teamNotificationSubject,
-          `Hello ${memberName},\n\n${manager_name} has been added to your team for ${company_name}.\n\nThey now have access to manage ${fundCount} fund${fundCount !== 1 ? 's' : ''} under this company.${fundsListHtml ? '\n\nAssociated Funds:\n' + associatedFunds.map(f => `- ${f.name}`).join('\n') : ''}\n\nTheir permissions:\n${permissionsList.map(p => `- ${p}`).join('\n')}\n\nBest regards,\nThe Movingto Funds Team`,
-          'View Team',
-          myFundsUrl + '/team'
+          `Hello ${memberName},\n\n${manager_name} has been added to your team for ${company_name}.\n\nThey now have access to manage ${fundCount} fund${fundCount !== 1 ? 's' : ''} under this company.${fundsListHtml ? '\n\nAssociated Funds:\n' + associatedFunds.map(f => `- ${f.name}`).join('\n') : ''}\n\nTheir permissions:\n${permissionsList.map(p => `- ${p}`).join('\n')}\n\nTo view your team:\n1. Sign in to your account\n2. Click on your account icon in the top right\n3. Click "Manage funds"\n\nBest regards,\nThe Movingto Funds Team`,
+          undefined,
+          undefined
         );
 
         try {
