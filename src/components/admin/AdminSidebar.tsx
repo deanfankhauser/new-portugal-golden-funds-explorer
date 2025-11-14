@@ -1,4 +1,4 @@
-import { NavLink, useLocation, Link } from "react-router-dom";
+import { NavLink, useLocation, useNavigate, Link } from "react-router-dom";
 import { 
   LayoutDashboard, 
   FileEdit, 
@@ -9,7 +9,9 @@ import {
   Mail, 
   Target, 
   Activity,
-  Settings
+  Settings,
+  Home,
+  LogOut
 } from "lucide-react";
 import {
   Sidebar,
@@ -21,10 +23,13 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
+  SidebarGroupLabel,
 } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface NavItem {
   title: string;
@@ -49,8 +54,20 @@ const navItems: NavItem[] = [
 export function AdminSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const isCollapsed = state === "collapsed";
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.success("Logged out successfully");
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("Failed to log out");
+    }
+  };
 
   const isActive = (path: string) => {
     if (path === "/admin") {
@@ -109,6 +126,27 @@ export function AdminSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup className="mt-auto">
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/">
+                    <Home className="h-4 w-4" />
+                    <span>Back to Site</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={handleLogout}>
+                  <LogOut className="h-4 w-4" />
+                  <span>Log Out</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
