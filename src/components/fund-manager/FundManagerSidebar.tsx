@@ -1,4 +1,4 @@
-import { Building2, BarChart3, User, LogOut, Home } from "lucide-react";
+import { Building2, BarChart3, User, LogOut, Home, Edit3, Users, Megaphone, ArrowLeft } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -12,38 +12,65 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-const FundManagerSidebar = () => {
+interface FundManagerSidebarProps {
+  fundId?: string;
+  fundName?: string;
+}
+
+const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const { state } = useSidebar();
+  const { state, setOpenMobile } = useSidebar();
   const isCollapsed = state === "collapsed";
 
-  const navItems = [
+  // Top-level navigation items (always shown)
+  const topNavItems = [
     {
       title: "My Companies",
       url: "/my-funds",
       icon: Building2,
     },
-    {
-      title: "Account Settings",
-      url: "/account-settings",
-      icon: User,
-    },
   ];
 
+  // Fund-specific navigation items (only shown when managing a fund)
+  const fundNavItems = fundId ? [
+    {
+      title: "Update Fund",
+      url: `/manage-fund/${fundId}/update`,
+      icon: Edit3,
+    },
+    {
+      title: "Analytics",
+      url: `/manage-fund/${fundId}/analytics`,
+      icon: BarChart3,
+    },
+    {
+      title: "Leads",
+      url: `/manage-fund/${fundId}/leads`,
+      icon: Users,
+    },
+    {
+      title: "Advertising",
+      url: `/manage-fund/${fundId}/advertising`,
+      icon: Megaphone,
+    },
+  ] : [];
+
   const isActive = (path: string) => {
-    if (path === "/my-funds") {
-      return location.pathname === "/my-funds" || 
-             location.pathname.startsWith("/manage-fund/") ||
-             location.pathname.startsWith("/manage-profile/");
-    }
     return location.pathname === path;
+  };
+
+  const handleNavClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
   };
 
   const handleLogout = async () => {
@@ -76,17 +103,18 @@ const FundManagerSidebar = () => {
       </SidebarHeader>
 
       <SidebarContent>
+        {/* Top-level navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>Fund Management</SidebarGroupLabel>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
+              {topNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
                     isActive={isActive(item.url)}
                   >
-                    <Link to={item.url}>
+                    <Link to={item.url} onClick={handleNavClick}>
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
                     </Link>
@@ -97,12 +125,73 @@ const FundManagerSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
 
+        {/* Fund-specific navigation */}
+        {fundId && fundName && (
+          <>
+            <Separator className="my-2" />
+            <SidebarGroup>
+              <SidebarGroupLabel className="truncate" title={fundName}>
+                {isCollapsed ? "Fund" : fundName}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link to="/my-funds" onClick={handleNavClick}>
+                        <ArrowLeft className="h-4 w-4" />
+                        <span>Back to My Companies</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  {fundNavItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={isActive(item.url)}
+                      >
+                        <Link to={item.url} onClick={handleNavClick}>
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </>
+        )}
+
+        <Separator className="my-2" />
+
+        {/* Account Settings */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActive("/account-settings")}
+                >
+                  <Link to="/account-settings" onClick={handleNavClick}>
+                    <User className="h-4 w-4" />
+                    <span>Account Settings</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <Separator className="my-2" />
+
+        {/* Bottom actions */}
         <SidebarGroup className="mt-auto">
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/">
+                  <Link to="/" onClick={handleNavClick}>
                     <Home className="h-4 w-4" />
                     <span>Back to Site</span>
                   </Link>

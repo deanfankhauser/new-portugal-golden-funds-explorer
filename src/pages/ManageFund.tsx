@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Routes, Route, Navigate } from 'react-router-dom';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card } from '@/components/ui/card';
-import { Edit3, BarChart3, Users, Megaphone, Loader2, AlertCircle, ArrowLeft, ExternalLink } from 'lucide-react';
+import { Loader2, AlertCircle, ExternalLink } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,7 +17,7 @@ import { Fund } from '@/data/types/funds';
 import { useFund } from '@/hooks/useFundsQuery';
 
 const ManageFund: React.FC = () => {
-  const { fundId } = useParams<{ fundId: string }>();
+  const { fundId, '*': subRoute } = useParams<{ fundId: string; '*': string }>();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useEnhancedAuth();
   const [hasAccess, setHasAccess] = useState(false);
@@ -141,84 +139,42 @@ const ManageFund: React.FC = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        <FundManagerSidebar />
+        <FundManagerSidebar 
+          fundId={fund.id} 
+          fundName={fund.name}
+        />
         <div className="flex-1 flex flex-col">
           <header className="h-14 flex items-center justify-between border-b px-4 lg:px-6">
             <div className="flex items-center gap-4">
               <SidebarTrigger />
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate('/my-funds')}
-                className="gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to My Companies
-              </Button>
+              <div className="flex items-center gap-3">
+                <h1 className="text-xl font-semibold">{fund.name}</h1>
+                {fund.isVerified && (
+                  <Badge variant="secondary">Verified</Badge>
+                )}
+              </div>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              asChild
+            >
+              <Link to={`/funds/${fund.slug}`} target="_blank" className="gap-2">
+                <ExternalLink className="h-4 w-4" />
+                View Public Page
+              </Link>
+            </Button>
           </header>
           
           <main className="flex-1 p-4 lg:p-6 overflow-auto">
             <div className="max-w-6xl mx-auto">
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-2">
-                  <div>
-                    <h1 className="text-2xl font-bold">{fund.name}</h1>
-                    {fund.isVerified && (
-                      <Badge variant="secondary" className="mt-2">
-                        Verified
-                      </Badge>
-                    )}
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    asChild
-                  >
-                    <Link to={`/funds/${fund.slug}`} target="_blank" className="gap-2">
-                      <ExternalLink className="h-4 w-4" />
-                      View Public Page
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-
-              <Tabs defaultValue="update" className="w-full">
-                <TabsList className="grid w-full grid-cols-4 mb-8">
-                  <TabsTrigger value="update" className="flex items-center gap-2">
-                    <Edit3 className="h-4 w-4" />
-                    Update Fund
-                  </TabsTrigger>
-                  <TabsTrigger value="analytics" className="flex items-center gap-2">
-                    <BarChart3 className="h-4 w-4" />
-                    Analytics
-                  </TabsTrigger>
-                  <TabsTrigger value="leads" className="flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    Leads
-                  </TabsTrigger>
-                  <TabsTrigger value="advertising" className="flex items-center gap-2">
-                    <Megaphone className="h-4 w-4" />
-                    Advertising
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="update">
-                  <UpdateFundTab fund={fund} canDirectEdit={canDirectEdit} />
-                </TabsContent>
-
-                <TabsContent value="analytics">
-                  <AnalyticsTab fundId={fund.id} />
-                </TabsContent>
-
-                <TabsContent value="leads">
-                  <LeadsTab fundId={fund.id} />
-                </TabsContent>
-
-                <TabsContent value="advertising">
-                  <AdvertisingTab fundId={fund.id} fundName={fund.name} />
-                </TabsContent>
-              </Tabs>
+              <Routes>
+                <Route index element={<Navigate to="update" replace />} />
+                <Route path="update" element={<UpdateFundTab fund={fund} canDirectEdit={canDirectEdit} />} />
+                <Route path="analytics" element={<AnalyticsTab fundId={fund.id} />} />
+                <Route path="leads" element={<LeadsTab fundId={fund.id} />} />
+                <Route path="advertising" element={<AdvertisingTab fundId={fund.id} fundName={fund.name} />} />
+              </Routes>
             </div>
           </main>
         </div>
