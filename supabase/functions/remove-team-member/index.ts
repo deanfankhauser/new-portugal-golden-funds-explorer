@@ -80,10 +80,10 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Update assignment status to 'inactive'
+    // Update assignment status to 'revoked'
     const { error: updateError } = await supabase
       .from('manager_profile_assignments')
-      .update({ status: 'inactive', updated_at: new Date().toISOString() })
+      .update({ status: 'revoked', updated_at: new Date().toISOString() })
       .eq('profile_id', profileId)
       .eq('user_id', userIdToRemove);
 
