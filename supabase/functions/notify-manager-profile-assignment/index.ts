@@ -174,6 +174,14 @@ serve(async (req) => {
     const result = await postmarkResponse.json();
     console.log("Profile assignment email sent successfully:", result);
 
+    // Get the newly assigned user's ID to exclude from team notifications
+    const { data: assignedUserId, error: userIdError } = await supabase
+      .rpc('find_user_by_email', { user_email: manager_email });
+
+    if (userIdError) {
+      console.error('Error finding user by email:', userIdError);
+    }
+
     // Notify all other active team members about the new member
     const { data: otherTeamMembers, error: teamError } = await supabase
       .from('manager_profile_assignments')
@@ -183,7 +191,7 @@ serve(async (req) => {
       `)
       .eq('profile_id', profile_id)
       .eq('status', 'active')
-      .neq('user_id', (await supabase.rpc('find_user_by_email', { user_email: manager_email })));
+      .neq('user_id', assignedUserId);
 
     if (teamError) {
       console.error('Error fetching other team members:', teamError);
