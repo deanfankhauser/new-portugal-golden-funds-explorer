@@ -132,63 +132,174 @@ Deno.serve(async (req) => {
           }
         }
 
-        // If user doesn't exist, send signup invitation
+        // If user doesn't exist, create invitation and send signup email
         if (!userId) {
-          const { data: inviteData, error: inviteError } = await supabase.auth.admin.inviteUserByEmail(
-            inviteeEmail,
-            {
-              data: {
-                invited_to_company: companyName,
-                personal_message: personalMessage,
-              },
-              redirectTo: `${supabaseUrl.replace('.supabase.co', '.lovableproject.com')}/my-funds`,
-            }
-          );
+          // Create invitation token
+          const { data: invitation, error: invitationError } = await supabase
+            .from('team_invitations')
+            .insert({
+              email: inviteeEmail,
+              profile_id: profile.id,
+              inviter_user_id: inviterUserId,
+              personal_message: personalMessage,
+            })
+            .select('invitation_token')
+            .single();
 
-          if (inviteError) {
-            console.error(`[bulk-invite] Invite error for ${inviteeEmail}:`, inviteError);
+          if (invitationError || !invitation) {
+            console.error(`[bulk-invite] Invitation creation error for ${inviteeEmail}:`, invitationError);
             results.push({
               email: inviteeEmail,
               success: false,
-              error: inviteError.message,
+              error: 'Failed to create invitation',
             });
             continue;
           }
 
-          assignedUserId = inviteData.user.id;
-        }
+          const invitationUrl = `https://funds.movingto.com/auth?invite=${invitation.invitation_token}`;
 
-        // Assign user to profile
-        const { error: assignError } = await supabase.rpc('assign_company_team_member', {
-          _profile_id: profile.id,
-          _manager_id: assignedUserId,
-          _permissions: {
-            can_edit_profile: true,
-            can_edit_funds: true,
-            can_manage_team: true,
-            can_view_analytics: true,
-          },
-          _status: 'active',
-          _notes: personalMessage,
-        });
+          // Send invitation email
+          const newUserEmailContent = `
+            <p style="font-size: 16px; line-height: 24px; color: #374151; margin-bottom: 24px;">
+              ${inviterName} has invited you to join the <strong>${companyName}</strong> team on <strong>Movingto Funds</strong>.
+            </p>
+            ${personalMessage ? generateContentCard(`
+              <p style="font-size: 14px; line-height: 20px; color: #6B7280; margin: 0;">
+                <strong>Personal message from ${inviterName}:</strong><br/>
+                "${personalMessage}"
+              </p>
+            `) : ''}
+            <p style="font-size: 16px; line-height: 24px; color: #374151; margin-bottom: 16px;">
+              <strong>What is Movingto Funds?</strong><br/>
+              Movingto Funds is Portugal's leading platform for Portuguese investment funds, helping investors discover the best opportunities while enabling fund managers to showcase their funds and connect with qualified investors.
+            </p>
+            <p style="font-size: 16px; line-height: 24px; color: #374151; margin-bottom: 24px;">
+              As a team member, you'll be able to:
+            </p>
+            <ul style="font-size: 16px; line-height: 24px; color: #374151; margin-bottom: 24px; padding-left: 24px;">
+              <li>Update and manage ${companyName}'s fund profiles</li>
+              <li>View detailed analytics and engagement metrics</li>
+              <li>Receive and manage investor leads</li>
+              <li>Collaborate with your team members</li>
+            </ul>
+            ${generateCTAButton('Accept Invitation & Create Account', invitationUrl, 'bordeaux')}
+            <p style="font-size: 14px; line-height: 20px; color: #9CA3AF; margin-top: 32px; text-align: center;">
+              This invitation will expire in 7 days. If you didn't expect this invitation, you can safely ignore this email.
+            </p>
+          `;
 
-        if (assignError) {
-          console.error(`[bulk-invite] Assignment error for ${inviteeEmail}:`, assignError);
+          const newUserHtml = generateEmailWrapper(
+            `You've been invited to join ${companyName}`,
+            newUserEmailContent,
+            inviteeEmail
+          );
+
+          try {
+            await postmark.sendEmail({
+              From: COMPANY_INFO.email,
+              To: inviteeEmail,
+              Subject: `You've been invited to join ${companyName} on Movingto Funds`,
+              HtmlBody: newUserHtml,
+              TextBody: `You've been invited to join ${companyName} on Movingto Funds\n\n${inviterName} has invited you to join the team.\n\nClick here to accept: ${invitationUrl}\n\nThis invitation expires in 7 days.`,
+              MessageStream: 'outbound',
+            });
+
+            results.push({
+              email: inviteeEmail,
+              success: true,
+              userExists: false,
+            });
+
+            console.log(`[bulk-invite] Invitation sent to new user: ${inviteeEmail}`);
+          } catch (emailError: any) {
+            console.error(`[bulk-invite] Email send error for ${inviteeEmail}:`, emailError);
+            
+            // Clean up invitation if email fails
+            await supabase
+              .from('team_invitations')
+              .delete()
+              .eq('invitation_token', invitation.invitation_token);
+            
+            results.push({
+              email: inviteeEmail,
+              success: false,
+              error: 'Failed to send invitation email',
+            });
+          }
+        } else {
+          // User exists - assign immediately and send notification
+          const { error: assignError } = await supabase.rpc('assign_company_team_member', {
+            _profile_id: profile.id,
+            _manager_id: userId,
+            _permissions: {
+              can_edit_profile: true,
+              can_edit_funds: true,
+              can_manage_team: true,
+              can_view_analytics: true,
+            },
+            _status: 'active',
+            _notes: personalMessage || `Invited by ${inviterName}`,
+          });
+
+          if (assignError) {
+            console.error(`[bulk-invite] Assignment error for ${inviteeEmail}:`, assignError);
+            results.push({
+              email: inviteeEmail,
+              success: false,
+              error: assignError.message,
+            });
+            continue;
+          }
+
+          // Send notification email to existing user
+          const existingUserEmailContent = `
+            <p style="font-size: 16px; line-height: 24px; color: #374151; margin-bottom: 24px;">
+              Great news! ${inviterName} has added you to the <strong>${companyName}</strong> team on Movingto Funds.
+            </p>
+            ${personalMessage ? generateContentCard(`
+              <p style="font-size: 14px; line-height: 20px; color: #6B7280; margin: 0;">
+                <strong>Personal message from ${inviterName}:</strong><br/>
+                "${personalMessage}"
+              </p>
+            `) : ''}
+            <p style="font-size: 16px; line-height: 24px; color: #374151; margin-bottom: 24px;">
+              You now have full access to manage ${companyName}'s fund profiles, view analytics, and manage leads.
+            </p>
+            ${generateCTAButton('View Dashboard', 'https://funds.movingto.com/my-funds', 'bordeaux')}
+            <p style="font-size: 14px; line-height: 20px; color: #6B7280; margin-top: 32px;">
+              If you have any questions, please don't hesitate to reach out to your team.
+            </p>
+          `;
+
+          const existingUserHtml = generateEmailWrapper(
+            `You've been added to ${companyName}`,
+            existingUserEmailContent,
+            inviteeEmail
+          );
+
+          try {
+            await postmark.sendEmail({
+              From: COMPANY_INFO.email,
+              To: inviteeEmail,
+              Subject: `You've been added to ${companyName} team`,
+              HtmlBody: existingUserHtml,
+              TextBody: `You've been added to ${companyName} team\n\n${inviterName} has added you to the team.\n\nYou now have full access to manage the company's fund profiles.\n\nVisit: https://funds.movingto.com/my-funds`,
+              MessageStream: 'outbound',
+            });
+          } catch (emailError: any) {
+            console.error(`[bulk-invite] Failed to send notification email for ${inviteeEmail}:`, emailError);
+            // Don't fail the request if email fails, user is already assigned
+          }
+
           results.push({
             email: inviteeEmail,
-            success: false,
-            error: assignError.message,
+            success: true,
+            userExists: true,
           });
-          continue;
+
+          console.log(`[bulk-invite] Existing user assigned: ${inviteeEmail}`);
         }
 
-        results.push({
-          email: inviteeEmail,
-          success: true,
-          userExists,
-        });
-
-        console.log(`[bulk-invite] Successfully invited: ${inviteeEmail}`);
       } catch (error: any) {
         console.error(`[bulk-invite] Error processing ${inviteeEmail}:`, error);
         results.push({
