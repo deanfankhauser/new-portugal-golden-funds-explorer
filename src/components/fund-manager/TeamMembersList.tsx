@@ -3,6 +3,7 @@ import { useTeamMembers, useRemoveTeamMember } from '@/hooks/useTeamManagement';
 import { Loader2, Mail, Trash2, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -54,8 +55,23 @@ const TeamMembersList: React.FC<TeamMembersListProps> = ({ companyName }) => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-8">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="flex items-center justify-between p-4 border rounded-lg"
+          >
+            <div className="flex items-start gap-4 flex-1">
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-4 w-48" />
+                <Skeleton className="h-3 w-24" />
+              </div>
+            </div>
+            <Skeleton className="h-9 w-20" />
+          </div>
+        ))}
       </div>
     );
   }

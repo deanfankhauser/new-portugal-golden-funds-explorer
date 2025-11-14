@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Fund } from '@/data/types/funds';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -10,6 +11,13 @@ interface TeamAccessTabProps {
 }
 
 const TeamAccessTab: React.FC<TeamAccessTabProps> = ({ fund }) => {
+  const queryClient = useQueryClient();
+  
+  // Refresh team members on mount to ensure fresh data
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['team-members', fund.managerName] });
+  }, [fund.managerName, queryClient]);
+
   return (
     <div className="space-y-6">
       <div>

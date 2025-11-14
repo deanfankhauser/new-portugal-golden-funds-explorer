@@ -37,6 +37,7 @@ const MyFunds = () => {
   const { user, loading: authLoading } = useEnhancedAuth();
   const [assignmentsLoading, setAssignmentsLoading] = useState(true);
   const [companiesWithFunds, setCompaniesWithFunds] = useState<CompanyWithFunds[]>([]);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { data: allFunds, isLoading: fundsLoading, isError, isFetching } = useAllFunds();
   
   // Show loading during any loading/error state (allows React Query retry)
@@ -46,6 +47,21 @@ const MyFunds = () => {
   const allFundIds = companiesWithFunds.flatMap(c => c.funds.map(f => f.id));
   const metrics = useFundEngagementMetrics(allFundIds);
 
+  // Check admin status
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (!user) return;
+      
+      const { data } = await supabase
+        .rpc('is_user_admin');
+      
+      setIsAdmin(!!data);
+      console.log('🔐 Admin status:', !!data);
+    };
+    
+    checkAdminStatus();
+  }, [user]);
+
   useEffect(() => {
     const fetchAssignments = async () => {
       if (!user || !allFunds) {
@@ -54,43 +70,71 @@ const MyFunds = () => {
       }
 
       try {
-        // Get company-level assignments
-        const { data: assignmentsData, error: assignError } = await supabase
-          .from('manager_profile_assignments')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('status', 'active')
-          .order('assigned_at', { ascending: false });
+        let companiesData: CompanyWithFunds[] = [];
 
-        if (assignError) throw assignError;
-
-        const assignments = (assignmentsData || []) as unknown as ProfileAssignment[];
-
-        // Get full profile data for each assignment
-        if (assignments.length > 0) {
-          const profileIds = assignments.map(a => a.profile_id);
-          const { data: profilesData, error: profilesError } = await supabase
+        if (isAdmin) {
+          // ADMIN PATH: Fetch ALL company profiles
+          console.log('🔐 Admin user - fetching all company profiles');
+          const { data: allProfiles, error: profilesError } = await supabase
             .from('profiles')
             .select('*')
-            .in('id', profileIds);
+            .not('company_name', 'is', null)
+            .order('company_name');
 
-          if (!profilesError && profilesData) {
-            // Match profiles with their assignments and funds
-            const companiesData: CompanyWithFunds[] = profilesData.map((profile: Profile) => {
-              const assignment = assignments.find(a => a.profile_id === profile.id)!;
-              // Find all funds managed by this company
-              const companyFunds = allFunds.filter(f => f.managerName === profile.company_name);
-              
-              return {
-                profile,
-                assignment,
-                funds: companyFunds
-              };
-            });
+          if (!profilesError && allProfiles) {
+            companiesData = allProfiles.map((profile: Profile) => ({
+              profile,
+              assignment: {
+                id: 'admin-access',
+                profile_id: profile.id,
+                status: 'active',
+                assigned_at: new Date().toISOString(),
+                permissions: {
+                  can_edit_profile: true,
+                  can_edit_funds: true,
+                  can_manage_team: true,
+                  can_view_analytics: true
+                }
+              },
+              funds: allFunds.filter(f => f.managerName === profile.company_name)
+            }));
+          }
+        } else {
+          // REGULAR USER PATH: Only assigned companies
+          const { data: assignmentsData, error: assignError } = await supabase
+            .from('manager_profile_assignments')
+            .select('*')
+            .eq('user_id', user.id)
+            .eq('status', 'active')
+            .order('assigned_at', { ascending: false });
 
-            setCompaniesWithFunds(companiesData);
+          if (assignError) throw assignError;
+
+          const assignments = (assignmentsData || []) as unknown as ProfileAssignment[];
+
+          if (assignments.length > 0) {
+            const profileIds = assignments.map(a => a.profile_id);
+            const { data: profilesData, error: profilesError } = await supabase
+              .from('profiles')
+              .select('*')
+              .in('id', profileIds);
+
+            if (!profilesError && profilesData) {
+              companiesData = profilesData.map((profile: Profile) => {
+                const assignment = assignments.find(a => a.profile_id === profile.id)!;
+                const companyFunds = allFunds.filter(f => f.managerName === profile.company_name);
+                
+                return {
+                  profile,
+                  assignment,
+                  funds: companyFunds
+                };
+              });
+            }
           }
         }
+
+        setCompaniesWithFunds(companiesData);
       } catch (error) {
         console.error('Error fetching company assignments:', error);
       } finally {
@@ -99,7 +143,7 @@ const MyFunds = () => {
     };
 
     fetchAssignments();
-  }, [user, allFunds]);
+  }, [user, allFunds, isAdmin]);
 
   if (authLoading || loading) {
     return <PageLoader />;
@@ -116,7 +160,9 @@ const MyFunds = () => {
         <div className="flex-1 flex flex-col">
           <header className="h-14 flex items-center border-b px-4 lg:px-6">
             <SidebarTrigger />
-            <h1 className="text-lg font-semibold ml-4">My Companies</h1>
+            <h1 className="text-lg font-semibold ml-4">
+              {isAdmin ? 'All Companies (Admin View)' : 'My Companies'}
+            </h1>
           </header>
           
           <PageSEO
@@ -127,7 +173,10 @@ const MyFunds = () => {
             <div className="max-w-7xl mx-auto">
               <div className="mb-6">
                 <p className="text-muted-foreground">
-                  Manage your assigned companies and their investment funds
+                  {isAdmin 
+                    ? 'View and manage all company profiles and their investment funds across the platform' 
+                    : 'Manage your assigned companies and their investment funds'
+                  }
                 </p>
               </div>
 

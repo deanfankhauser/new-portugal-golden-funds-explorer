@@ -416,6 +416,77 @@ export type Database = {
           },
         ]
       }
+      fund_manager_email_logs: {
+        Row: {
+          click_count: number | null
+          created_at: string | null
+          email_type: string
+          error_message: string | null
+          first_click_at: string | null
+          fund_id: string
+          id: string
+          is_verified_fund: boolean
+          manager_email: string
+          manager_name: string | null
+          opened_at: string | null
+          postmark_message_id: string | null
+          sent_at: string
+          subject: string
+          test_mode: boolean | null
+          updated_at: string | null
+          weekly_impressions: number | null
+          weekly_leads: number | null
+        }
+        Insert: {
+          click_count?: number | null
+          created_at?: string | null
+          email_type: string
+          error_message?: string | null
+          first_click_at?: string | null
+          fund_id: string
+          id?: string
+          is_verified_fund?: boolean
+          manager_email: string
+          manager_name?: string | null
+          opened_at?: string | null
+          postmark_message_id?: string | null
+          sent_at?: string
+          subject: string
+          test_mode?: boolean | null
+          updated_at?: string | null
+          weekly_impressions?: number | null
+          weekly_leads?: number | null
+        }
+        Update: {
+          click_count?: number | null
+          created_at?: string | null
+          email_type?: string
+          error_message?: string | null
+          first_click_at?: string | null
+          fund_id?: string
+          id?: string
+          is_verified_fund?: boolean
+          manager_email?: string
+          manager_name?: string | null
+          opened_at?: string | null
+          postmark_message_id?: string | null
+          sent_at?: string
+          subject?: string
+          test_mode?: boolean | null
+          updated_at?: string | null
+          weekly_impressions?: number | null
+          weekly_leads?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_manager_email_logs_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "funds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fund_managers: {
         Row: {
           assigned_at: string | null
@@ -1063,6 +1134,56 @@ export type Database = {
         }
         Relationships: []
       }
+      team_invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invitation_token: string
+          inviter_user_id: string | null
+          personal_message: string | null
+          profile_id: string
+          status: string
+          used_by_user_id: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          email: string
+          expires_at?: string
+          id?: string
+          invitation_token?: string
+          inviter_user_id?: string | null
+          personal_message?: string | null
+          profile_id: string
+          status?: string
+          used_by_user_id?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invitation_token?: string
+          inviter_user_id?: string | null
+          personal_message?: string | null
+          profile_id?: string
+          status?: string
+          used_by_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_invitations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -1105,6 +1226,23 @@ export type Database = {
           user_id: string
         }[]
       }
+      are_teammates: {
+        Args: { user_id_1: string; user_id_2: string }
+        Returns: boolean
+      }
+      assign_company_team_member: {
+        Args: {
+          _manager_id: string
+          _notes?: string
+          _permissions?: Json
+          _profile_id: string
+          _status?: string
+        }
+        Returns: {
+          inserted: boolean
+          user_id: string
+        }[]
+      }
       can_access_manager_sensitive_data: {
         Args: { manager_user_id?: string }
         Returns: boolean
@@ -1123,6 +1261,10 @@ export type Database = {
       }
       can_user_view_profile: {
         Args: { _profile_id: string; _user_id: string }
+        Returns: boolean
+      }
+      can_view_profile_assignments: {
+        Args: { _profile: string; _user: string }
         Returns: boolean
       }
       check_sensitive_data_exposure: {
@@ -1164,6 +1306,33 @@ export type Database = {
           data_type: string
           is_nullable: string
           table_name: string
+        }[]
+      }
+      get_email_campaign_stats: {
+        Args: { days?: number }
+        Returns: {
+          avg_clicks_per_email: number
+          click_rate: number
+          email_type: string
+          open_rate: number
+          total_clicked: number
+          total_opened: number
+          total_sent: number
+        }[]
+      }
+      get_fund_manager_sign_ins: {
+        Args: never
+        Returns: {
+          company_name: string
+          fund_id: string
+          fund_name: string
+          last_sign_in_at: string
+          manager_email: string
+          manager_name: string
+          recent_impressions: number
+          recent_leads: number
+          total_impressions: number
+          total_leads: number
         }[]
       }
       get_funds_by_company_name: {
@@ -1230,6 +1399,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      mark_expired_invitations: { Args: never; Returns: undefined }
       query: {
         Args: { query_text: string }
         Returns: {
