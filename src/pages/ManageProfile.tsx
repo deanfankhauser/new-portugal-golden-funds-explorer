@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Building2, Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import FundManagerSidebar from '@/components/fund-manager/FundManagerSidebar';
 import { Profile } from '@/types/profile';
 import ProfileEditTab from '@/components/manager-profile/ProfileEditTab';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
@@ -122,104 +130,98 @@ const ManageProfile: React.FC = () => {
 
   if (!hasAccess) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
-        <Header />
-        <main className="flex-1 py-12">
-          <div className="container mx-auto px-4 max-w-2xl">
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <FundManagerSidebar />
+          <div className="flex-1 p-8">
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                You don't have permission to manage this profile. Contact an administrator if you believe this is an error.
+                You don't have permission to manage this company profile.
               </AlertDescription>
             </Alert>
-            <div className="mt-6 flex justify-center">
-              <Button onClick={() => navigate('/')} variant="outline">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Home
-              </Button>
-            </div>
           </div>
-        </main>
-        <Footer />
-      </div>
+        </div>
+      </SidebarProvider>
     );
   }
 
   if (!profile) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
-        <Header />
-        <main className="flex-1 py-12">
-          <div className="container mx-auto px-4 max-w-2xl">
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <FundManagerSidebar />
+          <div className="flex-1 p-8">
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                Profile not found or has been deleted.
+                Company profile not found.
               </AlertDescription>
             </Alert>
-            <div className="mt-6 flex justify-center">
-              <Button onClick={() => navigate('/')} variant="outline">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Home
-              </Button>
-            </div>
           </div>
-        </main>
-        <Footer />
-      </div>
+        </div>
+      </SidebarProvider>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <Header />
-
-      <main className="flex-1 py-8">
-        <div className="container mx-auto px-4 max-w-7xl">
-          {/* Header Section */}
-          <div className="mb-8">
-            <Button
-              onClick={() => navigate(-1)}
-              variant="ghost"
-              className="mb-4"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
-
-            <div className="flex items-center gap-4 mb-2">
-              <Building2 className="h-8 w-8 text-primary" />
-              <h1 className="text-3xl font-bold text-gray-900">
-                Manage Profile: {profile.company_name}
-              </h1>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <FundManagerSidebar />
+        <div className="flex-1 flex flex-col">
+          <header className="h-14 flex items-center border-b px-4 lg:px-6">
+            <div className="flex items-center gap-3">
+              <SidebarTrigger className="-ml-1" />
+              <h1 className="text-xl font-semibold">{profile.company_name}</h1>
             </div>
-            <p className="text-gray-600">
-              Update your company profile information and manage your team
-            </p>
+          </header>
+          
+          {/* Breadcrumb Navigation */}
+          <div className="border-b bg-muted/30 px-4 lg:px-6 py-2">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/my-funds">My Companies</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/my-funds">{profile.company_name}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Edit Profile</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
           </div>
-
-          {/* Profile Edit Section */}
-          {permissions.can_edit_profile ? (
-            <ProfileEditTab
-              profile={profile}
-              onProfileUpdate={(updatedProfile) => setProfile(updatedProfile)}
-              canManageTeam={permissions.can_manage_team}
-            />
-          ) : (
-            <Card className="p-6">
-              <Alert>
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
-                  You don't have permission to edit this profile. Your access is view-only.
-                </AlertDescription>
-              </Alert>
-            </Card>
-          )}
+          
+          <main className="flex-1 p-4 lg:p-6 overflow-auto">
+            <div className="max-w-5xl mx-auto">
+              {permissions.can_edit_profile ? (
+                <ProfileEditTab
+                  profile={profile}
+                  onProfileUpdate={(updatedProfile) => setProfile(updatedProfile)}
+                  canManageTeam={permissions.can_manage_team}
+                />
+              ) : (
+                <Card className="p-6">
+                  <Alert>
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      You don't have permission to edit this profile. Your access is view-only.
+                    </AlertDescription>
+                  </Alert>
+                </Card>
+              )}
+            </div>
+          </main>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </SidebarProvider>
   );
 };
 

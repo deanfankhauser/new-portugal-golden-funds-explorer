@@ -106,6 +106,16 @@
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    
+    /* Sidebar tokens */
+    --sidebar-background: 36 15% 97%;
+    --sidebar-foreground: 340 20% 16%;
+    --sidebar-primary: var(--brand-bordeaux);
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 36 12% 96%;
+    --sidebar-accent-foreground: 340 20% 20%;
+    --sidebar-border: 20 10% 80%;
+    --sidebar-ring: var(--brand-bordeaux);
   }
 
   .dark {
@@ -129,6 +139,16 @@
     --border: 340 15% 25%;
     --input: 340 15% 25%;
     --ring: var(--brand-bronze);
+    
+    /* Sidebar tokens for dark mode */
+    --sidebar-background: 340 25% 12%;
+    --sidebar-foreground: 36 22% 92%;
+    --sidebar-primary: var(--brand-bronze);
+    --sidebar-primary-foreground: 0 0% 10%;
+    --sidebar-accent: 340 22% 16%;
+    --sidebar-accent-foreground: 36 22% 92%;
+    --sidebar-border: 340 15% 25%;
+    --sidebar-ring: var(--brand-bronze);
   }
 }
 

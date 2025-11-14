@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate, useParams } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from "@/components/ui/toaster";
 import { ComparisonProvider } from './contexts/ComparisonContext';
@@ -88,6 +88,13 @@ const ScrollToTop = () => {
   }, [location.pathname]);
 
   return null;
+};
+
+// Component to handle invitation redirects
+const InviteRedirect = () => {
+  const { token } = useParams<{ token: string }>();
+  console.log('🎫 Redirecting invite token:', token);
+  return <Navigate to={`/auth?invite=${token}`} replace />;
 };
 
 
@@ -237,6 +244,9 @@ function App() {
                           </Suspense>
                         } />
                         
+                        {/* Invitation redirect route */}
+                        <Route path="/invite/:token" element={<InviteRedirect />} />
+                        
                         {/* Legacy auth routes - redirect to unified auth */}
                         <Route path="/manager-auth" element={
                           <Suspense fallback={<PageLoader />}>
@@ -277,8 +287,8 @@ function App() {
                            </Suspense>
                          } />
                          
-                       {/* Admin Panel */}
-                       <Route path="/admin" element={
+                       {/* Admin Panel with nested routes */}
+                       <Route path="/admin/*" element={
                          <Suspense fallback={<PageLoader />}>
                            <AdminPanel />
                          </Suspense>
@@ -299,8 +309,8 @@ function App() {
                          </Suspense>
                        } />
 
-                       {/* Manage Individual Fund */}
-                       <Route path="/manage-fund/:fundId" element={
+                       {/* Manage Individual Fund with nested routes */}
+                       <Route path="/manage-fund/:fundId/*" element={
                          <Suspense fallback={<PageLoader />}>
                            <ManageFund />
                          </Suspense>
