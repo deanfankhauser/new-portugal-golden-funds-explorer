@@ -14,6 +14,7 @@ export type DatabaseExtended = BaseDatabase & {
           company_name: string;
           manager_email: string;
           last_sign_in_at: string | null;
+          team_members_count: number;
           total_leads: number;
           recent_leads: number;
           total_impressions: number;
