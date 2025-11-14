@@ -170,7 +170,7 @@ const ManageFund: React.FC = () => {
           <header className="h-14 flex items-center justify-between border-b px-4 lg:px-6">
             <div className="flex items-center gap-3">
               <SidebarTrigger className="-ml-1" />
-              <h1 className="text-xl font-semibold">{fund.name}</h1>
+              <h1 className="text-xl font-semibold leading-none">{fund.name}</h1>
               {fund.isVerified && (
                 <Badge variant="secondary">Verified</Badge>
               )}
