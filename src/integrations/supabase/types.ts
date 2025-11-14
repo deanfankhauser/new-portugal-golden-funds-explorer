@@ -1382,15 +1382,26 @@ export type Database = {
         }[]
       }
       is_user_admin: { Args: { check_user_id?: string }; Returns: boolean }
-      log_admin_activity: {
-        Args: {
-          p_action_type: string
-          p_details?: Json
-          p_target_id?: string
-          p_target_type: string
-        }
-        Returns: undefined
-      }
+      log_admin_activity:
+        | {
+            Args: {
+              p_action_type: string
+              p_admin_user_id?: string
+              p_details?: Json
+              p_target_id?: string
+              p_target_type: string
+            }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              p_action_type: string
+              p_details?: Json
+              p_target_id?: string
+              p_target_type: string
+            }
+            Returns: undefined
+          }
       log_sensitive_data_access: {
         Args: {
           access_type: string

@@ -104,6 +104,7 @@ Deno.serve(async (req) => {
         removed_user_id: userIdToRemove,
         company_name: profile.company_name,
       },
+      p_admin_user_id: requesterUserId,
     });
 
     console.log('[remove-team-member] Member removed successfully');
