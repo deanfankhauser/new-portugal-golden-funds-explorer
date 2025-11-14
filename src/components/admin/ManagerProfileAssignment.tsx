@@ -577,7 +577,14 @@ export const ManagerProfileAssignment: React.FC = () => {
                       <TableCell>
                         <div className="font-medium">{profile?.company_name}</div>
                       </TableCell>
-                      <TableCell>{displayName}</TableCell>
+                      <TableCell>
+                        <div className="space-y-1 whitespace-nowrap">
+                          <div className="font-medium text-sm">{displayName}</div>
+                          {assignedUser?.email && (
+                            <div className="text-xs text-muted-foreground">{assignedUser.email}</div>
+                          )}
+                        </div>
+                      </TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
                           {assignment.permissions.can_edit_profile && (
