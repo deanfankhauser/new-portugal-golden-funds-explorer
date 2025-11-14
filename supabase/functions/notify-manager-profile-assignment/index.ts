@@ -120,7 +120,14 @@ serve(async (req) => {
       </div>
       ` : ''}
 
-      ${generateCTAButton('View My Funds', myFundsUrl, 'bordeaux')}
+      <div style="margin: 32px 0; padding: 20px; background: #F8FAFC; border-radius: 8px; border: 1px solid #E5E7EB;">
+        <p style="margin: 0 0 12px 0; font-weight: 600; color: #4B0F23;">To access your funds:</p>
+        <ol style="margin: 0; padding-left: 20px; color: #64748b; line-height: 1.8;">
+          <li>Sign in to your account</li>
+          <li>Click on your account icon in the top right</li>
+          <li>Click "Manage funds"</li>
+        </ol>
+      </div>
 
       <div style="margin: 32px 0; padding: 16px; background: #F8FAFC; border-radius: 8px;">
         <p style="margin: 0 0 8px 0; font-size: 14px; color: #64748b;">
@@ -233,7 +240,14 @@ serve(async (req) => {
             </ul>
           </div>
 
-          ${generateCTAButton('View Team', myFundsUrl + '/team', 'bordeaux')}
+          <div style="margin: 32px 0; padding: 20px; background: #F8FAFC; border-radius: 8px; border: 1px solid #E5E7EB;">
+            <p style="margin: 0 0 12px 0; font-weight: 600; color: #4B0F23;">To view your team:</p>
+            <ol style="margin: 0; padding-left: 20px; color: #64748b; line-height: 1.8;">
+              <li>Sign in to your account</li>
+              <li>Click on your account icon in the top right</li>
+              <li>Click "Manage funds"</li>
+            </ol>
+          </div>
 
           <p style="margin: 24px 0 0 0; color: #64748b; font-size: 14px; line-height: 1.6;">
             This is an automated notification to keep you informed about team changes.
