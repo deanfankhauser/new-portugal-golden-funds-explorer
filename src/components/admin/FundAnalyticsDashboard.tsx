@@ -18,6 +18,7 @@ interface FundAnalytics {
   company_name: string;
   manager_email: string;
   last_sign_in_at: string | null;
+  team_members_count: number;
   total_leads: number;
   recent_leads: number;
   total_impressions: number;
@@ -256,6 +257,12 @@ export default function FundAnalyticsDashboard() {
                       <ArrowUpDown className="h-3 w-3" />
                     </div>
                   </TableHead>
+                  <TableHead className="text-right cursor-pointer" onClick={() => handleSort("team_members_count")}>
+                    <div className="flex items-center justify-end gap-1">
+                      Team
+                      <ArrowUpDown className="h-3 w-3" />
+                    </div>
+                  </TableHead>
                   <TableHead className="text-right cursor-pointer" onClick={() => handleSort("recent_leads")}>
                     <div className="flex items-center justify-end gap-1">
                       30d Leads
@@ -286,7 +293,7 @@ export default function FundAnalyticsDashboard() {
               <TableBody>
                 {filteredAndSorted?.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
                       No funds found matching your search
                     </TableCell>
                   </TableRow>
@@ -323,6 +330,11 @@ export default function FundAnalyticsDashboard() {
                         ) : (
                           <Badge variant="outline">Never</Badge>
                         )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Badge variant="secondary">
+                          {fund.team_members_count}
+                        </Badge>
                       </TableCell>
                       <TableCell className="text-right">
                         <span className={fund.recent_leads > 0 ? "font-semibold text-success" : ""}>

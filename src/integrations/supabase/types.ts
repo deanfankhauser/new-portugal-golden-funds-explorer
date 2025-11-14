@@ -1331,6 +1331,7 @@ export type Database = {
           manager_name: string
           recent_impressions: number
           recent_leads: number
+          team_members_count: number
           total_impressions: number
           total_leads: number
         }[]
