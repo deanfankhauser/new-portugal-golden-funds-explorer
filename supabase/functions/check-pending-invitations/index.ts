@@ -90,19 +90,25 @@ Deno.serve(async (req) => {
                            `${inviterProfile?.first_name || ''} ${inviterProfile?.last_name || ''}`.trim() ||
                            'Team member';
 
-        // Assign user to company
-        const { error: assignError } = await supabase.rpc('assign_company_team_member', {
-          _profile_id: invitation.profile_id,
-          _manager_id: userId,
-          _permissions: {
-            can_edit_profile: true,
-            can_edit_funds: true,
-            can_manage_team: true,
-            can_view_analytics: true,
-          },
-          _status: 'active',
-          _notes: invitation.personal_message || `Auto-accepted invitation from ${inviterName}`,
-        });
+        // Assign user to company by directly inserting into manager_profile_assignments
+        // Using service role key to bypass RLS
+        const { error: assignError } = await supabase
+          .from('manager_profile_assignments')
+          .upsert({
+            profile_id: invitation.profile_id,
+            user_id: userId,
+            assigned_by: invitation.inviter_user_id,
+            status: 'active',
+            permissions: {
+              can_edit_profile: true,
+              can_edit_funds: true,
+              can_manage_team: true,
+              can_view_analytics: true,
+            },
+            notes: invitation.personal_message || `Auto-accepted invitation from ${inviterName}`,
+          }, {
+            onConflict: 'profile_id,user_id'
+          });
 
         if (assignError) {
           console.error(`[check-pending-invitations] Failed to assign user to ${companyName}:`, assignError);
