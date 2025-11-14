@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { CheckCircle2, Info } from 'lucide-react';
 import { Fund } from '@/data/funds';
 import { Badge } from '@/components/ui/badge';
@@ -17,10 +18,12 @@ const ManagerVerificationBadge: React.FC<ManagerVerificationBadgeProps> = ({
   // Show verified badge if manager is verified
   if (isVerified) {
     return (
-      <div className={`inline-flex items-center gap-2 bg-success/10 text-success border border-success/20 px-4 py-2 rounded-lg text-sm font-semibold ${className}`}>
-        <CheckCircle2 className="w-4 h-4" />
-        <span>Verified Manager</span>
-      </div>
+      <Link to="/verification-program" className="inline-block hover:opacity-80 transition-opacity">
+        <div className={`inline-flex items-center gap-2 bg-success/10 text-success border border-success/20 px-4 py-2 rounded-lg text-sm font-semibold ${className}`}>
+          <CheckCircle2 className="w-4 h-4" />
+          <span>Verified Manager</span>
+        </div>
+      </Link>
     );
   }
 

@@ -21,6 +21,8 @@ import EmailCapturesManagement from '@/components/admin/EmailCapturesManagement'
 import { ManagerProfileAssignment } from '@/components/admin/ManagerProfileAssignment';
 import { AllLeadsManagement } from '@/components/admin/AllLeadsManagement';
 import { PerformanceMonitoring } from '@/components/admin/PerformanceMonitoring';
+// Temporarily disabled until types are regenerated
+// import { EmailCampaignMonitoring } from '@/components/admin/EmailCampaignMonitoring';
 
 const AdminPanel = () => {
   const { user, loading } = useEnhancedAuth();
@@ -289,6 +291,11 @@ const AdminPanel = () => {
                 <Activity className="h-4 w-4" />
                 Performance
               </TabsTrigger>
+              {/* Temporarily disabled until types are regenerated */}
+              {/* <TabsTrigger value="email-campaigns" className="flex items-center gap-2">
+                <Mail className="h-4 w-4" />
+                Email Campaigns
+              </TabsTrigger> */}
               <TabsTrigger value="settings" className="flex items-center gap-2">
                 <Settings className="h-4 w-4" />
                 Settings
@@ -343,6 +350,11 @@ const AdminPanel = () => {
             <TabsContent value="performance">
               <PerformanceMonitoring />
             </TabsContent>
+
+            {/* Temporarily disabled until types are regenerated */}
+            {/* <TabsContent value="email-campaigns">
+              <EmailCampaignMonitoring />
+            </TabsContent> */}
 
             <TabsContent value="settings">
               <div className="space-y-6">

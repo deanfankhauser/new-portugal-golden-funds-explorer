@@ -96,10 +96,12 @@ export const GlobalSearchDropdown: React.FC<Props> = ({
                   <div className="font-medium text-foreground truncate flex items-center gap-2 flex-wrap">
                     {result.name}
                     {result.type === 'fund' && result.metadata?.isVerified && (
-                      <span className="bg-success text-success-foreground px-2 py-0.5 rounded-full text-xs font-bold inline-flex items-center gap-1 shrink-0">
-                        <CheckCircle2 className="w-3 h-3" />
-                        VERIFIED
-                      </span>
+                      <Link to="/verification-program" onClick={(e) => e.stopPropagation()} className="hover:opacity-80 transition-opacity">
+                        <span className="bg-success text-success-foreground px-2 py-0.5 rounded-full text-xs font-bold inline-flex items-center gap-1 shrink-0">
+                          <CheckCircle2 className="w-3 h-3" />
+                          VERIFIED
+                        </span>
+                      </Link>
                     )}
                   </div>
                   {result.subtitle && (

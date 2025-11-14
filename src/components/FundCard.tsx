@@ -55,10 +55,12 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
               </CardTitle>
               {fund.isVerified ? (
                 <div className="mt-2">
-                  <div className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-md border-2 border-success/70 ring-2 ring-success/20 w-fit">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>✓ VERIFIED</span>
-                  </div>
+                  <Link to="/verification-program" onClick={(e) => e.stopPropagation()} className="inline-block hover:opacity-80 transition-opacity">
+                    <div className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-md border-2 border-success/70 ring-2 ring-success/20 w-fit">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>✓ VERIFIED</span>
+                    </div>
+                  </Link>
                 </div>
               ) : (
                 <div className="mt-2">

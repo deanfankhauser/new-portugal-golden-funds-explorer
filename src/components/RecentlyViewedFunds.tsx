@@ -44,10 +44,12 @@ const RecentlyViewedFundCard: React.FC<{ fund: any }> = ({ fund }) => {
           {fund.name}
         </h4>
         {fund.isVerified && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-success/10 text-success border border-success/20 rounded-md text-[12px] font-medium whitespace-nowrap flex-shrink-0">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Verified</span>
-          </div>
+          <Link to="/verification-program" onClick={(e) => e.stopPropagation()} className="hover:opacity-80 transition-opacity">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-success/10 text-success border border-success/20 rounded-md text-[12px] font-medium whitespace-nowrap flex-shrink-0">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Verified</span>
+            </div>
+          </Link>
         )}
       </div>
 

@@ -100,3 +100,15 @@ verify_jwt = false
 
 [functions.request-lead-status-check]
 verify_jwt = false
+
+[functions.weekly-fund-digest]
+verify_jwt = false
+
+[functions.monthly-performance-reminder]
+verify_jwt = false
+
+[functions.postmark-webhook]
+verify_jwt = false
+
+[functions.weekly-stale-lead-reminder]
+verify_jwt = false
