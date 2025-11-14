@@ -58,7 +58,7 @@ const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund, initialId }) =
         sessionStorage.setItem(trackingKey, now.toString());
       }
     }
-  }, [fund?.id, addToRecentlyViewed]); // Only depend on stable ID
+  }, [fund?.id]); // Only depend on stable ID
 
   // Show loading skeleton only in browser when actually loading
   // During SSR, skip loading state if we have ssrFund data
