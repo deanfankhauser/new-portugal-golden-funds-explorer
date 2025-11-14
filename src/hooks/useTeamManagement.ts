@@ -138,6 +138,70 @@ export function useInviteTeamMember() {
   });
 }
 
+export function useBulkInviteTeamMembers() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async ({
+      companyName,
+      emails,
+      personalMessage,
+    }: {
+      companyName: string;
+      emails: string[];
+      personalMessage?: string;
+    }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const { data, error } = await supabase.functions.invoke('bulk-invite-team-members', {
+        body: {
+          companyName,
+          emails,
+          inviterUserId: user.id,
+          personalMessage,
+        },
+      });
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['team-members', variables.companyName] });
+      
+      const { successful, failed, total } = data;
+      
+      if (failed === 0) {
+        toast({
+          title: 'All invitations sent',
+          description: `Successfully sent ${successful} invitation${successful !== 1 ? 's' : ''}.`,
+        });
+      } else if (successful > 0) {
+        toast({
+          title: 'Invitations partially sent',
+          description: `${successful} succeeded, ${failed} failed out of ${total} total.`,
+          variant: 'default',
+        });
+      } else {
+        toast({
+          title: 'All invitations failed',
+          description: `Failed to send ${total} invitation${total !== 1 ? 's' : ''}. Please try again.`,
+          variant: 'destructive',
+        });
+      }
+    },
+    onError: (error: any) => {
+      console.error('Failed to send bulk invitations:', error);
+      toast({
+        title: 'Bulk invitation failed',
+        description: error.message || 'Failed to send invitations. Please try again.',
+        variant: 'destructive',
+      });
+    },
+  });
+}
+
 export function useRemoveTeamMember() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
