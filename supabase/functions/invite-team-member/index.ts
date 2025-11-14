@@ -68,21 +68,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Check if invitee already has access
-    const { data: existingAssignment } = await supabase
-      .from('manager_profile_assignments')
-      .select('id, status, user_id')
-      .eq('profile_id', profile.id)
-      .eq('user_id', inviterUserId)
-      .maybeSingle();
-
-    if (existingAssignment && existingAssignment.status === 'active') {
-      return new Response(
-        JSON.stringify({ error: 'User already has access to this company', userExists: true }),
-        { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
     // Find user by email using the admin function
     const { data: userId, error: userLookupError } = await supabase.rpc('find_user_by_email', {
       user_email: inviteeEmail,
@@ -92,6 +77,23 @@ Deno.serve(async (req) => {
     let assignedUserId = userId;
 
     console.log('[invite-team-member] User lookup', { userId, userExists });
+
+    // Check if invitee already has access (only if user exists)
+    if (userId) {
+      const { data: existingAssignment } = await supabase
+        .from('manager_profile_assignments')
+        .select('id, status')
+        .eq('profile_id', profile.id)
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (existingAssignment && existingAssignment.status === 'active') {
+        return new Response(
+          JSON.stringify({ error: 'User already has access to this company', userExists: true }),
+          { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
 
     // If user doesn't exist, send signup invitation
     if (!userId) {
