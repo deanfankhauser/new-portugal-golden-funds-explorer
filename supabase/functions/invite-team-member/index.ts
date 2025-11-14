@@ -117,13 +117,13 @@ Deno.serve(async (req) => {
       console.log('[invite-team-member] Invitation sent to new user', { inviteData });
     }
 
-    // Assign user to company profile using admin function
+    // Assign user to company profile using the company manager function
     if (assignedUserId) {
       const { data: assignmentResult, error: assignError } = await supabase.rpc(
-        'admin_assign_profile_managers',
+        'assign_company_team_member',
         {
           _profile_id: profile.id,
-          _manager_ids: [assignedUserId],
+          _manager_id: assignedUserId,
           _permissions: {
             can_edit_profile: true,
             can_edit_funds: true,
