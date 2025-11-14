@@ -277,8 +277,8 @@ function App() {
                            </Suspense>
                          } />
                          
-                       {/* Admin Panel */}
-                       <Route path="/admin" element={
+                       {/* Admin Panel with nested routes */}
+                       <Route path="/admin/*" element={
                          <Suspense fallback={<PageLoader />}>
                            <AdminPanel />
                          </Suspense>
