@@ -197,20 +197,9 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       },
     });
 
-    // Send custom confirmation email via Postmark
+    // Check for pending invitations after signup
     if (!error && email && data?.user?.id) {
-      setTimeout(async () => {
-        try {
-          console.log('📧 Sending signup confirmation email via Postmark');
-          await supabase.functions.invoke('send-signup-confirmation', {
-            body: { email, userId: data.user!.id },
-          });
-          console.log('📧 Confirmation email sent successfully');
-        } catch (emailError) {
-          console.error('📧 Failed to send confirmation email:', emailError);
-        }
-        
-        // Also check for pending invitations
+      setTimeout(() => {
         checkPendingInvitations(email, data.user!.id).catch(console.error);
       }, 1000);
     }
