@@ -1,6 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../../data/types/funds';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 
 interface FundComparisonBreadcrumbsProps {
   fund1: Fund;
@@ -9,21 +17,27 @@ interface FundComparisonBreadcrumbsProps {
 
 const FundComparisonBreadcrumbs: React.FC<FundComparisonBreadcrumbsProps> = ({ fund1, fund2 }) => {
   return (
-    <nav aria-label="breadcrumbs" className="mb-6">
-      <ol className="flex items-center text-sm text-muted-foreground">
-        <li>
-          <Link to="/" className="hover:text-primary transition-colors">Home</Link>
-        </li>
-        <li className="mx-2">/</li>
-        <li>
-          <Link to="/comparisons" className="hover:text-primary transition-colors">Fund Comparisons</Link>
-        </li>
-        <li className="mx-2">/</li>
-        <li>
-          <span className="font-medium text-primary">{fund1.name} vs {fund2.name}</span>
-        </li>
-      </ol>
-    </nav>
+    <div className="mb-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link to="/comparisons">Comparisons Hub</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{fund1.name} vs {fund2.name}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+    </div>
   );
 };
 
