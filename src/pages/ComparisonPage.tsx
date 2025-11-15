@@ -9,7 +9,7 @@ import EmptyComparison from '../components/comparison/EmptyComparison';
 import ComparisonBreadcrumbs from '../components/comparison/ComparisonBreadcrumbs';
 
 const ComparisonPage = () => {
-  const { compareFunds } = useComparison();
+  const { compareFunds, clearComparison } = useComparison();
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -21,7 +21,17 @@ const ComparisonPage = () => {
         <div className="mb-8">
           <ComparisonBreadcrumbs />
           
-          <h1 className="text-3xl font-bold mb-4">Compare Portugal Golden Visa Investment Funds</h1>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-3xl font-bold">Compare Portugal Golden Visa Investment Funds</h1>
+            {compareFunds.length > 0 && (
+              <button
+                onClick={clearComparison}
+                className="px-4 py-2 text-sm font-medium text-destructive-foreground bg-destructive hover:bg-destructive/90 rounded-md transition-colors"
+              >
+                Clear All
+              </button>
+            )}
+          </div>
           <p className="text-gray-600 mb-4">
             {compareFunds.length > 0 
               ? `Comparing ${compareFunds.length} selected funds side by side.`
