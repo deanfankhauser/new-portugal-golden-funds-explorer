@@ -132,13 +132,17 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                       <h3 className="text-lg font-semibold mb-4 text-foreground">Fund Tags</h3>
                       <div className="flex flex-wrap gap-2">
                         {displayTags.map(tag => (
-                          <Link 
-                            key={tag} 
-                            to={`/tags/${tagToSlug(tag)}`}
-                            className="bg-card hover:bg-primary hover:text-primary-foreground text-primary border border-primary px-2 py-1 md:px-3 md:py-1 rounded-full transition-all duration-300 shadow-sm text-xs md:text-sm font-medium"
+                          <Button
+                            key={tag}
+                            variant="outline"
+                            size="sm"
+                            className="rounded-full"
+                            asChild
                           >
-                            {tag}
-                          </Link>
+                            <Link to={`/tags/${tagToSlug(tag)}`}>
+                              {tag}
+                            </Link>
+                          </Button>
                         ))}
                       </div>
                     </div>

@@ -1,5 +1,44 @@
 # Design System Documentation
 
+## Overview
+
+The design system provides a comprehensive set of reusable components and design tokens to ensure consistency across the entire application. All components follow the profile page design language, which represents our best and most refined design patterns.
+
+## Core Principles
+
+1. **Consistency**: All components use semantic design tokens
+2. **Accessibility**: WCAG 2.1 AA compliance
+3. **Responsiveness**: Mobile-first approach
+4. **Performance**: Optimized for speed and efficiency
+5. **Maintainability**: Clear patterns and documentation
+
+## Design Tokens
+
+### Color System
+
+All colors use HSL semantic tokens from `index.css`:
+
+#### Brand Colors
+- `--brand-bordeaux`: Rich Bordeaux (Primary brand color)
+- `--brand-bronze`: Matte Bronze (Accent color)
+- `--brand-bone`: Bone White (Background base)
+
+#### Semantic Tokens
+- `--background`: Page background
+- `--foreground`: Primary text
+- `--card`: Card background
+- `--border`: Border color
+- `--primary`: Primary action color (Bordeaux)
+- `--primary-foreground`: Text on primary
+- `--secondary`: Secondary surface
+- `--muted`: Muted background
+- `--muted-foreground`: Secondary text
+- `--accent`: Accent color (Bronze)
+- `--success`: Success indicators
+- `--destructive`: Error/warning indicators
+
+## Component Standards
+
 ## Card Components
 
 All card components across the site follow a standardized design language based on the profile page designs.
@@ -166,6 +205,7 @@ Example migration:
 
 ## Related Documentation
 
-- [Color System](./COLOR_SYSTEM.md)
-- [Typography](./TYPOGRAPHY.md)
-- [Component Library](./COMPONENTS.md)
+- [Button System](./BUTTON_SYSTEM.md) - Complete button variants and usage guide
+- [Color System](./COLOR_SYSTEM.md) - Color tokens and palettes
+- [Typography](./TYPOGRAPHY.md) - Text styles and hierarchy
+- [Component Library](./COMPONENTS.md) - All available components
