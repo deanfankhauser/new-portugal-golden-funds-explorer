@@ -155,6 +155,10 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
         </div>
       </div>
       
+      {/* ROI Calculator - Below Main Content */}
+      <div className="mt-8 md:mt-12">
+        <ROICalculator fund={fund} />
+      </div>
       
       {/* Bottom Sections with Proper Spacing */}
       <div className="space-y-8 md:space-y-12 mt-8 md:mt-12">
@@ -166,9 +170,6 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
         
         {/* Fund Comparison Suggestions */}
         <FundComparisonSuggestions currentFund={fund} />
-        
-        {/* ROI Calculator */}
-        <ROICalculator fund={fund} />
         
         {/* FAQ Section */}
         <FundFAQSection fund={fund} />
