@@ -4,14 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Info, ExternalLink } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
+import { trackInteraction } from '../../utils/analyticsTracking';
 
 interface IntroductionButtonProps {
   variant?: 'full' | 'compact';
+  fundId?: string;
 }
 
-const IntroductionButton: React.FC<IntroductionButtonProps> = ({ variant = 'full' }) => {
+const IntroductionButton: React.FC<IntroductionButtonProps> = ({ variant = 'full', fundId }) => {
   const handleIntroductionClick = () => {
     openExternalLink(buildContactUrl('introduction-button'));
+    if (fundId) {
+      trackInteraction(fundId, 'booking_click');
+    }
   };
   
   if (variant === 'compact') {

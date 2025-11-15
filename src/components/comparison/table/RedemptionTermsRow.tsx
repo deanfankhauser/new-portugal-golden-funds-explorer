@@ -8,13 +8,15 @@ interface RedemptionTermsRowProps {
   field: 'frequency' | 'noticePeriod' | 'minimumHoldingPeriod';
   label: string;
   allSame: (values: any[]) => boolean;
+  bestType?: 'lowest' | 'highest' | null;
 }
 
 const RedemptionTermsRow: React.FC<RedemptionTermsRowProps> = ({ 
   funds, 
   field, 
   label,
-  allSame 
+  allSame,
+  bestType = null
 }) => {
   const getDisplayValue = (fund: Fund) => {
     if (!fund.redemptionTerms) return 'N/A';
@@ -41,14 +43,38 @@ const RedemptionTermsRow: React.FC<RedemptionTermsRowProps> = ({
 
   const highlight = funds.length > 1 && allSame(values);
 
+  // Calculate best value index if bestType is specified and we have multiple funds
+  let bestIndex = -1;
+  if (bestType && funds.length > 1 && (field === 'noticePeriod' || field === 'minimumHoldingPeriod')) {
+    const numericValues = values.map(v => {
+      if (typeof v === 'number') return v;
+      if (v === null || v === undefined) return null;
+      return null;
+    });
+
+    // Only find best if we have at least one valid numeric value
+    if (numericValues.some(v => v !== null)) {
+      if (bestType === 'lowest') {
+        let minValue = Infinity;
+        numericValues.forEach((val, idx) => {
+          if (val !== null && val < minValue) {
+            minValue = val;
+            bestIndex = idx;
+          }
+        });
+      }
+    }
+  }
+
   return (
     <tr className="border-b">
       <td className="py-3 px-4 font-medium">{label}</td>
-      {funds.map(fund => (
+      {funds.map((fund, idx) => (
         <ComparisonCell 
           key={fund.id} 
           value={getDisplayValue(fund)} 
           highlight={highlight}
+          isBest={bestIndex === idx}
         />
       ))}
     </tr>

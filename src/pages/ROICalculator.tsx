@@ -11,9 +11,15 @@ import { Fund } from '../data/types/funds';
 const ROICalculator = () => {
   const [selectedFund, setSelectedFund] = useState<Fund | null>(null);
   const [results, setResults] = useState<{
-    totalValue: number;
-    totalReturn: number;
-    annualizedReturn: number;
+    grossTotalValue: number;
+    grossTotalReturn: number;
+    grossAnnualizedReturn: number;
+    netTotalValue: number;
+    netTotalReturn: number;
+    netAnnualizedReturn: number;
+    totalFeesPaid: number;
+    managementFeesPaid: number;
+    performanceFeesPaid: number;
   } | null>(null);
 
   useEffect(() => {
@@ -22,9 +28,15 @@ const ROICalculator = () => {
   }, []);
 
   const handleResultsCalculated = (calculatedResults: {
-    totalValue: number;
-    totalReturn: number;
-    annualizedReturn: number;
+    grossTotalValue: number;
+    grossTotalReturn: number;
+    grossAnnualizedReturn: number;
+    netTotalValue: number;
+    netTotalReturn: number;
+    netAnnualizedReturn: number;
+    totalFeesPaid: number;
+    managementFeesPaid: number;
+    performanceFeesPaid: number;
   }) => {
     setResults(calculatedResults);
   };

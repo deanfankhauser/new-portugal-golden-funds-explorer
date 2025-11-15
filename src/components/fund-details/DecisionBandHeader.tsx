@@ -1,149 +1,81 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { Calendar } from 'lucide-react';
-import { useComparison } from '../../contexts/ComparisonContext';
-import { buildBookingUrl, openExternalLink } from '../../utils/urlHelpers';
-import analytics from '../../utils/analytics';
+import { CheckCircle2 } from 'lucide-react';
 import { Fund } from '../../data/funds';
-import { FundEditButton } from '../fund-editing';
-import { categoryToSlug, managerToSlug } from '@/lib/utils';
+
 
 interface DecisionBandHeaderProps {
   fund: Fund;
 }
 
 const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
-  const { isInComparison, addToComparison } = useComparison();
-  const isCompared = isInComparison(fund.id);
-
-  const handleCompareClick = () => {
-    addToComparison(fund);
-    analytics.trackEvent('add_to_comparison', {
-      fund_id: fund.id,
-      fund_name: fund.name,
-      source: 'decision_band_header'
-    });
-  };
-
-  const handleBookCall = () => {
-    const bookingUrl = buildBookingUrl(fund.id, fund.name);
-    openExternalLink(bookingUrl);
-    analytics.trackCTAClick('decision_band_header', 'book_call', bookingUrl);
-  };
-
   const isOpenForSubscriptions = fund.fundStatus === 'Open';
 
-  // Simplified one-line summary with internal links
-  const hasGoldenVisa = fund.tags?.some(tag => tag.toLowerCase().includes('golden visa'));
-  const redemptionFreq = fund.redemptionTerms?.frequency?.toLowerCase();
-  
-  const categorySlug = categoryToSlug(fund.category);
-  const managerSlug = managerToSlug(fund.managerName);
-  
-  const summary = `${fund.regulatedBy || 'CMVM'}-regulated, ${fund.term ? 'closed-ended' : 'open-ended'} ${fund.category.toLowerCase()}${redemptionFreq === 'daily' ? ' with daily liquidity' : ''}${hasGoldenVisa ? '. Golden Visa eligible' : ''}.`;
+  // Helper function to bold percentages and key investment terms in description
+  const formatDescription = (text: string) => {
+    // Bold percentages (e.g., "65%", "35%")
+    let formatted = text.replace(/(\d+%)/g, '<strong>$1</strong>');
+    
+    // Bold key investment terms
+    const termsToHighlight = [
+      'Portuguese fixed income',
+      'digital assets',
+      'real estate',
+      'private equity',
+      'venture capital',
+      'public markets',
+      'fixed income',
+      'equities'
+    ];
+    
+    termsToHighlight.forEach(term => {
+      const regex = new RegExp(`(${term})`, 'gi');
+      formatted = formatted.replace(regex, '<strong>$1</strong>');
+    });
+    
+    return formatted;
+  };
 
   return (
-    <div className="space-y-8">
-      {/* Header with Suggest Edit */}
+    <div className="bg-card border border-border/40 rounded-2xl shadow-sm p-8 md:p-10">
       <div className="flex items-start justify-between gap-6">
-        <div className="flex-1 space-y-4">
+        <div className="flex-1 space-y-6">
+          {/* Badges */}
           <div className="flex items-center gap-3 flex-wrap">
+            {fund.isVerified && (
+              <Link to="/verification-program" className="inline-block hover:opacity-80 transition-opacity">
+                <div className="bg-success/10 text-success px-4 py-2 rounded-xl text-[13px] font-semibold flex items-center gap-2 border border-success/20">
+                  <CheckCircle2 className="w-4 h-4" />
+                  Verified Fund
+                </div>
+              </Link>
+            )}
             {isOpenForSubscriptions && (
-              <Badge variant="success" className="text-xs font-medium">
+              <div className="bg-primary/10 text-primary px-4 py-2 rounded-xl text-[13px] font-semibold border border-primary/20">
                 Open for subscriptions
+              </div>
+            )}
+            {!fund.isVerified && (
+              <Badge variant="outline" className="text-[13px] font-medium px-4 py-2 rounded-xl">
+                Unverified
               </Badge>
             )}
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+          {/* Fund Name */}
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight">
             {fund.name}
           </h1>
           
-          <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            {fund.regulatedBy || 'CMVM'}-regulated, {fund.term ? 'closed-ended' : 'open-ended'}{' '}
-            <Link 
-              to={`/categories/${categorySlug}`}
-              className="text-primary hover:underline font-medium"
-            >
-              {fund.category}
-            </Link>
-            {' '}fund managed by{' '}
-            <Link 
-              to={`/manager/${managerSlug}`}
-              className="text-primary hover:underline font-medium"
-            >
-              {fund.managerName}
-            </Link>
-            {redemptionFreq === 'daily' ? ' with daily liquidity' : ''}{hasGoldenVisa ? '. Golden Visa eligible' : ''}.
-          </p>
+          {/* Description with bold key terms */}
+          <p 
+            className="text-lg text-foreground/70 max-w-3xl leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: formatDescription(fund.description) }}
+          />
         </div>
         
-        <FundEditButton 
-          fund={fund}
-          variant="outline"
-          size="sm"
-          className="shrink-0"
-        />
-      </div>
-
-      {/* Clean CTAs */}
-      <div className="flex flex-col sm:flex-row gap-3 max-w-md">
-        <Button 
-          size="lg"
-          className="gap-2 flex-1"
-          onClick={handleBookCall}
-        >
-          <Calendar className="h-5 w-5" />
-          Book 30-min Call
-        </Button>
-        
-        <Button
-          variant={isCompared ? "secondary" : "outline"}
-          size="lg"
-          onClick={handleCompareClick}
-          className="flex-1"
-        >
-          {isCompared ? 'In Comparison' : 'Compare'}
-        </Button>
-      </div>
-
-      {/* Key Highlights Section */}
-      <div className="space-y-4 max-w-2xl">
-        <h2 className="text-lg font-semibold">Why This Fund?</h2>
-        <ul className="space-y-3">
-          {hasGoldenVisa && (
-            <li className="flex items-start gap-3">
-              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-              <span className="text-sm text-muted-foreground leading-relaxed">
-                <strong className="text-foreground">Golden Visa Eligible</strong> — Qualifies for Portugal's Golden Visa program
-              </span>
-            </li>
-          )}
-          <li className="flex items-start gap-3">
-            <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-            <span className="text-sm text-muted-foreground leading-relaxed">
-              <strong className="text-foreground">{fund.regulatedBy || 'CMVM'} Regulated</strong> — Licensed and supervised by Portuguese authorities
-            </span>
-          </li>
-          {redemptionFreq === 'daily' && (
-            <li className="flex items-start gap-3">
-              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-              <span className="text-sm text-muted-foreground leading-relaxed">
-                <strong className="text-foreground">Daily Liquidity</strong> — Redeem your investment any business day
-              </span>
-            </li>
-          )}
-          {fund.established && (
-            <li className="flex items-start gap-3">
-              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-              <span className="text-sm text-muted-foreground leading-relaxed">
-                <strong className="text-foreground">Established {fund.established}</strong> — {new Date().getFullYear() - Number(fund.established)} years of track record
-              </span>
-            </li>
-          )}
-        </ul>
+        {/* Edit actions removed on public profile */}
       </div>
     </div>
   );

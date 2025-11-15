@@ -25,6 +25,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import HistoricalPerformanceEditor from './HistoricalPerformanceEditor';
+import { useAllFunds } from '@/hooks/useFundsQuery';
 
 interface FundEditModalProps {
   fund: Fund;
@@ -37,9 +38,13 @@ export const FundEditModal: React.FC<FundEditModalProps> = ({
   open,
   onOpenChange,
 }) => {
-  const { submitFundEditSuggestion, loading } = useFundEditing();
+  const { submitFundEditSuggestion, canEditFund, directUpdateFund, loading, user } = useFundEditing();
   const { toast } = useToast();
+  const { data: allFundsData } = useAllFunds();
+  const allDatabaseFunds = allFundsData || [];
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [hasDirectEditAccess, setHasDirectEditAccess] = useState(false);
+  const [checkingPermission, setCheckingPermission] = useState(true);
   
 const buildFormData = (f: Fund) => {
   const formData: any = {
@@ -113,6 +118,28 @@ useEffect(() => {
     setFormData(buildFormData(fund));
   }
 }, [open, fund]);
+
+// Check if user has direct edit permission
+useEffect(() => {
+  const checkPermission = async () => {
+    if (user && open) {
+      setCheckingPermission(true);
+      try {
+        const canEdit = await canEditFund(fund.id);
+        setHasDirectEditAccess(canEdit);
+      } catch (error) {
+        console.error('Error checking edit permission:', error);
+        setHasDirectEditAccess(false);
+      } finally {
+        setCheckingPermission(false);
+      }
+    } else {
+      setHasDirectEditAccess(false);
+      setCheckingPermission(false);
+    }
+  };
+  checkPermission();
+}, [fund.id, user, open, canEditFund]);
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({
@@ -327,22 +354,34 @@ useEffect(() => {
         return;
       }
 
-      await submitFundEditSuggestion(
-        fund.id,
-        suggestedChanges,
-        getCurrentValues()
-      );
+      if (hasDirectEditAccess) {
+        // Direct update for assigned managers
+        await directUpdateFund(fund.id, suggestedChanges);
+        toast({
+          title: "Fund Updated!",
+          description: "Your changes have been saved. Please allow up to 10 minutes for updates to be reflected on the public fund profile.",
+        });
+      } else {
+        // Suggestion workflow for non-assigned users
+        await submitFundEditSuggestion(
+          fund.id,
+          suggestedChanges,
+          getCurrentValues()
+        );
+        toast({
+          title: "Suggestion submitted!",
+          description: "Thank you for your edit suggestion! We will review it and notify you by email once it's processed.",
+        });
+      }
       
-      toast({
-        title: "Suggestion submitted!",
-        description: "Thank you for your edit suggestion! We will review it and notify you by email once it's processed.",
-      });
       onOpenChange(false);
     } catch (error) {
-      console.error('Error submitting edit suggestion:', error);
+      console.error('Error submitting changes:', error);
       toast({
         title: "Submission failed",
-        description: "Failed to submit edit suggestion. Please try again.",
+        description: hasDirectEditAccess 
+          ? "Failed to update fund. Please try again."
+          : "Failed to submit edit suggestion. Please try again.",
         variant: "destructive",
       });
     }
@@ -354,9 +393,16 @@ useEffect(() => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle>Edit Fund Information</DialogTitle>
+          <DialogTitle>
+            {checkingPermission ? 'Edit Fund Information' : hasDirectEditAccess ? 'Edit Fund' : 'Suggest Fund Edit'}
+          </DialogTitle>
           <DialogDescription>
-            Suggest changes to {fund.name}. All changes will be reviewed before being applied.
+            {checkingPermission 
+              ? `Loading permissions for ${fund.name}...`
+              : hasDirectEditAccess 
+                ? `Edit ${fund.name}. Your changes will be published immediately.`
+                : `Suggest changes to ${fund.name}. All changes will be reviewed before being applied.`
+            }
           </DialogDescription>
         </DialogHeader>
         
@@ -674,7 +720,7 @@ useEffect(() => {
                 <div className="space-y-3">
                   <Label className="text-sm font-medium">Available Tags</Label>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-64 overflow-y-auto p-3 border rounded-md">
-                    {getAllTags().map((tag) => {
+                    {getAllTags(allDatabaseFunds).map((tag) => {
                       const isSelected = formData.tags?.includes(tag) || false;
                       return (
                         <div key={tag} className="flex items-center space-x-2">
@@ -1215,15 +1261,20 @@ useEffect(() => {
           
           <Button 
             onClick={handleSubmit} 
-            disabled={!hasChanges || loading}
+            disabled={!hasChanges || loading || checkingPermission}
             className="gap-2"
           >
             {loading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                {hasDirectEditAccess ? 'Publishing...' : 'Submitting...'}
+              </>
             ) : (
-              <Save className="h-4 w-4" />
+              <>
+                <Save className="h-4 w-4" />
+                {hasDirectEditAccess ? 'Publish Changes' : 'Submit Suggestion'}
+              </>
             )}
-            Submit Changes
           </Button>
         </div>
         

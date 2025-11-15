@@ -35,9 +35,9 @@ export const getReturnTargetDisplay = (fund: Fund): string => {
   
   if (min != null && max != null) {
     if (min === max) {
-      return `${min}% annually`;
+      return `${min}% p.a.`;
     }
-    return `${min}-${max}% annually`;
+    return `${min}-${max}% p.a.`;
   }
   
   if (fund.returnTarget) {

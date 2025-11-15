@@ -2,72 +2,56 @@ import fs from 'fs';
 import path from 'path';
 import { StaticRoute } from '../../src/ssg/routeDiscovery';
 import { DateManagementService } from '../../src/services/dateManagementService';
-import { funds } from '../../src/data/services/funds-service';
-import { getAllComparisonSlugs } from '../../src/data/services/comparison-service';
+import { fetchAllFundsForBuild, fetchAllCategoriesForBuild, fetchAllTagsForBuild } from '../../src/lib/build-data-fetcher';
+import { generateComparisonsFromFunds } from '../../src/data/services/comparison-service';
 import { EnhancedSitemapService } from '../../src/services/enhancedSitemapService';
-import { getAllCategories } from '../../src/data/services/categories-service';
-import { getAllTags } from '../../src/data/services/tags-service';
 import { categoryToSlug, tagToSlug } from '../../src/lib/utils';
 
-export function generateSitemap(routes: StaticRoute[], distDir: string): void {
-  // Build route-derived entries with enhanced priority logic
-  const routeEntries = routes.map(route => {
-    let priority = '0.6'; // Default for static pages
+export async function generateSitemap(routes: StaticRoute[], distDir: string): Promise<void> {
+  // Fetch fund data for accurate lastmod dates
+  const funds = await fetchAllFundsForBuild();
+  
+  // Filter to only canonical routes (exclude legacy slug aliases, alternatives pages)
+  const canonicalRoutes = routes.filter(route => route.isCanonical !== false);
+  const excludedCount = routes.length - canonicalRoutes.length;
+  
+  console.log(`📊 Sitemap: Processing ${canonicalRoutes.length} canonical routes (excluded ${excludedCount} non-canonical)`);
+  
+  // Build route-derived entries first
+  const routeEntries = canonicalRoutes.map(route => {
+    let priority = '0.8';
     let changefreq = 'weekly';
     let lastmod = DateManagementService.getCurrentISODate();
 
     if (route.path === '/') {
-      priority = '1.0'; // Homepage - highest priority
-      changefreq = 'daily';
-    } else if (route.pageType === 'fund-index') {
-      priority = '0.95'; // Fund index - critical discovery page
+      priority = '1.0';
       changefreq = 'daily';
     } else if (route.pageType === 'fund') {
-      // Individual funds: 0.85-0.90 based on performance/data quality
+      priority = '0.9';
       const fund = route.fundId ? funds.find(f => f.id === route.fundId) : null;
       if (fund) {
         const contentDates = DateManagementService.getFundContentDates(fund);
         lastmod = DateManagementService.formatSitemapDate(contentDates.dateModified);
         changefreq = contentDates.changeFrequency;
-        
-        // Higher priority for funds with better data quality
-        const hasPerformance = fund.historicalPerformance && fund.historicalPerformance.length > 0;
-        const hasRichData = fund.websiteUrl && fund.description;
-        priority = (hasPerformance && hasRichData) ? '0.90' : '0.85';
-      } else {
-        priority = '0.85';
       }
     } else if (route.pageType === 'fund-comparison') {
-      priority = '0.80'; // Comparisons - valuable for users
+      priority = '0.85';
       changefreq = 'weekly';
       const contentDates = DateManagementService.getContentDates('comparison');
       lastmod = DateManagementService.formatSitemapDate(contentDates.dateModified);
     } else if (route.pageType === 'fund-alternatives') {
-      priority = '0.75'; // Alternatives - discovery tool
+      priority = '0.8';
       changefreq = 'weekly';
       const fund = route.fundId ? funds.find(f => f.id === route.fundId) : null;
       if (fund) {
         const contentDates = DateManagementService.getFundContentDates(fund);
         lastmod = DateManagementService.formatSitemapDate(contentDates.dateModified);
       }
-    } else if (route.pageType === 'category') {
-      priority = '0.75'; // Categories - important taxonomy
-      changefreq = 'weekly';
-      const contentDates = DateManagementService.getContentDates('category');
-      lastmod = DateManagementService.formatSitemapDate(contentDates.dateModified);
-    } else if (route.pageType === 'tag') {
-      priority = '0.70'; // Tags - secondary taxonomy
-      changefreq = 'weekly';
-      const contentDates = DateManagementService.getContentDates('tag');
-      lastmod = DateManagementService.formatSitemapDate(contentDates.dateModified);
-    } else if (['categories-hub', 'tags-hub', 'managers-hub', 'comparisons-hub', 'alternatives-hub'].includes(route.pageType)) {
-      priority = '0.70'; // Hub pages - navigation aids
+    } else if (['categories', 'tags', 'managers', 'comparisons-hub', 'alternatives-hub'].includes(route.pageType)) {
+      priority = '0.7';
       changefreq = 'weekly';
       const contentDates = DateManagementService.getContentDates(route.pageType);
       lastmod = DateManagementService.formatSitemapDate(contentDates.dateModified);
-    } else if (route.pageType === 'manager') {
-      priority = '0.65'; // Manager pages
-      changefreq = 'monthly';
     }
 
     return {
@@ -96,54 +80,40 @@ export function generateSitemap(routes: StaticRoute[], distDir: string): void {
   routeEntries.forEach(addIfMissing);
   enhancedEntries.forEach(addIfMissing);
 
-  // Ensure core hub/static pages with differentiated priorities
+  // Ensure core hub/static pages are present even if upstream generation misses them
   const now = DateManagementService.getCurrentISODate();
-  const corePages = [
-    { path: '/', priority: '1.0', changefreq: 'daily' },
-    { path: '/index', priority: '0.95', changefreq: 'daily' },
-    { path: '/categories', priority: '0.70', changefreq: 'weekly' },
-    { path: '/tags', priority: '0.70', changefreq: 'weekly' },
-    { path: '/managers', priority: '0.70', changefreq: 'weekly' },
-    { path: '/comparisons', priority: '0.70', changefreq: 'weekly' },
-    { path: '/compare', priority: '0.70', changefreq: 'weekly' },
-    { path: '/alternatives', priority: '0.70', changefreq: 'weekly' },
-    { path: '/roi-calculator', priority: '0.65', changefreq: 'monthly' },
-    { path: '/about', priority: '0.60', changefreq: 'monthly' },
-    { path: '/faqs', priority: '0.65', changefreq: 'monthly' },
-    { path: '/disclaimer', priority: '0.50', changefreq: 'yearly' },
-    { path: '/privacy', priority: '0.50', changefreq: 'yearly' },
-    { path: '/saved-funds', priority: '0.40', changefreq: 'never' }, // User-specific
-  ];
-  corePages.forEach(({ path, priority, changefreq }) => addIfMissing({
-    url: `https://funds.movingto.com${path === '/' ? '' : path}`,
+  const corePaths = ['/', '/about', '/disclaimer', '/privacy', '/faqs', '/roi-calculator', '/saved-funds', '/categories', '/tags', '/managers', '/comparisons', '/compare', '/alternatives'];
+  corePaths.forEach(p => addIfMissing({
+    url: `https://funds.movingto.com${p === '/' ? '' : p}`,
     lastmod: now,
-    changefreq,
-    priority
+    changefreq: 'weekly',
+    priority: '0.7'
   }));
 
-  // Force include all discovered category and tag detail pages with proper priorities
+  // Force include all discovered category and tag detail pages
   routes.filter(r => r.pageType === 'category' || r.pageType === 'tag').forEach(r => addIfMissing({
     url: `https://funds.movingto.com${r.path}`,
     lastmod: now,
     changefreq: 'weekly',
-    priority: r.pageType === 'category' ? '0.75' : '0.70'
+    priority: r.pageType === 'category' ? '0.8' : '0.7'
   }));
 
   // Also force include using direct data (independent of route discovery)
   try {
-    const categoriesList = getAllCategories();
+    const categoriesList = await fetchAllCategoriesForBuild();
     categoriesList.forEach(cat => addIfMissing({
       url: `https://funds.movingto.com/categories/${categoryToSlug(cat as any)}`,
       lastmod: now,
       changefreq: 'weekly',
-      priority: '0.75' // Categories are important taxonomy
+      priority: '0.8'
     }));
-    const tagsList = getAllTags();
+    
+    const tagsList = await fetchAllTagsForBuild();
     tagsList.forEach(tag => addIfMissing({
       url: `https://funds.movingto.com/tags/${tagToSlug(tag as any)}`,
       lastmod: now,
       changefreq: 'weekly',
-      priority: '0.70' // Tags are secondary taxonomy
+      priority: '0.7'
     }));
   } catch (e) {
     console.warn('⚠️  Sitemap: category/tag data include failed:', (e as any)?.message || e);
@@ -167,12 +137,14 @@ ${urlElements}
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap);
 
   // Coverage logs
-  const comparisonSlugs = getAllComparisonSlugs();
-  const comparisonRoutesInSitemap = routes.filter(r => r.pageType === 'fund-comparison').length;
-  const alternativesRoutesInSitemap = routes.filter(r => r.pageType === 'fund-alternatives').length;
-  const categoryRoutesInSitemap = routes.filter(r => r.pageType === 'category').length;
+  const allComparisons = generateComparisonsFromFunds(funds);
+  const comparisonSlugs = allComparisons.map(c => c.slug);
+  const comparisonRoutesInSitemap = canonicalRoutes.filter(r => r.pageType === 'fund-comparison').length;
+  const alternativesRoutesInSitemap = canonicalRoutes.filter(r => r.pageType === 'fund-alternatives').length;
+  const categoryRoutesInSitemap = canonicalRoutes.filter(r => r.pageType === 'category').length;
 
-  console.log(`✅ Sitemap: Generated ${byUrl.size} URLs including ${comparisonRoutesInSitemap} comparison pages, ${alternativesRoutesInSitemap} alternatives pages, and ${categoryRoutesInSitemap} category pages`);
+  console.log(`✅ Sitemap: Generated ${byUrl.size} URLs (${comparisonRoutesInSitemap} comparisons, ${alternativesRoutesInSitemap} alternatives, ${categoryRoutesInSitemap} categories)`);
+  console.log(`   Excluded ${excludedCount} non-canonical routes from sitemap`);
   if (comparisonRoutesInSitemap < comparisonSlugs.length) {
     console.warn(`⚠️  Sitemap: Missing ${comparisonSlugs.length - comparisonRoutesInSitemap} comparison URLs`);
   }

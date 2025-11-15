@@ -1,7 +1,8 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getFundsByCategory, getAllCategories } from '../data/funds';
+import { getFundsByCategory } from '../data/services/categories-service';
+import { getAllCategories } from '../data/services/categories-service';
 import { slugToCategory, categoryToSlug } from '@/lib/utils';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -14,14 +15,22 @@ import CategoryPageFAQ from '../components/category/CategoryPageFAQ';
 import CategoryPageEmptyState from '../components/category/CategoryPageEmptyState';
 import RelatedCategories from '../components/category/RelatedCategories';
 import CategoryCrossLinks from '../components/category/CategoryCrossLinks';
+import VerificationFilterChip from '../components/common/VerificationFilterChip';
+import { FloatingActionButton } from '../components/common/FloatingActionButton';
+import { useAllFunds } from '../hooks/useFundsQuery';
+import FundListSkeleton from '../components/common/FundListSkeleton';
 
 const CategoryPage = () => {
   const { category: categorySlug } = useParams<{ category: string }>();
   const navigate = useNavigate();
+  const [showOnlyVerified, setShowOnlyVerified] = useState(false);
+  const { data: allFundsData, isLoading } = useAllFunds();
+  
+  const allDatabaseFunds = allFundsData || [];
   
   // Convert URL slug to actual category
   const category = categorySlug ? slugToCategory(categorySlug) : '';
-  const allCategories = getAllCategories();
+  const allCategories = getAllCategories(allDatabaseFunds);
   
   // Check if the category exists
   const categoryExists = allCategories.includes(category as any);
@@ -37,12 +46,33 @@ const CategoryPage = () => {
     window.scrollTo(0, 0);
   }, [categoryExists, navigate, categorySlug]);
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header />
+        <main className="flex-1 py-6 md:py-8">
+          <div className="container mx-auto px-4 max-w-7xl">
+            <FundListSkeleton count={6} />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   // Don't render anything if category doesn't exist
   if (!categoryExists || !category) {
     return null;
   }
 
-  const funds = getFundsByCategory(category as any);
+  const allFunds = getFundsByCategory(allDatabaseFunds, category as any);
+  
+  // Filter funds by verification status
+  const funds = useMemo(() => {
+    if (!showOnlyVerified) return allFunds;
+    return allFunds.filter(fund => fund.isVerified);
+  }, [allFunds, showOnlyVerified]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -55,8 +85,25 @@ const CategoryPage = () => {
           
           <CategoryPageHeader categoryName={category} />
           
-          {funds.length === 0 ? (
+          {/* Verification Filter */}
+          <div className="mb-6">
+            <VerificationFilterChip 
+              showOnlyVerified={showOnlyVerified}
+              setShowOnlyVerified={setShowOnlyVerified}
+            />
+          </div>
+          
+          {funds.length === 0 && !showOnlyVerified ? (
             <CategoryPageEmptyState categoryName={category} />
+          ) : funds.length === 0 && showOnlyVerified && allFunds.length > 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground text-lg">
+                No verified funds found in the "{category}" category.
+              </p>
+              <p className="text-muted-foreground mt-2">
+                Try disabling the verification filter to see all {allFunds.length} funds.
+              </p>
+            </div>
           ) : (
             <div className="space-y-8">
               <CategoryPageFundSummary count={funds.length} categoryName={category} />
@@ -78,6 +125,8 @@ const CategoryPage = () => {
       </main>
       
       <Footer />
+      
+      <FloatingActionButton />
     </div>
   );
 };

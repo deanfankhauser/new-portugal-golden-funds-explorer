@@ -25,6 +25,7 @@ export class InvestmentFundStructuredDataService {
       "fundLegalName": fund.name,
       "description": fund.description,
       "category": fund.category,
+      "fundType": fund.tags?.some(tag => tag.toLowerCase().includes('open-end')) ? "Open-end fund" : "Investment Fund",
       "feesAndCommissionsSpecification": feesSpec || "Contact fund for details",
       "auditor": fund.auditor || "Not specified",
       "custodian": fund.custodian || "Not specified",
@@ -33,7 +34,7 @@ export class InvestmentFundStructuredDataService {
         "name": "Portugal",
         "alternateName": "PT"
       },
-      "isAccessibleForFree": true,
+      "isAccessibleForFree": false,
       "provider": {
         "@type": "Organization",
         "name": fund.managerName,
@@ -141,6 +142,64 @@ export class InvestmentFundStructuredDataService {
         "description": `Minimum investment required: €${fund.minimumInvestment?.toLocaleString()}`
       }
     };
+
+    // Build additionalProperty array for fund characteristics
+    const additionalProperties: any[] = [];
+
+    // Lock-up period
+    if (fund.redemptionTerms?.minimumHoldingPeriod) {
+      additionalProperties.push({
+        "@type": "PropertyValue",
+        "name": "Lock-up Period",
+        "value": `${fund.redemptionTerms.minimumHoldingPeriod} months`
+      });
+    } else if (fund.tags?.includes('No Lock-Up')) {
+      additionalProperties.push({
+        "@type": "PropertyValue",
+        "name": "Lock-up Period",
+        "value": "No lock-up"
+      });
+    }
+
+    // US investor eligibility
+    const isUSInvestorFriendly = fund.tags?.some(tag => 
+      tag === 'PFIC-Compliant' || 
+      tag === 'QEF Eligible'
+    );
+    additionalProperties.push({
+      "@type": "PropertyValue",
+      "name": "Open to US investors",
+      "value": isUSInvestorFriendly ? "Yes" : "No"
+    });
+
+    // Golden Visa eligibility
+    const isGoldenVisaEligible = fund.tags?.includes('Golden Visa Eligible');
+    additionalProperties.push({
+      "@type": "PropertyValue",
+      "name": "Golden Visa Eligible",
+      "value": isGoldenVisaEligible ? "Yes" : "No"
+    });
+
+    // Fund status
+    additionalProperties.push({
+      "@type": "PropertyValue",
+      "name": "Fund Status",
+      "value": fund.fundStatus || "Open"
+    });
+
+    // Redemption frequency
+    if (fund.redemptionTerms?.frequency) {
+      additionalProperties.push({
+        "@type": "PropertyValue",
+        "name": "Redemption Frequency",
+        "value": fund.redemptionTerms.frequency
+      });
+    }
+
+    // Add to schema
+    if (additionalProperties.length > 0) {
+      schema.additionalProperty = additionalProperties;
+    }
     
     // Add aggregateRating if we have performance data
     if (fund.historicalPerformance && typeof fund.historicalPerformance === 'object') {

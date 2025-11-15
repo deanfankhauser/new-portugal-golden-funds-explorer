@@ -1,21 +1,29 @@
 
-import React, { useState } from 'react';
-import { Fund, FundTag } from '../../data/funds';
-import CompactFilter from './CompactFilter';
+import React from 'react';
+import { Fund, FundTag, FundCategory } from '../../data/funds';
+import StreamlinedFilter from './StreamlinedFilter';
+import CategoryFilter from './CategoryFilter';
+import ManagerFilter from './ManagerFilter';
 import FundListSkeleton from '../common/FundListSkeleton';
-import MobileFilterToggle from './MobileFilterToggle';
 import HomepageSidebar from './HomepageSidebar';
 import ResultsHeader from './ResultsHeader';
 import EmptyFundsState from './EmptyFundsState';
 import FundsList from './FundsList';
+import BackToTopButton from './BackToTopButton';
+import MobileFilterButton from './MobileFilterButton';
 
 
 interface HomepageContentProps {
   filteredFunds: Fund[];
   selectedTags: FundTag[];
   setSelectedTags: (tags: FundTag[]) => void;
+  selectedCategory: FundCategory | null;
+  setSelectedCategory: (category: FundCategory | null) => void;
+  selectedManager: string | null;
+  setSelectedManager: (manager: string | null) => void;
+  showOnlyVerified: boolean;
+  setShowOnlyVerified: (value: boolean) => void;
   searchQuery: string;
-  setSearchQuery: (query: string) => void;
   allFunds?: Fund[];
   loading?: boolean;
   error?: string | null;
@@ -25,46 +33,71 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
   filteredFunds,
   selectedTags,
   setSelectedTags,
+  selectedCategory,
+  setSelectedCategory,
+  selectedManager,
+  setSelectedManager,
+  showOnlyVerified,
+  setShowOnlyVerified,
   searchQuery,
-  setSearchQuery,
   allFunds = [],
   loading = false,
   error = null
 }) => {
-  const [showMobileFilter, setShowMobileFilter] = useState(false);
-
-  const hasActiveFilters = selectedTags.length > 0 || searchQuery.trim() !== '';
+  const hasActiveFilters = selectedTags.length > 0 || searchQuery.trim() !== '' || 
+    selectedCategory !== null || selectedManager !== null;
 
   return (
-    <div className="spacing-responsive-md">
+    <div className="spacing-responsive-md" id="funds-section">
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
-
-      <MobileFilterToggle 
-        showMobileFilter={showMobileFilter}
-        setShowMobileFilter={setShowMobileFilter}
-        activeFiltersCount={selectedTags.length}
-        hasSearch={searchQuery.trim() !== ''}
+      
+      {/* Floating action buttons */}
+      <BackToTopButton />
+      <MobileFilterButton
+        selectedTags={selectedTags}
+        setSelectedTags={setSelectedTags}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        selectedManager={selectedManager}
+        setSelectedManager={setSelectedManager}
+        showOnlyVerified={showOnlyVerified}
+        setShowOnlyVerified={setShowOnlyVerified}
       />
 
-      {showMobileFilter && (
-        <div className="lg:hidden mb-6" id="mobile-filter-section">
-          <CompactFilter
-            selectedTags={selectedTags}
-            setSelectedTags={setSelectedTags}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
+      {/* Mobile filter - hidden on all screens (using floating action button instead) */}
+      <div className="hidden mb-6 space-y-4">
+        <div className="bg-card rounded-lg shadow-sm border p-4">
+          <CategoryFilter
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
           />
         </div>
-      )}
+        
+        <div className="bg-card rounded-lg shadow-sm border p-4">
+          <ManagerFilter
+            selectedManager={selectedManager}
+            setSelectedManager={setSelectedManager}
+          />
+        </div>
+        
+        <StreamlinedFilter
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+          showOnlyVerified={showOnlyVerified}
+          setShowOnlyVerified={setShowOnlyVerified}
+        />
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8 items-start">
         <HomepageSidebar
           selectedTags={selectedTags}
           setSelectedTags={setSelectedTags}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          showOnlyVerified={showOnlyVerified}
+          setShowOnlyVerified={setShowOnlyVerified}
         />
         
         <main className="lg:col-span-3 order-1 lg:order-2" id="main-content">
@@ -80,7 +113,7 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
           ) : filteredFunds.length === 0 ? (
             <EmptyFundsState
               setSelectedTags={setSelectedTags}
-              setSearchQuery={setSearchQuery}
+              setSearchQuery={() => {}}
               hasActiveFilters={hasActiveFilters}
               searchQuery={searchQuery}
             />
@@ -91,7 +124,7 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
                 selectedTags={selectedTags}
                 searchQuery={searchQuery}
                 setSelectedTags={setSelectedTags}
-                setSearchQuery={setSearchQuery}
+                setSearchQuery={() => {}}
               />
               
               

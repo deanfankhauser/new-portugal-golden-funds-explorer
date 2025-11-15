@@ -1,10 +1,9 @@
 
 import { Fund } from '../types/funds';
-import { funds } from './funds-service';
 
-export const findAlternativeFunds = (currentFund: Fund, maxSuggestions: number = 3): Fund[] => {
+export const findAlternativeFunds = (allFunds: Fund[], currentFund: Fund, maxSuggestions: number = 3): Fund[] => {
   // Filter out the current fund
-  const otherFunds = funds.filter(fund => fund.id !== currentFund.id);
+  const otherFunds = allFunds.filter(fund => fund.id !== currentFund.id);
   
   // Score funds based on similarity
   const scoredFunds = otherFunds.map(fund => {
@@ -60,5 +59,6 @@ export const findAlternativeFunds = (currentFund: Fund, maxSuggestions: number =
   return scoredFunds
     .sort((a, b) => b.score - a.score)
     .slice(0, maxSuggestions)
-    .map(item => item.fund);
+    .map(item => item.fund)
+    .filter((f): f is Fund => !!f && typeof (f as any).name === 'string');
 };

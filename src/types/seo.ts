@@ -1,6 +1,6 @@
 
 export interface PageSEOProps {
-  pageType: 'homepage' | 'fund' | 'manager' | 'category' | 'tag' | '404' | 'disclaimer' | 'about' | 'faqs' | 'privacy' | 'comparison' | 'comparisons-hub' | 'fund-comparison' | 'roi-calculator' | 'managers-hub' | 'categories-hub' | 'tags-hub' | 'fund-index' | 'fund-alternatives' | 'alternatives-hub';
+  pageType: 'homepage' | 'fund' | 'manager' | 'category' | 'tag' | '404' | 'disclaimer' | 'about' | 'faqs' | 'privacy' | 'comparison' | 'comparisons-hub' | 'fund-comparison' | 'roi-calculator' | 'managers-hub' | 'categories-hub' | 'tags-hub' | 'fund-alternatives' | 'alternatives-hub' | 'verification-program' | 'verified-funds' | 'saved-funds';
   fundName?: string;
   managerName?: string;
   categoryName?: string;
@@ -8,6 +8,7 @@ export interface PageSEOProps {
   comparisonTitle?: string;
   comparisonSlug?: string;
   funds?: any[];
+  managerProfile?: any;
 }
 
 export interface SEOData {
@@ -16,8 +17,8 @@ export interface SEOData {
   url: string;
   structuredData: any;
   robots?: string;
-  keywords?: string[];
-  canonical?: string;
+  keywords?: string[]; // Array of SEO keywords for meta keywords tag
+  canonical?: string; // Canonical URL for this page
   helmetData?: {
     title: string;
     meta: string;

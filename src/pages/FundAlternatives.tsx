@@ -1,6 +1,7 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
-import { getFundById } from '../data/funds';
+import { useParams, Link } from 'react-router-dom';
+import { useAllFunds } from '../hooks/useFundsQuery';
+import { addTagsToFunds } from '../data/services/funds-service';
 import { findAlternativeFunds } from '../data/services/alternative-funds-service';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -8,15 +9,25 @@ import PageSEO from '../components/common/PageSEO';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ExternalLink, CheckCircle2 } from 'lucide-react';
 import { Alert, AlertDescription } from '../components/ui/alert';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '../components/ui/breadcrumb';
+import { URL_CONFIG } from '../utils/urlConfig';
 
 const FundAlternatives = () => {
   const { id } = useParams<{ id: string }>();
-  const fund = id ? getFundById(id) : null;
+  const { data: allFunds = [], isLoading } = useAllFunds();
+  const fundsWithTags = addTagsToFunds(allFunds);
+  const fund = fundsWithTags.find(f => f.id === id);
 
-  if (!fund) {
+  if (isLoading || !fund) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <PageSEO pageType="404" />
@@ -32,7 +43,7 @@ const FundAlternatives = () => {
     );
   }
 
-  const alternativeFunds = findAlternativeFunds(fund, 6);
+  const alternativeFunds = findAlternativeFunds(fundsWithTags, fund, 6);
 
   if (alternativeFunds.length === 0) {
     return (
@@ -42,13 +53,31 @@ const FundAlternatives = () => {
         <main className="flex-1 py-6 md:py-8">
           <div className="container mx-auto px-4 max-w-4xl">
             <div className="mb-6">
-              <Link 
-                to={`/${fund.id}`}
-                className="inline-flex items-center gap-2 text-primary hover:text-primary/80 mb-4"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Back to {fund.name}
-              </Link>
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink asChild>
+                      <Link to="/">Home</Link>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbLink asChild>
+                      <Link to="/alternatives">Alternatives Hub</Link>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbLink asChild>
+                      <Link to={URL_CONFIG.buildFundUrl(fund.id)}>{fund.name}</Link>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>Alternatives</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
             </div>
             
             <h1 className="text-3xl font-bold text-foreground mb-4">
@@ -59,7 +88,7 @@ const FundAlternatives = () => {
               <p className="text-muted-foreground mb-4">
                 No alternative funds found similar to {fund.name}.
               </p>
-              <Link to="/index">
+              <Link to="/">
                 <Button>Browse All Funds</Button>
               </Link>
             </div>
@@ -101,13 +130,31 @@ const FundAlternatives = () => {
       <main className="flex-1 py-6 md:py-8">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="mb-6">
-            <Link 
-              to={`/${fund.id}`}
-              className="inline-flex items-center gap-2 text-primary hover:text-primary/80 mb-4"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to {fund.name}
-            </Link>
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/">Home</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/alternatives">Alternatives Hub</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to={URL_CONFIG.buildFundUrl(fund.id)}>{fund.name}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Alternatives</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
           </div>
           
           <div className="mb-8">
@@ -131,8 +178,16 @@ const FundAlternatives = () => {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <CardTitle className="text-xl text-foreground mb-2">
+                      <CardTitle className="text-xl text-foreground mb-2 flex items-center gap-2">
                         {alternativeFund.name}
+                        {alternativeFund.isVerified && (
+                          <Link to="/verification-program" className="inline-block hover:opacity-80 transition-opacity">
+                            <span className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-md border-2 border-success/70 ring-2 ring-success/20">
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              ✓ VERIFIED
+                            </span>
+                          </Link>
+                        )}
                       </CardTitle>
                       <Badge className={`${getStatusColor(alternativeFund.fundStatus)} mb-3`}>
                         {alternativeFund.fundStatus}

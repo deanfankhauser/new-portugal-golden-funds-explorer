@@ -1,12 +1,5 @@
-
-import React, { useEffect } from 'react';
-import { FAQSchemaService } from '../../services/faqSchemaService';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import React from 'react';
+import FAQSection from '../common/FAQSection';
 import { isTagGVEligible } from '../../data/services/gv-eligibility-service';
 
 interface FAQItem {
@@ -56,49 +49,12 @@ const TagPageFAQ: React.FC<TagPageFAQProps> = ({ tagName, tagSlug, fundsCount })
 
   const faqs = generateTagFAQs(tagName, fundsCount);
 
-  useEffect(() => {
-    // Register FAQs with unified schema service
-    const cleanup = FAQSchemaService.registerFAQs({
-      schemaId: `tag-faq-${tagSlug}`,
-      faqs: faqs,
-      pageContext: `${tagName} Portugal Golden Visa Funds`
-    });
-
-    return cleanup;
-  }, [faqs, tagSlug, tagName]);
-
   return (
-    <section className="bg-white rounded-lg p-6 shadow-sm border mt-8" itemScope itemType="https://schema.org/FAQPage">
-      <h2 className="text-2xl font-bold mb-6 text-gray-900">
-        Frequently Asked Questions about {tagName} Portugal Golden Visa Investment Funds
-      </h2>
-      
-      <Accordion type="single" collapsible className="w-full space-y-4">
-        {faqs.map((faq: FAQItem, index: number) => (
-          <AccordionItem 
-            key={index} 
-            value={`item-${index}`}
-            className="bg-gray-50 rounded-lg border border-gray-200"
-            itemScope 
-            itemType="https://schema.org/Question"
-          >
-            <AccordionTrigger 
-              className="px-6 py-4 text-left hover:no-underline hover:bg-gray-100 rounded-t-lg"
-              itemProp="name"
-            >
-              <span className="font-medium text-gray-900">{faq.question}</span>
-            </AccordionTrigger>
-            <AccordionContent 
-              className="px-6 pb-4 text-gray-700 leading-relaxed"
-              itemScope 
-              itemType="https://schema.org/Answer"
-            >
-              <div itemProp="text">{faq.answer}</div>
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-    </section>
+    <FAQSection 
+      faqs={faqs}
+      title={`Frequently Asked Questions about ${tagName} Portugal Golden Visa Investment Funds`}
+      schemaId="tag-faq"
+    />
   );
 };
 

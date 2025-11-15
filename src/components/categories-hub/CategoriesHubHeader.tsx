@@ -5,7 +5,7 @@ import { Folder } from 'lucide-react';
 
 const CategoriesHubHeader = () => {
   return (
-    <div className="bg-card p-6 rounded-lg shadow-sm mb-8">
+    <div className="bg-card p-8 rounded-xl border border-border mb-8">
       <div className="flex items-center justify-center mb-4">
         <Folder className="w-6 h-6 text-primary mr-2" />
         <span className="text-sm bg-muted px-3 py-1 rounded-full">Directory</span>
@@ -17,7 +17,7 @@ const CategoriesHubHeader = () => {
       
       <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-center" itemProp="description">
         Browse all investment categories for Portugal Golden Visa Funds. 
-        Visit our <Link to="/index" className="text-primary hover:underline">Portugal Golden Visa Investment Fund Index</Link> to see complete rankings and comparisons.
+        Visit our <Link to="/" className="text-primary hover:underline">complete fund list</Link> to see rankings and comparisons.
       </p>
     </div>
   );

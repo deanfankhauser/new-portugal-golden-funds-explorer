@@ -1,7 +1,8 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { getFundsByTag, getAllTags } from '../data/funds';
+import { getFundsByTag } from '../data/services/tags-service';
+import { getAllTags } from '../data/services/tags-service';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -12,12 +13,20 @@ import TagPageFundList from '../components/tag/TagPageFundList';
 import TagPageEmptyState from '../components/tag/TagPageEmptyState';
 import TagPageFAQ from '../components/tag/TagPageFAQ';
 import RelatedTags from '../components/tag/RelatedTags';
+import VerificationFilterChip from '../components/common/VerificationFilterChip';
 import { FundTag } from '../data/types/funds';
 import { slugToTag, tagToSlug } from '../lib/utils';
+import { FloatingActionButton } from '../components/common/FloatingActionButton';
+import { useAllFunds } from '../hooks/useFundsQuery';
+import FundListSkeleton from '../components/common/FundListSkeleton';
 
 const TagPage = () => {
   const { tag: tagSlug } = useParams<{ tag: string }>();
-  const allTags = getAllTags();
+  const { data: allFundsData, isLoading } = useAllFunds();
+  const [showOnlyVerified, setShowOnlyVerified] = useState(false);
+  
+  const allDatabaseFunds = allFundsData || [];
+  const allTags = getAllTags(allDatabaseFunds);
   
   // Processing tag slug and available tags
   
@@ -67,13 +76,33 @@ const TagPage = () => {
   }
   
   const tagExists = !!matchingTag;
-  const funds = tagExists ? getFundsByTag(matchingTag as FundTag) : [];
+  const allFunds = tagExists ? getFundsByTag(allDatabaseFunds, matchingTag as FundTag) : [];
+  
+  // Filter funds by verification status
+  const funds = useMemo(() => {
+    if (!showOnlyVerified) return allFunds;
+    return allFunds.filter(fund => fund.isVerified);
+  }, [allFunds, showOnlyVerified]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     
     // Final processing completed
   }, [tagSlug, matchingTag, displayTagName, tagExists]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header />
+        <main className="flex-1 py-8">
+          <div className="container mx-auto px-4">
+            <FundListSkeleton count={6} />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!tagExists) {
     // Tag not found, showing empty state
@@ -100,11 +129,28 @@ const TagPage = () => {
         <TagBreadcrumbs tagName={displayTagName} tagSlug={tagSlug || ''} />
         <TagPageHeader tagName={displayTagName} />
         
+        {/* Verification Filter */}
+        <div className="mb-6">
+          <VerificationFilterChip 
+            showOnlyVerified={showOnlyVerified}
+            setShowOnlyVerified={setShowOnlyVerified}
+          />
+        </div>
+        
         {funds.length > 0 ? (
           <>
             <TagPageFundSummary count={funds.length} tagName={displayTagName} />
             <TagPageFundList funds={funds} />
           </>
+        ) : showOnlyVerified && allFunds.length > 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-lg">
+              No verified funds found with the tag "{displayTagName}".
+            </p>
+            <p className="text-muted-foreground mt-2">
+              Try disabling the verification filter to see all {allFunds.length} funds.
+            </p>
+          </div>
         ) : (
           <TagPageEmptyState tagName={displayTagName} />
         )}
@@ -114,6 +160,8 @@ const TagPage = () => {
       </main>
       
       <Footer />
+      
+      <FloatingActionButton />
     </div>
   );
 };

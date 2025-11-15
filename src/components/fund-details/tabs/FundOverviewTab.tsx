@@ -29,7 +29,7 @@ const FundOverviewTab: React.FC<FundOverviewTabProps> = ({ fund }) => {
       <FundWebsite websiteUrl={fund.websiteUrl} />
       
       {/* Introduction Button (compact version in overview) */}
-      <IntroductionButton variant="compact" />
+      <IntroductionButton variant="compact" fundId={fund.id} />
     </div>
   );
 };

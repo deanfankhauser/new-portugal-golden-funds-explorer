@@ -4,13 +4,23 @@ import { PageSEOProps } from '../../types/seo';
 import { ConsolidatedSEOService } from '../../services/consolidatedSEOService';
 import { EnhancedSEOValidationService } from '../../services/enhancedSEOValidationService';
 import { PerformanceOptimizationService } from '../../services/performanceOptimizationService';
-import { CoreWebVitalsService } from '../../services/coreWebVitalsService';
 import { SEOErrorBoundary } from './SEOErrorBoundary';
 
 interface PageSEOComponentProps extends PageSEOProps {
   children?: React.ReactNode;
 }
 
+/**
+ * PageSEO Component
+ * 
+ * IMPORTANT: This component runs ONLY in the browser after initial page load (client-side).
+ * During SSR/SSG build time, meta tags are injected directly into static HTML by:
+ * - src/ssg/ssrRenderer.ts (fetches SEO data)
+ * - src/ssg/htmlTemplateGenerator.ts (injects meta tags into <head>)
+ * 
+ * This component updates meta tags during client-side navigation between pages.
+ * The useEffect hook does NOT execute during server-side rendering.
+ */
 export const PageSEO: React.FC<PageSEOComponentProps> = ({ 
   pageType, 
   fundName, 
@@ -22,43 +32,35 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
   funds,
   children 
 }) => {
+  // This useEffect only runs in the browser after hydration, NOT during SSR/SSG build
   useEffect(() => {
     try {
       // Apply SEO meta tags
-      const seoData = ConsolidatedSEOService.getSEOData(pageType, {
-        fundName,
-        managerName,
-        categoryName,
-        tagName,
-        comparisonTitle,
-        comparisonSlug,
+const seoData = ConsolidatedSEOService.getSEOData(
+        pageType,
+        {
+          fundName,
+          managerName,
+          categoryName,
+          tagName,
+          comparisonTitle,
+          comparisonSlug,
+        },
         funds
-      });
+      );
 
       ConsolidatedSEOService.applyMetaTags(seoData);
-
-      // Critical: Never apply noindex to fund pages
-      // Only apply noindex to 404 pages and auth pages
-      const noIndexPages = ['404', 'manager-auth', 'investor-auth'];
-      if (noIndexPages.includes(pageType)) {
-        const robotsContent = pageType === '404' ? 'noindex, follow' : 'noindex, nofollow';
+      
+      // Only noindex true 404 pages, never fund pages
+      if (pageType === '404') {
         let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
         if (!robots) {
           robots = document.createElement('meta');
           robots.setAttribute('name', 'robots');
           document.head.appendChild(robots);
         }
-        robots.setAttribute('content', robotsContent);
-      } else {
-        // Ensure fund pages are indexed
-        let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
-        if (robots && robots.getAttribute('content')?.includes('noindex')) {
-          robots.setAttribute('content', 'index, follow, max-image-preview:large');
-        }
+        robots.setAttribute('content', 'noindex, follow');
       }
-      
-      // Initialize Core Web Vitals monitoring
-      CoreWebVitalsService.initialize();
       
       // Defer performance optimizations and SEO fixes to avoid forced reflows
       requestAnimationFrame(() => {

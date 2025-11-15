@@ -1,8 +1,5 @@
-
-import { fundsData } from '../data/mock/funds';
-import { getAllFundManagers } from '../data/services/managers-service';
-import { getAllCategories } from '../data/services/categories-service';
-import { getAllTags } from '../data/services/tags-service';
+import { fetchAllBuildDataCached } from '../lib/build-data-fetcher';
+import { generateComparisonsFromFunds } from '../data/services/comparison-service';
 import { categoryToSlug, tagToSlug, managerToSlug } from '../lib/utils';
 
 export interface StaticRoute {
@@ -10,17 +7,29 @@ export interface StaticRoute {
   pageType: string;
   params?: Record<string, string>;
   fundId?: string;
+  isCanonical?: boolean; // true = include in sitemap, false = exclude (non-canonical pages)
 }
 
 export class RouteDiscovery {
   static async getAllStaticRoutes(): Promise<StaticRoute[]> {
     const routes: StaticRoute[] = [];
 
-    // Homepage
-    routes.push({ path: '/', pageType: 'homepage' });
+    console.log('🔍 RouteDiscovery: Fetching data from database for route generation...');
+    console.log('🔌 Environment check:');
+    console.log(`   VITE_SUPABASE_URL: ${process.env.VITE_SUPABASE_URL ? '✅ Set' : '❌ Missing'}`);
+    console.log(`   VITE_SUPABASE_ANON_KEY: ${process.env.VITE_SUPABASE_ANON_KEY ? '✅ Set' : '❌ Missing'}`);
+    
+    // Fetch all data from database (cached for efficiency)
+    const { funds, categories, tags, managers } = await fetchAllBuildDataCached();
+    
+    console.log('📊 Data fetched successfully:');
+    console.log(`   Funds: ${funds.length}`);
+    console.log(`   Categories: ${categories.length}`);
+    console.log(`   Tags: ${tags.length}`);
+    console.log(`   Managers: ${managers.length}`);
 
-    // Fund Index page - Fixed to avoid double /funds
-    routes.push({ path: '/index', pageType: 'fund-index' });
+    // Homepage (main fund listing)
+    routes.push({ path: '/', pageType: 'homepage' });
 
     // Static pages
     routes.push({ path: '/about', pageType: 'about' });
@@ -31,13 +40,8 @@ export class RouteDiscovery {
     routes.push({ path: '/comparisons', pageType: 'comparisons-hub' });
     routes.push({ path: '/roi-calculator', pageType: 'roi-calculator' });
     routes.push({ path: '/saved-funds', pageType: 'saved-funds' });
-    
-    // Auth pages - generate for SEO but handle auth state gracefully
-    routes.push({ path: '/manager-auth', pageType: 'manager-auth' });
-    routes.push({ path: '/investor-auth', pageType: 'investor-auth' });
-    routes.push({ path: '/account-settings', pageType: 'account-settings' });
-    routes.push({ path: '/reset-password', pageType: 'reset-password' });
-    routes.push({ path: '/confirm', pageType: 'email-confirmation' });
+    routes.push({ path: '/verified-funds', pageType: 'verified-funds' });
+    routes.push({ path: '/verification-program', pageType: 'verification-program' });
     
     routes.push({ path: '/managers', pageType: 'managers-hub' });
     routes.push({ path: '/categories', pageType: 'categories-hub' });
@@ -45,18 +49,18 @@ export class RouteDiscovery {
     routes.push({ path: '/alternatives', pageType: 'alternatives-hub' });
 
     // Fund detail pages - ONLY the direct route pattern
-    fundsData.forEach(fund => {
+    funds.forEach(fund => {
       // Only use the new direct route: /fund-id
       routes.push({
         path: `/${fund.id}`,
         pageType: 'fund',
         params: { fundName: fund.name },
-        fundId: fund.id
+        fundId: fund.id,
+        isCanonical: true
       });
     });
 
     // Manager pages
-    const managers = getAllFundManagers();
     managers.forEach(manager => {
       const slug = managerToSlug(manager.name);
       routes.push({
@@ -67,7 +71,6 @@ export class RouteDiscovery {
     });
 
     // Category pages
-    const categories = getAllCategories();
     categories.forEach(category => {
       const slug = categoryToSlug(category);
       routes.push({
@@ -78,7 +81,6 @@ export class RouteDiscovery {
     });
 
     // Tag pages
-    const tags = getAllTags();
     tags.forEach(tag => {
       const slug = tagToSlug(tag);
       routes.push({
@@ -88,24 +90,25 @@ export class RouteDiscovery {
       });
     });
 
-    // Fund comparison pages
-    const { getAllComparisonSlugs } = await import('../data/services/comparison-service');
-    const comparisonSlugs = getAllComparisonSlugs();
-    comparisonSlugs.forEach(slug => {
+    // Fund comparison pages (canonical - keep in sitemap)
+    const comparisons = generateComparisonsFromFunds(funds);
+    comparisons.forEach(comparison => {
       routes.push({
-        path: `/compare/${slug}`,
+        path: `/compare/${comparison.slug}`,
         pageType: 'fund-comparison',
-        params: { slug }
+        params: { slug: comparison.slug },
+        isCanonical: true
       });
     });
 
-    // Fund alternatives pages (always generate for all funds)
-    fundsData.forEach(fund => {
+    // Fund alternatives pages (non-canonical - exclude from sitemap, canonical points to main fund page)
+    funds.forEach(fund => {
       routes.push({
         path: `/${fund.id}/alternatives`,
         pageType: 'fund-alternatives',
         params: { fundName: fund.name },
-        fundId: fund.id
+        fundId: fund.id,
+        isCanonical: false
       });
     });
 
@@ -115,10 +118,12 @@ export class RouteDiscovery {
       if (route.path.startsWith('/admin')) return false;
       // Exclude edit suggestion routes
       if (route.path.includes('/edit-suggestions')) return false;
+      // Exclude fund manager routes
+      if (route.path.startsWith('/manage-fund')) return false;
       return true;
     });
 
-    console.log(`🔍 RouteDiscovery: Generated ${filteredRoutes.length} static routes (filtered from ${routes.length} total, including ${comparisonSlugs.length} comparisons and ${fundsData.length} alternatives pages)`);
+    console.log(`🔍 RouteDiscovery: Generated ${filteredRoutes.length} static routes from database (filtered from ${routes.length} total, including ${comparisons.length} comparisons and ${funds.length} alternatives pages)`);
     return filteredRoutes;
   }
 

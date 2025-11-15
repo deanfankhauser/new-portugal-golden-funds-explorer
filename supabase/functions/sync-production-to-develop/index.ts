@@ -133,8 +133,7 @@ serve(async (req) => {
     
     const tablesToSync = [
       'funds',
-      'manager_profiles', 
-      'investor_profiles',
+      'profiles',
       'admin_users',
       'fund_edit_suggestions',
       'fund_edit_history',

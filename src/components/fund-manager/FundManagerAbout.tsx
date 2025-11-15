@@ -57,7 +57,7 @@ const FundManagerAbout: React.FC<FundManagerAboutProps> = ({ fund }) => {
             {fund.fundStatus}
           </Badge>
           <Badge variant="outline">
-            {getReturnTargetDisplay(fund)} Target Annual Return
+            {getReturnTargetDisplay(fund)} Target Return
           </Badge>
         </div>
 
