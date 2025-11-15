@@ -69,6 +69,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
               label="Minimum Investment"
               formatter={formatCurrency}
               allSame={allSame}
+              bestType="lowest"
             />
             
             <StandardRow 
@@ -76,6 +77,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
               field={(fund) => getReturnTargetDisplay(fund)}
               label="Target Return"
               allSame={allSame}
+              bestType="highest"
             />
 
             <StandardRow 
@@ -112,6 +114,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
               field={(fund) => `${fund.managementFee}%`}
               label="Management Fee"
               allSame={allSame}
+              bestType="lowest"
             />
             
             <StandardRow 
@@ -119,6 +122,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
               field={(fund) => `${fund.performanceFee}%`}
               label="Performance Fee"
               allSame={allSame}
+              bestType="lowest"
             />
             
             {(funds.some(f => f.subscriptionFee)) && (
@@ -127,6 +131,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
                 field={(fund) => fund.subscriptionFee ? `${fund.subscriptionFee}%` : "N/A"}
                 label="Subscription Fee"
                 allSame={allSame}
+                bestType="lowest"
               />
             )}
             
@@ -136,6 +141,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
                 field={(fund) => fund.redemptionFee ? `${fund.redemptionFee}%` : "N/A"}
                 label="Redemption Fee"
                 allSame={allSame}
+                bestType="lowest"
               />
             )}
             
@@ -161,6 +167,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
               field="noticePeriod"
               label="Notice Period"
               allSame={allSame}
+              bestType="lowest"
             />
             
             <RedemptionTermsRow 
@@ -168,6 +175,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
               field="minimumHoldingPeriod"
               label="Minimum Holding Period"
               allSame={allSame}
+              bestType="lowest"
             />
 
             <StandardRow 
