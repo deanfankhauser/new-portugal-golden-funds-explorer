@@ -17,10 +17,34 @@ export const ComparisonProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [compareFunds, setCompareFunds] = React.useState<Fund[]>([]);
   const [isHydrated, setIsHydrated] = React.useState(false);
 
-  // Ensure hydration is complete before any state changes
+  // Load from localStorage on mount
   React.useEffect(() => {
     setIsHydrated(true);
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('compareFunds');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed)) {
+            setCompareFunds(parsed);
+          }
+        } catch (e) {
+          console.error('Failed to parse stored comparison funds:', e);
+        }
+      }
+    }
   }, []);
+
+  // Persist to localStorage whenever compareFunds changes
+  React.useEffect(() => {
+    if (isHydrated && typeof window !== 'undefined') {
+      if (compareFunds.length > 0) {
+        localStorage.setItem('compareFunds', JSON.stringify(compareFunds));
+      } else {
+        localStorage.removeItem('compareFunds');
+      }
+    }
+  }, [compareFunds, isHydrated]);
 
   const addToComparison = (fund: Fund) => {
     // Check if we already have this fund

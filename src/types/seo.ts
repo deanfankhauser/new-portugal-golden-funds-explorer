@@ -8,6 +8,7 @@ export interface PageSEOProps {
   comparisonTitle?: string;
   comparisonSlug?: string;
   funds?: any[];
+  managerProfile?: any;
 }
 
 export interface SEOData {
