@@ -71,9 +71,9 @@ const EmptyFundsState: React.FC<EmptyFundsStateProps> = ({
         <div className="space-y-4">
           {hasActiveFilters && (
             <Button 
-              className="w-full btn-primary-enhanced text-base h-14 font-semibold text-lg
-                         bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary
-                         shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              variant="default"
+              size="lg"
+              className="w-full shadow-lg hover:shadow-xl"
               onClick={handleClearAll}
             >
               <div className="flex items-center gap-3">
@@ -92,11 +92,8 @@ const EmptyFundsState: React.FC<EmptyFundsStateProps> = ({
           <Link to="/roi-calculator">
             <Button 
               variant={hasActiveFilters ? "outline" : "default"}
-              className={`w-full text-base h-14 font-semibold text-lg transition-all duration-300 ${
-                hasActiveFilters 
-                  ? 'btn-secondary-enhanced border-2' 
-                  : 'btn-primary-enhanced bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transform hover:scale-105'
-              }`}
+              size="lg"
+              className="w-full shadow-lg hover:shadow-xl"
               aria-label="Use ROI calculator for investment calculations"
             >
               <div className="flex items-center gap-3">

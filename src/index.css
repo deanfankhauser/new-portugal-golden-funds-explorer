@@ -311,33 +311,6 @@
     @apply shadow-lg border-accent transform -translate-y-1;
   }
 
-  /* Enhanced button styles */
-  .btn-primary-enhanced {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 
-           transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg
-           focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:outline-none
-           font-semibold px-6 py-3 rounded-xl;
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%);
-  }
-
-  .btn-primary-enhanced:hover {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-600)) 100%);
-  }
-
-  .btn-secondary-enhanced {
-    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 border border-border hover:border-accent
-           transition-all duration-300 ease-out hover:scale-105 hover:shadow-md
-           focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:outline-none
-           font-semibold px-6 py-3 rounded-xl;
-  }
-
-  .btn-outline-enhanced {
-    @apply bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-primary-foreground
-           transition-all duration-300 ease-out hover:scale-105 hover:shadow-md
-           focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:outline-none
-           font-semibold px-6 py-3 rounded-xl;
-  }
-
   /* Interactive hover effects */
   .interactive-hover {
     @apply transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg;
@@ -386,12 +359,6 @@
 
   .card-modern {
     @apply rounded-xl;
-  }
-
-  .btn-primary-enhanced,
-  .btn-secondary-enhanced,
-  .btn-outline-enhanced {
-    @apply px-4 py-2.5 text-sm rounded-lg;
   }
 }
 
