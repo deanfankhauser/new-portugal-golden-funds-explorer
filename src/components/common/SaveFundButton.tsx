@@ -94,7 +94,7 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
 
   return (
     <Button
-      variant={showText ? variant : undefined}
+      variant={variant}
       size={showText ? 'sm' : 'icon'}
       onClick={handleClick}
       aria-pressed={displaySaved}
@@ -102,9 +102,7 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
       className={cn(
         showText ? 'gap-2' : getSizeClasses(),
         'transition-colors duration-200',
-        displaySaved
-          ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-          : 'border border-border hover:bg-primary hover:text-white',
+        displaySaved && 'bg-primary text-primary-foreground',
         className
       )}
     >
