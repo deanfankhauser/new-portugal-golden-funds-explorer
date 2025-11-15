@@ -32,7 +32,7 @@ const CategoryPageFundSummary: React.FC<CategoryPageFundSummaryProps> = ({ count
   const freshness = calculateCategoryFreshness();
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6 bg-card p-4 rounded-lg shadow-sm">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 bg-card p-6 rounded-xl border border-border">
       <div className="flex-1">
         <p className="text-muted-foreground">
           <span itemProp="numberOfItems">{count}</span> fund{count !== 1 ? 's' : ''} in <span className="font-semibold">{categoryName}</span> category

@@ -21,7 +21,7 @@ const RecentlyViewedFundCard: React.FC<{ fund: any }> = ({ fund }) => {
   return (
     <Link
       to={`/${fund.id}`}
-      className="group relative bg-card border border-border/60 rounded-xl p-5 lg:p-7 hover:border-border hover:shadow-lg transition-all duration-200 overflow-hidden"
+      className="group relative bg-card border border-border rounded-xl p-8 hover:border-primary/20 hover:shadow-lg transition-all duration-300 overflow-hidden"
       style={{
         willChange: 'transform',
       }}
@@ -33,10 +33,7 @@ const RecentlyViewedFundCard: React.FC<{ fund: any }> = ({ fund }) => {
       }}
     >
       {/* Top border highlight */}
-      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-success to-success/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-      
-      {/* Recent indicator dot */}
-      <div className="absolute top-3 right-3 w-2 h-2 bg-success rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-200" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-primary/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
       {/* Card Header */}
       <div className="flex items-start justify-between mb-5 min-h-[56px]">

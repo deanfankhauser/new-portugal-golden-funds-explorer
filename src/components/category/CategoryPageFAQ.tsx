@@ -1,11 +1,5 @@
-
-import React, { useEffect } from 'react';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import React from 'react';
+import FAQSection from '../common/FAQSection';
 
 interface FAQItem {
   question: string;
@@ -21,9 +15,6 @@ interface CategoryPageFAQProps {
 const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categorySlug, fundsCount }) => {
   // Generate category-specific FAQs
   const generateCategoryFAQs = (category: string, count: number): FAQItem[] => {
-    // All categories are now Golden Visa eligible
-
-    // Default FAQs for GV-eligible categories
     return [
       {
         question: `What are ${category} Golden Visa investment funds?`,
@@ -42,75 +33,12 @@ const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categor
 
   const faqs = generateCategoryFAQs(categoryName, fundsCount);
 
-  useEffect(() => {
-    // Create FAQ Page schema for SEO
-    const faqSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      'mainEntity': faqs.map((faq: FAQItem) => ({
-        '@type': 'Question',
-        'name': faq.question,
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': faq.answer
-        }
-      }))
-    };
-
-    // Remove existing FAQ schema
-    const existingFAQSchema = document.querySelector('script[data-schema="faq"]');
-    if (existingFAQSchema) {
-      existingFAQSchema.remove();
-    }
-
-    // Add new FAQ schema with unified data-schema="faq"
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.setAttribute('data-schema', 'faq');
-    script.textContent = JSON.stringify(faqSchema);
-    document.head.appendChild(script);
-
-    // Cleanup function
-    return () => {
-      const schemaScript = document.querySelector('script[data-schema="faq"]');
-      if (schemaScript) {
-        schemaScript.remove();
-      }
-    };
-  }, [faqs]);
-
   return (
-    <section className="bg-card rounded-lg p-6 shadow-sm border mt-8" itemScope itemType="https://schema.org/FAQPage">
-      <h2 className="text-2xl font-bold mb-6 text-foreground">
-        Frequently Asked Questions about {categoryName} Portugal Golden Visa Investment Funds
-      </h2>
-      
-      <Accordion type="single" collapsible className="w-full space-y-4">
-        {faqs.map((faq: FAQItem, index: number) => (
-          <AccordionItem 
-            key={index} 
-            value={`item-${index}`}
-            className="bg-muted rounded-lg border border-border"
-            itemScope 
-            itemType="https://schema.org/Question"
-          >
-            <AccordionTrigger 
-              className="px-6 py-3 text-left hover:no-underline hover:bg-muted/50 rounded-t-lg text-sm"
-              itemProp="name"
-            >
-              <span className="font-medium text-foreground">{faq.question}</span>
-            </AccordionTrigger>
-            <AccordionContent 
-              className="px-6 pb-4 text-sm text-muted-foreground leading-relaxed"
-              itemScope 
-              itemType="https://schema.org/Answer"
-            >
-              <div itemProp="text">{faq.answer}</div>
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-    </section>
+    <FAQSection 
+      faqs={faqs}
+      title={`Frequently Asked Questions about ${categoryName} Portugal Golden Visa Investment Funds`}
+      schemaId="category-faq"
+    />
   );
 };
 

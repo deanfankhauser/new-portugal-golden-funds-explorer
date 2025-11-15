@@ -90,7 +90,7 @@ const Footer = () => {
                 <Link to="/managers" className="text-muted-foreground hover:text-accent text-sm transition-colors">Fund Managers</Link>
               </li>
               <li>
-                <Link to="/compare" className="text-muted-foreground hover:text-accent text-sm transition-colors">Compare Funds</Link>
+                <Link to="/comparisons" className="text-muted-foreground hover:text-accent text-sm transition-colors">Compare Funds</Link>
               </li>
               <li>
                 <Link to="/alternatives" className="text-muted-foreground hover:text-accent text-sm transition-colors">Fund Alternatives</Link>

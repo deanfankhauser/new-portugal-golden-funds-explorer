@@ -1,5 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
+import FAQSection from '../common/FAQSection';
 import { Fund } from '../../data/funds';
+
 interface FAQItem {
   question: string;
   answer: string;
@@ -10,8 +12,6 @@ interface FundFAQSectionProps {
 }
 
 const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
-  const faqRefs = useRef<(HTMLDivElement | null)[]>([]);
-
   // Default FAQs if none provided in fund data
   const defaultFAQs: FAQItem[] = [
     {
@@ -43,116 +43,12 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
   // Use fund-specific FAQs if available, otherwise use default FAQs
   const activeFAQs = (fund as any).faqs && (fund as any).faqs.length > 0 ? (fund as any).faqs : defaultFAQs;
 
-  // Entrance animations
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('opacity-100', 'translate-y-0');
-            entry.target.classList.remove('opacity-0', 'translate-y-5');
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    faqRefs.current.forEach((ref) => {
-      if (ref) observer.observe(ref);
-    });
-
-    return () => observer.disconnect();
-  }, [activeFAQs]);
-
-  // Schema markup
-  useEffect(() => {
-    const faqSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      'mainEntity': activeFAQs.map((faq: FAQItem) => ({
-        '@type': 'Question',
-        'name': faq.question,
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': faq.answer
-        }
-      }))
-    };
-
-    const existingFAQSchema = document.querySelector('script[data-schema="faq"]');
-    if (existingFAQSchema) {
-      existingFAQSchema.remove();
-    }
-
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.setAttribute('data-schema', 'faq');
-    script.textContent = JSON.stringify(faqSchema);
-    document.head.appendChild(script);
-
-    return () => {
-      const schemaScript = document.querySelector('script[data-schema="faq"]');
-      if (schemaScript) {
-        schemaScript.remove();
-      }
-    };
-  }, [activeFAQs]);
-
-  if (activeFAQs.length === 0) {
-    return null;
-  }
-
   return (
-    <section className="container mx-auto max-w-4xl" itemScope itemType="https://schema.org/FAQPage">
-      {/* Section Header */}
-      <div className="mb-10">
-        <h2 className="text-[32px] font-semibold tracking-tight leading-tight mb-3">
-          Frequently Asked Questions about {fund.name}
-        </h2>
-        <p className="text-base text-muted-foreground max-w-2xl">
-          Everything you need to know about investing in {fund.name}
-        </p>
-      </div>
-
-      {/* FAQ List */}
-      <div className="flex flex-col gap-8">
-        {activeFAQs.map((faq: FAQItem, index: number) => (
-          <div
-            key={index}
-            ref={(el) => (faqRefs.current[index] = el)}
-            className="bg-card border border-border/40 rounded-xl p-8 shadow-sm hover:border-primary/20 hover:shadow-lg transition-all duration-200 opacity-0 translate-y-5"
-            style={{
-              transitionDelay: `${index * 0.1}s`
-            }}
-            itemScope
-            itemType="https://schema.org/Question"
-          >
-            {/* Question */}
-            <h3 
-              className="text-xl font-semibold tracking-tight leading-relaxed mb-4"
-              itemProp="name"
-            >
-              {faq.question}
-            </h3>
-
-            {/* Answer */}
-            <div 
-              className="text-base text-muted-foreground leading-relaxed"
-              itemScope
-              itemType="https://schema.org/Answer"
-            >
-              <div itemProp="text">
-                {faq.answer.split('\n\n').map((paragraph, pIndex) => (
-                  <p key={pIndex} className={pIndex < faq.answer.split('\n\n').length - 1 ? 'mb-3' : ''}>
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
+    <FAQSection 
+      faqs={activeFAQs}
+      title="Frequently Asked Questions"
+      schemaId="fund-faq"
+    />
   );
 };
 

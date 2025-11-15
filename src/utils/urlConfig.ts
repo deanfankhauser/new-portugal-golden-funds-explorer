@@ -23,6 +23,10 @@ export const URL_CONFIG = {
     const baseUrl = getBaseUrl();
     return `${baseUrl}/${fundId}`;
   },
+  buildFundAlternativesUrl: (fundId: string) => {
+    const baseUrl = getBaseUrl();
+    return `${baseUrl}/${fundId}/alternatives`;
+  },
   buildManagerUrl: (managerName: string) => {
     const baseUrl = getBaseUrl();
     return `${baseUrl}/manager/${managerToSlug(managerName)}`;
