@@ -121,29 +121,6 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                     <section id="contact-fund" className="scroll-mt-28 md:scroll-mt-24">
                       <FundEnquirySection fund={fund} />
                     </section>
-
-
-                    {/* CTA Section */}
-                    <div className="bg-gradient-to-r from-success/10 to-success/5 p-4 md:p-6 rounded-lg border border-success/30">
-                      <div className="text-center">
-                        <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Want to calculate your potential returns?</h3>
-                        <p className="text-xs md:text-sm text-muted-foreground mb-4">Use our ROI calculator to estimate potential returns based on historical performance</p>
-                        <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                          <Button asChild className="bg-success hover:bg-success/90 text-success-foreground h-11">
-                            <Link to="/roi-calculator">
-                              <Calculator className="mr-2 h-4 w-4" />
-                              Calculate Returns
-                            </Link>
-                          </Button>
-                          <Button asChild variant="outline" className="border-success text-success hover:bg-success/10 h-11">
-                            <Link to="/">
-                              <TrendingUp className="mr-2 h-4 w-4" />
-                              Browse All Funds
-                            </Link>
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
                     
                     <PremiumCTA variant="full" location={`fund-details-${fund.id}`} />
                     
