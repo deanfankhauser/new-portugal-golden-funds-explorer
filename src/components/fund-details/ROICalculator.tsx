@@ -8,6 +8,7 @@ import { Calculator, AlertTriangle, TrendingUp } from 'lucide-react';
 import { getReturnTargetNumbers } from '../../utils/returnTarget';
 import { calculateROIWithFees, ROICalculationResult } from '../../utils/roiCalculator';
 import { formatCurrency, formatPercentage } from './utils/formatters';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface ROICalculatorProps {
   fund: Fund;
@@ -44,6 +45,48 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
     
     setExpectedReturn(returnRate);
   }, [fund]);
+
+  // Generate year-by-year growth data for chart
+  const generateChartData = () => {
+    if (!results) return [];
+    
+    const chartData = [];
+    let grossValue = investmentAmount;
+    let netValue = investmentAmount;
+    
+    // Year 0
+    chartData.push({
+      year: 0,
+      grossValue: investmentAmount,
+      netValue: investmentAmount
+    });
+    
+    // Calculate year by year
+    for (let year = 1; year <= holdingPeriod; year++) {
+      // Gross growth (simple compound growth)
+      grossValue = grossValue * (1 + expectedReturn / 100);
+      
+      // Net growth (with fees)
+      const yearlyGrossGrowth = netValue * (expectedReturn / 100);
+      const managementFee = netValue * (fund.managementFee / 100);
+      
+      // Calculate performance fee on gains above hurdle rate
+      let performanceFee = 0;
+      const hurdleRate = fund.hurdleRate || 0;
+      const gainAboveHurdle = Math.max(0, yearlyGrossGrowth - (netValue * hurdleRate / 100));
+      performanceFee = gainAboveHurdle * (fund.performanceFee / 100);
+      
+      netValue = netValue + yearlyGrossGrowth - managementFee - performanceFee;
+      
+      chartData.push({
+        year,
+        grossValue: Math.round(grossValue),
+        netValue: Math.round(netValue)
+      });
+    }
+    
+    return chartData;
+  };
 
   const calculateROI = () => {
     if (investmentAmount <= 0 || holdingPeriod <= 0 || expectedReturn < 0) {
@@ -185,6 +228,64 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
                 <div className="text-[28px] font-bold tracking-tight text-foreground">
                   {formatPercentage(showNetReturns ? results.netAnnualizedReturn : results.grossAnnualizedReturn)}
                 </div>
+              </div>
+            </div>
+
+            {/* Growth Chart */}
+            <div className="mt-8 pt-8 border-t border-border/40">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-6">
+                Projected Value Growth Over Time
+              </h4>
+              <div className="bg-background/50 rounded-lg p-6">
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={generateChartData()} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                    <XAxis 
+                      dataKey="year" 
+                      label={{ value: 'Years', position: 'insideBottom', offset: -5 }}
+                      stroke="hsl(var(--muted-foreground))"
+                    />
+                    <YAxis 
+                      tickFormatter={(value) => `€${(value / 1000).toFixed(0)}k`}
+                      stroke="hsl(var(--muted-foreground))"
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'hsl(var(--card))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                      }}
+                      formatter={(value: number) => [`€${value.toLocaleString()}`, '']}
+                      labelFormatter={(label) => `Year ${label}`}
+                    />
+                    <Legend 
+                      wrapperStyle={{ paddingTop: '20px' }}
+                      iconType="line"
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="grossValue" 
+                      stroke="hsl(var(--primary))" 
+                      strokeWidth={2}
+                      dot={{ fill: 'hsl(var(--primary))', r: 4 }}
+                      name="Gross Returns (Before Fees)"
+                      activeDot={{ r: 6 }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="netValue" 
+                      stroke="hsl(142.1 76.2% 36.3%)" 
+                      strokeWidth={2}
+                      dot={{ fill: 'hsl(142.1 76.2% 36.3%)', r: 4 }}
+                      name="Net Returns (After Fees)"
+                      activeDot={{ r: 6 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+                <p className="text-xs text-muted-foreground mt-4 text-center">
+                  The gap between the two lines represents the total impact of fees over your holding period
+                </p>
               </div>
             </div>
 
