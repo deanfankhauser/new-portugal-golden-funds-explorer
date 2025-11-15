@@ -121,7 +121,7 @@ const AlternativesHub: React.FC = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Fund Alternatives</BreadcrumbPage>
+              <BreadcrumbPage>Alternatives Hub</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
