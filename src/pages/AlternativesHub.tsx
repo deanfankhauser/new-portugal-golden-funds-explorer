@@ -218,7 +218,7 @@ const AlternativesHub: React.FC = () => {
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div className="flex-1 min-w-0">
                     <Link 
-                      to={URL_CONFIG.buildFundUrl(fund.id)}
+                      to={URL_CONFIG.buildFundAlternativesUrl(fund.id)}
                       className="hover:underline"
                     >
                       <CardTitle className="text-xl mb-2 text-foreground">
@@ -240,8 +240,8 @@ const AlternativesHub: React.FC = () => {
                     </div>
                   </div>
                   <Button asChild variant="outline" size="sm">
-                    <Link to={URL_CONFIG.buildFundUrl(fund.id)}>
-                      View Details
+                    <Link to={URL_CONFIG.buildFundAlternativesUrl(fund.id)}>
+                      View Alternatives
                       <ArrowRight className="ml-2 h-3.5 w-3.5" />
                     </Link>
                   </Button>
