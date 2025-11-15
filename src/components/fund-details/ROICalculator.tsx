@@ -3,8 +3,11 @@ import { Fund } from '../../data/funds';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Calculator, AlertTriangle } from 'lucide-react';
+import { Switch } from "@/components/ui/switch";
+import { Calculator, AlertTriangle, TrendingUp } from 'lucide-react';
 import { getReturnTargetNumbers } from '../../utils/returnTarget';
+import { calculateROIWithFees, ROICalculationResult } from '../../utils/roiCalculator';
+import { formatCurrency, formatPercentage } from './utils/formatters';
 
 interface ROICalculatorProps {
   fund: Fund;
@@ -23,11 +26,8 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
   const [investmentAmount, setInvestmentAmount] = useState<number>(fund.minimumInvestment);
   const [holdingPeriod, setHoldingPeriod] = useState<number>(5);
   const [expectedReturn, setExpectedReturn] = useState<number>(0);
-  const [results, setResults] = useState<{
-    totalValue: number;
-    totalReturn: number;
-    annualizedReturn: number;
-  } | null>(null);
+  const [showNetReturns, setShowNetReturns] = useState<boolean>(true);
+  const [results, setResults] = useState<ROICalculationResult | null>(null);
 
   // Extract numeric return using utility
   useEffect(() => {
@@ -46,29 +46,18 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
   }, [fund]);
 
   const calculateROI = () => {
-    const annualReturn = expectedReturn / 100;
-    const totalValue = investmentAmount * Math.pow(1 + annualReturn, holdingPeriod);
-    const totalReturn = totalValue - investmentAmount;
-    const annualizedReturn = (totalValue / investmentAmount) ** (1 / holdingPeriod) - 1;
+    if (investmentAmount <= 0 || holdingPeriod <= 0 || expectedReturn < 0) {
+      return;
+    }
 
-    setResults({
-      totalValue,
-      totalReturn,
-      annualizedReturn: annualizedReturn * 100
-    });
-  };
+    const calculatedResults = calculateROIWithFees(
+      investmentAmount,
+      holdingPeriod,
+      expectedReturn,
+      fund
+    );
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'EUR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
-
-  const formatPercentage = (percentage: number) => {
-    return `${percentage.toFixed(2)}%`;
+    setResults(calculatedResults);
   };
 
   return (
@@ -84,6 +73,25 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
         <p className="text-sm text-muted-foreground">
           Project potential returns for {fund.name} based on your investment parameters
         </p>
+      </div>
+
+      {/* Toggle for Net Returns */}
+      <div className="mb-8 pb-8 border-b border-border/60">
+        <div className="flex items-center justify-between gap-4 p-6 bg-muted/30 rounded-xl border border-border/40">
+          <div className="flex items-center gap-3">
+            <TrendingUp className="h-5 w-5 text-primary" />
+            <div>
+              <div className="font-semibold text-foreground">Show Net Returns After Fees</div>
+              <div className="text-sm text-muted-foreground">
+                Display realistic returns after deducting management and performance fees
+              </div>
+            </div>
+          </div>
+          <Switch
+            checked={showNetReturns}
+            onCheckedChange={setShowNetReturns}
+          />
+        </div>
       </div>
 
       {/* Input Section */}
@@ -150,7 +158,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
       {results && (
         <div className="mb-8 pb-8 border-b border-border/60">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-6">
-            Projected Results
+            Projected Results {showNetReturns ? '(After Fees)' : '(Before Fees)'}
           </h3>
           <div className="bg-gradient-to-br from-primary/5 to-primary/[0.02] border border-primary/20 rounded-xl p-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -159,7 +167,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
                   Total Value
                 </div>
                 <div className="text-[28px] font-bold tracking-tight text-primary">
-                  {formatCurrency(results.totalValue)}
+                  {formatCurrency(showNetReturns ? results.netTotalValue : results.grossTotalValue)}
                 </div>
               </div>
               <div className="text-center">
@@ -167,7 +175,7 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
                   Total Return
                 </div>
                 <div className="text-[28px] font-bold tracking-tight text-green-600">
-                  {formatCurrency(results.totalReturn)}
+                  {formatCurrency(showNetReturns ? results.netTotalReturn : results.grossTotalReturn)}
                 </div>
               </div>
               <div className="text-center">
@@ -175,10 +183,33 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
                   Annualized Return
                 </div>
                 <div className="text-[28px] font-bold tracking-tight text-foreground">
-                  {formatPercentage(results.annualizedReturn)}
+                  {formatPercentage(showNetReturns ? results.netAnnualizedReturn : results.grossAnnualizedReturn)}
                 </div>
               </div>
             </div>
+
+            {/* Fee Breakdown - Only show when displaying net returns */}
+            {showNetReturns && results.totalFeesPaid > 0 && (
+              <div className="mt-8 pt-8 border-t border-border/40">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
+                  Fee Impact Analysis
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="bg-background/50 rounded-lg p-4">
+                    <div className="text-xs text-muted-foreground mb-1">Total Fees Paid</div>
+                    <div className="text-xl font-bold text-destructive">{formatCurrency(results.totalFeesPaid)}</div>
+                  </div>
+                  <div className="bg-background/50 rounded-lg p-4">
+                    <div className="text-xs text-muted-foreground mb-1">Management Fees</div>
+                    <div className="text-xl font-bold text-foreground">{formatCurrency(results.managementFeesPaid)}</div>
+                  </div>
+                  <div className="bg-background/50 rounded-lg p-4">
+                    <div className="text-xs text-muted-foreground mb-1">Performance Fees</div>
+                    <div className="text-xl font-bold text-foreground">{formatCurrency(results.performanceFeesPaid)}</div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

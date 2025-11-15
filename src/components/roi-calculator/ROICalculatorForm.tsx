@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Fund } from '../../data/types/funds';
 import { useRealTimeFunds } from '../../hooks/useRealTimeFunds';
@@ -10,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Calculator, AlertTriangle, TrendingUp } from 'lucide-react';
 import { getReturnTargetNumbers, getReturnTargetDisplay } from '../../utils/returnTarget';
+import { calculateROIWithFees } from '../../utils/roiCalculator';
 
 interface ROICalculatorFormProps {
   onResultsCalculated: (results: {
@@ -75,56 +75,14 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
       return;
     }
 
-    const annualReturnRate = expectedReturn / 100;
-    const managementFeeRate = (selectedFund?.managementFee || 0) / 100;
-    const performanceFeeRate = (selectedFund?.performanceFee || 0) / 100;
-    const hurdleRate = (selectedFund?.hurdleRate || 0) / 100;
+    const results = calculateROIWithFees(
+      investmentAmount,
+      holdingPeriod,
+      expectedReturn,
+      selectedFund
+    );
 
-    // Calculate GROSS returns (before fees)
-    const grossTotalValue = investmentAmount * Math.pow(1 + annualReturnRate, holdingPeriod);
-    const grossTotalReturn = grossTotalValue - investmentAmount;
-    const grossAnnualizedReturn = ((grossTotalValue / investmentAmount) ** (1 / holdingPeriod) - 1) * 100;
-
-    // Calculate NET returns (after fees)
-    let currentValue = investmentAmount;
-    let totalManagementFees = 0;
-    let totalPerformanceFees = 0;
-
-    for (let year = 1; year <= holdingPeriod; year++) {
-      // Calculate gross gain for the year
-      const startYearValue = currentValue;
-      const grossGainThisYear = currentValue * annualReturnRate;
-      
-      // Deduct management fee
-      const managementFee = currentValue * managementFeeRate;
-      totalManagementFees += managementFee;
-      
-      // Calculate performance fee on gains above hurdle rate
-      const hurdleGain = currentValue * hurdleRate;
-      const excessGain = Math.max(0, grossGainThisYear - hurdleGain);
-      const performanceFee = excessGain * performanceFeeRate;
-      totalPerformanceFees += performanceFee;
-      
-      // Net value after fees
-      currentValue = startYearValue + grossGainThisYear - managementFee - performanceFee;
-    }
-
-    const netTotalValue = currentValue;
-    const netTotalReturn = netTotalValue - investmentAmount;
-    const netAnnualizedReturn = ((netTotalValue / investmentAmount) ** (1 / holdingPeriod) - 1) * 100;
-    const totalFeesPaid = totalManagementFees + totalPerformanceFees;
-
-    onResultsCalculated({
-      grossTotalValue,
-      grossTotalReturn,
-      grossAnnualizedReturn,
-      netTotalValue,
-      netTotalReturn,
-      netAnnualizedReturn,
-      totalFeesPaid,
-      managementFeesPaid: totalManagementFees,
-      performanceFeesPaid: totalPerformanceFees,
-    });
+    onResultsCalculated(results);
   };
 
   const formatCurrency = (amount: number) => {
