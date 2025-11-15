@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Calculator, AlertTriangle, TrendingUp } from 'lucide-react';
-import { getReturnTargetNumbers } from '../../utils/returnTarget';
+import { Calculator, AlertTriangle, TrendingUp, Info } from 'lucide-react';
+import { getSmartDefaults } from '../../utils/roiDefaults';
 import { calculateROIWithFees, ROICalculationResult } from '../../utils/roiCalculator';
 import { formatCurrency, formatPercentage } from './utils/formatters';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -15,36 +15,20 @@ interface ROICalculatorProps {
 }
 
 const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
-  // Check if fund has return target data
-  const { min, max } = getReturnTargetNumbers(fund);
-  const hasReturnData = min != null || max != null;
-
-  // Don't render if no return data
-  if (!hasReturnData) {
-    return null;
-  }
-
-  const [investmentAmount, setInvestmentAmount] = useState<number>(fund.minimumInvestment);
-  const [holdingPeriod, setHoldingPeriod] = useState<number>(5);
-  const [expectedReturn, setExpectedReturn] = useState<number>(0);
+  const defaults = getSmartDefaults(fund);
+  
+  const [investmentAmount, setInvestmentAmount] = useState<number>(defaults.investmentAmount);
+  const [holdingPeriod, setHoldingPeriod] = useState<number>(defaults.holdingPeriod);
+  const [expectedReturn, setExpectedReturn] = useState<number>(defaults.expectedReturn);
   const [showNetReturns, setShowNetReturns] = useState<boolean>(true);
   const [results, setResults] = useState<ROICalculationResult | null>(null);
 
-  // Extract numeric return using utility
+  // Initialize with smart defaults
   useEffect(() => {
-    const { min, max } = getReturnTargetNumbers(fund);
-    let returnRate = 0;
-
-    if (min != null && max != null) {
-      returnRate = (min + max) / 2;
-    } else if (min != null) {
-      returnRate = min;
-    } else if (max != null) {
-      returnRate = max;
-    }
-    
-    setExpectedReturn(returnRate);
-  }, [fund]);
+    setInvestmentAmount(defaults.investmentAmount);
+    setHoldingPeriod(defaults.holdingPeriod);
+    setExpectedReturn(defaults.expectedReturn);
+  }, [fund, defaults.investmentAmount, defaults.holdingPeriod, defaults.expectedReturn]);
 
   // Generate year-by-year growth data for chart
   const generateChartData = () => {
@@ -68,13 +52,13 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
       
       // Net growth (with fees)
       const yearlyGrossGrowth = netValue * (expectedReturn / 100);
-      const managementFee = netValue * (fund.managementFee / 100);
+      const managementFee = netValue * ((fund.managementFee || 0) / 100);
       
       // Calculate performance fee on gains above hurdle rate
       let performanceFee = 0;
       const hurdleRate = fund.hurdleRate || 0;
       const gainAboveHurdle = Math.max(0, yearlyGrossGrowth - (netValue * hurdleRate / 100));
-      performanceFee = gainAboveHurdle * (fund.performanceFee / 100);
+      performanceFee = gainAboveHurdle * ((fund.performanceFee || 0) / 100);
       
       netValue = netValue + yearlyGrossGrowth - managementFee - performanceFee;
       
@@ -103,62 +87,97 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
     setResults(calculatedResults);
   };
 
-  return (
-    <div id="roi-calculator" className="bg-card border border-border/40 rounded-2xl shadow-sm p-10">
-      {/* Header */}
-      <div className="mb-8 pb-8 border-b border-border/60">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
-            <Calculator className="h-5 w-5 text-primary" />
-          </div>
-          <h2 className="text-xl md:text-2xl font-semibold tracking-tight">ROI Calculator</h2>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          Project potential returns for {fund.name} based on your investment parameters
-        </p>
-      </div>
+  const chartData = generateChartData();
 
-      {/* Toggle for Net Returns */}
-      <div className="mb-8 pb-8 border-b border-border/60">
-        <div className="flex items-center justify-between gap-4 p-6 bg-muted/30 rounded-xl border border-border/40">
-          <div className="flex items-center gap-3">
-            <TrendingUp className="h-5 w-5 text-primary" />
-            <div>
-              <div className="font-semibold text-foreground">Show Net Returns After Fees</div>
-              <div className="text-sm text-muted-foreground">
-                Display realistic returns after deducting management and performance fees
-              </div>
+  return (
+    <div id="roi-calculator" className="bg-card border border-border/30 rounded-xl shadow-sm overflow-hidden">
+      {/* Info Banner - when fund data is missing */}
+      {!defaults.hasFundReturnData && (
+        <div className="bg-primary-50/50 border-b border-primary-100/50 px-6 py-4">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5">
+              <Info className="h-4 w-4 text-primary-600" />
+            </div>
+            <div className="flex-1 space-y-1">
+              <p className="text-sm font-medium text-primary-900">
+                Using Industry Assumptions
+              </p>
+              <p className="text-sm text-primary-700">
+                This fund hasn't specified target returns. You can adjust the assumptions below to project potential outcomes. 
+                <a href="#contact" className="underline hover:no-underline ml-1 font-medium">
+                  Contact the fund
+                </a> for precise targets.
+              </p>
             </div>
           </div>
-          <Switch
-            checked={showNetReturns}
-            onCheckedChange={setShowNetReturns}
-          />
         </div>
-      </div>
+      )}
 
-      {/* Input Section */}
-      <div className="mb-8 pb-8 border-b border-border/60">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-6">
-          Investment Parameters
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="space-y-3">
-            <Label htmlFor="investment-amount" className="text-sm font-medium text-foreground/70">
-              Investment Amount (EUR)
-            </Label>
-            <Input
-              id="investment-amount"
-              type="number"
-              value={investmentAmount}
-              onChange={(e) => setInvestmentAmount(Number(e.target.value))}
-              min={fund.minimumInvestment}
-              className="px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all"
+      {/* Main Calculator Content */}
+      <div className="p-6 md:p-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-9 h-9 bg-primary/5 rounded-lg flex items-center justify-center">
+              <Calculator className="h-4 w-4 text-primary" />
+            </div>
+            <h3 className="text-lg font-semibold text-foreground tracking-tight">
+              Investment Calculator
+            </h3>
+          </div>
+          <p className="text-sm text-muted-foreground ml-12">
+            Project potential returns based on your investment parameters
+          </p>
+        </div>
+
+        {/* Net Returns Toggle */}
+        <div className="mb-8 pb-6 border-b border-border/50">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <label htmlFor="net-returns-toggle" className="text-sm font-medium text-foreground cursor-pointer">
+                Show Net Returns
+              </label>
+              <p className="text-xs text-muted-foreground">
+                Display returns after management and performance fees
+              </p>
+            </div>
+            <Switch
+              id="net-returns-toggle"
+              checked={showNetReturns}
+              onCheckedChange={setShowNetReturns}
             />
           </div>
-          
-          <div className="space-y-3">
-            <Label htmlFor="holding-period" className="text-sm font-medium text-foreground/70">
+        </div>
+
+        {/* Input Fields */}
+        <div className="space-y-6 mb-8">
+          {/* Investment Amount */}
+          <div className="space-y-2">
+            <Label htmlFor="investment-amount" className="text-sm font-medium text-foreground">
+              Investment Amount
+            </Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-medium">
+                €
+              </span>
+              <Input
+                id="investment-amount"
+                type="number"
+                value={investmentAmount}
+                onChange={(e) => setInvestmentAmount(Number(e.target.value))}
+                className="pl-7 h-11 border-input/60 focus:border-primary/40 focus:ring-primary/20 transition-colors"
+                min={0}
+                step={1000}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {defaults.investmentAmountSource}
+            </p>
+          </div>
+
+          {/* Holding Period */}
+          <div className="space-y-2">
+            <Label htmlFor="holding-period" className="text-sm font-medium text-foreground">
               Holding Period (Years)
             </Label>
             <Input
@@ -166,162 +185,221 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
               type="number"
               value={holdingPeriod}
               onChange={(e) => setHoldingPeriod(Number(e.target.value))}
+              className="h-11 border-input/60 focus:border-primary/40 focus:ring-primary/20 transition-colors"
               min={1}
-              max={20}
-              className="px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all"
+              max={30}
             />
+            <p className="text-xs text-muted-foreground">
+              {defaults.holdingPeriodSource}
+            </p>
           </div>
-          
-          <div className="space-y-3">
-            <Label htmlFor="expected-return" className="text-sm font-medium text-foreground/70">
-              Expected Annual Return (%)
+
+          {/* Expected Annual Return */}
+          <div className="space-y-2">
+            <Label htmlFor="expected-return" className="text-sm font-medium text-foreground">
+              Expected Annual Return
             </Label>
-            <Input
-              id="expected-return"
-              type="number"
-              value={expectedReturn}
-              onChange={(e) => setExpectedReturn(Number(e.target.value))}
-              step={0.1}
-              min={0}
-              max={50}
-              className="px-4 py-4 text-lg font-semibold bg-muted/20 border-2 border-border/40 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all"
-            />
+            <div className="relative">
+              <Input
+                id="expected-return"
+                type="number"
+                value={expectedReturn}
+                onChange={(e) => setExpectedReturn(Number(e.target.value))}
+                className="pr-7 h-11 border-input/60 focus:border-primary/40 focus:ring-primary/20 transition-colors"
+                min={0}
+                max={100}
+                step={0.1}
+              />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-medium">
+                %
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {defaults.expectedReturnSource}
+            </p>
           </div>
         </div>
-        
-        <Button 
-          onClick={calculateROI} 
-          className="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground px-7 py-6 rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 text-base font-semibold"
-        >
-          Calculate Projected Returns
-        </Button>
-      </div>
-        
-      {/* Results Section */}
-      {results && (
-        <div className="mb-8 pb-8 border-b border-border/60">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-6">
-            Projected Results {showNetReturns ? '(After Fees)' : '(Before Fees)'}
-          </h3>
-          <div className="bg-gradient-to-br from-primary/5 to-primary/[0.02] border border-primary/20 rounded-xl p-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                  Total Value
-                </div>
-                <div className="text-[28px] font-bold tracking-tight text-primary">
-                  {formatCurrency(showNetReturns ? results.netTotalValue : results.grossTotalValue)}
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                  Total Return
-                </div>
-                <div className="text-[28px] font-bold tracking-tight text-green-600">
-                  {formatCurrency(showNetReturns ? results.netTotalReturn : results.grossTotalReturn)}
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                  Annualized Return
-                </div>
-                <div className="text-[28px] font-bold tracking-tight text-foreground">
-                  {formatPercentage(showNetReturns ? results.netAnnualizedReturn : results.grossAnnualizedReturn)}
-                </div>
-              </div>
-            </div>
 
-            {/* Growth Chart */}
-            <div className="mt-8 pt-8 border-t border-border/40">
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-6">
-                Projected Value Growth Over Time
-              </h4>
-              <div className="bg-background/50 rounded-lg p-6">
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={generateChartData()} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                    <XAxis 
-                      dataKey="year" 
-                      label={{ value: 'Years', position: 'insideBottom', offset: -5 }}
-                      stroke="hsl(var(--muted-foreground))"
-                    />
-                    <YAxis 
-                      tickFormatter={(value) => `€${(value / 1000).toFixed(0)}k`}
-                      stroke="hsl(var(--muted-foreground))"
-                    />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'hsl(var(--card))',
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                      }}
-                      formatter={(value: number) => [`€${value.toLocaleString()}`, '']}
-                      labelFormatter={(label) => `Year ${label}`}
-                    />
-                    <Legend 
-                      wrapperStyle={{ paddingTop: '20px' }}
-                      iconType="line"
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="grossValue" 
-                      stroke="hsl(var(--primary))" 
-                      strokeWidth={2}
-                      dot={{ fill: 'hsl(var(--primary))', r: 4 }}
-                      name="Gross Returns (Before Fees)"
-                      activeDot={{ r: 6 }}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="netValue" 
-                      stroke="hsl(142.1 76.2% 36.3%)" 
-                      strokeWidth={2}
-                      dot={{ fill: 'hsl(142.1 76.2% 36.3%)', r: 4 }}
-                      name="Net Returns (After Fees)"
-                      activeDot={{ r: 6 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-                <p className="text-xs text-muted-foreground mt-4 text-center">
-                  The gap between the two lines represents the total impact of fees over your holding period
+        {/* Calculate Button */}
+        <Button 
+          onClick={calculateROI}
+          className="w-full h-11 text-sm font-medium shadow-sm hover:shadow transition-all"
+          size="lg"
+        >
+          Calculate Projection
+        </Button>
+
+        {/* Results Section */}
+        {results && (
+          <div className="mt-8 space-y-6 animate-in fade-in duration-500">
+            {/* Metrics Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Total Value */}
+              <div className="bg-card border border-border/40 rounded-lg p-5 space-y-1">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  Total Value
+                </p>
+                <p className="text-2xl font-semibold text-foreground tracking-tight">
+                  {formatCurrency(showNetReturns ? results.netTotalValue : results.grossTotalValue)}
+                </p>
+              </div>
+
+              {/* Total Return */}
+              <div className="bg-card border border-border/40 rounded-lg p-5 space-y-1">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  Total Return
+                </p>
+                <p className="text-2xl font-semibold text-success tracking-tight">
+                  {formatCurrency(showNetReturns ? results.netTotalReturn : results.grossTotalReturn)}
+                </p>
+              </div>
+
+              {/* Annualized Return */}
+              <div className="bg-card border border-border/40 rounded-lg p-5 space-y-1">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  Annualized Return
+                </p>
+                <p className="text-2xl font-semibold text-foreground tracking-tight">
+                  {formatPercentage(showNetReturns ? results.netAnnualizedReturn : results.grossAnnualizedReturn)}
                 </p>
               </div>
             </div>
 
-            {/* Fee Breakdown - Only show when displaying net returns */}
+            {/* Growth Chart */}
+            <div className="bg-card border border-border/40 rounded-lg p-6">
+              <div className="flex items-center gap-2 mb-6">
+                <TrendingUp className="h-4 w-4 text-primary" />
+                <h4 className="text-sm font-semibold text-foreground">
+                  Projected Growth Over Time
+                </h4>
+              </div>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                  <XAxis 
+                    dataKey="year" 
+                    label={{ value: 'Year', position: 'insideBottom', offset: -5 }}
+                    stroke="hsl(var(--muted-foreground))"
+                    tick={{ fontSize: 12 }}
+                  />
+                  <YAxis 
+                    tickFormatter={(value) => `€${(value / 1000).toFixed(0)}k`}
+                    stroke="hsl(var(--muted-foreground))"
+                    tick={{ fontSize: 12 }}
+                  />
+                  <Tooltip 
+                    formatter={(value: number) => formatCurrency(value)}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                    }}
+                    labelStyle={{ color: 'hsl(var(--foreground))' }}
+                  />
+                  <Legend 
+                    wrapperStyle={{ 
+                      fontSize: '12px',
+                      paddingTop: '16px'
+                    }}
+                  />
+                  {!showNetReturns && (
+                    <Line 
+                      type="monotone" 
+                      dataKey="grossValue" 
+                      stroke="hsl(var(--primary))" 
+                      strokeWidth={2.5}
+                      name="Gross Returns (Before Fees)"
+                      dot={false}
+                      activeDot={{ r: 5 }}
+                    />
+                  )}
+                  {showNetReturns && (
+                    <>
+                      <Line 
+                        type="monotone" 
+                        dataKey="grossValue" 
+                        stroke="hsl(var(--muted-foreground))" 
+                        strokeWidth={1.5}
+                        strokeDasharray="5 5"
+                        name="Gross Returns (Before Fees)"
+                        dot={false}
+                        opacity={0.5}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="netValue" 
+                        stroke="hsl(var(--primary))" 
+                        strokeWidth={2.5}
+                        name="Net Returns (After Fees)"
+                        dot={false}
+                        activeDot={{ r: 5 }}
+                      />
+                    </>
+                  )}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Fee Impact Analysis */}
             {showNetReturns && results.totalFeesPaid > 0 && (
-              <div className="mt-8 pt-8 border-t border-border/40">
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
+              <div className="bg-muted/30 border border-border/40 rounded-lg p-5">
+                <h4 className="text-sm font-semibold text-foreground mb-4">
                   Fee Impact Analysis
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-background/50 rounded-lg p-4">
-                    <div className="text-xs text-muted-foreground mb-1">Total Fees Paid</div>
-                    <div className="text-xl font-bold text-destructive">{formatCurrency(results.totalFeesPaid)}</div>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground">Total Fees Paid</span>
+                    <span className="font-semibold text-foreground">
+                      {formatCurrency(results.totalFeesPaid)}
+                    </span>
                   </div>
-                  <div className="bg-background/50 rounded-lg p-4">
-                    <div className="text-xs text-muted-foreground mb-1">Management Fees</div>
-                    <div className="text-xl font-bold text-foreground">{formatCurrency(results.managementFeesPaid)}</div>
+                  <div className="flex justify-between items-center text-sm pl-4">
+                    <span className="text-muted-foreground">Management Fees</span>
+                    <span className="text-foreground">
+                      {formatCurrency(results.managementFeesPaid)}
+                    </span>
                   </div>
-                  <div className="bg-background/50 rounded-lg p-4">
-                    <div className="text-xs text-muted-foreground mb-1">Performance Fees</div>
-                    <div className="text-xl font-bold text-foreground">{formatCurrency(results.performanceFeesPaid)}</div>
+                  <div className="flex justify-between items-center text-sm pl-4">
+                    <span className="text-muted-foreground">Performance Fees</span>
+                    <span className="text-foreground">
+                      {formatCurrency(results.performanceFeesPaid)}
+                    </span>
+                  </div>
+                  <div className="pt-3 mt-3 border-t border-border/40 flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground">Return Impact</span>
+                    <span className="font-semibold text-foreground">
+                      {formatCurrency(results.grossTotalReturn - results.netTotalReturn)} less
+                    </span>
                   </div>
                 </div>
               </div>
             )}
           </div>
-        </div>
-      )}
-        
-      {/* Disclaimer */}
-      <div className="flex items-start gap-3 p-6 bg-warning/10 rounded-xl border border-warning/20">
-        <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
-        <div className="text-sm text-foreground/80 leading-relaxed">
-          <strong className="font-semibold">Investment Risk Disclaimer:</strong> Past performance does not guarantee future results. 
-          This calculation is for illustrative purposes only and actual returns may vary significantly. 
-          Always consult with qualified financial professionals before making investment decisions.
+        )}
+
+        {/* Disclaimers */}
+        <div className="mt-8 pt-6 border-t border-border/50 space-y-4">
+          {/* Data Source Disclaimer - only when using assumptions */}
+          {!defaults.hasFundReturnData && (
+            <div className="flex items-start gap-3 p-4 bg-primary-50/30 rounded-lg border border-primary-100/40">
+              <Info className="h-4 w-4 text-primary-600 mt-0.5 flex-shrink-0" />
+              <p className="text-xs text-primary-800 leading-relaxed">
+                <span className="font-semibold">Using Industry Assumptions:</span> This projection uses market averages as the fund hasn't specified target returns. 
+                Actual performance may differ significantly. Contact the fund manager for fund-specific projections.
+              </p>
+            </div>
+          )}
+          
+          {/* Legal Disclaimer */}
+          <div className="flex items-start gap-3 p-4 bg-warning/5 rounded-lg border border-warning/20">
+            <AlertTriangle className="h-4 w-4 text-warning mt-0.5 flex-shrink-0" />
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              <span className="font-semibold text-foreground">Investment Risk Disclosure:</span> These projections are for illustrative purposes only and do not guarantee future performance. 
+              Past performance is not indicative of future results. All investments carry risk, including potential loss of principal. 
+              Consult with a qualified financial advisor before making investment decisions.
+            </p>
+          </div>
         </div>
       </div>
     </div>
