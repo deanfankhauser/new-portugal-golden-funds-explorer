@@ -1013,15 +1013,42 @@ export class ConsolidatedSEOService {
     // Use comprehensive investment fund structured data
     const investmentFundSchema = InvestmentFundStructuredDataService.generateInvestmentFundSchema(fund);
     
-    // Add breadcrumb schema
-    const breadcrumbSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      'itemListElement': [
-        { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
-        { '@type': 'ListItem', 'position': 2, 'name': fund.name, 'item': URL_CONFIG.buildFundUrl(fund.id) }
-      ]
-    };
+        // Add breadcrumb schema with proper navigation hierarchy
+        const breadcrumbItems: any[] = [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL }
+        ];
+
+        // Add Browse Funds
+        breadcrumbItems.push({
+          '@type': 'ListItem',
+          'position': 2,
+          'name': 'Browse Funds',
+          'item': `${URL_CONFIG.BASE_URL}/`
+        });
+
+        // Add category if available
+        if (fund.category) {
+          breadcrumbItems.push({
+            '@type': 'ListItem',
+            'position': breadcrumbItems.length + 1,
+            'name': fund.category,
+            'item': URL_CONFIG.buildCategoryUrl(fund.category)
+          });
+        }
+
+        // Add fund
+        breadcrumbItems.push({
+          '@type': 'ListItem',
+          'position': breadcrumbItems.length + 1,
+          'name': fund.name,
+          'item': URL_CONFIG.buildFundUrl(fund.id)
+        });
+
+        const breadcrumbSchema = {
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          'itemListElement': breadcrumbItems
+        };
     
     // Add FAQ schema if fund has FAQs
     const schemas: any[] = [investmentFundSchema, breadcrumbSchema];
