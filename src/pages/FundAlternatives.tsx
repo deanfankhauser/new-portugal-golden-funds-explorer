@@ -9,8 +9,17 @@ import PageSEO from '../components/common/PageSEO';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { ArrowLeft, ExternalLink, CheckCircle2 } from 'lucide-react';
+import { ExternalLink, CheckCircle2 } from 'lucide-react';
 import { Alert, AlertDescription } from '../components/ui/alert';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '../components/ui/breadcrumb';
+import { URL_CONFIG } from '../utils/urlConfig';
 
 const FundAlternatives = () => {
   const { id } = useParams<{ id: string }>();
@@ -44,13 +53,31 @@ const FundAlternatives = () => {
         <main className="flex-1 py-6 md:py-8">
           <div className="container mx-auto px-4 max-w-4xl">
             <div className="mb-6">
-              <Link 
-                to={`/${fund.id}`}
-                className="inline-flex items-center gap-2 text-primary hover:text-primary/80 mb-4"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Back to {fund.name}
-              </Link>
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink asChild>
+                      <Link to="/">Home</Link>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbLink asChild>
+                      <Link to="/alternatives">Alternatives Hub</Link>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbLink asChild>
+                      <Link to={URL_CONFIG.buildFundUrl(fund.id)}>{fund.name}</Link>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>Alternatives</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
             </div>
             
             <h1 className="text-3xl font-bold text-foreground mb-4">
@@ -103,13 +130,31 @@ const FundAlternatives = () => {
       <main className="flex-1 py-6 md:py-8">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="mb-6">
-            <Link 
-              to={`/${fund.id}`}
-              className="inline-flex items-center gap-2 text-primary hover:text-primary/80 mb-4"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to {fund.name}
-            </Link>
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/">Home</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/alternatives">Alternatives Hub</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to={URL_CONFIG.buildFundUrl(fund.id)}>{fund.name}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Alternatives</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
           </div>
           
           <div className="mb-8">
