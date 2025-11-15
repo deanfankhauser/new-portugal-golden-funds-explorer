@@ -29,7 +29,7 @@ export const HeaderIconButton: React.FC<HeaderIconButtonProps> = ({
       className={
         [
           'relative text-background',
-          'hover:bg-background/10 active:bg-background/20',
+          'hover:bg-background/10 hover:text-background active:bg-background/20',
           'transition-colors',
           className,
         ].filter(Boolean).join(' ')
