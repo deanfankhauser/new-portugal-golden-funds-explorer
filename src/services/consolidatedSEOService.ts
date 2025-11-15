@@ -342,7 +342,7 @@ export class ConsolidatedSEOService {
             'fund manager profile',
             'Golden Visa investment professionals'
           ],
-          structuredData: this.getManagerStructuredData(params.managerName)
+          structuredData: this.getManagerStructuredData(params.managerName, params.managerProfile, params.funds || [])
         };
 
       case 'comparison':
@@ -1148,13 +1148,149 @@ export class ConsolidatedSEOService {
     return [baseSchema, itemListSchema, breadcrumbSchema];
   }
 
-  private static getManagerStructuredData(managerName: string): any {
-    return {
+  private static getManagerStructuredData(managerName: string, managerProfile?: any, funds: any[] = []): any {
+    const managerUrl = URL_CONFIG.buildManagerUrl(managerName);
+    const fundsCount = funds.length;
+    
+    // Base Organization Schema (Enhanced)
+    const organizationSchema = {
       '@context': 'https://schema.org',
       '@type': 'Organization',
       'name': managerName,
-      'url': URL_CONFIG.buildManagerUrl(managerName)
+      'url': managerUrl,
+      ...(managerProfile?.logo_url && { 'logo': managerProfile.logo_url }),
+      ...(managerProfile?.description && { 'description': managerProfile.description }),
+      'address': {
+        '@type': 'PostalAddress',
+        'addressCountry': 'PT',
+        ...(managerProfile?.city && { 'addressLocality': managerProfile.city })
+      },
+      ...(managerProfile?.founded_year && { 'foundingDate': managerProfile.founded_year.toString() }),
+      ...(managerProfile?.website && { 'sameAs': [managerProfile.website] }),
+      'areaServed': {
+        '@type': 'Place',
+        'name': 'Portugal'
+      },
+      'serviceType': 'Investment Fund Management',
+      'knowsAbout': 'Golden Visa Investment Funds'
     };
+
+    // Add contact information if available
+    if (managerProfile?.email || managerProfile?.phone) {
+      organizationSchema['contactPoint'] = {
+        '@type': 'ContactPoint',
+        'contactType': 'customer service',
+        ...(managerProfile.email && { 'email': managerProfile.email }),
+        ...(managerProfile.phone && { 'telephone': managerProfile.phone })
+      };
+    }
+
+    // BreadcrumbList Schema
+    const breadcrumbSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      'itemListElement': [
+        {
+          '@type': 'ListItem',
+          'position': 1,
+          'name': 'Home',
+          'item': URL_CONFIG.BASE_URL
+        },
+        {
+          '@type': 'ListItem',
+          'position': 2,
+          'name': 'Fund Managers',
+          'item': `${URL_CONFIG.BASE_URL}/managers`
+        },
+        {
+          '@type': 'ListItem',
+          'position': 3,
+          'name': managerName,
+          'item': managerUrl
+        }
+      ]
+    };
+
+    // FinancialService Schema
+    const financialServiceSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'FinancialService',
+      'name': `${managerName} Investment Management`,
+      'description': managerProfile?.description || `Professional investment fund management services by ${managerName} specializing in Golden Visa eligible funds.`,
+      'provider': {
+        '@type': 'Organization',
+        'name': managerName
+      },
+      'serviceType': 'Investment Fund Management',
+      'areaServed': {
+        '@type': 'Place',
+        'name': 'Portugal'
+      },
+      ...(funds.length > 0 && {
+        'hasOfferCatalog': {
+          '@type': 'OfferCatalog',
+          'name': `${managerName} Investment Funds`,
+          'numberOfItems': fundsCount,
+          'itemListElement': funds.slice(0, 10).map(fund => ({
+            '@type': 'Offer',
+            'itemOffered': {
+              '@type': 'FinancialProduct',
+              'name': fund.name,
+              'category': fund.category || 'Investment Fund',
+              'url': URL_CONFIG.buildFundUrl(fund.id)
+            },
+            ...(fund.minimumInvestment && {
+              'price': fund.minimumInvestment,
+              'priceCurrency': 'EUR'
+            })
+          }))
+        }
+      })
+    };
+
+    // CollectionPage Schema with ItemList
+    const collectionPageSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'name': `${managerName} Golden Visa Investment Funds`,
+      'description': `Browse ${fundsCount} Golden Visa eligible investment funds managed by ${managerName}`,
+      'url': managerUrl,
+      'numberOfItems': fundsCount,
+      'mainEntity': {
+        '@type': 'ItemList',
+        'itemListElement': funds.map((fund, index) => ({
+          '@type': 'ListItem',
+          'position': index + 1,
+          'item': {
+            '@type': 'FinancialProduct',
+            'name': fund.name,
+            'url': URL_CONFIG.buildFundUrl(fund.id),
+            'category': fund.category || 'Investment Fund',
+            'description': fund.description,
+            'provider': {
+              '@type': 'Organization',
+              'name': managerName
+            },
+            ...(fund.minimumInvestment && {
+              'offers': {
+                '@type': 'Offer',
+                'price': fund.minimumInvestment,
+                'priceCurrency': 'EUR',
+                'availability': 'https://schema.org/InStock'
+              }
+            })
+          }
+        }))
+      }
+    };
+
+    // Return array of schemas
+    return [
+      organizationSchema,
+      breadcrumbSchema,
+      financialServiceSchema,
+      ...(funds.length > 0 ? [collectionPageSchema] : [])
+    ];
   }
 
   private static getComparisonStructuredData(): any {
