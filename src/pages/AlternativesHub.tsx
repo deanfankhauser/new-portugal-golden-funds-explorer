@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAllFunds } from '../hooks/useFundsQuery';
 import { findAlternativeFunds } from '../data/services/alternative-funds-service';
@@ -17,9 +17,12 @@ import {
   BreadcrumbPage, 
   BreadcrumbSeparator 
 } from '../components/ui/breadcrumb';
+import { InvestmentFundStructuredDataService } from '../services/investmentFundStructuredDataService';
+import { StructuredDataService } from '../services/structuredDataService';
 
 const AlternativesHub: React.FC = () => {
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
+  const [displayCount, setDisplayCount] = useState(10);
   const { data: fundsData = [], isLoading } = useAllFunds();
   
   // Filter funds by verification status
@@ -56,6 +59,38 @@ const AlternativesHub: React.FC = () => {
   const verifiedCount = allFunds.filter(f => f.isVerified).length;
   const totalAlternatives = fundsWithAlternatives.reduce((sum, item) => sum + item.alternatives.length, 0);
 
+  // Add structured data for SEO
+  useEffect(() => {
+    if (fundsWithAlternatives.length > 0) {
+      const schemas = [
+        InvestmentFundStructuredDataService.generateFundListSchema(
+          fundsWithAlternatives.map(item => item.fund),
+          'fund-alternatives'
+        ),
+        {
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          'name': 'Fund Alternatives Hub - Portugal Golden Visa Investment Funds',
+          'description': 'Discover similar Golden Visa eligible funds based on category, investment requirements, and performance metrics.',
+          'url': window.location.href,
+          'numberOfItems': fundsWithAlternatives.length,
+          'about': {
+            '@type': 'FinancialProduct',
+            'name': 'Portugal Golden Visa Investment Funds'
+          }
+        }
+      ];
+      StructuredDataService.addStructuredData(schemas, 'alternatives-hub-schema');
+    }
+    
+    return () => {
+      StructuredDataService.removeStructuredData('alternatives-hub-schema');
+    };
+  }, [fundsWithAlternatives]);
+
+  const displayedFunds = fundsWithAlternatives.slice(0, displayCount);
+  const hasMore = displayCount < fundsWithAlternatives.length;
+
   if (isLoading) {
     return (
       <HomepageLayout>
@@ -72,7 +107,7 @@ const AlternativesHub: React.FC = () => {
       <PageSEO pageType="alternatives-hub" />
       
       {/* Breadcrumb Navigation */}
-      <div className="mb-6">
+      <nav className="mb-6" aria-label="Breadcrumb">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -89,12 +124,12 @@ const AlternativesHub: React.FC = () => {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-      </div>
+      </nav>
 
       {/* Hero Section */}
-      <section className="mb-12">
+      <section className="mb-12" aria-labelledby="page-title">
         <div className="max-w-3xl">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4 leading-tight">
+          <h1 id="page-title" className="text-3xl md:text-4xl font-bold text-foreground mb-4 leading-tight">
             Find Alternative Investment Funds
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
@@ -103,154 +138,192 @@ const AlternativesHub: React.FC = () => {
           </p>
         </div>
       </section>
-      
-      {/* Verification Filter Toolbar */}
-      <div className="mb-8 flex items-center gap-4 flex-wrap">
+
+      {/* Statistics Grid */}
+      <section className="mb-12" aria-labelledby="statistics-heading">
+        <h2 id="statistics-heading" className="sr-only">Fund Statistics</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="border-border/50 hover:border-border hover:shadow-md transition-all duration-300">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Funds with Alternatives
+                </CardTitle>
+                <Layers className="h-4 w-4 text-primary" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-foreground">{fundsWithAlternatives.length}</div>
+              <p className="text-xs text-muted-foreground mt-1">Investment options</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/50 hover:border-border hover:shadow-md transition-all duration-300">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Total Funds
+                </CardTitle>
+                <Users className="h-4 w-4 text-primary" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-foreground">{allFunds.length}</div>
+              <p className="text-xs text-muted-foreground mt-1">Golden Visa eligible</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/50 hover:border-border hover:shadow-md transition-all duration-300">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Alternative Matches
+                </CardTitle>
+                <CheckCircle2 className="h-4 w-4 text-primary" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-foreground">{totalAlternatives}</div>
+              <p className="text-xs text-muted-foreground mt-1">Similar fund matches</p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Verification Filter */}
+      <div className="mb-8 flex items-center justify-between flex-wrap gap-4" role="toolbar" aria-label="Filter controls">
+        <div>
+          <h2 className="text-xl font-semibold text-foreground mb-1">Browse Fund Alternatives</h2>
+          <p className="text-sm text-muted-foreground" aria-live="polite">
+            {showOnlyVerified ? `Showing ${verifiedCount} verified funds` : `Showing all ${allFunds.length} funds`}
+          </p>
+        </div>
         <VerificationFilterChip 
           showOnlyVerified={showOnlyVerified}
           setShowOnlyVerified={setShowOnlyVerified}
         />
-        <span className="text-sm text-muted-foreground">
-          {showOnlyVerified 
-            ? `Showing ${verifiedCount} verified funds` 
-            : `Showing all ${allFunds.length} funds (${verifiedCount} verified)`
-          }
-        </span>
-      </div>
-
-      {/* Statistics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
-        <Card className="border-border/50 hover:border-border transition-colors">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="p-2.5 rounded-lg bg-primary/10">
-                <Layers className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-foreground mb-1">{fundsWithAlternatives.length}</div>
-                <div className="text-sm text-muted-foreground">Funds with Alternatives</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-border/50 hover:border-border transition-colors">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="p-2.5 rounded-lg bg-primary/10">
-                <Users className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-foreground mb-1">{allFunds.length}</div>
-                <div className="text-sm text-muted-foreground">Total Funds</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-border/50 hover:border-border transition-colors">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="p-2.5 rounded-lg bg-primary/10">
-                <CheckCircle2 className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-foreground mb-1">{totalAlternatives}</div>
-                <div className="text-sm text-muted-foreground">Alternative Matches</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Funds with Alternatives */}
-      <div className="space-y-6">
-        {fundsWithAlternatives.map(({ fund, alternatives }) => (
-          <Card key={fund.id} className="border-border/50 hover:shadow-md transition-all">
-            <CardHeader className="pb-4">
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                <div className="flex-1">
-                  <CardTitle className="text-xl mb-3">
+      <section aria-labelledby="funds-list-heading">
+        <h2 id="funds-list-heading" className="sr-only">List of Funds with Alternatives</h2>
+        <div className="space-y-6 mb-8">
+          {displayedFunds.map(({ fund, alternatives }) => (
+            <Card 
+              key={fund.id} 
+              className="overflow-hidden border-border/50 hover:border-border hover:shadow-lg transition-all duration-300"
+            >
+              <CardHeader className="bg-accent/20 border-b border-border/50">
+                <div className="flex items-start justify-between gap-4 flex-wrap">
+                  <div className="flex-1 min-w-0">
                     <Link 
-                      to={`/fund/${fund.id}`}
-                      className="hover:text-primary transition-colors inline-flex items-center gap-2 group"
+                      to={`/funds/${fund.id}`}
+                      className="hover:underline"
                     >
-                      {fund.name}
-                      <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <CardTitle className="text-xl mb-2 text-foreground">
+                        {fund.name}
+                      </CardTitle>
                     </Link>
-                  </CardTitle>
-                  <div className="flex flex-wrap gap-2">
-                    {fund.category && (
-                      <Badge variant="secondary" className="font-normal">{fund.category}</Badge>
-                    )}
-                    {fund.isVerified && (
-                      <Badge className="bg-emerald-600 hover:bg-emerald-700 font-normal">
-                        <CheckCircle2 className="h-3 w-3 mr-1" />
-                        Verified
-                      </Badge>
-                    )}
-                    {fund.minimumInvestment && (
-                      <Badge variant="outline" className="font-normal">
-                        Min: €{fund.minimumInvestment.toLocaleString()}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-3 flex items-center gap-2">
-                <h3 className="text-sm font-semibold text-muted-foreground">
-                  Similar Alternatives
-                </h3>
-                <Badge variant="outline" className="text-xs">{alternatives.length}</Badge>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {alternatives.map((alt) => (
-                  <Link 
-                    key={alt.id}
-                    to={`/fund/${alt.id}`}
-                    className="group block p-4 rounded-lg border border-border/50 bg-card hover:border-primary/50 hover:shadow-sm transition-all"
-                  >
-                    <div className="font-semibold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
-                      {alt.name}
-                    </div>
-                    <div className="flex flex-wrap gap-1.5 mb-2">
-                      {alt.category && (
-                        <Badge variant="outline" className="text-xs font-normal">{alt.category}</Badge>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {fund.category && (
+                        <Badge variant="secondary" className="text-xs">
+                          {fund.category}
+                        </Badge>
                       )}
-                      {alt.isVerified && (
-                        <Badge variant="outline" className="text-xs font-normal bg-emerald-50 text-emerald-700 border-emerald-200">
-                          ✓ Verified
+                      {fund.isVerified && (
+                        <Badge className="text-xs bg-primary/10 text-primary border-primary/20">
+                          <CheckCircle2 className="h-3 w-3 mr-1" />
+                          Verified
                         </Badge>
                       )}
                     </div>
-                    {alt.minimumInvestment && (
-                      <div className="text-xs text-muted-foreground">
-                        Min: €{alt.minimumInvestment.toLocaleString()}
+                  </div>
+                  <Button asChild variant="outline" size="sm">
+                    <Link to={`/funds/${fund.id}`}>
+                      View Details
+                      <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                    </Link>
+                  </Button>
+                </div>
+              </CardHeader>
+              
+              <CardContent className="pt-6">
+                <h3 className="text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wide">
+                  Similar Alternatives ({alternatives.length})
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {alternatives.map(alt => (
+                    <Link
+                      key={alt.id}
+                      to={`/funds/${alt.id}`}
+                      className="group block p-4 rounded-lg border border-border/50 hover:border-primary/50 hover:bg-accent/30 transition-all duration-200"
+                    >
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <h4 className="font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 flex-1">
+                          {alt.name}
+                        </h4>
+                        {alt.isVerified && (
+                          <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                        )}
                       </div>
-                    )}
-                  </Link>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                      
+                      {alt.category && (
+                        <Badge variant="outline" className="text-xs mb-2">
+                          {alt.category}
+                        </Badge>
+                      )}
+                      
+                      {alt.minimumInvestment && (
+                        <p className="text-sm text-muted-foreground">
+                          Min: €{alt.minimumInvestment.toLocaleString()}
+                        </p>
+                      )}
+                      
+                      <div className="flex items-center gap-1 text-xs text-primary mt-2 group-hover:gap-2 transition-all">
+                        <span>Learn more</span>
+                        <ArrowRight className="h-3 w-3" />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Load More Button */}
+        {hasMore && (
+          <div className="text-center mb-16">
+            <Button 
+              onClick={() => setDisplayCount(prev => prev + 10)}
+              variant="outline"
+              size="lg"
+              className="min-w-[200px]"
+              aria-label={`Load ${Math.min(10, fundsWithAlternatives.length - displayCount)} more funds`}
+            >
+              Load More Funds
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+            <p className="text-sm text-muted-foreground mt-3">
+              Showing {displayCount} of {fundsWithAlternatives.length} funds
+            </p>
+          </div>
+        )}
+      </section>
 
       {/* Call to Action */}
-      <section className="mt-16 bg-gradient-to-br from-primary/5 to-primary/10 border border-border/50 rounded-lg p-8 md:p-12 text-center">
-        <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-          Ready to Compare More Funds?
+      <section className="bg-accent/30 rounded-xl p-8 md:p-12 text-center" aria-labelledby="cta-heading">
+        <h2 id="cta-heading" className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+          Ready to Explore All Funds?
         </h2>
-        <p className="text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-          Browse our complete directory of Portugal Golden Visa investment funds
-          and find the perfect match for your investment goals.
+        <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+          Browse our complete collection of Portugal Golden Visa investment funds to find the perfect match for your investment goals.
         </p>
-        <Button asChild size="lg" className="gap-2">
-          <Link to="/">
+        <Button asChild size="lg" className="font-semibold">
+          <Link to="/funds">
             Browse All Funds
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>
       </section>
