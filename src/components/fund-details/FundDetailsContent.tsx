@@ -117,6 +117,11 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                       <TeamSection team={fund.team} />
                     </section>
 
+                    {/* Enquiry Form Section */}
+                    <section id="contact-fund" className="scroll-mt-28 md:scroll-mt-24">
+                      <FundEnquirySection fund={fund} />
+                    </section>
+
 
                     {/* CTA Section */}
                     <div className="bg-gradient-to-r from-success/10 to-success/5 p-4 md:p-6 rounded-lg border border-success/30">
@@ -186,9 +191,6 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
         
         {/* FAQ Section */}
         <FundFAQSection fund={fund} />
-        
-        {/* Enquiry Form Section - Inline at bottom */}
-        <FundEnquirySection fund={fund} />
       </div>
       
       {/* Floating TOC (Mobile only) */}

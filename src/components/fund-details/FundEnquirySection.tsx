@@ -215,7 +215,7 @@ export const FundEnquirySection: React.FC<FundEnquirySectionProps> = ({ fund }) 
       )}
       
       <CardHeader className="p-10 pb-8">
-        <CardTitle className="text-[32px] font-semibold tracking-tight leading-tight mb-3">Get in Touch with Fund Manager</CardTitle>
+        <CardTitle className="text-[32px] font-semibold tracking-tight leading-tight mb-3">Get in Touch with {fund.name}</CardTitle>
         <CardDescription className="text-base text-muted-foreground leading-relaxed">
           Enquire about <strong>{fund.name}</strong>. The fund manager will respond within 24-48 hours.
         </CardDescription>
