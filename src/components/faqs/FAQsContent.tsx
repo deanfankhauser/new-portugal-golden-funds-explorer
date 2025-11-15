@@ -45,7 +45,7 @@ const FAQsContent = () => {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="bg-card p-8 rounded-lg shadow-sm mb-16">
+      <div className="bg-card p-8 rounded-xl border border-border mb-16">
         <h1 className="text-3xl font-bold mb-4 text-foreground">
           Portugal Golden Visa Investment Funds - Frequently Asked Questions
         </h1>
