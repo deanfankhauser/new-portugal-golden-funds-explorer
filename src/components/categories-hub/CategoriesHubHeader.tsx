@@ -5,7 +5,7 @@ import { Folder } from 'lucide-react';
 
 const CategoriesHubHeader = () => {
   return (
-    <div className="bg-card p-6 rounded-lg shadow-sm mb-8">
+    <div className="bg-card p-8 rounded-xl border border-border mb-8">
       <div className="flex items-center justify-center mb-4">
         <Folder className="w-6 h-6 text-primary mr-2" />
         <span className="text-sm bg-muted px-3 py-1 rounded-full">Directory</span>

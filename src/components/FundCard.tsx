@@ -40,16 +40,16 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
 
   return (
     <>
-      <Card className={`h-full ${
+      <Card className={`group h-full bg-card rounded-xl border border-border p-8 hover:border-primary/20 hover:shadow-lg transition-all duration-300 ${
         fund.isVerified 
           ? 'ring-2 ring-success/30 border-success/30' 
           : ''
       }`}>
-        <CardHeader className="pb-2">
+        <CardHeader className="p-0 pb-4">
           <div className="flex justify-between items-start gap-3">
             <div className="flex-1 min-w-0">
               <CardTitle className="text-xl">
-                <Link to={`/${fund.id}`} className="hover:text-accent transition-colors block" onClick={() => window.scrollTo(0, 0)}>
+                <Link to={`/${fund.id}`} className="hover:text-primary transition-colors block" onClick={() => window.scrollTo(0, 0)}>
                   {fund.name}
                 </Link>
               </CardTitle>
@@ -70,7 +70,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           <div className="text-muted-foreground mb-4">
             {fund.description}
           </div>
@@ -96,7 +96,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
           </div>
 
           {/* Fee Information */}
-          <div className="grid grid-cols-2 gap-2 mb-4 p-3 bg-accent/5 border border-accent/20 rounded-lg">
+          <div className="grid grid-cols-2 gap-2 mb-4 p-4 bg-muted/30 border border-border/40 rounded-lg">
             <div>
               <div className="flex items-center gap-1 mb-1">
                 <Euro className="w-3 h-3 text-accent" />

@@ -11,7 +11,7 @@ const CategoryPageEmptyState: React.FC<CategoryPageEmptyStateProps> = ({ categor
   const navigate = useNavigate();
   
   return (
-    <div className="bg-card rounded-lg shadow-sm border border-border/40 p-10 text-center">
+    <div className="bg-card rounded-xl border border-border p-12 text-center">
       <h3 className="text-2xl font-semibold mb-3">No funds found</h3>
       <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
         No funds are currently in the {categoryName} category

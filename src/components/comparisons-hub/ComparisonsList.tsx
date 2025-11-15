@@ -43,9 +43,9 @@ const ComparisonsList = () => {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {currentComparisons.map((comparison) => (
-          <div key={comparison.slug} className="bg-card p-6 rounded-lg shadow-sm border border-border hover:shadow-md transition-shadow">
+          <div key={comparison.slug} className="group bg-card rounded-xl border border-border p-8 hover:border-primary/20 hover:shadow-lg transition-all duration-300">
             <div className="flex flex-col space-y-4">
               <div className="flex items-center justify-between">
                 <GitCompare className="h-5 w-5 text-primary" />
@@ -71,7 +71,7 @@ const ComparisonsList = () => {
               </div>
               
               <Link to={`/compare/${comparison.slug}`}>
-                <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+                <Button className="w-full group-hover:bg-primary/90">
                   Compare Funds
                 </Button>
               </Link>
