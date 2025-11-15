@@ -1,13 +1,32 @@
-
 import React from 'react';
 import Header from '../Header';
 import Footer from '../Footer';
+import FAQSection from '../common/FAQSection';
 
 interface HomepageLayoutProps {
   children: React.ReactNode;
 }
 
 const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
+  const homepageFAQs = [
+    {
+      question: "What's the minimum for the fund route?",
+      answer: "€500,000 total investment required for Golden Visa fund route, with no real-estate exposure permitted (post-October 2023 regulatory changes). A fund's subscription minimum can be lower, but you still need €500,000 across one or more qualifying funds. Source: IMI Daily"
+    },
+    {
+      question: "How long does the Golden Visa application process take?",
+      answer: "The application process typically takes 6-12 months from investment to visa approval, depending on the fund and documentation completeness."
+    },
+    {
+      question: "Are these funds regulated by Portuguese authorities?",
+      answer: "We source from CMVM-regulated managers where applicable. Verify each fund's registration and GV suitability with counsel."
+    },
+    {
+      question: "Can I compare different fund options?",
+      answer: "Movingto clients get access to comprehensive fund comparison tools, detailed performance data, and personalized recommendations based on risk tolerance and investment goals."
+    }
+  ];
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
@@ -51,41 +70,11 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
 
         {/* FAQ Section for SEO */}
         <section className="mt-12 pt-8 border-t border-border">
-          <h2 className="text-2xl font-bold text-foreground mb-6">Frequently Asked Questions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h3 className="font-semibold text-foreground mb-2">What's the minimum for the fund route?</h3>
-              <p className="text-sm text-muted-foreground">
-                €500,000 total investment required for Golden Visa fund route, with no real-estate exposure permitted (post-October 2023 regulatory changes). 
-                A fund's subscription minimum can be lower, but you still need €500,000 across one or more qualifying funds.
-                <br /><br />
-                <strong>Source:</strong> <a href="https://www.imidaily.com/portugal/" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 underline">IMI Daily</a>
-              </p>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold text-foreground mb-2">How long does the Golden Visa application process take?</h3>
-              <p className="text-sm text-muted-foreground">
-                The application process typically takes 6-12 months from investment to visa approval, 
-                depending on the fund and documentation completeness.
-              </p>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold text-foreground mb-2">Are these funds regulated by Portuguese authorities?</h3>
-              <p className="text-sm text-muted-foreground">
-                We source from CMVM-regulated managers where applicable. Verify each fund's registration and GV suitability with counsel.
-              </p>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold text-foreground mb-2">Can I compare different fund options?</h3>
-              <p className="text-sm text-muted-foreground">
-                Movingto clients get access to comprehensive fund comparison tools, detailed analytics, 
-                and personalized recommendations based on risk tolerance and investment goals.
-              </p>
-            </div>
-          </div>
+          <FAQSection 
+            faqs={homepageFAQs}
+            title="Frequently Asked Questions"
+            schemaId="homepage-faq"
+          />
         </section>
       </main>
       <Footer />

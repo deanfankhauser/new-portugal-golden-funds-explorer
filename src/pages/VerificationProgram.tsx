@@ -2,6 +2,7 @@ import { CheckCircle2, AlertCircle, FileCheck, Shield, Clock, Users, Database, E
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import FAQSection from "@/components/common/FAQSection";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -636,28 +637,21 @@ const VerificationProgram = () => {
       {/* FAQs */}
       <section className="py-16 px-6">
         <div className="container mx-auto max-w-[1200px]">
-          <div className="mb-12">
+          <div className="text-center mb-8">
             <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
               FAQ
             </div>
             <h2 className="text-3xl font-semibold text-gray-900 mb-3">Frequently asked questions</h2>
-            <p className="text-base text-gray-600 max-w-2xl leading-relaxed">
+            <p className="text-base text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
               Quick answers to common questions about our verification program.
             </p>
           </div>
           
-          <Accordion type="single" collapsible className="w-full">
-            {faqs.map((faq, index) => (
-              <AccordionItem key={index} value={`faq-${index}`} className="border-t border-gray-200 last:border-b">
-                <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          <FAQSection 
+            faqs={faqs}
+            title=""
+            schemaId="verification-faq"
+          />
         </div>
       </section>
 

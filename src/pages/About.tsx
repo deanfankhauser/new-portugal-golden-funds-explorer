@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Separator } from '@/components/ui/separator';
+import FAQSection from '@/components/common/FAQSection';
 import { 
   ShieldCheck, 
   TrendingUp, 
@@ -388,29 +389,20 @@ const About = () => {
         {/* FAQ Section */}
         <section className="py-16 sm:py-20">
           <div className="container-responsive-padding">
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-                  Frequently Asked <span className="text-accent italic font-cheltenham">Questions</span>
-                </h2>
-                <p className="text-lg text-medium-contrast">
-                  Common questions about our platform, methodology, and services.
-                </p>
-              </div>
-
-              <Accordion type="single" collapsible className="space-y-4">
-                {faqs.map((faq, index) => (
-                  <AccordionItem key={index} value={`faq-${index}`} className="border rounded-lg px-6">
-                    <AccordionTrigger className="hover:no-underline text-left">
-                      <span className="font-semibold">{faq.question}</span>
-                    </AccordionTrigger>
-                    <AccordionContent className="text-medium-contrast leading-relaxed">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
+            <div className="text-center mb-8">
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+                Frequently Asked <span className="text-accent italic font-cheltenham">Questions</span>
+              </h2>
+              <p className="text-lg text-medium-contrast mb-8">
+                Common questions about our platform, methodology, and services.
+              </p>
             </div>
+            
+            <FAQSection 
+              faqs={faqs}
+              title=""
+              schemaId="about-faq"
+            />
           </div>
         </section>
 
