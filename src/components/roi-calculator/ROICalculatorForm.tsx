@@ -7,14 +7,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Calculator, AlertTriangle, TrendingUp } from 'lucide-react';
 import { getReturnTargetNumbers, getReturnTargetDisplay } from '../../utils/returnTarget';
 
 interface ROICalculatorFormProps {
   onResultsCalculated: (results: {
-    totalValue: number;
-    totalReturn: number;
-    annualizedReturn: number;
+    grossTotalValue: number;
+    grossTotalReturn: number;
+    grossAnnualizedReturn: number;
+    netTotalValue: number;
+    netTotalReturn: number;
+    netAnnualizedReturn: number;
+    totalFeesPaid: number;
+    managementFeesPaid: number;
+    performanceFeesPaid: number;
   }) => void;
   selectedFund: Fund | null;
   setSelectedFund: (fund: Fund | null) => void;
@@ -29,6 +36,7 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
   const [investmentAmount, setInvestmentAmount] = useState<number>(350000);
   const [holdingPeriod, setHoldingPeriod] = useState<number>(5);
   const [expectedReturn, setExpectedReturn] = useState<number>(0);
+  const [showNetReturns, setShowNetReturns] = useState<boolean>(true);
 
   // Enhanced function to extract return rate using utility
   const extractReturnRate = (fund: Fund): number => {
@@ -68,14 +76,54 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
     }
 
     const annualReturnRate = expectedReturn / 100;
-    const totalValue = investmentAmount * Math.pow(1 + annualReturnRate, holdingPeriod);
-    const totalReturn = totalValue - investmentAmount;
-    const annualizedReturn = ((totalValue / investmentAmount) ** (1 / holdingPeriod) - 1) * 100;
+    const managementFeeRate = (selectedFund?.managementFee || 0) / 100;
+    const performanceFeeRate = (selectedFund?.performanceFee || 0) / 100;
+    const hurdleRate = (selectedFund?.hurdleRate || 0) / 100;
+
+    // Calculate GROSS returns (before fees)
+    const grossTotalValue = investmentAmount * Math.pow(1 + annualReturnRate, holdingPeriod);
+    const grossTotalReturn = grossTotalValue - investmentAmount;
+    const grossAnnualizedReturn = ((grossTotalValue / investmentAmount) ** (1 / holdingPeriod) - 1) * 100;
+
+    // Calculate NET returns (after fees)
+    let currentValue = investmentAmount;
+    let totalManagementFees = 0;
+    let totalPerformanceFees = 0;
+
+    for (let year = 1; year <= holdingPeriod; year++) {
+      // Calculate gross gain for the year
+      const startYearValue = currentValue;
+      const grossGainThisYear = currentValue * annualReturnRate;
+      
+      // Deduct management fee
+      const managementFee = currentValue * managementFeeRate;
+      totalManagementFees += managementFee;
+      
+      // Calculate performance fee on gains above hurdle rate
+      const hurdleGain = currentValue * hurdleRate;
+      const excessGain = Math.max(0, grossGainThisYear - hurdleGain);
+      const performanceFee = excessGain * performanceFeeRate;
+      totalPerformanceFees += performanceFee;
+      
+      // Net value after fees
+      currentValue = startYearValue + grossGainThisYear - managementFee - performanceFee;
+    }
+
+    const netTotalValue = currentValue;
+    const netTotalReturn = netTotalValue - investmentAmount;
+    const netAnnualizedReturn = ((netTotalValue / investmentAmount) ** (1 / holdingPeriod) - 1) * 100;
+    const totalFeesPaid = totalManagementFees + totalPerformanceFees;
 
     onResultsCalculated({
-      totalValue,
-      totalReturn,
-      annualizedReturn
+      grossTotalValue,
+      grossTotalReturn,
+      grossAnnualizedReturn,
+      netTotalValue,
+      netTotalReturn,
+      netAnnualizedReturn,
+      totalFeesPaid,
+      managementFeesPaid: totalManagementFees,
+      performanceFeesPaid: totalPerformanceFees,
     });
   };
 
@@ -124,6 +172,23 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
 
         {selectedFund && (
           <>
+            {/* Gross vs Net Toggle */}
+            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border border-border">
+              <div className="space-y-0.5">
+                <Label htmlFor="show-net-returns" className="text-base font-medium">
+                  Show Returns After Fees
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  Toggle to see net returns after deducting management and performance fees
+                </p>
+              </div>
+              <Switch
+                id="show-net-returns"
+                checked={showNetReturns}
+                onCheckedChange={setShowNetReturns}
+              />
+            </div>
+
             {/* Input Fields */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
@@ -175,32 +240,47 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
             <Button 
               onClick={calculateROI}
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+              size="lg"
             >
-              <TrendingUp className="w-4 h-4 mr-2" />
-              Calculate ROI
+              <Calculator className="w-4 h-4 mr-2" />
+              Calculate {showNetReturns ? 'Net' : 'Gross'} ROI
             </Button>
 
-            {/* Fund Information Card */}
-            <Card className="bg-secondary border-border">
-              <CardContent className="pt-4">
-                <h3 className="font-semibold text-foreground mb-2">{selectedFund.name}</h3>
-                <p className="text-sm text-muted-foreground mb-2">{selectedFund.description}</p>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="font-medium">Fund Size:</span> €{selectedFund.fundSize}M
-                  </div>
-                  <div>
-                    <span className="font-medium">Management Fee:</span> {selectedFund.managementFee}%
-                  </div>
-                  <div>
-                    <span className="font-medium">Term:</span> {selectedFund.term} years
-                  </div>
-                  <div>
-                    <span className="font-medium">Manager:</span> {selectedFund.managerName}
-                  </div>
+            {/* Fund Details & Fees */}
+            <div className="pt-4 border-t border-border space-y-3">
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                <TrendingUp className="w-4 h-4" />
+                Fund Details & Fees
+              </h3>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <p className="text-muted-foreground">Category</p>
+                  <p className="font-medium text-foreground">{selectedFund.category}</p>
                 </div>
-              </CardContent>
-            </Card>
+                <div>
+                  <p className="text-muted-foreground">Management Fee</p>
+                  <p className="font-medium text-foreground">{selectedFund.managementFee}% p.a.</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Performance Fee</p>
+                  <p className="font-medium text-foreground">{selectedFund.performanceFee}%</p>
+                </div>
+                {selectedFund.hurdleRate && (
+                  <div>
+                    <p className="text-muted-foreground">Hurdle Rate</p>
+                    <p className="font-medium text-foreground">{selectedFund.hurdleRate}%</p>
+                  </div>
+                )}
+                <div>
+                  <p className="text-muted-foreground">Fund Status</p>
+                  <p className="font-medium text-foreground">{selectedFund.fundStatus}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Manager</p>
+                  <p className="font-medium text-foreground">{selectedFund.managerName}</p>
+                </div>
+              </div>
+            </div>
           </>
         )}
 
@@ -214,7 +294,8 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
               Actual returns may vary significantly and are not guaranteed. Past performance does not 
               predict future results. Investment in funds involves risk, including the possible loss of 
               principal. Please consult with qualified financial guidance professionals before making investment decisions.
-              The expected returns shown are targets only and may not be achieved. This tool is designed 
+              The expected returns shown are targets only and may not be achieved. Fee calculations are estimates 
+              based on current fund fee structures and actual fees may differ. This tool is designed 
               to help you understand potential scenarios but should not be the sole basis for investment 
               decisions related to the Portuguese Golden Visa program.
             </p>
