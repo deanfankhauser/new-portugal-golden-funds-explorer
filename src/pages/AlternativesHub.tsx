@@ -19,6 +19,7 @@ import {
 } from '../components/ui/breadcrumb';
 import { InvestmentFundStructuredDataService } from '../services/investmentFundStructuredDataService';
 import { StructuredDataService } from '../services/structuredDataService';
+import { URL_CONFIG } from '../utils/urlConfig';
 
 const AlternativesHub: React.FC = () => {
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
@@ -217,7 +218,7 @@ const AlternativesHub: React.FC = () => {
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div className="flex-1 min-w-0">
                     <Link 
-                      to={`/funds/${fund.id}`}
+                      to={URL_CONFIG.buildFundUrl(fund.id)}
                       className="hover:underline"
                     >
                       <CardTitle className="text-xl mb-2 text-foreground">
@@ -239,7 +240,7 @@ const AlternativesHub: React.FC = () => {
                     </div>
                   </div>
                   <Button asChild variant="outline" size="sm">
-                    <Link to={`/funds/${fund.id}`}>
+                    <Link to={URL_CONFIG.buildFundUrl(fund.id)}>
                       View Details
                       <ArrowRight className="ml-2 h-3.5 w-3.5" />
                     </Link>
@@ -256,7 +257,7 @@ const AlternativesHub: React.FC = () => {
                   {alternatives.map(alt => (
                     <Link
                       key={alt.id}
-                      to={`/funds/${alt.id}`}
+                      to={URL_CONFIG.buildFundUrl(alt.id)}
                       className="group block p-4 rounded-lg border border-border/50 hover:border-primary/50 hover:bg-accent/30 transition-all duration-200"
                     >
                       <div className="flex items-start justify-between gap-2 mb-2">
