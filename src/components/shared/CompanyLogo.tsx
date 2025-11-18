@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useManagerProfile } from '@/hooks/useManagerProfile';
 import { Building2 } from 'lucide-react';
 
@@ -22,6 +22,17 @@ export const CompanyLogo: React.FC<CompanyLogoProps> = ({
   className = '' 
 }) => {
   const profile = useManagerProfile(managerName);
+  
+  // Debug logging
+  useEffect(() => {
+    console.log('🖼️ CompanyLogo Debug:', {
+      managerName,
+      profileFound: !!profile,
+      profileData: profile,
+      hasLogo: !!profile?.logo_url,
+      logoUrl: profile?.logo_url
+    });
+  }, [managerName, profile]);
   
   // Get initials from company name for fallback
   const getInitials = (name: string) => {
@@ -74,10 +85,13 @@ export const CompanyLogo: React.FC<CompanyLogoProps> = ({
   }
 
   // Fallback to initials if no logo
+  const initials = getInitials(managerName);
+  console.log('🔤 Showing initials fallback:', { managerName, initials });
+  
   return (
     <div className={`${sizeClass} flex-shrink-0 ${className}`}>
-      <div className="w-full h-full bg-muted/30 border border-border/40 rounded-lg flex items-center justify-center font-semibold text-muted-foreground shadow-sm">
-        {getInitials(managerName)}
+      <div className="w-full h-full bg-accent/20 border-2 border-accent/50 rounded-lg flex items-center justify-center font-bold text-accent shadow-md">
+        {initials}
       </div>
     </div>
   );
