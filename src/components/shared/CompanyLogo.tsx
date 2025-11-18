@@ -86,7 +86,6 @@ export const CompanyLogo: React.FC<CompanyLogoProps> = ({
 
   // Fallback to initials if no logo
   const initials = getInitials(managerName);
-  console.log('🔤 Showing initials fallback:', { managerName, initials });
   
   return (
     <div className={`${sizeClass} flex-shrink-0 ${className}`}>
