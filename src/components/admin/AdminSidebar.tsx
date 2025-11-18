@@ -11,7 +11,9 @@ import {
   Activity,
   Settings,
   Home,
-  LogOut
+  LogOut,
+  Edit,
+  Building
 } from "lucide-react";
 import {
   Sidebar,
@@ -38,7 +40,7 @@ interface NavItem {
   badge?: number;
 }
 
-const navItems: NavItem[] = [
+const adminNavItems: NavItem[] = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
   { title: "Suggestions", url: "/admin/suggestions", icon: FileEdit },
   { title: "Funds", url: "/admin/funds", icon: Briefcase },
@@ -49,6 +51,11 @@ const navItems: NavItem[] = [
   { title: "Leads", url: "/admin/leads", icon: Target },
   { title: "Performance", url: "/admin/performance", icon: Activity },
   { title: "Settings", url: "/admin/settings", icon: Settings },
+];
+
+const superAdminNavItems: NavItem[] = [
+  { title: "Edit Funds", url: "/admin/edit-funds", icon: Edit },
+  { title: "Edit Company Profiles", url: "/admin/edit-profiles", icon: Building },
 ];
 
 export function AdminSidebar() {
@@ -95,7 +102,7 @@ export function AdminSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
+              {adminNavItems.map((item) => (
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton 
                     asChild 
@@ -122,6 +129,38 @@ export function AdminSidebar() {
                           )}
                         </>
                       )}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Super Admin Section */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground/80 px-4">
+            SUPER ADMIN
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {superAdminNavItems.map((item) => (
+                <SidebarMenuItem key={item.url}>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={isActive(item.url)}
+                    tooltip={isCollapsed ? item.title : undefined}
+                  >
+                    <NavLink 
+                      to={item.url}
+                      className={({ isActive }) => 
+                        isActive 
+                          ? "bg-muted text-primary font-medium" 
+                          : "hover:bg-muted/50"
+                      }
+                    >
+                      <item.icon className="h-4 w-4" />
+                      {!isCollapsed && <span>{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

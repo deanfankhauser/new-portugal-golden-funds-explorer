@@ -16,6 +16,8 @@ import { AllLeadsManagement } from "@/components/admin/AllLeadsManagement";
 import { PerformanceMonitoring } from "@/components/admin/PerformanceMonitoring";
 import { DataCopyButton } from "@/components/admin/DataCopyButton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EditFundsManagement } from "@/components/admin/EditFundsManagement";
+import { EditCompanyProfilesManagement } from "@/components/admin/EditCompanyProfilesManagement";
 
 export default function AdminPanel() {
   const navigate = useNavigate();
@@ -103,7 +105,9 @@ export default function AdminPanel() {
               <Route path="emails" element={<EmailCapturesManagement />} />
               <Route path="leads" element={<AllLeadsManagement />} />
               <Route path="performance" element={<PerformanceMonitoring />} />
-              <Route 
+              <Route path="edit-funds" element={<EditFundsManagement />} />
+              <Route path="edit-profiles" element={<EditCompanyProfilesManagement />} />
+              <Route
                 path="settings" 
                 element={
                   <Card>
