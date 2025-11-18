@@ -79,67 +79,25 @@ export default function ResetPassword() {
     setIsSubmitting(true);
 
     try {
-      // Always call the Edge Function (it's public: verify_jwt=false)
-      const baseUrl = (() => {
-        if (typeof window !== 'undefined') return window.location.origin;
-        if (typeof process !== 'undefined' && process.env.VITE_APP_BASE_URL) return process.env.VITE_APP_BASE_URL;
-        return 'https://funds.movingto.com';
-      })();
+      const baseUrl = window.location.origin;
       
-      const { data: fnData, error: fnError } = await supabase.functions.invoke('send-password-reset', {
+      const { data, error } = await supabase.functions.invoke('send-password-reset', {
         body: {
           email,
           redirectTo: `${baseUrl}/reset-password`
         }
       });
 
-      if (fnError) {
-        console.error('Edge function error:', fnError);
-        // Fallback to Supabase's built-in method
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${baseUrl}/reset-password`
-        });
-        
-        if (error) {
-          setError(error.message);
-        } else {
-          toast.success('Reset Email Sent', {
-            description: 'Check your email for password reset instructions (via Supabase)'
-          });
-          setStatus('success');
-        }
-      } else {
-        toast.success('Reset Email Sent', {
-          description: 'Check your email for password reset instructions'
-        });
-        setStatus('success');
+      if (error) {
+        throw error;
       }
-    } catch (error) {
-      console.error('Password reset request error:', error);
-      
-      // Final fallback to Supabase built-in method
-      try {
-        const fallbackBaseUrl = (() => {
-          if (typeof window !== 'undefined') return window.location.origin;
-          if (typeof process !== 'undefined' && process.env.VITE_APP_BASE_URL) return process.env.VITE_APP_BASE_URL;
-          return 'https://funds.movingto.com';
-        })();
-        
-        const { error: fallbackError } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${fallbackBaseUrl}/reset-password`
-        });
-        
-        if (fallbackError) {
-          setError('Unable to send reset email. Please try again later.');
-        } else {
-          toast.success('Reset Email Sent', {
-            description: 'Check your email for password reset instructions'
-          });
-          setStatus('success');
-        }
-      } catch (fallbackErr) {
-        setError('An unexpected error occurred. Please try again later.');
-      }
+
+      setStatus('success');
+      toast.success('Check your email for password reset instructions');
+    } catch (err: any) {
+      console.error('Password reset request error:', err);
+      setError('Failed to send reset email. Please try again.');
+      setStatus('error');
     } finally {
       setIsSubmitting(false);
     }
