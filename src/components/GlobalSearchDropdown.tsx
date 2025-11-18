@@ -10,6 +10,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { SearchResult } from '@/hooks/useGlobalSearch';
+import { CompanyLogo } from './shared/CompanyLogo';
 
 interface Props {
   results: SearchResult[];
@@ -88,9 +89,13 @@ export const GlobalSearchDropdown: React.FC<Props> = ({
                   }
                 `}
               >
-                <div className="h-10 w-10 md:h-10 md:w-10 shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Icon className="h-5 w-5 text-primary" />
-                </div>
+                {result.type === 'fund' && result.metadata?.managerName ? (
+                  <CompanyLogo managerName={result.metadata.managerName} size="xs" />
+                ) : (
+                  <div className="h-10 w-10 md:h-10 md:w-10 shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Icon className="h-5 w-5 text-primary" />
+                  </div>
+                )}
                 
                 <div className="flex-1 min-w-0 overflow-hidden">
                   <div className="font-medium text-foreground truncate flex items-center gap-2 flex-wrap">

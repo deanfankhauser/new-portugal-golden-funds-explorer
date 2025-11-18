@@ -13,6 +13,7 @@ import { useAllFunds } from '@/hooks/useFundsQuery';
 import { useFundEngagementMetrics } from '@/hooks/useFundEngagementMetrics';
 import { Fund } from '@/data/types/funds';
 import { Profile } from '@/types/profile';
+import { CompanyLogo } from '@/components/shared/CompanyLogo';
 
 interface ProfileAssignment {
   id: string;
@@ -239,8 +240,9 @@ const MyFunds = () => {
                       <div className="space-y-3">
                         {companyFunds.map((fund) => (
                           <Card key={fund.id} className="hover:border-primary/40 transition-colors">
-                            <CardContent className="p-4">
-                              <div className="flex items-center justify-between">
+                             <CardContent className="p-4">
+                              <div className="flex items-start gap-3">
+                                <CompanyLogo managerName={fund.managerName} size="sm" className="mt-1" />
                                 <div className="flex-1">
                                   <h4 className="font-semibold text-lg mb-1">{fund.name}</h4>
                                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
