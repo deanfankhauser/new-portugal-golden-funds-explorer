@@ -10,6 +10,7 @@ import IntroductionButton from './IntroductionButton';
 import EnhancedGVEligibilityBadge from './EnhancedGVEligibilityBadge';
 import RecentlyUpdatedBadge from './RecentlyUpdatedBadge';
 import { getReturnTargetNumbers } from '../../utils/returnTarget';
+import { CompanyLogo } from '../shared/CompanyLogo';
 
 interface FundHeaderProps {
   fund: Fund;
@@ -49,9 +50,12 @@ const FundHeader: React.FC<FundHeaderProps> = ({ fund }) => {
         <div className="flex flex-col gap-4 mb-4 md:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div className="flex-1">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-foreground tracking-tight leading-tight">
-                {fund.name} | Portugal Investment Fund
-              </h1>
+              <div className="flex items-start gap-4 mb-4">
+                <CompanyLogo managerName={fund.managerName} size="lg" className="mt-1" />
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight leading-tight flex-1">
+                  {fund.name} | Portugal Investment Fund
+                </h1>
+              </div>
               <div className="flex flex-wrap items-center gap-2">
                 {fund.isVerified && (
                   <Link to="/verification-program" className="inline-block hover:opacity-90 transition-opacity">

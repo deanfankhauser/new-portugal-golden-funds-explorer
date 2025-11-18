@@ -12,6 +12,7 @@ import RedemptionTermsRow from './table/RedemptionTermsRow';
 import DataFreshnessIndicator from '../common/DataFreshnessIndicator';
 import { getReturnTargetDisplay, getReturnTargetNumbers } from '../../utils/returnTarget';
 import { CheckCircle2 } from 'lucide-react';
+import { CompanyLogo } from '../shared/CompanyLogo';
 
 interface ComparisonTableProps {
   funds: Fund[];

@@ -9,6 +9,7 @@ import { GitCompare, User, Euro, CheckCircle2 } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { managerToSlug } from '../lib/utils';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
+import { CompanyLogo } from './shared/CompanyLogo';
 
 interface FundCardProps {
   fund: Fund;
@@ -115,7 +116,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
 
           {/* Fund Manager Section */}
           <div className="flex items-center gap-2 mb-4 bg-secondary p-2 rounded-md">
-            <User className="w-4 h-4 text-accent" />
+            <CompanyLogo managerName={fund.managerName} size="xs" />
             <div className="flex-1">
               <p className="text-sm text-muted-foreground">Fund Manager</p>
               <Link 

@@ -15,6 +15,7 @@ import { getReturnTargetDisplay } from '../utils/returnTarget';
 
 import { DATA_AS_OF_LABEL } from '../utils/constants';
 import { SaveFundButton } from './common/SaveFundButton';
+import { CompanyLogo } from './shared/CompanyLogo';
 
 interface FundListItemProps {
   fund: Fund;
@@ -41,12 +42,14 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
       <CardContent className="p-6 lg:p-10">
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
-          <div className="flex-1">
-            <Link to={`/${fund.id}`} className="block" onClick={() => window.scrollTo(0, 0)}>
-              <h2 className="text-[28px] font-semibold text-foreground mb-3 tracking-tight">
-                {fund.name}
-              </h2>
-            </Link>
+          <div className="flex items-start gap-4 flex-1">
+            <CompanyLogo managerName={fund.managerName} size="sm" className="mt-1" />
+            <div className="flex-1">
+              <Link to={`/${fund.id}`} className="block" onClick={() => window.scrollTo(0, 0)}>
+                <h2 className="text-[28px] font-semibold text-foreground mb-3 tracking-tight">
+                  {fund.name}
+                </h2>
+              </Link>
             <div className="flex items-center gap-2 flex-wrap">
               {fund.isVerified && (
                 <Link to="/verification-program" onClick={(e) => e.stopPropagation()} className="hover:opacity-80 transition-opacity">
@@ -67,6 +70,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
               >
                 {fund.fundStatus}
               </Badge>
+            </div>
             </div>
           </div>
           <DataFreshnessIndicator fund={fund} variant="compact" />

@@ -1,14 +1,12 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, TrendingUp, ArrowRight, Sparkles, Building2 } from 'lucide-react';
+import { Clock, TrendingUp, ArrowRight, Sparkles } from 'lucide-react';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
-import { useManagerProfile } from '../hooks/useManagerProfile';
+import { CompanyLogo } from './shared/CompanyLogo';
 
 const RecentlyViewedFundCard: React.FC<{ fund: any }> = ({ fund }) => {
-  const managerProfile = useManagerProfile(fund.managerName);
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -73,15 +71,7 @@ const RecentlyViewedFundCard: React.FC<{ fund: any }> = ({ fund }) => {
           Fund Manager
         </div>
         <div className="flex items-center gap-2 text-[14px] text-muted-foreground font-medium">
-          {managerProfile?.logo_url ? (
-            <img 
-              src={managerProfile.logo_url} 
-              alt={`${fund.managerName} logo`}
-              className="w-5 h-5 rounded object-cover border border-border/40"
-            />
-          ) : (
-            <Building2 className="h-4 w-4 text-accent" strokeWidth={2} />
-          )}
+          <CompanyLogo managerName={fund.managerName} size="xs" />
           <span>{fund.managerName}</span>
         </div>
       </div>
