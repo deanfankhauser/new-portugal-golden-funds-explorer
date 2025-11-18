@@ -47,8 +47,9 @@ export const CompanyLogo: React.FC<CompanyLogoProps> = ({
   };
 
   const sizeClass = sizeMap[size];
+  const initials = getInitials(managerName);
 
-  // Show logo if available
+  // Show logo if available, with proper error handling
   if (profile?.logo_url) {
     return (
       <div className={`${sizeClass} flex-shrink-0 ${className}`}>
@@ -57,36 +58,24 @@ export const CompanyLogo: React.FC<CompanyLogoProps> = ({
           alt={`${managerName} logo`}
           className="w-full h-full object-cover rounded-lg border border-border/40 shadow-sm"
           onError={(e) => {
-            // Fallback to initials if image fails to load
-            e.currentTarget.style.display = 'none';
-            if (e.currentTarget.nextSibling) {
-              (e.currentTarget.nextSibling as HTMLElement).style.display = 'flex';
+            console.error('❌ Logo failed to load:', profile.logo_url);
+            // Replace with initials fallback
+            const parent = e.currentTarget.parentElement;
+            if (parent) {
+              parent.innerHTML = `
+                <div class="w-full h-full bg-accent/20 border-2 border-accent/50 rounded-lg flex items-center justify-center font-bold text-accent shadow-md">
+                  ${initials}
+                </div>
+              `;
             }
           }}
         />
-        {/* Hidden fallback that shows if image fails */}
-        <div 
-          className={`${sizeClass} bg-muted/30 border border-border/40 rounded-lg flex items-center justify-center font-semibold text-muted-foreground shadow-sm`}
-          style={{ display: 'none' }}
-        >
-          {getInitials(managerName)}
-        </div>
       </div>
     );
   }
 
-  // Show subtle loading state while profile is being fetched
-  if (!profile) {
-    return (
-      <div className={`${sizeClass} flex-shrink-0 ${className}`}>
-        <div className="w-full h-full bg-muted/20 border border-border/30 rounded-lg animate-pulse" />
-      </div>
-    );
-  }
-
-  // Fallback to initials if no logo
-  const initials = getInitials(managerName);
-  
+  // If profile exists but no logo, or still loading - show initials immediately
+  // Don't show indefinite loading state
   return (
     <div className={`${sizeClass} flex-shrink-0 ${className}`}>
       <div className="w-full h-full bg-accent/20 border-2 border-accent/50 rounded-lg flex items-center justify-center font-bold text-accent shadow-md">
