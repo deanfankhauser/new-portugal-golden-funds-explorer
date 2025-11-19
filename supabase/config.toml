@@ -1,5 +1,8 @@
 project_id = "bkmvydnfhmkjnuszroim"
 
+[functions.send-magic-link]
+verify_jwt = false
+
 [functions.notify-fund-assignment]
 verify_jwt = false
 
@@ -32,16 +35,7 @@ verify_jwt = false
 [functions.delete-account]
 verify_jwt = false
 
-[functions.send-password-reset]
-verify_jwt = false
-
 [functions.sync-production-to-develop]
-verify_jwt = false
-
-[functions.send-confirmation-email]
-verify_jwt = false
-
-[functions.send-confirmation-email-capture]
 verify_jwt = false
 
 [functions.send-welcome-email]

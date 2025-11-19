@@ -29,18 +29,6 @@
     {
       "source": "/manage-profile/(.*)",
       "destination": "/index.html"
-    },
-    {
-      "source": "/reset-password",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/confirm",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/confirm-email",
-      "destination": "/index.html"
     }
   ],
   "redirects": [

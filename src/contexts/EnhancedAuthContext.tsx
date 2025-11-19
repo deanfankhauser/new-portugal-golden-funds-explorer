@@ -10,6 +10,7 @@ interface EnhancedAuthContextType {
   session: Session | null;
   loading: boolean;
   profile: Profile | null;
+  sendMagicLink: (email: string, metadata?: any) => Promise<{ error: any }>;
   signUp: (email: string, password: string, metadata?: any) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<{ error: any }>;
@@ -29,6 +30,7 @@ export const useEnhancedAuth = () => {
         session: null,
         loading: true,
         profile: null,
+        sendMagicLink: async () => ({ error: null }),
         signUp: async () => ({ error: null }),
         signIn: async () => ({ error: null }),
         signOut: async () => ({ error: null }),
@@ -229,6 +231,34 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     return { error };
   };
 
+  const sendMagicLink = async (email: string, metadata?: any) => {
+    try {
+      console.log('🔐 Sending magic link to:', email);
+      
+      const { data, error } = await supabase.functions.invoke('send-magic-link', {
+        body: { 
+          email,
+          metadata: {
+            first_name: metadata?.first_name || '',
+            last_name: metadata?.last_name || '',
+            invitation_token: metadata?.invitation_token || undefined,
+          }
+        }
+      });
+
+      if (error) {
+        console.error('❌ Magic link error:', error);
+        return { error };
+      }
+
+      console.log('✅ Magic link sent successfully');
+      return { error: null };
+    } catch (error: any) {
+      console.error('❌ Magic link exception:', error);
+      return { error };
+    }
+  };
+
   const signOut = async () => {
     try {
       console.log('🔐 Signing out user...');
@@ -348,6 +378,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     session: isHydrated ? session : null,
     loading: !isHydrated || loading,
     profile: isHydrated ? profile : null,
+    sendMagicLink,
     signUp,
     signIn,
     signOut,
