@@ -29,7 +29,6 @@ const EXCLUDED_ROUTES = [
   '/admin',
   '/account-settings',
   '/auth',
-  '/reset-password',
 ];
 
 export default function ExitIntentModal() {

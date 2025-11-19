@@ -312,7 +312,6 @@ export class SSRRenderer {
                 // Auth page
                 React.createElement(Route, { path: '/auth', element: React.createElement(getComponent('Auth')) }),
                 React.createElement(Route, { path: '/account-settings', element: React.createElement(getComponent('AccountSettings')) }),
-                React.createElement(Route, { path: '/reset-password', element: React.createElement(getComponent('ResetPassword')) }),
                 React.createElement(Route, { path: '/confirm', element: React.createElement(getComponent('EmailConfirmation')) }),
                 
                 React.createElement(Route, { 
