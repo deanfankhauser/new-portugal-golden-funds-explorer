@@ -462,9 +462,11 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
     return funds.find(fund => fund.id === id);
   }, [funds]);
 
-  // Memoized manager funds lookup
+  // Memoized manager funds lookup (with fuzzy name matching)
   const getFundsByManager = useCallback((managerName: string): Fund[] => {
-    return funds.filter(fund => fund.managerName === managerName);
+    // Import inline to avoid SSG issues
+    const { managerNamesMatch } = require('@/utils/managerNameMatching');
+    return funds.filter(fund => managerNamesMatch(fund.managerName, managerName));
   }, [funds]);
 
   // Memoized return object to prevent unnecessary re-renders

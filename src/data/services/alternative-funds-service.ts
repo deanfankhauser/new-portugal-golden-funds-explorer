@@ -1,5 +1,5 @@
-
 import { Fund } from '../types/funds';
+import { managerNamesMatch } from '@/utils/managerNameMatching';
 
 export const findAlternativeFunds = (allFunds: Fund[], currentFund: Fund, maxSuggestions: number = 3): Fund[] => {
   // Filter out the current fund
@@ -30,8 +30,8 @@ export const findAlternativeFunds = (allFunds: Fund[], currentFund: Fund, maxSug
       score += 2;
     }
     
-    // Same manager
-    if (fund.managerName === currentFund.managerName) {
+    // Same manager (using fuzzy matching for name variations)
+    if (managerNamesMatch(fund.managerName, currentFund.managerName)) {
       score += 4;
     }
     
