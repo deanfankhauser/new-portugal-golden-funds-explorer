@@ -21,17 +21,23 @@ export const CompanyLogo: React.FC<CompanyLogoProps> = ({
   size = 'md',
   className = '' 
 }) => {
-  const profile = useManagerProfile(managerName);
+  // Detect SSR environment
+  const isSSR = typeof window === 'undefined';
   
-  // Debug logging
+  // Skip data fetching during SSR
+  const profile = !isSSR ? useManagerProfile(managerName) : null;
+  
+  // Debug logging (client-side only)
   useEffect(() => {
-    console.log('🖼️ CompanyLogo Debug:', {
-      managerName,
-      profileFound: !!profile,
-      profileData: profile,
-      hasLogo: !!profile?.logo_url,
-      logoUrl: profile?.logo_url
-    });
+    if (typeof window !== 'undefined') {
+      console.log('🖼️ CompanyLogo Debug:', {
+        managerName,
+        profileFound: !!profile,
+        profileData: profile,
+        hasLogo: !!profile?.logo_url,
+        logoUrl: profile?.logo_url
+      });
+    }
   }, [managerName, profile]);
   
   // Get initials from company name for fallback
@@ -48,6 +54,17 @@ export const CompanyLogo: React.FC<CompanyLogoProps> = ({
 
   const sizeClass = sizeMap[size];
   const initials = getInitials(managerName);
+
+  // Return simple fallback during SSR
+  if (isSSR) {
+    return (
+      <div className={`${sizeClass} flex-shrink-0 ${className}`}>
+        <div className="w-full h-full bg-accent/20 border-2 border-accent/50 rounded-lg flex items-center justify-center font-bold text-accent shadow-md">
+          {initials}
+        </div>
+      </div>
+    );
+  }
 
   // Show logo if available, with proper error handling
   if (profile?.logo_url) {
