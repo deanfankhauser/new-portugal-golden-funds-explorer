@@ -232,7 +232,6 @@ serve(async (req) => {
       'delete-account',
       'notify-super-admins',
       'send-notification-email',
-      'send-password-reset',
       'sync-production-to-develop'
     ];
 
