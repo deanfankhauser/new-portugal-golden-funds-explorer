@@ -114,15 +114,6 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
         </div>
       </section>
 
-      {/* FAQs */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
-        <div className="max-w-7xl mx-auto space-y-8">
-          <h2 className="text-3xl font-semibold text-foreground">Frequently Asked Questions</h2>
-          {managerFunds.map((fund) => (
-            <FundManagerFAQs key={`faq-${fund.id}`} fund={fund} />
-          ))}
-        </div>
-      </section>
     </div>
   );
 };
