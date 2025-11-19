@@ -83,22 +83,34 @@ const MyFunds = () => {
             .order('company_name');
 
           if (!profilesError && allProfiles) {
-            companiesData = allProfiles.map((profile: Profile) => ({
-              profile,
-              assignment: {
-                id: 'admin-access',
-                profile_id: profile.id,
-                status: 'active',
-                assigned_at: new Date().toISOString(),
-                permissions: {
-                  can_edit_profile: true,
-                  can_edit_funds: true,
-                  can_manage_team: true,
-                  can_view_analytics: true
-                }
-              },
-              funds: allFunds.filter(f => f.managerName === profile.company_name)
-            }));
+            // Fetch funds for each company using database fuzzy matching
+            const companiesDataPromises = allProfiles.map(async (profile: Profile) => {
+              const { data: companyFunds } = await supabase
+                .rpc('get_funds_by_company_name', { 
+                  company_name_param: profile.company_name 
+                });
+              
+              return {
+                profile,
+                assignment: {
+                  id: 'admin-access',
+                  profile_id: profile.id,
+                  status: 'active',
+                  assigned_at: new Date().toISOString(),
+                  permissions: {
+                    can_edit_profile: true,
+                    can_edit_funds: true,
+                    can_manage_team: true,
+                    can_view_analytics: true
+                  }
+                },
+                funds: (companyFunds || []).map(cf => 
+                  allFunds.find(f => f.id === cf.id)
+                ).filter((f): f is Fund => f !== undefined)
+              };
+            });
+
+            companiesData = await Promise.all(companiesDataPromises);
           }
         } else {
           // REGULAR USER PATH: Only assigned companies
@@ -121,16 +133,25 @@ const MyFunds = () => {
               .in('id', profileIds);
 
             if (!profilesError && profilesData) {
-              companiesData = profilesData.map((profile: Profile) => {
+              // Fetch funds for each company using database fuzzy matching
+              const companiesDataPromises = profilesData.map(async (profile: Profile) => {
                 const assignment = assignments.find(a => a.profile_id === profile.id)!;
-                const companyFunds = allFunds.filter(f => f.managerName === profile.company_name);
+                
+                const { data: companyFunds } = await supabase
+                  .rpc('get_funds_by_company_name', { 
+                    company_name_param: profile.company_name 
+                  });
                 
                 return {
                   profile,
                   assignment,
-                  funds: companyFunds
+                  funds: (companyFunds || []).map(cf => 
+                    allFunds.find(f => f.id === cf.id)
+                  ).filter((f): f is Fund => f !== undefined)
                 };
               });
+
+              companiesData = await Promise.all(companiesDataPromises);
             }
           }
         }
