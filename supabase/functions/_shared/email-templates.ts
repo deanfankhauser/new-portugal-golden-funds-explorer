@@ -30,6 +30,45 @@ export const COMPANY_INFO = {
 };
 
 /**
+ * Generates a magic link email for passwordless authentication
+ */
+export function generateMagicLinkEmail(data: {
+  email: string;
+  magicLink: string;
+}): { html: string; text: string } {
+  const html = generateEmailWrapper(
+    'Sign In to Movingto Funds',
+    `
+      ${generateContentCard(`
+        <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+          Click the button below to instantly sign in to your account. This link is valid for <strong>1 hour</strong> and can only be used once.
+        </p>
+        ${generateCTAButton('Sign In Now', data.magicLink, 'bordeaux')}
+        <p style="color: ${BRAND_COLORS.textMuted}; font-size: 14px; line-height: 1.5; margin: 25px 0 0 0;">
+          If the button doesn't work, copy and paste this link into your browser:
+        </p>
+        <p style="color: ${BRAND_COLORS.bronze}; font-size: 13px; word-break: break-all; margin: 10px 0 20px 0;">
+          ${data.magicLink}
+        </p>
+        <div style="background: ${BRAND_COLORS.bone}; padding: 15px; border-radius: 6px; border-left: 3px solid ${BRAND_COLORS.bronze}; margin-top: 25px;">
+          <p style="color: ${BRAND_COLORS.textDark}; font-size: 14px; line-height: 1.5; margin: 0;">
+            <strong>🔒 Security Note:</strong> Never share this link with anyone. If you didn't request this email, you can safely ignore it.
+          </p>
+        </div>
+      `, 'bordeaux')}
+    `,
+    data.email
+  );
+
+  const text = generatePlainTextEmail(
+    'Sign In to Movingto Funds',
+    `Click the link below to instantly sign in to your account. This link is valid for 1 hour and can only be used once.\n\nSign in link:\n${data.magicLink}\n\nSecurity Note: Never share this link with anyone. If you didn't request this email, you can safely ignore it.`
+  );
+
+  return { html, text };
+}
+
+/**
  * Generates a branded email header with logo and title
  */
 export function generateEmailHeader(title: string): string {

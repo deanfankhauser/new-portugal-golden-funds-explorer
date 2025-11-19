@@ -47,7 +47,6 @@ export const loadComponents = async (only?: string[]) => {
       AlternativesHub: () => import('../pages/AlternativesHub').then(m => m.default),
       Auth: () => import('../pages/Auth').then(m => m.default),
       AccountSettings: () => import('../pages/AccountSettings').then(m => m.default),
-      ResetPassword: () => import('../pages/ResetPassword').then(m => m.default),
       SavedFunds: () => import('../pages/SavedFunds').then(m => m.default),
       EmailConfirmation: () => import('../pages/EmailConfirmation').then(m => m.default),
       VerifiedFunds: () => import('../pages/VerifiedFunds').then(m => m.default),
