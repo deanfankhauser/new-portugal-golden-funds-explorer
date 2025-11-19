@@ -95,12 +95,52 @@
       "permanent": true
     },
     {
-      "source": "/:slug(balanced|clean-energy-solar-battery-storage|debt|fixed-income-digital-assets|infrastructure|mixed|multi-asset|private-debt-hybrid-instruments|private-equity|private-equity-debt|private-equity-venture-capital|real-estate|venture-capital)",
+      "source": "/categories/mixed",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/mixed-fixed-income-digital-assets",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/multi-asset",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/balanced",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/private-debt-hybrid-instruments",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/private-equity-debt",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/fixed-income-digital-assets",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/clean-energy-solar-battery-storage",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/:slug(bitcoin|clean-energy|crypto|debt|infrastructure|other|private-equity|private-equity-venture-capital|real-estate|venture-capital)",
       "destination": "/categories/:slug",
       "permanent": true
     },
     {
-      "source": "/:slug(balanced|clean-energy-solar-battery-storage|debt|fixed-income-digital-assets|infrastructure|mixed|multi-asset|private-debt-hybrid-instruments|private-equity|private-equity-debt|private-equity-venture-capital|real-estate|venture-capital)/",
+      "source": "/:slug(bitcoin|clean-energy|crypto|debt|infrastructure|other|private-equity|private-equity-venture-capital|real-estate|venture-capital)/",
       "destination": "/categories/:slug",
       "permanent": true
     },

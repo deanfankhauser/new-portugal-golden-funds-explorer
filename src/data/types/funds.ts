@@ -85,16 +85,13 @@ export type FundCategory =
   | 'Venture Capital'
   | 'Private Equity'
   | 'Real Estate'
-  | 'Mixed'
   | 'Infrastructure'
   | 'Debt'
-  | 'Fixed Income & Digital Assets'
-  | 'Balanced'
-  | 'Multi-Asset'
   | 'Private Equity & Venture Capital'
-  | 'Private Debt & Hybrid Instruments'
-  | 'Clean Energy (Solar & Battery Storage)'
-  | 'Private Equity & Debt';
+  | 'Bitcoin'
+  | 'Crypto'
+  | 'Clean Energy'
+  | 'Other';
 
 export type RedemptionFrequency =
   | 'Monthly'
