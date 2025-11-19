@@ -6,9 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Mail, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -18,36 +17,27 @@ import { InvitationBanner } from '@/components/auth/InvitationBanner';
 const Auth = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user, signIn, signUp, signOut } = useEnhancedAuth();
+  const { user, sendMagicLink, signOut } = useEnhancedAuth();
   
   // Invitation handling
   const invitationToken = searchParams.get('invite');
   console.log('🎫 Auth page loaded with invitation token:', invitationToken);
   const { isValidating, invitation, error: invitationError } = useInvitationValidation(invitationToken);
-  const [activeTab, setActiveTab] = useState('login');
 
-  // Login state
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-  const [loginLoading, setLoginLoading] = useState(false);
-  const [loginError, setLoginError] = useState('');
-
-  // Signup state
-  const [signupFirstName, setSignupFirstName] = useState('');
-  const [signupLastName, setSignupLastName] = useState('');
-  const [signupEmail, setSignupEmail] = useState('');
-  const [signupPassword, setSignupPassword] = useState('');
-  const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
-  const [signupLoading, setSignupLoading] = useState(false);
-  const [signupError, setSignupError] = useState('');
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [needsConfirmation, setNeedsConfirmation] = useState(false);
+  // Form state
+  const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [lastSentEmail, setLastSentEmail] = useState('');
+  const [cooldownRemaining, setCooldownRemaining] = useState(0);
   
-  // Pre-fill email from invitation and switch to signup tab
+  // Pre-fill email from invitation
   useEffect(() => {
     if (invitation?.email) {
-      setSignupEmail(invitation.email);
-      setActiveTab('signup');
+      setEmail(invitation.email);
     }
   }, [invitation]);
   
@@ -59,6 +49,16 @@ const Auth = () => {
       });
     }
   }, [invitationError]);
+
+  // Cooldown timer
+  useEffect(() => {
+    if (cooldownRemaining > 0) {
+      const timer = setTimeout(() => {
+        setCooldownRemaining(cooldownRemaining - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldownRemaining]);
 
   // Already logged in
   if (user) {
@@ -93,325 +93,227 @@ const Auth = () => {
     );
   }
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSendMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoginError('');
-    setLoginLoading(true);
+    setError('');
+    setIsSubmitting(true);
 
     try {
-      const { error } = await signIn(loginEmail, loginPassword);
+      if (!email || !email.includes('@')) {
+        setError('Please enter a valid email address');
+        setIsSubmitting(false);
+        return;
+      }
+
+      const metadata = {
+        first_name: firstName,
+        last_name: lastName,
+        invitation_token: invitationToken || undefined,
+      };
+
+      const { error } = await sendMagicLink(email, metadata);
       
       if (error) {
-        if (error.message.includes('Email not confirmed')) {
-          setLoginError('Please check your email and confirm your account before logging in.');
-          setNeedsConfirmation(true);
-        } else if (error.message.includes('Invalid login credentials')) {
-          setLoginError('Invalid email or password. Please try again.');
+        console.error('Magic link error:', error);
+        if (error.message?.includes('rate limit')) {
+          setError('Too many requests. Please wait a moment before trying again.');
         } else {
-          setLoginError(error.message);
+          setError(error.message || 'Failed to send magic link. Please try again.');
         }
+        toast.error('Error', {
+          description: error.message || 'Failed to send magic link',
+        });
       } else {
-        toast.success('Successfully signed in!');
-        navigate('/');
+        setShowSuccess(true);
+        setLastSentEmail(email);
+        setCooldownRemaining(60);
+        toast.success('Check your email!', {
+          description: 'We\'ve sent you a magic link to sign in.',
+        });
       }
-    } catch (error: any) {
-      setLoginError('An unexpected error occurred. Please try again.');
-      console.error('Login error:', error);
+    } catch (err: any) {
+      console.error('Exception sending magic link:', err);
+      setError('An unexpected error occurred. Please try again.');
+      toast.error('Error', {
+        description: 'Failed to send magic link',
+      });
     } finally {
-      setLoginLoading(false);
+      setIsSubmitting(false);
     }
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSignupError('');
-
-    // Validation
-    if (signupPassword !== signupConfirmPassword) {
-      setSignupError('Passwords do not match');
-      return;
-    }
-
-    if (signupPassword.length < 6) {
-      setSignupError('Password must be at least 6 characters long');
+  const handleResend = async () => {
+    if (cooldownRemaining > 0) {
+      toast.error('Please wait', {
+        description: `You can resend in ${cooldownRemaining} seconds`,
+      });
       return;
     }
     
-    // Validate email matches invitation if present
-    if (invitation && signupEmail !== invitation.email) {
-      setSignupError(`Please use the invited email address: ${invitation.email}`);
-      return;
-    }
-
-    setSignupLoading(true);
-
-    try {
-      const { error } = await signUp(signupEmail, signupPassword, {
-        first_name: signupFirstName.trim(),
-        last_name: signupLastName.trim(),
-        invitation_token: invitationToken || undefined,
-      });
-
-      if (error) {
-        if (error.message.includes('already registered')) {
-          setSignupError('This email is already registered. Please login instead.');
-        } else {
-          setSignupError(error.message);
-        }
-      } else {
-        setShowSuccessMessage(true);
-        const message = invitationToken 
-          ? 'Account created! Please check your email to confirm and complete your team invitation.'
-          : 'Account created! Please check your email to confirm your account.';
-        toast.success(message);
-      }
-    } catch (error: any) {
-      setSignupError('An unexpected error occurred. Please try again.');
-      console.error('Signup error:', error);
-    } finally {
-      setSignupLoading(false);
-    }
+    setShowSuccess(false);
+    // The form will be shown again, user can click send
   };
-  
-  // Note: Invitation acceptance is now handled automatically by the database trigger
-  // when the user signs up with an invitation_token in their metadata.
-  // The trigger creates the profile AND assigns the user to the company automatically.
-
-  if (showSuccessMessage) {
-    return (
-      <>
-        <Helmet>
-          <title>Registration Successful | FundsPortugal.com</title>
-          <meta name="robots" content="noindex, nofollow" />
-        </Helmet>
-        <Header />
-        <div className="container mx-auto px-4 py-16">
-          <Card className="max-w-md mx-auto">
-            <CardHeader>
-              <CardTitle>Check Your Email</CardTitle>
-              <CardDescription>We've sent you a confirmation link</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Alert>
-                <AlertDescription>
-                  We've sent a confirmation email to <strong>{signupEmail}</strong>. 
-                  Please check your inbox and click the confirmation link to activate your account.
-                </AlertDescription>
-              </Alert>
-              <Button onClick={() => navigate('/')} className="w-full">
-                Return to Home
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-        <Footer />
-      </>
-    );
-  }
 
   return (
     <>
       <Helmet>
-        <title>Login / Register | FundsPortugal.com</title>
-        <meta name="description" content="Sign in or create an account to access personalized features, save funds, and manage your portfolio." />
+        <title>Sign In | FundsPortugal.com</title>
+        <meta name="description" content="Sign in to access your FundsPortugal.com account" />
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <Header />
-      <div className="container mx-auto px-4 py-16">
-        {isValidating && (
-          <div className="max-w-2xl mx-auto mb-6 flex items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
-            <span className="ml-2">Validating invitation...</span>
-          </div>
-        )}
-        
-        {invitation && (
-          <div className="max-w-2xl mx-auto mb-6">
-            <InvitationBanner
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-16">
+          <div className="max-w-md mx-auto">
+            {invitation && <InvitationBanner 
               companyName={invitation.companyName}
               inviterName={invitation.inviterName}
               personalMessage={invitation.personalMessage}
               expiresAt={invitation.expiresAt}
               email={invitation.email}
-            />
-          </div>
-        )}
-        
-        <Card className="max-w-md mx-auto">
-          <CardHeader>
-            <CardTitle>Welcome</CardTitle>
-            <CardDescription>
-              {invitation ? 'Complete your signup to join the team' : 'Sign in or create an account to continue'}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
-
-              {/* Login Tab */}
-              <TabsContent value="login">
-                <form onSubmit={handleLogin} className="space-y-4">
-                  {invitation && (
-                    <Alert>
-                      <AlertDescription>
-                        You have a team invitation. Please use the <strong>Sign Up</strong> tab to create your account with the invited email address.
-                      </AlertDescription>
-                    </Alert>
-                  )}
+            />}
+            
+            {isValidating ? (
+              <Card>
+                <CardContent className="flex items-center justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </CardContent>
+              </Card>
+            ) : showSuccess ? (
+              <Card>
+                <CardHeader className="text-center">
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                    <CheckCircle2 className="h-10 w-10 text-primary" />
+                  </div>
+                  <CardTitle>Check Your Email</CardTitle>
+                  <CardDescription>
+                    We've sent a magic link to <strong>{lastSentEmail}</strong>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="rounded-lg border border-border bg-muted/50 p-4">
+                    <div className="flex items-start gap-3">
+                      <Mail className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                      <div className="space-y-1 text-sm">
+                        <p className="font-medium text-foreground">Click the link to sign in</p>
+                        <p className="text-muted-foreground">The link is valid for 1 hour and can only be used once.</p>
+                      </div>
+                    </div>
+                  </div>
                   
-                  {loginError && (
-                    <Alert variant="destructive">
-                      <AlertDescription>{loginError}</AlertDescription>
-                    </Alert>
-                  )}
-
-                  <div className="space-y-2">
-                    <Label htmlFor="login-email">Email</Label>
-                    <Input
-                      id="login-email"
-                      type="email"
-                      placeholder="your@email.com"
-                      value={loginEmail}
-                      onChange={(e) => setLoginEmail(e.target.value)}
-                      required
-                      disabled={loginLoading}
-                    />
+                  <div className="text-center text-sm text-muted-foreground">
+                    Didn't receive the email?
                   </div>
+                  
+                  <Button 
+                    onClick={handleResend} 
+                    variant="outline" 
+                    className="w-full"
+                    disabled={cooldownRemaining > 0}
+                  >
+                    {cooldownRemaining > 0 
+                      ? `Resend in ${cooldownRemaining}s` 
+                      : 'Resend Magic Link'
+                    }
+                  </Button>
+                  
+                  <Button 
+                    onClick={() => setShowSuccess(false)} 
+                    variant="ghost" 
+                    className="w-full"
+                  >
+                    Use a different email
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card>
+                <CardHeader className="text-center">
+                  <CardTitle>Sign In or Sign Up</CardTitle>
+                  <CardDescription>
+                    Enter your email and we'll send you a magic link to sign in instantly
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSendMagicLink} className="space-y-4">
+                    {error && (
+                      <Alert variant="destructive">
+                        <AlertDescription>{error}</AlertDescription>
+                      </Alert>
+                    )}
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email Address</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="you@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        disabled={isSubmitting || !!invitation?.email}
+                        required
+                      />
+                      {invitation?.email && (
+                        <p className="text-sm text-muted-foreground">
+                          Email is pre-filled from your invitation
+                        </p>
+                      )}
+                    </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="login-password">Password</Label>
-                    <Input
-                      id="login-password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={loginPassword}
-                      onChange={(e) => setLoginPassword(e.target.value)}
-                      required
-                      disabled={loginLoading}
-                    />
-                  </div>
-
-                  <div className="flex justify-end">
-                    <Button
-                      type="button"
-                      variant="link"
-                      className="px-0 text-sm"
-                      onClick={() => navigate('/reset-password')}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="firstName">First Name (Optional)</Label>
+                        <Input
+                          id="firstName"
+                          type="text"
+                          placeholder="John"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="lastName">Last Name (Optional)</Label>
+                        <Input
+                          id="lastName"
+                          type="text"
+                          placeholder="Doe"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      disabled={isSubmitting}
                     >
-                      Forgot password?
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Sending Magic Link...
+                        </>
+                      ) : (
+                        <>
+                          <Mail className="mr-2 h-4 w-4" />
+                          Send Magic Link
+                        </>
+                      )}
                     </Button>
-                  </div>
 
-                  <Button type="submit" className="w-full" disabled={loginLoading}>
-                    {loginLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Signing in...
-                      </>
-                    ) : (
-                      'Sign In'
-                    )}
-                  </Button>
-                </form>
-              </TabsContent>
-
-              {/* Signup Tab */}
-              <TabsContent value="signup">
-                <form onSubmit={handleSignup} className="space-y-4">
-                  {signupError && (
-                    <Alert variant="destructive">
-                      <AlertDescription>{signupError}</AlertDescription>
-                    </Alert>
-                  )}
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-firstname">First Name</Label>
-                      <Input
-                        id="signup-firstname"
-                        type="text"
-                        placeholder="John"
-                        value={signupFirstName}
-                        onChange={(e) => setSignupFirstName(e.target.value)}
-                        required
-                        disabled={signupLoading}
-                      />
+                    <div className="rounded-lg border border-border bg-muted/50 p-3 text-center">
+                      <p className="text-xs text-muted-foreground">
+                        No password needed. We'll email you a secure link to sign in.
+                      </p>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-lastname">Last Name</Label>
-                      <Input
-                        id="signup-lastname"
-                        type="text"
-                        placeholder="Doe"
-                        value={signupLastName}
-                        onChange={(e) => setSignupLastName(e.target.value)}
-                        required
-                        disabled={signupLoading}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      placeholder="your@email.com"
-                      value={signupEmail}
-                      onChange={(e) => setSignupEmail(e.target.value)}
-                      required
-                      disabled={signupLoading}
-                      readOnly={!!invitation}
-                      className={invitation ? 'bg-muted' : ''}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <Input
-                      id="signup-password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={signupPassword}
-                      onChange={(e) => setSignupPassword(e.target.value)}
-                      required
-                      minLength={6}
-                      disabled={signupLoading}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-confirm-password">Confirm Password</Label>
-                    <Input
-                      id="signup-confirm-password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={signupConfirmPassword}
-                      onChange={(e) => setSignupConfirmPassword(e.target.value)}
-                      required
-                      minLength={6}
-                      disabled={signupLoading}
-                    />
-                  </div>
-
-                  <Button type="submit" className="w-full" disabled={signupLoading}>
-                    {signupLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Creating account...
-                      </>
-                    ) : (
-                      'Create Account'
-                    )}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+                  </form>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
       </div>
       <Footer />
     </>

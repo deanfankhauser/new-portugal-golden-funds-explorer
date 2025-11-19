@@ -44,7 +44,6 @@ const Auth = lazy(() => import('./pages/Auth'));
 const AccountSettings = lazy(() => import('./pages/AccountSettings'));
 const EmailConfirmation = lazy(() => import('./pages/EmailConfirmation'));
 const ConfirmEmailCapture = lazy(() => import('./pages/ConfirmEmailCapture'));
-const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const SavedFunds = lazy(() => import('./pages/SavedFunds'));
 
@@ -294,13 +293,6 @@ function App() {
                           </Suspense>
                         } />
                         
-                         {/* Password Reset */}
-                         <Route path="/reset-password" element={
-                           <Suspense fallback={<PageLoader />}>
-                             <ResetPassword />
-                           </Suspense>
-                         } />
-                         
                        {/* Admin Panel with nested routes */}
                        <Route path="/admin/*" element={
                          <Suspense fallback={<PageLoader />}>
