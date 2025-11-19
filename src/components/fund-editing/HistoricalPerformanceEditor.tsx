@@ -97,11 +97,14 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
   };
 
   const updateMonthData = (monthKey: string, field: keyof MonthlyPerformanceData, value: number) => {
+    // For AUM, multiply by 1,000,000 to convert millions to euros
+    const actualValue = field === 'aum' ? value * 1000000 : value;
+    
     const newData = {
       ...performanceData,
       [monthKey]: {
         ...performanceData[monthKey],
-        [field]: value
+        [field]: actualValue
       }
     };
     setPerformanceData(newData);
@@ -212,14 +215,14 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
                         />
                       </div>
                       <div>
-                        <Label htmlFor={`aum-${monthKey}`}>AUM (€)</Label>
+                        <Label htmlFor={`aum-${monthKey}`}>AUM (€ millions)</Label>
                         <Input
                           id={`aum-${monthKey}`}
                           type="number"
-                          step="1000000"
-                          value={data?.aum || 0}
+                          step="0.1"
+                          value={(data?.aum || 0) / 1000000}
                           onChange={(e) => updateMonthData(monthKey, 'aum', parseFloat(e.target.value) || 0)}
-                          placeholder="e.g., 50000000"
+                          placeholder="e.g., 50"
                         />
                         <p className="text-xs text-muted-foreground mt-1">
                           €{((data?.aum || 0) / 1000000).toFixed(1)}M
@@ -247,7 +250,7 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
         {existingMonths.length > 0 && (
           <div className="p-3 bg-muted/50 rounded-lg">
             <p className="text-xs text-muted-foreground">
-              Tip: Returns can be positive or negative. AUM should be in euros (will display in millions). 
+              Tip: Returns can be positive or negative. AUM should be entered in millions (e.g., enter 50 for €50M). 
               NAV typically starts at 1.0 and changes based on performance.
             </p>
           </div>

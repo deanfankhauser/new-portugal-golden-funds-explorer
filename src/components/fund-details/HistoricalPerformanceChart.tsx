@@ -100,7 +100,7 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
       return [`${value >= 0 ? '+' : ''}${value.toFixed(2)}%`, 'Returns'];
     }
     if (name === 'aum') {
-      return [`€${(value / 1000000).toFixed(1)}M`, 'AUM'];
+      return [`€${value.toFixed(1)}M`, 'AUM'];
     }
     if (name === 'nav') {
       return [value.toFixed(3), 'NAV'];
@@ -282,8 +282,22 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                     fill: 'hsl(var(--muted-foreground))',
                     fontWeight: 500
                   }}
-                  tickFormatter={(value) => `€${(value / 1000000).toFixed(0)}M`}
+                  tickFormatter={(value) => `€${value.toFixed(0)}M`}
                   dx={5}
+                />
+                
+                <YAxis 
+                  yAxisId="nav"
+                  orientation="right"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ 
+                    fontSize: 11, 
+                    fill: 'hsl(var(--muted-foreground))',
+                    fontWeight: 500
+                  }}
+                  tickFormatter={(value) => value.toFixed(2)}
+                  dx={40}
                 />
                 
                 {/* Area fills for shadow effect */}
@@ -343,6 +357,28 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                   dot={false}
                   activeDot={false}
                   name="AUM (€M)"
+                  connectNulls={false}
+                />
+                
+                <Line
+                  yAxisId="nav"
+                  type="monotone"
+                  dataKey="nav"
+                  stroke="hsl(var(--chart-3))"
+                  strokeWidth={2}
+                  strokeDasharray="3 3"
+                  dot={{ 
+                    fill: 'hsl(var(--chart-3))', 
+                    strokeWidth: 0, 
+                    r: 3
+                  }}
+                  activeDot={{ 
+                    r: 5, 
+                    fill: 'hsl(var(--chart-3))',
+                    stroke: 'hsl(var(--background))',
+                    strokeWidth: 2
+                  }}
+                  name="NAV"
                   connectNulls={false}
                 />
               </ComposedChart>
