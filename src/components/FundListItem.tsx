@@ -10,11 +10,11 @@ import { PieChart, Euro, CheckCircle2, GitCompare } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
-import DataFreshnessIndicator from './common/DataFreshnessIndicator';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
 
 import { DATA_AS_OF_LABEL } from '../utils/constants';
 import { SaveFundButton } from './common/SaveFundButton';
+import { CompanyLogo } from './shared/CompanyLogo';
 
 interface FundListItemProps {
   fund: Fund;
@@ -41,35 +41,37 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
       <CardContent className="p-6 lg:p-10">
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
-          <div className="flex-1">
-            <Link to={`/${fund.id}`} className="block" onClick={() => window.scrollTo(0, 0)}>
-              <h2 className="text-[28px] font-semibold text-foreground mb-3 tracking-tight">
-                {fund.name}
-              </h2>
-            </Link>
-            <div className="flex items-center gap-2 flex-wrap">
-              {fund.isVerified && (
-                <Link to="/verification-program" onClick={(e) => e.stopPropagation()} className="hover:opacity-80 transition-opacity">
-                  <Badge variant="outline" className="bg-success/10 text-success border-success/20 px-3 py-1 text-[13px] font-medium">
-                    <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
-                    Verified
-                  </Badge>
-                </Link>
-              )}
-              {fund.isVerified && isGVEligible && (
-                <Badge variant="outline" className="bg-primary/8 text-primary border-primary/20 px-3 py-1 text-[13px] font-medium">
-                  GV Eligible
-                </Badge>
-              )}
-              <Badge 
-                variant="outline"
-                className="bg-muted/40 text-muted-foreground border-border/50 px-2.5 py-0.5 text-[12px] font-medium"
-              >
-                {fund.fundStatus}
+      <div className="flex items-start gap-4 flex-1">
+        <CompanyLogo managerName={fund.managerName} size="sm" className="mt-1" />
+        <div className="flex-1">
+          <Link to={`/${fund.id}`} className="block" onClick={() => window.scrollTo(0, 0)}>
+            <h2 className="text-[28px] font-semibold text-foreground mb-3 tracking-tight">
+              {fund.name}
+            </h2>
+          </Link>
+        <div className="flex items-center gap-2 flex-wrap">
+          {fund.isVerified && (
+            <Link to="/verification-program" onClick={(e) => e.stopPropagation()} className="hover:opacity-80 transition-opacity">
+              <Badge variant="outline" className="bg-success/10 text-success border-success/20 px-3 py-1 text-[13px] font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
+                Verified
               </Badge>
-            </div>
-          </div>
-          <DataFreshnessIndicator fund={fund} variant="compact" />
+            </Link>
+          )}
+          {fund.isVerified && isGVEligible && (
+            <Badge variant="outline" className="bg-primary/8 text-primary border-primary/20 px-3 py-1 text-[13px] font-medium">
+              GV Eligible
+            </Badge>
+          )}
+          <Badge 
+            variant="outline"
+            className="bg-muted/40 text-muted-foreground border-border/50 px-2.5 py-0.5 text-[12px] font-medium"
+          >
+            {fund.fundStatus}
+          </Badge>
+        </div>
+        </div>
+      </div>
         </div>
         
         {/* Description */}

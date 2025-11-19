@@ -6,6 +6,7 @@ import { URL_CONFIG } from '../../utils/urlConfig';
 import { ArrowLeftRight, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAllFunds } from '../../hooks/useFundsQuery';
+import { CompanyLogo } from '../shared/CompanyLogo';
 
 interface FundComparisonSuggestionsProps {
   currentFund: Fund;
@@ -56,6 +57,7 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                       {/* Base Fund */}
                       <div className="flex items-center gap-2 min-w-0">
+                        <CompanyLogo managerName={currentFund.managerName} size="sm" />
                         <span className="font-semibold text-sm sm:text-base text-foreground break-words">
                           {currentFund.name}
                         </span>
@@ -72,9 +74,12 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
                       </span>
 
                       {/* Compare Fund */}
-                      <span className="font-medium text-sm sm:text-base text-foreground break-words min-w-0">
-                        {fund.name}
-                      </span>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <CompanyLogo managerName={fund.managerName} size="sm" />
+                        <span className="font-medium text-sm sm:text-base text-foreground break-words min-w-0">
+                          {fund.name}
+                        </span>
+                      </div>
                     </div>
 
                     {/* Metadata */}

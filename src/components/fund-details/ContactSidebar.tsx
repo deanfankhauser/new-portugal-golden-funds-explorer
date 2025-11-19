@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { managerToSlug } from '@/lib/utils';
 import { getReturnTargetDisplay } from '@/utils/returnTarget';
 import { useToast } from '@/hooks/use-toast';
+import { CompanyLogo } from '../shared/CompanyLogo';
 
 interface ContactSidebarProps {
   fund: Fund;
@@ -117,9 +118,12 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
           <p className="text-[11px] font-semibold text-muted-foreground mb-1 uppercase tracking-wider">Managed by</p>
           <Link 
             to={`/manager/${managerToSlug(fund.managerName)}`}
-            className="font-semibold text-base text-foreground hover:text-primary transition-colors block leading-tight"
+            className="flex items-center gap-3 group"
           >
-            {fund.managerName}
+            <CompanyLogo managerName={fund.managerName} size="sm" />
+            <span className="font-semibold text-base text-foreground group-hover:text-primary transition-colors leading-tight">
+              {fund.managerName}
+            </span>
           </Link>
         </div>
         
