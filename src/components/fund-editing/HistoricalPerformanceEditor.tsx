@@ -7,9 +7,10 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, X, TrendingUp, CalendarIcon } from 'lucide-react';
+import { Plus, X, TrendingUp, CalendarIcon, Upload } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import CSVImportDialog from './CSVImportDialog';
 
 interface MonthlyPerformanceData {
   returns?: number;
@@ -29,6 +30,7 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
   const [performanceData, setPerformanceData] = useState<Record<string, MonthlyPerformanceData>>(value);
   const [selectedYear, setSelectedYear] = useState<string>('');
   const [selectedMonth, setSelectedMonth] = useState<string>('');
+  const [showImportDialog, setShowImportDialog] = useState(false);
 
   useEffect(() => {
     setPerformanceData(value || {});
@@ -117,16 +119,34 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
     return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   };
 
+  const handleCSVImport = (importedData: Record<string, MonthlyPerformanceData>) => {
+    setPerformanceData(importedData);
+    onChange(importedData);
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="h-5 w-5" />
-          Historical Performance (Monthly Data)
-        </CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Add monthly performance data for up to the last 3 years
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Historical Performance (Monthly Data)
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Add monthly performance data for up to the last 3 years
+            </p>
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => setShowImportDialog(true)}
+            className="gap-2"
+          >
+            <Upload className="h-4 w-4" />
+            Import CSV
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Add new month with year/month selectors */}
@@ -256,6 +276,13 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
           </div>
         )}
       </CardContent>
+
+      <CSVImportDialog
+        open={showImportDialog}
+        onOpenChange={setShowImportDialog}
+        onImport={handleCSVImport}
+        existingData={performanceData}
+      />
     </Card>
   );
 };
