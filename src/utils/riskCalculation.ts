@@ -11,7 +11,7 @@ export const calculateRiskScore = (fund: Fund): number => {
   
   // Low risk factors  
   if (fund.tags.includes('Bonds') || fund.tags.includes('UCITS')) score -= 2;
-  if (fund.category === 'Infrastructure' || fund.category === 'Balanced') score -= 1;
+  if (fund.category === 'Infrastructure' || fund.category === 'Debt') score -= 1;
   if (fund.managementFee <= 1.5) score -= 1;
   
   return Math.max(1, Math.min(7, score));
