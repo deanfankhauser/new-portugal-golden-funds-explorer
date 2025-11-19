@@ -36,7 +36,7 @@ const CategoryPage = () => {
   const categoryExists = allCategories.includes(category as any);
 
   useEffect(() => {
-    if (!categoryExists && categorySlug) {
+    if (!isLoading && !categoryExists && categorySlug) {
       // If category doesn't exist, redirect to homepage
       navigate('/');
       return;
@@ -44,7 +44,7 @@ const CategoryPage = () => {
     
     // Scroll to top when category changes
     window.scrollTo(0, 0);
-  }, [categoryExists, navigate, categorySlug]);
+  }, [categoryExists, navigate, categorySlug, isLoading]);
 
   // Show loading state
   if (isLoading) {
