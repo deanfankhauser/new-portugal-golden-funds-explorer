@@ -52,10 +52,10 @@ export const getCategorizedFilters = (funds: Fund[]): FilterGroup[] => {
   const allFilters = getMeaningfulFilters(funds);
   
   const categoryTags = ['Venture Capital', 'Private Equity', 'Infrastructure', 'Debt', 'Bitcoin', 'Crypto', 'Clean Energy', 'Other'];
-  const eligibilityTags = ['Golden Visa Eligible', 'Portugal'];
-  const structureTags = ['Closed Ended', 'Open Ended', 'Open', 'Liquid'];
+  const eligibilityTags = ['Golden Visa Eligible'];
+  const structureTags = ['Closed-end Fund', 'Open Ended', 'Liquid'];
   const riskTags = ['Low-risk', 'Medium-risk', 'High-risk'];
-  const featureTags = ['Dividends'];
+  const featureTags = ['Dividend paying'];
   
   const groups: FilterGroup[] = [];
   
