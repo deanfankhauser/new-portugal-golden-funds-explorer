@@ -1421,7 +1421,10 @@ export class ConsolidatedSEOService {
       ]
     };
 
-    return [baseSchema, itemListSchema, breadcrumbSchema];
+    // Add FAQ schema for category
+    const faqSchema = this.getCategoryFAQSchema(categoryName);
+
+    return [baseSchema, itemListSchema, breadcrumbSchema, faqSchema];
   }
 
   private static getTagStructuredData(tagName: string, funds: any[] = []): any {
@@ -1474,7 +1477,10 @@ export class ConsolidatedSEOService {
       ]
     };
 
-    return [baseSchema, itemListSchema, breadcrumbSchema];
+    // Add FAQ schema for tag
+    const faqSchema = this.getTagFAQSchema(tagName);
+
+    return [baseSchema, itemListSchema, breadcrumbSchema, faqSchema];
   }
 
   private static getManagerStructuredData(managerName: string, managerProfile?: any, funds: any[] = []): any {
@@ -2088,6 +2094,262 @@ export class ConsolidatedSEOService {
           ]
         }
       ]
+    };
+  }
+
+  private static getCategoryFAQSchema(categoryName: string): any {
+    const categoryLower = categoryName.toLowerCase();
+    let faqs: Array<{ question: string; answer: string }> = [];
+
+    // Category-specific FAQs
+    if (categoryLower === 'bitcoin') {
+      faqs = [
+        {
+          question: 'Are Bitcoin Golden Visa funds eligible for Portuguese residency?',
+          answer: 'Yes, Bitcoin-focused investment funds can qualify for Portugal\'s Golden Visa if they meet CMVM registration requirements and the €500,000 minimum investment threshold. The fund must be properly regulated and cannot have real estate exposure (as of October 2023 rule changes).'
+        },
+        {
+          question: 'What are the risks of Bitcoin Golden Visa funds?',
+          answer: 'Bitcoin funds carry high volatility risk due to cryptocurrency price fluctuations. Investors should consider market cycles, regulatory changes, custody security, and liquidity constraints. These funds typically have higher risk profiles compared to traditional debt or real estate funds.'
+        },
+        {
+          question: 'How are Bitcoin fund returns taxed in Portugal?',
+          answer: 'Portugal offers favorable tax treatment for cryptocurrency gains for individual investors under certain conditions. However, fund-level taxation and distribution taxation vary by fund structure. Consult with Movingto\'s legal team for specific tax implications based on your residency status.'
+        }
+      ];
+    } else if (categoryLower === 'crypto') {
+      faqs = [
+        {
+          question: 'What types of crypto assets do these funds invest in?',
+          answer: 'Cryptocurrency Golden Visa funds typically invest in a diversified portfolio of digital assets including Bitcoin, Ethereum, and other established cryptocurrencies. Some funds also invest in blockchain infrastructure, DeFi protocols, and Web3 projects. Investment strategies vary by fund manager.'
+        },
+        {
+          question: 'How liquid are crypto Golden Visa funds?',
+          answer: 'Liquidity varies significantly by fund. Some offer quarterly redemptions while others have lock-up periods of 3-5 years. Crypto funds may have redemption gates during market stress. Review each fund\'s redemption terms and NAV calculation frequency before investing.'
+        },
+        {
+          question: 'Are crypto funds more volatile than traditional Golden Visa options?',
+          answer: 'Yes, cryptocurrency funds typically exhibit higher volatility than traditional debt, real estate, or infrastructure funds. Monthly returns can swing significantly based on crypto market conditions. These funds are suitable for investors with higher risk tolerance and longer investment horizons.'
+        }
+      ];
+    } else if (categoryLower === 'real estate') {
+      faqs = [
+        {
+          question: 'Can I invest in real estate funds for Portugal Golden Visa?',
+          answer: 'As of October 2023, Portugal changed Golden Visa rules to exclude direct real estate investments. However, real estate-focused funds that invest in commercial property, development projects, or REITs may still qualify if they meet CMVM requirements and the €500,000 minimum. Verify eligibility with Movingto\'s legal team.'
+        },
+        {
+          question: 'What returns can I expect from real estate Golden Visa funds?',
+          answer: 'Real estate fund returns typically range from 4-8% annually, combining rental income and capital appreciation. Returns depend on property type (residential, commercial, logistics), location, development stage, and market conditions. Review historical performance and current portfolio composition.'
+        },
+        {
+          question: 'How long is the typical lock-up period for real estate funds?',
+          answer: 'Real estate Golden Visa funds typically have lock-up periods of 5-7 years to match property development and sales cycles. Some open-ended funds offer quarterly redemptions subject to liquidity gates. Closed-ended funds return capital only at fund maturity or exit events.'
+        }
+      ];
+    } else if (categoryLower === 'debt') {
+      faqs = [
+        {
+          question: 'What types of debt do these funds invest in?',
+          answer: 'Debt Golden Visa funds invest in corporate bonds, structured credit, real estate debt, infrastructure loans, and private lending. Some focus on senior secured debt for lower risk, while others pursue mezzanine or subordinated debt for higher yields. Portfolio composition varies by fund strategy.'
+        },
+        {
+          question: 'Are debt funds safer than equity funds for Golden Visa?',
+          answer: 'Debt funds generally offer lower volatility and more predictable returns than equity funds, with typical yields of 4-7% annually. They rank senior to equity in capital structure, providing downside protection. However, they still carry credit risk, interest rate risk, and liquidity risk. Review credit ratings and default history.'
+        },
+        {
+          question: 'How are debt fund distributions paid?',
+          answer: 'Most debt Golden Visa funds pay quarterly or semi-annual distributions from interest income. Some funds offer capital preservation with periodic coupon payments, while others reinvest cash flow for compound growth. Distribution frequency and yield depend on the fund\'s investment mandate and cash flow generation.'
+        }
+      ];
+    } else if (categoryLower === 'infrastructure') {
+      faqs = [
+        {
+          question: 'What types of infrastructure projects qualify for Golden Visa?',
+          answer: 'Infrastructure Golden Visa funds invest in essential assets like renewable energy projects (solar, wind), transportation networks (ports, toll roads), utilities (water, waste management), and telecommunications infrastructure. Projects must be in Portugal or have significant Portuguese economic impact.'
+        },
+        {
+          question: 'What are typical returns for infrastructure funds?',
+          answer: 'Infrastructure Golden Visa funds target stable returns of 5-9% annually, combining project cash flows and asset appreciation. Returns are typically lower volatility than equity but higher than pure debt funds. Infrastructure assets often have inflation-linked revenues providing natural hedges.'
+        },
+        {
+          question: 'How long until infrastructure funds return capital?',
+          answer: 'Infrastructure funds typically have 7-12 year fund lives matching project development and operational phases. Capital is returned through project dividends, refinancing events, or asset sales. Some funds offer earlier exits through secondary market sales, though at potential discounts.'
+        }
+      ];
+    } else if (categoryLower === 'venture capital') {
+      faqs = [
+        {
+          question: 'Are Venture Capital funds riskier than other Golden Visa options?',
+          answer: 'Yes, VC Golden Visa funds carry higher risk due to startup failure rates (typically 50-70% of portfolio companies). However, successful exits can generate 3-10x returns. VC funds are suitable for investors with high risk tolerance, long time horizons (8-12 years), and diversification across other asset classes.'
+        },
+        {
+          question: 'What stage startups do VC Golden Visa funds invest in?',
+          answer: 'VC fund stage focus varies: early-stage funds invest in seed/Series A startups with higher risk/reward, while growth-stage funds invest in Series B+ companies with proven business models and lower risk. Some funds focus on specific sectors like fintech, healthtech, or climate tech. Review fund strategy alignment.'
+        },
+        {
+          question: 'When do VC funds distribute returns?',
+          answer: 'VC Golden Visa funds typically distribute capital only upon successful exits (M&A or IPO), which can take 5-10 years from initial investment. Unlike income-generating funds, VC funds reinvest proceeds for compound growth. Expect minimal cash flow during fund life with returns concentrated at maturity.'
+        }
+      ];
+    } else if (categoryLower === 'clean energy') {
+      faqs = [
+        {
+          question: 'What types of clean energy projects do these funds invest in?',
+          answer: 'Clean Energy Golden Visa funds invest in solar farms, wind projects, battery storage, green hydrogen, EV charging infrastructure, and energy efficiency retrofits. Portugal has strong renewable energy potential with government support through EU Green Deal funding and climate commitments.'
+        },
+        {
+          question: 'Are clean energy funds eligible for Golden Visa?',
+          answer: 'Yes, clean energy funds qualify for Portugal Golden Visa if they meet CMVM registration requirements and invest at least €500,000. These funds align with Portugal\'s decarbonization goals and often benefit from government subsidies, power purchase agreements, and EU climate financing.'
+        },
+        {
+          question: 'What returns do clean energy Golden Visa funds generate?',
+          answer: 'Clean energy funds typically target 6-10% annual returns combining project revenues (electricity sales, subsidies) and asset appreciation. Returns benefit from long-term power purchase agreements (10-25 years) providing stable cash flows. ESG-focused investors value impact alongside financial returns.'
+        }
+      ];
+    } else {
+      // Generic category FAQs
+      faqs = [
+        {
+          question: `What are the benefits of investing in ${categoryName} Golden Visa funds?`,
+          answer: `${categoryName} Golden Visa funds offer diversified exposure to this asset class while meeting Portugal residency requirements. Benefits include professional management, regulatory compliance, risk diversification across multiple investments, and access to institutional-quality deals. Minimum investment starts at €500,000.`
+        },
+        {
+          question: `How do I choose the right ${categoryName} fund for Golden Visa?`,
+          answer: `Compare ${categoryName} funds based on track record, management team experience, fee structure (management and performance fees), historical returns, risk profile, redemption terms, and investor protection measures. Consider your investment timeline, risk tolerance, and liquidity needs. Movingto\'s legal team can provide personalized guidance.`
+        },
+        {
+          question: `What documents do I need for ${categoryName} Golden Visa investment?`,
+          answer: 'Required documents include valid passport, proof of investment (subscription agreement, capital call confirmation), fund prospectus showing CMVM registration, clean criminal record certificate, proof of legal entry to Portugal, and completed IMI (Immigration Authority) application forms. Processing takes 3-12 months.'
+        }
+      ];
+    }
+
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'name': `${categoryName} Golden Visa Funds FAQs`,
+      'description': `Frequently asked questions about ${categoryName} Golden Visa investment funds`,
+      'mainEntity': faqs.map(faq => ({
+        '@type': 'Question',
+        'name': faq.question,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': faq.answer
+        }
+      }))
+    };
+  }
+
+  private static getTagFAQSchema(tagName: string): any {
+    const tagLower = tagName.toLowerCase();
+    let faqs: Array<{ question: string; answer: string }> = [];
+
+    // Tag-specific FAQs for high-value tags
+    if (tagLower === 'verified') {
+      faqs = [
+        {
+          question: 'What does "Verified" mean for Golden Visa funds?',
+          answer: 'Verified funds have undergone independent validation of their documentation, performance claims, CMVM registration, and management team credentials. Verification provides investors with additional confidence beyond standard regulatory compliance. Contact Movingto to understand our 6-point verification process.'
+        },
+        {
+          question: 'Do verified funds perform better than non-verified funds?',
+          answer: 'Verification indicates transparency and documentation quality, not guaranteed performance. However, verified funds typically have experienced management teams, established track records, and institutional-grade governance. Past performance doesn\'t guarantee future results. Always review each fund\'s historical returns and risk profile.'
+        }
+      ];
+    } else if (tagLower === 'low risk') {
+      faqs = [
+        {
+          question: 'What makes a Golden Visa fund "Low Risk"?',
+          answer: 'Low risk funds typically invest in senior debt, investment-grade bonds, diversified loan portfolios, or established infrastructure with stable cash flows. They prioritize capital preservation over high returns. Expected annual returns range 3-6% with lower volatility. Suitable for conservative investors prioritizing residency over aggressive growth.'
+        },
+        {
+          question: 'Can low risk funds still lose money?',
+          answer: 'Yes, all investments carry risk. Low risk funds can experience losses from credit defaults, interest rate changes, liquidity constraints, or economic downturns. "Low risk" indicates relative risk compared to equity or VC funds, not zero risk. Review fund prospectus for detailed risk disclosures.'
+        }
+      ];
+    } else if (tagLower === 'high risk') {
+      faqs = [
+        {
+          question: 'Why would someone choose high risk Golden Visa funds?',
+          answer: 'High risk funds (VC, growth equity, crypto) target higher returns (10-20%+ annually) to compensate for volatility and potential losses. Suitable for investors with long time horizons (8-12 years), high risk tolerance, diversification across other assets, and who can afford capital loss while still meeting Golden Visa requirements.'
+        },
+        {
+          question: 'What percentage of portfolio should be high risk funds?',
+          answer: 'Financial advisors typically recommend limiting high risk investments to 10-30% of total portfolio depending on age, wealth, and risk tolerance. For Golden Visa investors, consider splitting €500,000 minimum across multiple funds (mix of low/medium/high risk) for diversification. Consult Movingto\'s legal team for allocation strategies.'
+        }
+      ];
+    } else if (tagLower === 'dividend paying') {
+      faqs = [
+        {
+          question: 'How often do dividend-paying Golden Visa funds distribute?',
+          answer: 'Distribution frequency varies by fund: quarterly (most common), semi-annual, or annual payments. Some funds offer monthly distributions for maximum cash flow. Review fund prospectus for distribution policy, payout ratios, and sustainability of dividend payments based on underlying investment income.'
+        },
+        {
+          question: 'Are Golden Visa fund dividends taxed in Portugal?',
+          answer: 'Dividend taxation depends on fund structure, investor tax residency status, and applicable tax treaties. Portugal offers Non-Habitual Resident (NHR) tax regime with potential exemptions. Fund distributions may be taxed as income or capital gains. Consult tax advisor for your specific situation and Movingto for NHR eligibility.'
+        }
+      ];
+    } else if (tagLower === 'esg') {
+      faqs = [
+        {
+          question: 'What ESG criteria do these Golden Visa funds follow?',
+          answer: 'ESG Golden Visa funds apply environmental (carbon reduction, renewable energy), social (labor practices, community impact), and governance (board independence, ethics) screening. Most follow EU Taxonomy or SFDR Article 8/9 classifications. Review fund ESG reports for specific metrics, impact targets, and third-party certifications.'
+        },
+        {
+          question: 'Do ESG funds sacrifice returns for impact?',
+          answer: 'Recent studies show ESG funds can match or exceed traditional fund returns while providing positive impact. ESG screening may reduce risk by avoiding controversial industries and improving long-term sustainability. However, returns vary by fund manager, strategy, and market conditions. Review historical performance alongside ESG ratings.'
+        }
+      ];
+    } else if (tagLower.includes('target yield') || tagLower.includes('apy')) {
+      faqs = [
+        {
+          question: `What does "${tagName}" mean for Golden Visa funds?`,
+          answer: `This indicates the fund's expected annual return target based on investment strategy and historical performance. "Target" yields are projections, not guarantees. Actual returns may be higher or lower depending on market conditions, investment execution, and fund manager skill. Review past performance and risk factors before investing.`
+        },
+        {
+          question: 'Are target yields guaranteed?',
+          answer: 'No, target yields are projections based on fund strategy and market assumptions. Actual returns fluctuate based on economic conditions, interest rates, credit performance, and manager execution. Some funds meet or exceed targets consistently, while others underperform. Review 3-5 year historical returns for more reliable expectations.'
+        }
+      ];
+    } else if (tagLower.includes('min. subscription') || tagLower.includes('minimum investment')) {
+      faqs = [
+        {
+          question: `Can I invest less than ${tagName} for Golden Visa?`,
+          answer: `Individual fund minimums vary, but Portugal's Golden Visa requires €500,000 total investment across one or more eligible funds. You can combine multiple funds to reach the threshold. Fund minimums indicate per-fund entry requirements. Consult Movingto's legal team to structure qualifying investments.`
+        },
+        {
+          question: 'Does higher minimum investment mean better funds?',
+          answer: 'Not necessarily. Minimum subscriptions reflect fund strategy and target investor base (retail vs. institutional). Some excellent funds have €50,000 minimums while others require €1,000,000+. Evaluate funds based on track record, team, strategy, and fees rather than minimum investment alone.'
+        }
+      ];
+    } else {
+      // Generic tag FAQs
+      faqs = [
+        {
+          question: `What does the "${tagName}" tag mean for Golden Visa funds?`,
+          answer: `The "${tagName}" tag indicates this characteristic or feature is present in the fund's strategy, structure, or investment approach. Tags help investors filter and compare Golden Visa funds based on specific criteria. Review individual fund profiles for detailed information on how this characteristic applies.`
+        },
+        {
+          question: `How many Golden Visa funds have the "${tagName}" tag?`,
+          answer: `The number of funds with this tag varies as new funds launch and existing funds update strategies. Use our filter system to see all current "${tagName}" funds, compare their features, fees, and performance. Connect with Movingto's legal team for personalized fund recommendations based on your investment goals.`
+        }
+      ];
+    }
+
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'name': `${tagName} Golden Visa Funds FAQs`,
+      'description': `Frequently asked questions about ${tagName} Golden Visa investment funds`,
+      'mainEntity': faqs.map(faq => ({
+        '@type': 'Question',
+        'name': faq.question,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': faq.answer
+        }
+      }))
     };
   }
 
