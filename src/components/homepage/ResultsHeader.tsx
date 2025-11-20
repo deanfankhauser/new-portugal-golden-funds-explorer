@@ -29,6 +29,7 @@ const ResultsHeader: React.FC<ResultsHeaderProps> = ({
   sortBy,
   setSortBy
 }) => {
+  const activeFilterCount = selectedTags.length + (searchQuery ? 1 : 0);
   
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -66,7 +67,7 @@ const ResultsHeader: React.FC<ResultsHeaderProps> = ({
             }}
             className="text-sm"
           >
-            Reset all filters
+            Reset all filters ({activeFilterCount})
           </Button>
         )}
       </div>
