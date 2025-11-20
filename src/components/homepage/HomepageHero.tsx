@@ -50,7 +50,7 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
           </div>
 
           {/* Learn More Links */}
-          <div className="text-center mb-8 space-y-3">
+          <div className="text-center mb-8">
             <a 
               href="https://www.movingto.com/portugal-golden-visa-funds" 
               target="_blank" 
@@ -62,19 +62,6 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </a>
-            <div className="text-sm text-medium-contrast">
-              <a 
-                href="https://movingto.com/pt/portugal-golden-visa" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center hover:text-accent transition-colors duration-200 group"
-              >
-                Learn about Portugal Golden Visa requirements
-                <svg className="ml-2 w-3 h-3 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </a>
-            </div>
           </div>
         </div>
       </div>

@@ -134,7 +134,7 @@ const Footer = () => {
               </li>
               <li>
                 <a 
-                  href="https://www.movingto.com/pt/portugal-golden-visa" 
+                  href="https://movingto.com/pt/portugal-golden-visa" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-muted-foreground hover:text-primary text-sm transition-colors inline-flex items-center"

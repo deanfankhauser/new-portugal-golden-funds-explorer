@@ -75,6 +75,23 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
           </a>
         </div>
 
+        {/* Golden Visa Info Banner - Only for GV Eligible funds */}
+        {fund?.tags?.includes('Golden Visa Eligible') && (
+          <div className="bg-muted/30 border border-border rounded-lg p-4 mb-6">
+            <p className="text-sm text-muted-foreground">
+              💡 This fund qualifies for the Portugal Golden Visa program. {' '}
+              <a 
+                href="https://movingto.com/pt/portugal-golden-visa" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-accent hover:text-accent/80 font-medium underline"
+              >
+                View Portugal Golden Visa eligibility requirements
+              </a>
+            </p>
+          </div>
+        )}
+
         {/* Header - Full Width */}
         <DecisionBandHeader fund={fund} />
 
