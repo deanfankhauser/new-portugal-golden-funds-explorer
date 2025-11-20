@@ -19,10 +19,10 @@ const EmptyFundsState: React.FC<EmptyFundsStateProps> = ({
   searchQuery = ''
 }) => {
   const popularSuggestions = [
-    { label: 'Real Estate Funds', tag: 'Real Estate' as FundTag },
+    { label: 'Infrastructure Funds', tag: 'Infrastructure' as FundTag },
     { label: 'Low Risk Options', tag: 'Low-risk' as FundTag },
-    { label: 'Fund minimums', tag: 'Fund subscription minimums' as FundTag },
-    { label: 'Currently Open', tag: 'Open' as FundTag },
+    { label: 'Low Minimums (€100k-250k)', tag: 'Min. subscription €100k–250k' as FundTag },
+    { label: 'Open-Ended Funds', tag: 'Open Ended' as FundTag },
   ];
 
   const handleSuggestionClick = (tag: FundTag) => {
