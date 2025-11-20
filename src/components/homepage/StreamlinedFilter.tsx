@@ -81,8 +81,9 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
         </div>
 
         <CollapsibleContent className="space-y-2 pt-2">
+          {/* Priority Tags - Top 6-8 most useful filters */}
           <div className="flex flex-wrap gap-2 w-full">
-            {allFilters.slice(0, 10).map((filter) => {
+            {allFilters.slice(0, 8).map((filter) => {
               const isSelected = selectedTags.includes(filter.tag);
               
               return (
@@ -104,30 +105,11 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
               variant="outline"
               className="w-full mt-3"
             >
-              See more tags
+              See more filters
             </Button>
           </Link>
         </CollapsibleContent>
       </Collapsible>
-
-      {/* Active Filters Display */}
-      {hasActiveFilters && (
-        <div className="flex flex-wrap gap-2 pt-2 border-t w-full">
-          {selectedTags.map(tag => (
-            <div key={tag} className="flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded-md text-sm max-w-full break-words">
-              <span className="break-words">{tag}</span>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => toggleTag(tag)}
-                className="h-4 w-4 p-0 hover:bg-primary/20 shrink-0"
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
