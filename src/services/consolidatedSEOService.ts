@@ -1620,11 +1620,14 @@ export class ConsolidatedSEOService {
     };
 
     // Return array of schemas
+    const faqSchema = this.getManagerFAQSchema(managerName, fundsCount);
+    
     return [
       organizationSchema,
       breadcrumbSchema,
       financialServiceSchema,
-      ...(funds.length > 0 ? [collectionPageSchema] : [])
+      ...(funds.length > 0 ? [collectionPageSchema] : []),
+      faqSchema
     ];
   }
 
@@ -2353,8 +2356,60 @@ export class ConsolidatedSEOService {
     };
   }
 
+  private static getManagerFAQSchema(managerName: string, fundsCount: number): any {
+    const faqs = [
+      {
+        question: `What types of Golden Visa funds does ${managerName} manage?`,
+        answer: `${managerName} manages ${fundsCount} Golden Visa eligible investment fund${fundsCount !== 1 ? 's' : ''} in Portugal. Their portfolio may include various asset classes such as venture capital, real estate, debt, infrastructure, or alternative investments. Review their individual fund profiles for specific strategies, risk profiles, minimum investments, and historical performance data.`
+      },
+      {
+        question: `Is ${managerName} a registered fund manager in Portugal?`,
+        answer: `${managerName} operates as a professional fund manager in Portugal. All Golden Visa eligible funds must be registered with CMVM (Comissão do Mercado de Valores Mobiliários), Portugal's securities regulator. Verify CMVM registration status, license numbers, and regulatory compliance on each fund's profile page before investing.`
+      },
+      {
+        question: `How do I invest in ${managerName}'s Golden Visa funds?`,
+        answer: `To invest in ${managerName}'s Golden Visa funds: (1) Review fund profiles comparing strategy, fees, returns, and risk, (2) Contact ${managerName} directly or through Movingto's legal team for subscription documents, (3) Complete KYC/AML verification, (4) Sign subscription agreement and transfer €500,000 minimum investment, (5) Receive proof of investment for Golden Visa application. Processing takes 3-12 months.`
+      },
+      {
+        question: `What is ${managerName}'s track record managing Golden Visa funds?`,
+        answer: `Review ${managerName}'s historical performance data, assets under management (AUM), fund inception dates, and investment team credentials on their profile page. Compare their funds' historical returns, risk-adjusted performance, fee structures, and investor protection measures against other managers. Past performance does not guarantee future results.`
+      },
+      {
+        question: `Can I meet with ${managerName}'s investment team?`,
+        answer: `Most fund managers offer investor meetings to discuss fund strategy, answer questions, and explain Golden Visa eligibility. Contact ${managerName} directly through their website or request an introduction through Movingto's legal team. Meetings help you assess management quality, investment philosophy, and alignment with your goals before committing €500,000+.`
+      },
+      {
+        question: `What fees does ${managerName} charge for fund management?`,
+        answer: `Fund management fees vary by strategy and typically include: (1) Management fee: 1-2% annually on AUM, (2) Performance fee: 10-20% on returns above hurdle rate, (3) Subscription/redemption fees: 0-3%. Review detailed fee structures on each fund's profile. Compare total cost of ownership across ${managerName}'s funds and competitors before investing.`
+      },
+      {
+        question: `Does ${managerName} manage verified Golden Visa funds?`,
+        answer: `Some of ${managerName}'s funds may carry "Verified" status indicating independent validation of documentation, performance claims, and compliance. Verified funds undergo enhanced due diligence beyond standard CMVM registration. Check individual fund profiles for verification badges and review Movingto's 6-point verification criteria.`
+      },
+      {
+        question: `How can I track performance of ${managerName}'s funds?`,
+        answer: `Fund performance tracking varies by fund: (1) Quarterly NAV updates from the fund administrator, (2) Annual audited financial statements, (3) Monthly investor reports for some funds, (4) Access to investor portal for real-time data. Review NAV calculation frequency, reporting transparency, and auditor credentials before investing.`
+      }
+    ];
+
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'name': `${managerName} Golden Visa Funds FAQs`,
+      'description': `Frequently asked questions about ${managerName} and their Golden Visa investment funds`,
+      'mainEntity': faqs.map(faq => ({
+        '@type': 'Question',
+        'name': faq.question,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': faq.answer
+        }
+      }))
+    };
+  }
+
   private static getFundAlternativesStructuredData(fund: any): any {
-    // Simple structured data without dynamic imports  
+    // Simple structured data without dynamic imports
     const baseStructuredData = [
       {
         '@context': 'https://schema.org',
