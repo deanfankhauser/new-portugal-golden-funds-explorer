@@ -1632,6 +1632,86 @@ export class ConsolidatedSEOService {
   }
 
   private static getComparisonStructuredData(): any {
+    const faqSchema = {
+      '@type': 'FAQPage',
+      'name': 'Golden Visa Fund Comparison Tool FAQs',
+      'description': 'How to use the comparison tool to analyze investment funds',
+      'mainEntity': [
+        {
+          '@type': 'Question',
+          'name': 'How do I use the Golden Visa fund comparison tool?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Select any two Golden Visa funds from the comparison interface to view side-by-side analysis of fees, returns, minimums, risk profiles, and fund characteristics. The tool displays detailed metrics including management fees, performance fees, historical returns, minimum investment requirements, and redemption terms. Use filters to narrow down funds by category, manager, or specific features before comparing.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'What metrics should I compare when evaluating Golden Visa funds?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Key comparison metrics include: (1) Total fees (management + performance fees), (2) Historical returns over 1, 3, 5 years, (3) Minimum investment amount, (4) Lock-up period and redemption terms, (5) Risk level and volatility, (6) Fund category and investment strategy, (7) Manager track record and AUM, (8) CMVM registration status. Compare funds within the same category for meaningful analysis.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'Can I compare funds from different categories?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Yes, you can compare any two Golden Visa funds regardless of category. However, cross-category comparisons (e.g., Bitcoin fund vs. Debt fund) may be less meaningful due to fundamentally different risk-return profiles. For apples-to-apples comparison, compare funds within the same category (e.g., two VC funds, two Real Estate funds). The tool shows category differences to highlight strategy variations.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'How do I interpret the fee comparison?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Fee comparison shows: (1) Management fee: annual percentage charged on AUM (typically 1-2%), (2) Performance fee: percentage of returns above hurdle rate (typically 10-20%), (3) Subscription/redemption fees: one-time charges when entering/exiting (0-3%). Calculate total cost by adding management fee + expected performance fee based on projected returns. Lower fees don\'t always mean better value - consider net returns after all fees.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'What does "Minimum Investment" mean in the comparison?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Minimum Investment shows the smallest amount you can invest in each specific fund. Note: Portugal\'s Golden Visa requires €500,000 total investment across one or more eligible funds. If a fund has €250,000 minimum, you can combine it with another fund to reach €500,000 threshold. Some funds have €500,000+ minimums requiring full investment in a single fund.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'How reliable are the historical returns shown?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Historical returns are sourced from fund administrators and audited financial statements. Returns represent past performance and do not guarantee future results. Compare returns over multiple time periods (1, 3, 5 years) and consider risk-adjusted returns (returns relative to volatility). Newer funds may show limited history. Review fund prospectus for detailed performance methodology and disclaimers.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'What do the risk level indicators mean?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Risk levels indicate expected volatility and potential for loss: (1) Low Risk: Debt/fixed income funds with 3-6% target returns and capital preservation focus, (2) Medium Risk: Diversified or infrastructure funds with 5-9% targets and moderate volatility, (3) High Risk: VC, growth equity, or crypto funds with 10-20%+ targets but higher loss potential. Match risk level to your investment timeline and risk tolerance.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'Can I save my fund comparisons?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Each comparison generates a unique URL you can bookmark or share. The URL preserves the exact fund pair comparison for future reference. You can also save individual funds to your "Saved Funds" list by clicking the bookmark icon on any fund card. Create an account to access your saved funds across devices and receive updates on saved fund performance.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'How often is comparison data updated?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Fund data is updated regularly: (1) Fees and minimums: as reported by fund managers, (2) Historical returns: quarterly from fund administrators, (3) NAV values: monthly or quarterly depending on fund, (4) CMVM registration: verified annually. Check individual fund pages for "Last Updated" timestamps. Contact Movingto\'s legal team for the most current information before making investment decisions.'
+          }
+        }
+      ]
+    };
+
     return {
       '@context': 'https://schema.org',
       '@graph': [
@@ -1665,7 +1745,8 @@ export class ConsolidatedSEOService {
           'description': 'Interactive tool to compare investment funds',
           'url': URL_CONFIG.buildUrl('compare'),
           'applicationCategory': 'FinanceApplication'
-        }
+        },
+        faqSchema
       ]
     };
   }
@@ -2454,6 +2535,70 @@ export class ConsolidatedSEOService {
     const normalizedSlug = `${[fund1.id, fund2.id].sort().join('-vs-')}`;
     const comparisonUrl = URL_CONFIG.buildComparisonUrl(normalizedSlug);
 
+    const faqSchema = {
+      '@type': 'FAQPage',
+      'name': `${fund1.name} vs ${fund2.name} Comparison FAQs`,
+      'description': `Frequently asked questions about comparing ${fund1.name} and ${fund2.name}`,
+      'mainEntity': [
+        {
+          '@type': 'Question',
+          'name': `Which fund has lower fees: ${fund1.name} or ${fund2.name}?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `Compare the total fee structure of both funds including management fees, performance fees, and subscription/redemption fees. ${fund1.name} charges ${fund1.managementFee ? fund1.managementFee + '% management fee' : 'fees detailed in prospectus'} while ${fund2.name} charges ${fund2.managementFee ? fund2.managementFee + '% management fee' : 'fees detailed in prospectus'}. Consider net returns after all fees rather than gross returns alone. Review complete fee schedules in each fund's offering documents.`
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': `Which fund has better historical performance?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `Review historical returns over multiple time periods (1, 3, 5 years) and compare risk-adjusted performance. ${fund1.name} is managed by ${fund1.managerName} while ${fund2.name} is managed by ${fund2.managerName}. Past performance does not guarantee future results. Consider consistency of returns, drawdown periods, and performance relative to category benchmarks when evaluating track records.`
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': `What are the minimum investment requirements for each fund?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `${fund1.name} has a minimum investment of ${fund1.minimumInvestment ? '€' + fund1.minimumInvestment.toLocaleString() : 'amount specified in prospectus'}, while ${fund2.name} requires ${fund2.minimumInvestment ? '€' + fund2.minimumInvestment.toLocaleString() : 'amount specified in prospectus'}. Remember that Portugal's Golden Visa requires €500,000 total investment. You can combine multiple funds to reach this threshold if individual minimums are lower. Consult Movingto's legal team to structure qualifying investments.`
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': `Which fund category do these belong to?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `${fund1.name} is categorized as ${fund1.category || 'investment fund'} while ${fund2.name} falls under ${fund2.category || 'investment fund'}. Different categories have distinct risk-return profiles, liquidity terms, and investment strategies. Compare funds within the same category for more meaningful analysis, or compare across categories to understand diversification opportunities within your €500,000 Golden Visa investment.`
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': `What are the redemption terms for each fund?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `Redemption terms vary significantly between funds and impact liquidity. Review each fund's lock-up periods, redemption windows (monthly, quarterly, annual), notice periods, and potential redemption fees. Some funds have gates limiting redemptions during stress periods. For Golden Visa purposes, you must maintain €500,000 investment for at least 5 years. Check individual fund prospectuses for complete redemption policies.`
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': `Are both funds CMVM registered for Golden Visa?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `All funds listed on Movingto must be CMVM (Comissão do Mercado de Valores Mobiliários) registered to qualify for Portugal's Golden Visa program. Verify current registration status, CMVM fund codes, and regulatory compliance on each fund's profile page. "Verified" badges indicate independent validation beyond standard CMVM registration. Always confirm eligibility with Movingto's legal team before investing.`
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': `Which fund is better for my Golden Visa application?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `The "better" fund depends on your investment goals, risk tolerance, time horizon, and liquidity needs. Compare: (1) Expected returns vs. acceptable risk, (2) Lock-up period alignment with your timeline, (3) Fee impact on net returns, (4) Manager track record and expertise, (5) Portfolio diversification with other assets. Both funds qualify for Golden Visa. Connect with Movingto's legal team for personalized recommendations based on your complete financial situation.`
+          }
+        }
+      ]
+    };
+
     return [
       // Main WebPage schema
       {
@@ -2514,7 +2659,8 @@ export class ConsolidatedSEOService {
             }
           ]
         }
-      }
+      },
+      faqSchema
     ];
   }
 
