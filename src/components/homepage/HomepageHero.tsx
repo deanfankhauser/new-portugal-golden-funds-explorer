@@ -44,8 +44,7 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
             </div>
             
             <p className="text-lg sm:text-xl text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-8">
-              Compare Portugal Golden Visa investment funds with comprehensive analysis. 
-              Detailed breakdown of fees, returns, and compliance requirements.
+              Browse independent fund profiles, compare fees, performance and risk, and shortlist the best options for your Golden Visa.
             </p>
           </div>
 
