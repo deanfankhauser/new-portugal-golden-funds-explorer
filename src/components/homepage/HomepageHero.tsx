@@ -49,19 +49,32 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
             </p>
           </div>
 
-          {/* Learn More Link */}
-          <div className="text-center mb-8">
+          {/* Learn More Links */}
+          <div className="text-center mb-8 space-y-3">
             <a 
-              href="https://movingto.com/pt/portugal-golden-visa" 
+              href="https://www.movingto.com/portugal-golden-visa-funds" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center text-accent hover:text-accent/80 font-medium text-sm sm:text-base transition-colors duration-200 group"
+              className="inline-flex items-center text-accent hover:text-accent/80 font-semibold text-base sm:text-lg transition-colors duration-200 group"
             >
-              Learn about Portugal Golden Visa requirements
-              <svg className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              Browse All Portugal Golden Visa Funds
+              <svg className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </a>
+            <div className="text-sm text-medium-contrast">
+              <a 
+                href="https://movingto.com/pt/portugal-golden-visa" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center hover:text-accent transition-colors duration-200 group"
+              >
+                Learn about Portugal Golden Visa requirements
+                <svg className="ml-2 w-3 h-3 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
       </div>
