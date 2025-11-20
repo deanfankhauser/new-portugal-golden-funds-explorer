@@ -4,14 +4,14 @@ import type { Fund } from '../data/types/funds';
 export const calculateRiskScore = (fund: Fund): number => {
   let score = 4; // Default medium risk
   
-  // High risk factors
-  if (fund.tags.includes('Venture Capital') || fund.tags.includes('Crypto')) score += 2;
+  // High risk factors - check categories not tags
+  if (fund.category === 'Venture Capital' || fund.category === 'Crypto') score += 2;
   if (fund.performanceFee >= 20) score += 1;
   if (fund.minimumInvestment >= 250000) score += 1;
   
   // Low risk factors  
   if (fund.tags.includes('Bonds') || fund.tags.includes('UCITS')) score -= 2;
-  if (fund.category === 'Infrastructure' || fund.category === 'Balanced') score -= 1;
+  if (fund.category === 'Infrastructure' || fund.category === 'Debt') score -= 1;
   if (fund.managementFee <= 1.5) score -= 1;
   
   return Math.max(1, Math.min(7, score));

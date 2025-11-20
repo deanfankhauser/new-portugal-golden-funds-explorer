@@ -35,16 +35,9 @@ const TagPage = () => {
   let displayTagName = '';
   
   if (tagSlug) {
-    // Strategy 1: Direct special case matching for management fees
-    if (tagSlug === '-15-management-fee' || tagSlug === '15-management-fee') {
-      matchingTag = allTags.find(tag => tag.includes('> 1.5% management')) || null;
-      // Special case match for > 1.5% management fee
-    } else if (tagSlug === '-1-management-fee' || tagSlug === '1-management-fee') {
-      matchingTag = allTags.find(tag => tag.includes('< 1% management')) || null;
-      // Special case match for < 1% management fee
-    } else if (tagSlug === '-1-1-5-management-fee' || tagSlug === '1-1-5-management-fee') {
-      matchingTag = allTags.find(tag => tag.includes('1-1.5% management')) || null;
-      // Special case match for 1-1.5% management fee
+    // Strategy 1: Direct special case matching for low fees tag
+    if (tagSlug === 'low-fees') {
+      matchingTag = allTags.find(tag => tag.includes('Low fees')) || null;
     }
     
     // Strategy 2: Exact slug match

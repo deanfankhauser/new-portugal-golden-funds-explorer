@@ -92,9 +92,10 @@ MINIMUM_HOLD_PERIOD: 5 years`;
   // Determine primary investment focus
   private static determineInvestmentFocus(fund: Fund): string {
     if (fund.category === 'Real Estate') return 'Real Estate';
-    if (fund.category === 'Clean Energy (Solar & Battery Storage)') return 'Renewable Energy';
+    if (fund.category === 'Clean Energy') return 'Renewable Energy';
     if (fund.category === 'Infrastructure') return 'Infrastructure';
     if (fund.category === 'Venture Capital' || fund.category === 'Private Equity') return 'Equity';
+    if (fund.category === 'Bitcoin' || fund.category === 'Crypto') return 'Digital Assets';
     return 'Diversified';
   }
 

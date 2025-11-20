@@ -95,12 +95,227 @@
       "permanent": true
     },
     {
-      "source": "/:slug(balanced|clean-energy-solar-battery-storage|debt|fixed-income-digital-assets|infrastructure|mixed|multi-asset|private-debt-hybrid-instruments|private-equity|private-equity-debt|private-equity-venture-capital|real-estate|venture-capital)",
+      "source": "/categories/mixed",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/mixed-fixed-income-digital-assets",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/multi-asset",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/balanced",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/private-debt-hybrid-instruments",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/private-equity-debt",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/fixed-income-digital-assets",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/clean-energy-solar-battery-storage",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/categories/private-equity-venture-capital",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/crypto",
+      "destination": "/categories/crypto",
+      "permanent": true
+    },
+    {
+      "source": "/tags/debt",
+      "destination": "/categories/debt",
+      "permanent": true
+    },
+    {
+      "source": "/tags/private-equity",
+      "destination": "/categories/private-equity",
+      "permanent": true
+    },
+    {
+      "source": "/tags/real-estate",
+      "destination": "/categories/real-estate",
+      "permanent": true
+    },
+    {
+      "source": "/tags/venture-capital",
+      "destination": "/categories/venture-capital",
+      "permanent": true
+    },
+    {
+      "source": "/tags/golden-visa",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/portugal",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/equity",
+      "destination": "/tags/equities",
+      "permanent": true
+    },
+    {
+      "source": "/tags/closed-ended",
+      "destination": "/tags/closed-end-fund",
+      "permanent": true
+    },
+    {
+      "source": "/tags/lock-up",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/fund-subscription-minimums",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/1-1-5-percent-management-fee",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/greater-than-1-5-percent-management-fee",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/5-percent-yield",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/less-than-3-percent-annual-yield",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/12-percent-return",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/small-cap-less-than-50m",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/mid-cap",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/mid-cap-50-100m",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/large-cap-greater-than-100m",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/quadrantis-capital",
+      "destination": "/manager/quadrantis-capital",
+      "permanent": true
+    },
+    {
+      "source": "/tags/less-than-1-percent-management-fee",
+      "destination": "/tags/low-fees-less-than-1-percent-management-fee",
+      "permanent": true
+    },
+    {
+      "source": "/tags/3-5-percent-annual-yield",
+      "destination": "/tags/target-yield-3-5-percent",
+      "permanent": true
+    },
+    {
+      "source": "/tags/greater-than-5-percent-annual-yield",
+      "destination": "/tags/target-yield-5-percent-plus",
+      "permanent": true
+    },
+    {
+      "source": "/tags/5-percent-dividend",
+      "destination": "/tags/dividend-paying",
+      "permanent": true
+    },
+    {
+      "source": "/tags/less-than-5-year-lock-up",
+      "destination": "/tags/short-lock-up-less-than-5-years",
+      "permanent": true
+    },
+    {
+      "source": "/tags/5-10-year-lock-up",
+      "destination": "/tags/long-lock-up-5-10-years",
+      "permanent": true
+    },
+    {
+      "source": "/tags/greater-than-10-year-lock-up",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/100k-250k",
+      "destination": "/tags/min-subscription-100k-250k",
+      "permanent": true
+    },
+    {
+      "source": "/tags/250k-350k-subscription-min-only-gv-still-requires-500k-total",
+      "destination": "/tags/min-subscription-250k-350k",
+      "permanent": true
+    },
+    {
+      "source": "/tags/300k-400k-subscription-min-only-gv-still-requires-500k-total",
+      "destination": "/tags/min-subscription-250k-350k",
+      "permanent": true
+    },
+    {
+      "source": "/tags/350k-500k-subscription-min-only-gv-still-requires-500k-total",
+      "destination": "/tags/min-subscription-350k-500k",
+      "permanent": true
+    },
+    {
+      "source": "/tags/400k-600k-subscription-min-only-gv-still-requires-500k-total",
+      "destination": "/tags/min-subscription-500k-plus",
+      "permanent": true
+    },
+    {
+      "source": "/tags/500k-plus",
+      "destination": "/tags/min-subscription-500k-plus",
+      "permanent": true
+    },
+    {
+      "source": "/:slug(bitcoin|clean-energy|crypto|debt|infrastructure|other|private-equity|private-equity-venture-capital|real-estate|venture-capital)",
       "destination": "/categories/:slug",
       "permanent": true
     },
     {
-      "source": "/:slug(balanced|clean-energy-solar-battery-storage|debt|fixed-income-digital-assets|infrastructure|mixed|multi-asset|private-debt-hybrid-instruments|private-equity|private-equity-debt|private-equity-venture-capital|real-estate|venture-capital)/",
+      "source": "/:slug(bitcoin|clean-energy|crypto|debt|infrastructure|other|private-equity|private-equity-venture-capital|real-estate|venture-capital)/",
       "destination": "/categories/:slug",
       "permanent": true
     },

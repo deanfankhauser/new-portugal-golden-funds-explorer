@@ -41,15 +41,9 @@ export function slugToCategory(slug: string): string {
 export function tagToSlug(tag: string): string {
   // Convert tag to URL slug
   
-  // Handle special percentage cases first
-  if (tag.includes('> 1.5% management')) {
-    return '15-management-fee';
-  }
-  if (tag.includes('< 1% management')) {
-    return '1-management-fee';
-  }
-  if (tag.includes('1-1.5% management')) {
-    return '1-1-5-management-fee';
+  // Handle special low fees tag
+  if (tag.includes('Low fees')) {
+    return 'low-fees';
   }
   
   const slug = tag
@@ -68,18 +62,9 @@ export function tagToSlug(tag: string): string {
 export function slugToTag(slug: string): string {
   // Convert URL slug back to tag
   
-  // Handle special management fee cases first
-  if (slug === '15-management-fee' || slug === '-15-management-fee') {
-    // Handle high management fee pattern
-    return '> 1.5% management fee';
-  }
-  if (slug === '1-management-fee' || slug === '-1-management-fee') {
-    // Handle low management fee pattern
-    return '< 1% management fee';
-  }
-  if (slug === '1-1-5-management-fee' || slug === '-1-1-5-management-fee') {
-    // Handle medium management fee pattern
-    return '1-1.5% management fee';
+  // Handle special low fees tag
+  if (slug === 'low-fees') {
+    return 'Low fees (<1% management fee)';
   }
   
   // Clean up the slug first
