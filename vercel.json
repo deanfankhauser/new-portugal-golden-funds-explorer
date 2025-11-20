@@ -135,6 +135,11 @@
       "permanent": true
     },
     {
+      "source": "/categories/private-equity-venture-capital",
+      "destination": "/",
+      "permanent": true
+    },
+    {
       "source": "/:slug(bitcoin|clean-energy|crypto|debt|infrastructure|other|private-equity|private-equity-venture-capital|real-estate|venture-capital)",
       "destination": "/categories/:slug",
       "permanent": true
