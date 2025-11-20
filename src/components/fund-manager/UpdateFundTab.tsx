@@ -467,6 +467,9 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
                   value={formData.managementFee}
                   onChange={(e) => handleInputChange('managementFee', e.target.value)}
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Enter 0 only if this is genuinely a no-fee fund. Leave empty if unknown.
+                </p>
               </div>
               
               <div>
@@ -507,6 +510,9 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
                   value={formData.subscriptionFee}
                   onChange={(e) => handleInputChange('subscriptionFee', e.target.value)}
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Enter 0 if there's no subscription fee. Leave empty if undisclosed.
+                </p>
               </div>
 
               <div>
@@ -518,6 +524,9 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
                   value={formData.redemptionFee}
                   onChange={(e) => handleInputChange('redemptionFee', e.target.value)}
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Enter 0 if there's no redemption fee. Leave empty if undisclosed.
+                </p>
               </div>
             </CardContent>
           </Card>
