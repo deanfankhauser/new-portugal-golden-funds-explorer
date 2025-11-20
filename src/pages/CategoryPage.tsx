@@ -24,6 +24,7 @@ const CategoryPage = () => {
   const { category: categorySlug } = useParams<{ category: string }>();
   const navigate = useNavigate();
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
   const { data: allFundsData, isLoading } = useAllFunds();
   
   const allDatabaseFunds = allFundsData || [];
@@ -36,15 +37,22 @@ const CategoryPage = () => {
   const categoryExists = allCategories.includes(category as any);
 
   useEffect(() => {
-    if (!isLoading && !categoryExists && categorySlug) {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
+    // Only redirect after component has mounted and data has loaded
+    if (hasMounted && !isLoading && !categoryExists && categorySlug) {
       // If category doesn't exist, redirect to homepage
       navigate('/');
       return;
     }
     
     // Scroll to top when category changes
-    window.scrollTo(0, 0);
-  }, [categoryExists, navigate, categorySlug, isLoading]);
+    if (categoryExists) {
+      window.scrollTo(0, 0);
+    }
+  }, [hasMounted, categoryExists, navigate, categorySlug, isLoading]);
 
   // Show loading state
   if (isLoading) {
