@@ -411,18 +411,222 @@ export class ConsolidatedSEOService {
         };
 
       case 'tag':
+        // CTR-optimized SEO for all tag types
+        let tagTitle = `${params.tagName} Golden Visa Funds – Compare Performance & Fees`;
+        let tagDescription = `Compare ${params.tagName} Golden Visa funds in Portugal. Analyze returns, fees, strategy, and risk. Connect with Movingto's legal team.`;
+        let tagKeywords = [
+          `${params.tagName} Golden Visa funds`,
+          `${params.tagName} investment funds Portugal`,
+          'Golden Visa fund characteristics',
+          `${params.tagName} fund features`,
+          'Portugal investment fund tags',
+          `best ${params.tagName} funds`
+        ];
+        
+        // Tag-specific optimizations for better CTR
+        const tagLower = params.tagName.toLowerCase();
+        
+        // Investment range tags
+        if (tagLower.includes('min. subscription') || tagLower.includes('minimum investment')) {
+          tagTitle = `${params.tagName} Golden Visa Funds – Find Your Investment Match`;
+          tagDescription = `Browse Golden Visa funds with ${params.tagName}. Compare performance, fees, and compliance. Expert legal support available.`;
+          tagKeywords = [
+            `${params.tagName} Golden Visa`,
+            'Golden Visa investment levels',
+            'minimum investment Portugal',
+            'Golden Visa fund entry',
+            'investment threshold Portugal'
+          ];
+        }
+        // Yield/return tags
+        else if (tagLower.includes('target yield') || tagLower.includes('apy')) {
+          tagTitle = `${params.tagName} Golden Visa Funds – Compare High-Yield Options`;
+          tagDescription = `Find ${params.tagName} Golden Visa funds. Compare actual returns, fees, and risk. Connect with Movingto's legal team.`;
+          tagKeywords = [
+            `${params.tagName} Golden Visa`,
+            'high yield Portugal funds',
+            'Golden Visa returns',
+            'investment income Portugal',
+            'yield comparison Golden Visa'
+          ];
+        }
+        // Verification/eligibility tags
+        else if (tagLower === 'gv eligible') {
+          tagTitle = 'GV Eligible Funds Portugal – CMVM-Verified Golden Visa Options';
+          tagDescription = 'Browse officially eligible Golden Visa funds. All CMVM-verified for Portuguese residency. Compare performance and fees.';
+          tagKeywords = [
+            'GV eligible funds',
+            'Golden Visa eligible',
+            'CMVM verified funds',
+            'official Golden Visa funds',
+            'Portugal residency investment'
+          ];
+        }
+        else if (tagLower === 'verified') {
+          tagTitle = 'Verified Golden Visa Funds – Independently Validated Options';
+          tagDescription = 'Compare independently verified Golden Visa funds. Documentation, performance, and compliance validated. Legal support included.';
+          tagKeywords = [
+            'verified Golden Visa funds',
+            'validated investment funds',
+            'trusted Golden Visa',
+            'verified fund performance',
+            'independent fund validation'
+          ];
+        }
+        // Risk level tags
+        else if (tagLower === 'low risk') {
+          tagTitle = 'Low Risk Golden Visa Funds – Conservative Investment Options';
+          tagDescription = 'Compare low-risk Golden Visa funds in Portugal. Analyze stable returns, capital protection, and fees. Expert legal guidance.';
+          tagKeywords = [
+            'low risk Golden Visa funds',
+            'conservative investment Portugal',
+            'capital protection funds',
+            'safe Golden Visa options',
+            'low volatility funds'
+          ];
+        }
+        else if (tagLower === 'medium risk') {
+          tagTitle = 'Medium Risk Golden Visa Funds – Balanced Investment Strategies';
+          tagDescription = 'Compare balanced Golden Visa funds. Analyze risk-adjusted returns, diversification, and fees. Legal support available.';
+          tagKeywords = [
+            'medium risk Golden Visa',
+            'balanced investment Portugal',
+            'moderate risk funds',
+            'diversified Golden Visa',
+            'balanced fund strategies'
+          ];
+        }
+        else if (tagLower === 'high risk') {
+          tagTitle = 'High Risk Golden Visa Funds – Growth-Focused Investments';
+          tagDescription = 'Compare high-growth Golden Visa funds. Analyze return potential, volatility, and fees. Expert legal guidance available.';
+          tagKeywords = [
+            'high risk Golden Visa',
+            'growth investment Portugal',
+            'high return funds',
+            'aggressive Golden Visa',
+            'growth-focused funds'
+          ];
+        }
+        // Income/dividend tags
+        else if (tagLower === 'dividend paying') {
+          tagTitle = 'Dividend Paying Golden Visa Funds – Regular Income Options';
+          tagDescription = 'Compare dividend-paying Golden Visa funds. Analyze distribution yields, payment frequency, and fees. Legal support included.';
+          tagKeywords = [
+            'dividend Golden Visa funds',
+            'income paying funds Portugal',
+            'dividend distribution',
+            'regular income Golden Visa',
+            'dividend yield funds'
+          ];
+        }
+        else if (tagLower === 'income-focused') {
+          tagTitle = 'Income-Focused Golden Visa Funds – Yield-Generating Investments';
+          tagDescription = 'Compare income-focused Golden Visa funds. Analyze yields, distributions, and sustainability. Connect with legal experts.';
+          tagKeywords = [
+            'income-focused Golden Visa',
+            'yield generating funds',
+            'income investment Portugal',
+            'cashflow Golden Visa',
+            'income producing funds'
+          ];
+        }
+        // Sector-specific tags
+        else if (tagLower === 'esg') {
+          tagTitle = 'ESG Golden Visa Funds Portugal – Sustainable Investment Options';
+          tagDescription = 'Compare ESG-compliant Golden Visa funds. Analyze environmental impact, returns, and governance. Expert legal support.';
+          tagKeywords = [
+            'ESG Golden Visa funds',
+            'sustainable investment Portugal',
+            'green Golden Visa',
+            'responsible investment',
+            'ESG compliance funds'
+          ];
+        }
+        else if (tagLower === 'healthcare & life sciences') {
+          tagTitle = 'Healthcare Golden Visa Funds – Medical & Life Sciences Investments';
+          tagDescription = 'Compare healthcare-focused Golden Visa funds. Analyze medical sector returns, innovation exposure, and fees.';
+          tagKeywords = [
+            'healthcare Golden Visa',
+            'life sciences investment Portugal',
+            'medical funds Portugal',
+            'pharma Golden Visa',
+            'biotech investment funds'
+          ];
+        }
+        else if (tagLower === 'logistics & warehouses') {
+          tagTitle = 'Logistics Golden Visa Funds – Warehouse & Distribution Investments';
+          tagDescription = 'Compare logistics-focused Golden Visa funds. Analyze warehouse returns, e-commerce exposure, and rental yields.';
+          tagKeywords = [
+            'logistics Golden Visa',
+            'warehouse investment Portugal',
+            'industrial real estate',
+            'distribution centers',
+            'logistics property funds'
+          ];
+        }
+        else if (tagLower === 'hospitality & hotels') {
+          tagTitle = 'Hospitality Golden Visa Funds – Hotel & Tourism Investments';
+          tagDescription = 'Compare hospitality-focused Golden Visa funds. Analyze hotel returns, tourism recovery, and rental income.';
+          tagKeywords = [
+            'hospitality Golden Visa',
+            'hotel investment Portugal',
+            'tourism funds',
+            'hotel property investment',
+            'hospitality real estate'
+          ];
+        }
+        else if (tagLower === 'residential real estate') {
+          tagTitle = 'Residential Real Estate Golden Visa Funds – Property Investments';
+          tagDescription = 'Compare residential property Golden Visa funds. Analyze rental yields, appreciation potential, and market trends.';
+          tagKeywords = [
+            'residential Golden Visa',
+            'residential property Portugal',
+            'housing investment',
+            'apartment funds',
+            'residential real estate'
+          ];
+        }
+        else if (tagLower === 'commercial real estate') {
+          tagTitle = 'Commercial Real Estate Golden Visa Funds – Office & Retail Investments';
+          tagDescription = 'Compare commercial property Golden Visa funds. Analyze office yields, retail performance, and tenant stability.';
+          tagKeywords = [
+            'commercial Golden Visa',
+            'commercial property Portugal',
+            'office investment',
+            'retail property funds',
+            'commercial real estate'
+          ];
+        }
+        // Strategy tags
+        else if (tagLower === 'diversified portfolio') {
+          tagTitle = 'Diversified Golden Visa Funds – Multi-Asset Investment Strategies';
+          tagDescription = 'Compare diversified Golden Visa funds. Analyze asset allocation, risk management, and balanced returns.';
+          tagKeywords = [
+            'diversified Golden Visa',
+            'multi-asset funds Portugal',
+            'portfolio diversification',
+            'balanced allocation',
+            'diversified investment'
+          ];
+        }
+        else if (tagLower === 'growth-focused') {
+          tagTitle = 'Growth-Focused Golden Visa Funds – Capital Appreciation Strategies';
+          tagDescription = 'Compare growth-oriented Golden Visa funds. Analyze appreciation potential, expansion strategies, and long-term returns.';
+          tagKeywords = [
+            'growth-focused Golden Visa',
+            'capital appreciation',
+            'growth investment Portugal',
+            'expansion strategies',
+            'growth equity funds'
+          ];
+        }
+        
         return {
-          title: this.optimizeText(`${params.tagName} Portugal Golden Visa Investment Funds | Movingto`, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText(`Explore ${params.tagName} Portugal Golden Visa investment funds. Compare minimum investments, returns, and Golden Visa eligibility requirements.`, this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText(tagTitle, this.MAX_TITLE_LENGTH),
+          description: this.optimizeText(tagDescription, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildTagUrl(params.tagName),
           canonical: URL_CONFIG.buildTagUrl(params.tagName),
-          keywords: [
-            `${params.tagName} Golden Visa funds`,
-            `${params.tagName} investment funds Portugal`,
-            'Golden Visa fund characteristics',
-            `${params.tagName} fund features`,
-            'Portugal investment fund tags'
-          ],
+          keywords: tagKeywords,
           structuredData: this.getTagStructuredData(params.tagName, params.funds || [])
         };
 
