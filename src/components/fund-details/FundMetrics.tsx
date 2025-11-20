@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import FeeDisclaimer from './FeeDisclaimer';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
 import { getReturnTargetDisplay } from '../../utils/returnTarget';
+import { formatManagementFee, formatPerformanceFee, formatSubscriptionFee, formatRedemptionFee } from '../../utils/feeFormatters';
 
 interface FundMetricsProps {
   fund: Fund;
@@ -34,11 +35,11 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
     },
     {
       label: "Management Fee",
-      value: `${fund.managementFee}%`,
+      value: formatManagementFee(fund.managementFee),
     },
     {
       label: "Performance Fee",
-      value: `${fund.performanceFee}%`,
+      value: formatPerformanceFee(fund.performanceFee),
     },
     {
       label: "Term",
@@ -53,14 +54,14 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
   if (fund.subscriptionFee !== undefined) {
     metrics.push({
       label: "Subscription Fee",
-      value: `${fund.subscriptionFee}%`
+      value: formatSubscriptionFee(fund.subscriptionFee)
     });
   }
 
   if (fund.redemptionFee !== undefined) {
     metrics.push({
       label: "Redemption Fee",
-      value: `${fund.redemptionFee}%`
+      value: formatRedemptionFee(fund.redemptionFee)
     });
   }
 

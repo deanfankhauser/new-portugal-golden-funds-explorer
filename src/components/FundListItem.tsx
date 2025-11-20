@@ -15,6 +15,7 @@ import { getReturnTargetDisplay } from '../utils/returnTarget';
 import { DATA_AS_OF_LABEL } from '../utils/constants';
 import { SaveFundButton } from './common/SaveFundButton';
 import { CompanyLogo } from './shared/CompanyLogo';
+import { formatManagementFee, formatPerformanceFee } from '../utils/feeFormatters';
 
 interface FundListItemProps {
   fund: Fund;
@@ -156,11 +157,11 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           <div className="flex items-center gap-6 text-[14px] text-muted-foreground">
             <div className="flex items-center gap-1.5">
               <span>Management:</span>
-              <span className="font-medium text-foreground">{fund.managementFee != null ? `${fund.managementFee}%` : 'N/A'}</span>
+              <span className="font-medium text-foreground">{formatManagementFee(fund.managementFee)}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span>Performance:</span>
-              <span className="font-medium text-foreground">{fund.performanceFee != null ? `${fund.performanceFee}%` : 'N/A'}</span>
+              <span className="font-medium text-foreground">{formatPerformanceFee(fund.performanceFee)}</span>
             </div>
           </div>
           

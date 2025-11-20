@@ -5,6 +5,7 @@ import { Separator } from '../ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { Info, Calculator } from 'lucide-react';
 import { getReturnTargetNumbers } from '../../utils/returnTarget';
+import { formatManagementFee, formatPerformanceFee } from '../../utils/feeFormatters';
 
 interface TrustPracticalityCardsProps {
   fund: Fund;
@@ -64,13 +65,13 @@ const TrustPracticalityCards: React.FC<TrustPracticalityCardsProps> = ({ fund })
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Management Fee:</span>
                 <span className="font-medium">
-                  {fund.managementFee ? `${fund.managementFee}%` : 'N/A'}
+                  {formatManagementFee(fund.managementFee)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Performance Fee:</span>
                 <span className="font-medium">
-                  {fund.performanceFee ? `${fund.performanceFee}%` : 'None'}
+                  {formatPerformanceFee(fund.performanceFee)}
                 </span>
               </div>
               {fund.performanceFee && hurdle && (
