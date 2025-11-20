@@ -40,6 +40,7 @@ const ResultsHeader: React.FC<ResultsHeaderProps> = ({
             <SelectValue placeholder="Select sort option" />
           </SelectTrigger>
           <SelectContent className="bg-background border-border z-50">
+            <SelectItem value="verified">Verified</SelectItem>
             <SelectItem value="min-investment-asc">Min. investment (low → high)</SelectItem>
             <SelectItem value="target-return-desc">Target return (high → low)</SelectItem>
             <SelectItem value="risk-asc">Risk (low → high)</SelectItem>

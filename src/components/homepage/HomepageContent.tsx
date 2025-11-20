@@ -44,7 +44,7 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
   loading = false,
   error = null
 }) => {
-  const [sortBy, setSortBy] = React.useState<string>('newly-added');
+  const [sortBy, setSortBy] = React.useState<string>('verified');
   const [searchQueryState, setSearchQueryState] = React.useState<string>(searchQuery);
 
   const hasActiveFilters = selectedTags.length > 0 || searchQuery.trim() !== '' || 
@@ -55,6 +55,12 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
     const funds = [...filteredFunds];
     
     switch (sortBy) {
+      case 'verified':
+        return funds.sort((a, b) => {
+          if (a.isVerified === b.isVerified) return 0;
+          return a.isVerified ? -1 : 1;
+        });
+      
       case 'min-investment-asc':
         return funds.sort((a, b) => {
           const aMin = a.minimumInvestment || Infinity;
