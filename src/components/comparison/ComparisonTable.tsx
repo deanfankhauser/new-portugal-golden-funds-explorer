@@ -13,6 +13,8 @@ import DataFreshnessIndicator from '../common/DataFreshnessIndicator';
 import { getReturnTargetDisplay, getReturnTargetNumbers } from '../../utils/returnTarget';
 import { CheckCircle2 } from 'lucide-react';
 import { CompanyLogo } from '../shared/CompanyLogo';
+import { formatManagementFee, formatPerformanceFee, formatSubscriptionFee, formatRedemptionFee } from '../../utils/feeFormatters';
+import { formatFundSize } from '../../utils/fundSizeFormatters';
 
 interface ComparisonTableProps {
   funds: Fund[];
@@ -105,14 +107,14 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             
             <StandardRow
               funds={funds}
-              field={(fund) => `${fund.fundSize}M EUR`}
+              field={(fund) => formatFundSize(fund.fundSize)}
               label="Fund Size"
               allSame={allSame}
             />
             
             <StandardRow 
               funds={funds}
-              field={(fund) => `${fund.managementFee}%`}
+              field={(fund) => formatManagementFee(fund.managementFee)}
               label="Management Fee"
               allSame={allSame}
               bestType="lowest"
@@ -120,26 +122,26 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             
             <StandardRow 
               funds={funds}
-              field={(fund) => `${fund.performanceFee}%`}
+              field={(fund) => formatPerformanceFee(fund.performanceFee)}
               label="Performance Fee"
               allSame={allSame}
               bestType="lowest"
             />
             
-            {(funds.some(f => f.subscriptionFee)) && (
+            {(funds.some(f => f.subscriptionFee !== undefined)) && (
               <StandardRow 
                 funds={funds}
-                field={(fund) => fund.subscriptionFee ? `${fund.subscriptionFee}%` : "N/A"}
+                field={(fund) => formatSubscriptionFee(fund.subscriptionFee)}
                 label="Subscription Fee"
                 allSame={allSame}
                 bestType="lowest"
               />
             )}
             
-            {(funds.some(f => f.redemptionFee)) && (
+            {(funds.some(f => f.redemptionFee !== undefined)) && (
               <StandardRow 
                 funds={funds}
-                field={(fund) => fund.redemptionFee ? `${fund.redemptionFee}%` : "N/A"}
+                field={(fund) => formatRedemptionFee(fund.redemptionFee)}
                 label="Redemption Fee"
                 allSame={allSame}
                 bestType="lowest"

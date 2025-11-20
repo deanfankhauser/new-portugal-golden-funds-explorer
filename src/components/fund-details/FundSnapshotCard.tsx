@@ -12,6 +12,7 @@ import { getReturnTargetDisplay, getReturnTargetNumbers } from '../../utils/retu
 import PerformancePreview from './PerformancePreview';
 import KeyFactsChips from './KeyFactsChips';
 import AuthGate from '../auth/AuthGate';
+import { formatManagementFee, formatPerformanceFee } from '../../utils/feeFormatters';
 
 interface FundSnapshotCardProps {
   fund: Fund;
@@ -264,13 +265,13 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
               <div className="bg-primary/5 border border-primary/15 rounded-xl p-4 flex flex-col gap-1.5">
                 <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Management Fee</div>
                 <div className="text-[28px] font-bold text-primary tracking-tight">
-                  {fund.managementFee ? `${fund.managementFee}%` : 'N/A'}
+                  {formatManagementFee(fund.managementFee)}
                 </div>
               </div>
               <div className="bg-primary/5 border border-primary/15 rounded-xl p-4 flex flex-col gap-1.5">
                 <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Performance Fee</div>
                 <div className="text-[28px] font-bold text-primary tracking-tight">
-                  {fund.performanceFee ? `${fund.performanceFee}%` : 'N/A'}
+                  {formatPerformanceFee(fund.performanceFee)}
                 </div>
               </div>
             </div>
