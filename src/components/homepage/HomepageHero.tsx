@@ -43,8 +43,12 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
               <span className="text-accent italic font-cheltenham">Profiles, Metrics, Comparisons</span>
             </div>
             
-            <p className="text-lg sm:text-xl text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-8">
+            <p className="text-lg sm:text-xl text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-4">
               Browse independent fund profiles, compare fees, performance and risk, and shortlist the best options for your Golden Visa.
+            </p>
+            
+            <p className="text-base sm:text-lg text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-8 font-medium">
+              Filter by risk, minimum ticket and strategy, then shortlist 2–3 funds to discuss with our legal team.
             </p>
           </div>
 

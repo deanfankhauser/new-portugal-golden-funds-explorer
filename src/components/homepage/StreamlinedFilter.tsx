@@ -59,7 +59,7 @@ const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
               className="flex-1 justify-between p-3 h-auto hover:bg-muted"
             >
               <span className="font-semibold text-base">
-                Tags{!isOpen && hasActiveFilters && ` (${selectedTags.length} active)`}
+                Filter by Investor Profile{!isOpen && hasActiveFilters && ` (${selectedTags.length})`}
               </span>
               <ChevronDown
                 className={`h-4 w-4 transition-transform duration-200 ${
