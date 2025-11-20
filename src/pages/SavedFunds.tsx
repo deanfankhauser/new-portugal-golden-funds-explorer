@@ -63,13 +63,28 @@ const SavedFunds = () => {
             <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-3">
               Saved Funds
             </h1>
-            <p className="text-base text-muted-foreground">
+            <p className="text-base text-muted-foreground mb-4">
               {loading ? (
                 'Loading your saved funds...'
               ) : (
                 `${savedFundObjects.length} saved fund${savedFundObjects.length !== 1 ? 's' : ''}`
               )}
             </p>
+            
+            {/* Link to Main Hub */}
+            <div>
+              <a 
+                href="https://www.movingto.com/portugal-golden-visa-funds" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
+              >
+                Browse All Portugal Golden Visa Funds
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+            </div>
           </div>
 
           {/* Content */}
