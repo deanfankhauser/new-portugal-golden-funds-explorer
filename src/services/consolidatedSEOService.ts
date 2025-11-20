@@ -298,56 +298,111 @@ export class ConsolidatedSEOService {
         };
 
       case 'category':
-        // Custom SEO for new categories
-        let categoryDescription = `Discover ${params.categoryName} Portugal Golden Visa investment funds. Compare minimum investments, returns, fees, and eligibility for residency applications.`;
+        // CTR-optimized SEO for all categories
+        let categoryTitle = `Browse ${params.categoryName} Golden Visa Funds – Compare Performance & Fees`;
+        let categoryDescription = `Independent comparison of ${params.categoryName} Golden Visa funds in Portugal. Analyze returns, fees, strategy, and risk. Connect with Movingto's legal team.`;
         let categoryKeywords = [
           `${params.categoryName} Golden Visa funds`,
           `${params.categoryName} investment Portugal`,
           `Portugal ${params.categoryName} funds`,
           'Golden Visa investment categories',
-          `${params.categoryName} fund comparison`
+          `${params.categoryName} fund comparison`,
+          `best ${params.categoryName} funds Portugal`
         ];
         
+        // Category-specific optimizations
         if (params.categoryName === 'Bitcoin') {
-          categoryDescription = 'Bitcoin-focused Portugal Golden Visa investment funds. Compare BTC exposure, returns, and regulatory compliance for Portuguese residency applications.';
+          categoryTitle = 'Bitcoin Golden Visa Funds Portugal – Compare BTC Investment Options';
+          categoryDescription = 'Compare Bitcoin-focused Golden Visa funds. Analyze BTC exposure, performance, and regulatory compliance. Expert legal support included.';
           categoryKeywords = [
             'Bitcoin Golden Visa funds',
             'BTC investment Portugal',
             'Bitcoin fund Portugal',
             'crypto Golden Visa',
-            'Bitcoin residency investment'
+            'Bitcoin residency investment',
+            'best Bitcoin funds Portugal'
           ];
         } else if (params.categoryName === 'Crypto') {
-          categoryDescription = 'Cryptocurrency Portugal Golden Visa investment funds. Compare digital asset exposure, blockchain investments, and Golden Visa eligibility.';
+          categoryTitle = 'Crypto Golden Visa Funds Portugal – Compare Digital Asset Options';
+          categoryDescription = 'Compare cryptocurrency Golden Visa funds. Analyze blockchain investments, returns, and compliance. Connect with Movingto\'s legal team.';
           categoryKeywords = [
             'Crypto Golden Visa funds',
             'cryptocurrency investment Portugal',
             'digital asset funds Portugal',
             'blockchain Golden Visa',
-            'crypto residency investment'
+            'crypto residency investment',
+            'best crypto funds Portugal'
           ];
         } else if (params.categoryName === 'Clean Energy') {
-          categoryDescription = 'Clean Energy Portugal Golden Visa investment funds. Compare renewable energy investments, solar projects, and sustainable Golden Visa options.';
+          categoryTitle = 'Clean Energy Golden Visa Funds – Compare Renewable Investments';
+          categoryDescription = 'Compare sustainable Golden Visa funds in Portugal. Analyze solar, renewable energy returns, and impact. Expert legal guidance available.';
           categoryKeywords = [
             'Clean Energy Golden Visa funds',
             'renewable energy Portugal investment',
             'solar fund Portugal',
             'sustainable Golden Visa',
-            'green energy residency investment'
+            'green energy residency investment',
+            'ESG Golden Visa funds'
+          ];
+        } else if (params.categoryName === 'Real Estate') {
+          categoryTitle = 'Real Estate Golden Visa Funds – Compare Property Investments';
+          categoryDescription = 'Compare real estate Golden Visa funds in Portugal. Analyze property returns, rental yields, and compliance. Expert legal support.';
+          categoryKeywords = [
+            'Real Estate Golden Visa funds',
+            'property investment Portugal',
+            'real estate fund Portugal',
+            'Golden Visa property',
+            'Portugal property funds',
+            'best real estate funds Portugal'
+          ];
+        } else if (params.categoryName === 'Debt') {
+          categoryTitle = 'Debt Golden Visa Funds Portugal – Compare Fixed Income Options';
+          categoryDescription = 'Compare debt-focused Golden Visa funds. Analyze fixed income returns, yields, and risk. Connect with Movingto\'s legal team.';
+          categoryKeywords = [
+            'Debt Golden Visa funds',
+            'fixed income Portugal',
+            'debt fund Portugal',
+            'Golden Visa bonds',
+            'income funds Portugal',
+            'best debt funds Portugal'
+          ];
+        } else if (params.categoryName === 'Infrastructure') {
+          categoryTitle = 'Infrastructure Golden Visa Funds – Compare Development Projects';
+          categoryDescription = 'Compare infrastructure Golden Visa funds in Portugal. Analyze project returns, timelines, and impact. Legal guidance available.';
+          categoryKeywords = [
+            'Infrastructure Golden Visa funds',
+            'infrastructure investment Portugal',
+            'development projects Portugal',
+            'Golden Visa infrastructure',
+            'Portugal infrastructure funds',
+            'best infrastructure funds'
+          ];
+        } else if (params.categoryName === 'Venture Capital') {
+          categoryTitle = 'Venture Capital Golden Visa Funds – Compare Startup Investments';
+          categoryDescription = 'Compare VC Golden Visa funds in Portugal. Analyze startup portfolios, returns, and growth potential. Expert legal support.';
+          categoryKeywords = [
+            'Venture Capital Golden Visa funds',
+            'VC investment Portugal',
+            'startup fund Portugal',
+            'Golden Visa venture capital',
+            'Portugal VC funds',
+            'best venture capital funds'
           ];
         } else if (params.categoryName === 'Other') {
-          categoryDescription = 'Diverse Portugal Golden Visa investment funds. Compare alternative investment strategies and unique fund structures for residency applications.';
+          categoryTitle = 'Alternative Golden Visa Funds Portugal – Unique Investment Strategies';
+          categoryDescription = 'Compare diverse Golden Visa investment funds. Explore alternative strategies, unique structures, and returns. Legal support available.';
           categoryKeywords = [
             'alternative Golden Visa funds',
             'diverse investment Portugal',
             'unique fund structures Portugal',
             'Golden Visa investment options',
-            'Portugal residency investments'
+            'Portugal alternative investments',
+            'other Golden Visa funds'
           ];
         }
         
         return {
-          title: this.optimizeText(`${params.categoryName} Portugal Golden Visa Investment Funds | Movingto`, this.MAX_TITLE_LENGTH),
+          title: this.optimizeText(categoryTitle, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(categoryDescription, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildCategoryUrl(params.categoryName),
           canonical: URL_CONFIG.buildCategoryUrl(params.categoryName),
