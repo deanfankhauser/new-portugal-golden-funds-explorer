@@ -34,6 +34,18 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
       formatted = formatted.replace(regex, '<strong>$1</strong>');
     });
     
+    // Add discrete Golden Visa links if fund is GV eligible
+    if (fund.tags?.includes('Golden Visa Eligible')) {
+      // Link "Golden Visa" text to eligibility requirements
+      formatted = formatted.replace(
+        /Golden Visa/gi,
+        '<a href="https://movingto.com/pt/portugal-golden-visa" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent/80 underline decoration-1 underline-offset-2">Golden Visa</a>'
+      );
+      
+      // Add subtle "Browse all funds" link at the end
+      formatted += ' <a href="/" class="text-muted-foreground/70 hover:text-accent text-sm whitespace-nowrap transition-colors">Browse all funds →</a>';
+    }
+    
     return formatted;
   };
 

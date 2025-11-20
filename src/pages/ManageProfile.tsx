@@ -51,31 +51,48 @@ const ManageProfile: React.FC = () => {
           can_manage_team: false,
         };
 
-        try {
-          const { data: canEdit, error: permError } = await supabase.rpc('can_user_edit_profile', {
-            p_user_id: user.id,
-            p_profile_id: profileId,
-          });
-          if (permError) throw permError;
-          access = !!canEdit;
-          console.log('[ManageProfile] RPC can_user_edit_profile result', { access });
-        } catch (e) {
-          console.warn('[ManageProfile] RPC failed, falling back to manager_profile_assignments', e);
-        }
+        // First check if user is an admin
+        const { data: isAdmin, error: adminError } = await supabase.rpc('is_user_admin', {
+          check_user_id: user.id,
+        });
 
-        // Get detailed permissions
-        if (access) {
-          const { data: assignment, error: assignError } = await supabase
-            .from('manager_profile_assignments')
-            .select('permissions')
-            .eq('user_id', user.id)
-            .eq('profile_id', profileId)
-            .eq('status', 'active')
-            .maybeSingle();
+        if (!adminError && isAdmin) {
+          // Admins get full permissions without checking manager_profile_assignments
+          access = true;
+          userPermissions = {
+            can_edit_profile: true,
+            can_edit_funds: true,
+            can_manage_team: true,
+          };
+          console.log('[ManageProfile] User is admin, granted full permissions');
+        } else {
+          // Non-admins: check assignment permissions
+          try {
+            const { data: canEdit, error: permError } = await supabase.rpc('can_user_edit_profile', {
+              p_user_id: user.id,
+              p_profile_id: profileId,
+            });
+            if (permError) throw permError;
+            access = !!canEdit;
+            console.log('[ManageProfile] RPC can_user_edit_profile result', { access });
+          } catch (e) {
+            console.warn('[ManageProfile] RPC failed, falling back to manager_profile_assignments', e);
+          }
 
-          if (!assignError && assignment) {
-            userPermissions = assignment.permissions as any;
-            console.log('[ManageProfile] User permissions', userPermissions);
+          // Get detailed permissions from assignment
+          if (access) {
+            const { data: assignment, error: assignError } = await supabase
+              .from('manager_profile_assignments')
+              .select('permissions')
+              .eq('user_id', user.id)
+              .eq('profile_id', profileId)
+              .eq('status', 'active')
+              .maybeSingle();
+
+            if (!assignError && assignment) {
+              userPermissions = assignment.permissions as any;
+              console.log('[ManageProfile] User permissions from assignment', userPermissions);
+            }
           }
         }
 
