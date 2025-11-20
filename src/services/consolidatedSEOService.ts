@@ -226,8 +226,9 @@ export class ConsolidatedSEOService {
     switch (pageType) {
       case 'homepage':
         return {
-          title: this.optimizeText('Portugal Golden Visa Funds 2025 | Compare 28+ Investment Options', 60),
-          description: this.optimizeText('Discover and compare Portugal Golden Visa Investment Funds. Comprehensive analysis, performance data, and expert insights for qualified Golden Visa investment decisions.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Compare Portugal Golden Visa Funds – Performance & Fees', this.MAX_TITLE_LENGTH),
+          keywords: ['Portugal Golden Visa funds', 'Golden Visa investment', 'Portugal investment funds', 'CMVM funds', 'investment immigration', 'residence by investment', 'Portugal capital transfer', 'VC funds Portugal', 'real estate funds Portugal', 'fund comparison'],
+          description: this.optimizeText('Independent directory of Portugal Golden Visa funds. Compare performance, fees, strategy, sector focus and risk, then connect with Movingto\'s legal team for advice.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/'),
           canonical: URL_CONFIG.buildUrl('/'),
           structuredData: this.getHomepageStructuredData(funds)
@@ -297,56 +298,111 @@ export class ConsolidatedSEOService {
         };
 
       case 'category':
-        // Custom SEO for new categories
-        let categoryDescription = `Discover ${params.categoryName} Portugal Golden Visa investment funds. Compare minimum investments, returns, fees, and eligibility for residency applications.`;
+        // CTR-optimized SEO for all categories
+        let categoryTitle = `Browse ${params.categoryName} Golden Visa Funds – Compare Performance & Fees`;
+        let categoryDescription = `Independent comparison of ${params.categoryName} Golden Visa funds in Portugal. Analyze returns, fees, strategy, and risk. Connect with Movingto's legal team.`;
         let categoryKeywords = [
           `${params.categoryName} Golden Visa funds`,
           `${params.categoryName} investment Portugal`,
           `Portugal ${params.categoryName} funds`,
           'Golden Visa investment categories',
-          `${params.categoryName} fund comparison`
+          `${params.categoryName} fund comparison`,
+          `best ${params.categoryName} funds Portugal`
         ];
         
+        // Category-specific optimizations
         if (params.categoryName === 'Bitcoin') {
-          categoryDescription = 'Bitcoin-focused Portugal Golden Visa investment funds. Compare BTC exposure, returns, and regulatory compliance for Portuguese residency applications.';
+          categoryTitle = 'Bitcoin Golden Visa Funds Portugal – Compare BTC Investment Options';
+          categoryDescription = 'Compare Bitcoin-focused Golden Visa funds. Analyze BTC exposure, performance, and regulatory compliance. Expert legal support included.';
           categoryKeywords = [
             'Bitcoin Golden Visa funds',
             'BTC investment Portugal',
             'Bitcoin fund Portugal',
             'crypto Golden Visa',
-            'Bitcoin residency investment'
+            'Bitcoin residency investment',
+            'best Bitcoin funds Portugal'
           ];
         } else if (params.categoryName === 'Crypto') {
-          categoryDescription = 'Cryptocurrency Portugal Golden Visa investment funds. Compare digital asset exposure, blockchain investments, and Golden Visa eligibility.';
+          categoryTitle = 'Crypto Golden Visa Funds Portugal – Compare Digital Asset Options';
+          categoryDescription = 'Compare cryptocurrency Golden Visa funds. Analyze blockchain investments, returns, and compliance. Connect with Movingto\'s legal team.';
           categoryKeywords = [
             'Crypto Golden Visa funds',
             'cryptocurrency investment Portugal',
             'digital asset funds Portugal',
             'blockchain Golden Visa',
-            'crypto residency investment'
+            'crypto residency investment',
+            'best crypto funds Portugal'
           ];
         } else if (params.categoryName === 'Clean Energy') {
-          categoryDescription = 'Clean Energy Portugal Golden Visa investment funds. Compare renewable energy investments, solar projects, and sustainable Golden Visa options.';
+          categoryTitle = 'Clean Energy Golden Visa Funds – Compare Renewable Investments';
+          categoryDescription = 'Compare sustainable Golden Visa funds in Portugal. Analyze solar, renewable energy returns, and impact. Expert legal guidance available.';
           categoryKeywords = [
             'Clean Energy Golden Visa funds',
             'renewable energy Portugal investment',
             'solar fund Portugal',
             'sustainable Golden Visa',
-            'green energy residency investment'
+            'green energy residency investment',
+            'ESG Golden Visa funds'
+          ];
+        } else if (params.categoryName === 'Real Estate') {
+          categoryTitle = 'Real Estate Golden Visa Funds – Compare Property Investments';
+          categoryDescription = 'Compare real estate Golden Visa funds in Portugal. Analyze property returns, rental yields, and compliance. Expert legal support.';
+          categoryKeywords = [
+            'Real Estate Golden Visa funds',
+            'property investment Portugal',
+            'real estate fund Portugal',
+            'Golden Visa property',
+            'Portugal property funds',
+            'best real estate funds Portugal'
+          ];
+        } else if (params.categoryName === 'Debt') {
+          categoryTitle = 'Debt Golden Visa Funds Portugal – Compare Fixed Income Options';
+          categoryDescription = 'Compare debt-focused Golden Visa funds. Analyze fixed income returns, yields, and risk. Connect with Movingto\'s legal team.';
+          categoryKeywords = [
+            'Debt Golden Visa funds',
+            'fixed income Portugal',
+            'debt fund Portugal',
+            'Golden Visa bonds',
+            'income funds Portugal',
+            'best debt funds Portugal'
+          ];
+        } else if (params.categoryName === 'Infrastructure') {
+          categoryTitle = 'Infrastructure Golden Visa Funds – Compare Development Projects';
+          categoryDescription = 'Compare infrastructure Golden Visa funds in Portugal. Analyze project returns, timelines, and impact. Legal guidance available.';
+          categoryKeywords = [
+            'Infrastructure Golden Visa funds',
+            'infrastructure investment Portugal',
+            'development projects Portugal',
+            'Golden Visa infrastructure',
+            'Portugal infrastructure funds',
+            'best infrastructure funds'
+          ];
+        } else if (params.categoryName === 'Venture Capital') {
+          categoryTitle = 'Venture Capital Golden Visa Funds – Compare Startup Investments';
+          categoryDescription = 'Compare VC Golden Visa funds in Portugal. Analyze startup portfolios, returns, and growth potential. Expert legal support.';
+          categoryKeywords = [
+            'Venture Capital Golden Visa funds',
+            'VC investment Portugal',
+            'startup fund Portugal',
+            'Golden Visa venture capital',
+            'Portugal VC funds',
+            'best venture capital funds'
           ];
         } else if (params.categoryName === 'Other') {
-          categoryDescription = 'Diverse Portugal Golden Visa investment funds. Compare alternative investment strategies and unique fund structures for residency applications.';
+          categoryTitle = 'Alternative Golden Visa Funds Portugal – Unique Investment Strategies';
+          categoryDescription = 'Compare diverse Golden Visa investment funds. Explore alternative strategies, unique structures, and returns. Legal support available.';
           categoryKeywords = [
             'alternative Golden Visa funds',
             'diverse investment Portugal',
             'unique fund structures Portugal',
             'Golden Visa investment options',
-            'Portugal residency investments'
+            'Portugal alternative investments',
+            'other Golden Visa funds'
           ];
         }
         
         return {
-          title: this.optimizeText(`${params.categoryName} Portugal Golden Visa Investment Funds | Movingto`, this.MAX_TITLE_LENGTH),
+          title: this.optimizeText(categoryTitle, this.MAX_TITLE_LENGTH),
           description: this.optimizeText(categoryDescription, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildCategoryUrl(params.categoryName),
           canonical: URL_CONFIG.buildCategoryUrl(params.categoryName),
@@ -355,18 +411,222 @@ export class ConsolidatedSEOService {
         };
 
       case 'tag':
+        // CTR-optimized SEO for all tag types
+        let tagTitle = `${params.tagName} Golden Visa Funds – Compare Performance & Fees`;
+        let tagDescription = `Compare ${params.tagName} Golden Visa funds in Portugal. Analyze returns, fees, strategy, and risk. Connect with Movingto's legal team.`;
+        let tagKeywords = [
+          `${params.tagName} Golden Visa funds`,
+          `${params.tagName} investment funds Portugal`,
+          'Golden Visa fund characteristics',
+          `${params.tagName} fund features`,
+          'Portugal investment fund tags',
+          `best ${params.tagName} funds`
+        ];
+        
+        // Tag-specific optimizations for better CTR
+        const tagLower = params.tagName.toLowerCase();
+        
+        // Investment range tags
+        if (tagLower.includes('min. subscription') || tagLower.includes('minimum investment')) {
+          tagTitle = `${params.tagName} Golden Visa Funds – Find Your Investment Match`;
+          tagDescription = `Browse Golden Visa funds with ${params.tagName}. Compare performance, fees, and compliance. Expert legal support available.`;
+          tagKeywords = [
+            `${params.tagName} Golden Visa`,
+            'Golden Visa investment levels',
+            'minimum investment Portugal',
+            'Golden Visa fund entry',
+            'investment threshold Portugal'
+          ];
+        }
+        // Yield/return tags
+        else if (tagLower.includes('target yield') || tagLower.includes('apy')) {
+          tagTitle = `${params.tagName} Golden Visa Funds – Compare High-Yield Options`;
+          tagDescription = `Find ${params.tagName} Golden Visa funds. Compare actual returns, fees, and risk. Connect with Movingto's legal team.`;
+          tagKeywords = [
+            `${params.tagName} Golden Visa`,
+            'high yield Portugal funds',
+            'Golden Visa returns',
+            'investment income Portugal',
+            'yield comparison Golden Visa'
+          ];
+        }
+        // Verification/eligibility tags
+        else if (tagLower === 'gv eligible') {
+          tagTitle = 'GV Eligible Funds Portugal – CMVM-Verified Golden Visa Options';
+          tagDescription = 'Browse officially eligible Golden Visa funds. All CMVM-verified for Portuguese residency. Compare performance and fees.';
+          tagKeywords = [
+            'GV eligible funds',
+            'Golden Visa eligible',
+            'CMVM verified funds',
+            'official Golden Visa funds',
+            'Portugal residency investment'
+          ];
+        }
+        else if (tagLower === 'verified') {
+          tagTitle = 'Verified Golden Visa Funds – Independently Validated Options';
+          tagDescription = 'Compare independently verified Golden Visa funds. Documentation, performance, and compliance validated. Legal support included.';
+          tagKeywords = [
+            'verified Golden Visa funds',
+            'validated investment funds',
+            'trusted Golden Visa',
+            'verified fund performance',
+            'independent fund validation'
+          ];
+        }
+        // Risk level tags
+        else if (tagLower === 'low risk') {
+          tagTitle = 'Low Risk Golden Visa Funds – Conservative Investment Options';
+          tagDescription = 'Compare low-risk Golden Visa funds in Portugal. Analyze stable returns, capital protection, and fees. Expert legal guidance.';
+          tagKeywords = [
+            'low risk Golden Visa funds',
+            'conservative investment Portugal',
+            'capital protection funds',
+            'safe Golden Visa options',
+            'low volatility funds'
+          ];
+        }
+        else if (tagLower === 'medium risk') {
+          tagTitle = 'Medium Risk Golden Visa Funds – Balanced Investment Strategies';
+          tagDescription = 'Compare balanced Golden Visa funds. Analyze risk-adjusted returns, diversification, and fees. Legal support available.';
+          tagKeywords = [
+            'medium risk Golden Visa',
+            'balanced investment Portugal',
+            'moderate risk funds',
+            'diversified Golden Visa',
+            'balanced fund strategies'
+          ];
+        }
+        else if (tagLower === 'high risk') {
+          tagTitle = 'High Risk Golden Visa Funds – Growth-Focused Investments';
+          tagDescription = 'Compare high-growth Golden Visa funds. Analyze return potential, volatility, and fees. Expert legal guidance available.';
+          tagKeywords = [
+            'high risk Golden Visa',
+            'growth investment Portugal',
+            'high return funds',
+            'aggressive Golden Visa',
+            'growth-focused funds'
+          ];
+        }
+        // Income/dividend tags
+        else if (tagLower === 'dividend paying') {
+          tagTitle = 'Dividend Paying Golden Visa Funds – Regular Income Options';
+          tagDescription = 'Compare dividend-paying Golden Visa funds. Analyze distribution yields, payment frequency, and fees. Legal support included.';
+          tagKeywords = [
+            'dividend Golden Visa funds',
+            'income paying funds Portugal',
+            'dividend distribution',
+            'regular income Golden Visa',
+            'dividend yield funds'
+          ];
+        }
+        else if (tagLower === 'income-focused') {
+          tagTitle = 'Income-Focused Golden Visa Funds – Yield-Generating Investments';
+          tagDescription = 'Compare income-focused Golden Visa funds. Analyze yields, distributions, and sustainability. Connect with legal experts.';
+          tagKeywords = [
+            'income-focused Golden Visa',
+            'yield generating funds',
+            'income investment Portugal',
+            'cashflow Golden Visa',
+            'income producing funds'
+          ];
+        }
+        // Sector-specific tags
+        else if (tagLower === 'esg') {
+          tagTitle = 'ESG Golden Visa Funds Portugal – Sustainable Investment Options';
+          tagDescription = 'Compare ESG-compliant Golden Visa funds. Analyze environmental impact, returns, and governance. Expert legal support.';
+          tagKeywords = [
+            'ESG Golden Visa funds',
+            'sustainable investment Portugal',
+            'green Golden Visa',
+            'responsible investment',
+            'ESG compliance funds'
+          ];
+        }
+        else if (tagLower === 'healthcare & life sciences') {
+          tagTitle = 'Healthcare Golden Visa Funds – Medical & Life Sciences Investments';
+          tagDescription = 'Compare healthcare-focused Golden Visa funds. Analyze medical sector returns, innovation exposure, and fees.';
+          tagKeywords = [
+            'healthcare Golden Visa',
+            'life sciences investment Portugal',
+            'medical funds Portugal',
+            'pharma Golden Visa',
+            'biotech investment funds'
+          ];
+        }
+        else if (tagLower === 'logistics & warehouses') {
+          tagTitle = 'Logistics Golden Visa Funds – Warehouse & Distribution Investments';
+          tagDescription = 'Compare logistics-focused Golden Visa funds. Analyze warehouse returns, e-commerce exposure, and rental yields.';
+          tagKeywords = [
+            'logistics Golden Visa',
+            'warehouse investment Portugal',
+            'industrial real estate',
+            'distribution centers',
+            'logistics property funds'
+          ];
+        }
+        else if (tagLower === 'hospitality & hotels') {
+          tagTitle = 'Hospitality Golden Visa Funds – Hotel & Tourism Investments';
+          tagDescription = 'Compare hospitality-focused Golden Visa funds. Analyze hotel returns, tourism recovery, and rental income.';
+          tagKeywords = [
+            'hospitality Golden Visa',
+            'hotel investment Portugal',
+            'tourism funds',
+            'hotel property investment',
+            'hospitality real estate'
+          ];
+        }
+        else if (tagLower === 'residential real estate') {
+          tagTitle = 'Residential Real Estate Golden Visa Funds – Property Investments';
+          tagDescription = 'Compare residential property Golden Visa funds. Analyze rental yields, appreciation potential, and market trends.';
+          tagKeywords = [
+            'residential Golden Visa',
+            'residential property Portugal',
+            'housing investment',
+            'apartment funds',
+            'residential real estate'
+          ];
+        }
+        else if (tagLower === 'commercial real estate') {
+          tagTitle = 'Commercial Real Estate Golden Visa Funds – Office & Retail Investments';
+          tagDescription = 'Compare commercial property Golden Visa funds. Analyze office yields, retail performance, and tenant stability.';
+          tagKeywords = [
+            'commercial Golden Visa',
+            'commercial property Portugal',
+            'office investment',
+            'retail property funds',
+            'commercial real estate'
+          ];
+        }
+        // Strategy tags
+        else if (tagLower === 'diversified portfolio') {
+          tagTitle = 'Diversified Golden Visa Funds – Multi-Asset Investment Strategies';
+          tagDescription = 'Compare diversified Golden Visa funds. Analyze asset allocation, risk management, and balanced returns.';
+          tagKeywords = [
+            'diversified Golden Visa',
+            'multi-asset funds Portugal',
+            'portfolio diversification',
+            'balanced allocation',
+            'diversified investment'
+          ];
+        }
+        else if (tagLower === 'growth-focused') {
+          tagTitle = 'Growth-Focused Golden Visa Funds – Capital Appreciation Strategies';
+          tagDescription = 'Compare growth-oriented Golden Visa funds. Analyze appreciation potential, expansion strategies, and long-term returns.';
+          tagKeywords = [
+            'growth-focused Golden Visa',
+            'capital appreciation',
+            'growth investment Portugal',
+            'expansion strategies',
+            'growth equity funds'
+          ];
+        }
+        
         return {
-          title: this.optimizeText(`${params.tagName} Portugal Golden Visa Investment Funds | Movingto`, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText(`Explore ${params.tagName} Portugal Golden Visa investment funds. Compare minimum investments, returns, and Golden Visa eligibility requirements.`, this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText(tagTitle, this.MAX_TITLE_LENGTH),
+          description: this.optimizeText(tagDescription, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildTagUrl(params.tagName),
           canonical: URL_CONFIG.buildTagUrl(params.tagName),
-          keywords: [
-            `${params.tagName} Golden Visa funds`,
-            `${params.tagName} investment funds Portugal`,
-            'Golden Visa fund characteristics',
-            `${params.tagName} fund features`,
-            'Portugal investment fund tags'
-          ],
+          keywords: tagKeywords,
           structuredData: this.getTagStructuredData(params.tagName, params.funds || [])
         };
 
@@ -474,8 +734,8 @@ export class ConsolidatedSEOService {
 
       case 'managers-hub':
         return {
-          title: this.optimizeText('28+ Portugal Golden Visa Fund Managers | Verified Professionals | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Compare 28+ verified Portugal Golden Visa fund managers. View track records, total AUM, and fund offerings. Find the right investment professional for your €500k+ Golden Visa application.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Browse 28+ Golden Visa Fund Managers – Compare Track Records', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare verified Golden Visa fund managers in Portugal. Analyze track records, AUM, and performance. Connect with Movingto\'s legal team for guidance.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('managers'),
           canonical: URL_CONFIG.buildUrl('managers'),
           keywords: [
@@ -495,8 +755,8 @@ export class ConsolidatedSEOService {
 
       case 'categories-hub':
         return {
-          title: this.optimizeText('Browse 8 Golden Visa Fund Categories | Debt, Equity & More | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Discover 8 Portugal Golden Visa fund categories: Debt, Equity, Venture Capital, Infrastructure & more. Compare €500k+ investment options across categories with detailed performance metrics and risk profiles.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Browse Golden Visa Fund Categories – Debt, Equity, Crypto & More', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Explore 8 Golden Visa fund categories in Portugal. Compare debt, equity, VC, infrastructure, and alternative strategies. Expert legal support available.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('categories'),
           canonical: URL_CONFIG.buildUrl('categories'),
           keywords: [
@@ -516,8 +776,8 @@ export class ConsolidatedSEOService {
 
       case 'tags-hub':
         return {
-          title: this.optimizeText('Filter Funds by 40+ Tags | Find Your Perfect Golden Visa Match | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Filter 40+ Portugal Golden Visa funds by APY, risk level, lockup period, minimum investment, and more. Find funds matching your exact requirements with advanced filtering and instant comparisons.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Filter Golden Visa Funds by 40+ Tags – Find Your Perfect Match', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Filter Golden Visa funds by yield, risk, lockup, minimums, and more. Find funds matching your exact criteria. Connect with legal experts.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('tags'),
           canonical: URL_CONFIG.buildUrl('tags'),
           keywords: [
@@ -537,8 +797,8 @@ export class ConsolidatedSEOService {
 
       case 'alternatives-hub':
         return {
-          title: this.optimizeText('Find Fund Alternatives | Explore Similar Golden Visa Investments | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Discover alternative Portugal Golden Visa funds with similar risk profiles, returns, and investment amounts. Compare matching funds across all categories to find the perfect fit for your €500k visa investment.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Find Fund Alternatives – Discover Similar Golden Visa Options', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Discover alternative Golden Visa funds with similar risk, returns, and minimums. Compare matching options across all categories. Legal guidance available.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/alternatives'),
           canonical: URL_CONFIG.buildUrl('/alternatives'),
           keywords: [
@@ -558,21 +818,21 @@ export class ConsolidatedSEOService {
 
       case 'comparisons-hub':
         return {
-          title: this.optimizeText('Compare 435+ Golden Visa Fund Pairs | Side-by-Side Analysis | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Compare 435+ Portugal Golden Visa fund combinations side-by-side. Analyze fees, returns, risk profiles, minimum investments, and Golden Visa eligibility requirements to make informed investment decisions.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Compare 435+ Golden Visa Fund Pairs – Side-by-Side Analysis', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare 435+ Golden Visa fund combinations side-by-side. Analyze fees, returns, risk, and minimums. Connect with Movingto\'s legal team.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('comparisons'),
           canonical: URL_CONFIG.buildUrl('comparisons'),
           keywords: [
             'fund comparison hub',
-            'investment analysis tools',
-            'Golden Visa comparisons',
-            'fund analysis hub',
-            'comparison directory',
-            'investment fund comparisons',
             'compare Golden Visa funds',
-            'side by side fund comparison',
-            'which Golden Visa fund is best',
-            'fund comparison tool Portugal'
+            'side by side fund analysis',
+            'investment comparison tool',
+            'fund vs fund comparison',
+            'compare investment funds Portugal',
+            'Golden Visa fund comparisons',
+            'investment fund comparison tool',
+            'which Golden Visa fund is better',
+            'compare fund performance'
           ],
           structuredData: this.getComparisonsHubStructuredData(funds)
         };
@@ -1161,7 +1421,10 @@ export class ConsolidatedSEOService {
       ]
     };
 
-    return [baseSchema, itemListSchema, breadcrumbSchema];
+    // Add FAQ schema for category
+    const faqSchema = this.getCategoryFAQSchema(categoryName);
+
+    return [baseSchema, itemListSchema, breadcrumbSchema, faqSchema];
   }
 
   private static getTagStructuredData(tagName: string, funds: any[] = []): any {
@@ -1214,7 +1477,10 @@ export class ConsolidatedSEOService {
       ]
     };
 
-    return [baseSchema, itemListSchema, breadcrumbSchema];
+    // Add FAQ schema for tag
+    const faqSchema = this.getTagFAQSchema(tagName);
+
+    return [baseSchema, itemListSchema, breadcrumbSchema, faqSchema];
   }
 
   private static getManagerStructuredData(managerName: string, managerProfile?: any, funds: any[] = []): any {
@@ -1354,15 +1620,98 @@ export class ConsolidatedSEOService {
     };
 
     // Return array of schemas
+    const faqSchema = this.getManagerFAQSchema(managerName, fundsCount);
+    
     return [
       organizationSchema,
       breadcrumbSchema,
       financialServiceSchema,
-      ...(funds.length > 0 ? [collectionPageSchema] : [])
+      ...(funds.length > 0 ? [collectionPageSchema] : []),
+      faqSchema
     ];
   }
 
   private static getComparisonStructuredData(): any {
+    const faqSchema = {
+      '@type': 'FAQPage',
+      'name': 'Golden Visa Fund Comparison Tool FAQs',
+      'description': 'How to use the comparison tool to analyze investment funds',
+      'mainEntity': [
+        {
+          '@type': 'Question',
+          'name': 'How do I use the Golden Visa fund comparison tool?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Select any two Golden Visa funds from the comparison interface to view side-by-side analysis of fees, returns, minimums, risk profiles, and fund characteristics. The tool displays detailed metrics including management fees, performance fees, historical returns, minimum investment requirements, and redemption terms. Use filters to narrow down funds by category, manager, or specific features before comparing.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'What metrics should I compare when evaluating Golden Visa funds?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Key comparison metrics include: (1) Total fees (management + performance fees), (2) Historical returns over 1, 3, 5 years, (3) Minimum investment amount, (4) Lock-up period and redemption terms, (5) Risk level and volatility, (6) Fund category and investment strategy, (7) Manager track record and AUM, (8) CMVM registration status. Compare funds within the same category for meaningful analysis.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'Can I compare funds from different categories?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Yes, you can compare any two Golden Visa funds regardless of category. However, cross-category comparisons (e.g., Bitcoin fund vs. Debt fund) may be less meaningful due to fundamentally different risk-return profiles. For apples-to-apples comparison, compare funds within the same category (e.g., two VC funds, two Real Estate funds). The tool shows category differences to highlight strategy variations.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'How do I interpret the fee comparison?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Fee comparison shows: (1) Management fee: annual percentage charged on AUM (typically 1-2%), (2) Performance fee: percentage of returns above hurdle rate (typically 10-20%), (3) Subscription/redemption fees: one-time charges when entering/exiting (0-3%). Calculate total cost by adding management fee + expected performance fee based on projected returns. Lower fees don\'t always mean better value - consider net returns after all fees.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'What does "Minimum Investment" mean in the comparison?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Minimum Investment shows the smallest amount you can invest in each specific fund. Note: Portugal\'s Golden Visa requires €500,000 total investment across one or more eligible funds. If a fund has €250,000 minimum, you can combine it with another fund to reach €500,000 threshold. Some funds have €500,000+ minimums requiring full investment in a single fund.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'How reliable are the historical returns shown?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Historical returns are sourced from fund administrators and audited financial statements. Returns represent past performance and do not guarantee future results. Compare returns over multiple time periods (1, 3, 5 years) and consider risk-adjusted returns (returns relative to volatility). Newer funds may show limited history. Review fund prospectus for detailed performance methodology and disclaimers.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'What do the risk level indicators mean?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Risk levels indicate expected volatility and potential for loss: (1) Low Risk: Debt/fixed income funds with 3-6% target returns and capital preservation focus, (2) Medium Risk: Diversified or infrastructure funds with 5-9% targets and moderate volatility, (3) High Risk: VC, growth equity, or crypto funds with 10-20%+ targets but higher loss potential. Match risk level to your investment timeline and risk tolerance.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'Can I save my fund comparisons?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Each comparison generates a unique URL you can bookmark or share. The URL preserves the exact fund pair comparison for future reference. You can also save individual funds to your "Saved Funds" list by clicking the bookmark icon on any fund card. Create an account to access your saved funds across devices and receive updates on saved fund performance.'
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': 'How often is comparison data updated?',
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': 'Fund data is updated regularly: (1) Fees and minimums: as reported by fund managers, (2) Historical returns: quarterly from fund administrators, (3) NAV values: monthly or quarterly depending on fund, (4) CMVM registration: verified annually. Check individual fund pages for "Last Updated" timestamps. Contact Movingto\'s legal team for the most current information before making investment decisions.'
+          }
+        }
+      ]
+    };
+
     return {
       '@context': 'https://schema.org',
       '@graph': [
@@ -1396,7 +1745,8 @@ export class ConsolidatedSEOService {
           'description': 'Interactive tool to compare investment funds',
           'url': URL_CONFIG.buildUrl('compare'),
           'applicationCategory': 'FinanceApplication'
-        }
+        },
+        faqSchema
       ]
     };
   }
@@ -1831,8 +2181,316 @@ export class ConsolidatedSEOService {
     };
   }
 
+  private static getCategoryFAQSchema(categoryName: string): any {
+    const categoryLower = categoryName.toLowerCase();
+    let faqs: Array<{ question: string; answer: string }> = [];
+
+    // Category-specific FAQs
+    if (categoryLower === 'bitcoin') {
+      faqs = [
+        {
+          question: 'Are Bitcoin Golden Visa funds eligible for Portuguese residency?',
+          answer: 'Yes, Bitcoin-focused investment funds can qualify for Portugal\'s Golden Visa if they meet CMVM registration requirements and the €500,000 minimum investment threshold. The fund must be properly regulated and cannot have real estate exposure (as of October 2023 rule changes).'
+        },
+        {
+          question: 'What are the risks of Bitcoin Golden Visa funds?',
+          answer: 'Bitcoin funds carry high volatility risk due to cryptocurrency price fluctuations. Investors should consider market cycles, regulatory changes, custody security, and liquidity constraints. These funds typically have higher risk profiles compared to traditional debt or real estate funds.'
+        },
+        {
+          question: 'How are Bitcoin fund returns taxed in Portugal?',
+          answer: 'Portugal offers favorable tax treatment for cryptocurrency gains for individual investors under certain conditions. However, fund-level taxation and distribution taxation vary by fund structure. Consult with Movingto\'s legal team for specific tax implications based on your residency status.'
+        }
+      ];
+    } else if (categoryLower === 'crypto') {
+      faqs = [
+        {
+          question: 'What types of crypto assets do these funds invest in?',
+          answer: 'Cryptocurrency Golden Visa funds typically invest in a diversified portfolio of digital assets including Bitcoin, Ethereum, and other established cryptocurrencies. Some funds also invest in blockchain infrastructure, DeFi protocols, and Web3 projects. Investment strategies vary by fund manager.'
+        },
+        {
+          question: 'How liquid are crypto Golden Visa funds?',
+          answer: 'Liquidity varies significantly by fund. Some offer quarterly redemptions while others have lock-up periods of 3-5 years. Crypto funds may have redemption gates during market stress. Review each fund\'s redemption terms and NAV calculation frequency before investing.'
+        },
+        {
+          question: 'Are crypto funds more volatile than traditional Golden Visa options?',
+          answer: 'Yes, cryptocurrency funds typically exhibit higher volatility than traditional debt, real estate, or infrastructure funds. Monthly returns can swing significantly based on crypto market conditions. These funds are suitable for investors with higher risk tolerance and longer investment horizons.'
+        }
+      ];
+    } else if (categoryLower === 'real estate') {
+      faqs = [
+        {
+          question: 'Can I invest in real estate funds for Portugal Golden Visa?',
+          answer: 'As of October 2023, Portugal changed Golden Visa rules to exclude direct real estate investments. However, real estate-focused funds that invest in commercial property, development projects, or REITs may still qualify if they meet CMVM requirements and the €500,000 minimum. Verify eligibility with Movingto\'s legal team.'
+        },
+        {
+          question: 'What returns can I expect from real estate Golden Visa funds?',
+          answer: 'Real estate fund returns typically range from 4-8% annually, combining rental income and capital appreciation. Returns depend on property type (residential, commercial, logistics), location, development stage, and market conditions. Review historical performance and current portfolio composition.'
+        },
+        {
+          question: 'How long is the typical lock-up period for real estate funds?',
+          answer: 'Real estate Golden Visa funds typically have lock-up periods of 5-7 years to match property development and sales cycles. Some open-ended funds offer quarterly redemptions subject to liquidity gates. Closed-ended funds return capital only at fund maturity or exit events.'
+        }
+      ];
+    } else if (categoryLower === 'debt') {
+      faqs = [
+        {
+          question: 'What types of debt do these funds invest in?',
+          answer: 'Debt Golden Visa funds invest in corporate bonds, structured credit, real estate debt, infrastructure loans, and private lending. Some focus on senior secured debt for lower risk, while others pursue mezzanine or subordinated debt for higher yields. Portfolio composition varies by fund strategy.'
+        },
+        {
+          question: 'Are debt funds safer than equity funds for Golden Visa?',
+          answer: 'Debt funds generally offer lower volatility and more predictable returns than equity funds, with typical yields of 4-7% annually. They rank senior to equity in capital structure, providing downside protection. However, they still carry credit risk, interest rate risk, and liquidity risk. Review credit ratings and default history.'
+        },
+        {
+          question: 'How are debt fund distributions paid?',
+          answer: 'Most debt Golden Visa funds pay quarterly or semi-annual distributions from interest income. Some funds offer capital preservation with periodic coupon payments, while others reinvest cash flow for compound growth. Distribution frequency and yield depend on the fund\'s investment mandate and cash flow generation.'
+        }
+      ];
+    } else if (categoryLower === 'infrastructure') {
+      faqs = [
+        {
+          question: 'What types of infrastructure projects qualify for Golden Visa?',
+          answer: 'Infrastructure Golden Visa funds invest in essential assets like renewable energy projects (solar, wind), transportation networks (ports, toll roads), utilities (water, waste management), and telecommunications infrastructure. Projects must be in Portugal or have significant Portuguese economic impact.'
+        },
+        {
+          question: 'What are typical returns for infrastructure funds?',
+          answer: 'Infrastructure Golden Visa funds target stable returns of 5-9% annually, combining project cash flows and asset appreciation. Returns are typically lower volatility than equity but higher than pure debt funds. Infrastructure assets often have inflation-linked revenues providing natural hedges.'
+        },
+        {
+          question: 'How long until infrastructure funds return capital?',
+          answer: 'Infrastructure funds typically have 7-12 year fund lives matching project development and operational phases. Capital is returned through project dividends, refinancing events, or asset sales. Some funds offer earlier exits through secondary market sales, though at potential discounts.'
+        }
+      ];
+    } else if (categoryLower === 'venture capital') {
+      faqs = [
+        {
+          question: 'Are Venture Capital funds riskier than other Golden Visa options?',
+          answer: 'Yes, VC Golden Visa funds carry higher risk due to startup failure rates (typically 50-70% of portfolio companies). However, successful exits can generate 3-10x returns. VC funds are suitable for investors with high risk tolerance, long time horizons (8-12 years), and diversification across other asset classes.'
+        },
+        {
+          question: 'What stage startups do VC Golden Visa funds invest in?',
+          answer: 'VC fund stage focus varies: early-stage funds invest in seed/Series A startups with higher risk/reward, while growth-stage funds invest in Series B+ companies with proven business models and lower risk. Some funds focus on specific sectors like fintech, healthtech, or climate tech. Review fund strategy alignment.'
+        },
+        {
+          question: 'When do VC funds distribute returns?',
+          answer: 'VC Golden Visa funds typically distribute capital only upon successful exits (M&A or IPO), which can take 5-10 years from initial investment. Unlike income-generating funds, VC funds reinvest proceeds for compound growth. Expect minimal cash flow during fund life with returns concentrated at maturity.'
+        }
+      ];
+    } else if (categoryLower === 'clean energy') {
+      faqs = [
+        {
+          question: 'What types of clean energy projects do these funds invest in?',
+          answer: 'Clean Energy Golden Visa funds invest in solar farms, wind projects, battery storage, green hydrogen, EV charging infrastructure, and energy efficiency retrofits. Portugal has strong renewable energy potential with government support through EU Green Deal funding and climate commitments.'
+        },
+        {
+          question: 'Are clean energy funds eligible for Golden Visa?',
+          answer: 'Yes, clean energy funds qualify for Portugal Golden Visa if they meet CMVM registration requirements and invest at least €500,000. These funds align with Portugal\'s decarbonization goals and often benefit from government subsidies, power purchase agreements, and EU climate financing.'
+        },
+        {
+          question: 'What returns do clean energy Golden Visa funds generate?',
+          answer: 'Clean energy funds typically target 6-10% annual returns combining project revenues (electricity sales, subsidies) and asset appreciation. Returns benefit from long-term power purchase agreements (10-25 years) providing stable cash flows. ESG-focused investors value impact alongside financial returns.'
+        }
+      ];
+    } else {
+      // Generic category FAQs
+      faqs = [
+        {
+          question: `What are the benefits of investing in ${categoryName} Golden Visa funds?`,
+          answer: `${categoryName} Golden Visa funds offer diversified exposure to this asset class while meeting Portugal residency requirements. Benefits include professional management, regulatory compliance, risk diversification across multiple investments, and access to institutional-quality deals. Minimum investment starts at €500,000.`
+        },
+        {
+          question: `How do I choose the right ${categoryName} fund for Golden Visa?`,
+          answer: `Compare ${categoryName} funds based on track record, management team experience, fee structure (management and performance fees), historical returns, risk profile, redemption terms, and investor protection measures. Consider your investment timeline, risk tolerance, and liquidity needs. Movingto\'s legal team can provide personalized guidance.`
+        },
+        {
+          question: `What documents do I need for ${categoryName} Golden Visa investment?`,
+          answer: 'Required documents include valid passport, proof of investment (subscription agreement, capital call confirmation), fund prospectus showing CMVM registration, clean criminal record certificate, proof of legal entry to Portugal, and completed IMI (Immigration Authority) application forms. Processing takes 3-12 months.'
+        }
+      ];
+    }
+
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'name': `${categoryName} Golden Visa Funds FAQs`,
+      'description': `Frequently asked questions about ${categoryName} Golden Visa investment funds`,
+      'mainEntity': faqs.map(faq => ({
+        '@type': 'Question',
+        'name': faq.question,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': faq.answer
+        }
+      }))
+    };
+  }
+
+  private static getTagFAQSchema(tagName: string): any {
+    const tagLower = tagName.toLowerCase();
+    let faqs: Array<{ question: string; answer: string }> = [];
+
+    // Tag-specific FAQs for high-value tags
+    if (tagLower === 'verified') {
+      faqs = [
+        {
+          question: 'What does "Verified" mean for Golden Visa funds?',
+          answer: 'Verified funds have undergone independent validation of their documentation, performance claims, CMVM registration, and management team credentials. Verification provides investors with additional confidence beyond standard regulatory compliance. Contact Movingto to understand our 6-point verification process.'
+        },
+        {
+          question: 'Do verified funds perform better than non-verified funds?',
+          answer: 'Verification indicates transparency and documentation quality, not guaranteed performance. However, verified funds typically have experienced management teams, established track records, and institutional-grade governance. Past performance doesn\'t guarantee future results. Always review each fund\'s historical returns and risk profile.'
+        }
+      ];
+    } else if (tagLower === 'low risk') {
+      faqs = [
+        {
+          question: 'What makes a Golden Visa fund "Low Risk"?',
+          answer: 'Low risk funds typically invest in senior debt, investment-grade bonds, diversified loan portfolios, or established infrastructure with stable cash flows. They prioritize capital preservation over high returns. Expected annual returns range 3-6% with lower volatility. Suitable for conservative investors prioritizing residency over aggressive growth.'
+        },
+        {
+          question: 'Can low risk funds still lose money?',
+          answer: 'Yes, all investments carry risk. Low risk funds can experience losses from credit defaults, interest rate changes, liquidity constraints, or economic downturns. "Low risk" indicates relative risk compared to equity or VC funds, not zero risk. Review fund prospectus for detailed risk disclosures.'
+        }
+      ];
+    } else if (tagLower === 'high risk') {
+      faqs = [
+        {
+          question: 'Why would someone choose high risk Golden Visa funds?',
+          answer: 'High risk funds (VC, growth equity, crypto) target higher returns (10-20%+ annually) to compensate for volatility and potential losses. Suitable for investors with long time horizons (8-12 years), high risk tolerance, diversification across other assets, and who can afford capital loss while still meeting Golden Visa requirements.'
+        },
+        {
+          question: 'What percentage of portfolio should be high risk funds?',
+          answer: 'Financial advisors typically recommend limiting high risk investments to 10-30% of total portfolio depending on age, wealth, and risk tolerance. For Golden Visa investors, consider splitting €500,000 minimum across multiple funds (mix of low/medium/high risk) for diversification. Consult Movingto\'s legal team for allocation strategies.'
+        }
+      ];
+    } else if (tagLower === 'dividend paying') {
+      faqs = [
+        {
+          question: 'How often do dividend-paying Golden Visa funds distribute?',
+          answer: 'Distribution frequency varies by fund: quarterly (most common), semi-annual, or annual payments. Some funds offer monthly distributions for maximum cash flow. Review fund prospectus for distribution policy, payout ratios, and sustainability of dividend payments based on underlying investment income.'
+        },
+        {
+          question: 'Are Golden Visa fund dividends taxed in Portugal?',
+          answer: 'Dividend taxation depends on fund structure, investor tax residency status, and applicable tax treaties. Portugal offers Non-Habitual Resident (NHR) tax regime with potential exemptions. Fund distributions may be taxed as income or capital gains. Consult tax advisor for your specific situation and Movingto for NHR eligibility.'
+        }
+      ];
+    } else if (tagLower === 'esg') {
+      faqs = [
+        {
+          question: 'What ESG criteria do these Golden Visa funds follow?',
+          answer: 'ESG Golden Visa funds apply environmental (carbon reduction, renewable energy), social (labor practices, community impact), and governance (board independence, ethics) screening. Most follow EU Taxonomy or SFDR Article 8/9 classifications. Review fund ESG reports for specific metrics, impact targets, and third-party certifications.'
+        },
+        {
+          question: 'Do ESG funds sacrifice returns for impact?',
+          answer: 'Recent studies show ESG funds can match or exceed traditional fund returns while providing positive impact. ESG screening may reduce risk by avoiding controversial industries and improving long-term sustainability. However, returns vary by fund manager, strategy, and market conditions. Review historical performance alongside ESG ratings.'
+        }
+      ];
+    } else if (tagLower.includes('target yield') || tagLower.includes('apy')) {
+      faqs = [
+        {
+          question: `What does "${tagName}" mean for Golden Visa funds?`,
+          answer: `This indicates the fund's expected annual return target based on investment strategy and historical performance. "Target" yields are projections, not guarantees. Actual returns may be higher or lower depending on market conditions, investment execution, and fund manager skill. Review past performance and risk factors before investing.`
+        },
+        {
+          question: 'Are target yields guaranteed?',
+          answer: 'No, target yields are projections based on fund strategy and market assumptions. Actual returns fluctuate based on economic conditions, interest rates, credit performance, and manager execution. Some funds meet or exceed targets consistently, while others underperform. Review 3-5 year historical returns for more reliable expectations.'
+        }
+      ];
+    } else if (tagLower.includes('min. subscription') || tagLower.includes('minimum investment')) {
+      faqs = [
+        {
+          question: `Can I invest less than ${tagName} for Golden Visa?`,
+          answer: `Individual fund minimums vary, but Portugal's Golden Visa requires €500,000 total investment across one or more eligible funds. You can combine multiple funds to reach the threshold. Fund minimums indicate per-fund entry requirements. Consult Movingto's legal team to structure qualifying investments.`
+        },
+        {
+          question: 'Does higher minimum investment mean better funds?',
+          answer: 'Not necessarily. Minimum subscriptions reflect fund strategy and target investor base (retail vs. institutional). Some excellent funds have €50,000 minimums while others require €1,000,000+. Evaluate funds based on track record, team, strategy, and fees rather than minimum investment alone.'
+        }
+      ];
+    } else {
+      // Generic tag FAQs
+      faqs = [
+        {
+          question: `What does the "${tagName}" tag mean for Golden Visa funds?`,
+          answer: `The "${tagName}" tag indicates this characteristic or feature is present in the fund's strategy, structure, or investment approach. Tags help investors filter and compare Golden Visa funds based on specific criteria. Review individual fund profiles for detailed information on how this characteristic applies.`
+        },
+        {
+          question: `How many Golden Visa funds have the "${tagName}" tag?`,
+          answer: `The number of funds with this tag varies as new funds launch and existing funds update strategies. Use our filter system to see all current "${tagName}" funds, compare their features, fees, and performance. Connect with Movingto's legal team for personalized fund recommendations based on your investment goals.`
+        }
+      ];
+    }
+
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'name': `${tagName} Golden Visa Funds FAQs`,
+      'description': `Frequently asked questions about ${tagName} Golden Visa investment funds`,
+      'mainEntity': faqs.map(faq => ({
+        '@type': 'Question',
+        'name': faq.question,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': faq.answer
+        }
+      }))
+    };
+  }
+
+  private static getManagerFAQSchema(managerName: string, fundsCount: number): any {
+    const faqs = [
+      {
+        question: `What types of Golden Visa funds does ${managerName} manage?`,
+        answer: `${managerName} manages ${fundsCount} Golden Visa eligible investment fund${fundsCount !== 1 ? 's' : ''} in Portugal. Their portfolio may include various asset classes such as venture capital, real estate, debt, infrastructure, or alternative investments. Review their individual fund profiles for specific strategies, risk profiles, minimum investments, and historical performance data.`
+      },
+      {
+        question: `Is ${managerName} a registered fund manager in Portugal?`,
+        answer: `${managerName} operates as a professional fund manager in Portugal. All Golden Visa eligible funds must be registered with CMVM (Comissão do Mercado de Valores Mobiliários), Portugal's securities regulator. Verify CMVM registration status, license numbers, and regulatory compliance on each fund's profile page before investing.`
+      },
+      {
+        question: `How do I invest in ${managerName}'s Golden Visa funds?`,
+        answer: `To invest in ${managerName}'s Golden Visa funds: (1) Review fund profiles comparing strategy, fees, returns, and risk, (2) Contact ${managerName} directly or through Movingto's legal team for subscription documents, (3) Complete KYC/AML verification, (4) Sign subscription agreement and transfer €500,000 minimum investment, (5) Receive proof of investment for Golden Visa application. Processing takes 3-12 months.`
+      },
+      {
+        question: `What is ${managerName}'s track record managing Golden Visa funds?`,
+        answer: `Review ${managerName}'s historical performance data, assets under management (AUM), fund inception dates, and investment team credentials on their profile page. Compare their funds' historical returns, risk-adjusted performance, fee structures, and investor protection measures against other managers. Past performance does not guarantee future results.`
+      },
+      {
+        question: `Can I meet with ${managerName}'s investment team?`,
+        answer: `Most fund managers offer investor meetings to discuss fund strategy, answer questions, and explain Golden Visa eligibility. Contact ${managerName} directly through their website or request an introduction through Movingto's legal team. Meetings help you assess management quality, investment philosophy, and alignment with your goals before committing €500,000+.`
+      },
+      {
+        question: `What fees does ${managerName} charge for fund management?`,
+        answer: `Fund management fees vary by strategy and typically include: (1) Management fee: 1-2% annually on AUM, (2) Performance fee: 10-20% on returns above hurdle rate, (3) Subscription/redemption fees: 0-3%. Review detailed fee structures on each fund's profile. Compare total cost of ownership across ${managerName}'s funds and competitors before investing.`
+      },
+      {
+        question: `Does ${managerName} manage verified Golden Visa funds?`,
+        answer: `Some of ${managerName}'s funds may carry "Verified" status indicating independent validation of documentation, performance claims, and compliance. Verified funds undergo enhanced due diligence beyond standard CMVM registration. Check individual fund profiles for verification badges and review Movingto's 6-point verification criteria.`
+      },
+      {
+        question: `How can I track performance of ${managerName}'s funds?`,
+        answer: `Fund performance tracking varies by fund: (1) Quarterly NAV updates from the fund administrator, (2) Annual audited financial statements, (3) Monthly investor reports for some funds, (4) Access to investor portal for real-time data. Review NAV calculation frequency, reporting transparency, and auditor credentials before investing.`
+      }
+    ];
+
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'name': `${managerName} Golden Visa Funds FAQs`,
+      'description': `Frequently asked questions about ${managerName} and their Golden Visa investment funds`,
+      'mainEntity': faqs.map(faq => ({
+        '@type': 'Question',
+        'name': faq.question,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': faq.answer
+        }
+      }))
+    };
+  }
+
   private static getFundAlternativesStructuredData(fund: any): any {
-    // Simple structured data without dynamic imports  
+    // Simple structured data without dynamic imports
     const baseStructuredData = [
       {
         '@context': 'https://schema.org',
@@ -1876,6 +2534,70 @@ export class ConsolidatedSEOService {
 
     const normalizedSlug = `${[fund1.id, fund2.id].sort().join('-vs-')}`;
     const comparisonUrl = URL_CONFIG.buildComparisonUrl(normalizedSlug);
+
+    const faqSchema = {
+      '@type': 'FAQPage',
+      'name': `${fund1.name} vs ${fund2.name} Comparison FAQs`,
+      'description': `Frequently asked questions about comparing ${fund1.name} and ${fund2.name}`,
+      'mainEntity': [
+        {
+          '@type': 'Question',
+          'name': `Which fund has lower fees: ${fund1.name} or ${fund2.name}?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `Compare the total fee structure of both funds including management fees, performance fees, and subscription/redemption fees. ${fund1.name} charges ${fund1.managementFee ? fund1.managementFee + '% management fee' : 'fees detailed in prospectus'} while ${fund2.name} charges ${fund2.managementFee ? fund2.managementFee + '% management fee' : 'fees detailed in prospectus'}. Consider net returns after all fees rather than gross returns alone. Review complete fee schedules in each fund's offering documents.`
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': `Which fund has better historical performance?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `Review historical returns over multiple time periods (1, 3, 5 years) and compare risk-adjusted performance. ${fund1.name} is managed by ${fund1.managerName} while ${fund2.name} is managed by ${fund2.managerName}. Past performance does not guarantee future results. Consider consistency of returns, drawdown periods, and performance relative to category benchmarks when evaluating track records.`
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': `What are the minimum investment requirements for each fund?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `${fund1.name} has a minimum investment of ${fund1.minimumInvestment ? '€' + fund1.minimumInvestment.toLocaleString() : 'amount specified in prospectus'}, while ${fund2.name} requires ${fund2.minimumInvestment ? '€' + fund2.minimumInvestment.toLocaleString() : 'amount specified in prospectus'}. Remember that Portugal's Golden Visa requires €500,000 total investment. You can combine multiple funds to reach this threshold if individual minimums are lower. Consult Movingto's legal team to structure qualifying investments.`
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': `Which fund category do these belong to?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `${fund1.name} is categorized as ${fund1.category || 'investment fund'} while ${fund2.name} falls under ${fund2.category || 'investment fund'}. Different categories have distinct risk-return profiles, liquidity terms, and investment strategies. Compare funds within the same category for more meaningful analysis, or compare across categories to understand diversification opportunities within your €500,000 Golden Visa investment.`
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': `What are the redemption terms for each fund?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `Redemption terms vary significantly between funds and impact liquidity. Review each fund's lock-up periods, redemption windows (monthly, quarterly, annual), notice periods, and potential redemption fees. Some funds have gates limiting redemptions during stress periods. For Golden Visa purposes, you must maintain €500,000 investment for at least 5 years. Check individual fund prospectuses for complete redemption policies.`
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': `Are both funds CMVM registered for Golden Visa?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `All funds listed on Movingto must be CMVM (Comissão do Mercado de Valores Mobiliários) registered to qualify for Portugal's Golden Visa program. Verify current registration status, CMVM fund codes, and regulatory compliance on each fund's profile page. "Verified" badges indicate independent validation beyond standard CMVM registration. Always confirm eligibility with Movingto's legal team before investing.`
+          }
+        },
+        {
+          '@type': 'Question',
+          'name': `Which fund is better for my Golden Visa application?`,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': `The "better" fund depends on your investment goals, risk tolerance, time horizon, and liquidity needs. Compare: (1) Expected returns vs. acceptable risk, (2) Lock-up period alignment with your timeline, (3) Fee impact on net returns, (4) Manager track record and expertise, (5) Portfolio diversification with other assets. Both funds qualify for Golden Visa. Connect with Movingto's legal team for personalized recommendations based on your complete financial situation.`
+          }
+        }
+      ]
+    };
 
     return [
       // Main WebPage schema
@@ -1937,7 +2659,8 @@ export class ConsolidatedSEOService {
             }
           ]
         }
-      }
+      },
+      faqSchema
     ];
   }
 
