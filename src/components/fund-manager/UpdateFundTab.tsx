@@ -532,18 +532,18 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
                 <Select
                   value={
                     formData.tags?.includes('Open Ended' as any) ? 'open-ended' :
-                    formData.tags?.includes('Closed Ended' as any) ? 'closed-ended' : ''
+                    formData.tags?.includes('Closed-end Fund' as any) ? 'closed-ended' : ''
                   }
                   onValueChange={(value) => {
                     const updatedTags = [...(formData.tags || [])];
                     const filteredTags = updatedTags.filter(tag => 
-                      tag !== 'Open Ended' && tag !== 'Closed Ended'
+                      tag !== 'Open Ended' && tag !== 'Closed-end Fund'
                     );
                     
                     if (value === 'open-ended') {
                       filteredTags.push('Open Ended' as any);
                     } else if (value === 'closed-ended') {
-                      filteredTags.push('Closed Ended' as any);
+                      filteredTags.push('Closed-end Fund' as any);
                     }
                     
                     setFormData(prev => ({ ...prev, tags: filteredTags }));

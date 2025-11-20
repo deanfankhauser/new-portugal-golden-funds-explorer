@@ -5,35 +5,18 @@ import { Fund, FundTag } from '../types/funds';
 export const generateInvestmentTags = (minimumInvestment: number): FundTag[] => {
   const tags: FundTag[] = [];
   
-  // Fund subscription minimums - replace old "Under" tags
-  if (minimumInvestment < 250000) {
-    tags.push('Fund subscription minimums');
-  } else if (minimumInvestment < 300000) {
-    tags.push('Fund subscription minimums');
-  } else if (minimumInvestment < 350000) {
-    tags.push('Fund subscription minimums');
-  } else if (minimumInvestment < 400000) {
-    tags.push('Fund subscription minimums');
-  } else if (minimumInvestment < 500000) {
-    tags.push('Fund subscription minimums');
-  }
-  
-  // Range tags - only add the most specific range
-  // Note: All ranges below €500k include disclaimer that GV still requires €500k total
-  if (minimumInvestment >= 250000 && minimumInvestment <= 350000) {
-    tags.push('€250k-€350k (subscription min only; GV still requires €500k total)');
-  } else if (minimumInvestment >= 300000 && minimumInvestment <= 400000) {
-    tags.push('€300k-€400k (subscription min only; GV still requires €500k total)');
-  } else if (minimumInvestment >= 350000 && minimumInvestment <= 500000) {
-    tags.push('€350k-€500k (subscription min only; GV still requires €500k total)');
-  } else if (minimumInvestment >= 400000 && minimumInvestment <= 600000) {
-    tags.push('€400k-€600k (subscription min only; GV still requires €500k total)');
+  // Add specific subscription minimum tags
+  if (minimumInvestment >= 100000 && minimumInvestment < 250000) {
+    tags.push('Min. subscription €100k–250k');
+  } else if (minimumInvestment >= 250000 && minimumInvestment < 350000) {
+    tags.push('Min. subscription €250k–€350k');
+  } else if (minimumInvestment >= 350000 && minimumInvestment < 500000) {
+    tags.push('Min. subscription €350k–€500k');
   } else if (minimumInvestment >= 500000) {
-    tags.push('€500k+');
+    tags.push('Min. subscription €500k+');
   }
   
-  // Remove duplicates using Set
-  return [...new Set(tags)];
+  return tags;
 };
 
 // Function to get funds by investment amount (helper for investment-based filtering)

@@ -16,12 +16,11 @@ export const generateLockupTags = (fund: Fund): FundTag[] => {
     const termYears = fund.term;
     
     if (termYears < 5) {
-      tags.push('< 5-year lock-up');
+      tags.push('Short lock-up (<5 years)');
     } else if (termYears >= 5 && termYears <= 10) {
-      tags.push('5-10 year lock-up');
-    } else if (termYears > 10) {
-      tags.push('> 10-year lock-up');
+      tags.push('Long lock-up (5–10 years)');
     }
+    // Note: >10 year lock-up removed as per restructuring
   }
   // If no lock-up information is available, don't assign any lock-up tags
   
@@ -29,6 +28,6 @@ export const generateLockupTags = (fund: Fund): FundTag[] => {
 };
 
 // Function to get funds by lock-up period
-export const getFundsByLockupPeriod = (funds: Fund[], lockupPeriod: '< 5-year lock-up' | '5-10 year lock-up' | '> 10-year lock-up'): Fund[] => {
+export const getFundsByLockupPeriod = (funds: Fund[], lockupPeriod: 'Short lock-up (<5 years)' | 'Long lock-up (5–10 years)'): Fund[] => {
   return funds.filter(fund => fund.tags.includes(lockupPeriod));
 };
