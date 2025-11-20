@@ -2,6 +2,7 @@ import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 const getSupabase = async () => (await import('../integrations/supabase/client')).supabase;
 import { Fund, FundTag, FundCategory, GeographicAllocation, TeamMember, PdfDocument, FAQItem, RedemptionFrequency } from '../data/types/funds';
 import { addTagsToFunds } from '../data/services/funds-service';
+import { getReturnTargetDisplay } from '../utils/returnTarget';
 
 const FUNDS_PER_PAGE = 30;
 const isSSG = typeof window === 'undefined';
@@ -21,16 +22,18 @@ const transformFund = ({ fund, ranking = 999 }: TransformFundParams): Fund => {
     managerName: fund.manager_name || '',
     minimumInvestment: Number(fund.minimum_investment) || 0,
     fundSize: Number(fund.aum) / 1000000 || 0,
-    managementFee: Number(fund.management_fee) || 0,
-    performanceFee: Number(fund.performance_fee) || 0,
+    managementFee: fund.management_fee != null ? Number(fund.management_fee) : null,
+    performanceFee: fund.performance_fee != null ? Number(fund.performance_fee) : null,
     term: Math.round((fund.lock_up_period_months || 0) / 12) || 5,
-    returnTarget: fund.expected_return_min && fund.expected_return_max 
-      ? (fund.expected_return_min === fund.expected_return_max 
-          ? `${fund.expected_return_min}% annually` 
-          : `${fund.expected_return_min}-${fund.expected_return_max}% annually`)
-      : fund.expected_return_min 
-        ? `${fund.expected_return_min}% annually`
-        : 'Unspecified',
+    returnTarget: (() => {
+      // Build temporary fund object for getReturnTargetDisplay
+      const tempFund = {
+        expectedReturnMin: fund.expected_return_min || undefined,
+        expectedReturnMax: fund.expected_return_max || undefined,
+        returnTarget: undefined
+      };
+      return getReturnTargetDisplay(tempFund as any);
+    })(),
     expectedReturnMin: fund.expected_return_min || undefined,
     expectedReturnMax: fund.expected_return_max || undefined,
     fundStatus: 'Open' as const,

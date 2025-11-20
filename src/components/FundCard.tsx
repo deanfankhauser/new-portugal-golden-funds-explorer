@@ -10,6 +10,8 @@ import { useComparison } from '../contexts/ComparisonContext';
 import { managerToSlug } from '../lib/utils';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
 import { CompanyLogo } from './shared/CompanyLogo';
+import { formatManagementFee, formatPerformanceFee } from '../utils/feeFormatters';
+import { formatFundSize } from '../utils/fundSizeFormatters';
 
 interface FundCardProps {
   fund: Fund;
@@ -88,7 +90,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Fund Size</p>
-              <p className="font-medium">{fund.fundSize ? `${fund.fundSize}M EUR` : 'N/A'}</p>
+              <p className="font-medium">{formatFundSize(fund.fundSize)}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Term</p>
@@ -103,14 +105,14 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
                 <Euro className="w-3 h-3 text-accent" />
                 <p className="text-sm text-muted-foreground">Mgmt Fee</p>
               </div>
-              <p className="font-medium">{fund.managementFee != null ? `${fund.managementFee}%` : 'N/A'}</p>
+              <p className="font-medium">{formatManagementFee(fund.managementFee)}</p>
             </div>
             <div>
               <div className="flex items-center gap-1 mb-1">
                 <Euro className="w-3 h-3 text-accent" />
                 <p className="text-sm text-muted-foreground">Perf Fee</p>
               </div>
-              <p className="font-medium">{fund.performanceFee != null ? `${fund.performanceFee}%` : 'N/A'}</p>
+              <p className="font-medium">{formatPerformanceFee(fund.performanceFee)}</p>
             </div>
           </div>
 

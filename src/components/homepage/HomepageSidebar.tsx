@@ -24,19 +24,19 @@ const HomepageSidebar: React.FC<HomepageSidebarProps> = ({
   return (
     <aside className="lg:col-span-1 order-2 lg:order-1" aria-label="Sidebar tools">
       <div className="lg:sticky lg:top-4 space-y-4 hidden md:block">
-        <StreamlinedFilter
-          selectedTags={selectedTags}
-          setSelectedTags={setSelectedTags}
-          showOnlyVerified={showOnlyVerified}
-          setShowOnlyVerified={setShowOnlyVerified}
-        />
-        
         <div className="bg-card rounded-lg shadow-sm border p-4">
           <CategoryFilter
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
           />
         </div>
+        
+        <StreamlinedFilter
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+          showOnlyVerified={showOnlyVerified}
+          setShowOnlyVerified={setShowOnlyVerified}
+        />
       </div>
     </aside>
   );

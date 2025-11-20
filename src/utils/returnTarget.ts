@@ -35,14 +35,24 @@ export const getReturnTargetDisplay = (fund: Fund): string => {
   
   if (min != null && max != null) {
     if (min === max) {
-      return `${min}% p.a.`;
+      // Format with max 2 decimal places, remove trailing zeros
+      const formatted = Number(min.toFixed(2)).toString();
+      return `${formatted}% p.a.`;
     }
-    return `${min}-${max}% p.a.`;
+    // Format range with max 2 decimal places
+    const minFormatted = Number(min.toFixed(2)).toString();
+    const maxFormatted = Number(max.toFixed(2)).toString();
+    return `${minFormatted}–${maxFormatted}% p.a.`;
   }
   
-  if (fund.returnTarget) {
+  if (min != null) {
+    const formatted = Number(min.toFixed(2)).toString();
+    return `${formatted}% p.a.`;
+  }
+  
+  if (fund.returnTarget && fund.returnTarget !== 'Unspecified') {
     return fund.returnTarget;
   }
   
-  return 'Contact for details';
+  return 'Not disclosed';
 };

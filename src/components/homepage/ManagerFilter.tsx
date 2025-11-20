@@ -46,7 +46,7 @@ const ManagerFilter: React.FC<ManagerFilterProps> = ({
           variant="ghost"
           className="w-full justify-between p-3 h-auto hover:bg-muted"
         >
-          <span className="font-semibold text-base">Filter by managers</span>
+          <span className="font-semibold text-base">Filter by Manager</span>
           <ChevronDown
             className={`h-4 w-4 transition-transform duration-200 ${
               isOpen ? 'rotate-180' : ''

@@ -44,8 +44,57 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
   loading = false,
   error = null
 }) => {
+  const [sortBy, setSortBy] = React.useState<string>('verified');
+  const [searchQueryState, setSearchQueryState] = React.useState<string>(searchQuery);
+
   const hasActiveFilters = selectedTags.length > 0 || searchQuery.trim() !== '' || 
     selectedCategory !== null || selectedManager !== null;
+
+  // Sort funds based on selected option
+  const sortedFunds = React.useMemo(() => {
+    const funds = [...filteredFunds];
+    
+    switch (sortBy) {
+      case 'verified':
+        return funds.sort((a, b) => {
+          if (a.isVerified === b.isVerified) return 0;
+          return a.isVerified ? -1 : 1;
+        });
+      
+      case 'min-investment-asc':
+        return funds.sort((a, b) => {
+          const aMin = a.minimumInvestment || Infinity;
+          const bMin = b.minimumInvestment || Infinity;
+          return aMin - bMin;
+        });
+      
+      case 'target-return-desc':
+        return funds.sort((a, b) => {
+          const aReturn = a.expectedReturnMax || a.expectedReturnMin || 0;
+          const bReturn = b.expectedReturnMax || b.expectedReturnMin || 0;
+          return bReturn - aReturn;
+        });
+      
+      case 'risk-asc':
+        return funds.sort((a, b) => {
+          const getRiskScore = (fund: typeof funds[0]) => {
+            if (fund.tags.includes('Low-risk')) return 1;
+            if (fund.tags.includes('Medium-risk')) return 2;
+            if (fund.tags.includes('High-risk')) return 3;
+            return 2; // default to medium if not specified
+          };
+          return getRiskScore(a) - getRiskScore(b);
+        });
+      
+      case 'newly-added':
+      default:
+        return funds.sort((a, b) => {
+          const aDate = new Date(a.datePublished || a.updatedAt || 0).getTime();
+          const bDate = new Date(b.datePublished || b.updatedAt || 0).getTime();
+          return bDate - aDate;
+        });
+    }
+  }, [filteredFunds, sortBy]);
 
   return (
     <div className="spacing-responsive-md" id="funds-section">
@@ -66,29 +115,6 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
         setShowOnlyVerified={setShowOnlyVerified}
       />
 
-      {/* Mobile filter - hidden on all screens (using floating action button instead) */}
-      <div className="hidden mb-6 space-y-4">
-        <div className="bg-card rounded-lg shadow-sm border p-4">
-          <CategoryFilter
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
-        </div>
-        
-        <div className="bg-card rounded-lg shadow-sm border p-4">
-          <ManagerFilter
-            selectedManager={selectedManager}
-            setSelectedManager={setSelectedManager}
-          />
-        </div>
-        
-        <StreamlinedFilter
-          selectedTags={selectedTags}
-          setSelectedTags={setSelectedTags}
-          showOnlyVerified={showOnlyVerified}
-          setShowOnlyVerified={setShowOnlyVerified}
-        />
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8 items-start">
         <HomepageSidebar
@@ -110,7 +136,7 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
               <p className="text-destructive">Error loading funds: {error}</p>
               <p className="text-muted-foreground mt-2">Please try refreshing the page.</p>
             </div>
-          ) : filteredFunds.length === 0 ? (
+          ) : sortedFunds.length === 0 ? (
             <EmptyFundsState
               setSelectedTags={setSelectedTags}
               setSearchQuery={() => {}}
@@ -120,17 +146,16 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
           ) : (
             <>
               <ResultsHeader
-                filteredFunds={filteredFunds}
+                filteredFunds={sortedFunds}
                 selectedTags={selectedTags}
                 searchQuery={searchQuery}
                 setSelectedTags={setSelectedTags}
-                setSearchQuery={() => {}}
+                setSearchQuery={setSearchQueryState}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
               />
               
-              
-              <FundsList
-                filteredFunds={filteredFunds}
-              />
+              <FundsList filteredFunds={sortedFunds} />
             </>
           )}
         </main>

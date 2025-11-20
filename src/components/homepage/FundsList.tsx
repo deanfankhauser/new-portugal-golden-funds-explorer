@@ -30,17 +30,23 @@ const FundsList: React.FC<FundsListProps> = ({
     };
   }, [filteredFunds]);
 
+  // Calculate positions for CTAs
+  const totalFunds = filteredFunds.length;
+  const midPosition = Math.floor(totalFunds / 3); // Around 1/3 through the list
+  const bottomPosition = totalFunds - 5; // 5 funds before the end
+
   return (
     <div className="space-y-6">
       {filteredFunds.map((fund, index) => (
         <div key={fund.id} className="relative">
           <FundListItem fund={fund} />
           
-          {(index + 1) % 4 === 0 && index < filteredFunds.length - 1 && (
+          {/* Show CTA only at mid-page and near bottom */}
+          {((index === midPosition || index === bottomPosition) && index < filteredFunds.length - 1) && (
             <div className="my-12 relative">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-3xl blur-2xl"></div>
               <div className="relative bg-gradient-to-br from-card to-secondary/30 rounded-3xl p-8 border-2 border-border shadow-lg">
-                <PremiumCTA variant="full" location={`homepage-${index + 1}`} />
+                <PremiumCTA variant="full" location={`homepage-${index === midPosition ? 'mid' : 'bottom'}`} />
               </div>
             </div>
           )}

@@ -43,22 +43,25 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
               <span className="text-accent italic font-cheltenham">Profiles, Metrics, Comparisons</span>
             </div>
             
-            <p className="text-lg sm:text-xl text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-8">
-              Compare Portugal Golden Visa investment funds with comprehensive analysis. 
-              Detailed breakdown of fees, returns, and compliance requirements.
+            <p className="text-lg sm:text-xl text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-4">
+              Browse independent fund profiles, compare fees, performance and risk, and shortlist the best options for your Golden Visa.
+            </p>
+            
+            <p className="text-base sm:text-lg text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-8 font-medium">
+              Filter by risk, minimum ticket and strategy, then shortlist 2–3 funds to discuss with our legal team.
             </p>
           </div>
 
-          {/* Learn More Link */}
+          {/* Learn More Links */}
           <div className="text-center mb-8">
             <a 
-              href="https://movingto.com/pt/portugal-golden-visa" 
+              href="https://www.movingto.com/portugal-golden-visa-funds" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center text-accent hover:text-accent/80 font-medium text-sm sm:text-base transition-colors duration-200 group"
+              className="inline-flex items-center text-accent hover:text-accent/80 font-semibold text-base sm:text-lg transition-colors duration-200 group"
             >
-              Learn about Portugal Golden Visa requirements
-              <svg className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              Browse All Portugal Golden Visa Funds
+              <svg className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </a>

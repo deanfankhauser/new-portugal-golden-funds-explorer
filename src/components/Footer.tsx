@@ -75,7 +75,15 @@ const Footer = () => {
                 <Link to="/" className="text-muted-foreground hover:text-accent text-sm transition-colors">Home</Link>
               </li>
               <li>
-                <Link to="/" className="text-muted-foreground hover:text-accent text-sm transition-colors">Browse Funds</Link>
+                <a 
+                  href="https://www.movingto.com/portugal-golden-visa-funds" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-accent text-sm transition-colors inline-flex items-center gap-1"
+                >
+                  Browse All Golden Visa Funds
+                  <ExternalLink size={12} />
+                </a>
               </li>
               <li>
                 <Link to="/about" className="text-muted-foreground hover:text-accent text-sm transition-colors">About</Link>
@@ -126,7 +134,7 @@ const Footer = () => {
               </li>
               <li>
                 <a 
-                  href="https://www.movingto.com/pt/portugal-golden-visa" 
+                  href="https://movingto.com/pt/portugal-golden-visa" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-muted-foreground hover:text-primary text-sm transition-colors inline-flex items-center"

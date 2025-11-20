@@ -148,6 +148,21 @@ const About = () => {
                 Your trusted resource for Portugal Golden Visa investment fund analysis. 
                 Independent, comprehensive, and always up-to-date.
               </p>
+              
+              {/* Link to Main Hub */}
+              <div className="mb-4">
+                <a 
+                  href="https://www.movingto.com/portugal-golden-visa-funds" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
+                >
+                  Browse All Portugal Golden Visa Funds
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </a>
+              </div>
 
               <div className="flex flex-wrap justify-center gap-4">
                 {stats.map((stat, index) => {
@@ -183,7 +198,15 @@ const About = () => {
                     <p className="text-medium-contrast leading-relaxed">
                       We provide comprehensive analysis and comparison tools for Portugal Golden Visa investment funds. 
                       Our platform aggregates fund data, tracks performance metrics, and delivers independent analysis 
-                      to help investors make informed decisions about their Golden Visa investments.
+                      to help investors make informed decisions about their Golden Visa investments. All funds listed meet the{' '}
+                      <a 
+                        href="https://movingto.com/pt/portugal-golden-visa" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-accent hover:text-accent/80 underline"
+                      >
+                        official Portugal Golden Visa requirements
+                      </a>.
                     </p>
                   </CardContent>
                 </Card>

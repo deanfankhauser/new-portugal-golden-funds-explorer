@@ -4,6 +4,7 @@ import { Fund } from '../../data/funds';
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { formatManagementFee, formatPerformanceFee } from '../../utils/feeFormatters';
 
 interface FeeStructureProps {
   fund: Fund;
@@ -68,13 +69,13 @@ const FeeStructure: React.FC<FeeStructureProps> = ({ fund, formatPercentage }) =
             <div className="bg-gradient-to-br from-primary/5 to-primary/[0.02] border border-primary/15 rounded-xl p-5 flex justify-between items-center hover:from-primary/[0.07] hover:to-primary/[0.03] hover:border-primary/20 transition-all">
               <span className="text-[15px] text-foreground/70 font-medium">Management Fee</span>
               <span className="text-[28px] font-bold text-primary tracking-tight">
-                {fund.managementFee ? `${fund.managementFee}%` : 'N/A'}
+                {formatManagementFee(fund.managementFee)}
               </span>
             </div>
             <div className="bg-gradient-to-br from-primary/5 to-primary/[0.02] border border-primary/15 rounded-xl p-5 flex justify-between items-center hover:from-primary/[0.07] hover:to-primary/[0.03] hover:border-primary/20 transition-all">
               <span className="text-[15px] text-foreground/70 font-medium">Performance Fee</span>
               <span className="text-[28px] font-bold text-primary tracking-tight">
-                {typeof fund.performanceFee === 'number' ? `${fund.performanceFee}%` : 'N/A'}
+                {formatPerformanceFee(fund.performanceFee)}
               </span>
             </div>
           </div>
