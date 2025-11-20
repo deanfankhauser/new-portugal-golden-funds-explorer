@@ -87,7 +87,6 @@ export type FundCategory =
   | 'Real Estate'
   | 'Infrastructure'
   | 'Debt'
-  | 'Private Equity & Venture Capital'
   | 'Bitcoin'
   | 'Crypto'
   | 'Clean Energy'
