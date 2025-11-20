@@ -734,8 +734,8 @@ export class ConsolidatedSEOService {
 
       case 'managers-hub':
         return {
-          title: this.optimizeText('28+ Portugal Golden Visa Fund Managers | Verified Professionals | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Compare 28+ verified Portugal Golden Visa fund managers. View track records, total AUM, and fund offerings. Find the right investment professional for your €500k+ Golden Visa application.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Browse 28+ Golden Visa Fund Managers – Compare Track Records', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare verified Golden Visa fund managers in Portugal. Analyze track records, AUM, and performance. Connect with Movingto\'s legal team for guidance.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('managers'),
           canonical: URL_CONFIG.buildUrl('managers'),
           keywords: [
@@ -755,8 +755,8 @@ export class ConsolidatedSEOService {
 
       case 'categories-hub':
         return {
-          title: this.optimizeText('Browse 8 Golden Visa Fund Categories | Debt, Equity & More | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Discover 8 Portugal Golden Visa fund categories: Debt, Equity, Venture Capital, Infrastructure & more. Compare €500k+ investment options across categories with detailed performance metrics and risk profiles.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Browse Golden Visa Fund Categories – Debt, Equity, Crypto & More', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Explore 8 Golden Visa fund categories in Portugal. Compare debt, equity, VC, infrastructure, and alternative strategies. Expert legal support available.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('categories'),
           canonical: URL_CONFIG.buildUrl('categories'),
           keywords: [
@@ -776,8 +776,8 @@ export class ConsolidatedSEOService {
 
       case 'tags-hub':
         return {
-          title: this.optimizeText('Filter Funds by 40+ Tags | Find Your Perfect Golden Visa Match | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Filter 40+ Portugal Golden Visa funds by APY, risk level, lockup period, minimum investment, and more. Find funds matching your exact requirements with advanced filtering and instant comparisons.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Filter Golden Visa Funds by 40+ Tags – Find Your Perfect Match', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Filter Golden Visa funds by yield, risk, lockup, minimums, and more. Find funds matching your exact criteria. Connect with legal experts.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('tags'),
           canonical: URL_CONFIG.buildUrl('tags'),
           keywords: [
@@ -797,8 +797,8 @@ export class ConsolidatedSEOService {
 
       case 'alternatives-hub':
         return {
-          title: this.optimizeText('Find Fund Alternatives | Explore Similar Golden Visa Investments | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Discover alternative Portugal Golden Visa funds with similar risk profiles, returns, and investment amounts. Compare matching funds across all categories to find the perfect fit for your €500k visa investment.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Find Fund Alternatives – Discover Similar Golden Visa Options', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Discover alternative Golden Visa funds with similar risk, returns, and minimums. Compare matching options across all categories. Legal guidance available.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/alternatives'),
           canonical: URL_CONFIG.buildUrl('/alternatives'),
           keywords: [
@@ -818,21 +818,21 @@ export class ConsolidatedSEOService {
 
       case 'comparisons-hub':
         return {
-          title: this.optimizeText('Compare 435+ Golden Visa Fund Pairs | Side-by-Side Analysis | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Compare 435+ Portugal Golden Visa fund combinations side-by-side. Analyze fees, returns, risk profiles, minimum investments, and Golden Visa eligibility requirements to make informed investment decisions.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Compare 435+ Golden Visa Fund Pairs – Side-by-Side Analysis', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Compare 435+ Golden Visa fund combinations side-by-side. Analyze fees, returns, risk, and minimums. Connect with Movingto\'s legal team.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('comparisons'),
           canonical: URL_CONFIG.buildUrl('comparisons'),
           keywords: [
             'fund comparison hub',
-            'investment analysis tools',
-            'Golden Visa comparisons',
-            'fund analysis hub',
-            'comparison directory',
-            'investment fund comparisons',
             'compare Golden Visa funds',
-            'side by side fund comparison',
-            'which Golden Visa fund is best',
-            'fund comparison tool Portugal'
+            'side by side fund analysis',
+            'investment comparison tool',
+            'fund vs fund comparison',
+            'compare investment funds Portugal',
+            'Golden Visa fund comparisons',
+            'investment fund comparison tool',
+            'which Golden Visa fund is better',
+            'compare fund performance'
           ],
           structuredData: this.getComparisonsHubStructuredData(funds)
         };
