@@ -10,7 +10,7 @@ export const getFundType = (fund: Fund): 'Open-Ended' | 'Closed-End' => {
   if (fund.tags?.includes('Open Ended')) {
     return 'Open-Ended';
   }
-  if (fund.tags?.includes('Closed Ended')) {
+  if (fund.tags?.includes('Closed-end Fund')) {
     return 'Closed-End';
   }
   

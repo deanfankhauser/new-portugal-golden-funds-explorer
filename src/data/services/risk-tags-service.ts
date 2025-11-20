@@ -20,13 +20,12 @@ export const generateRiskTags = (fund: Fund): FundTag[] => {
   );
   
   const isHighRisk = (
-    // Venture capital and crypto are high risk
-    fund.tags.includes('Venture Capital') ||
-    fund.tags.includes('Crypto') ||
+    // Venture capital and crypto categories are high risk
+    fund.category === 'Venture Capital' ||
+    fund.category === 'Crypto' ||
     fund.tags.includes('Bitcoin') ||
     fund.tags.includes('Ethereum') ||
     fund.tags.includes('Solana') ||
-    fund.category === 'Venture Capital' ||
     // High performance fees indicate higher risk/return strategies
     fund.performanceFee >= 20 ||
     // High target returns typically mean higher risk
