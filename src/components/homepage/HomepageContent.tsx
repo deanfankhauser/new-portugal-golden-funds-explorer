@@ -115,29 +115,6 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
         setShowOnlyVerified={setShowOnlyVerified}
       />
 
-      {/* Mobile filter - hidden on all screens (using floating action button instead) */}
-      <div className="hidden mb-6 space-y-4">
-        <div className="bg-card rounded-lg shadow-sm border p-4">
-          <CategoryFilter
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
-        </div>
-        
-        <div className="bg-card rounded-lg shadow-sm border p-4">
-          <ManagerFilter
-            selectedManager={selectedManager}
-            setSelectedManager={setSelectedManager}
-          />
-        </div>
-        
-        <StreamlinedFilter
-          selectedTags={selectedTags}
-          setSelectedTags={setSelectedTags}
-          showOnlyVerified={showOnlyVerified}
-          setShowOnlyVerified={setShowOnlyVerified}
-        />
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8 items-start">
         <HomepageSidebar
