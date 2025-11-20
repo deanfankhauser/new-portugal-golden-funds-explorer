@@ -98,6 +98,16 @@ const CategoryPage = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </a>
+            <p className="text-sm text-muted-foreground mt-2">
+              <a 
+                href="https://movingto.com/pt/portugal-golden-visa" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-accent hover:text-accent/80 underline"
+              >
+                Learn more about Golden Visa requirements
+              </a>
+            </p>
           </div>
           
           {/* Verification Filter */}

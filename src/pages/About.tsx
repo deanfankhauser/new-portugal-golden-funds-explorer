@@ -198,7 +198,15 @@ const About = () => {
                     <p className="text-medium-contrast leading-relaxed">
                       We provide comprehensive analysis and comparison tools for Portugal Golden Visa investment funds. 
                       Our platform aggregates fund data, tracks performance metrics, and delivers independent analysis 
-                      to help investors make informed decisions about their Golden Visa investments.
+                      to help investors make informed decisions about their Golden Visa investments. All funds listed meet the{' '}
+                      <a 
+                        href="https://movingto.com/pt/portugal-golden-visa" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-accent hover:text-accent/80 underline"
+                      >
+                        official Portugal Golden Visa requirements
+                      </a>.
                     </p>
                   </CardContent>
                 </Card>
