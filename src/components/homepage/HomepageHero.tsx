@@ -37,7 +37,7 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
           {/* Main Headline */}
           <div className="text-center mb-8">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-high-contrast leading-[1.1] tracking-tight">
-              Portugal Golden Visa Funds
+              Portugal Golden Visa Fund Directory & Comparison Tool
             </h1>
             <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
               <span className="text-accent italic font-cheltenham">Profiles, Metrics, Comparisons</span>
