@@ -297,18 +297,60 @@ export class ConsolidatedSEOService {
         };
 
       case 'category':
+        // Custom SEO for new categories
+        let categoryDescription = `Discover ${params.categoryName} Portugal Golden Visa investment funds. Compare minimum investments, returns, fees, and eligibility for residency applications.`;
+        let categoryKeywords = [
+          `${params.categoryName} Golden Visa funds`,
+          `${params.categoryName} investment Portugal`,
+          `Portugal ${params.categoryName} funds`,
+          'Golden Visa investment categories',
+          `${params.categoryName} fund comparison`
+        ];
+        
+        if (params.categoryName === 'Bitcoin') {
+          categoryDescription = 'Bitcoin-focused Portugal Golden Visa investment funds. Compare BTC exposure, returns, and regulatory compliance for Portuguese residency applications.';
+          categoryKeywords = [
+            'Bitcoin Golden Visa funds',
+            'BTC investment Portugal',
+            'Bitcoin fund Portugal',
+            'crypto Golden Visa',
+            'Bitcoin residency investment'
+          ];
+        } else if (params.categoryName === 'Crypto') {
+          categoryDescription = 'Cryptocurrency Portugal Golden Visa investment funds. Compare digital asset exposure, blockchain investments, and Golden Visa eligibility.';
+          categoryKeywords = [
+            'Crypto Golden Visa funds',
+            'cryptocurrency investment Portugal',
+            'digital asset funds Portugal',
+            'blockchain Golden Visa',
+            'crypto residency investment'
+          ];
+        } else if (params.categoryName === 'Clean Energy') {
+          categoryDescription = 'Clean Energy Portugal Golden Visa investment funds. Compare renewable energy investments, solar projects, and sustainable Golden Visa options.';
+          categoryKeywords = [
+            'Clean Energy Golden Visa funds',
+            'renewable energy Portugal investment',
+            'solar fund Portugal',
+            'sustainable Golden Visa',
+            'green energy residency investment'
+          ];
+        } else if (params.categoryName === 'Other') {
+          categoryDescription = 'Diverse Portugal Golden Visa investment funds. Compare alternative investment strategies and unique fund structures for residency applications.';
+          categoryKeywords = [
+            'alternative Golden Visa funds',
+            'diverse investment Portugal',
+            'unique fund structures Portugal',
+            'Golden Visa investment options',
+            'Portugal residency investments'
+          ];
+        }
+        
         return {
           title: this.optimizeText(`${params.categoryName} Portugal Golden Visa Investment Funds | Movingto`, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText(`Discover ${params.categoryName} Portugal Golden Visa investment funds. Compare minimum investments, returns, fees, and eligibility for residency applications.`, this.MAX_DESCRIPTION_LENGTH),
+          description: this.optimizeText(categoryDescription, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildCategoryUrl(params.categoryName),
           canonical: URL_CONFIG.buildCategoryUrl(params.categoryName),
-          keywords: [
-            `${params.categoryName} Golden Visa funds`,
-            `${params.categoryName} investment Portugal`,
-            `Portugal ${params.categoryName} funds`,
-            'Golden Visa investment categories',
-            `${params.categoryName} fund comparison`
-          ],
+          keywords: categoryKeywords,
           structuredData: this.getCategoryStructuredData(params.categoryName, params.funds || [])
         };
 
