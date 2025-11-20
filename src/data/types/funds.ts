@@ -5,7 +5,6 @@ export type FundTag =
   | 'Target yield 3–5%'
   | 'Target yield 5%+'
   | 'Dividend paying'
-  | 'Dividends'
   | 'Income-focused'
   // Risk & Objective
   | 'Capital Preservation'
@@ -58,7 +57,6 @@ export type FundTag =
   | 'Sustainability'
   | 'ESG'
   | 'AI-Driven'
-  | 'Healthcare'
   | 'Healthcare & life sciences'
   | 'Logistics & warehouses'
   | 'Hospitality & hotels'
@@ -78,10 +76,7 @@ export type FundTag =
   | 'Golden Visa funds for UK citizens'
   | 'Golden Visa funds for Chinese citizens'
   | 'Golden Visa funds for Canadian citizens'
-  | 'Golden Visa funds for Australian citizens'
-  // Legacy/Deprecated (keep for compatibility but don't use)
-  | 'Equities'
-  | 'Hybrid';
+  | 'Golden Visa funds for Australian citizens';
 
 export type FundCategory =
   | 'Venture Capital'
