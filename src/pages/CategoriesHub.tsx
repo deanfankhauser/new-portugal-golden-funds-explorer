@@ -41,9 +41,10 @@ const CategoriesHub = () => {
       <main className="container mx-auto px-4 py-8 flex-1" itemScope itemType="https://schema.org/CollectionPage">
         <CategoriesHubBreadcrumbs />
         <CategoriesHubHeader />
+        <CategoriesList categories={allCategories} />
         
         {/* Link to Main Hub */}
-        <div className="mb-8 text-center">
+        <div className="mt-8 text-center">
           <a 
             href="https://www.movingto.com/portugal-golden-visa-funds" 
             target="_blank" 
@@ -56,7 +57,6 @@ const CategoriesHub = () => {
             </svg>
           </a>
         </div>
-        <CategoriesList categories={allCategories} />
       </main>
       
       <Footer />
