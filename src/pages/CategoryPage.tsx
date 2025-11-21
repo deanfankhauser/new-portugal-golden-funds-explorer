@@ -45,6 +45,11 @@ const CategoryPage = () => {
   console.log('6. categoryExists:', categoryExists);
   console.log('========================');
 
+  // Scroll to top when category changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [categorySlug]);
+
   // Show loading state (matching TagPage pattern)
   if (isLoading) {
     return (
@@ -59,11 +64,6 @@ const CategoryPage = () => {
       </div>
     );
   }
-
-  // Scroll to top when category changes
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [categorySlug]);
 
   // Show empty state for non-existent categories (matching TagPage pattern)
   if (!categoryExists && category) {
