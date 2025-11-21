@@ -111,9 +111,36 @@ export class ConsolidatedSEOService {
 
   // Generate optimized fund description with USPs and performance
   private static generateFundDescription(fund: any): string {
-    // Pattern: [Fund Name] is a [category/strategy] Portugal Golden Visa fund. See minimum investment, target returns, fees, liquidity terms and Golden Visa eligibility in one place.
-    const category = fund.category || 'investment';
-    return `${fund.name} is a ${category.toLowerCase()} Portugal Golden Visa fund. See minimum investment, returns, fees, liquidity terms and Golden Visa eligibility.`;
+    // Pattern: {Fund Name} is a CMVM-regulated Portugal Golden Visa investment fund managed by {Manager}, investing in {category} {liquidity} and {minimum}.
+    
+    const parts: string[] = [
+      `${fund.name} is a CMVM-regulated Portugal Golden Visa investment fund managed by ${fund.managerName}, investing in ${fund.category?.toLowerCase() || 'diversified assets'}`
+    ];
+    
+    // Add liquidity info if available
+    const hasHighLiquidity = fund.tags?.some((tag: string) => 
+      tag.includes('Daily NAV') || tag.includes('No Lock-Up') || tag.toLowerCase().includes('daily liquidity')
+    );
+    if (hasHighLiquidity) {
+      parts.push('with daily liquidity');
+    } else if (fund.lockUpPeriodMonths) {
+      if (fund.lockUpPeriodMonths <= 12) {
+        parts.push('with short lock-up');
+      }
+    }
+    
+    // Add minimum investment if available
+    if (fund.minimumInvestment) {
+      const minFormatted = formatMinimumForTitle(fund.minimumInvestment);
+      if (minFormatted) {
+        parts.push(`and ${minFormatted} minimum`);
+      }
+    }
+    
+    const description = parts.join(' ') + '.';
+    
+    // Ensure we stay within character limit
+    return this.optimizeText(description, this.MAX_DESCRIPTION_LENGTH);
   }
 
   // Generate dynamic keywords based on fund characteristics
@@ -1011,12 +1038,54 @@ export class ConsolidatedSEOService {
           'itemListElement': breadcrumbItems
         };
     
-    // Add FAQ schema if fund has FAQs
+    // Generate FAQ schema for all funds (default or custom)
     const schemas: any[] = [investmentFundSchema, breadcrumbSchema];
-    if (fund.faqs && fund.faqs.length > 0) {
-      const faqSchema = EnhancedStructuredDataService.generateFundFAQSchema(fund);
-      schemas.push(faqSchema);
-    }
+    
+    // Generate default FAQs if none exist (matching FundFAQSection.tsx logic)
+    const defaultFAQs = [
+      {
+        question: `What makes ${fund.name} unique?`,
+        answer: `${fund.name} offers a distinctive investment approach with carefully selected strategies designed to achieve optimal returns while managing risk. The fund combines experienced management with rigorous investment processes to deliver value to investors.`
+      },
+      {
+        question: `How is risk managed?`,
+        answer: `${fund.name} employs a multi-layered risk management approach designed to protect capital while pursuing growth opportunities. This includes asset diversification, rigorous selection processes, regular portfolio rebalancing, and professional oversight by experienced managers with proven track records.`
+      },
+      {
+        question: `What are the investment requirements?`,
+        answer: `The minimum investment for ${fund.name} is ${fund.minimumInvestment ? `€${fund.minimumInvestment.toLocaleString()}` : 'available upon request'}. The fund features ${fund.redemptionTerms?.frequency || 'periodic'} redemptions with ${fund.redemptionTerms?.minimumHoldingPeriod ? `a ${fund.redemptionTerms.minimumHoldingPeriod}-month` : 'a'} lock-up period. ${fund.redemptionTerms?.noticePeriod ? `${fund.redemptionTerms.noticePeriod} days notice` : 'Advance notice'} is required for redemptions.`
+      },
+      {
+        question: fund.tags?.includes('Golden Visa Eligible') 
+          ? `How does the Golden Visa qualification work?`
+          : `What are the regulatory requirements?`,
+        answer: fund.tags?.includes('Golden Visa Eligible')
+          ? `${fund.name} is approved by Portuguese authorities as a Golden Visa qualifying investment. By investing the minimum amount, you become eligible to apply for Portuguese residency through the Golden Visa program. The fund maintains full compliance with CMVM regulations${fund.cmvmId ? ` and is registered under CMVM #${fund.cmvmId}` : ''}. Our team works closely with investors to ensure all documentation meets Golden Visa requirements.`
+          : `${fund.name} operates under strict regulatory oversight${fund.regulatedBy ? ` by ${fund.regulatedBy}` : ''}${fund.cmvmId ? ` and is registered with CMVM #${fund.cmvmId}` : ''}. The fund maintains full compliance with all applicable securities regulations and reporting requirements.`
+      },
+      {
+        question: `What are the expected returns?`,
+        answer: `${fund.name} ${fund.returnTarget ? `targets ${fund.returnTarget}` : 'aims to deliver competitive returns'}${fund.historicalPerformance ? `, with historical performance demonstrating the fund's ability to achieve its objectives` : ''}. However, past performance is not indicative of future results. The fund's investments carry inherent market risks. Capital is at risk, and investors should carefully consider their investment objectives and risk tolerance.`
+      }
+    ];
+
+    // Use fund-specific FAQs if available, otherwise use defaults
+    const activeFAQs = (fund.faqs && fund.faqs.length > 0) ? fund.faqs : defaultFAQs;
+    
+    // Generate FAQ schema with active FAQs
+    const faqSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'mainEntity': activeFAQs.map((faq: any) => ({
+        '@type': 'Question',
+        'name': faq.question,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': faq.answer
+        }
+      }))
+    };
+    schemas.push(faqSchema);
     
     // Add fund manager organization schema
     const managerSchema = {

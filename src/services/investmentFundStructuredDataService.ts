@@ -16,6 +16,25 @@ export class InvestmentFundStructuredDataService {
       fund.redemptionFee ? `Exit Fee: ${cleanFeeString(fund.redemptionFee)}% on redemption` : ''
     ].filter(Boolean).join('; ');
 
+    // Generate keyword-rich description matching subheader pattern
+    const getLiquidityText = () => {
+      if (!fund.redemptionTerms?.frequency) return '';
+      
+      if (fund.redemptionTerms.frequency.toLowerCase().includes('daily')) {
+        return ' with daily liquidity for investors';
+      }
+      
+      if (fund.redemptionTerms.minimumHoldingPeriod) {
+        return ` with ${fund.redemptionTerms.minimumHoldingPeriod}-month minimum holding period`;
+      }
+      
+      return '';
+    };
+
+    const schemaDescription = fund.managerName && fund.category
+      ? `${fund.name} is a CMVM-regulated Portugal Golden Visa investment fund managed by ${fund.managerName}, investing primarily in ${fund.category.toLowerCase()}${getLiquidityText()}.`
+      : fund.description || `${fund.name} is a professionally managed investment fund in Portugal.`;
+
     // Build enhanced schema with additional properties
     const schema: any = {
       "@context": "https://schema.org",
@@ -23,7 +42,7 @@ export class InvestmentFundStructuredDataService {
       "name": fund.name,
       "url": URL_CONFIG.buildFundUrl(fund.id),
       "fundLegalName": fund.name,
-      "description": fund.description,
+      "description": schemaDescription,
       "category": fund.category,
       "fundType": fund.tags?.some(tag => tag.toLowerCase().includes('open-end')) ? "Open-end fund" : "Investment Fund",
       "feesAndCommissionsSpecification": feesSpec || "Contact fund for details",
@@ -40,8 +59,36 @@ export class InvestmentFundStructuredDataService {
         "name": fund.managerName,
         "url": URL_CONFIG.buildManagerUrl(fund.managerName),
         "sameAs": fund.websiteUrl || URL_CONFIG.buildManagerUrl(fund.managerName)
-      },
-      "offers": {
+      }
+    };
+
+    // Add location/domicile if available
+    if (fund.location) {
+      schema.location = {
+        "@type": "Place",
+        "name": fund.location,
+        "addressCountry": fund.location.includes('Portugal') ? 'PT' : undefined
+      };
+    }
+
+    // Add offers section with holding period information
+    const offerAdditionalProperties: any[] = [];
+    
+    if (fund.redemptionTerms?.minimumHoldingPeriod) {
+      offerAdditionalProperties.push({
+        "@type": "PropertyValue",
+        "name": "Minimum Holding Period",
+        "value": `${fund.redemptionTerms.minimumHoldingPeriod} months`
+      });
+    } else if (fund.redemptionTerms?.frequency?.toLowerCase().includes('daily')) {
+      offerAdditionalProperties.push({
+        "@type": "PropertyValue",
+        "name": "Liquidity",
+        "value": "Daily liquidity"
+      });
+    }
+
+    schema.offers = {
         "@type": "Offer",
         "price": fund.minimumInvestment || 0,
         "priceCurrency": "EUR",
@@ -57,9 +104,9 @@ export class InvestmentFundStructuredDataService {
           "@type": "Organization",
           "name": fund.managerName,
           "url": URL_CONFIG.buildManagerUrl(fund.managerName)
-        }
-      }
-    };
+        },
+        ...(offerAdditionalProperties.length > 0 && { "additionalProperty": offerAdditionalProperties })
+      };
     
     // Add sameAs for fund website if available
     if (fund.websiteUrl) {
