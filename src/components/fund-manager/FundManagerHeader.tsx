@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import { User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface FundManagerData {
@@ -28,10 +27,7 @@ const FundManagerHeader: React.FC<FundManagerHeaderProps> = ({ managerData }) =>
   return (
     <Card className="border border-gray-100 shadow-md mb-10">
       <CardContent className="p-6">
-        <div className="flex items-center mb-5">
-          <User className="w-6 h-6 mr-2 text-primary" />
-          <h1 className="text-3xl font-bold">{managerData.name} | Portugal Golden Visa Fund Manager</h1>
-        </div>
+        <h1 className="text-3xl font-bold mb-5">{managerData.name} | Portugal Golden Visa Fund Manager</h1>
         
         <div className="bg-slate-50 p-5 rounded-lg border border-slate-100">
           {managerData.logo && (
