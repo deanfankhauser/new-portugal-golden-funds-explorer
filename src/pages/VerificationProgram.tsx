@@ -190,7 +190,7 @@ const VerificationProgram = () => {
             Verification Program
           </div>
           <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gray-900 tracking-tight leading-tight">
-            Verification you can actually use
+            Portugal Golden Visa Fund Verification Program
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
             We verify basic fund information against official sources — helping you spot incomplete profiles and giving you a head start on due diligence.
