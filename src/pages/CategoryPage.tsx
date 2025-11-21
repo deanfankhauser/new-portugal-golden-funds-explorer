@@ -69,11 +69,6 @@ const CategoryPage = () => {
     }
   }, [hasMounted, categoryExists, navigate, categorySlug, isLoading]);
 
-  // Don't render anything if category doesn't exist (only after data has loaded)
-  if (!categoryExists || !category) {
-    return null;
-  }
-
   const allFunds = getFundsByCategory(allDatabaseFunds, category as any);
   
   // Filter funds by verification status
