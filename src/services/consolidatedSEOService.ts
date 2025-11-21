@@ -111,9 +111,36 @@ export class ConsolidatedSEOService {
 
   // Generate optimized fund description with USPs and performance
   private static generateFundDescription(fund: any): string {
-    // Pattern: [Fund Name] is a [category/strategy] Portugal Golden Visa fund. See minimum investment, target returns, fees, liquidity terms and Golden Visa eligibility in one place.
-    const category = fund.category || 'investment';
-    return `${fund.name} is a ${category.toLowerCase()} Portugal Golden Visa fund. See minimum investment, returns, fees, liquidity terms and Golden Visa eligibility.`;
+    // Pattern: {Fund Name} is a CMVM-regulated Portugal Golden Visa investment fund managed by {Manager}, investing in {category} {liquidity} and {minimum}.
+    
+    const parts: string[] = [
+      `${fund.name} is a CMVM-regulated Portugal Golden Visa investment fund managed by ${fund.managerName}, investing in ${fund.category?.toLowerCase() || 'diversified assets'}`
+    ];
+    
+    // Add liquidity info if available
+    const hasHighLiquidity = fund.tags?.some((tag: string) => 
+      tag.includes('Daily NAV') || tag.includes('No Lock-Up') || tag.toLowerCase().includes('daily liquidity')
+    );
+    if (hasHighLiquidity) {
+      parts.push('with daily liquidity');
+    } else if (fund.lockUpPeriodMonths) {
+      if (fund.lockUpPeriodMonths <= 12) {
+        parts.push('with short lock-up');
+      }
+    }
+    
+    // Add minimum investment if available
+    if (fund.minimumInvestment) {
+      const minFormatted = formatMinimumForTitle(fund.minimumInvestment);
+      if (minFormatted) {
+        parts.push(`and ${minFormatted} minimum`);
+      }
+    }
+    
+    const description = parts.join(' ') + '.';
+    
+    // Ensure we stay within character limit
+    return this.optimizeText(description, this.MAX_DESCRIPTION_LENGTH);
   }
 
   // Generate dynamic keywords based on fund characteristics
