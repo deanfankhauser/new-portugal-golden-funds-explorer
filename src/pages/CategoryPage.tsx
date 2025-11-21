@@ -57,6 +57,19 @@ const CategoryPage = () => {
   const categoryExists = !!matchingCategory;
   const displayCategoryName = matchingCategory || category;
 
+  // ✅ ALL HOOKS MUST BE CALLED BEFORE EARLY RETURNS (React Rules of Hooks)
+  const allFunds = useMemo(() => {
+    return matchingCategory 
+      ? getFundsByCategory(allDatabaseFunds, matchingCategory as FundCategory) 
+      : [];
+  }, [allDatabaseFunds, matchingCategory]);
+  
+  // Filter funds by verification status
+  const funds = useMemo(() => {
+    if (!showOnlyVerified) return allFunds;
+    return allFunds.filter(fund => fund.isVerified);
+  }, [allFunds, showOnlyVerified]);
+
   // Scroll to top when category changes
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -92,18 +105,6 @@ const CategoryPage = () => {
       </div>
     );
   }
-
-  const allFunds = useMemo(() => {
-    return matchingCategory 
-      ? getFundsByCategory(allDatabaseFunds, matchingCategory as FundCategory) 
-      : [];
-  }, [allDatabaseFunds, matchingCategory]);
-  
-  // Filter funds by verification status
-  const funds = useMemo(() => {
-    if (!showOnlyVerified) return allFunds;
-    return allFunds.filter(fund => fund.isVerified);
-  }, [allFunds, showOnlyVerified]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
