@@ -1,5 +1,5 @@
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { DollarSign, Users, Calendar, Clock, Lock, TrendingUp } from 'lucide-react';
 
 interface KeyFactsChipsProps {

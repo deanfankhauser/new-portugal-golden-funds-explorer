@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { formatCurrency } from '../fund-details/utils/formatters';
 import { getFundType } from '../../utils/fundTypeUtils';
 import ComparisonTableHeader from './table/ComparisonTableHeader';

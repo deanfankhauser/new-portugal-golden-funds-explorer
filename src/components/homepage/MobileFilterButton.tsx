@@ -3,7 +3,7 @@ import { Filter } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet';
-import { FundTag, FundCategory } from '../../data/funds';
+import { FundTag, FundCategory } from '../../data/types/funds';
 import CategoryFilter from './CategoryFilter';
 import ManagerFilter from './ManagerFilter';
 import StreamlinedFilter from './StreamlinedFilter';

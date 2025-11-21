@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { MessageSquare, Heart } from 'lucide-react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import analytics from '../../utils/analytics';
 import { trackInteraction } from '../../utils/analyticsTracking';
 import { useSavedFunds } from '../../hooks/useSavedFunds';

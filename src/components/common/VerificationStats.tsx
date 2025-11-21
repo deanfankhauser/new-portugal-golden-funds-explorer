@@ -3,7 +3,7 @@ import { CheckCircle2, ShieldCheck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Fund } from '@/data/funds';
+import { Fund } from '@/data/types/funds';
 import VerificationExplainerModal from './VerificationExplainerModal';
 
 interface VerificationStatsProps {

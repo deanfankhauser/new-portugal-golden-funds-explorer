@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import FundListItem from '../FundListItem';
 import PremiumCTA from '../cta/PremiumCTA';
 import { InvestmentFundStructuredDataService } from '../../services/investmentFundStructuredDataService';

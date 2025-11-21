@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { GeographicAllocation } from '../../../data/funds';
+import { GeographicAllocation } from '../../../data/types/funds';
 import ComparisonCell from './ComparisonCell';
 
 interface GeographicAllocationCellProps {

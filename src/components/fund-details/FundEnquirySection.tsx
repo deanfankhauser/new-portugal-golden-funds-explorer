@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Fund } from '@/data/funds';
+import { Fund } from '@/data/types/funds';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, CheckCircle2, Sparkles } from 'lucide-react';
 import { z } from 'zod';

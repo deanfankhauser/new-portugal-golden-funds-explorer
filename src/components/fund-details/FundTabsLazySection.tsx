@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, PieChart, Users } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';

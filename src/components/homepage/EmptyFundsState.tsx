@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ClipboardCheck, Search, Lightbulb, ArrowRight, Filter, Sparkles, X, Calculator } from 'lucide-react';
-import { FundTag } from '../../data/funds';
+import { FundTag } from '../../data/types/funds';
 
 interface EmptyFundsStateProps {
   setSelectedTags: (tags: FundTag[]) => void;

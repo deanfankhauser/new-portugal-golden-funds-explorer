@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Fund } from '../data/funds';
+import { Fund } from '../data/types/funds';
 import { toast } from "@/components/ui/use-toast";
 
 interface ComparisonContextType {

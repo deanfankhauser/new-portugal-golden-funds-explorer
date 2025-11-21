@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Fund } from '@/data/funds';
+import { Fund } from '@/data/types/funds';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useSavedFunds } from '@/hooks/useSavedFunds';

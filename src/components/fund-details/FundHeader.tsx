@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Button } from "@/components/ui/button";
 import { GitCompare, Calculator, CheckCircle2 } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';

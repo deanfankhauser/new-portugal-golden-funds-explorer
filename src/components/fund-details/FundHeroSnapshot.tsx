@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Button } from '../ui/button';
 import { Phone, BarChart3 } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';

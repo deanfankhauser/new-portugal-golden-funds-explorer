@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, Info } from 'lucide-react';
-import { Fund } from '@/data/funds';
+import { Fund } from '@/data/types/funds';
 import { Badge } from '@/components/ui/badge';
 
 interface ManagerVerificationBadgeProps {

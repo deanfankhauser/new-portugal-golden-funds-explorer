@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Info } from 'lucide-react';
 

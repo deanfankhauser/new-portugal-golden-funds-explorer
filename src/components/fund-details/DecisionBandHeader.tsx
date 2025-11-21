@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from '../ui/badge';
 import { CheckCircle2 } from 'lucide-react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 
 
 interface DecisionBandHeaderProps {

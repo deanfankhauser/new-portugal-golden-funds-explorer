@@ -1,5 +1,5 @@
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { getFundType } from '../../utils/fundTypeUtils';
 import FAQSection from '../common/FAQSection';
 import { Link } from 'react-router-dom';

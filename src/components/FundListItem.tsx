@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Fund } from '../data/funds';
+import { Fund } from '../data/types/funds';
 import { isFundGVEligible } from '../data/services/gv-eligibility-service';
 import { getFundType } from '../utils/fundTypeUtils';
 import { Badge } from "@/components/ui/badge";
