@@ -77,6 +77,11 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
             {fund.name}
           </h1>
           
+          {/* Dynamic keyword-rich subheader */}
+          <p className="text-xl font-semibold text-foreground/80 leading-relaxed">
+            {fund.name} is a CMVM-regulated Portugal Golden Visa investment fund managed by {fund.managerName}, focusing on {fund.category.toLowerCase()} investments.
+          </p>
+          
           {/* Description with bold key terms */}
           <p 
             className="text-lg text-foreground/70 max-w-3xl leading-relaxed"
