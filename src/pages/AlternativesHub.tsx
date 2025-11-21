@@ -133,23 +133,10 @@ const AlternativesHub: React.FC = () => {
           <h1 id="page-title" className="text-3xl md:text-4xl font-bold text-foreground mb-4 leading-tight">
             Find Alternative Investment Funds
           </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed mb-4">
+          <p className="text-lg text-muted-foreground leading-relaxed">
             Discover similar Golden Visa eligible funds based on category, investment requirements, and performance metrics.
             Compare alternatives to make informed investment decisions.
           </p>
-          <div className="text-center">
-            <a 
-              href="https://www.movingto.com/portugal-golden-visa-funds" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
-            >
-              Browse All Portugal Golden Visa Funds
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </a>
-          </div>
         </div>
       </section>
 
@@ -341,6 +328,21 @@ const AlternativesHub: React.FC = () => {
           </Link>
         </Button>
       </section>
+
+      {/* Link to Main Hub */}
+      <div className="mt-8 text-center">
+        <a 
+          href="https://www.movingto.com/portugal-golden-visa-funds" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
+        >
+          Browse All Portugal Golden Visa Funds
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
     </HomepageLayout>
   );
 };
