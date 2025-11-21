@@ -24,8 +24,8 @@ export const CompanyLogo: React.FC<CompanyLogoProps> = ({
   // Detect SSR environment
   const isSSR = typeof window === 'undefined';
   
-  // Skip data fetching during SSR
-  const profile = !isSSR ? useManagerProfile(managerName) : null;
+  // Always call hook unconditionally (React Rules of Hooks requirement)
+  const profile = useManagerProfile(managerName);
   
   // Debug logging (client-side only)
   useEffect(() => {
