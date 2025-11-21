@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getFundsByCategory } from '../data/services/categories-service';
 import { getAllCategories } from '../data/services/categories-service';
 import { slugToCategory, categoryToSlug } from '@/lib/utils';
@@ -22,7 +22,6 @@ import FundListSkeleton from '../components/common/FundListSkeleton';
 
 const CategoryPage = () => {
   const { category: categorySlug } = useParams<{ category: string }>();
-  const navigate = useNavigate();
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   const { data: allFundsData, isLoading } = useAllFunds();
   
@@ -32,18 +31,30 @@ const CategoryPage = () => {
   const category = categorySlug ? slugToCategory(categorySlug) : '';
   const allCategories = getAllCategories(allDatabaseFunds);
   
-  // Debug logging
-  console.log('=== CategoryPage Debug ===');
-  console.log('1. categorySlug from URL:', categorySlug);
-  console.log('2. converted category:', category);
-  console.log('3. allDatabaseFunds length:', allDatabaseFunds.length);
-  console.log('4. allCategories:', allCategories);
-  console.log('5. isLoading:', isLoading);
+  // Enhanced category matching with multiple strategies
+  let matchingCategory: string | null = null;
   
-  // Check if the category exists
-  const categoryExists = allCategories.includes(category as any);
-  console.log('6. categoryExists:', categoryExists);
-  console.log('========================');
+  if (category && allDatabaseFunds.length > 0) {
+    // Strategy 1: Exact match
+    matchingCategory = allCategories.find(cat => cat === category) || null;
+    
+    // Strategy 2: Case-insensitive match
+    if (!matchingCategory) {
+      matchingCategory = allCategories.find(cat => 
+        cat.toLowerCase() === category.toLowerCase()
+      ) || null;
+    }
+    
+    // Strategy 3: Slug-based matching
+    if (!matchingCategory && categorySlug) {
+      matchingCategory = allCategories.find(cat => 
+        categoryToSlug(cat) === categorySlug
+      ) || null;
+    }
+  }
+  
+  const categoryExists = !!matchingCategory;
+  const displayCategoryName = matchingCategory || category;
 
   // Scroll to top when category changes
   useEffect(() => {
@@ -69,11 +80,11 @@ const CategoryPage = () => {
   if (!categoryExists && category) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
-        <PageSEO pageType="category" categoryName={category} funds={[]} />
+        <PageSEO pageType="category" categoryName={displayCategoryName} funds={[]} />
         <Header />
         <main className="flex-1 py-6 md:py-8">
           <div className="container mx-auto px-4 max-w-7xl">
-            <CategoryPageEmptyState categoryName={category} />
+            <CategoryPageEmptyState categoryName={displayCategoryName} />
           </div>
         </main>
         <Footer />
@@ -81,7 +92,7 @@ const CategoryPage = () => {
     );
   }
 
-  const allFunds = getFundsByCategory(allDatabaseFunds, category as any);
+  const allFunds = matchingCategory ? getFundsByCategory(allDatabaseFunds, matchingCategory as any) : [];
   
   // Filter funds by verification status
   const funds = useMemo(() => {
@@ -91,14 +102,14 @@ const CategoryPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <PageSEO pageType="category" categoryName={category} funds={funds} />
+      <PageSEO pageType="category" categoryName={displayCategoryName} funds={funds} />
       <Header />
       
       <main className="flex-1 py-6 md:py-8">
         <div className="container mx-auto px-4 max-w-7xl">
-          <CategoryBreadcrumbs categoryName={category} />
+          <CategoryBreadcrumbs categoryName={displayCategoryName} />
           
-          <CategoryPageHeader categoryName={category} />
+          <CategoryPageHeader categoryName={displayCategoryName} />
           
           {/* Link to Main Hub */}
           <div className="mb-6 text-center">
@@ -134,11 +145,11 @@ const CategoryPage = () => {
           </div>
           
           {funds.length === 0 && !showOnlyVerified ? (
-            <CategoryPageEmptyState categoryName={category} />
+            <CategoryPageEmptyState categoryName={displayCategoryName} />
           ) : funds.length === 0 && showOnlyVerified && allFunds.length > 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground text-lg">
-                No verified funds found in the "{category}" category.
+                No verified funds found in the "{displayCategoryName}" category.
               </p>
               <p className="text-muted-foreground mt-2">
                 Try disabling the verification filter to see all {allFunds.length} funds.
@@ -146,19 +157,19 @@ const CategoryPage = () => {
             </div>
           ) : (
             <div className="space-y-8">
-              <CategoryPageFundSummary count={funds.length} categoryName={category} />
+              <CategoryPageFundSummary count={funds.length} categoryName={displayCategoryName} />
               
               <CategoryPageFundList funds={funds} />
               
-              <CategoryCrossLinks categoryName={category} />
+              <CategoryCrossLinks categoryName={displayCategoryName} />
               
               <CategoryPageFAQ 
-                categoryName={category} 
+                categoryName={displayCategoryName} 
                 categorySlug={categorySlug || ''} 
                 fundsCount={funds.length} 
               />
               
-              <RelatedCategories allCategories={allCategories} currentCategory={category} />
+              <RelatedCategories allCategories={allCategories} currentCategory={displayCategoryName} />
             </div>
           )}
         </div>
