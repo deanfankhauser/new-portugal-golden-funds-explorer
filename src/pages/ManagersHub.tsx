@@ -42,9 +42,10 @@ const ManagersHub = () => {
       <main className="container mx-auto px-4 py-8 flex-1">
         <ManagersHubBreadcrumbs />
         <ManagersHubHeader />
+        <ManagersList managers={managers} funds={allDatabaseFunds} />
         
         {/* Link to Main Hub */}
-        <div className="mb-8 text-center">
+        <div className="mt-8 text-center">
           <a 
             href="https://www.movingto.com/portugal-golden-visa-funds" 
             target="_blank" 
@@ -57,7 +58,6 @@ const ManagersHub = () => {
             </svg>
           </a>
         </div>
-        <ManagersList managers={managers} funds={allDatabaseFunds} />
       </main>
       
       <Footer />
