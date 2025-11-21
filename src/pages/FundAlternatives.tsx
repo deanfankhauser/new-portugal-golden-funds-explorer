@@ -27,7 +27,23 @@ const FundAlternatives = () => {
   const fundsWithTags = addTagsToFunds(allFunds);
   const fund = fundsWithTags.find(f => f.id === id);
 
-  if (isLoading || !fund) {
+  // Show loading state while data is being fetched
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-pulse text-muted-foreground">Loading fund alternatives...</div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // After data is loaded, check if fund exists
+  if (!fund) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <PageSEO pageType="404" />
