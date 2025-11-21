@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Sparkles } from 'lucide-react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { isRecentlyUpdated } from '../../utils/dateHelpers';
 
 interface RecentlyUpdatedBadgeProps {

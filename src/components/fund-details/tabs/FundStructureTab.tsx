@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Fund } from '../../../data/funds';
+import { Fund } from '../../../data/types/funds';
 import FundCategory from '../FundCategory';
 import FeeStructure from '../FeeStructure';
 import GeographicAllocation from '../GeographicAllocation';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { DateManagementService } from '../../services/dateManagementService';
 import { format } from 'date-fns';
 import { Clock, FileText } from 'lucide-react';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Building, MapPin, Shield, FileCheck, Calendar, Hash, FileText, Briefcase, Clock } from 'lucide-react';

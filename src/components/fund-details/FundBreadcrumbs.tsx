@@ -9,7 +9,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Home, ChevronRight } from 'lucide-react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { URL_CONFIG } from '../../utils/urlConfig';
 
 interface FundBreadcrumbsProps {

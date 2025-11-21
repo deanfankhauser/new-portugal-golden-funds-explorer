@@ -1,6 +1,6 @@
 import React from 'react';
 import FAQSection from '../common/FAQSection';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 
 interface FAQItem {
   question: string;

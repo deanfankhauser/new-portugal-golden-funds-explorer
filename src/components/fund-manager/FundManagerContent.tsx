@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Info, HelpCircle } from 'lucide-react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import FundListItem from '@/components/FundListItem';
 import FundManagerAbout from './FundManagerAbout';
 import FundManagerFAQs from './FundManagerFAQs';

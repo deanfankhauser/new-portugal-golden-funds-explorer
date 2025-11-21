@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowDownCircle, ArrowUpCircle, Info } from 'lucide-react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
