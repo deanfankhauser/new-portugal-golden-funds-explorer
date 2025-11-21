@@ -19,6 +19,12 @@ export interface Profile {
   assets_under_management?: number;
   founded_year?: number;
   
+  // Social media links
+  linkedin_url?: string;
+  twitter_url?: string;
+  facebook_url?: string;
+  instagram_url?: string;
+  
   // Manager-level content
   manager_about?: string;
   manager_faqs?: any; // JSONB array

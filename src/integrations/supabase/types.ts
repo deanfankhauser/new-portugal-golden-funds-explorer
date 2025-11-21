@@ -961,12 +961,15 @@ export type Database = {
           date_of_birth: string | null
           description: string | null
           email: string
+          facebook_url: string | null
           first_name: string | null
           founded_year: number | null
           id: string
+          instagram_url: string | null
           investment_experience: string | null
           last_name: string | null
           license_number: string | null
+          linkedin_url: string | null
           logo_url: string | null
           manager_about: string | null
           manager_faqs: Json | null
@@ -977,6 +980,7 @@ export type Database = {
           registration_number: string | null
           risk_tolerance: string | null
           team_members: Json | null
+          twitter_url: string | null
           updated_at: string
           user_id: string
           website: string | null
@@ -993,12 +997,15 @@ export type Database = {
           date_of_birth?: string | null
           description?: string | null
           email: string
+          facebook_url?: string | null
           first_name?: string | null
           founded_year?: number | null
           id?: string
+          instagram_url?: string | null
           investment_experience?: string | null
           last_name?: string | null
           license_number?: string | null
+          linkedin_url?: string | null
           logo_url?: string | null
           manager_about?: string | null
           manager_faqs?: Json | null
@@ -1009,6 +1016,7 @@ export type Database = {
           registration_number?: string | null
           risk_tolerance?: string | null
           team_members?: Json | null
+          twitter_url?: string | null
           updated_at?: string
           user_id: string
           website?: string | null
@@ -1025,12 +1033,15 @@ export type Database = {
           date_of_birth?: string | null
           description?: string | null
           email?: string
+          facebook_url?: string | null
           first_name?: string | null
           founded_year?: number | null
           id?: string
+          instagram_url?: string | null
           investment_experience?: string | null
           last_name?: string | null
           license_number?: string | null
+          linkedin_url?: string | null
           logo_url?: string | null
           manager_about?: string | null
           manager_faqs?: Json | null
@@ -1041,6 +1052,7 @@ export type Database = {
           registration_number?: string | null
           risk_tolerance?: string | null
           team_members?: Json | null
+          twitter_url?: string | null
           updated_at?: string
           user_id?: string
           website?: string | null
