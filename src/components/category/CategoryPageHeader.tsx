@@ -13,7 +13,7 @@ const CategoryPageHeader: React.FC<CategoryPageHeaderProps> = ({ categoryName })
   return (
     <div className="bg-card p-8 rounded-xl border border-border mb-8">
       <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-center" itemProp="name">
-        {categoryName} Portugal Investment Funds
+        {categoryName} Portugal Golden Visa Investment Funds
       </h1>
       
       <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-center" itemProp="description">

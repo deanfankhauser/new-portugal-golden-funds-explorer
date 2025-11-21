@@ -131,7 +131,7 @@ const AlternativesHub: React.FC = () => {
       <section className="mb-12" aria-labelledby="page-title">
         <div className="max-w-3xl">
           <h1 id="page-title" className="text-3xl md:text-4xl font-bold text-foreground mb-4 leading-tight">
-            Find Alternative Investment Funds
+            Portugal Golden Visa Fund Alternatives Hub
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
             Discover similar Golden Visa eligible funds based on category, investment requirements, and performance metrics.

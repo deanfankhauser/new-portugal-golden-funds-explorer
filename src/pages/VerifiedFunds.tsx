@@ -55,7 +55,7 @@ const VerifiedFunds = () => {
           </div>
           
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
-            Verified Golden Visa Funds
+            Verified Portugal Golden Visa Investment Funds
           </h1>
           
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
