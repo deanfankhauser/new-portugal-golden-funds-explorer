@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Fund, FundTag } from '../../data/funds';
+import { Fund, FundTag } from '../../data/types/funds';
 import {
   Select,
   SelectContent,

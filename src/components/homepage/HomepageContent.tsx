@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Fund, FundTag, FundCategory } from '../../data/funds';
+import { Fund, FundTag, FundCategory } from '../../data/types/funds';
 import StreamlinedFilter from './StreamlinedFilter';
 import CategoryFilter from './CategoryFilter';
 import ManagerFilter from './ManagerFilter';

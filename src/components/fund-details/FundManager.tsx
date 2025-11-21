@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Building2, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';

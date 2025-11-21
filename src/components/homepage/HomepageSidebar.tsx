@@ -2,7 +2,7 @@
 import React from 'react';
 import StreamlinedFilter from './StreamlinedFilter';
 import CategoryFilter from './CategoryFilter';
-import { FundTag, FundCategory } from '../../data/funds';
+import { FundTag, FundCategory } from '../../data/types/funds';
 
 interface HomepageSidebarProps {
   selectedTags: FundTag[];
