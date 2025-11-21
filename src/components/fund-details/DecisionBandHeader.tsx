@@ -82,7 +82,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
           
           {/* Keyword-rich subheader */}
           <p className="text-xl font-semibold text-foreground/80">
-            Portugal Golden Visa Investment Fund
+            {fund.category} Portugal Golden Visa Investment Fund from {fund.managerName}
           </p>
           
           {/* Description with bold key terms */}
