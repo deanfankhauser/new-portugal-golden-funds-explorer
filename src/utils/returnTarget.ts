@@ -1,4 +1,4 @@
-import { Fund } from '../data/funds';
+import { Fund } from '../data/types/funds';
 
 export const getReturnTargetNumbers = (fund: Fund): { min?: number; max?: number } => {
   // Prioritize direct database fields
