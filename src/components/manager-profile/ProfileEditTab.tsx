@@ -39,6 +39,10 @@ const profileSchema = z.object({
   manager_name: z.string().trim().min(1, 'Manager name is required').max(200),
   description: z.string().trim().max(2000).optional(),
   website: z.string().trim().url('Must be a valid URL').optional().or(z.literal('')),
+  linkedin_url: z.string().trim().url('Must be a valid URL').optional().or(z.literal('')),
+  twitter_url: z.string().trim().url('Must be a valid URL').optional().or(z.literal('')),
+  facebook_url: z.string().trim().url('Must be a valid URL').optional().or(z.literal('')),
+  instagram_url: z.string().trim().url('Must be a valid URL').optional().or(z.literal('')),
   city: z.string().trim().max(100).optional(),
   country: z.string().trim().max(100).optional(),
   founded_year: z.number().int().min(1800).max(new Date().getFullYear()).optional().nullable(),
@@ -58,6 +62,10 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
   const [managerName, setManagerName] = useState(profile.manager_name || '');
   const [description, setDescription] = useState(profile.description || '');
   const [website, setWebsite] = useState(profile.website || '');
+  const [linkedinUrl, setLinkedinUrl] = useState(profile.linkedin_url || '');
+  const [twitterUrl, setTwitterUrl] = useState(profile.twitter_url || '');
+  const [facebookUrl, setFacebookUrl] = useState(profile.facebook_url || '');
+  const [instagramUrl, setInstagramUrl] = useState(profile.instagram_url || '');
   const [city, setCity] = useState(profile.city || '');
   const [country, setCountry] = useState(profile.country || '');
   const [foundedYear, setFoundedYear] = useState(profile.founded_year?.toString() || '');
@@ -293,6 +301,10 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
         manager_name: managerName,
         description: description || undefined,
         website: website || undefined,
+        linkedin_url: linkedinUrl || undefined,
+        twitter_url: twitterUrl || undefined,
+        facebook_url: facebookUrl || undefined,
+        instagram_url: instagramUrl || undefined,
         city: city || undefined,
         country: country || undefined,
         founded_year: foundedYear ? parseInt(foundedYear) : null,
@@ -323,6 +335,10 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
         manager_name: managerName.trim(),
         description: description.trim() || null,
         website: website.trim() || null,
+        linkedin_url: linkedinUrl.trim() || null,
+        twitter_url: twitterUrl.trim() || null,
+        facebook_url: facebookUrl.trim() || null,
+        instagram_url: instagramUrl.trim() || null,
         city: city.trim() || null,
         country: country.trim() || null,
         founded_year: foundedYear ? parseInt(foundedYear) : null,
@@ -476,6 +492,52 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
                 placeholder="2020"
                 min="1800"
                 max={new Date().getFullYear()}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="linkedin_url">LinkedIn URL</Label>
+              <Input
+                id="linkedin_url"
+                type="url"
+                value={linkedinUrl}
+                onChange={(e) => setLinkedinUrl(e.target.value)}
+                placeholder="https://linkedin.com/company/yourcompany"
+              />
+            </div>
+            <div>
+              <Label htmlFor="twitter_url">Twitter URL</Label>
+              <Input
+                id="twitter_url"
+                type="url"
+                value={twitterUrl}
+                onChange={(e) => setTwitterUrl(e.target.value)}
+                placeholder="https://twitter.com/yourcompany"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="facebook_url">Facebook URL</Label>
+              <Input
+                id="facebook_url"
+                type="url"
+                value={facebookUrl}
+                onChange={(e) => setFacebookUrl(e.target.value)}
+                placeholder="https://facebook.com/yourcompany"
+              />
+            </div>
+            <div>
+              <Label htmlFor="instagram_url">Instagram URL</Label>
+              <Input
+                id="instagram_url"
+                type="url"
+                value={instagramUrl}
+                onChange={(e) => setInstagramUrl(e.target.value)}
+                placeholder="https://instagram.com/yourcompany"
               />
             </div>
           </div>
