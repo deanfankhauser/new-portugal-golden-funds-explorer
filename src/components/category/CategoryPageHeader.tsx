@@ -17,24 +17,7 @@ const CategoryPageHeader: React.FC<CategoryPageHeaderProps> = ({ categoryName })
       </h1>
       
       <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-center" itemProp="description">
-        Explore {categoryName} investment funds for Golden Visa applications and compare available options.{' '}
-        <a 
-          href="https://www.movingto.com/portugal-golden-visa-funds" 
-          className="text-primary hover:text-primary/80 underline"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Browse All Portugal Golden Visa Funds →
-        </a>{' '}
-        or{' '}
-        <a 
-          href="https://movingto.com/pt/portugal-golden-visa" 
-          className="text-primary hover:text-primary/80 underline"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn more about Golden Visa requirements
-        </a>.
+        Explore {categoryName} investment funds for Golden Visa applications and compare available options.
       </p>
     </div>
   );
