@@ -3,6 +3,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { getFundsByCategory } from '../data/services/categories-service';
 import { getAllCategories } from '../data/services/categories-service';
+import { FundCategory } from '../data/types/funds';
 import { slugToCategory, categoryToSlug } from '@/lib/utils';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -92,7 +93,11 @@ const CategoryPage = () => {
     );
   }
 
-  const allFunds = matchingCategory ? getFundsByCategory(allDatabaseFunds, matchingCategory as any) : [];
+  const allFunds = useMemo(() => {
+    return matchingCategory 
+      ? getFundsByCategory(allDatabaseFunds, matchingCategory as FundCategory) 
+      : [];
+  }, [allDatabaseFunds, matchingCategory]);
   
   // Filter funds by verification status
   const funds = useMemo(() => {
