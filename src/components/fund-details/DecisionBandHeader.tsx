@@ -41,9 +41,6 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
         /Golden Visa/gi,
         '<a href="https://movingto.com/pt/portugal-golden-visa" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent/80 underline decoration-1 underline-offset-2">Golden Visa</a>'
       );
-      
-      // Add subtle "Browse all funds" link at the end
-      formatted += ' <a href="/" class="text-muted-foreground/70 hover:text-accent text-sm whitespace-nowrap transition-colors">Browse all funds →</a>';
     }
     
     return formatted;
@@ -80,9 +77,9 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
             {fund.name}
           </h1>
           
-          {/* Keyword-rich subheader */}
-          <p className="text-xl font-semibold text-foreground/80">
-            {fund.category} Portugal Golden Visa Investment Fund from {fund.managerName}
+          {/* Dynamic keyword-rich subheader */}
+          <p className="text-xl font-semibold text-foreground/80 leading-relaxed">
+            {fund.name} is a CMVM-regulated Portugal Golden Visa investment fund managed by {fund.managerName}, focusing on {fund.category.toLowerCase()} investments.
           </p>
           
           {/* Description with bold key terms */}
