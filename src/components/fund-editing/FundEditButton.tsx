@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 // import { Edit3 } from 'lucide-react';
 import { useFundEditing } from '@/hooks/useFundEditing';
 import { FundEditModal } from './FundEditModal';
-import { Fund } from '@/data/funds';
+import { Fund } from '@/data/types/funds';
 
 interface FundEditButtonProps {
   fund: Fund;
