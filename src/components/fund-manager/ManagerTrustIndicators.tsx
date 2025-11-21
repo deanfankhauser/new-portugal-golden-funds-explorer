@@ -1,6 +1,6 @@
 import React from 'react';
 import { Shield, CheckCircle, Info } from 'lucide-react';
-import { Fund } from '@/data/funds';
+import { Fund } from '@/data/types/funds';
 import { Badge } from '@/components/ui/badge';
 import { isFundGVEligible } from '@/data/services/gv-eligibility-service';
 
