@@ -25,7 +25,7 @@ const CategoryPage = () => {
   const navigate = useNavigate();
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
-  const { data: allFundsData, isLoading, isError, isFetching, error } = useAllFunds();
+  const { data: allFundsData, isLoading } = useAllFunds();
   
   const allDatabaseFunds = allFundsData || [];
   
@@ -40,51 +40,14 @@ const CategoryPage = () => {
     setHasMounted(true);
   }, []);
 
-  // Debug logging
-  console.log('CategoryPage Debug:', {
-    categorySlug,
-    isLoading,
-    isFetching,
-    isError,
-    hasData: !!allFundsData,
-    dataLength: allFundsData?.length,
-    category: category,
-    categoryExists
-  });
-
-  // Show loading state for ALL loading states (initial + refetching)
-  if (isLoading || isFetching) {
+  // Show loading state (matching TagPage pattern)
+  if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
         <main className="flex-1 py-6 md:py-8">
           <div className="container mx-auto px-4 max-w-7xl">
             <FundListSkeleton count={6} />
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  // If error and no data available, show error state
-  if (isError && !allFundsData) {
-    return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
-        <Header />
-        <main className="flex-1 py-6 md:py-8">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <div className="text-center py-12">
-              <h2 className="text-2xl font-semibold mb-3">Unable to load funds</h2>
-              <p className="text-muted-foreground mb-4">
-                There was an error loading the fund data. Please try refreshing the page.
-              </p>
-              {error && (
-                <p className="text-sm text-muted-foreground">
-                  Error: {error instanceof Error ? error.message : 'Unknown error'}
-                </p>
-              )}
-            </div>
           </div>
         </main>
         <Footer />
