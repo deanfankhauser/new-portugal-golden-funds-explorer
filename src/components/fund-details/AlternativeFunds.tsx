@@ -60,7 +60,7 @@ const AlternativeFundCard: React.FC<{ fund: Fund }> = ({ fund }) => {
           <Clock className="h-[18px] w-[18px] text-accent shrink-0" strokeWidth={2} />
           <div className="flex-1">
             <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Duration</span>
-            <span className="text-[15px] font-semibold text-foreground">{fund.term} years</span>
+            <span className="text-[15px] font-semibold text-foreground">{fund.term && fund.term > 0 ? `${fund.term} years` : 'N/A'}</span>
           </div>
         </div>
 

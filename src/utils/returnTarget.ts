@@ -34,6 +34,12 @@ export const getReturnTargetDisplay = (fund: Fund): string => {
   const { min, max } = getReturnTargetNumbers(fund);
   
   if (min != null && max != null) {
+    // If max is 0 or invalid, treat as single value
+    if (max <= 0 || max < min) {
+      const formatted = Number(min.toFixed(2)).toString();
+      return `${formatted}% p.a.`;
+    }
+    
     if (min === max) {
       // Format with max 2 decimal places, remove trailing zeros
       const formatted = Number(min.toFixed(2)).toString();

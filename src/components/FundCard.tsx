@@ -94,7 +94,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Term</p>
-              <p className="font-medium">{fund.term ? `${fund.term} years` : 'N/A'}</p>
+              <p className="font-medium">{fund.term && fund.term > 0 ? `${fund.term} years` : 'N/A'}</p>
             </div>
           </div>
 
