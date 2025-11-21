@@ -36,10 +36,6 @@ const CategoryPage = () => {
   // Check if the category exists
   const categoryExists = allCategories.includes(category as any);
 
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
-
   // Show loading state (matching TagPage pattern)
   if (isLoading) {
     return (
@@ -55,19 +51,26 @@ const CategoryPage = () => {
     );
   }
 
+  // Scroll to top when category changes
   useEffect(() => {
-    // Only redirect after component has mounted and data has loaded
-    if (hasMounted && !isLoading && !categoryExists && categorySlug) {
-      // If category doesn't exist, redirect to homepage
-      navigate('/');
-      return;
-    }
-    
-    // Scroll to top when category changes
-    if (categoryExists) {
-      window.scrollTo(0, 0);
-    }
-  }, [hasMounted, categoryExists, navigate, categorySlug, isLoading]);
+    window.scrollTo(0, 0);
+  }, [categorySlug]);
+
+  // Show empty state for non-existent categories (matching TagPage pattern)
+  if (!categoryExists && category) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <PageSEO pageType="category" categoryName={category} funds={[]} />
+        <Header />
+        <main className="flex-1 py-6 md:py-8">
+          <div className="container mx-auto px-4 max-w-7xl">
+            <CategoryPageEmptyState categoryName={category} />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   const allFunds = getFundsByCategory(allDatabaseFunds, category as any);
   
