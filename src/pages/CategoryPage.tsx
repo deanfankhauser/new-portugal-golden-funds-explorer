@@ -24,7 +24,6 @@ const CategoryPage = () => {
   const { category: categorySlug } = useParams<{ category: string }>();
   const navigate = useNavigate();
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
-  const [hasMounted, setHasMounted] = useState(false);
   const { data: allFundsData, isLoading } = useAllFunds();
   
   const allDatabaseFunds = allFundsData || [];
@@ -33,8 +32,18 @@ const CategoryPage = () => {
   const category = categorySlug ? slugToCategory(categorySlug) : '';
   const allCategories = getAllCategories(allDatabaseFunds);
   
+  // Debug logging
+  console.log('=== CategoryPage Debug ===');
+  console.log('1. categorySlug from URL:', categorySlug);
+  console.log('2. converted category:', category);
+  console.log('3. allDatabaseFunds length:', allDatabaseFunds.length);
+  console.log('4. allCategories:', allCategories);
+  console.log('5. isLoading:', isLoading);
+  
   // Check if the category exists
   const categoryExists = allCategories.includes(category as any);
+  console.log('6. categoryExists:', categoryExists);
+  console.log('========================');
 
   // Show loading state (matching TagPage pattern)
   if (isLoading) {
