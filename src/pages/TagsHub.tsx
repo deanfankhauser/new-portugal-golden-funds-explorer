@@ -41,9 +41,10 @@ const TagsHub = () => {
       <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1" itemScope itemType="https://schema.org/CollectionPage">
         <TagsHubBreadcrumbs />
         <TagsHubHeader />
+        <TagsHubTagsList allTags={allTags} />
         
         {/* Link to Main Hub */}
-        <div className="mb-8 text-center">
+        <div className="mt-8 text-center">
           <a 
             href="https://www.movingto.com/portugal-golden-visa-funds" 
             target="_blank" 
@@ -56,7 +57,6 @@ const TagsHub = () => {
             </svg>
           </a>
         </div>
-        <TagsHubTagsList allTags={allTags} />
       </main>
       
       <Footer />
