@@ -6,7 +6,7 @@ interface TeamMember {
   name: string;
   role: string;
   bio?: string;
-  photo?: string;
+  photoUrl?: string;
   email?: string;
   linkedin?: string;
 }
@@ -46,7 +46,7 @@ const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, te
             >
               <div className="flex flex-col items-center text-center gap-4">
                 <Avatar className="h-24 w-24 border-2 border-primary/10 ring-4 ring-primary/5 group-hover:ring-primary/10 transition-all">
-                  <AvatarImage src={member.photo} alt={member.name} />
+                  <AvatarImage src={member.photoUrl} alt={member.name} />
                   <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xl">
                     {getInitials(member.name)}
                   </AvatarFallback>
