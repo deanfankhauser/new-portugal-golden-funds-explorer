@@ -17,6 +17,17 @@ const FundDescription: React.FC<FundDescriptionProps> = ({ description }) => {
           <p className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">
             {description}
           </p>
+          <p className="text-base text-muted-foreground leading-relaxed mt-4">
+            For broader context, see our full guide to{' '}
+            <a 
+              href="https://www.movingto.com/portugal-golden-visa-funds" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-accent hover:text-accent/80 underline decoration-1 underline-offset-2"
+            >
+              Portugal Golden Visa investment funds
+            </a>.
+          </p>
         </div>
       </CardContent>
     </Card>
