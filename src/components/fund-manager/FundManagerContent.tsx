@@ -9,6 +9,8 @@ import ManagerHighlightsSection from './ManagerHighlightsSection';
 import ManagerFAQsSection from './ManagerFAQsSection';
 import ManagerStatsSection from './ManagerStatsSection';
 import ManagerContactSection from './ManagerContactSection';
+import { ManagerContactCTA } from './ManagerContactCTA';
+import { ManagerEnquirySection } from './ManagerEnquirySection';
 import { Profile } from '@/types/profile';
 import { Badge } from '@/components/ui/badge';
 
@@ -99,6 +101,9 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
         <ManagerContactSection managerProfile={managerProfile} />
       )}
 
+      {/* Contact CTA */}
+      <ManagerContactCTA managerName={managerName} />
+
       {/* Funds List */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30 border-t border-border">
         <div className="max-w-7xl mx-auto">
@@ -141,6 +146,18 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
           managerName={managerName}
           faqs={managerProfile.manager_faqs}
         />
+      )}
+
+      {/* Contact Form */}
+      {managerProfile && (
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-background">
+          <div className="max-w-4xl mx-auto">
+            <ManagerEnquirySection 
+              managerProfile={managerProfile}
+              managerName={managerName}
+            />
+          </div>
+        </section>
       )}
 
     </div>
