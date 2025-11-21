@@ -11,6 +11,21 @@ const Disclaimer = () => {
       <Header />
       
       <main className="container mx-auto px-4 py-8 flex-1">
+        {/* Link to Main Hub */}
+        <div className="mb-8 text-center">
+          <a 
+            href="https://www.movingto.com/portugal-golden-visa-funds" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
+          >
+            Browse All Portugal Golden Visa Funds
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+        
         <div className="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold mb-6">Legal Disclaimer</h1>
           

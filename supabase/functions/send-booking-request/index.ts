@@ -1,6 +1,14 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { 
+  BRAND_COLORS, 
+  COMPANY_INFO, 
+  generateEmailWrapper, 
+  generateCTAButton, 
+  generateContentCard,
+  generatePlainTextEmail 
+} from "../_shared/email-templates.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -74,10 +82,42 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
 
-    // Send email using Gmail SMTP
-    const textContent = `Book Your 15-Minute Call - ${fundName} Discussion
+    // Create branded email content
+    const bodyContent = `
+      <h2 style="color: ${BRAND_COLORS.bordeaux}; margin-top: 0;">Thank you for your interest in ${fundName}</h2>
+      
+      ${generateContentCard(`
+        <p style="margin: 0; color: ${BRAND_COLORS.textDark};">We're excited to discuss this investment opportunity with you. Our team is ready to answer your questions and provide detailed insights about ${fundName}.</p>
+      `, 'bronze')}
+      
+      <div style="background: white; padding: 20px; border-radius: 6px; margin: 20px 0;">
+        <h3 style="margin-top: 0; color: ${BRAND_COLORS.bordeaux};">What to expect in your call:</h3>
+        <ul style="margin: 0; padding-left: 20px; line-height: 1.8; color: ${BRAND_COLORS.textDark};">
+          <li>Detailed overview of ${fundName}</li>
+          <li>Investment strategy and risk assessment</li>
+          <li>Performance analysis and projections</li>
+          <li>Q&A session tailored to your needs</li>
+        </ul>
+      </div>
+      
+      ${generateCTAButton('Schedule Your Call Now', `https://movingto.com/contact?utm_source=funds-app&utm_medium=email&utm_campaign=booking-request&fund=${encodeURIComponent(fundName)}`, 'bordeaux')}
+      
+      <p style="margin: 0; color: ${BRAND_COLORS.textMuted}; font-size: 14px; line-height: 1.6;">
+        This email was sent because you requested a consultation for ${fundName}.<br>
+        If you have any questions, please contact us at info@movingto.com
+      </p>
+    `;
 
-Thank you for your interest in ${fundName}
+    const html = generateEmailWrapper(
+      `Book Your 15-Minute Call - ${fundName} Discussion`,
+      bodyContent,
+      recipientEmail
+    );
+
+    // Plain text version
+    const textContent = generatePlainTextEmail(
+      `Book Your 15-Minute Call - ${fundName} Discussion`,
+      `Thank you for your interest in ${fundName}
 
 We're excited to discuss this investment opportunity with you. Our team is ready to answer your questions and provide detailed insights about ${fundName}.
 
@@ -87,50 +127,15 @@ What to expect in your call:
 - Performance analysis and projections
 - Q&A session tailored to your needs
 
-Schedule Your Call Now: https://movingto.com/contact?utm_source=funds-app&utm_medium=email&utm_campaign=booking-request&fund=${encodeURIComponent(fundName)}
-
 This email was sent because you requested a consultation for ${fundName}.
-If you have any questions, please contact us at info@movingto.com`;
-
-    const html = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Book Your Call</title>
-</head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-<div style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-<h1 style="margin: 0; font-size: 24px;">Book Your 15-Minute Call</h1>
-<p style="margin: 10px 0 0 0; opacity: 0.9;">${fundName} Discussion</p>
-</div>
-<div style="background: #f8fafc; padding: 30px; border-radius: 0 0 8px 8px;">
-<h2 style="color: #1e293b; margin-top: 0;">Thank you for your interest in ${fundName}</h2>
-<div style="background: white; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #2563eb;">
-<p style="margin: 0;">We're excited to discuss this investment opportunity with you. Our team is ready to answer your questions and provide detailed insights about ${fundName}.</p>
-</div>
-<div style="background: white; padding: 20px; border-radius: 6px; margin: 20px 0;">
-<h3 style="margin-top: 0; color: #1e293b;">What to expect in your call:</h3>
-<ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
-<li>Detailed overview of ${fundName}</li>
-<li>Investment strategy and risk assessment</li>
-<li>Performance analysis and projections</li>
-<li>Q&A session tailored to your needs</li>
-</ul>
-</div>
-<div style="text-align: center; margin: 30px 0;">
-<a href="https://movingto.com/contact?utm_source=funds-app&utm_medium=email&utm_campaign=booking-request&fund=${encodeURIComponent(fundName)}" style="background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: 500;">Schedule Your Call Now</a>
-</div>
-<div style="text-align: center; padding: 20px 0; border-top: 1px solid #e2e8f0; margin-top: 30px;">
-<p style="margin: 0; color: #64748b; font-size: 14px;">This email was sent because you requested a consultation for ${fundName}.<br>If you have any questions, please contact us at info@movingto.com</p>
-</div>
-</div>
-</body>
-</html>`;
+If you have any questions, please contact us at info@movingto.com`,
+      'Schedule Your Call Now',
+      `https://movingto.com/contact?utm_source=funds-app&utm_medium=email&utm_campaign=booking-request&fund=${encodeURIComponent(fundName)}`
+    );
 
     // Send the booking request email
     await client.send({
-      from: `Investment Funds Platform <${gmailEmail}>`,
+      from: `${COMPANY_INFO.tradingName} <${gmailEmail}>`,
       to: recipientEmail,
       subject: `Book Your Call - ${fundName} Discussion`,
       html,

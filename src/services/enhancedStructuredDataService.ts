@@ -1,5 +1,5 @@
 
-import { Fund } from '../data/funds';
+import { Fund } from '../data/types/funds';
 import { StructuredDataSchema } from './structuredDataService';
 import { URL_CONFIG } from '../utils/urlConfig';
 

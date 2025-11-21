@@ -1,22 +1,21 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Fund } from '../data/funds';
+import { Fund } from '../data/types/funds';
 import { isFundGVEligible } from '../data/services/gv-eligibility-service';
 import { getFundType } from '../utils/fundTypeUtils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GitCompare, PieChart, Globe, Tag, User, Euro } from 'lucide-react';
+import { PieChart, Euro, CheckCircle2, GitCompare } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
-import IntroductionButton from './fund-details/IntroductionButton';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
-import DataFreshnessIndicator from './common/DataFreshnessIndicator';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
 
 import { DATA_AS_OF_LABEL } from '../utils/constants';
 import { SaveFundButton } from './common/SaveFundButton';
+import { CompanyLogo } from './shared/CompanyLogo';
+import { formatManagementFee, formatPerformanceFee } from '../utils/feeFormatters';
 
 interface FundListItemProps {
   fund: Fund;
@@ -24,12 +23,12 @@ interface FundListItemProps {
 
 const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
   const { addToComparison, removeFromComparison, isInComparison } = useComparison();
-  
   const isSelected = isInComparison(fund.id);
   const isGVEligible = isFundGVEligible(fund);
-  
+
   const handleCompareClick = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation to fund details
+    e.preventDefault();
+    e.stopPropagation();
     
     if (isSelected) {
       removeFromComparison(fund.id);
@@ -38,125 +37,158 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
     }
   };
 
-  // Get the main geographic allocation (first one)
-  const mainGeoAllocation = fund.geographicAllocation && fund.geographicAllocation.length > 0 
-    ? fund.geographicAllocation[0] 
-    : null;
-
   return (
-    <Card className="border rounded-xl hover:shadow-lg transition-all duration-200 bg-card w-full group">
-      <CardContent className="p-6">
+    <Card className="border border-border/60 rounded-xl bg-card w-full group">
+      <CardContent className="p-6 lg:p-10">
         {/* Header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex-1 min-w-0">
-            <h3 className="text-xl font-bold leading-tight mb-2 group-hover:text-primary transition-colors">
-              <Link to={`/${fund.id}`} className="block" onClick={() => window.scrollTo(0, 0)}>
-                {fund.name}
-              </Link>
-            </h3>
-            <div className="flex items-center gap-2">
-              {isGVEligible && (
-                <Badge variant="default" className="text-xs font-medium">
-                  GV Eligible
-                </Badge>
-              )}
-              <Badge 
-                variant={fund.fundStatus === 'Open' ? 'default' : fund.fundStatus === 'Closing Soon' ? 'destructive' : 'secondary'} 
-                className="text-xs"
-              >
-                {fund.fundStatus}
+        <div className="flex items-start justify-between mb-3">
+      <div className="flex items-start gap-4 flex-1">
+        <CompanyLogo managerName={fund.managerName} size="sm" className="mt-1" />
+        <div className="flex-1">
+          <Link to={`/${fund.id}`} className="block" onClick={() => window.scrollTo(0, 0)}>
+            <h2 className="text-[28px] font-semibold text-foreground mb-3 tracking-tight">
+              {fund.name}
+            </h2>
+          </Link>
+        <div className="flex items-center gap-2 flex-wrap">
+          {fund.isVerified && (
+            <Link to="/verification-program" onClick={(e) => e.stopPropagation()} className="hover:opacity-80 transition-opacity">
+              <Badge variant="outline" className="bg-success/10 text-success border-success/20 px-3 py-1 text-[13px] font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
+                Verified
               </Badge>
-            </div>
-          </div>
-          <DataFreshnessIndicator fund={fund} variant="compact" />
+            </Link>
+          )}
+          {fund.isVerified && isGVEligible && (
+            <Badge variant="outline" className="bg-primary/8 text-primary border-primary/20 px-3 py-1 text-[13px] font-medium">
+              GV Eligible
+            </Badge>
+          )}
+          <Badge 
+            variant="outline"
+            className="bg-muted/40 text-muted-foreground border-border/50 px-2.5 py-0.5 text-[12px] font-medium"
+          >
+            {fund.fundStatus}
+          </Badge>
+        </div>
+        </div>
+      </div>
         </div>
         
         {/* Description */}
-        <p className="text-muted-foreground mb-6 line-clamp-2">{fund.description}</p>
+        <p className="text-[16px] leading-relaxed text-muted-foreground mb-8 line-clamp-2 max-w-[90%]">
+          {fund.description}
+        </p>
         
         {/* Key Metrics Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
           {/* Minimum Investment */}
-          <div className="bg-gradient-to-br from-primary/10 to-primary/5 p-4 rounded-xl border border-primary/20">
+          <div className="bg-muted/20 border border-border/40 rounded-[10px] p-6">
             <div className="flex items-center gap-2 mb-2">
-              <Euro className="w-4 h-4 text-primary" />
-              <span className="text-xs font-semibold text-muted-foreground tracking-wide">MINIMUM INVESTMENT</span>
+              <Euro className="w-3.5 h-3.5 text-muted-foreground/60" />
+              <span className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground">
+                Minimum Investment
+              </span>
             </div>
-            <p className="text-2xl font-bold text-primary">
-              €{fund.minimumInvestment?.toLocaleString() || 'Not specified'}
+            <p className="text-[24px] font-semibold text-foreground tracking-tight leading-none">
+              €{fund.minimumInvestment?.toLocaleString() || '—'}
             </p>
           </div>
           
           {/* Target Return */}
-          <div className="bg-gradient-to-br from-accent/10 to-accent/5 p-4 rounded-xl border border-accent/20">
+          <div className="bg-muted/20 border border-border/40 rounded-[10px] p-6">
             <div className="flex items-center gap-2 mb-2">
-              <PieChart className="w-4 h-4 text-accent" />
-              <span className="text-xs font-semibold text-muted-foreground tracking-wide">TARGET ANNUAL RETURN</span>
+              <PieChart className="w-3.5 h-3.5 text-muted-foreground/60" />
+              <span className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground">
+                Target Return
+              </span>
             </div>
-            <p className="text-2xl font-bold text-accent">
+            <p className="text-[24px] font-semibold text-foreground tracking-tight leading-none">
               {getReturnTargetDisplay(fund)}
             </p>
           </div>
         </div>
 
         {/* Structure & Redemption */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div>
-            <h4 className="text-xs font-semibold text-muted-foreground tracking-wide mb-2">FUND STRUCTURE</h4>
-            <div className="flex items-center gap-2">
-              <Badge variant={getFundType(fund) === 'Closed-End' ? "outline" : "secondary"} className="font-medium">
-                {getFundType(fund) === 'Open-Ended' ? "Open-ended" : "Closed-ended"}
-              </Badge>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 pb-8 border-b border-border/60">
+          <div className="flex flex-col gap-1">
+            <h4 className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground mb-0">
+              Fund Structure
+            </h4>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-[16px] font-medium text-foreground">
+                {getFundType(fund) === 'Open-Ended' ? 'Open-ended' : 'Closed-ended'}
+              </span>
               {getFundType(fund) === 'Closed-End' && fund.term > 0 && (
-                <span className="text-sm text-muted-foreground">({fund.term} years)</span>
+                <span className="text-[14px] text-muted-foreground">({fund.term} years)</span>
               )}
             </div>
           </div>
           
-          <div>
-            <h4 className="text-xs font-semibold text-muted-foreground tracking-wide mb-2">REDEMPTION TERMS</h4>
+          <div className="flex flex-col gap-1">
+            <h4 className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground mb-0">
+              Redemption Terms
+            </h4>
             {fund.redemptionTerms ? (
-              <div className="space-y-1">
+              <div className="space-y-0.5 mt-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-foreground">{fund.redemptionTerms.frequency}</span>
+                  <span className="text-[16px] font-medium text-foreground">
+                    {fund.redemptionTerms.frequency}
+                  </span>
                   {!fund.redemptionTerms.redemptionOpen && (
-                    <Badge variant="destructive" className="text-xs">Closed</Badge>
+                    <Badge variant="outline" className="text-[11px] px-2 py-0">Closed</Badge>
                   )}
                 </div>
                 {fund.redemptionTerms.noticePeriod && fund.redemptionTerms.noticePeriod > 0 && (
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-[14px] text-muted-foreground mt-0.5">
                     {fund.redemptionTerms.noticePeriod} days notice required
                   </p>
                 )}
               </div>
             ) : (
-              <span className="text-sm text-muted-foreground">End of term only</span>
+              <span className="text-[16px] font-medium text-foreground mt-1">N/A</span>
             )}
           </div>
         </div>
 
         {/* Footer: Fees & Actions */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-4 border-t border-border/50">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           {/* Fees */}
-          <div className="text-sm text-muted-foreground">
-            <span>Management: <strong className="text-foreground">{fund.managementFee}%</strong></span>
-            <span className="mx-3">•</span>
-            <span>Performance: <strong className="text-foreground">{fund.performanceFee}%</strong></span>
+          <div className="flex items-center gap-6 text-[14px] text-muted-foreground">
+            <div className="flex items-center gap-1.5">
+              <span>Management:</span>
+              <span className="font-medium text-foreground">{formatManagementFee(fund.managementFee)}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span>Performance:</span>
+              <span className="font-medium text-foreground">{formatPerformanceFee(fund.performanceFee)}</span>
+            </div>
           </div>
           
           {/* Action Buttons */}
-          <div className="flex items-center gap-2">
-            <SaveFundButton fundId={fund.id} showText={false} size="sm" />
-            <IntroductionButton variant="compact" />
+          <div className="flex items-center gap-3">
+            <SaveFundButton fundId={fund.id} showText={false} size="md" variant="outline" className="h-11 w-11" />
             <Button 
-              variant={isSelected ? "default" : "outline"}
-              size="sm"
-              className="font-medium"
+              variant="outline"
+              size="icon"
               onClick={handleCompareClick}
+              title={isSelected ? 'Remove from comparison' : 'Add to comparison'}
+              className={`h-11 w-11 ${isSelected ? 'bg-primary text-primary-foreground' : ''}`}
             >
-              <GitCompare className="mr-1.5 h-3.5 w-3.5" />
-              {isSelected ? 'Added' : 'Compare'}
+              <GitCompare className="h-4 w-4" />
             </Button>
+            <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
+              <Button 
+                variant="default"
+                size="default"
+                className="font-medium bg-primary hover:bg-primary/90 h-11"
+              >
+                See more
+                <svg className="ml-2 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/>
+                </svg>
+              </Button>
+            </Link>
           </div>
         </div>
       </CardContent>

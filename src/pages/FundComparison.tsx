@@ -1,6 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -8,13 +9,43 @@ import ComparisonTable from '../components/comparison/ComparisonTable';
 import FundComparisonBreadcrumbs from '../components/comparison/FundComparisonBreadcrumbs';
 import RelatedComparisons from '../components/comparison/RelatedComparisons';
 import FundComparisonFAQ from '../components/comparison/FundComparisonFAQ';
-import { getComparisonBySlug } from '../data/services/comparison-service';
+import { parseComparisonSlug } from '../data/services/comparison-service';
 import { normalizeComparisonSlug, isCanonicalComparisonSlug } from '../utils/comparisonUtils';
+import { useAllFunds } from '@/hooks/useFundsQuery';
 import { Card, CardContent } from '@/components/ui/card';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
+import type { Fund } from '@/data/types/funds';
 
-const FundComparison = () => {
-  const { slug } = useParams<{ slug: string }>();
+interface FundComparisonProps {
+  initialSlug?: string;
+}
+
+const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug }) => {
+  const { slug: routerSlug } = useParams<{ slug: string }>();
+  const queryClient = useQueryClient();
+  
+  // During SSR, directly access prefetched cache data
+  // During client-side, use the hook normally
+  const isSSR = typeof window === 'undefined';
+  
+  // Use initialSlug during SSR, routerSlug on client
+  const slug = isSSR ? initialSlug : routerSlug;
+  
+  let allFunds: Fund[] | undefined;
+  let isLoading = false;
+  let error = null;
+  
+  if (isSSR) {
+    // SSR: Direct cache access
+    allFunds = queryClient.getQueryData<Fund[]>(['funds-all']);
+    console.log('🔥 SSR FundComparison: slug=%s, funds-all length=%s', slug, allFunds?.length ?? 'undefined');
+  } else {
+    // Client-side: Use React Query hook
+    const queryResult = useAllFunds();
+    allFunds = queryResult.data;
+    isLoading = queryResult.isLoading;
+    error = queryResult.error;
+  }
   
   // Check if slug needs canonicalization (redirect to normalized version)
   if (slug && !isCanonicalComparisonSlug(slug)) {
@@ -22,17 +53,42 @@ const FundComparison = () => {
     return <Navigate to={`/compare/${normalizedSlug}`} replace />;
   }
   
-  // Get the comparison data using the slug
-  const comparisonData = slug ? getComparisonBySlug(slug) : null;
+  // Parse slug to get fund IDs
+  const slugData = slug ? parseComparisonSlug(slug) : null;
   
+  // Find the two funds from database data
+  const fund1 = slugData && allFunds ? allFunds.find(f => f.id === slugData.fund1Id) : null;
+  const fund2 = slugData && allFunds ? allFunds.find(f => f.id === slugData.fund2Id) : null;
+  
+  const comparisonData = fund1 && fund2 ? { fund1, fund2 } : null;
   const comparisonTitle = slug?.replace(/-/g, ' ') || '';
   
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
 
-  // If no comparison data found, show error
-  if (!comparisonData) {
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <PageSEO pageType="fund-comparison" comparisonTitle={comparisonTitle} comparisonSlug={slug} />
+        
+        <Header />
+        
+        <main className="container mx-auto px-4 py-8 flex-1 flex items-center justify-center">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Loader2 className="w-6 h-6 animate-spin" />
+            <span>Loading comparison...</span>
+          </div>
+        </main>
+        
+        <Footer />
+      </div>
+    );
+  }
+
+  // If no comparison data found or error, show error
+  if (error || !comparisonData) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <PageSEO pageType="404" />
@@ -64,6 +120,21 @@ const FundComparison = () => {
       
       <main className="container mx-auto px-4 py-8 flex-1">
         <FundComparisonBreadcrumbs fund1={comparisonData.fund1} fund2={comparisonData.fund2} />
+        
+        {/* Link to Main Hub */}
+        <div className="mb-6 text-center">
+          <a 
+            href="https://www.movingto.com/portugal-golden-visa-funds" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
+          >
+            Browse All Portugal Golden Visa Funds
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">
             {comparisonData.fund1.name} vs {comparisonData.fund2.name}: Portugal Golden Visa Fund Comparison

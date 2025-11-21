@@ -33,8 +33,7 @@ async function loadDevSchemaColumns(dev: any): Promise<Record<string, string[]>>
   }
   await Promise.all([
     probe('funds'),
-    probe('manager_profiles'),
-    probe('investor_profiles'),
+    probe('profiles'),
     probe('admin_users'),
     probe('fund_edit_suggestions'),
     probe('fund_edit_history'),
@@ -132,8 +131,7 @@ Deno.serve(async (req) => {
 
     const results: Record<string, number | string[]> = {
       funds: 0,
-      manager_profiles: 0,
-      investor_profiles: 0,
+      profiles: 0,
       admin_users: 0,
       fund_edit_suggestions: 0,
       fund_edit_history: 0,
@@ -341,8 +339,7 @@ Deno.serve(async (req) => {
 
     await Promise.all([
       copyTable('funds'),
-      copyTable('manager_profiles', { uniqueKey: 'email' }),
-      copyTable('investor_profiles'),
+      copyTable('profiles', { uniqueKey: 'email' }),
       copyTable('admin_users'),
       copyTable('fund_edit_suggestions'),
       copyTable('fund_edit_history'),
@@ -350,7 +347,7 @@ Deno.serve(async (req) => {
       copyStorageFiles(),
     ])
 
-    const total = ['funds','manager_profiles','investor_profiles','admin_users','fund_edit_suggestions','fund_edit_history','saved_funds','storage_files']
+    const total = ['funds','profiles','admin_users','fund_edit_suggestions','fund_edit_history','saved_funds','storage_files']
       .reduce((sum, t) => sum + (Number(results[t]) || 0), 0)
 
     return new Response(

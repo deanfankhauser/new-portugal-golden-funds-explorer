@@ -1,10 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { funds } from '../data/services/funds-service';
-import { getAllCategories } from '../data/services/categories-service';
-import { getAllTags } from '../data/services/tags-service';
-import { getAllFundManagers } from '../data/services/managers-service';
-import { getAllComparisonSlugs } from '../data/services/comparison-service';
+import { fetchAllBuildDataCached } from '../lib/build-data-fetcher';
+import { generateComparisonsFromFunds } from '../data/services/comparison-service';
 import { categoryToSlug, tagToSlug, managerToSlug } from '../lib/utils';
 import { URL_CONFIG } from '../utils/urlConfig';
 
@@ -36,13 +33,24 @@ export class ComprehensiveSitemapService {
    * Validate and normalize URL
    */
   private static normalizeURL(url: string): string {
+    const PRODUCTION_BASE_URL = 'https://funds.movingto.com';
+    
     try {
       const urlObj = new URL(url);
-      return urlObj.toString();
+      let normalized = urlObj.toString();
+      // Remove trailing slash (except for homepage)
+      if (normalized.endsWith('/') && normalized !== PRODUCTION_BASE_URL + '/') {
+        normalized = normalized.slice(0, -1);
+      }
+      return normalized;
     } catch {
       // If not absolute, assume it's relative and prepend base URL
-      const cleanUrl = url.startsWith('/') ? url : `/${url}`;
-      return `${URL_CONFIG.BASE_URL}${cleanUrl}`;
+      let cleanUrl = url.startsWith('/') ? url : `/${url}`;
+      // Remove trailing slash (except for homepage)
+      if (cleanUrl.endsWith('/') && cleanUrl !== '/') {
+        cleanUrl = cleanUrl.slice(0, -1);
+      }
+      return `${PRODUCTION_BASE_URL}${cleanUrl}`;
     }
   }
 
@@ -98,8 +106,10 @@ ${urlElements}
    * Generate sitemap index XML
    */
   private static generateSitemapIndexXML(sitemapFiles: Array<{ filename: string; lastmod: string }>): string {
+    const PRODUCTION_BASE_URL = 'https://funds.movingto.com';
+    
     const sitemapElements = sitemapFiles.map(sitemap => {
-      const sitemapURL = `${URL_CONFIG.BASE_URL}/${sitemap.filename}`;
+      const sitemapURL = `${PRODUCTION_BASE_URL}/${sitemap.filename}`;
       return `  <sitemap>
     <loc>${this.escapeXML(sitemapURL)}</loc>
     <lastmod>${this.formatDate(sitemap.lastmod)}</lastmod>
@@ -115,32 +125,40 @@ ${sitemapElements}
   /**
    * Collect all URLs from the application
    */
-  private static collectAllURLs(): SitemapURL[] {
+  private static async collectAllURLs(): Promise<SitemapURL[]> {
     const urls: SitemapURL[] = [];
     const currentDate = new Date().toISOString().split('T')[0];
+    
+    // CRITICAL: Always use production URL for sitemaps, regardless of environment
+    const PRODUCTION_BASE_URL = 'https://funds.movingto.com';
+    
+    console.log(`🗺️  Generating sitemap URLs with BASE_URL: ${PRODUCTION_BASE_URL}`);
+    
+    // Fetch all data from database (cached)
+    console.log('📊 Fetching data from database for sitemap generation...');
+    const { funds, categories, tags, managers } = await fetchAllBuildDataCached();
+    console.log(`✅ Loaded ${funds.length} funds, ${categories.length} categories, ${tags.length} tags, ${managers.length} managers from database`);
 
     // Homepage
     urls.push({
-      loc: URL_CONFIG.BASE_URL,
+      loc: PRODUCTION_BASE_URL,
       lastmod: currentDate,
       changefreq: 'daily',
       priority: 1.0
     });
 
-    // Static pages
+    // Static pages (excluding noindex pages like /saved-funds)
     const staticPages = [
-      { path: '/index', priority: 0.9, changefreq: 'daily' as const },
       { path: '/about', priority: 0.6, changefreq: 'monthly' as const },
       { path: '/disclaimer', priority: 0.3, changefreq: 'monthly' as const },
       { path: '/privacy', priority: 0.3, changefreq: 'monthly' as const },
       { path: '/faqs', priority: 0.7, changefreq: 'monthly' as const },
-      { path: '/roi-calculator', priority: 0.6, changefreq: 'monthly' as const },
-      { path: '/saved-funds', priority: 0.6, changefreq: 'weekly' as const }
+      { path: '/roi-calculator', priority: 0.6, changefreq: 'monthly' as const }
     ];
 
     staticPages.forEach(page => {
       urls.push({
-        loc: `${URL_CONFIG.BASE_URL}${page.path}`,
+        loc: `${PRODUCTION_BASE_URL}${page.path}`,
         lastmod: currentDate,
         changefreq: page.changefreq,
         priority: page.priority
@@ -159,7 +177,7 @@ ${sitemapElements}
 
     hubPages.forEach(hub => {
       urls.push({
-        loc: `${URL_CONFIG.BASE_URL}${hub.path}`,
+        loc: `${PRODUCTION_BASE_URL}${hub.path}`,
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: hub.priority
@@ -167,115 +185,134 @@ ${sitemapElements}
     });
 
     // Fund detail pages
-    console.log(`🔍 Generating ${funds.length} fund pages + ${funds.length} alternatives pages...`);
     funds.forEach(fund => {
       urls.push({
-        loc: URL_CONFIG.buildFundUrl(fund.id),
+        loc: `${PRODUCTION_BASE_URL}/${fund.id}`,
         lastmod: fund.dateModified || currentDate,
         changefreq: 'weekly',
         priority: fund.fundStatus === 'Open' ? 0.9 : fund.fundStatus === 'Closing Soon' ? 0.95 : 0.8
       });
-
-      // Fund alternatives pages
-      urls.push({
-        loc: `${URL_CONFIG.buildFundUrl(fund.id)}/alternatives`,
-        lastmod: fund.dateModified || currentDate,
-        changefreq: 'weekly',
-        priority: 0.8
-      });
     });
-    console.log(`✅ Added ${funds.length * 2} fund-related pages to sitemap`);
 
     // Category pages
     try {
-      const categories = getAllCategories();
-      console.log(`🔍 Generating ${categories.length} category pages...`);
       categories.forEach(category => {
+        const slug = categoryToSlug(category);
         urls.push({
-          loc: URL_CONFIG.buildCategoryUrl(category),
+          loc: `${PRODUCTION_BASE_URL}/categories/${slug}`,
           lastmod: currentDate,
           changefreq: 'weekly',
           priority: 0.8
         });
       });
-      console.log(`✅ Added ${categories.length} category pages to sitemap`);
     } catch (error) {
-      console.error('❌ Failed to generate category URLs:', error);
+      console.warn('Failed to generate category URLs:', error);
     }
 
     // Tag pages
     try {
-      const tags = getAllTags();
-      console.log(`🔍 Generating ${tags.length} tag pages...`);
       tags.forEach(tag => {
+        const slug = tagToSlug(tag);
         urls.push({
-          loc: URL_CONFIG.buildTagUrl(tag),
+          loc: `${PRODUCTION_BASE_URL}/tags/${slug}`,
           lastmod: currentDate,
           changefreq: 'weekly',
           priority: 0.7
         });
       });
-      console.log(`✅ Added ${tags.length} tag pages to sitemap`);
     } catch (error) {
-      console.error('❌ Failed to generate tag URLs:', error);
+      console.warn('Failed to generate tag URLs:', error);
     }
 
     // Manager pages
     try {
-      const managers = getAllFundManagers();
-      console.log(`🔍 Generating ${managers.length} manager pages...`);
       managers.forEach(manager => {
+        const slug = managerToSlug(manager.name);
         urls.push({
-          loc: URL_CONFIG.buildManagerUrl(manager.name),
+          loc: `${PRODUCTION_BASE_URL}/manager/${slug}`,
           lastmod: currentDate,
           changefreq: 'weekly',
           priority: 0.8
         });
       });
-      console.log(`✅ Added ${managers.length} manager pages to sitemap`);
     } catch (error) {
-      console.error('❌ Failed to generate manager URLs:', error);
+      console.warn('Failed to generate manager URLs:', error);
     }
 
-    // Comparison pages - ALL fund combinations
+    // Comparison pages
     try {
-      const comparisonSlugs = getAllComparisonSlugs();
-      console.log(`🔍 Generating ${comparisonSlugs.length} comparison pages...`);
-      comparisonSlugs.forEach(slug => {
+      const comparisons = generateComparisonsFromFunds(funds);
+      comparisons.forEach(comparison => {
         urls.push({
-          loc: URL_CONFIG.buildComparisonUrl(slug),
+          loc: `${PRODUCTION_BASE_URL}/compare/${comparison.slug}`,
           lastmod: currentDate,
           changefreq: 'weekly',
           priority: 0.85
         });
       });
-      console.log(`✅ Added ${comparisonSlugs.length} comparison pages to sitemap`);
     } catch (error) {
-      console.error('❌ CRITICAL: Failed to generate comparison URLs:', error);
-      throw error; // Don't silently fail
+      console.warn('Failed to generate comparison URLs:', error);
     }
 
     return urls;
   }
 
   /**
+   * Extract canonical URL from HTML content
+   */
+  private static extractCanonicalURL(htmlContent: string): string | null {
+    const canonicalMatch = htmlContent.match(/<link\s+rel=["']canonical["']\s+href=["']([^"']+)["']/i);
+    return canonicalMatch ? canonicalMatch[1] : null;
+  }
+
+  /**
+   * Check if a page has a non-self-referencing canonical tag
+   * Returns true if the page should be excluded from sitemap
+   */
+  private static hasNonSelfReferencingCanonical(htmlPath: string, expectedURL: string): boolean {
+    try {
+      const htmlContent = fs.readFileSync(htmlPath, 'utf-8');
+      const canonicalURL = this.extractCanonicalURL(htmlContent);
+      
+      if (!canonicalURL) {
+        return false; // No canonical tag, include in sitemap
+      }
+      
+      // Normalize both URLs for comparison (remove trailing slashes, ensure lowercase)
+      const normalizedCanonical = canonicalURL.toLowerCase().replace(/\/$/, '');
+      const normalizedExpected = expectedURL.toLowerCase().replace(/\/$/, '');
+      
+      // If canonical points to a different URL, exclude from sitemap
+      return normalizedCanonical !== normalizedExpected;
+    } catch (error) {
+      console.warn(`⚠️  Could not read HTML file: ${htmlPath}`, error);
+      return false; // If we can't read it, include it (fail-safe)
+    }
+  }
+
+  /**
    * Discover dynamic routes from built dist folder, e.g., /categories/* and /tags/*
    * This ensures nested or dynamically generated paths are always included.
+   * EXCLUDES pages with non-self-referencing canonical tags (legacy slug aliases).
    */
   private static discoverDynamicPathsFromDist(outputDir: string, subdirs: string[]): string[] {
-    const found: string[] = [];
+    const found: Array<{ path: string; htmlPath: string }> = [];
+    const PRODUCTION_BASE_URL = 'https://funds.movingto.com';
 
     const hasIndexHtml = (dir: string) => fs.existsSync(path.join(dir, 'index.html'));
 
-    const walk = (baseAbs: string, rel: string) => {
+    const walk = (baseAbs: string, rel: string, subdir: string) => {
       // If this folder has an index.html and rel is non-empty, it represents a route
       if (rel && hasIndexHtml(baseAbs)) {
-        found.push(rel.replace(/\\/g, '/')); // normalize
+        // Prefix the path with the subdirectory to ensure proper URL structure
+        const fullPath = `${subdir}/${rel}`.replace(/\\/g, '/');
+        const htmlPath = path.join(baseAbs, 'index.html');
+        found.push({ path: fullPath, htmlPath });
       }
       const entries = fs.existsSync(baseAbs) ? fs.readdirSync(baseAbs, { withFileTypes: true }) : [];
       for (const entry of entries) {
         if (entry.isDirectory()) {
-          walk(path.join(baseAbs, entry.name), `${rel ? rel + '/' : ''}${entry.name}`);
+          walk(path.join(baseAbs, entry.name), `${rel ? rel + '/' : ''}${entry.name}`, subdir);
         }
       }
     };
@@ -283,11 +320,29 @@ ${sitemapElements}
     subdirs.forEach((sub) => {
       const root = path.join(outputDir, sub);
       if (!fs.existsSync(root)) return;
-      walk(root, '');
+      walk(root, '', sub);
     });
 
+    // Filter out pages with non-self-referencing canonical tags (legacy slug aliases)
+    let excludedCount = 0;
+    const validPaths = found.filter(({ path: relPath, htmlPath }) => {
+      const expectedURL = `${PRODUCTION_BASE_URL}/${relPath}`;
+      const shouldExclude = this.hasNonSelfReferencingCanonical(htmlPath, expectedURL);
+      
+      if (shouldExclude) {
+        excludedCount++;
+        console.log(`🚫 Excluding legacy slug alias from sitemap: ${expectedURL}`);
+      }
+      
+      return !shouldExclude;
+    });
+
+    if (excludedCount > 0) {
+      console.log(`✅ Excluded ${excludedCount} legacy slug alias pages from sitemap (non-self-referencing canonical tags)`);
+    }
+
     // Convert discovered relative paths into absolute canonical URLs under BASE_URL
-    const urls = found.map(rel => `${URL_CONFIG.BASE_URL}/${rel.startsWith('categories') || rel.startsWith('tags') ? rel : rel}`);
+    const urls = validPaths.map(({ path: relPath }) => `${PRODUCTION_BASE_URL}/${relPath}`);
 
     return Array.from(new Set(urls));
   }
@@ -308,8 +363,9 @@ ${sitemapElements}
    */
   private static generateRobotsTxt(sitemapFiles: string[]): string {
     const currentDate = new Date().toISOString().split('T')[0];
+    const PRODUCTION_BASE_URL = 'https://funds.movingto.com';
     
-    let robotsContent = `# Robots.txt for ${URL_CONFIG.BASE_URL}
+    let robotsContent = `# Robots.txt for ${PRODUCTION_BASE_URL}
 # Generated on ${currentDate}
 
 User-agent: *
@@ -327,12 +383,9 @@ Crawl-delay: 2
 # Disallow admin and auth pages
 Disallow: /admin
 Disallow: /auth
-Disallow: /manager-auth
-Disallow: /investor-auth
 Disallow: /api/
 
 # Allow important pages
-Allow: /index
 Allow: /categories
 Allow: /tags
 Allow: /managers
@@ -343,7 +396,7 @@ Allow: /alternatives
 `;
 
     sitemapFiles.forEach(filename => {
-      robotsContent += `Sitemap: ${URL_CONFIG.BASE_URL}/${filename}\n`;
+      robotsContent += `Sitemap: ${PRODUCTION_BASE_URL}/${filename}\n`;
     });
 
     return robotsContent;
@@ -352,16 +405,20 @@ Allow: /alternatives
   /**
    * Verify all expected dynamic routes are included
    */
-  private static verifyAndAddMissingRoutes(allURLs: SitemapURL[]): SitemapURL[] {
+  private static async verifyAndAddMissingRoutes(allURLs: SitemapURL[]): Promise<SitemapURL[]> {
     const currentDate = new Date().toISOString().split('T')[0];
     const existingURLs = new Set(allURLs.map(url => url.loc));
     const missingURLs: SitemapURL[] = [];
+    const PRODUCTION_BASE_URL = 'https://funds.movingto.com';
+    
+    // Fetch data from database (cached)
+    const { categories, tags } = await fetchAllBuildDataCached();
 
     // Verify all categories are included
     try {
-      const categories = getAllCategories();
       categories.forEach(category => {
-        const expectedURL = URL_CONFIG.buildCategoryUrl(category);
+        const slug = categoryToSlug(category);
+        const expectedURL = `${PRODUCTION_BASE_URL}/categories/${slug}`;
         if (!existingURLs.has(expectedURL)) {
           console.warn(`⚠️  Missing category route: ${expectedURL}`);
           missingURLs.push({
@@ -378,9 +435,9 @@ Allow: /alternatives
 
     // Verify all tags are included
     try {
-      const tags = getAllTags();
       tags.forEach(tag => {
-        const expectedURL = URL_CONFIG.buildTagUrl(tag);
+        const slug = tagToSlug(tag);
+        const expectedURL = `${PRODUCTION_BASE_URL}/tags/${slug}`;
         if (!existingURLs.has(expectedURL)) {
           console.warn(`⚠️  Missing tag route: ${expectedURL}`);
           missingURLs.push({
@@ -407,37 +464,35 @@ Allow: /alternatives
   /**
    * Generate comprehensive sitemap(s) and save to directory
    */
-  public static generateSitemaps(outputDir: string): {
+  public static async generateSitemaps(outputDir: string): Promise<{
     sitemapFiles: string[];
     totalURLs: number;
     robotsTxtGenerated: boolean;
-  } {
+  }> {
     // Ensure output directory exists
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    // Collect all URLs
-    let allURLs = this.collectAllURLs();
+    // Collect all URLs from database
+    let allURLs = await this.collectAllURLs();
 
-    // Discover dynamic category/tag paths from built dist to ensure full coverage
-    const discoveredFromDist = this.discoverDynamicPathsFromDist(outputDir, ['categories', 'tags']);
-    discoveredFromDist.forEach(loc => {
-      allURLs.push({
-        loc,
-        lastmod: new Date().toISOString().split('T')[0],
-        changefreq: 'weekly',
-        priority: loc.includes('/categories/') ? 0.8 : 0.7
-      });
-    });
+    // DISABLED: Dist discovery to ensure 100% database-driven sitemap
+    // This prevents non-canonical variants or legacy routes from being included
+    // const discoveredFromDist = this.discoverDynamicPathsFromDist(outputDir, ['categories', 'tags']);
+    // discoveredFromDist.forEach(loc => {
+    //   allURLs.push({
+    //     loc,
+    //     lastmod: new Date().toISOString().split('T')[0],
+    //     changefreq: 'weekly',
+    //     priority: loc.includes('/categories/') ? 0.8 : 0.7
+    //   });
+    // });
 
-    console.log(`\n📊 SITEMAP SUMMARY:`);
-    console.log(`   Total URLs collected: ${allURLs.length}`);
-    console.log(`   Discovered from dist: ${discoveredFromDist.length}`);
-    console.log(`   Expected: 1500+ URLs (28 funds × 2 + 378 comparisons + categories + tags + managers + static)`);
+    console.log(`📊 Collected ${allURLs.length} URLs for sitemap generation from database (100% database-driven)`);
 
     // Verify and add any missing dynamic routes
-    allURLs = this.verifyAndAddMissingRoutes(allURLs);
+    allURLs = await this.verifyAndAddMissingRoutes(allURLs);
 
     // Remove duplicates
     const uniqueURLs = allURLs.filter((url, index, self) => 
@@ -447,6 +502,23 @@ Allow: /alternatives
     if (uniqueURLs.length !== allURLs.length) {
       console.log(`🔄 Removed ${allURLs.length - uniqueURLs.length} duplicate URLs`);
     }
+    
+    // Log sample of generated URLs for verification
+    console.log('\n📋 Sample of generated sitemap URLs:');
+    const sampleURLs = [
+      uniqueURLs.find(u => u.loc.endsWith('movingto.com') || u.loc.endsWith('movingto.com/')),
+      uniqueURLs.find(u => u.loc.includes('/about')),
+      uniqueURLs.find(u => u.loc.includes('/categories') && !u.loc.includes('/categories/')),
+      uniqueURLs.find(u => u.loc.includes('/tags') && !u.loc.includes('/tags/')),
+      uniqueURLs.find(u => u.loc.includes('/managers')),
+      uniqueURLs.find(u => u.loc.includes('/categories/')),
+      uniqueURLs.find(u => u.loc.includes('/tags/'))
+    ].filter(Boolean);
+    
+    sampleURLs.forEach(url => {
+      if (url) console.log(`   - ${url.loc}`);
+    });
+    console.log('');
 
     const currentDate = new Date().toISOString().split('T')[0];
     const sitemapFiles: string[] = [];

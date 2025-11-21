@@ -7,9 +7,10 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, X, TrendingUp, CalendarIcon } from 'lucide-react';
+import { Plus, X, TrendingUp, CalendarIcon, Upload } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import CSVImportDialog from './CSVImportDialog';
 
 interface MonthlyPerformanceData {
   returns?: number;
@@ -29,6 +30,7 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
   const [performanceData, setPerformanceData] = useState<Record<string, MonthlyPerformanceData>>(value);
   const [selectedYear, setSelectedYear] = useState<string>('');
   const [selectedMonth, setSelectedMonth] = useState<string>('');
+  const [showImportDialog, setShowImportDialog] = useState(false);
 
   useEffect(() => {
     setPerformanceData(value || {});
@@ -97,11 +99,14 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
   };
 
   const updateMonthData = (monthKey: string, field: keyof MonthlyPerformanceData, value: number) => {
+    // For AUM, multiply by 1,000,000 to convert millions to euros
+    const actualValue = field === 'aum' ? value * 1000000 : value;
+    
     const newData = {
       ...performanceData,
       [monthKey]: {
         ...performanceData[monthKey],
-        [field]: value
+        [field]: actualValue
       }
     };
     setPerformanceData(newData);
@@ -114,16 +119,34 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
     return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   };
 
+  const handleCSVImport = (importedData: Record<string, MonthlyPerformanceData>) => {
+    setPerformanceData(importedData);
+    onChange(importedData);
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="h-5 w-5" />
-          Historical Performance (Monthly Data)
-        </CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Add monthly performance data for up to the last 3 years
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Historical Performance (Monthly Data)
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Add monthly performance data for up to the last 3 years
+            </p>
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => setShowImportDialog(true)}
+            className="gap-2"
+          >
+            <Upload className="h-4 w-4" />
+            Import CSV
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Add new month with year/month selectors */}
@@ -212,14 +235,14 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
                         />
                       </div>
                       <div>
-                        <Label htmlFor={`aum-${monthKey}`}>AUM (€)</Label>
+                        <Label htmlFor={`aum-${monthKey}`}>AUM (€ millions)</Label>
                         <Input
                           id={`aum-${monthKey}`}
                           type="number"
-                          step="1000000"
-                          value={data?.aum || 0}
+                          step="0.1"
+                          value={(data?.aum || 0) / 1000000}
                           onChange={(e) => updateMonthData(monthKey, 'aum', parseFloat(e.target.value) || 0)}
-                          placeholder="e.g., 50000000"
+                          placeholder="e.g., 50"
                         />
                         <p className="text-xs text-muted-foreground mt-1">
                           €{((data?.aum || 0) / 1000000).toFixed(1)}M
@@ -247,12 +270,19 @@ const HistoricalPerformanceEditor: React.FC<HistoricalPerformanceEditorProps> = 
         {existingMonths.length > 0 && (
           <div className="p-3 bg-muted/50 rounded-lg">
             <p className="text-xs text-muted-foreground">
-              Tip: Returns can be positive or negative. AUM should be in euros (will display in millions). 
+              Tip: Returns can be positive or negative. AUM should be entered in millions (e.g., enter 50 for €50M). 
               NAV typically starts at 1.0 and changes based on performance.
             </p>
           </div>
         )}
       </CardContent>
+
+      <CSVImportDialog
+        open={showImportDialog}
+        onOpenChange={setShowImportDialog}
+        onImport={handleCSVImport}
+        existingData={performanceData}
+      />
     </Card>
   );
 };

@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Link } from 'react-router-dom';
+import { Fund } from '../../data/types/funds';
 import { formatCurrency } from '../fund-details/utils/formatters';
 import { getFundType } from '../../utils/fundTypeUtils';
 import ComparisonTableHeader from './table/ComparisonTableHeader';
@@ -10,6 +11,10 @@ import TagsCell from './table/TagsCell';
 import RedemptionTermsRow from './table/RedemptionTermsRow';
 import DataFreshnessIndicator from '../common/DataFreshnessIndicator';
 import { getReturnTargetDisplay, getReturnTargetNumbers } from '../../utils/returnTarget';
+import { CheckCircle2 } from 'lucide-react';
+import { CompanyLogo } from '../shared/CompanyLogo';
+import { formatManagementFee, formatPerformanceFee, formatSubscriptionFee, formatRedemptionFee } from '../../utils/feeFormatters';
+import { formatFundSize } from '../../utils/fundSizeFormatters';
 
 interface ComparisonTableProps {
   funds: Fund[];
@@ -27,8 +32,27 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
         <table className="w-full border-collapse">
           <ComparisonTableHeader funds={funds} />
           <tbody>
+            {/* Verification Status Row */}
+            <tr className="border-b bg-success/5">
+              <td className="py-3 px-4 font-medium">Verification Status</td>
+              {funds.map(fund => (
+                <td key={fund.id} className="py-3 px-4">
+                  {fund.isVerified ? (
+                    <Link to="/verification-program" className="inline-block hover:opacity-80 transition-opacity">
+                      <div className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold inline-flex items-center gap-1.5 shadow-md border-2 border-success/70 ring-2 ring-success/20 w-fit">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        ✓ VERIFIED
+                      </div>
+                    </Link>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">Not verified</span>
+                  )}
+                </td>
+              ))}
+            </tr>
+            
             {/* Always visible - Basic Information */}
-            <StandardRow 
+            <StandardRow
               funds={funds}
               field="category"
               label="Fund Type"
@@ -48,13 +72,15 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
               label="Minimum Investment"
               formatter={formatCurrency}
               allSame={allSame}
+              bestType="lowest"
             />
             
             <StandardRow 
               funds={funds}
               field={(fund) => getReturnTargetDisplay(fund)}
-              label="Target Annual Return"
+              label="Target Return"
               allSame={allSame}
+              bestType="highest"
             />
 
             <StandardRow 
@@ -73,7 +99,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
                 if (fund.hurdleRate != null) return `${fund.hurdleRate}%`;
                 const { min } = getReturnTargetNumbers(fund);
                 if (min != null) return `${min}%`;
-                return "8%";
+                return "N/A";
               }}
               label="Performance Fee Hurdle"
               allSame={allSame}
@@ -81,40 +107,44 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             
             <StandardRow
               funds={funds}
-              field={(fund) => `${fund.fundSize}M EUR`}
+              field={(fund) => formatFundSize(fund.fundSize)}
               label="Fund Size"
               allSame={allSame}
             />
             
             <StandardRow 
               funds={funds}
-              field={(fund) => `${fund.managementFee}%`}
+              field={(fund) => formatManagementFee(fund.managementFee)}
               label="Management Fee"
               allSame={allSame}
+              bestType="lowest"
             />
             
             <StandardRow 
               funds={funds}
-              field={(fund) => `${fund.performanceFee}%`}
+              field={(fund) => formatPerformanceFee(fund.performanceFee)}
               label="Performance Fee"
               allSame={allSame}
+              bestType="lowest"
             />
             
-            {(funds.some(f => f.subscriptionFee)) && (
+            {(funds.some(f => f.subscriptionFee !== undefined)) && (
               <StandardRow 
                 funds={funds}
-                field={(fund) => fund.subscriptionFee ? `${fund.subscriptionFee}%` : "N/A"}
+                field={(fund) => formatSubscriptionFee(fund.subscriptionFee)}
                 label="Subscription Fee"
                 allSame={allSame}
+                bestType="lowest"
               />
             )}
             
-            {(funds.some(f => f.redemptionFee)) && (
+            {(funds.some(f => f.redemptionFee !== undefined)) && (
               <StandardRow 
                 funds={funds}
-                field={(fund) => fund.redemptionFee ? `${fund.redemptionFee}%` : "N/A"}
+                field={(fund) => formatRedemptionFee(fund.redemptionFee)}
                 label="Redemption Fee"
                 allSame={allSame}
+                bestType="lowest"
               />
             )}
             
@@ -140,6 +170,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
               field="noticePeriod"
               label="Notice Period"
               allSame={allSame}
+              bestType="lowest"
             />
             
             <RedemptionTermsRow 
@@ -147,6 +178,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
               field="minimumHoldingPeriod"
               label="Minimum Holding Period"
               allSame={allSame}
+              bestType="lowest"
             />
 
             <StandardRow 
@@ -165,8 +197,8 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             </tr>
 
             {/* Data Freshness - Always visible */}
-            <tr className="border-b bg-accent/10">
-              <td className="py-3 px-4 font-medium text-accent-foreground">Data Last Verified</td>
+            <tr className="border-b bg-muted/30">
+              <td className="py-3 px-4 font-medium text-foreground">Data Last Verified</td>
               {funds.map(fund => (
                 <td key={fund.id} className="py-3 px-4">
                   <DataFreshnessIndicator fund={fund} variant="full" className="justify-start" />

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import FundListItem from '../FundListItem';
-import { Fund } from '@/data/funds';
+import { Fund } from '@/data/types/funds';
 import { URL_CONFIG } from '../../utils/urlConfig';
 
 interface TagPageFundListProps {

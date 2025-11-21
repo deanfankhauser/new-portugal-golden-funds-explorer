@@ -1,0 +1,53 @@
+INSERT INTO funds (
+  id,
+  name,
+  manager_name,
+  category,
+  description,
+  detailed_description,
+  minimum_investment,
+  aum,
+  management_fee,
+  performance_fee,
+  subscription_fee,
+  expected_return_min,
+  expected_return_max,
+  hurdle_rate,
+  lock_up_period_months,
+  gv_eligible,
+  regulated_by,
+  location,
+  tags,
+  custodian,
+  auditor,
+  redemption_terms,
+  currency
+) VALUES (
+  'quadrantis-private-equity-credits-and-bonds-fund-subfund-b',
+  'Quadrantis Private Equity Credits & Bonds Fund – Subfund B',
+  'Quadrantis Capital',
+  'Private Equity',
+  'A CMVM-recognised private equity fund managed by Quadrantis Capital, combining private equity, credit and high-grade bond investments to target a 10% annual return and provide a Golden Visa-eligible route for investors.',
+  'The Quadrantis Private Equity Credits & Bonds Fund – Subfund B is a Portuguese private equity investment vehicle managed by Quadrantis Capital and recognised by the CMVM. The fund focuses on generating attractive, risk-adjusted returns through a balanced portfolio of private equity, credit and high-grade bond investments.
+
+On the credit side, the fund acquires receivables and future payment rights from companies with strong, recurring cash flows. Target industries include telecoms, payment platforms, food and beverage brands, and sportswear companies, where long-term contracts, predictable revenues and sponsorship deals create stable cash-flow profiles. In addition, the fund invests in bonds issued by insurance companies, banks, sovereigns rated between BBB and AAA, and Tier 1 UEFA Champions League football clubs, aiming to combine yield with robust credit quality.
+
+The fund has a hard cap of €75 million, a 10-year term with maturity in 2034, and an early exit option after 5 years. Quadrantis Capital charges a 1.5% annual management fee and a 20% performance fee on returns above a 6.5% hurdle, with 80% of the upside distributed to investors and 20% to the management company. The minimum investment is €100,000, while investors seeking to qualify for the Portuguese Golden Visa must comply with the legal minimum of €500,000 in eligible fund units. The structure is designed to offer investor-friendly terms, tax benefits for non-residents and a clear, transparent income distribution framework.',
+  100000,
+  75000000,
+  1.5,
+  20,
+  0,
+  10,
+  10,
+  6.5,
+  60,
+  true,
+  'CMVM',
+  'Portugal',
+  ARRAY['Portugal', 'Quadrantis Capital', 'Golden Visa', 'Private Equity', 'Credit', 'Bonds', 'Fixed Income', 'Alternative Investments', 'Closed-end Fund'],
+  'BNI Europa',
+  'Kreston & Associados, SROC, Lda.',
+  '{"frequency": "End of Term", "redemptionOpen": false, "minimumHoldingPeriod": 60, "notes": "10-year fund with contractual maturity in 2034 and an early exit option after 5 years. 80% of profits above the 6.5% hurdle accrue to investors, 20% to management company at fund term end."}'::jsonb,
+  'EUR'
+);
