@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { formatFundSize } from '../../utils/fundSizeFormatters';
 
 interface FundSizeFormatterProps {

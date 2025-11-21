@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

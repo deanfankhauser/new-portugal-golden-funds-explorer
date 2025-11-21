@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Separator } from '../ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';

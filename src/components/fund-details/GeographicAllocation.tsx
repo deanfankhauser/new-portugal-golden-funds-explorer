@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Globe } from 'lucide-react';
-import { GeographicAllocation as GeoAllocation } from '../../data/funds';
+import { GeographicAllocation as GeoAllocation } from '../../data/types/funds';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface GeographicAllocationProps {
