@@ -63,8 +63,8 @@ const VerifiedFunds = () => {
             Every verified fund meets our strict standards for transparency and legitimacy.
           </p>
 
-          {/* Link to Main Hub */}
-          <div className="mb-4">
+          {/* Link Section */}
+          <div className="mb-8">
             <a 
               href="https://www.movingto.com/portugal-golden-visa-funds" 
               target="_blank" 

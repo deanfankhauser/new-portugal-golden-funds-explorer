@@ -149,8 +149,8 @@ const About = () => {
                 Independent, comprehensive, and always up-to-date.
               </p>
               
-              {/* Link to Main Hub */}
-              <div className="mb-4">
+              {/* Link Section */}
+              <div className="mb-8">
                 <a 
                   href="https://www.movingto.com/portugal-golden-visa-funds" 
                   target="_blank" 
