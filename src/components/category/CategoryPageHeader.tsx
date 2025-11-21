@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Folder, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { isCategoryGVEligible, getGVIneligibilityWarning } from '../../data/services/gv-eligibility-service';
 
@@ -13,12 +12,7 @@ const CategoryPageHeader: React.FC<CategoryPageHeaderProps> = ({ categoryName })
   
   return (
     <div className="bg-card p-8 rounded-xl border border-border mb-8">
-      <div className="flex items-center justify-center mb-4">
-        <Folder className="w-6 h-6 text-primary mr-2" />
-        <span className="text-sm bg-muted px-3 py-1 rounded-full">Category</span>
-      </div>
-      
-      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-center" itemProp="name">
+      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-center" itemProp="name">
         {categoryName} Portugal Investment Funds
       </h1>
       
