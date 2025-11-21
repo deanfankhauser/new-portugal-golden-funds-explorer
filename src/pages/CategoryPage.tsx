@@ -40,21 +40,7 @@ const CategoryPage = () => {
     setHasMounted(true);
   }, []);
 
-  useEffect(() => {
-    // Only redirect after component has mounted and data has loaded
-    if (hasMounted && !isLoading && !categoryExists && categorySlug) {
-      // If category doesn't exist, redirect to homepage
-      navigate('/');
-      return;
-    }
-    
-    // Scroll to top when category changes
-    if (categoryExists) {
-      window.scrollTo(0, 0);
-    }
-  }, [hasMounted, categoryExists, navigate, categorySlug, isLoading]);
-
-  // Show loading state
+  // Show loading state FIRST (before checking if category exists)
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
@@ -69,7 +55,21 @@ const CategoryPage = () => {
     );
   }
 
-  // Don't render anything if category doesn't exist
+  useEffect(() => {
+    // Only redirect after component has mounted and data has loaded
+    if (hasMounted && !isLoading && !categoryExists && categorySlug) {
+      // If category doesn't exist, redirect to homepage
+      navigate('/');
+      return;
+    }
+    
+    // Scroll to top when category changes
+    if (categoryExists) {
+      window.scrollTo(0, 0);
+    }
+  }, [hasMounted, categoryExists, navigate, categorySlug, isLoading]);
+
+  // Don't render anything if category doesn't exist (only after data has loaded)
   if (!categoryExists || !category) {
     return null;
   }
