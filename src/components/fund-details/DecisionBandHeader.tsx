@@ -12,6 +12,51 @@ interface DecisionBandHeaderProps {
 const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
   const isOpenForSubscriptions = fund.fundStatus === 'Open';
 
+  // Helper function to generate keyword-rich subheader
+  const generateSubheader = () => {
+    const parts: string[] = [
+      `${fund.name} is a CMVM-regulated Portugal Golden Visa investment fund managed by ${fund.managerName}, investing`
+    ];
+
+    // Add investment focus based on category
+    if (fund.category) {
+      const categoryLower = fund.category.toLowerCase();
+      
+      // Add "primarily in" or "in" based on context
+      if (categoryLower.includes('mixed') || categoryLower.includes('multi')) {
+        parts.push(`in ${categoryLower}`);
+      } else {
+        parts.push(`primarily in ${categoryLower}`);
+      }
+    }
+
+    // Add liquidity as key differentiator
+    const hasHighLiquidity = fund.tags?.some(tag => 
+      tag.includes('Daily NAV') || tag.includes('No Lock-Up') || tag.toLowerCase().includes('daily')
+    );
+    
+    const hasShortLockup = fund.tags?.some(tag => tag.includes('Short lock-up'));
+    const hasLongLockup = fund.tags?.some(tag => tag.includes('Long lock-up'));
+    
+    if (hasHighLiquidity) {
+      parts.push('with daily liquidity for investors');
+    } else if (hasShortLockup) {
+      parts.push('with flexible redemption terms');
+    } else if (hasLongLockup) {
+      const holdingPeriod = fund.redemptionTerms?.minimumHoldingPeriod;
+      if (holdingPeriod) {
+        parts.push(`with ${holdingPeriod}-month minimum holding period`);
+      } else {
+        parts.push('with long-term investment horizon');
+      }
+    } else if (fund.redemptionTerms?.frequency) {
+      const freq = fund.redemptionTerms.frequency.toLowerCase();
+      parts.push(`with ${freq} redemption opportunities`);
+    }
+
+    return parts.join(' ') + '.';
+  };
+
   // Helper function to bold percentages and key investment terms in description
   const formatDescription = (text: string) => {
     // Bold percentages (e.g., "65%", "35%")
@@ -79,7 +124,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
           
           {/* Dynamic keyword-rich subheader */}
           <p className="text-xl font-semibold text-foreground/80 leading-relaxed">
-            {fund.name} is a CMVM-regulated Portugal Golden Visa investment fund managed by {fund.managerName}, focusing on {fund.category.toLowerCase()} investments.
+            {generateSubheader()}
           </p>
           
           {/* Description with bold key terms */}
