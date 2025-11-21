@@ -1,5 +1,5 @@
 
-import { Fund } from '../data/funds';
+import { Fund } from '../data/types/funds';
 
 export class AIOptimizationService {
   
