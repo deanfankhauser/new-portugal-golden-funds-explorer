@@ -530,14 +530,14 @@ const VerificationProgram = () => {
             <p className="text-base text-gray-600 mb-6 leading-relaxed max-w-2xl">
               If you believe a verified fund profile contains inaccurate or outdated information, please let us know.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 items-start">
-              <Button asChild size="lg" variant="outline" className="border border-gray-300 hover:border-gray-400 bg-white text-gray-700 px-6 py-3 rounded-lg font-medium">
-                <a href="mailto:verify@fundvista.com">
-                  <Mail className="mr-2 h-4 w-4" />
-                  verify@fundvista.com
+            <div className="flex flex-col gap-4">
+              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto border border-gray-300 hover:border-gray-400 bg-white text-gray-700 px-6 py-3 rounded-lg font-medium">
+                <a href="mailto:info@movingto.com">
+                  <Mail className="mr-2 h-4 w-4 flex-shrink-0" />
+                  info@movingto.com
                 </a>
               </Button>
-              <p className="text-sm text-gray-500 pt-2">
+              <p className="text-sm text-gray-500">
                 Include fund name, specific issue, and any supporting documentation
               </p>
             </div>
