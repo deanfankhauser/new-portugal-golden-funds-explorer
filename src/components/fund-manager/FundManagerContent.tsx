@@ -7,6 +7,7 @@ import ManagerFundCard from './ManagerFundCard';
 import ManagerAboutSection from './ManagerAboutSection';
 import ManagerTeamSection from './ManagerTeamSection';
 import ManagerHighlightsSection from './ManagerHighlightsSection';
+import ManagerContactSection from './ManagerContactSection';
 import ManagerFAQsSection from './ManagerFAQsSection';
 import InvestmentPhilosophySection from './InvestmentPhilosophySection';
 import HowMovingtoHelpsSection from './HowMovingtoHelpsSection';
@@ -170,6 +171,11 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
 
       {/* How Movingto Helps */}
       <HowMovingtoHelpsSection managerName={managerName} />
+
+      {/* Contact & Regulatory Information */}
+      {managerProfile && (
+        <ManagerContactSection managerProfile={managerProfile} />
+      )}
       
       {/* Manager FAQs Section */}
       {managerProfile?.manager_faqs && Array.isArray(managerProfile.manager_faqs) && managerProfile.manager_faqs.length > 0 ? (
