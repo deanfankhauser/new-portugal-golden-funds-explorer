@@ -6,7 +6,7 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import FundManagerSidebar from '@/components/fund-manager/FundManagerSidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Building2, Edit3, TrendingUp, Eye, Users } from 'lucide-react';
+import { Building2, Edit3, TrendingUp, Eye, Users, Mail } from 'lucide-react';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { useAllFunds } from '@/hooks/useFundsQuery';
@@ -14,6 +14,7 @@ import { useFundEngagementMetrics } from '@/hooks/useFundEngagementMetrics';
 import { Fund } from '@/data/types/funds';
 import { Profile } from '@/types/profile';
 import { CompanyLogo } from '@/components/shared/CompanyLogo';
+import { Badge } from '@/components/ui/badge';
 
 interface ProfileAssignment {
   id: string;
@@ -39,6 +40,7 @@ const MyFunds = () => {
   const [assignmentsLoading, setAssignmentsLoading] = useState(true);
   const [companiesWithFunds, setCompaniesWithFunds] = useState<CompanyWithFunds[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [openLeadsCounts, setOpenLeadsCounts] = useState<Record<string, number>>({});
   const { data: allFunds, isLoading: fundsLoading, isError, isFetching } = useAllFunds();
   
   // Show loading during any loading/error state (allows React Query retry)
@@ -167,6 +169,31 @@ const MyFunds = () => {
     fetchAssignments();
   }, [user, allFunds, isAdmin]);
 
+  // Fetch open leads count for each company
+  useEffect(() => {
+    const fetchOpenLeadsCounts = async () => {
+      if (companiesWithFunds.length === 0) return;
+
+      const counts: Record<string, number> = {};
+      
+      for (const { profile, funds: companyFunds } of companiesWithFunds) {
+        const fundIds = companyFunds.map(f => f.id);
+        
+        const { count } = await supabase
+          .from('fund_enquiries')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'open')
+          .or(`fund_id.in.(${fundIds.join(',')}),and(fund_id.is.null,manager_name.eq.${profile.company_name})`);
+        
+        counts[profile.id] = count || 0;
+      }
+      
+      setOpenLeadsCounts(counts);
+    };
+
+    fetchOpenLeadsCounts();
+  }, [companiesWithFunds]);
+
   if (authLoading || loading) {
     return <PageLoader />;
   }
@@ -239,14 +266,30 @@ const MyFunds = () => {
                             </p>
                           </div>
                         </div>
-                        {assignment.permissions.can_edit_profile && (
-                          <Link to={`/manage-profile/${profile.id}`}>
-                            <Button>
-                              <Edit3 className="h-4 w-4 mr-2" />
-                              Edit Company Profile
+                        <div className="flex gap-2">
+                          <Link to={`/manage-profile/${profile.id}?tab=leads`}>
+                            <Button variant="outline" className="relative">
+                              <Mail className="h-4 w-4 mr-2" />
+                              View Leads
+                              {openLeadsCounts[profile.id] > 0 && (
+                                <Badge 
+                                  variant="default" 
+                                  className="ml-2 h-5 px-1.5 min-w-5 flex items-center justify-center"
+                                >
+                                  {openLeadsCounts[profile.id]}
+                                </Badge>
+                              )}
                             </Button>
                           </Link>
-                        )}
+                          {assignment.permissions.can_edit_profile && (
+                            <Link to={`/manage-profile/${profile.id}`}>
+                              <Button>
+                                <Edit3 className="h-4 w-4 mr-2" />
+                                Edit Profile
+                              </Button>
+                            </Link>
+                          )}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

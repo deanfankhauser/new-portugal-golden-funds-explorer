@@ -52,11 +52,6 @@ const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
       icon: BarChart3,
     },
     {
-      title: "Leads",
-      url: `/manage-fund/${fundId}/leads`,
-      icon: Users,
-    },
-    {
       title: "Advertising",
       url: `/manage-fund/${fundId}/advertising`,
       icon: Megaphone,

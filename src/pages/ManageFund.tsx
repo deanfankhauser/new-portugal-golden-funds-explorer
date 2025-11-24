@@ -19,7 +19,6 @@ import FundManagerSidebar from '@/components/fund-manager/FundManagerSidebar';
 import { Link } from 'react-router-dom';
 import UpdateFundTab from '@/components/fund-manager/UpdateFundTab';
 import AnalyticsTab from '@/components/fund-manager/AnalyticsTab';
-import LeadsTab from '@/components/fund-manager/LeadsTab';
 import AdvertisingTab from '@/components/fund-manager/AdvertisingTab';
 import TeamAccessTab from '@/components/fund-manager/TeamAccessTab';
 import { Fund } from '@/data/types/funds';
@@ -81,7 +80,6 @@ const ManageFund: React.FC = () => {
     const path = location.pathname;
     if (path.includes('/update')) return { label: 'Update Fund', path: 'update' };
     if (path.includes('/analytics')) return { label: 'Analytics', path: 'analytics' };
-    if (path.includes('/leads')) return { label: 'Leads', path: 'leads' };
     if (path.includes('/advertising')) return { label: 'Advertising', path: 'advertising' };
     if (path.includes('/team')) return { label: 'Team Access', path: 'team' };
     return { label: 'Update Fund', path: 'update' };
@@ -216,7 +214,6 @@ const ManageFund: React.FC = () => {
               <Route index element={<Navigate to="update" replace />} />
               <Route path="update" element={<UpdateFundTab fund={fund} canDirectEdit={canDirectEdit} />} />
               <Route path="analytics" element={<AnalyticsTab fundId={fund.id} />} />
-              <Route path="leads" element={<LeadsTab fundId={fund.id} />} />
               <Route path="advertising" element={<AdvertisingTab fundId={fund.id} fundName={fund.name} />} />
               <Route path="team" element={<TeamAccessTab fund={fund} />} />
             </Routes>
