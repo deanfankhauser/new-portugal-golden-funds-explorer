@@ -195,11 +195,6 @@ export default function FundManagerSidebar() {
       icon: Mail,
       badge: totalOpenLeads > 0 ? totalOpenLeads : undefined,
     },
-    {
-      title: 'Companies Overview',
-      to: '/dashboard/companies',
-      icon: Building2,
-    },
   ];
 
   const handleNavClick = () => {
