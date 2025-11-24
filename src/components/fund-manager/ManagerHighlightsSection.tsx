@@ -44,14 +44,14 @@ const ManagerHighlightsSection: React.FC<ManagerHighlightsSectionProps> = ({
           </h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {highlights.map((highlight, index) => (
             <div 
               key={index} 
               className="group relative bg-card rounded-xl border border-border p-8 hover:border-primary/20 hover:shadow-lg transition-all duration-300"
             >
               <div className="flex items-start gap-5">
-                <div className="flex-shrink-0 h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20 transition-colors">
+                <div className="flex-shrink-0 h-12 w-12 rounded-lg bg-primary text-primary-foreground flex items-center justify-center group-hover:scale-110 transition-transform">
                   {getIcon(highlight.icon)}
                 </div>
                 <div className="flex-1">

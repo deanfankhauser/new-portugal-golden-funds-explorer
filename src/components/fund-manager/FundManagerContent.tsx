@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, ExternalLink } from 'lucide-react';
+import { MapPin, ExternalLink, TrendingUp, Calendar, Building2, Shield } from 'lucide-react';
 import { Fund } from '../../data/types/funds';
 import FundListItem from '@/components/FundListItem';
 import ManagerVerificationBadge from './ManagerVerificationBadge';
@@ -7,11 +7,13 @@ import ManagerAboutSection from './ManagerAboutSection';
 import ManagerTeamSection from './ManagerTeamSection';
 import ManagerHighlightsSection from './ManagerHighlightsSection';
 import ManagerFAQsSection from './ManagerFAQsSection';
-import ManagerStatsSection from './ManagerStatsSection';
-import ManagerContactSection from './ManagerContactSection';
-import ManagerContactForm from './ManagerContactForm';
+import ManagerOverviewSection from './ManagerOverviewSection';
+import ManagerEnquirySection from './ManagerEnquirySection';
+import ManagerCTAFooter from './ManagerCTAFooter';
 import { Profile } from '@/types/profile';
 import { Badge } from '@/components/ui/badge';
+import StandardCard from '../common/StandardCard';
+import { Button } from '@/components/ui/button';
 
 interface FundManagerContentProps {
   managerFunds: Fund[];
@@ -26,84 +28,131 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
   isManagerVerified = false,
   managerProfile
 }) => {
+  const formatAUM = (aum: number): string => {
+    if (aum >= 1000) {
+      return `€${(aum / 1000).toFixed(1)}B`;
+    }
+    return `€${aum}M`;
+  };
+
+  const calculateYearsTrackRecord = (foundedYear?: number): string => {
+    if (!foundedYear) return 'N/A';
+    return `${new Date().getFullYear() - foundedYear}+`;
+  };
+
+  const scrollToForm = () => {
+    const formElement = document.getElementById('manager-enquiry-form');
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <div className="space-y-0">
-      {/* Manager Header */}
-      <div className="py-16 px-4 sm:px-6 lg:px-8 border-b border-border">
+      {/* Hero Section with Stats */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30 border-b border-border">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-start gap-6 mb-6">
-            {managerProfile?.logo_url && (
-              <img 
-                src={managerProfile.logo_url} 
-                alt={`${managerName} logo`}
-                className="w-24 h-24 rounded-xl object-cover border border-border/40 shadow-sm"
-              />
-            )}
-            <div className="flex-1">
-              <div className="flex items-center gap-4 mb-4">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 items-start">
+            <div>
+              {/* Verification Badge */}
+              <div className="mb-4">
                 <ManagerVerificationBadge 
                   isVerified={isManagerVerified}
                   funds={managerFunds}
                 />
               </div>
-              <h1 className="text-5xl font-bold text-foreground mb-4">{managerName}</h1>
-            </div>
-          </div>
-          
-          <div className={managerProfile?.logo_url ? "pl-[120px]" : ""}>
-            <p className="text-xl text-muted-foreground max-w-3xl mb-4">
-              {managerProfile?.description || (
-                managerFunds.length === 1 
-                  ? "Portugal Golden Visa approved investment fund manager offering professional fund management services for international investors seeking Portuguese residency through capital transfer."
-                  : `Portugal Golden Visa approved investment fund manager offering ${managerFunds.length} professional investment funds for international investors seeking Portuguese residency through capital transfer.`
-              )}
-            </p>
-            
-            {/* Location & Website badges */}
-            {(managerProfile?.city || managerProfile?.country || managerProfile?.website) && (
-              <div className="flex flex-wrap gap-3 items-center">
-                {(managerProfile?.city || managerProfile?.country) && (
-                  <Badge variant="outline" className="text-sm">
-                    <MapPin className="h-3 w-3 mr-1.5" />
-                    {[managerProfile.city, managerProfile.country].filter(Boolean).join(', ')}
-                  </Badge>
+
+              {/* Title */}
+              <h1 className="text-5xl font-bold text-primary mb-4 tracking-tight">
+                {managerName}
+              </h1>
+
+              {/* Tagline */}
+              <p className="text-xl text-muted-foreground mb-8 max-w-3xl leading-relaxed">
+                {managerProfile?.description || 
+                  `Strategic investment solutions across Portugal's Golden Visa real estate and technology sectors`
+                }
+              </p>
+
+              {/* Stats Grid */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Active Funds */}
+                <StandardCard padding="sm" className="text-center">
+                  <div className="text-4xl font-bold text-primary mb-1">
+                    {managerFunds.length}
+                  </div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-wider">
+                    Active Fund{managerFunds.length !== 1 ? 's' : ''}
+                  </div>
+                </StandardCard>
+
+                {/* AUM */}
+                {managerProfile?.assets_under_management && managerProfile.assets_under_management > 0 && (
+                  <StandardCard padding="sm" className="text-center">
+                    <div className="text-4xl font-bold text-primary mb-1">
+                      {formatAUM(managerProfile.assets_under_management)}
+                    </div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider">
+                      AUM
+                    </div>
+                  </StandardCard>
                 )}
-                {managerProfile?.website && (
-                  <a 
-                    href={managerProfile.website} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-block"
-                  >
-                    <Badge variant="outline" className="text-sm hover:bg-primary/10 transition-colors">
-                      <ExternalLink className="h-3 w-3 mr-1.5" />
-                      Visit Website
-                    </Badge>
-                  </a>
+
+                {/* Location/Regions */}
+                {(managerProfile?.city || managerProfile?.country) && (
+                  <StandardCard padding="sm" className="text-center">
+                    <div className="text-4xl font-bold text-primary mb-1">
+                      {[managerProfile.city, managerProfile.country].filter(Boolean).length}
+                    </div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider">
+                      Region{[managerProfile.city, managerProfile.country].filter(Boolean).length > 1 ? 's' : ''}
+                    </div>
+                  </StandardCard>
+                )}
+
+                {/* Track Record */}
+                {managerProfile?.founded_year && (
+                  <StandardCard padding="sm" className="text-center">
+                    <div className="text-4xl font-bold text-primary mb-1">
+                      {calculateYearsTrackRecord(managerProfile.founded_year)}
+                    </div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider">
+                      Years Track Record
+                    </div>
+                  </StandardCard>
                 )}
               </div>
-            )}
+            </div>
+
+            {/* CTA Button */}
+            <div className="flex-shrink-0">
+              <Button 
+                onClick={scrollToForm}
+                size="lg"
+                className="px-8 py-6 text-lg font-semibold whitespace-nowrap"
+              >
+                Schedule Consultation
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Company Overview Stats */}
-      {managerProfile && (
-        <ManagerStatsSection 
-          managerProfile={managerProfile} 
-          fundsCount={managerFunds.length}
-        />
-      )}
+      {/* Overview Section - About + Contact Sidebar */}
+      <ManagerOverviewSection 
+        managerName={managerName}
+        managerProfile={managerProfile}
+      />
 
-      {/* Contact & Regulatory Information */}
-      {managerProfile && (
-        <ManagerContactSection managerProfile={managerProfile} />
-      )}
-
-      {/* Funds List */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30 border-t border-border">
+      {/* Fund Portfolio Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-background border-t border-border">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl font-semibold text-foreground mb-8">Investment Funds</h2>
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-primary mb-2">Fund Portfolio</h2>
+            <p className="text-muted-foreground">
+              Explore all investment funds managed by {managerName}
+            </p>
+          </div>
           <div className="space-y-6">
             {managerFunds.map((fund) => (
               <FundListItem key={fund.id} fund={fund} />
@@ -145,15 +194,17 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
       )}
 
       {/* Contact Form Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-border">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-border bg-muted/30">
         <div className="max-w-3xl mx-auto">
-          <ManagerContactForm 
+          <ManagerEnquirySection 
             managerName={managerName}
             companyName={managerProfile?.company_name}
           />
         </div>
       </section>
 
+      {/* CTA Footer */}
+      <ManagerCTAFooter managerName={managerName} />
     </div>
   );
 };
