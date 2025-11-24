@@ -79,11 +79,19 @@ Deno.serve(async (req) => {
       );
     }
     
+    // For general enquiries, derive manager_name from fundName
+    let managerNameForInsert: string | null = null;
+    if (!enquiryData.fundId && enquiryData.fundName) {
+      // fundName contains the company name for general enquiries
+      managerNameForInsert = enquiryData.fundName;
+    }
+    
     // Insert enquiry into database (fund_id can be null for general enquiries)
     const { data: enquiry, error: insertError } = await supabase
       .from('fund_enquiries')
       .insert({
         fund_id: enquiryData.fundId || null,
+        manager_name: managerNameForInsert,
         first_name: enquiryData.firstName,
         last_name: enquiryData.lastName,
         email: enquiryData.email,

@@ -48,36 +48,81 @@ const LeadsTab: React.FC<LeadsTabProps> = ({ fundId }) => {
   const [sortBy, setSortBy] = useState<'date' | 'status'>('date');
 
   useEffect(() => {
-    fetchEnquiries();
-    
-    // Set up real-time subscription
-    const channel = supabase
-      .channel('fund_enquiries_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'fund_enquiries',
-          filter: `fund_id=eq.${fundId}`,
-        },
-        () => {
-          fetchEnquiries();
-        }
-      )
-      .subscribe();
+    const setupSubscription = async () => {
+      fetchEnquiries();
+      
+      // Get the fund's manager_name for the real-time filter
+      const { data: fundData } = await supabase
+        .from('funds')
+        .select('manager_name')
+        .eq('id', fundId)
+        .single();
+      
+      const managerName = fundData?.manager_name;
+      
+      // Set up real-time subscription for both fund-specific and general company enquiries
+      const channel = supabase
+        .channel('fund_enquiries_changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'fund_enquiries',
+            filter: `fund_id=eq.${fundId}`,
+          },
+          () => {
+            fetchEnquiries();
+          }
+        );
+      
+      // Add subscription for general company enquiries if we have a manager name
+      if (managerName) {
+        channel.on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'fund_enquiries',
+            filter: `manager_name=eq.${managerName}`,
+          },
+          () => {
+            fetchEnquiries();
+          }
+        );
+      }
+      
+      channel.subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
+      return () => {
+        supabase.removeChannel(channel);
+      };
     };
+    
+    setupSubscription();
   }, [fundId]);
 
   const fetchEnquiries = async () => {
     try {
+      // First, get the fund to determine its manager_name
+      const { data: fundData, error: fundError } = await supabase
+        .from('funds')
+        .select('manager_name')
+        .eq('id', fundId)
+        .single();
+      
+      if (fundError) {
+        console.error('Error fetching fund details:', fundError);
+        throw fundError;
+      }
+      
+      const managerName = fundData?.manager_name;
+      
+      // Query for both fund-specific and general company enquiries
       const { data, error } = await supabase
         .from('fund_enquiries')
         .select('*')
-        .or(`fund_id.eq.${fundId},fund_id.is.null`)
+        .or(`fund_id.eq.${fundId},and(fund_id.is.null,manager_name.eq.${managerName})`)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
