@@ -20,6 +20,7 @@ interface LeadsTabProps {
 
 interface Enquiry {
   id: string;
+  fund_id: string | null;
   first_name: string;
   last_name: string;
   email: string;
@@ -76,7 +77,7 @@ const LeadsTab: React.FC<LeadsTabProps> = ({ fundId }) => {
       const { data, error } = await supabase
         .from('fund_enquiries')
         .select('*')
-        .eq('fund_id', fundId)
+        .or(`fund_id.eq.${fundId},fund_id.is.null`)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -360,6 +361,7 @@ const LeadsTab: React.FC<LeadsTabProps> = ({ fundId }) => {
                     <TableHead className="w-[50px]"></TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Contact</TableHead>
+                    <TableHead>Type</TableHead>
                     <TableHead>Investment Range</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Date</TableHead>
@@ -408,6 +410,13 @@ const LeadsTab: React.FC<LeadsTabProps> = ({ fundId }) => {
                           </div>
                         </TableCell>
                         <TableCell>
+                          {enquiry.fund_id ? (
+                            <Badge variant="secondary" className="text-xs">Fund Enquiry</Badge>
+                          ) : (
+                            <Badge variant="outline" className="text-xs border-bronze/30 text-bronze">General Enquiry</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
                           <Badge variant="outline">{enquiry.investment_amount_range}</Badge>
                         </TableCell>
                         <TableCell onClick={(e) => e.stopPropagation()}>
@@ -440,7 +449,7 @@ const LeadsTab: React.FC<LeadsTabProps> = ({ fundId }) => {
                       {/* Expandable Details */}
                       {expandedRow === enquiry.id && (
                         <TableRow>
-                          <TableCell colSpan={6} className="bg-muted/30">
+                          <TableCell colSpan={7} className="bg-muted/30">
                             <div className="p-4 space-y-4">
                               {/* Interest Areas */}
                               <div>
