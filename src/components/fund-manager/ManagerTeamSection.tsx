@@ -27,7 +27,7 @@ const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, te
   };
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30">
+    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center gap-3 mb-12">
           <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">

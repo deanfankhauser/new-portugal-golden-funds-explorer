@@ -35,7 +35,7 @@ const ManagerStatsSection: React.FC<ManagerStatsSectionProps> = ({
   if (!hasStats) return null;
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 border-t border-border bg-muted/30">
+    <section className="py-16 px-4 sm:px-6 lg:px-8 border-t border-border bg-background">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-2xl font-semibold text-foreground mb-8">Company Overview</h2>
         
