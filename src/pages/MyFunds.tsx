@@ -6,7 +6,7 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import FundManagerSidebar from '@/components/fund-manager/FundManagerSidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Building2, Edit3, TrendingUp, Eye, Users } from 'lucide-react';
+import { Building2, Edit3, TrendingUp, Eye, Users, Mail } from 'lucide-react';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { useAllFunds } from '@/hooks/useFundsQuery';
@@ -239,14 +239,22 @@ const MyFunds = () => {
                             </p>
                           </div>
                         </div>
-                        {assignment.permissions.can_edit_profile && (
-                          <Link to={`/manage-profile/${profile.id}`}>
-                            <Button>
-                              <Edit3 className="h-4 w-4 mr-2" />
-                              Edit Company Profile
+                        <div className="flex gap-2">
+                          <Link to={`/manage-profile/${profile.id}?tab=leads`}>
+                            <Button variant="outline">
+                              <Mail className="h-4 w-4 mr-2" />
+                              View Leads
                             </Button>
                           </Link>
-                        )}
+                          {assignment.permissions.can_edit_profile && (
+                            <Link to={`/manage-profile/${profile.id}`}>
+                              <Button>
+                                <Edit3 className="h-4 w-4 mr-2" />
+                                Edit Profile
+                              </Button>
+                            </Link>
+                          )}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
