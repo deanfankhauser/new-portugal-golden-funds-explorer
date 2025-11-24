@@ -85,20 +85,8 @@ const FundManager = () => {
       
       if (matchingProfile) {
         setIsManagerVerified(true);
-        
-        // Lazy load supabase only when needed (not during SSG)
-        const { supabase } = await import('@/integrations/supabase/client');
-        
-        // Fetch full profile data
-        const { data } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', matchingProfile.id)
-          .single();
-        
-        if (data) {
-          setManagerProfile(data);
-        }
+        // Use the complete profile from getAllApprovedManagers - no need for second fetch
+        setManagerProfile(matchingProfile as unknown as Profile);
       }
     };
     

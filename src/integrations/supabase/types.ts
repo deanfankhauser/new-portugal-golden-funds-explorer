@@ -1369,8 +1369,12 @@ export type Database = {
           id: string
           license_number: string
           logo_url: string
+          manager_about: string
+          manager_faqs: Json
+          manager_highlights: Json
           manager_name: string
           registration_number: string
+          team_members: Json
           updated_at: string
           user_id: string
           website: string
