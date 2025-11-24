@@ -9,6 +9,7 @@ import ManagerHighlightsSection from './ManagerHighlightsSection';
 import ManagerFAQsSection from './ManagerFAQsSection';
 import ManagerStatsSection from './ManagerStatsSection';
 import ManagerContactSection from './ManagerContactSection';
+import ManagerContactForm from './ManagerContactForm';
 import { Profile } from '@/types/profile';
 import { Badge } from '@/components/ui/badge';
 
@@ -142,6 +143,16 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
           faqs={managerProfile.manager_faqs}
         />
       )}
+
+      {/* Contact Form Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-border">
+        <div className="max-w-3xl mx-auto">
+          <ManagerContactForm 
+            managerName={managerName}
+            companyName={managerProfile?.company_name}
+          />
+        </div>
+      </section>
 
     </div>
   );

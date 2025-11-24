@@ -17,7 +17,7 @@ interface Lead {
   last_name: string;
   email: string;
   phone: string;
-  fund_id: string;
+  fund_id: string | null;
   fund_name: string;
   manager_name: string;
   investment_amount_range: string;
@@ -71,6 +71,15 @@ export function AllLeadsManagement() {
       // Fetch fund names for each lead
       const leadsWithFunds = await Promise.all(
         (data || []).map(async (lead) => {
+          if (!lead.fund_id) {
+            // General enquiry without specific fund
+            return {
+              ...lead,
+              fund_name: 'General Enquiry',
+              manager_name: 'General',
+            };
+          }
+
           const { data: fund } = await supabase
             .from('funds')
             .select('name, manager_name')
@@ -339,7 +348,13 @@ export function AllLeadsManagement() {
                     <TableCell>{lead.email}</TableCell>
                     <TableCell>{lead.phone || 'N/A'}</TableCell>
                     <TableCell className="max-w-[200px] truncate" title={lead.fund_name}>
-                      {lead.fund_name}
+                      {lead.fund_id ? (
+                        lead.fund_name
+                      ) : (
+                        <Badge variant="outline" className="border-bronze/30 text-bronze">
+                          General Enquiry
+                        </Badge>
+                      )}
                     </TableCell>
                     <TableCell>{lead.manager_name}</TableCell>
                     <TableCell>{lead.investment_amount_range}</TableCell>
