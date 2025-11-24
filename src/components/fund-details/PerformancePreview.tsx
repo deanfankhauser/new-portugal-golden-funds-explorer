@@ -73,19 +73,19 @@ const PerformancePreview: React.FC<PerformancePreviewProps> = ({ fund }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="flex flex-col gap-1.5">
           <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">YTD</div>
-          <div className={`text-[28px] font-bold tracking-tight ${getValueClassName(ytd)}`}>
+          <div className={`text-sm font-bold tracking-tight ${getValueClassName(ytd)}`}>
             {ytd}
           </div>
         </div>
         <div className="flex flex-col gap-1.5">
           <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">1 Year</div>
-          <div className={`text-[28px] font-bold tracking-tight ${getValueClassName(oneYear)}`}>
+          <div className={`text-sm font-bold tracking-tight ${getValueClassName(oneYear)}`}>
             {oneYear}
           </div>
         </div>
         <div className="flex flex-col gap-1.5">
           <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Since Inception</div>
-          <div className={`text-[28px] font-bold tracking-tight ${getValueClassName(sinceInception)}`}>
+          <div className={`text-sm font-bold tracking-tight ${getValueClassName(sinceInception)}`}>
             {sinceInception}
           </div>
         </div>
