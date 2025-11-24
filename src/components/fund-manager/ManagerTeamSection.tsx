@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Users, Mail, Linkedin } from 'lucide-react';
+import { Mail, Linkedin } from 'lucide-react';
 
 interface TeamMember {
   name: string;
@@ -45,14 +45,9 @@ const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, te
 
   return (
     <div>
-      <div className="flex items-center gap-3 mb-12">
-        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-          <Users className="h-5 w-5 text-primary" />
-        </div>
-        <h2 className="text-3xl font-semibold text-foreground">
-          Team
-        </h2>
-      </div>
+      <h2 className="text-3xl font-semibold text-foreground mb-12">
+        Team
+      </h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {teamMembers.map((member, index) => {

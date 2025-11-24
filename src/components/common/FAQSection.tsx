@@ -54,14 +54,9 @@ const FAQSection: React.FC<FAQSectionProps> = ({
 
   const content = (
     <>
-      <div className="flex items-center gap-3 mb-12">
-        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-          <HelpCircle className="h-5 w-5 text-primary" />
-        </div>
-        <h2 className="text-3xl font-semibold text-foreground">
-          {title}
-        </h2>
-      </div>
+      <h2 className="text-3xl font-semibold text-foreground mb-12">
+        {title}
+      </h2>
       
       <div className="space-y-8">
         {faqs.map((faq, index) => (
