@@ -42,12 +42,12 @@ const FundManagerPanel: React.FC = () => {
               {/* Companies */}
               <Route path="companies" element={<CompaniesOverview />} />
               <Route path="company/:profileId" element={<CompanyDetails />} />
+              <Route path="company/:profileId/team" element={<FundTeam />} />
               
               {/* Fund Management */}
               <Route path="fund/:fundId/update" element={<FundUpdate />} />
               <Route path="fund/:fundId/analytics" element={<FundAnalytics />} />
               <Route path="fund/:fundId/advertising" element={<FundAdvertising />} />
-              <Route path="fund/:fundId/team" element={<FundTeam />} />
               
               {/* Fallback */}
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

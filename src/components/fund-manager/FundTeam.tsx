@@ -1,17 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
-import { useFund } from '@/hooks/useFundsQuery';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 import PageSEO from '@/components/common/PageSEO';
 import TeamAccessTab from './TeamAccessTab';
+import { supabase } from '@/integrations/supabase/client';
 
 const FundTeam: React.FC = () => {
-  const { fundId } = useParams<{ fundId: string }>();
+  const { profileId } = useParams<{ profileId: string }>();
   const { user, loading: authLoading } = useEnhancedAuth();
-  const { data: fund, isLoading: fundLoading } = useFund(fundId);
+  const [companyName, setCompanyName] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (authLoading || fundLoading) {
+  useEffect(() => {
+    const fetchCompany = async () => {
+      if (!profileId) return;
+      
+      const { data } = await supabase
+        .from('profiles')
+        .select('company_name')
+        .eq('id', profileId)
+        .single();
+      
+      setCompanyName(data?.company_name || null);
+      setLoading(false);
+    };
+
+    fetchCompany();
+  }, [profileId]);
+
+  if (authLoading || loading) {
     return <PageLoader />;
   }
 
@@ -19,7 +37,7 @@ const FundTeam: React.FC = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  if (!fund) {
+  if (!companyName) {
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -29,13 +47,13 @@ const FundTeam: React.FC = () => {
       
       <div className="max-w-6xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold">{fund.name}</h1>
+          <h1 className="text-2xl font-bold">{companyName}</h1>
           <p className="text-muted-foreground mt-1">
             Team access and permissions
           </p>
         </div>
 
-        <TeamAccessTab fund={fund} />
+        <TeamAccessTab companyName={companyName} />
       </div>
     </>
   );

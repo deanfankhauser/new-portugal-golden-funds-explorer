@@ -212,7 +212,7 @@ const ManageFund: React.FC = () => {
               <Route path="update" element={<UpdateFundTab fund={fund} canDirectEdit={canDirectEdit} />} />
               <Route path="analytics" element={<AnalyticsTab fundId={fund.id} />} />
               <Route path="advertising" element={<AdvertisingTab fundId={fund.id} fundName={fund.name} />} />
-              <Route path="team" element={<TeamAccessTab fund={fund} />} />
+              <Route path="team" element={<TeamAccessTab companyName={fund.managerName} />} />
             </Routes>
             </div>
           </main>
