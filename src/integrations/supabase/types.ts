@@ -246,6 +246,7 @@ export type Database = {
           interest_areas: Json | null
           investment_amount_range: string | null
           last_name: string
+          manager_name: string | null
           message: string
           notes: string | null
           phone: string | null
@@ -267,6 +268,7 @@ export type Database = {
           interest_areas?: Json | null
           investment_amount_range?: string | null
           last_name: string
+          manager_name?: string | null
           message: string
           notes?: string | null
           phone?: string | null
@@ -288,6 +290,7 @@ export type Database = {
           interest_areas?: Json | null
           investment_amount_range?: string | null
           last_name?: string
+          manager_name?: string | null
           message?: string
           notes?: string | null
           phone?: string | null
