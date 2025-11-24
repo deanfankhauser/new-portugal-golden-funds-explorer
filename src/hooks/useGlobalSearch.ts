@@ -45,6 +45,7 @@ export const useGlobalSearch = (query: string) => {
         subtitle: fund.managerName,
         url: `/${fund.id}`,
         metadata: {
+          managerName: fund.managerName,
           category: fund.category,
           returnTarget: fund.returnTarget,
           isVerified: fund.isVerified,
