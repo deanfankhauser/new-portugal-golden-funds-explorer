@@ -7,6 +7,7 @@ import ManagerAboutSection from './ManagerAboutSection';
 import ManagerTeamSection from './ManagerTeamSection';
 import ManagerHighlightsSection from './ManagerHighlightsSection';
 import ManagerFAQsSection from './ManagerFAQsSection';
+import ManagerContactSection from './ManagerContactSection';
 import ManagerEnquirySection from './ManagerEnquirySection';
 import ManagerSummaryCard from './ManagerSummaryCard';
 
@@ -158,6 +159,16 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                 </div>
               </div>
 
+              {/* Manager About Section */}
+              {managerProfile?.manager_about && (
+                <div className="border-t border-border pt-16 pb-16">
+                  <ManagerAboutSection 
+                    managerName={managerName}
+                    about={managerProfile.manager_about}
+                  />
+                </div>
+              )}
+
               {/* Fund Portfolio Section */}
               <div className="border-t border-border pt-20 pb-20">
                 <div className="mb-12">
@@ -172,16 +183,6 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                   ))}
                 </div>
               </div>
-
-              {/* Manager About Section */}
-              {managerProfile?.manager_about && (
-                <div className="border-t border-border pt-16 pb-16">
-                  <ManagerAboutSection 
-                    managerName={managerName}
-                    about={managerProfile.manager_about}
-                  />
-                </div>
-              )}
               
               {/* Manager Highlights Section */}
               {managerProfile?.manager_highlights && Array.isArray(managerProfile.manager_highlights) && managerProfile.manager_highlights.length > 0 && (
@@ -211,6 +212,11 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                     faqs={managerProfile.manager_faqs}
                   />
                 </div>
+              )}
+              
+              {/* Manager Contact & Social Media Section */}
+              {managerProfile && (
+                <ManagerContactSection managerProfile={managerProfile} />
               )}
 
               {/* Contact Form Section */}
