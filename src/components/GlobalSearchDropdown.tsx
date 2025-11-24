@@ -89,8 +89,11 @@ export const GlobalSearchDropdown: React.FC<Props> = ({
                   }
                 `}
               >
-                {result.type === 'fund' && result.metadata?.managerName ? (
-                  <CompanyLogo managerName={result.metadata.managerName} size="xs" />
+                {(result.type === 'fund' && result.metadata?.managerName) || result.type === 'manager' ? (
+                  <CompanyLogo 
+                    managerName={result.type === 'fund' ? result.metadata.managerName : result.name} 
+                    size="xs" 
+                  />
                 ) : (
                   <div className="h-10 w-10 md:h-10 md:w-10 shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
                     <Icon className="h-5 w-5 text-primary" />
