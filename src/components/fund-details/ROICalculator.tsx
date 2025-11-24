@@ -117,15 +117,10 @@ const ROICalculator: React.FC<ROICalculatorProps> = ({ fund }) => {
       <div className="p-6 md:p-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-9 h-9 bg-primary/5 rounded-lg flex items-center justify-center">
-              <Calculator className="h-4 w-4 text-primary" />
-            </div>
-            <h3 className="text-lg font-semibold text-foreground tracking-tight">
-              Investment Calculator
-            </h3>
-          </div>
-          <p className="text-sm text-muted-foreground ml-12">
+          <h3 className="text-lg font-semibold text-foreground tracking-tight mb-2">
+            Investment Calculator
+          </h3>
+          <p className="text-sm text-muted-foreground">
             Project potential returns based on your investment parameters
           </p>
         </div>
