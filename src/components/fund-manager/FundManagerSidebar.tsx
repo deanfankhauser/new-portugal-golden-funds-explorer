@@ -195,11 +195,6 @@ export default function FundManagerSidebar() {
       icon: Mail,
       badge: totalOpenLeads > 0 ? totalOpenLeads : undefined,
     },
-    {
-      title: 'Companies Overview',
-      to: '/dashboard/companies',
-      icon: Building2,
-    },
   ];
 
   const handleNavClick = () => {
@@ -299,6 +294,16 @@ export default function FundManagerSidebar() {
                       </SidebarMenuButton>
                     </SidebarMenuItem>
 
+                    {/* Team Access at company level */}
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild isActive={location.pathname === `/dashboard/company/${company.profileId}/team`}>
+                        <Link to={`/dashboard/company/${company.profileId}/team`} onClick={handleNavClick}>
+                          <UsersIcon className="h-4 w-4" />
+                          <span>Team Access</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+
                     {company.funds.length > 0 && (
                       <SidebarMenuSub>
                         {company.funds.map((fund) => {
@@ -331,20 +336,13 @@ export default function FundManagerSidebar() {
                                       </Link>
                                     </SidebarMenuSubButton>
                                   </SidebarMenuSubItem>
-                                  <SidebarMenuSubItem>
-                                    <SidebarMenuSubButton asChild isActive={location.pathname === `/dashboard/fund/${fund.id}/advertising`}>
-                                      <Link to={`/dashboard/fund/${fund.id}/advertising`} onClick={handleNavClick}>
-                                        Advertising
-                                      </Link>
-                                    </SidebarMenuSubButton>
-                                  </SidebarMenuSubItem>
-                                  <SidebarMenuSubItem>
-                                    <SidebarMenuSubButton asChild isActive={location.pathname === `/dashboard/fund/${fund.id}/team`}>
-                                      <Link to={`/dashboard/fund/${fund.id}/team`} onClick={handleNavClick}>
-                                        Team Access
-                                      </Link>
-                                    </SidebarMenuSubButton>
-                                  </SidebarMenuSubItem>
+                                   <SidebarMenuSubItem>
+                                     <SidebarMenuSubButton asChild isActive={location.pathname === `/dashboard/fund/${fund.id}/advertising`}>
+                                       <Link to={`/dashboard/fund/${fund.id}/advertising`} onClick={handleNavClick}>
+                                         Advertising
+                                       </Link>
+                                     </SidebarMenuSubButton>
+                                   </SidebarMenuSubItem>
                                 </SidebarMenuSub>
                               </CollapsibleContent>
                             </Collapsible>

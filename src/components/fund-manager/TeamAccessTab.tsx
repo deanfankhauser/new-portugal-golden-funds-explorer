@@ -1,22 +1,21 @@
 import React, { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Fund } from '@/data/types/funds';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import TeamMembersList from './TeamMembersList';
 import InviteTeamMemberForm from './InviteTeamMemberForm';
 
 interface TeamAccessTabProps {
-  fund: Fund;
+  companyName: string;
 }
 
-const TeamAccessTab: React.FC<TeamAccessTabProps> = ({ fund }) => {
+const TeamAccessTab: React.FC<TeamAccessTabProps> = ({ companyName }) => {
   const queryClient = useQueryClient();
   
   // Refresh team members on mount to ensure fresh data
   useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ['team-members', fund.managerName] });
-  }, [fund.managerName, queryClient]);
+    queryClient.invalidateQueries({ queryKey: ['team-members', companyName] });
+  }, [companyName, queryClient]);
 
   return (
     <div className="space-y-6">
@@ -35,7 +34,7 @@ const TeamAccessTab: React.FC<TeamAccessTabProps> = ({ fund }) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <TeamMembersList companyName={fund.managerName} />
+          <TeamMembersList companyName={companyName} />
         </CardContent>
       </Card>
 
@@ -49,7 +48,7 @@ const TeamAccessTab: React.FC<TeamAccessTabProps> = ({ fund }) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <InviteTeamMemberForm companyName={fund.managerName} />
+          <InviteTeamMemberForm companyName={companyName} />
         </CardContent>
       </Card>
     </div>

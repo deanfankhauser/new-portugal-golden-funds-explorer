@@ -5,7 +5,6 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import FundManagerSidebar from '@/components/fund-manager/FundManagerSidebar';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 import MyLeads from '@/pages/MyLeads';
-import CompaniesOverview from '@/components/fund-manager/CompaniesOverview';
 import CompanyDetails from '@/components/fund-manager/CompanyDetails';
 import FundUpdate from '@/components/fund-manager/FundUpdate';
 import FundAnalytics from '@/components/fund-manager/FundAnalytics';
@@ -39,15 +38,14 @@ const FundManagerPanel: React.FC = () => {
               {/* Default to Leads */}
               <Route index element={<MyLeads />} />
               
-              {/* Companies */}
-              <Route path="companies" element={<CompaniesOverview />} />
+              {/* Company Management */}
               <Route path="company/:profileId" element={<CompanyDetails />} />
+              <Route path="company/:profileId/team" element={<FundTeam />} />
               
               {/* Fund Management */}
               <Route path="fund/:fundId/update" element={<FundUpdate />} />
               <Route path="fund/:fundId/analytics" element={<FundAnalytics />} />
               <Route path="fund/:fundId/advertising" element={<FundAdvertising />} />
-              <Route path="fund/:fundId/team" element={<FundTeam />} />
               
               {/* Fallback */}
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
