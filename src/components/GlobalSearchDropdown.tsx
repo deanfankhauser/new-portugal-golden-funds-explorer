@@ -117,7 +117,10 @@ export const GlobalSearchDropdown: React.FC<Props> = ({
                       {result.subtitle}
                     </div>
                   )}
-                  {result.type === 'fund' && result.metadata?.returnTarget && (
+                  {result.type === 'fund' && result.metadata?.returnTarget && 
+                   result.metadata.returnTarget !== 'Unspecified' && 
+                   result.metadata.returnTarget !== 'Not disclosed' && 
+                   result.metadata.returnTarget !== 'N/A' && (
                     <div className="text-xs text-muted-foreground mt-0.5">
                       Target: {result.metadata.returnTarget}
                     </div>
