@@ -7,7 +7,6 @@ import ManagerAboutSection from './ManagerAboutSection';
 import ManagerTeamSection from './ManagerTeamSection';
 import ManagerHighlightsSection from './ManagerHighlightsSection';
 import ManagerFAQsSection from './ManagerFAQsSection';
-import ManagerOverviewSection from './ManagerOverviewSection';
 import ManagerEnquirySection from './ManagerEnquirySection';
 
 import { Profile } from '@/types/profile';
@@ -156,14 +155,6 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                     </StandardCard>
                   )}
                 </div>
-              </div>
-
-              {/* Overview Section - About */}
-              <div className="border-t border-border pt-16 pb-16">
-                <ManagerOverviewSection 
-                  managerName={managerName}
-                  managerProfile={managerProfile}
-                />
               </div>
 
               {/* Fund Portfolio Section */}
