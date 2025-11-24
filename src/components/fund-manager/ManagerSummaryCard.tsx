@@ -79,8 +79,7 @@ const ManagerSummaryCard: React.FC<ManagerSummaryCardProps> = ({
         {/* Location */}
         {(managerProfile?.city || managerProfile?.country) && (
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground flex items-center gap-1">
-              <MapPin className="h-3 w-3" />
+            <span className="text-muted-foreground">
               Location
             </span>
             <span className="font-semibold text-foreground text-right">
@@ -100,8 +99,7 @@ const ManagerSummaryCard: React.FC<ManagerSummaryCardProps> = ({
         {/* License/Registration */}
         {(managerProfile?.license_number || managerProfile?.registration_number) && (
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground flex items-center gap-1">
-              <Shield className="h-3 w-3" />
+            <span className="text-muted-foreground">
               Regulated
             </span>
             <span className="font-semibold text-foreground text-xs">
