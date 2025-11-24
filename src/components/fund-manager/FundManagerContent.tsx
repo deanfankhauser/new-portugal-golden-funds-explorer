@@ -112,7 +112,7 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                   {/* Active Funds */}
                   <StandardCard padding="sm" className="text-center">
-                    <div className="text-4xl font-bold text-primary mb-1">
+                    <div className="text-2xl font-bold text-primary mb-1">
                       {managerFunds.length}
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">
@@ -123,7 +123,7 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                   {/* AUM */}
                   {managerProfile?.assets_under_management && managerProfile.assets_under_management > 0 && (
                     <StandardCard padding="sm" className="text-center">
-                      <div className="text-4xl font-bold text-primary mb-1">
+                      <div className="text-2xl font-bold text-primary mb-1">
                         {formatAUM(managerProfile.assets_under_management)}
                       </div>
                       <div className="text-xs text-muted-foreground uppercase tracking-wider">
@@ -135,7 +135,7 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                   {/* License Number */}
                   {managerProfile?.registration_number && (
                     <StandardCard padding="sm" className="text-center">
-                      <div className="text-4xl font-bold text-primary mb-1">
+                      <div className="text-2xl font-bold text-primary mb-1">
                         {managerProfile.registration_number}
                       </div>
                       <div className="text-xs text-muted-foreground uppercase tracking-wider">
@@ -147,7 +147,7 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                   {/* CMVM Number */}
                   {managerProfile?.license_number && (
                     <StandardCard padding="sm" className="text-center">
-                      <div className="text-4xl font-bold text-primary mb-1">
+                      <div className="text-2xl font-bold text-primary mb-1">
                         {managerProfile.license_number}
                       </div>
                       <div className="text-xs text-muted-foreground uppercase tracking-wider">
