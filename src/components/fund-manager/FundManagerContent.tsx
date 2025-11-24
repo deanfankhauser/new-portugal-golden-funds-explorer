@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MapPin, ExternalLink, TrendingUp, Calendar, Building2, Shield } from 'lucide-react';
 import { Fund } from '../../data/types/funds';
 import FundListItem from '@/components/FundListItem';
@@ -28,6 +28,8 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
   isManagerVerified = false,
   managerProfile
 }) => {
+  const [isHeroExpanded, setIsHeroExpanded] = useState(false);
+  
   const formatAUM = (aum: number): string => {
     // Convert to millions first
     const millions = aum / 1000000;
@@ -54,6 +56,18 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
       formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
+  
+  const fullHeroDescription = managerProfile?.description || 
+    `Strategic investment solutions across Portugal's Golden Visa real estate and technology sectors`;
+  
+  const getTruncatedHeroText = (text: string) => {
+    const sentences = text.split(/[.!?]+/).filter(s => s.trim());
+    if (sentences.length <= 2) return text;
+    return sentences.slice(0, 2).join('. ') + '.';
+  };
+  
+  const truncatedHeroDescription = getTruncatedHeroText(fullHeroDescription);
+  const shouldShowHeroReadMore = fullHeroDescription.length > truncatedHeroDescription.length;
 
   return (
     <div className="space-y-0">
@@ -76,11 +90,20 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
               </h1>
 
               {/* Tagline */}
-              <p className="text-xl text-muted-foreground mb-8 max-w-3xl leading-relaxed">
-                {managerProfile?.description || 
-                  `Strategic investment solutions across Portugal's Golden Visa real estate and technology sectors`
-                }
-              </p>
+              <div className="max-w-3xl mb-8">
+                <p className="text-xl text-muted-foreground leading-relaxed">
+                  {isHeroExpanded ? fullHeroDescription : truncatedHeroDescription}
+                </p>
+                {shouldShowHeroReadMore && (
+                  <Button
+                    variant="link"
+                    onClick={() => setIsHeroExpanded(!isHeroExpanded)}
+                    className="px-0 h-auto font-normal text-primary hover:text-primary/80 mt-2"
+                  >
+                    {isHeroExpanded ? 'Read less' : 'Read more'}
+                  </Button>
+                )}
+              </div>
 
               {/* Stats Grid */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
