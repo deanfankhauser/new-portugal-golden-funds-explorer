@@ -321,13 +321,13 @@ function generateManagerNotificationEmail(enquiry: EnquiryData, managerName: str
       
       <div style="background: ${BRAND_COLORS.bone}; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid ${BRAND_COLORS.bronze};">
         <p style="margin: 0 0 10px 0; color: ${BRAND_COLORS.textDark}; font-size: 16px; font-weight: 600;">Hello ${managerName},</p>
-        <p style="margin: 0; color: ${BRAND_COLORS.textMuted};">You have a new prospective investor! Sign in to your dashboard to view their complete details.</p>
+        <p style="margin: 0; color: ${BRAND_COLORS.textMuted};">You have a new prospective investor! Click the button below to sign in and view their complete details in your Leads tab.</p>
       </div>
       
       <div style="background: linear-gradient(135deg, ${BRAND_COLORS.bordeaux}10, ${BRAND_COLORS.bronze}10); padding: 25px; border-radius: 8px; margin: 25px 0; border: 2px solid ${BRAND_COLORS.bordeaux};">
         <h2 style="margin-top: 0; color: ${BRAND_COLORS.bordeaux}; font-size: 18px;">⚠️ Important Reminders</h2>
         <ul style="color: ${BRAND_COLORS.textDark}; line-height: 1.8; padding-left: 20px; margin: 10px 0 0 0;">
-          <li><strong>Sign in to your dashboard</strong> to view full lead details and contact information</li>
+          <li><strong>Sign in first:</strong> Click the button below to access your dashboard, then navigate to the Leads tab to view full contact information</li>
           <li><strong>Update the lead status</strong> (Open, Closed Lost, or Won) to keep accurate records</li>
           <li><strong>Status verification:</strong> We verify lead statuses with clients - please ensure accuracy to avoid discrepancies</li>
           <li><strong>Direct contact:</strong> Feel free to arrange a call directly with the lead using the contact information provided</li>
@@ -365,10 +365,7 @@ function generateManagerNotificationEmail(enquiry: EnquiryData, managerName: str
         </div>
       </div>
       
-      ${enquiry.fundId 
-        ? generateCTAButton('View in Dashboard', `https://funds.movingto.com/manage-fund/${enquiry.fundId}?tab=leads`, 'bordeaux')
-        : generateCTAButton('View in Dashboard', `https://funds.movingto.com/my-funds`, 'bordeaux')
-      }
+      ${generateCTAButton('Sign In to View Lead', `https://funds.movingto.com`, 'bordeaux')}
       
       <div style="background: ${BRAND_COLORS.bone}; padding: 20px; border-radius: 6px; margin-top: 25px;">
         <p style="margin: 0; color: ${BRAND_COLORS.textMuted}; font-size: 14px; line-height: 1.6;">
@@ -403,7 +400,7 @@ ${enquiry.phone ? `- Phone: ${enquiry.phone}` : ''}
 Message:
 ${enquiry.message}
 
-View in Dashboard: https://funds.movingto.com/${enquiry.fundId ? `manage-fund/${enquiry.fundId}?tab=leads` : 'my-funds'}
+Sign in to view lead: https://funds.movingto.com
 
 Tip: Investors typically contact multiple funds. Respond within 24 hours to maximize your chances of conversion.
 
