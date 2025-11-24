@@ -132,6 +132,18 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                     </StandardCard>
                   )}
 
+                  {/* CMVM Number */}
+                  {managerProfile?.registration_number && (
+                    <StandardCard padding="sm" className="text-center">
+                      <div className="text-2xl font-bold text-primary mb-1">
+                        {managerProfile.registration_number}
+                      </div>
+                      <div className="text-xs text-muted-foreground uppercase tracking-wider">
+                        CMVM Number
+                      </div>
+                    </StandardCard>
+                  )}
+
                   {/* License Number */}
                   {managerProfile?.license_number && (
                     <StandardCard padding="sm" className="text-center">
@@ -140,18 +152,6 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                       </div>
                       <div className="text-xs text-muted-foreground uppercase tracking-wider">
                         License Number
-                      </div>
-                    </StandardCard>
-                  )}
-
-                  {/* CMVM Registration Number */}
-                  {managerProfile?.registration_number && (
-                    <StandardCard padding="sm" className="text-center">
-                      <div className="text-2xl font-bold text-primary mb-1">
-                        {managerProfile.registration_number}
-                      </div>
-                      <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                        CMVM Number
                       </div>
                     </StandardCard>
                   )}
