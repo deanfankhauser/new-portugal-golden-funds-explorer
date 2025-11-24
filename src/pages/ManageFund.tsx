@@ -160,10 +160,7 @@ const ManageFund: React.FC = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        <FundManagerSidebar 
-          fundId={fund.id} 
-          fundName={fund.name}
-        />
+        <FundManagerSidebar />
         <div className="flex-1 flex flex-col">
           <header className="h-14 flex items-center justify-between border-b px-4 lg:px-6">
             <div className="flex items-center gap-3">

@@ -276,19 +276,16 @@ const MyLeads = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <FundManagerSidebar />
-        <div className="flex-1 flex flex-col">
-          <header className="h-14 flex items-center border-b px-4 lg:px-6">
-            <SidebarTrigger />
-            <h1 className="text-lg font-semibold ml-4">All Leads</h1>
-          </header>
-          
-          <PageSEO pageType="about" />
-          
-          <main className="flex-1 p-4 lg:p-6 overflow-auto">
-            <div className="max-w-7xl mx-auto space-y-6">
+    <>
+      <PageSEO pageType="about" />
+      
+      <div className="max-w-7xl mx-auto space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold">All Leads</h1>
+          <p className="text-muted-foreground mt-1">
+            Manage all enquiries across your companies
+          </p>
+        </div>
               {/* Summary Statistics */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card>
@@ -617,11 +614,8 @@ const MyLeads = () => {
                   )}
                 </CardContent>
               </Card>
-            </div>
-          </main>
-        </div>
       </div>
-    </SidebarProvider>
+    </>
   );
 };
 
