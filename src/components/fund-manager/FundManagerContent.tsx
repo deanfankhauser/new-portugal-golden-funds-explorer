@@ -8,6 +8,7 @@ import ManagerTeamSection from './ManagerTeamSection';
 import ManagerHighlightsSection from './ManagerHighlightsSection';
 import ManagerFAQsSection from './ManagerFAQsSection';
 import ManagerEnquirySection from './ManagerEnquirySection';
+import ManagerSummaryCard from './ManagerSummaryCard';
 
 import { Profile } from '@/types/profile';
 import { Badge } from '@/components/ui/badge';
@@ -223,15 +224,15 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
               </div>
             </div>
 
-            {/* Right Column - Sticky CTA Button */}
+            {/* Right Column - Sticky Summary Card */}
             <div className="hidden lg:block flex-shrink-0 sticky top-24">
-              <Button 
-                onClick={scrollToForm}
-                size="lg"
-                className="px-8 py-6 text-lg font-semibold whitespace-nowrap"
-              >
-                Schedule Consultation
-              </Button>
+              <ManagerSummaryCard
+                managerName={managerName}
+                managerProfile={managerProfile}
+                isVerified={isManagerVerified}
+                fundCount={managerFunds.length}
+                onScheduleClick={scrollToForm}
+              />
             </div>
           </div>
         </div>
