@@ -30,8 +30,8 @@ interface ManagerFAQ {
 
 interface ProfileEditTabProps {
   profile: Profile;
-  onProfileUpdate: (profile: Profile) => void;
-  canManageTeam: boolean;
+  onProfileUpdate?: (profile: Profile) => void;
+  canManageTeam?: boolean;
 }
 
 const profileSchema = z.object({
@@ -52,7 +52,7 @@ const profileSchema = z.object({
   license_number: z.string().trim().max(100).optional(),
 });
 
-const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdate, canManageTeam }) => {
+const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdate, canManageTeam = false }) => {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
@@ -389,7 +389,9 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
           });
       }
 
-      onProfileUpdate(updatedProfile as Profile);
+      if (onProfileUpdate) {
+        onProfileUpdate(updatedProfile as Profile);
+      }
 
       toast({
         title: 'Profile Updated',
