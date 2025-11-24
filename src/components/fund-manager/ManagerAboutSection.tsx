@@ -9,15 +9,15 @@ interface ManagerAboutSectionProps {
 const ManagerAboutSection: React.FC<ManagerAboutSectionProps> = ({ managerName, about }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Truncate to approximately 2-3 sentences (around 300 characters)
-  const truncateText = (text: string, maxLength: number = 300) => {
+  // Truncate to approximately first paragraph (around 500 characters)
+  const truncateText = (text: string, maxLength: number = 500) => {
     if (text.length <= maxLength) return text;
     const truncated = text.substring(0, maxLength);
     const lastPeriod = truncated.lastIndexOf('.');
     return lastPeriod > 0 ? truncated.substring(0, lastPeriod + 1) : truncated + '...';
   };
 
-  const shouldTruncate = about.length > 300;
+  const shouldTruncate = about.length > 500;
   const displayText = shouldTruncate && !isExpanded ? truncateText(about) : about;
 
   return (
