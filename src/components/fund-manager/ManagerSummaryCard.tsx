@@ -31,25 +31,21 @@ const ManagerSummaryCard: React.FC<ManagerSummaryCardProps> = ({
 
   return (
     <StandardCard className="overflow-hidden w-80">
-      {/* Header Banner */}
-      <div className="bg-primary text-primary-foreground p-6 -m-6 mb-6">
-        <div className="flex items-center justify-center gap-3">
-          {managerProfile?.logo_url ? (
-            <div className="bg-white rounded-lg p-2">
-              <CompanyLogo
-                managerName={managerName}
-                size="md"
-              />
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Building2 className="h-6 w-6" />
-              <h3 className="text-lg font-semibold text-center">
-                {managerName}
-              </h3>
-            </div>
-          )}
-        </div>
+      {/* Header Section */}
+      <div className="flex items-center justify-center mb-6">
+        {managerProfile?.logo_url ? (
+          <CompanyLogo
+            managerName={managerName}
+            size="lg"
+          />
+        ) : (
+          <div className="flex items-center gap-2">
+            <Building2 className="h-6 w-6 text-foreground" />
+            <h3 className="text-lg font-semibold text-foreground">
+              {managerName}
+            </h3>
+          </div>
+        )}
       </div>
 
       {/* Verification Badge */}
