@@ -15,6 +15,10 @@ export interface PublicManagerData {
   assets_under_management?: number;
   registration_number?: string;
   license_number?: string;
+  manager_about?: string;
+  manager_highlights?: any; // JSONB array
+  manager_faqs?: any; // JSONB array
+  team_members?: any; // JSONB array
   created_at: string;
   updated_at: string;
 }
