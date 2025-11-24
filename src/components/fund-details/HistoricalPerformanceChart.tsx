@@ -23,10 +23,7 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
     return (
       <Card className="border-0 shadow-sm bg-card/50">
         <CardHeader className="pb-4">
-          <CardTitle className="flex items-center gap-3 text-lg font-semibold text-foreground">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <TrendingUp className="h-5 w-5 text-primary" />
-            </div>
+          <CardTitle className="text-lg font-semibold text-foreground">
             Historical Performance
           </CardTitle>
         </CardHeader>
@@ -140,10 +137,7 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
       <CardHeader className="pb-6">
         <div className="flex items-start justify-between">
           <div>
-            <CardTitle className="flex items-center gap-3 text-lg font-semibold text-foreground mb-2">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <TrendingUp className="h-5 w-5 text-primary" />
-              </div>
+            <CardTitle className="text-lg font-semibold text-foreground mb-2">
               Historical Performance
             </CardTitle>
             <p className="text-sm text-muted-foreground">
