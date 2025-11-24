@@ -156,7 +156,7 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
             </div>
 
             {/* CTA Button */}
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 sticky top-24">
               <Button 
                 onClick={scrollToForm}
                 size="lg"
