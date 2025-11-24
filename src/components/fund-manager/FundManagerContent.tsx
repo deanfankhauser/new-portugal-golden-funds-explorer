@@ -132,26 +132,26 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                     </StandardCard>
                   )}
 
-                  {/* CMVM Number */}
+                  {/* License Number */}
                   {managerProfile?.registration_number && (
                     <StandardCard padding="sm" className="text-center">
                       <div className="text-2xl font-bold text-primary mb-1">
                         {managerProfile.registration_number}
                       </div>
                       <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                        CMVM Number
+                        License Number
                       </div>
                     </StandardCard>
                   )}
 
-                  {/* License Number */}
+                  {/* CMVM Number */}
                   {managerProfile?.license_number && (
                     <StandardCard padding="sm" className="text-center">
                       <div className="text-2xl font-bold text-primary mb-1">
                         {managerProfile.license_number}
                       </div>
                       <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                        License Number
+                        CMVM Number
                       </div>
                     </StandardCard>
                   )}
