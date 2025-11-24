@@ -58,7 +58,7 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
   return (
     <div className="space-y-0">
       {/* Hero Section with Stats */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30 border-b border-border">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background border-b border-border">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 items-start">
             <div>
@@ -202,7 +202,7 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
       )}
 
       {/* Contact Form Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-border bg-muted/30">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-border bg-background">
         <div className="max-w-3xl mx-auto">
           <ManagerEnquirySection 
             managerName={managerName}

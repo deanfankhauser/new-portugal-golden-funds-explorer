@@ -20,7 +20,7 @@ const ManagerOverviewSection: React.FC<ManagerOverviewSectionProps> = ({
   };
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30 border-t border-border">
+    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background border-t border-border">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
           {/* About Section */}
