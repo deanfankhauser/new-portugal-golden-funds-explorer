@@ -7,6 +7,7 @@ import ManagerAboutSection from './ManagerAboutSection';
 import ManagerTeamSection from './ManagerTeamSection';
 import ManagerHighlightsSection from './ManagerHighlightsSection';
 import ManagerFAQsSection from './ManagerFAQsSection';
+import ManagerContactSection from './ManagerContactSection';
 import ManagerEnquirySection from './ManagerEnquirySection';
 import ManagerSummaryCard from './ManagerSummaryCard';
 
@@ -211,6 +212,11 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                     faqs={managerProfile.manager_faqs}
                   />
                 </div>
+              )}
+              
+              {/* Manager Contact & Social Media Section */}
+              {managerProfile && (
+                <ManagerContactSection managerProfile={managerProfile} />
               )}
 
               {/* Contact Form Section */}
