@@ -267,20 +267,6 @@ const MyFunds = () => {
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          <Link to={`/manage-profile/${profile.id}?tab=leads`}>
-                            <Button variant="outline" className="relative">
-                              <Mail className="h-4 w-4 mr-2" />
-                              View Leads
-                              {openLeadsCounts[profile.id] > 0 && (
-                                <Badge 
-                                  variant="default" 
-                                  className="ml-2 h-5 px-1.5 min-w-5 flex items-center justify-center"
-                                >
-                                  {openLeadsCounts[profile.id]}
-                                </Badge>
-                              )}
-                            </Button>
-                          </Link>
                           {assignment.permissions.can_edit_profile && (
                             <Link to={`/manage-profile/${profile.id}`}>
                               <Button>
@@ -307,17 +293,12 @@ const MyFunds = () => {
                              <CardContent className="p-4">
                               <div className="flex items-start gap-3">
                                 <CompanyLogo managerName={fund.managerName} size="sm" className="mt-1" />
-                                <div className="flex-1">
+                                 <div className="flex-1">
                                   <h4 className="font-semibold text-lg mb-1">{fund.name}</h4>
                                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                     <span className="flex items-center gap-1">
                                       <Eye className="h-4 w-4" />
                                       {metrics[fund.id]?.loading ? '—' : metrics[fund.id]?.monthlyViews ?? 0} impressions (30d)
-                                    </span>
-                                    <span>•</span>
-                                    <span className="flex items-center gap-1">
-                                      <Users className="h-4 w-4" />
-                                      {metrics[fund.id]?.loading ? '—' : metrics[fund.id]?.totalLeads ?? 0} total leads
                                     </span>
                                   </div>
                                 </div>

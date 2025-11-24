@@ -48,6 +48,7 @@ const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const SavedFunds = lazy(() => import('./pages/SavedFunds'));
 
 const MyFunds = lazy(() => import('./pages/MyFunds'));
+const MyLeads = lazy(() => import('./pages/MyLeads'));
 const ManageFund = lazy(() => import('./pages/ManageFund'));
 const ManageProfile = lazy(() => import('./pages/ManageProfile'));
 
@@ -312,6 +313,13 @@ function App() {
                        <Route path="/my-funds" element={
                          <Suspense fallback={<PageLoader />}>
                            <MyFunds />
+                         </Suspense>
+                       } />
+
+                       {/* My Leads - Unified Leads Dashboard */}
+                       <Route path="/my-leads" element={
+                         <Suspense fallback={<PageLoader />}>
+                           <MyLeads />
                          </Suspense>
                        } />
 
