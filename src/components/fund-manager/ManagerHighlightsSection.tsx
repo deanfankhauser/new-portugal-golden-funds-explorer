@@ -34,14 +34,9 @@ const ManagerHighlightsSection: React.FC<ManagerHighlightsSectionProps> = ({
 
   return (
     <div>
-      <div className="flex items-center gap-3 mb-12">
-        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-          <Award className="h-5 w-5 text-primary" />
-        </div>
-        <h2 className="text-3xl font-semibold text-foreground">
-          Key Highlights
-        </h2>
-      </div>
+      <h2 className="text-3xl font-semibold text-foreground mb-12">
+        Key Highlights
+      </h2>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {highlights.map((highlight, index) => (
