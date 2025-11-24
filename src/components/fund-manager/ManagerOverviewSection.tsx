@@ -28,31 +28,29 @@ const ManagerOverviewSection: React.FC<ManagerOverviewSectionProps> = ({
   const shouldShowReadMore = fullDescription.length > truncatedDescription.length;
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background border-t border-border">
-      <div className="max-w-4xl mx-auto">
-        <Card className="border-border/40 shadow-sm">
-          <CardContent className="p-8">
-            <h3 className="text-2xl font-semibold text-foreground mb-4">
-              About {managerName}
-            </h3>
-            <div className="prose prose-lg max-w-none">
-              <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap">
-                {isExpanded ? fullDescription : truncatedDescription}
-              </p>
-              {shouldShowReadMore && (
-                <Button
-                  variant="link"
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className="px-0 h-auto font-normal text-primary hover:text-primary/80 mt-2"
-                >
-                  {isExpanded ? 'Read less' : 'Read more'}
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </section>
+    <div>
+      <Card className="border-border/40 shadow-sm">
+        <CardContent className="p-8">
+          <h3 className="text-2xl font-semibold text-foreground mb-4">
+            About {managerName}
+          </h3>
+          <div className="prose prose-lg max-w-none">
+            <p className="text-foreground/80 leading-relaxed whitespace-pre-wrap">
+              {isExpanded ? fullDescription : truncatedDescription}
+            </p>
+            {shouldShowReadMore && (
+              <Button
+                variant="link"
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="px-0 h-auto font-normal text-primary hover:text-primary/80 mt-2"
+              >
+                {isExpanded ? 'Read less' : 'Read more'}
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
