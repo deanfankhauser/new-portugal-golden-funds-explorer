@@ -132,26 +132,26 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                     </StandardCard>
                   )}
 
-                  {/* Location/Regions */}
-                  {(managerProfile?.city || managerProfile?.country) && (
+                  {/* License Number */}
+                  {managerProfile?.license_number && (
                     <StandardCard padding="sm" className="text-center">
-                      <div className="text-4xl font-bold text-primary mb-1">
-                        {[managerProfile.city, managerProfile.country].filter(Boolean).length}
+                      <div className="text-2xl font-bold text-primary mb-1">
+                        {managerProfile.license_number}
                       </div>
                       <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                        Region{[managerProfile.city, managerProfile.country].filter(Boolean).length > 1 ? 's' : ''}
+                        License Number
                       </div>
                     </StandardCard>
                   )}
 
-                  {/* Track Record */}
-                  {managerProfile?.founded_year && (
+                  {/* CMVM Registration Number */}
+                  {managerProfile?.registration_number && (
                     <StandardCard padding="sm" className="text-center">
-                      <div className="text-4xl font-bold text-primary mb-1">
-                        {calculateYearsTrackRecord(managerProfile.founded_year)}
+                      <div className="text-2xl font-bold text-primary mb-1">
+                        {managerProfile.registration_number}
                       </div>
                       <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                        Years Track Record
+                        CMVM Number
                       </div>
                     </StandardCard>
                   )}
