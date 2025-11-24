@@ -9,7 +9,7 @@ import ManagerHighlightsSection from './ManagerHighlightsSection';
 import ManagerFAQsSection from './ManagerFAQsSection';
 import ManagerOverviewSection from './ManagerOverviewSection';
 import ManagerEnquirySection from './ManagerEnquirySection';
-import ManagerCTAFooter from './ManagerCTAFooter';
+
 import { Profile } from '@/types/profile';
 import { Badge } from '@/components/ui/badge';
 import StandardCard from '../common/StandardCard';
@@ -211,8 +211,6 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
         </div>
       </section>
 
-      {/* CTA Footer */}
-      <ManagerCTAFooter managerName={managerName} />
     </div>
   );
 };
