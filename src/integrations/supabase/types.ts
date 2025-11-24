@@ -241,7 +241,7 @@ export type Database = {
           created_at: string | null
           email: string
           first_name: string
-          fund_id: string
+          fund_id: string | null
           id: string
           interest_areas: Json | null
           investment_amount_range: string | null
@@ -262,7 +262,7 @@ export type Database = {
           created_at?: string | null
           email: string
           first_name: string
-          fund_id: string
+          fund_id?: string | null
           id?: string
           interest_areas?: Json | null
           investment_amount_range?: string | null
@@ -283,7 +283,7 @@ export type Database = {
           created_at?: string | null
           email?: string
           first_name?: string
-          fund_id?: string
+          fund_id?: string | null
           id?: string
           interest_areas?: Json | null
           investment_amount_range?: string | null
@@ -1369,8 +1369,12 @@ export type Database = {
           id: string
           license_number: string
           logo_url: string
+          manager_about: string
+          manager_faqs: Json
+          manager_highlights: Json
           manager_name: string
           registration_number: string
+          team_members: Json
           updated_at: string
           user_id: string
           website: string

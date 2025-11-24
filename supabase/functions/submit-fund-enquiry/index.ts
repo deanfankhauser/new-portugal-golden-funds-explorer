@@ -14,7 +14,7 @@ const corsHeaders = {
 const POSTMARK_API_URL = 'https://api.postmarkapp.com/email';
 
 interface EnquiryData {
-  fundId: string;
+  fundId?: string | null; // Optional for general manager enquiries
   fundName: string;
   firstName: string;
   lastName: string;
@@ -51,8 +51,8 @@ Deno.serve(async (req) => {
     
     const enquiryData: EnquiryData = await req.json();
     
-    // Validate required fields
-    if (!enquiryData.fundId || !enquiryData.firstName || !enquiryData.lastName || 
+    // Validate required fields (fundId is now optional for general manager enquiries)
+    if (!enquiryData.firstName || !enquiryData.lastName || 
         !enquiryData.email || !enquiryData.message || !enquiryData.investmentAmountRange) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
@@ -79,11 +79,11 @@ Deno.serve(async (req) => {
       );
     }
     
-    // Insert enquiry into database
+    // Insert enquiry into database (fund_id can be null for general enquiries)
     const { data: enquiry, error: insertError } = await supabase
       .from('fund_enquiries')
       .insert({
-        fund_id: enquiryData.fundId,
+        fund_id: enquiryData.fundId || null,
         first_name: enquiryData.firstName,
         last_name: enquiryData.lastName,
         email: enquiryData.email,
@@ -107,15 +107,26 @@ Deno.serve(async (req) => {
       );
     }
     
-    // Get fund details to find manager_name
-    const { data: fund, error: fundError } = await supabase
-      .from('funds')
-      .select('manager_name')
-      .eq('id', enquiryData.fundId)
-      .single();
+    // Get fund details to find manager_name (if this is a fund-specific enquiry)
+    let fund: { manager_name: string } | null = null;
     
-    if (fundError || !fund) {
-      console.error('Error fetching fund:', fundError);
+    if (enquiryData.fundId) {
+      const { data: fundData, error: fundError } = await supabase
+        .from('funds')
+        .select('manager_name')
+        .eq('id', enquiryData.fundId)
+        .single();
+      
+      if (fundError) {
+        console.error('Error fetching fund:', fundError);
+      } else {
+        fund = fundData;
+      }
+    } else {
+      // For general enquiries, try to extract manager_name from fundName
+      // This assumes fundName contains the company name
+      console.log('General manager enquiry - using fundName as manager_name:', enquiryData.fundName);
+      fund = { manager_name: enquiryData.fundName };
     }
     
     // Collect all recipient emails
@@ -172,18 +183,24 @@ Deno.serve(async (req) => {
       }
     }
     
-    // Get additional notification emails
-    const { data: additionalEmails, error: additionalEmailsError } = await supabase
-      .from('fund_lead_notification_emails')
-      .select('email')
-      .eq('fund_id', enquiryData.fundId);
+    // Get additional notification emails (only for fund-specific enquiries)
+    let additionalEmails: { email: string }[] = [];
     
-    if (additionalEmailsError) {
-      console.error('Error fetching additional notification emails:', additionalEmailsError);
+    if (enquiryData.fundId) {
+      const { data, error: additionalEmailsError } = await supabase
+        .from('fund_lead_notification_emails')
+        .select('email')
+        .eq('fund_id', enquiryData.fundId);
+      
+      if (additionalEmailsError) {
+        console.error('Error fetching additional notification emails:', additionalEmailsError);
+      } else {
+        additionalEmails = data || [];
+      }
     }
     
     // Add additional notification emails
-    if (additionalEmails && additionalEmails.length > 0) {
+    if (additionalEmails.length > 0) {
       for (const item of additionalEmails) {
         if (item.email) {
           recipientEmails.push(item.email);
@@ -304,13 +321,13 @@ function generateManagerNotificationEmail(enquiry: EnquiryData, managerName: str
       
       <div style="background: ${BRAND_COLORS.bone}; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid ${BRAND_COLORS.bronze};">
         <p style="margin: 0 0 10px 0; color: ${BRAND_COLORS.textDark}; font-size: 16px; font-weight: 600;">Hello ${managerName},</p>
-        <p style="margin: 0; color: ${BRAND_COLORS.textMuted};">You have a new prospective investor! Sign in to your dashboard to view their complete details.</p>
+        <p style="margin: 0; color: ${BRAND_COLORS.textMuted};">You have a new prospective investor! Click the button below to sign in and view their complete details in your Leads tab.</p>
       </div>
       
       <div style="background: linear-gradient(135deg, ${BRAND_COLORS.bordeaux}10, ${BRAND_COLORS.bronze}10); padding: 25px; border-radius: 8px; margin: 25px 0; border: 2px solid ${BRAND_COLORS.bordeaux};">
         <h2 style="margin-top: 0; color: ${BRAND_COLORS.bordeaux}; font-size: 18px;">⚠️ Important Reminders</h2>
         <ul style="color: ${BRAND_COLORS.textDark}; line-height: 1.8; padding-left: 20px; margin: 10px 0 0 0;">
-          <li><strong>Sign in to your dashboard</strong> to view full lead details and contact information</li>
+          <li><strong>Sign in first:</strong> Click the button below to access your dashboard, then navigate to the Leads tab to view full contact information</li>
           <li><strong>Update the lead status</strong> (Open, Closed Lost, or Won) to keep accurate records</li>
           <li><strong>Status verification:</strong> We verify lead statuses with clients - please ensure accuracy to avoid discrepancies</li>
           <li><strong>Direct contact:</strong> Feel free to arrange a call directly with the lead using the contact information provided</li>
@@ -348,7 +365,7 @@ function generateManagerNotificationEmail(enquiry: EnquiryData, managerName: str
         </div>
       </div>
       
-      ${generateCTAButton('View in Dashboard', `https://funds.movingto.com/manage-fund/${enquiry.fundId}?tab=leads`, 'bordeaux')}
+      ${generateCTAButton('Sign In to View Lead', `https://funds.movingto.com`, 'bordeaux')}
       
       <div style="background: ${BRAND_COLORS.bone}; padding: 20px; border-radius: 6px; margin-top: 25px;">
         <p style="margin: 0; color: ${BRAND_COLORS.textMuted}; font-size: 14px; line-height: 1.6;">
@@ -383,7 +400,7 @@ ${enquiry.phone ? `- Phone: ${enquiry.phone}` : ''}
 Message:
 ${enquiry.message}
 
-View in Dashboard: https://funds.movingto.com/manage-fund/${enquiry.fundId}?tab=leads
+Sign in to view lead: https://funds.movingto.com
 
 Tip: Investors typically contact multiple funds. Respond within 24 hours to maximize your chances of conversion.
 
@@ -418,7 +435,10 @@ function generateInvestorConfirmationEmail(enquiry: EnquiryData) {
         </ul>
       </div>
       
-      ${generateCTAButton('View Fund Details', `https://funds.movingto.com/funds/${enquiry.fundId}`, 'bordeaux')}
+      ${enquiry.fundId 
+        ? generateCTAButton('View Fund Details', `https://funds.movingto.com/${enquiry.fundId}`, 'bordeaux')
+        : generateCTAButton('Browse Funds', `https://funds.movingto.com/`, 'bordeaux')
+      }
       
       <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid ${BRAND_COLORS.bone};">
         <p style="margin: 0; color: ${BRAND_COLORS.textMuted}; font-size: 14px; line-height: 1.6;">

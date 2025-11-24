@@ -85,20 +85,8 @@ const FundManager = () => {
       
       if (matchingProfile) {
         setIsManagerVerified(true);
-        
-        // Lazy load supabase only when needed (not during SSG)
-        const { supabase } = await import('@/integrations/supabase/client');
-        
-        // Fetch full profile data
-        const { data } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', matchingProfile.id)
-          .single();
-        
-        if (data) {
-          setManagerProfile(data);
-        }
+        // Use the complete profile from getAllApprovedManagers - no need for second fetch
+        setManagerProfile(matchingProfile as unknown as Profile);
       }
     };
     
@@ -123,7 +111,7 @@ const FundManager = () => {
   // Return minimal shell during SSG
   if (isSSG) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-background">
         <PageSEO pageType="manager" managerName={displayManagerName} />
         <Header />
         <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
@@ -142,7 +130,7 @@ const FundManager = () => {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-background">
         <Header />
         <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
           <div className="flex items-center justify-center min-h-[400px]">
@@ -162,7 +150,7 @@ const FundManager = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-background">
       <PageSEO 
         pageType="manager" 
         managerName={displayManagerName}

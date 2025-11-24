@@ -264,13 +264,13 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-primary/5 border border-primary/15 rounded-xl p-4 flex flex-col gap-1.5">
                 <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Management Fee</div>
-                <div className="text-[28px] font-bold text-primary tracking-tight">
+                <div className="text-sm font-bold text-primary tracking-tight">
                   {formatManagementFee(fund.managementFee)}
                 </div>
               </div>
               <div className="bg-primary/5 border border-primary/15 rounded-xl p-4 flex flex-col gap-1.5">
                 <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Performance Fee</div>
-                <div className="text-[28px] font-bold text-primary tracking-tight">
+                <div className="text-sm font-bold text-primary tracking-tight">
                   {formatPerformanceFee(fund.performanceFee)}
                 </div>
               </div>

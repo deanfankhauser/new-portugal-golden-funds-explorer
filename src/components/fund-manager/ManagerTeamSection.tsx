@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Users, Mail, Linkedin } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Mail, Linkedin } from 'lucide-react';
 
 interface TeamMember {
   name: string;
   role: string;
   bio?: string;
-  photo?: string;
+  photoUrl?: string;
   email?: string;
   linkedin?: string;
 }
@@ -17,6 +18,8 @@ interface ManagerTeamSectionProps {
 }
 
 const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, teamMembers }) => {
+  const [expandedBios, setExpandedBios] = useState<Record<number, boolean>>({});
+  
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -26,27 +29,39 @@ const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, te
       .slice(0, 2);
   };
 
+  const truncateBio = (bio: string, maxLength: number = 150) => {
+    if (bio.length <= maxLength) return bio;
+    const truncated = bio.slice(0, maxLength);
+    const lastSpace = truncated.lastIndexOf(' ');
+    return lastSpace > 0 ? truncated.slice(0, lastSpace) + '...' : truncated + '...';
+  };
+
+  const toggleBio = (index: number) => {
+    setExpandedBios(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
+  };
+
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-3 mb-12">
-          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Users className="h-5 w-5 text-primary" />
-          </div>
-          <h2 className="text-3xl font-semibold text-foreground">
-            Team
-          </h2>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {teamMembers.map((member, index) => (
+    <div>
+      <h2 className="text-3xl font-semibold text-foreground mb-12">
+        Team
+      </h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {teamMembers.map((member, index) => {
+          const isExpanded = expandedBios[index];
+          const shouldTruncate = member.bio && member.bio.length > 150;
+          
+          return (
             <div 
               key={index} 
               className="group bg-card rounded-xl border border-border p-8 hover:border-primary/20 hover:shadow-lg transition-all duration-300"
             >
               <div className="flex flex-col items-center text-center gap-4">
                 <Avatar className="h-24 w-24 border-2 border-primary/10 ring-4 ring-primary/5 group-hover:ring-primary/10 transition-all">
-                  <AvatarImage src={member.photo} alt={member.name} />
+                  <AvatarImage src={member.photoUrl} alt={member.name} />
                   <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xl">
                     {getInitials(member.name)}
                   </AvatarFallback>
@@ -62,9 +77,20 @@ const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, te
                 </div>
                 
                 {member.bio && (
-                  <p className="text-sm text-muted-foreground leading-relaxed mt-2">
-                    {member.bio}
-                  </p>
+                  <div className="text-sm text-muted-foreground leading-relaxed mt-2">
+                    <p>
+                      {isExpanded ? member.bio : truncateBio(member.bio)}
+                    </p>
+                    {shouldTruncate && (
+                      <Button
+                        variant="link"
+                        onClick={() => toggleBio(index)}
+                        className="px-0 h-auto font-normal text-primary hover:text-primary/80 mt-2 text-sm"
+                      >
+                        {isExpanded ? 'Read less' : 'Read more'}
+                      </Button>
+                    )}
+                  </div>
                 )}
                 
                 {(member.email || member.linkedin) && (
@@ -93,10 +119,10 @@ const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, te
                 )}
               </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
-    </section>
+    </div>
   );
 };
 

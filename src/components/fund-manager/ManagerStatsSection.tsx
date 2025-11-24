@@ -13,10 +13,18 @@ const ManagerStatsSection: React.FC<ManagerStatsSectionProps> = ({
   fundsCount 
 }) => {
   const formatAUM = (aum: number): string => {
-    if (aum >= 1000) {
-      return `${(aum / 1000).toFixed(1)}B`;
+    // Convert to millions first
+    const millions = aum / 1000000;
+    
+    // If >= 1000 million (1 billion), show in billions
+    if (millions >= 1000) {
+      const billions = millions / 1000;
+      // Remove .0 from whole numbers
+      return `€${billions % 1 === 0 ? billions.toFixed(0) : billions.toFixed(1)}B`;
     }
-    return `${aum}M`;
+    
+    // Show in millions, remove .0 from whole numbers
+    return `€${millions % 1 === 0 ? millions.toFixed(0) : millions.toFixed(1)}M`;
   };
 
   const hasStats = managerProfile.assets_under_management || 
@@ -27,7 +35,7 @@ const ManagerStatsSection: React.FC<ManagerStatsSectionProps> = ({
   if (!hasStats) return null;
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 border-t border-border bg-muted/30">
+    <section className="py-16 px-4 sm:px-6 lg:px-8 border-t border-border bg-background">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-2xl font-semibold text-foreground mb-8">Company Overview</h2>
         

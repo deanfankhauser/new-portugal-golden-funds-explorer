@@ -1,5 +1,5 @@
-import React from 'react';
-import { Building2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 interface ManagerAboutSectionProps {
   managerName: string;
@@ -7,25 +7,41 @@ interface ManagerAboutSectionProps {
 }
 
 const ManagerAboutSection: React.FC<ManagerAboutSectionProps> = ({ managerName, about }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // Truncate to approximately first paragraph (around 500 characters)
+  const truncateText = (text: string, maxLength: number = 500) => {
+    if (text.length <= maxLength) return text;
+    const truncated = text.substring(0, maxLength);
+    const lastPeriod = truncated.lastIndexOf('.');
+    return lastPeriod > 0 ? truncated.substring(0, lastPeriod + 1) : truncated + '...';
+  };
+
+  const shouldTruncate = about.length > 500;
+  const displayText = shouldTruncate && !isExpanded ? truncateText(about) : about;
+
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Building2 className="h-5 w-5 text-primary" />
-          </div>
-          <h2 className="text-3xl font-semibold text-foreground">
-            About {managerName}
-          </h2>
-        </div>
+    <div>
+      <h2 className="text-3xl font-semibold text-foreground mb-6">
+        About {managerName}
+      </h2>
+      
+      <div className="prose prose-lg max-w-none">
+        <p className="text-foreground/80 leading-relaxed text-lg whitespace-pre-wrap font-normal">
+          {displayText}
+        </p>
         
-        <div className="prose prose-lg max-w-none">
-          <p className="text-foreground/80 leading-relaxed text-lg whitespace-pre-wrap font-normal">
-            {about}
-          </p>
-        </div>
+        {shouldTruncate && (
+          <Button
+            variant="link"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="px-0 h-auto text-primary hover:text-primary/80 mt-2"
+          >
+            {isExpanded ? 'Read less' : 'Read more'}
+          </Button>
+        )}
       </div>
-    </section>
+    </div>
   );
 };
 
