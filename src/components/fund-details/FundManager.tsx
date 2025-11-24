@@ -2,7 +2,7 @@
 import React from 'react';
 import { Fund } from '../../data/types/funds';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Building2, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { managerToSlug } from '../../lib/utils';
 import { CompanyLogo } from '../shared/CompanyLogo';
@@ -15,8 +15,7 @@ const FundManager: React.FC<FundManagerProps> = ({ managerName }) => {
   return (
     <Card className="shadow-lg border-2 hover:shadow-xl transition-all duration-300">
       <CardHeader className="pb-4">
-        <CardTitle className="text-2xl flex items-center gap-2">
-          <Building2 className="h-5 w-5" />
+        <CardTitle className="text-2xl">
           Fund Manager
         </CardTitle>
       </CardHeader>

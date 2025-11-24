@@ -20,8 +20,7 @@ const HistoricalPerformance: React.FC<HistoricalPerformanceProps> = ({
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-primary" />
+          <CardTitle>
             Historical Performance
           </CardTitle>
         </CardHeader>
@@ -54,8 +53,7 @@ const HistoricalPerformance: React.FC<HistoricalPerformanceProps> = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="h-5 w-5 text-primary" />
+        <CardTitle>
           Historical Performance
         </CardTitle>
       </CardHeader>

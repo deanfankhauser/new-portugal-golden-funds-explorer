@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from "@/components/ui/badge";
-import { Folder, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { Fund } from '../../data/types/funds';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { categoryToSlug } from '@/lib/utils';
@@ -15,8 +15,7 @@ const FundCategory: React.FC<FundCategoryProps> = ({ category }) => {
   return (
     <Card className="shadow-lg border-2 hover:shadow-xl transition-all duration-300">
       <CardHeader className="pb-4">
-        <CardTitle className="text-2xl flex items-center gap-2">
-          <Folder className="h-5 w-5" />
+        <CardTitle className="text-2xl">
           Fund Category
         </CardTitle>
       </CardHeader>
