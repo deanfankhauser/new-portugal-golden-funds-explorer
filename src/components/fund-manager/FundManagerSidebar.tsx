@@ -1,6 +1,5 @@
-import { Building2, BarChart3, User, LogOut, Home, Edit3, Users, Megaphone, ArrowLeft, UserPlus, Mail } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import {
   Sidebar,
   SidebarContent,
@@ -11,30 +10,41 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuBadge,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import { useEnhancedAuth } from "@/contexts/EnhancedAuthContext";
+} from '@/components/ui/sidebar';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Separator } from '@/components/ui/separator';
+import { supabase } from '@/integrations/supabase/client';
+import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
+import { Building2, Settings, LogOut, Home, Mail, ChevronRight, TrendingUp, BarChart3, Megaphone, Users as UsersIcon, Edit, User } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useAllFunds } from '@/hooks/useFundsQuery';
+import { toast } from 'sonner';
 
-interface FundManagerSidebarProps {
-  fundId?: string;
-  fundName?: string;
+interface CompanyWithFunds {
+  profileId: string;
+  companyName: string;
+  logo: string | null;
+  funds: Array<{ id: string; name: string }>;
 }
 
-const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
+export default function FundManagerSidebar() {
+  const { user } = useEnhancedAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
   const { state, setOpenMobile } = useSidebar();
+  const isMobile = useIsMobile();
   const isCollapsed = state === "collapsed";
-  const { user } = useEnhancedAuth();
-  const [totalOpenLeads, setTotalOpenLeads] = useState(0);
+  const [totalOpenLeads, setTotalOpenLeads] = useState<number>(0);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [companies, setCompaniesWithFunds] = useState<CompanyWithFunds[]>([]);
+  const [expandedCompany, setExpandedCompany] = useState<string | null>(null);
+  const [expandedFunds, setExpandedFunds] = useState<Set<string>>(new Set());
+  const { data: allFunds } = useAllFunds();
 
   // Check admin status
   useEffect(() => {
@@ -46,7 +56,77 @@ const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
     checkAdminStatus();
   }, [user]);
 
-  // Fetch total open leads count
+  // Fetch companies and their funds
+  useEffect(() => {
+    const fetchCompaniesAndFunds = async () => {
+      if (!user || !allFunds) return;
+
+      try {
+        let companiesData: CompanyWithFunds[] = [];
+
+        if (isAdmin) {
+          const { data: allProfiles } = await supabase
+            .from('profiles')
+            .select('id, company_name, logo_url')
+            .not('company_name', 'is', null)
+            .order('company_name');
+
+          if (allProfiles) {
+            companiesData = await Promise.all(
+              allProfiles.map(async (profile) => {
+                const { data: companyFunds } = await supabase.rpc('get_funds_by_company_name', {
+                  company_name_param: profile.company_name
+                });
+
+                return {
+                  profileId: profile.id,
+                  companyName: profile.company_name,
+                  logo: profile.logo_url,
+                  funds: (companyFunds || []).map((f: any) => ({ id: f.id, name: f.name }))
+                };
+              })
+            );
+          }
+        } else {
+          const { data: assignments } = await supabase
+            .from('manager_profile_assignments')
+            .select('profile_id, profiles!inner(id, company_name, logo_url)')
+            .eq('user_id', user.id)
+            .eq('status', 'active');
+
+          if (assignments) {
+            companiesData = await Promise.all(
+              assignments.map(async (assignment: any) => {
+                const profile = assignment.profiles;
+                const { data: companyFunds } = await supabase.rpc('get_funds_by_company_name', {
+                  company_name_param: profile.company_name
+                });
+
+                return {
+                  profileId: profile.id,
+                  companyName: profile.company_name,
+                  logo: profile.logo_url,
+                  funds: (companyFunds || []).map((f: any) => ({ id: f.id, name: f.name }))
+                };
+              })
+            );
+          }
+        }
+
+        setCompaniesWithFunds(companiesData);
+        
+        if (companiesData.length > 0 && !expandedCompany) {
+          setExpandedCompany(companiesData[0].profileId);
+        }
+      } catch (error) {
+        console.error('Error fetching companies and funds:', error);
+      }
+    };
+
+    fetchCompaniesAndFunds();
+  }, [user, isAdmin, allFunds]);
+
+  // Fetch total open leads
   useEffect(() => {
     const fetchOpenLeadsCount = async () => {
       if (!user) return;
@@ -55,7 +135,6 @@ const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
         let companyNames: string[] = [];
 
         if (isAdmin) {
-          // Admin sees all companies
           const { data: allProfiles } = await supabase
             .from('profiles')
             .select('company_name')
@@ -63,7 +142,6 @@ const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
           
           companyNames = allProfiles?.map(p => p.company_name) || [];
         } else {
-          // Get user's assigned companies
           const { data: assignments } = await supabase
             .from('manager_profile_assignments')
             .select('profiles!inner(company_name)')
@@ -73,7 +151,6 @@ const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
           companyNames = assignments?.map(a => (a.profiles as any).company_name) || [];
         }
 
-        // Get all funds for these companies
         let totalCount = 0;
         for (const companyName of companyNames) {
           const { data: companyFunds } = await supabase.rpc('get_funds_by_company_name', {
@@ -82,7 +159,6 @@ const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
 
           const fundIds = companyFunds?.map((f: any) => f.id) || [];
 
-          // Count open leads for fund-specific enquiries
           if (fundIds.length > 0) {
             const { count: fundLeadsCount } = await supabase
               .from('fund_enquiries')
@@ -93,7 +169,6 @@ const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
             totalCount += (fundLeadsCount || 0);
           }
 
-          // Count open leads for general company enquiries
           const { count: generalLeadsCount } = await supabase
             .from('fund_enquiries')
             .select('*', { count: 'exact', head: true })
@@ -113,48 +188,19 @@ const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
     fetchOpenLeadsCount();
   }, [user, isAdmin]);
 
-  // Top-level navigation items (always shown)
   const topNavItems = [
     {
-      title: "My Companies",
-      url: "/my-funds",
-      icon: Building2,
-    },
-    {
-      title: "Leads",
-      url: "/my-leads",
+      title: 'Leads',
+      to: '/dashboard',
       icon: Mail,
       badge: totalOpenLeads > 0 ? totalOpenLeads : undefined,
     },
+    {
+      title: 'Companies Overview',
+      to: '/dashboard/companies',
+      icon: Building2,
+    },
   ];
-
-  // Fund-specific navigation items (only shown when managing a fund)
-  const fundNavItems = fundId ? [
-    {
-      title: "Update Fund",
-      url: `/manage-fund/${fundId}/update`,
-      icon: Edit3,
-    },
-    {
-      title: "Analytics",
-      url: `/manage-fund/${fundId}/analytics`,
-      icon: BarChart3,
-    },
-    {
-      title: "Advertising",
-      url: `/manage-fund/${fundId}/advertising`,
-      icon: Megaphone,
-    },
-    {
-      title: "Team Access",
-      url: `/manage-fund/${fundId}/team`,
-      icon: UserPlus,
-    },
-  ] : [];
-
-  const isActive = (path: string) => {
-    return location.pathname === path;
-  };
 
   const handleNavClick = () => {
     if (isMobile) {
@@ -173,11 +219,20 @@ const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
     }
   };
 
+  const toggleFundExpanded = (fundId: string) => {
+    setExpandedFunds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(fundId)) {
+        newSet.delete(fundId);
+      } else {
+        newSet.add(fundId);
+      }
+      return newSet;
+    });
+  };
+
   return (
-    <Sidebar
-      collapsible={isMobile ? "offcanvas" : "icon"}
-      className="border-r"
-    >
+    <Sidebar collapsible={isMobile ? "offcanvas" : "icon"} className="border-r">
       <SidebarHeader>
         <Link 
           to="/" 
@@ -192,22 +247,18 @@ const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
       </SidebarHeader>
 
       <SidebarContent>
-        {/* Top-level navigation */}
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {topNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive(item.url)}
-                  >
-                    <Link to={item.url} onClick={handleNavClick}>
+                  <SidebarMenuButton asChild isActive={location.pathname === item.to}>
+                    <Link to={item.to} onClick={handleNavClick}>
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
                       {item.badge && !isCollapsed && (
-                        <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
+                        <Badge variant="default" className="ml-auto">{item.badge}</Badge>
                       )}
                     </Link>
                   </SidebarMenuButton>
@@ -217,54 +268,104 @@ const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Fund-specific navigation */}
-        {fundId && fundName && (
-          <>
-            <Separator className="my-2" />
+        {companies.map((company) => (
+          <Collapsible
+            key={company.profileId}
+            open={expandedCompany === company.profileId}
+            onOpenChange={(open) => setExpandedCompany(open ? company.profileId : null)}
+          >
             <SidebarGroup>
-              <SidebarGroupLabel className="truncate" title={fundName}>
-                {isCollapsed ? "Fund" : fundName}
-              </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link to="/my-funds" onClick={handleNavClick}>
-                        <ArrowLeft className="h-4 w-4" />
-                        <span>Back to My Companies</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  {fundNavItems.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton
-                        asChild
-                        isActive={isActive(item.url)}
-                      >
-                        <Link to={item.url} onClick={handleNavClick}>
-                          <item.icon className="h-4 w-4" />
-                          <span>{item.title}</span>
+              <CollapsibleTrigger asChild>
+                <SidebarGroupLabel className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 rounded-md px-2 py-1.5">
+                  {company.logo && !isCollapsed && (
+                    <img src={company.logo} alt="" className="h-4 w-4 rounded object-cover" />
+                  )}
+                  <span className="flex-1 truncate">{isCollapsed ? company.companyName.substring(0, 2) : company.companyName}</span>
+                  {!isCollapsed && (
+                    <ChevronRight className={`h-4 w-4 transition-transform ${expandedCompany === company.profileId ? 'rotate-90' : ''}`} />
+                  )}
+                </SidebarGroupLabel>
+              </CollapsibleTrigger>
+              
+              <CollapsibleContent>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild isActive={location.pathname === `/dashboard/company/${company.profileId}`}>
+                        <Link to={`/dashboard/company/${company.profileId}`} onClick={handleNavClick}>
+                          <Edit className="h-4 w-4" />
+                          <span>Edit Company Profile</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
+
+                    {company.funds.length > 0 && (
+                      <SidebarMenuSub>
+                        {company.funds.map((fund) => {
+                          const isFundExpanded = expandedFunds.has(fund.id);
+                          return (
+                            <Collapsible key={fund.id} open={isFundExpanded} onOpenChange={() => toggleFundExpanded(fund.id)}>
+                              <CollapsibleTrigger asChild>
+                                <SidebarMenuSubItem className="cursor-pointer">
+                                  <div className="flex items-center gap-2 px-2 py-1.5 hover:bg-muted/50 rounded-md">
+                                    <TrendingUp className="h-3.5 w-3.5" />
+                                    <span className="flex-1 truncate text-sm">{fund.name}</span>
+                                    <ChevronRight className={`h-3 w-3 transition-transform ${isFundExpanded ? 'rotate-90' : ''}`} />
+                                  </div>
+                                </SidebarMenuSubItem>
+                              </CollapsibleTrigger>
+                              
+                              <CollapsibleContent>
+                                <SidebarMenuSub className="pl-4">
+                                  <SidebarMenuSubItem>
+                                    <SidebarMenuSubButton asChild isActive={location.pathname === `/dashboard/fund/${fund.id}/update`}>
+                                      <Link to={`/dashboard/fund/${fund.id}/update`} onClick={handleNavClick}>
+                                        Update Fund
+                                      </Link>
+                                    </SidebarMenuSubButton>
+                                  </SidebarMenuSubItem>
+                                  <SidebarMenuSubItem>
+                                    <SidebarMenuSubButton asChild isActive={location.pathname === `/dashboard/fund/${fund.id}/analytics`}>
+                                      <Link to={`/dashboard/fund/${fund.id}/analytics`} onClick={handleNavClick}>
+                                        Analytics
+                                      </Link>
+                                    </SidebarMenuSubButton>
+                                  </SidebarMenuSubItem>
+                                  <SidebarMenuSubItem>
+                                    <SidebarMenuSubButton asChild isActive={location.pathname === `/dashboard/fund/${fund.id}/advertising`}>
+                                      <Link to={`/dashboard/fund/${fund.id}/advertising`} onClick={handleNavClick}>
+                                        Advertising
+                                      </Link>
+                                    </SidebarMenuSubButton>
+                                  </SidebarMenuSubItem>
+                                  <SidebarMenuSubItem>
+                                    <SidebarMenuSubButton asChild isActive={location.pathname === `/dashboard/fund/${fund.id}/team`}>
+                                      <Link to={`/dashboard/fund/${fund.id}/team`} onClick={handleNavClick}>
+                                        Team Access
+                                      </Link>
+                                    </SidebarMenuSubButton>
+                                  </SidebarMenuSubItem>
+                                </SidebarMenuSub>
+                              </CollapsibleContent>
+                            </Collapsible>
+                          );
+                        })}
+                      </SidebarMenuSub>
+                    )}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </CollapsibleContent>
             </SidebarGroup>
-          </>
-        )}
+          </Collapsible>
+        ))}
 
         <Separator className="my-2" />
 
-        {/* Account Settings */}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isActive("/account-settings")}
-                >
+                <SidebarMenuButton asChild isActive={location.pathname === "/account-settings"}>
                   <Link to="/account-settings" onClick={handleNavClick}>
                     <User className="h-4 w-4" />
                     <span>Account Settings</span>
@@ -277,7 +378,6 @@ const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
 
         <Separator className="my-2" />
 
-        {/* Bottom actions */}
         <SidebarGroup className="mt-auto">
           <SidebarGroupContent>
             <SidebarMenu>
@@ -301,6 +401,4 @@ const FundManagerSidebar = ({ fundId, fundName }: FundManagerSidebarProps) => {
       </SidebarContent>
     </Sidebar>
   );
-};
-
-export default FundManagerSidebar;
+}

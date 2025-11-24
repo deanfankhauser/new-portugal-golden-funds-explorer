@@ -216,9 +216,9 @@ const AuthAwareButton: React.FC = () => {
 
         {hasAssignedFunds && (
           <DropdownMenuItem asChild>
-            <Link to="/my-funds" className="w-full cursor-pointer">
+            <Link to="/dashboard" className="w-full cursor-pointer">
               <Building className="mr-2 h-4 w-4" />
-              Manage My Funds
+              Manage funds
             </Link>
           </DropdownMenuItem>
         )}

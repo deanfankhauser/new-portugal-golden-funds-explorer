@@ -47,10 +47,7 @@ const ConfirmEmailCapture = lazy(() => import('./pages/ConfirmEmailCapture'));
 const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const SavedFunds = lazy(() => import('./pages/SavedFunds'));
 
-const MyFunds = lazy(() => import('./pages/MyFunds'));
-const MyLeads = lazy(() => import('./pages/MyLeads'));
-const ManageFund = lazy(() => import('./pages/ManageFund'));
-const ManageProfile = lazy(() => import('./pages/ManageProfile'));
+const FundManagerPanel = lazy(() => import('./pages/FundManagerPanel'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -309,31 +306,10 @@ function App() {
                          </Suspense>
                        } />
 
-                       {/* My Funds - Manager Dashboard */}
-                       <Route path="/my-funds" element={
+                       {/* Fund Manager Dashboard */}
+                       <Route path="/dashboard/*" element={
                          <Suspense fallback={<PageLoader />}>
-                           <MyFunds />
-                         </Suspense>
-                       } />
-
-                       {/* My Leads - Unified Leads Dashboard */}
-                       <Route path="/my-leads" element={
-                         <Suspense fallback={<PageLoader />}>
-                           <MyLeads />
-                         </Suspense>
-                       } />
-
-                       {/* Manage Individual Fund with nested routes */}
-                       <Route path="/manage-fund/:fundId/*" element={
-                         <Suspense fallback={<PageLoader />}>
-                           <ManageFund />
-                         </Suspense>
-                       } />
-
-                       {/* Manage Company Profile */}
-                       <Route path="/manage-profile/:profileId" element={
-                         <Suspense fallback={<PageLoader />}>
-                           <ManageProfile />
+                           <FundManagerPanel />
                          </Suspense>
                        } />
 
