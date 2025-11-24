@@ -1215,21 +1215,33 @@ export class ConsolidatedSEOService {
     const managerUrl = URL_CONFIG.buildManagerUrl(managerName);
     const fundsCount = funds.length;
     
-    // Base Organization Schema (Enhanced)
-    const organizationSchema = {
+    // Build comprehensive sameAs array with all social media links and website
+    const sameAsLinks: string[] = [];
+    if (managerProfile?.website) sameAsLinks.push(managerProfile.website);
+    if (managerProfile?.linkedin_url) sameAsLinks.push(managerProfile.linkedin_url);
+    if (managerProfile?.twitter_url) sameAsLinks.push(managerProfile.twitter_url);
+    if (managerProfile?.facebook_url) sameAsLinks.push(managerProfile.facebook_url);
+    if (managerProfile?.instagram_url) sameAsLinks.push(managerProfile.instagram_url);
+    
+    // Build complete postal address
+    const postalAddress: any = {
+      '@type': 'PostalAddress',
+      'addressCountry': managerProfile?.country || 'PT'
+    };
+    if (managerProfile?.city) postalAddress.addressLocality = managerProfile.city;
+    if (managerProfile?.address) postalAddress.streetAddress = managerProfile.address;
+    
+    // Base Organization Schema (Enhanced with complete company details)
+    const organizationSchema: any = {
       '@context': 'https://schema.org',
       '@type': 'Organization',
       'name': managerName,
       'url': managerUrl,
       ...(managerProfile?.logo_url && { 'logo': managerProfile.logo_url }),
       ...(managerProfile?.description && { 'description': managerProfile.description }),
-      'address': {
-        '@type': 'PostalAddress',
-        'addressCountry': 'PT',
-        ...(managerProfile?.city && { 'addressLocality': managerProfile.city })
-      },
+      'address': postalAddress,
       ...(managerProfile?.founded_year && { 'foundingDate': managerProfile.founded_year.toString() }),
-      ...(managerProfile?.website && { 'sameAs': [managerProfile.website] }),
+      ...(sameAsLinks.length > 0 && { 'sameAs': sameAsLinks }),
       'areaServed': {
         '@type': 'Place',
         'name': 'Portugal'
@@ -1237,6 +1249,26 @@ export class ConsolidatedSEOService {
       'serviceType': 'Investment Fund Management',
       'knowsAbout': 'Golden Visa Investment Funds'
     };
+    
+    // Add registration and license numbers as identifiers
+    if (managerProfile?.registration_number || managerProfile?.license_number) {
+      const identifiers: any[] = [];
+      if (managerProfile.registration_number) {
+        identifiers.push({
+          '@type': 'PropertyValue',
+          'propertyID': 'CMVM Registration Number',
+          'value': managerProfile.registration_number
+        });
+      }
+      if (managerProfile.license_number) {
+        identifiers.push({
+          '@type': 'PropertyValue',
+          'propertyID': 'License Number',
+          'value': managerProfile.license_number
+        });
+      }
+      organizationSchema.identifier = identifiers;
+    }
 
     // Add contact information if available
     if (managerProfile?.email || managerProfile?.phone) {
@@ -1348,7 +1380,10 @@ export class ConsolidatedSEOService {
     };
 
     // Return array of schemas
-    const faqSchema = this.getManagerFAQSchema(managerName, fundsCount);
+    // Use actual manager FAQs from database if available, otherwise use generic FAQs
+    const faqSchema = managerProfile?.manager_faqs && Array.isArray(managerProfile.manager_faqs) && managerProfile.manager_faqs.length > 0
+      ? this.getManagerSpecificFAQSchema(managerName, managerProfile.manager_faqs)
+      : this.getManagerFAQSchema(managerName, fundsCount);
     
     return [
       organizationSchema,
@@ -2165,6 +2200,25 @@ export class ConsolidatedSEOService {
     };
   }
 
+  // Generate FAQ schema from actual manager FAQs stored in database
+  private static getManagerSpecificFAQSchema(managerName: string, managerFaqs: any[]): any {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'name': `${managerName} Golden Visa Funds FAQs`,
+      'description': `Frequently asked questions about ${managerName} and their Golden Visa investment funds`,
+      'mainEntity': managerFaqs.map(faq => ({
+        '@type': 'Question',
+        'name': faq.question,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': faq.answer
+        }
+      }))
+    };
+  }
+
+  // Generic FAQ schema when manager hasn't added custom FAQs
   private static getManagerFAQSchema(managerName: string, fundsCount: number): any {
     const faqs = [
       {
