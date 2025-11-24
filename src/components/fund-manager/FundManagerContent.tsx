@@ -71,92 +71,169 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
 
   return (
     <div className="space-y-0">
-      {/* Hero Section with Stats */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background border-b border-border">
+      {/* Main Container with Two-Column Layout */}
+      <div className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 items-start">
-            <div>
-              {/* Verification Badge */}
-              <div className="mb-4">
-                <ManagerVerificationBadge 
-                  isVerified={isManagerVerified}
-                  funds={managerFunds}
+            {/* Left Column - All Content */}
+            <div className="space-y-0">
+              {/* Hero Section */}
+              <div className="mb-12">
+                {/* Verification Badge */}
+                <div className="mb-4">
+                  <ManagerVerificationBadge 
+                    isVerified={isManagerVerified}
+                    funds={managerFunds}
+                  />
+                </div>
+
+                {/* Title */}
+                <h1 className="text-5xl font-bold text-primary mb-4 tracking-tight">
+                  {managerName}
+                </h1>
+
+                {/* Tagline */}
+                <div className="max-w-3xl mb-8">
+                  <p className="text-xl text-muted-foreground leading-relaxed">
+                    {isHeroExpanded ? fullHeroDescription : truncatedHeroDescription}
+                  </p>
+                  {shouldShowHeroReadMore && (
+                    <Button
+                      variant="link"
+                      onClick={() => setIsHeroExpanded(!isHeroExpanded)}
+                      className="px-0 h-auto font-normal text-primary hover:text-primary/80 mt-2"
+                    >
+                      {isHeroExpanded ? 'Read less' : 'Read more'}
+                    </Button>
+                  )}
+                </div>
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                  {/* Active Funds */}
+                  <StandardCard padding="sm" className="text-center">
+                    <div className="text-4xl font-bold text-primary mb-1">
+                      {managerFunds.length}
+                    </div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider">
+                      Active Fund{managerFunds.length !== 1 ? 's' : ''}
+                    </div>
+                  </StandardCard>
+
+                  {/* AUM */}
+                  {managerProfile?.assets_under_management && managerProfile.assets_under_management > 0 && (
+                    <StandardCard padding="sm" className="text-center">
+                      <div className="text-4xl font-bold text-primary mb-1">
+                        {formatAUM(managerProfile.assets_under_management)}
+                      </div>
+                      <div className="text-xs text-muted-foreground uppercase tracking-wider">
+                        AUM
+                      </div>
+                    </StandardCard>
+                  )}
+
+                  {/* Location/Regions */}
+                  {(managerProfile?.city || managerProfile?.country) && (
+                    <StandardCard padding="sm" className="text-center">
+                      <div className="text-4xl font-bold text-primary mb-1">
+                        {[managerProfile.city, managerProfile.country].filter(Boolean).length}
+                      </div>
+                      <div className="text-xs text-muted-foreground uppercase tracking-wider">
+                        Region{[managerProfile.city, managerProfile.country].filter(Boolean).length > 1 ? 's' : ''}
+                      </div>
+                    </StandardCard>
+                  )}
+
+                  {/* Track Record */}
+                  {managerProfile?.founded_year && (
+                    <StandardCard padding="sm" className="text-center">
+                      <div className="text-4xl font-bold text-primary mb-1">
+                        {calculateYearsTrackRecord(managerProfile.founded_year)}
+                      </div>
+                      <div className="text-xs text-muted-foreground uppercase tracking-wider">
+                        Years Track Record
+                      </div>
+                    </StandardCard>
+                  )}
+                </div>
+              </div>
+
+              {/* Overview Section - About */}
+              <div className="border-t border-border pt-16 pb-16">
+                <ManagerOverviewSection 
+                  managerName={managerName}
+                  managerProfile={managerProfile}
                 />
               </div>
 
-              {/* Title */}
-              <h1 className="text-5xl font-bold text-primary mb-4 tracking-tight">
-                {managerName}
-              </h1>
-
-              {/* Tagline */}
-              <div className="max-w-3xl mb-8">
-                <p className="text-xl text-muted-foreground leading-relaxed">
-                  {isHeroExpanded ? fullHeroDescription : truncatedHeroDescription}
-                </p>
-                {shouldShowHeroReadMore && (
-                  <Button
-                    variant="link"
-                    onClick={() => setIsHeroExpanded(!isHeroExpanded)}
-                    className="px-0 h-auto font-normal text-primary hover:text-primary/80 mt-2"
-                  >
-                    {isHeroExpanded ? 'Read less' : 'Read more'}
-                  </Button>
-                )}
+              {/* Fund Portfolio Section */}
+              <div className="border-t border-border pt-20 pb-20">
+                <div className="mb-12">
+                  <h2 className="text-3xl font-bold text-primary mb-2">Fund Portfolio</h2>
+                  <p className="text-muted-foreground">
+                    Explore all investment funds managed by {managerName}
+                  </p>
+                </div>
+                <div className="space-y-6">
+                  {managerFunds.map((fund) => (
+                    <FundListItem key={fund.id} fund={fund} />
+                  ))}
+                </div>
               </div>
 
-              {/* Stats Grid */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* Active Funds */}
-                <StandardCard padding="sm" className="text-center">
-                  <div className="text-4xl font-bold text-primary mb-1">
-                    {managerFunds.length}
-                  </div>
-                  <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                    Active Fund{managerFunds.length !== 1 ? 's' : ''}
-                  </div>
-                </StandardCard>
+              {/* Manager About Section */}
+              {managerProfile?.manager_about && (
+                <div className="border-t border-border pt-16 pb-16">
+                  <ManagerAboutSection 
+                    managerName={managerName}
+                    about={managerProfile.manager_about}
+                  />
+                </div>
+              )}
+              
+              {/* Manager Highlights Section */}
+              {managerProfile?.manager_highlights && Array.isArray(managerProfile.manager_highlights) && managerProfile.manager_highlights.length > 0 && (
+                <div className="border-t border-border pt-16 pb-16">
+                  <ManagerHighlightsSection 
+                    managerName={managerName}
+                    highlights={managerProfile.manager_highlights}
+                  />
+                </div>
+              )}
+              
+              {/* Manager Team Section */}
+              {managerProfile?.team_members && Array.isArray(managerProfile.team_members) && managerProfile.team_members.length > 0 && (
+                <div className="border-t border-border pt-16 pb-16">
+                  <ManagerTeamSection 
+                    managerName={managerName}
+                    teamMembers={managerProfile.team_members}
+                  />
+                </div>
+              )}
+              
+              {/* Manager FAQs Section */}
+              {managerProfile?.manager_faqs && Array.isArray(managerProfile.manager_faqs) && managerProfile.manager_faqs.length > 0 && (
+                <div className="border-t border-border pt-16 pb-16">
+                  <ManagerFAQsSection 
+                    managerName={managerName}
+                    faqs={managerProfile.manager_faqs}
+                  />
+                </div>
+              )}
 
-                {/* AUM */}
-                {managerProfile?.assets_under_management && managerProfile.assets_under_management > 0 && (
-                  <StandardCard padding="sm" className="text-center">
-                    <div className="text-4xl font-bold text-primary mb-1">
-                      {formatAUM(managerProfile.assets_under_management)}
-                    </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                      AUM
-                    </div>
-                  </StandardCard>
-                )}
-
-                {/* Location/Regions */}
-                {(managerProfile?.city || managerProfile?.country) && (
-                  <StandardCard padding="sm" className="text-center">
-                    <div className="text-4xl font-bold text-primary mb-1">
-                      {[managerProfile.city, managerProfile.country].filter(Boolean).length}
-                    </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                      Region{[managerProfile.city, managerProfile.country].filter(Boolean).length > 1 ? 's' : ''}
-                    </div>
-                  </StandardCard>
-                )}
-
-                {/* Track Record */}
-                {managerProfile?.founded_year && (
-                  <StandardCard padding="sm" className="text-center">
-                    <div className="text-4xl font-bold text-primary mb-1">
-                      {calculateYearsTrackRecord(managerProfile.founded_year)}
-                    </div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                      Years Track Record
-                    </div>
-                  </StandardCard>
-                )}
+              {/* Contact Form Section */}
+              <div className="border-t border-border pt-20 pb-20">
+                <div className="max-w-3xl">
+                  <ManagerEnquirySection 
+                    managerName={managerName}
+                    companyName={managerProfile?.company_name}
+                  />
+                </div>
               </div>
             </div>
 
-            {/* CTA Button */}
-            <div className="flex-shrink-0 sticky top-24">
+            {/* Right Column - Sticky CTA Button */}
+            <div className="hidden lg:block flex-shrink-0 sticky top-24">
               <Button 
                 onClick={scrollToForm}
                 size="lg"
@@ -167,73 +244,7 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Overview Section - About + Contact Sidebar */}
-      <ManagerOverviewSection 
-        managerName={managerName}
-        managerProfile={managerProfile}
-      />
-
-      {/* Fund Portfolio Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-background border-t border-border">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold text-primary mb-2">Fund Portfolio</h2>
-            <p className="text-muted-foreground">
-              Explore all investment funds managed by {managerName}
-            </p>
-          </div>
-          <div className="space-y-6">
-            {managerFunds.map((fund) => (
-              <FundListItem key={fund.id} fund={fund} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Manager About Section */}
-      {managerProfile?.manager_about && (
-        <ManagerAboutSection 
-          managerName={managerName}
-          about={managerProfile.manager_about}
-        />
-      )}
-      
-      {/* Manager Highlights Section */}
-      {managerProfile?.manager_highlights && Array.isArray(managerProfile.manager_highlights) && managerProfile.manager_highlights.length > 0 && (
-        <ManagerHighlightsSection 
-          managerName={managerName}
-          highlights={managerProfile.manager_highlights}
-        />
-      )}
-      
-      {/* Manager Team Section */}
-      {managerProfile?.team_members && Array.isArray(managerProfile.team_members) && managerProfile.team_members.length > 0 && (
-        <ManagerTeamSection 
-          managerName={managerName}
-          teamMembers={managerProfile.team_members}
-        />
-      )}
-      
-      {/* Manager FAQs Section */}
-      {managerProfile?.manager_faqs && Array.isArray(managerProfile.manager_faqs) && managerProfile.manager_faqs.length > 0 && (
-        <ManagerFAQsSection 
-          managerName={managerName}
-          faqs={managerProfile.manager_faqs}
-        />
-      )}
-
-      {/* Contact Form Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-border bg-background">
-        <div className="max-w-3xl mx-auto">
-          <ManagerEnquirySection 
-            managerName={managerName}
-            companyName={managerProfile?.company_name}
-          />
-        </div>
-      </section>
-
+      </div>
     </div>
   );
 };
