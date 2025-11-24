@@ -241,7 +241,7 @@ export type Database = {
           created_at: string | null
           email: string
           first_name: string
-          fund_id: string
+          fund_id: string | null
           id: string
           interest_areas: Json | null
           investment_amount_range: string | null
@@ -262,7 +262,7 @@ export type Database = {
           created_at?: string | null
           email: string
           first_name: string
-          fund_id: string
+          fund_id?: string | null
           id?: string
           interest_areas?: Json | null
           investment_amount_range?: string | null
@@ -283,7 +283,7 @@ export type Database = {
           created_at?: string | null
           email?: string
           first_name?: string
-          fund_id?: string
+          fund_id?: string | null
           id?: string
           interest_areas?: Json | null
           investment_amount_range?: string | null
