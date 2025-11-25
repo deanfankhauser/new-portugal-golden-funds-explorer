@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
-import { MessageSquare, Heart } from 'lucide-react';
+import { MessageSquare, Star } from 'lucide-react';
 import { Fund } from '../../data/types/funds';
 import analytics from '../../utils/analytics';
 import { trackInteraction } from '../../utils/analyticsTracking';
@@ -80,8 +80,8 @@ const FloatingCTA: React.FC<FloatingCTAProps> = ({ fund }) => {
           className="w-full gap-2 h-12 text-sm font-semibold shadow-lg border-2"
           onClick={handleSaveFund}
         >
-          <Heart className={`h-5 w-5 ${isSaved ? 'fill-current' : ''}`} />
-          {isSaved ? 'Saved' : 'Save'}
+          <Star className={`h-5 w-5 ${isSaved ? 'fill-current' : ''}`} />
+          {isSaved ? 'On watchlist' : 'Add to watchlist'}
         </Button>
       </div>
     </div>

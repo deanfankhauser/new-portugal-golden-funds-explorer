@@ -52,7 +52,7 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
 
     if (!user) {
       toast({
-        title: 'Please sign in to save funds',
+        title: 'Please sign in to add funds to your watchlist',
         variant: 'destructive'
       });
       return;
@@ -163,7 +163,7 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
             className="w-full hover:bg-muted/20 transition-all duration-200 font-semibold text-sm h-12 lg:h-11 rounded-xl border-border/50 hover:border-border text-muted-foreground hover:text-foreground"
             aria-pressed={displaySaved}
           >
-            {displaySaved ? 'Saved' : 'Save'}
+            {displaySaved ? 'On watchlist' : 'Add to watchlist'}
           </Button>
         </div>
       </CardContent>

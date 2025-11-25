@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSavedFunds } from '../hooks/useSavedFunds';
-import { Bookmark } from 'lucide-react';
+import { Star } from 'lucide-react';
 import HeaderIconButton from '@/components/common/HeaderIconButton';
 
 const SavedFundsIndicator = () => {
@@ -19,10 +19,10 @@ const SavedFundsIndicator = () => {
   return (
     <HeaderIconButton
       onClick={handleSavedClick}
-      ariaLabel={`Saved funds (${count})`}
+      ariaLabel={`Watchlist (${count})`}
       badgeCount={count}
     >
-      <Bookmark className="h-5 w-5" />
+      <Star className="h-5 w-5" />
     </HeaderIconButton>
   );
 };

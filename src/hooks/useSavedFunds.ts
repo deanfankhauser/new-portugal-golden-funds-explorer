@@ -84,16 +84,16 @@ export const useSavedFunds = () => {
       }
 
       toast({
-        title: 'Saved to your list'
+        title: 'Added to watchlist'
       });
       fetchSavedFunds(); // Refresh the list
       return true;
     } catch (error) {
-      console.error('Error saving fund:', error);
-      toast({
-        title: 'Failed to save fund',
-        variant: 'destructive'
-      });
+        console.error('Error saving fund:', error);
+        toast({
+          title: 'Failed to add to watchlist',
+          variant: 'destructive'
+        });
       return false;
     }
   };
@@ -124,16 +124,16 @@ export const useSavedFunds = () => {
       }
 
       toast({
-        title: 'Removed from saved'
+        title: 'Removed from watchlist'
       });
       fetchSavedFunds(); // Refresh the list
       return true;
     } catch (error) {
-      console.error('Error unsaving fund:', error);
-      toast({
-        title: 'Failed to unsave fund',
-        variant: 'destructive'
-      });
+        console.error('Error unsaving fund:', error);
+        toast({
+          title: 'Failed to remove from watchlist',
+          variant: 'destructive'
+        });
       return false;
     }
   };

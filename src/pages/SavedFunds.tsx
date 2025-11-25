@@ -61,13 +61,13 @@ const SavedFunds = () => {
           {/* Header Section */}
           <div className="mb-12 text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-3">
-              Saved Funds
+              My Watchlist
             </h1>
             <p className="text-base text-muted-foreground mb-4">
               {loading ? (
-                'Loading your saved funds...'
+                'Loading your watchlist...'
               ) : (
-                `${savedFundObjects.length} saved fund${savedFundObjects.length !== 1 ? 's' : ''}`
+                `${savedFundObjects.length} fund${savedFundObjects.length !== 1 ? 's' : ''} in watchlist`
               )}
             </p>
             
@@ -100,9 +100,9 @@ const SavedFunds = () => {
                     </svg>
                   </div>
                   <div className="space-y-2">
-                    <h3 className="text-2xl font-semibold text-foreground">No saved funds yet</h3>
+                    <h3 className="text-2xl font-semibold text-foreground">Your watchlist is empty</h3>
                     <p className="text-base text-muted-foreground leading-relaxed">
-                      Start building your watchlist by saving funds that interest you. Click the "Save" button on any fund profile to add it here.
+                      Start building your watchlist by adding funds that interest you. Click the "Add to watchlist" button on any fund profile to add it here.
                     </p>
                   </div>
                   <Button
