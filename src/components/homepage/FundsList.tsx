@@ -41,15 +41,15 @@ const FundsList: React.FC<FundsListProps> = ({
         <div key={fund.id} className="relative">
           <FundListItem fund={fund} />
           
-          {/* Show CTA only at mid-page and near bottom */}
-          {((index === midPosition || index === bottomPosition) && index < filteredFunds.length - 1) && (
+          {/* PREMIUM CTA DISABLED - Uncomment to re-enable */}
+          {/* {((index === midPosition || index === bottomPosition) && index < filteredFunds.length - 1) && (
             <div className="my-12 relative">
               <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-3xl blur-2xl"></div>
               <div className="relative bg-gradient-to-br from-card to-secondary/30 rounded-3xl p-8 border-2 border-border shadow-lg">
                 <PremiumCTA variant="full" location={`homepage-${index === midPosition ? 'mid' : 'bottom'}`} />
               </div>
             </div>
-          )}
+          )} */}
         </div>
       ))}
     </div>

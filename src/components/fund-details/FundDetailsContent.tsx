@@ -122,7 +122,8 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                       <FundEnquirySection fund={fund} />
                     </section>
                     
-                    <PremiumCTA variant="full" location={`fund-details-${fund.id}`} />
+                    {/* PREMIUM CTA DISABLED - Uncomment to re-enable */}
+                    {/* <PremiumCTA variant="full" location={`fund-details-${fund.id}`} /> */}
                     
                     {/* Legal and Administrative - Bottom */}
                     <InvestorNotice />
