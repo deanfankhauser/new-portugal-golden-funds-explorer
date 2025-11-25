@@ -27,7 +27,7 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
   if (isLoading || suggestedFunds.length === 0) return null;
 
   return (
-    <div className="mt-12 bg-background rounded-2xl border border-border/40 shadow-sm p-6 lg:p-10">
+    <div className="mt-12 bg-card rounded-2xl border border-border/40 shadow-sm p-6 lg:p-10">
       {/* Header Section */}
       <div className="mb-8">
         <h2 className="text-xl sm:text-2xl md:text-[28px] font-bold tracking-tight text-foreground font-heading mb-4">

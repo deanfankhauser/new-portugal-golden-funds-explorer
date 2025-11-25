@@ -14,7 +14,7 @@ const AlternativeFundCard: React.FC<{ fund: Fund }> = ({ fund }) => {
 
   return (
     <article
-      className="group relative bg-background border border-border/40 rounded-xl p-5 lg:p-8 transition-all duration-200 hover:border-primary/30 hover:shadow-lg hover:translate-y-[-2px]"
+      className="group relative bg-card border border-border/40 rounded-xl p-5 lg:p-8 transition-all duration-200 hover:border-primary/30 hover:shadow-lg hover:translate-y-[-2px]"
     >
       {/* Left accent border on hover */}
       <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
@@ -117,9 +117,9 @@ const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
   }
 
   return (
-    <section className="bg-background rounded-2xl border border-border overflow-hidden shadow-sm">
+    <section className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
       {/* Header */}
-      <div className="px-6 py-8 lg:px-10 lg:py-10 bg-gradient-to-b from-muted/30 to-background border-b border-border/60">
+      <div className="px-6 py-8 lg:px-10 lg:py-10 bg-gradient-to-b from-muted/30 to-card border-b border-border/60">
         <h2 className="text-xl sm:text-2xl md:text-[28px] font-bold text-foreground tracking-tight font-heading mb-3">
           Alternative Fund Suggestions
         </h2>
