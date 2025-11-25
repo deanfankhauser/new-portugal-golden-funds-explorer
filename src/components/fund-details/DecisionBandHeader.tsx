@@ -14,8 +14,12 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
 
   // Helper function to generate keyword-rich subheader
   const generateSubheader = () => {
+    const fundType = fund.isVerified && fund.tags?.includes('Golden Visa Eligible')
+      ? 'Portugal Golden Visa investment fund'
+      : 'CMVM-regulated investment fund';
+    
     const parts: string[] = [
-      `${fund.name} is a CMVM-regulated Portugal Golden Visa investment fund managed by ${fund.managerName}, investing`
+      `${fund.name} is a ${fundType} managed by ${fund.managerName}, investing`
     ];
 
     // Add investment focus based on category
@@ -79,8 +83,8 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
       formatted = formatted.replace(regex, '<strong>$1</strong>');
     });
     
-    // Add discrete Golden Visa links if fund is GV eligible
-    if (fund.tags?.includes('Golden Visa Eligible')) {
+    // Add discrete Golden Visa links if fund is GV eligible and verified
+    if (fund.tags?.includes('Golden Visa Eligible') && fund.isVerified) {
       // Link "Golden Visa" text to eligibility requirements
       formatted = formatted.replace(
         /Golden Visa/gi,

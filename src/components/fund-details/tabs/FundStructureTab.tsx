@@ -39,7 +39,7 @@ const FundStructureTab: React.FC<FundStructureTabProps> = ({ fund }) => {
       <RegulatoryComplianceInfo fund={fund} />
       
       {/* Golden Visa Eligibility Basis */}
-      {fund.eligibilityBasis && fund.tags?.includes('Golden Visa Eligible') && (
+      {fund.eligibilityBasis && fund.tags?.includes('Golden Visa Eligible') && fund.isVerified && (
         <EligibilityBasisInfo fund={fund} />
       )}
     </div>
