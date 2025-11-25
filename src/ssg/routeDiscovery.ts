@@ -81,7 +81,10 @@ export class RouteDiscovery {
             slug: member.slug,
             name: member.name,
             role: member.role,
-            linkedinUrl: member.linkedin_url
+            linkedinUrl: member.linkedin_url,
+            photoUrl: member.photo_url,
+            bio: member.bio,
+            companyName: member.company_name
           }
         });
       });

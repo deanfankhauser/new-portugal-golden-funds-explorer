@@ -166,14 +166,24 @@ export async function fetchAllManagersForBuild(): Promise<Array<{ name: string; 
 /**
  * Fetch all team members from database during build time
  */
-export async function fetchAllTeamMembersForBuild(): Promise<Array<{ id: string; slug: string; name: string; role: string; profile_id: string; linkedin_url?: string }>> {
+export async function fetchAllTeamMembersForBuild(): Promise<Array<{ id: string; slug: string; name: string; role: string; profile_id: string; linkedin_url?: string; photo_url?: string; bio?: string; company_name?: string }>> {
   const supabase = getSupabaseBuildClient();
   
   console.log('📊 Build: Fetching all team members from database...');
   
   const { data: teamMembers, error } = await supabase
     .from('team_members')
-    .select('id, slug, name, role, profile_id, linkedin_url')
+    .select(`
+      id, 
+      slug, 
+      name, 
+      role, 
+      profile_id, 
+      linkedin_url,
+      photo_url,
+      bio,
+      profiles!inner(company_name)
+    `)
     .order('name', { ascending: true });
     
   if (error) {
@@ -181,9 +191,22 @@ export async function fetchAllTeamMembersForBuild(): Promise<Array<{ id: string;
     throw new Error(`Database fetch failed: ${error.message}`);
   }
   
-  console.log(`✅ Build: Fetched ${teamMembers?.length || 0} team members from database`);
+  // Transform data to flatten the profiles join
+  const transformedMembers = teamMembers?.map(member => ({
+    id: member.id,
+    slug: member.slug,
+    name: member.name,
+    role: member.role,
+    profile_id: member.profile_id,
+    linkedin_url: member.linkedin_url,
+    photo_url: member.photo_url,
+    bio: member.bio,
+    company_name: (member.profiles as any)?.company_name
+  })) || [];
   
-  return teamMembers || [];
+  console.log(`✅ Build: Fetched ${transformedMembers.length} team members from database`);
+  
+  return transformedMembers;
 }
 
 /**
@@ -195,7 +218,7 @@ let buildDataCache: {
   categories?: FundCategory[];
   tags?: FundTag[];
   managers?: Array<{ name: string; fundsCount: number }>;
-  teamMembers?: Array<{ id: string; slug: string; name: string; role: string; profile_id: string; linkedin_url?: string }>;
+  teamMembers?: Array<{ id: string; slug: string; name: string; role: string; profile_id: string; linkedin_url?: string; photo_url?: string; bio?: string; company_name?: string }>;
 } = {};
 
 /**
