@@ -48,8 +48,8 @@ const seoData = ConsolidatedSEOService.getSEOData(
           tagName,
           comparisonTitle,
           comparisonSlug,
-          memberName,
-          memberRole,
+          name: memberName,
+          role: memberRole,
           linkedinUrl,
         },
         funds
