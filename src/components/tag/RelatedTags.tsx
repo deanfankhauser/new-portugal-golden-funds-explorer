@@ -10,7 +10,7 @@ interface RelatedTagsProps {
 
 const RelatedTags = ({ allTags, currentTag }: RelatedTagsProps) => {
   return (
-    <div className="mt-8 pt-4 border-t border-gray-200">
+    <div className="mt-8 pt-4 border-t border-border">
       <h2 className="text-xl font-semibold mb-4">Related Tags</h2>
       <div className="flex flex-wrap gap-2">
         {allTags
@@ -20,7 +20,7 @@ const RelatedTags = ({ allTags, currentTag }: RelatedTagsProps) => {
             <Link 
               key={tag} 
               to={`/tags/${tagToSlug(tag)}`}
-              className="px-3 py-1 bg-white border border-gray-200 rounded-full hover:bg-gray-100 text-sm"
+              className="px-3 py-1 bg-card border border-border rounded-full hover:bg-muted text-sm"
             >
               {tag}
             </Link>

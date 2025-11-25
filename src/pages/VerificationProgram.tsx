@@ -158,17 +158,17 @@ const VerificationProgram = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <PageSEO pageType="verification-program" />
       <Header />
       
       {/* Breadcrumbs */}
-      <div className="border-b border-gray-200 bg-white">
+      <div className="border-b border-border bg-card">
         <div className="container mx-auto max-w-[1200px] px-6 py-3">
           <Breadcrumb>
-            <BreadcrumbList className="text-sm text-gray-500">
+            <BreadcrumbList className="text-sm text-muted-foreground">
               <BreadcrumbItem>
-                <BreadcrumbLink asChild className="hover:text-gray-900 transition-colors">
+                <BreadcrumbLink asChild className="hover:text-foreground transition-colors">
                   <Link to="/">Home</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
@@ -176,7 +176,7 @@ const VerificationProgram = () => {
                 <ChevronRight className="h-4 w-4" />
               </BreadcrumbSeparator>
               <BreadcrumbItem>
-                <BreadcrumbPage className="text-gray-900">Verification Program</BreadcrumbPage>
+                <BreadcrumbPage className="text-foreground">Verification Program</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -186,20 +186,20 @@ const VerificationProgram = () => {
       {/* Hero Section */}
       <section className="pt-24 pb-16 px-6">
         <div className="container mx-auto max-w-[1200px] text-center">
-          <div className="inline-flex items-center px-3 py-1 rounded-full border border-gray-200 bg-gray-50 text-xs font-medium text-gray-600 uppercase tracking-wide mb-6">
+          <div className="inline-flex items-center px-3 py-1 rounded-full border border-border bg-muted text-xs font-medium text-muted-foreground uppercase tracking-wide mb-6">
             Verification Program
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gray-900 tracking-tight leading-tight">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-foreground tracking-tight leading-tight">
             Portugal Golden Visa Fund Verification Program
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
             We verify basic fund information against official sources — helping you spot incomplete profiles and giving you a head start on due diligence.
           </p>
         </div>
         
         <div className="container mx-auto max-w-[1200px] text-center">
-          <div className="max-w-2xl mx-auto mb-10 p-4 border border-gray-200 rounded-lg bg-gray-50">
-            <p className="text-sm text-gray-600 leading-relaxed">
+          <div className="max-w-2xl mx-auto mb-10 p-4 border border-border rounded-lg bg-muted/30">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               This is not investment advice, due diligence, or a fund recommendation. Always conduct your own research.
             </p>
           </div>
@@ -211,7 +211,7 @@ const VerificationProgram = () => {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="border border-gray-300 hover:border-gray-400 bg-white text-gray-700 px-6 py-3 rounded-lg font-medium">
+            <Button asChild variant="outline" size="lg" className="border border-border hover:border-border bg-card text-foreground px-6 py-3 rounded-lg font-medium">
               <Link to="/faqs">Learn More</Link>
             </Button>
           </div>
@@ -222,23 +222,23 @@ const VerificationProgram = () => {
       <section className="py-16 px-6">
         <div className="container mx-auto max-w-[1200px]">
           <div className="mb-12">
-            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
+            <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
               What We Verify
             </div>
-            <h2 className="text-3xl font-semibold text-gray-900 mb-3">What we check — at-a-glance</h2>
-            <p className="text-base text-gray-600 max-w-2xl leading-relaxed">
+            <h2 className="text-3xl font-semibold text-foreground mb-3">What we check — at-a-glance</h2>
+            <p className="text-base text-muted-foreground max-w-2xl leading-relaxed">
               Quick reference: the fundamental checks we run on every fund profile.
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 gap-8">
             {verificationChecks.map((check, index) => (
-              <div key={index} className="pb-8 border-b border-gray-200 last:border-0">
+              <div key={index} className="pb-8 border-b border-border last:border-0">
                 <div className="flex items-start gap-4">
-                  <Check className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
+                  <Check className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{check.title}</h3>
-                    <p className="text-base text-gray-600 leading-relaxed">
+                    <h3 className="text-lg font-semibold text-foreground mb-2">{check.title}</h3>
+                    <p className="text-base text-muted-foreground leading-relaxed">
                       {check.description}
                     </p>
                   </div>
@@ -251,60 +251,60 @@ const VerificationProgram = () => {
 
       {/* Divider */}
       <div className="container mx-auto max-w-[1200px] px-6">
-        <hr className="border-gray-200" />
+        <hr className="border-border" />
       </div>
 
       {/* Status Tags */}
       <section className="py-16 px-6">
         <div className="container mx-auto max-w-[1200px]">
           <div className="mb-12">
-            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
+            <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">
               Status Indicators
             </div>
-            <h2 className="text-3xl font-semibold text-gray-900 mb-3">Understanding status tags</h2>
-            <p className="text-base text-gray-600 max-w-2xl leading-relaxed">
+            <h2 className="text-3xl font-semibold text-foreground mb-3">Understanding status tags</h2>
+            <p className="text-base text-muted-foreground max-w-2xl leading-relaxed">
               Each fund displays one of these status indicators.
             </p>
           </div>
           
           <div className="space-y-6">
-            <div className="flex items-start gap-4 p-6 border border-gray-200 rounded-lg bg-white hover:border-gray-300 transition-colors">
-              <div className="w-2 h-2 rounded-full bg-green-600 mt-2 flex-shrink-0"></div>
+            <div className="flex items-start gap-4 p-6 border border-border rounded-lg bg-card hover:border-border transition-colors">
+              <div className="w-2 h-2 rounded-full bg-success mt-2 flex-shrink-0"></div>
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-50 text-green-700 border border-green-200">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-success/10 text-success border border-success/20">
                     Verified
                   </span>
                 </div>
-                <p className="text-base text-gray-600 leading-relaxed">
+                <p className="text-base text-muted-foreground leading-relaxed">
                   Passed all checks. Information matches official records. Data was reviewed within the last 90 days.
                 </p>
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-6 border border-gray-200 rounded-lg bg-white hover:border-gray-300 transition-colors">
-              <div className="w-2 h-2 rounded-full bg-orange-600 mt-2 flex-shrink-0"></div>
+            <div className="flex items-start gap-4 p-6 border border-border rounded-lg bg-card hover:border-border transition-colors">
+              <div className="w-2 h-2 rounded-full bg-warning mt-2 flex-shrink-0"></div>
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-50 text-orange-700 border border-orange-200">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-warning/10 text-warning border border-warning/20">
                     Update Pending
                   </span>
                 </div>
-                <p className="text-base text-gray-600 leading-relaxed">
+                <p className="text-base text-muted-foreground leading-relaxed">
                   Previously verified but now over 90 days old. We're working to refresh the information.
                 </p>
               </div>
             </div>
 
-            <div className="flex items-start gap-4 p-6 border border-gray-200 rounded-lg bg-white hover:border-gray-300 transition-colors">
-              <div className="w-2 h-2 rounded-full bg-red-600 mt-2 flex-shrink-0"></div>
+            <div className="flex items-start gap-4 p-6 border border-border rounded-lg bg-card hover:border-border transition-colors">
+              <div className="w-2 h-2 rounded-full bg-destructive mt-2 flex-shrink-0"></div>
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-50 text-red-700 border border-red-200">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-destructive/10 text-destructive border border-destructive/20">
                     Paused / Revoked
                   </span>
                 </div>
-                <p className="text-base text-gray-600 leading-relaxed">
+                <p className="text-base text-muted-foreground leading-relaxed">
                   Documents couldn't be validated, or we found a discrepancy. Proceed with extra caution.
                 </p>
               </div>
@@ -315,35 +315,35 @@ const VerificationProgram = () => {
 
       {/* Divider */}
       <div className="container mx-auto max-w-[1200px] px-6">
-        <hr className="border-gray-200" />
+        <hr className="border-border" />
       </div>
 
       {/* What We Don't Do */}
       <section className="py-16 px-6">
         <div className="container mx-auto max-w-[1200px]">
-          <div className="p-8 border-2 border-orange-600 rounded-lg bg-orange-50">
+          <div className="p-8 border-2 border-warning rounded-lg bg-warning/10">
             <div className="flex items-center gap-3 mb-4">
-              <AlertTriangle className="h-6 w-6 text-orange-600" />
-              <h2 className="text-2xl font-semibold text-gray-900">What we do NOT do</h2>
+              <AlertTriangle className="h-6 w-6 text-warning" />
+              <h2 className="text-2xl font-semibold text-foreground">What we do NOT do</h2>
             </div>
-            <p className="text-base text-gray-600 mb-6 leading-relaxed">
+            <p className="text-base text-muted-foreground mb-6 leading-relaxed">
               Important limitations you should understand before using our verification badges.
             </p>
-            <ul className="space-y-4 text-base text-gray-900">
+            <ul className="space-y-4 text-base text-foreground">
               <li className="flex gap-3 items-start">
-                <span className="text-orange-600 font-bold">•</span>
+                <span className="text-warning font-bold">•</span>
                 <span><strong className="font-semibold">Financial performance analysis:</strong> We do not evaluate returns, risk, or investment suitability.</span>
               </li>
               <li className="flex gap-3 items-start">
-                <span className="text-orange-600 font-bold">•</span>
+                <span className="text-warning font-bold">•</span>
                 <span><strong className="font-semibold">Legal or compliance audits:</strong> We are not lawyers, accountants, or regulatory experts.</span>
               </li>
               <li className="flex gap-3 items-start">
-                <span className="text-orange-600 font-bold">•</span>
+                <span className="text-warning font-bold">•</span>
                 <span><strong className="font-semibold">Ongoing monitoring:</strong> Once verified, we revisit the profile periodically — but not in real-time.</span>
               </li>
               <li className="flex gap-3 items-start">
-                <span className="text-orange-600 font-bold">•</span>
+                <span className="text-warning font-bold">•</span>
                 <span><strong className="font-semibold">Endorsement or recommendation:</strong> A verification badge is not an endorsement to invest.</span>
               </li>
             </ul>

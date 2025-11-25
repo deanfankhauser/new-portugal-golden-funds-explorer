@@ -12,7 +12,7 @@ const ComparisonPage = () => {
   const { compareFunds, clearComparison } = useComparison();
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-background">
       <PageSEO pageType="comparison" />
       
       <Header />
@@ -32,7 +32,7 @@ const ComparisonPage = () => {
               </button>
             )}
           </div>
-          <p className="text-gray-600 mb-4">
+          <p className="text-muted-foreground mb-4">
             {compareFunds.length > 0 
               ? `Comparing ${compareFunds.length} selected funds side by side.`
               : 'Select funds to compare from the fund listings.'
@@ -71,7 +71,7 @@ const ComparisonPage = () => {
         </div>
 
         {compareFunds.length > 0 ? (
-          <div className="bg-white rounded-lg shadow-sm border p-6">
+          <div className="bg-card rounded-lg shadow-sm border p-6">
             <ComparisonTable funds={compareFunds} />
           </div>
         ) : (

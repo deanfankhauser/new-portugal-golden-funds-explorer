@@ -70,7 +70,7 @@ const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug }) => {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-background">
         <PageSEO pageType="fund-comparison" comparisonTitle={comparisonTitle} comparisonSlug={slug} />
         
         <Header />
@@ -90,17 +90,17 @@ const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug }) => {
   // If no comparison data found or error, show error
   if (error || !comparisonData) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-background">
         <PageSEO pageType="404" />
         
         <Header />
         
         <main className="container mx-auto px-4 py-8 flex-1">
-          <Card className="bg-white p-6 rounded-lg shadow-sm">
+          <Card className="bg-card p-6 rounded-lg shadow-sm">
             <CardContent className="text-center py-12">
-              <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h1 className="text-2xl font-bold mb-4">Comparison Not Found</h1>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 The fund comparison you're looking for could not be found.
               </p>
             </CardContent>
@@ -139,17 +139,17 @@ const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug }) => {
           <h1 className="text-3xl font-bold mb-4">
             {comparisonData.fund1.name} vs {comparisonData.fund2.name}: Portugal Golden Visa Fund Comparison
           </h1>
-          <h2 className="text-xl text-gray-700 mb-4 font-medium">
+          <h2 className="text-xl text-muted-foreground mb-4 font-medium">
             Compare Investment Fees, Minimum Investment, and Performance Metrics
           </h2>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Detailed side-by-side analysis of {comparisonData.fund1.name} (managed by {comparisonData.fund1.managerName}) 
             and {comparisonData.fund2.name} (managed by {comparisonData.fund2.managerName}) 
             Portugal Golden Visa investment funds.
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border">
+        <div className="bg-card rounded-lg shadow-sm border">
           <ComparisonTable funds={[comparisonData.fund1, comparisonData.fund2]} />
         </div>
 
