@@ -711,6 +711,7 @@ export type Database = {
           redemption_fee: number | null
           redemption_terms: Json | null
           regulated_by: string | null
+          risk_band: string | null
           risk_level: string | null
           subscription_fee: number | null
           tags: string[] | null
@@ -765,6 +766,7 @@ export type Database = {
           redemption_fee?: number | null
           redemption_terms?: Json | null
           regulated_by?: string | null
+          risk_band?: string | null
           risk_level?: string | null
           subscription_fee?: number | null
           tags?: string[] | null
@@ -819,6 +821,7 @@ export type Database = {
           redemption_fee?: number | null
           redemption_terms?: Json | null
           regulated_by?: string | null
+          risk_band?: string | null
           risk_level?: string | null
           subscription_fee?: number | null
           tags?: string[] | null

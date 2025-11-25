@@ -4,7 +4,7 @@ import { Fund } from '../../data/types/funds';
 import { Button } from '../ui/button';
 import { Phone, BarChart3 } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
-import { calculateRiskScore, getRiskLabel, getRiskColor } from '../../utils/riskCalculation';
+import { calculateRiskBand, getRiskBandLabel, getRiskBandColor } from '../../utils/riskCalculation';
 import { buildBookingUrl, openExternalLink } from '../../utils/urlHelpers';
 import analytics from '../../utils/analytics';
 import FundSnapshotCard from './FundSnapshotCard';
@@ -19,10 +19,10 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
   const { isInComparison, addToComparison } = useComparison();
   const isCompared = isInComparison(fund.id);
 
-  // Calculate risk score and get risk styling
-  const riskScore = calculateRiskScore(fund);
-  const riskLabel = getRiskLabel(riskScore);
-  const riskColor = getRiskColor(riskScore);
+  // Calculate risk band and get risk styling
+  const riskBand = calculateRiskBand(fund);
+  const riskLabel = getRiskBandLabel(riskBand);
+  const riskColor = getRiskBandColor(riskBand);
 
   const handleCompareClick = () => {
     addToComparison(fund);

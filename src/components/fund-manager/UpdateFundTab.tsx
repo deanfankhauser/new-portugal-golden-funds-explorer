@@ -103,6 +103,14 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
     pficStatus: f.pficStatus ?? '',
     eligibilityBasis: f.eligibilityBasis ?? null,
     redemptionTerms: f.redemptionTerms ?? null,
+    // New data model fields
+    isin: f.isin ?? '',
+    typicalTicket: f.typicalTicket != null ? f.typicalTicket.toString() : '',
+    aumAsOfDate: f.aumAsOfDate ?? '',
+    realisedExits: f.realisedExits != null ? f.realisedExits.toString() : '',
+    totalDistributions: f.totalDistributions != null ? f.totalDistributions.toString() : '',
+    lastDataReviewDate: f.lastDataReviewDate ?? '',
+    riskBand: f.riskBand ?? '',
   });
 
   const [formData, setFormData] = useState(buildFormData(fund));
@@ -260,6 +268,14 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
     historicalPerformance: fund.historicalPerformance,
     faqs: fund.faqs,
     tags: fund.tags,
+    // New data model fields
+    isin: fund.isin,
+    typicalTicket: fund.typicalTicket,
+    aumAsOfDate: fund.aumAsOfDate,
+    realisedExits: fund.realisedExits,
+    totalDistributions: fund.totalDistributions,
+    lastDataReviewDate: fund.lastDataReviewDate,
+    riskBand: fund.riskBand,
   });
 
   const getSuggestedChanges = () => {
@@ -294,7 +310,7 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
       const currentValue = normalizeValue(current[key as keyof typeof current]);
       let newValue: any = formData[key as keyof typeof formData];
       
-      if (['minimumInvestment', 'managementFee', 'performanceFee', 'subscriptionFee', 'redemptionFee', 'hurdleRate', 'term', 'fundSize', 'established'].includes(key)) {
+      if (['minimumInvestment', 'managementFee', 'performanceFee', 'subscriptionFee', 'redemptionFee', 'hurdleRate', 'term', 'fundSize', 'established', 'typicalTicket', 'realisedExits', 'totalDistributions'].includes(key)) {
         if (typeof newValue === 'string') {
           newValue = parseFloat(newValue) || 0;
         }
@@ -1009,6 +1025,114 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
                     <SelectItem value="Not provided">Not provided</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Data Model Fields</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="isin">ISIN</Label>
+                <Input
+                  id="isin"
+                  value={formData.isin || ''}
+                  onChange={(e) => handleInputChange('isin', e.target.value)}
+                  placeholder="e.g., PTBAC0AM0009"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  International Securities Identification Number
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="typicalTicket">Typical Ticket (EUR)</Label>
+                <Input
+                  id="typicalTicket"
+                  type="number"
+                  value={formData.typicalTicket || ''}
+                  onChange={(e) => handleInputChange('typicalTicket', e.target.value)}
+                  placeholder="e.g., 500000"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Typical investment amount (may differ from minimum)
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="aumAsOfDate">AUM As-of Date</Label>
+                <Input
+                  id="aumAsOfDate"
+                  type="date"
+                  value={formData.aumAsOfDate || ''}
+                  onChange={(e) => handleInputChange('aumAsOfDate', e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Date when the fund size (AUM) was last measured
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="realisedExits">Realised Exits</Label>
+                <Input
+                  id="realisedExits"
+                  type="number"
+                  value={formData.realisedExits || ''}
+                  onChange={(e) => handleInputChange('realisedExits', e.target.value)}
+                  placeholder="e.g., 5"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Number of successful exits/distributions
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="totalDistributions">Total Distributions (EUR)</Label>
+                <Input
+                  id="totalDistributions"
+                  type="number"
+                  value={formData.totalDistributions || ''}
+                  onChange={(e) => handleInputChange('totalDistributions', e.target.value)}
+                  placeholder="e.g., 5000000"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Cumulative distributions paid to investors
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="lastDataReviewDate">Last Data Review Date</Label>
+                <Input
+                  id="lastDataReviewDate"
+                  type="date"
+                  value={formData.lastDataReviewDate || ''}
+                  onChange={(e) => handleInputChange('lastDataReviewDate', e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Date when fund data was last verified by Movingto
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="riskBand">Risk Band</Label>
+                <Select
+                  value={formData.riskBand || ''}
+                  onValueChange={(value) => handleInputChange('riskBand', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select risk band" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Conservative">Conservative</SelectItem>
+                    <SelectItem value="Balanced">Balanced</SelectItem>
+                    <SelectItem value="Aggressive">Aggressive</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Three-tier risk classification
+                </p>
               </div>
             </CardContent>
           </Card>
