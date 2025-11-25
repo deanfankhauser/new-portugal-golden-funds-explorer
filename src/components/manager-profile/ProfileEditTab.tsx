@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/types/profile';
-import { CompanyTeamMember, generateMemberId } from '@/types/team';
+import { CompanyTeamMember, generateMemberId, teamMemberToSlug } from '@/types/team';
 import { Save, Upload, X, Plus, Trash2 } from 'lucide-react';
 import { z } from 'zod';
 
@@ -69,18 +69,46 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
   const [registrationNumber, setRegistrationNumber] = useState(profile.registration_number || '');
   const [licenseNumber, setLicenseNumber] = useState(profile.license_number || '');
   
-  const [teamMembers, setTeamMembers] = useState<CompanyTeamMember[]>(() => {
-    try {
-      const members = profile.team_members ? JSON.parse(JSON.stringify(profile.team_members)) : [];
-      // Ensure all members have member_id
-      return members.map((m: any) => ({
-        ...m,
-        member_id: m.member_id || generateMemberId()
-      }));
-    } catch {
-      return [];
-    }
-  });
+  const [teamMembers, setTeamMembers] = useState<CompanyTeamMember[]>([]);
+  const [loadingTeam, setLoadingTeam] = useState(true);
+  const [initialTeamMemberIds, setInitialTeamMemberIds] = useState<string[]>([]);
+
+  // Fetch team members from the new team_members table
+  useEffect(() => {
+    const fetchTeamMembers = async () => {
+      try {
+        setLoadingTeam(true);
+        const { data, error } = await supabase
+          .from('team_members')
+          .select('*')
+          .eq('profile_id', profile.id)
+          .order('created_at', { ascending: true });
+
+        if (error) throw error;
+
+        if (data) {
+          const members: CompanyTeamMember[] = data.map(tm => ({
+            member_id: tm.id,
+            slug: tm.slug,
+            name: tm.name,
+            role: tm.role,
+            bio: tm.bio || '',
+            photoUrl: tm.photo_url || undefined,
+            email: tm.email || undefined,
+            linkedinUrl: tm.linkedin_url || undefined,
+          }));
+          setTeamMembers(members);
+          setInitialTeamMemberIds(members.map(m => m.member_id));
+        }
+      } catch (error) {
+        console.error('Error fetching team members:', error);
+      } finally {
+        setLoadingTeam(false);
+      }
+    };
+
+    fetchTeamMembers();
+  }, [profile.id]);
 
   const [highlights, setHighlights] = useState<ManagerHighlight[]>(() => {
     try {
@@ -335,7 +363,7 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      // Prepare update data
+      // Prepare update data (WITHOUT team_members)
       const updateData: any = {
         company_name: companyName.trim(),
         manager_name: managerName.trim(),
@@ -353,7 +381,6 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
         logo_url: logoUrl || null,
         registration_number: registrationNumber.trim() || null,
         license_number: licenseNumber.trim() || null,
-        team_members: teamMembers.length > 0 ? teamMembers : null,
         manager_highlights: highlights.length > 0 ? highlights : null,
         manager_faqs: faqs.length > 0 ? faqs : null,
         updated_at: new Date().toISOString(),
@@ -381,6 +408,72 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
         .single();
 
       if (updateError) throw updateError;
+
+      // Handle team members separately in team_members table
+      const currentTeamMemberIds = teamMembers.map(m => m.member_id);
+      
+      // Find members to delete (existed before but not in current list)
+      const membersToDelete = initialTeamMemberIds.filter(
+        id => !currentTeamMemberIds.includes(id)
+      );
+
+      // Delete removed members
+      if (membersToDelete.length > 0) {
+        const { error: deleteError } = await supabase
+          .from('team_members')
+          .delete()
+          .in('id', membersToDelete);
+
+        if (deleteError) throw deleteError;
+      }
+
+      // Process each team member (insert new or update existing)
+      for (const member of teamMembers) {
+        // Generate slug from name if not present
+        const slug = member.slug || teamMemberToSlug(member.name);
+        
+        // Check if this is a new member (not in initialTeamMemberIds)
+        const isNew = !initialTeamMemberIds.includes(member.member_id);
+
+        if (isNew) {
+          // INSERT new team member
+          const { error: insertError } = await supabase
+            .from('team_members')
+            .insert({
+              id: member.member_id,
+              profile_id: profile.id,
+              slug: slug,
+              name: member.name,
+              role: member.role,
+              bio: member.bio || null,
+              photo_url: member.photoUrl || null,
+              email: member.email || null,
+              linkedin_url: member.linkedinUrl || null,
+            });
+
+          if (insertError) throw insertError;
+        } else {
+          // UPDATE existing team member
+          const { error: updateError } = await supabase
+            .from('team_members')
+            .update({
+              slug: slug,
+              name: member.name,
+              role: member.role,
+              bio: member.bio || null,
+              photo_url: member.photoUrl || null,
+              email: member.email || null,
+              linkedin_url: member.linkedinUrl || null,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', member.member_id);
+
+          if (updateError) throw updateError;
+        }
+      }
+
+      // Update initial team member IDs for next save
+      setInitialTeamMemberIds(currentTeamMemberIds);
 
       // Log the edit
       if (Object.keys(changes).length > 0) {
