@@ -21,6 +21,11 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
     tag.toLowerCase().includes('property')
   );
   
+  // Only show for verified funds
+  if (!fund.isVerified) {
+    return null;
+  }
+  
   // All funds are now Golden Visa eligible
   const getEligibilityStatus = () => {
     return 'yes';

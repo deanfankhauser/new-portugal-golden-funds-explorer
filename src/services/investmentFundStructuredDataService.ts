@@ -46,8 +46,6 @@ export class InvestmentFundStructuredDataService {
       "category": fund.category,
       "fundType": fund.tags?.some(tag => tag.toLowerCase().includes('open-end')) ? "Open-end fund" : "Investment Fund",
       "feesAndCommissionsSpecification": feesSpec || "Contact fund for details",
-      "auditor": fund.auditor || "Not specified",
-      "custodian": fund.custodian || "Not specified",
       "areaServed": {
         "@type": "Country",
         "name": "Portugal",
@@ -140,9 +138,19 @@ export class InvestmentFundStructuredDataService {
       });
     }
 
-    // Add fund performance data if available
+    // Add fund performance data if available - validate it's meaningful
     if (fund.returnTarget) {
-      schema.expectedReturn = fund.returnTarget;
+      const isInvalidReturn = 
+        fund.returnTarget === '0-0%' ||
+        fund.returnTarget === '0-0% p.a.' ||
+        fund.returnTarget === 'Not disclosed' ||
+        fund.returnTarget === 'Unspecified' ||
+        fund.returnTarget.trim() === '' ||
+        /^0+[-–]0+/.test(fund.returnTarget); // matches "0-0", "00-00", etc.
+      
+      if (!isInvalidReturn) {
+        schema.expectedReturn = fund.returnTarget;
+      }
     }
 
     // Add compliance and regulatory info
@@ -248,25 +256,13 @@ export class InvestmentFundStructuredDataService {
       schema.additionalProperty = additionalProperties;
     }
     
-    // Add aggregateRating if we have performance data
-    if (fund.historicalPerformance && typeof fund.historicalPerformance === 'object') {
-      const performanceYears = Object.keys(fund.historicalPerformance).length;
-      if (performanceYears > 0) {
-        // Calculate a performance-based rating (simplified)
-        const avgPerformance = Object.values(fund.historicalPerformance)
-          .reduce((sum: number, data: any) => sum + (data?.returns || 0), 0) / performanceYears;
-        
-        const rating = Math.min(5, Math.max(1, 3 + (avgPerformance / 10))); // Base 3, adjusted by performance
-        
-        schema.aggregateRating = {
-          "@type": "AggregateRating",
-          "ratingValue": rating.toFixed(1),
-          "bestRating": "5",
-          "worstRating": "1",
-          "ratingCount": performanceYears,
-          "description": `Based on ${performanceYears} years of historical performance data`
-        };
-      }
+    // Conditionally add auditor and custodian only if meaningful values exist
+    if (fund.auditor && fund.auditor !== 'Not specified' && fund.auditor.trim() !== '') {
+      schema.auditor = fund.auditor;
+    }
+    
+    if (fund.custodian && fund.custodian !== 'Not specified' && fund.custodian.trim() !== '') {
+      schema.custodian = fund.custodian;
     }
 
     return schema;

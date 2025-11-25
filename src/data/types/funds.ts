@@ -84,10 +84,14 @@ export type FundCategory =
   | 'Real Estate'
   | 'Infrastructure'
   | 'Debt'
+  | 'Credit'
+  | 'Fund-of-Funds'
   | 'Bitcoin'
   | 'Crypto'
   | 'Clean Energy'
   | 'Other';
+
+export type RiskBand = 'Conservative' | 'Balanced' | 'Aggressive';
 
 export type RedemptionFrequency =
   | 'Monthly'
@@ -168,7 +172,7 @@ export interface Fund {
   returnTarget: string; // e.g., "8-10% annually"
   expectedReturnMin?: number; // Direct access to min return percentage
   expectedReturnMax?: number; // Direct access to max return percentage
-  fundStatus: 'Open' | 'Closed' | 'Closing Soon';
+  fundStatus: 'Open' | 'Soft-closed' | 'Closed' | 'Closing Soon';
   websiteUrl?: string;
   established: number; // year
   regulatedBy: string;
@@ -216,4 +220,13 @@ export interface Fund {
   isVerified?: boolean;
   verifiedAt?: string; // ISO 8601
   verifiedBy?: string; // Admin user ID
+  
+  // New data model fields (Phase 1)
+  isin?: string; // International Securities Identification Number
+  typicalTicket?: number; // Typical investment ticket size in EUR
+  aumAsOfDate?: string; // ISO 8601 date when AUM was measured
+  realisedExits?: number; // Number of realised exits from portfolio
+  totalDistributions?: number; // Total distributions paid to investors in EUR
+  lastDataReviewDate?: string; // ISO 8601 date when data was last manually reviewed
+  riskBand?: RiskBand; // 3-band risk classification (Conservative/Balanced/Aggressive)
 }

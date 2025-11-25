@@ -12,6 +12,8 @@ import RedemptionTermsRow from './table/RedemptionTermsRow';
 import DataFreshnessIndicator from '../common/DataFreshnessIndicator';
 import { getReturnTargetDisplay, getReturnTargetNumbers } from '../../utils/returnTarget';
 import { CheckCircle2 } from 'lucide-react';
+import { Badge } from '../ui/badge';
+import { calculateRiskBand, getRiskBandLabel, getRiskBandBgColor } from '../../utils/riskCalculation';
 import { CompanyLogo } from '../shared/CompanyLogo';
 import { formatManagementFee, formatPerformanceFee, formatSubscriptionFee, formatRedemptionFee } from '../../utils/feeFormatters';
 import { formatFundSize } from '../../utils/fundSizeFormatters';
@@ -51,7 +53,23 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
               ))}
             </tr>
             
-            {/* Always visible - Basic Information */}
+            {/* Risk Band Row */}
+            <tr className="border-b">
+              <td className="py-3 px-4 font-medium">Risk Band</td>
+              {funds.map(fund => {
+                const riskBand = calculateRiskBand(fund);
+                const riskLabel = getRiskBandLabel(riskBand);
+                const riskBgColor = getRiskBandBgColor(riskBand);
+                return (
+                  <td key={fund.id} className="py-3 px-4">
+                    <Badge className={`${riskBgColor} text-xs`}>
+                      {riskLabel}
+                    </Badge>
+                  </td>
+                );
+              })}
+            </tr>
+            
             <StandardRow
               funds={funds}
               field="category"

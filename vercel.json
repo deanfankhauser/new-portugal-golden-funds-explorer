@@ -65,6 +65,11 @@
       "permanent": true
     },
     {
+      "source": "/manager/tejo-ventures-green-one-capital",
+      "destination": "/manager/tejo-ventures",
+      "permanent": true
+    },
+    {
       "source": "/:num(\\d+)-return",
       "destination": "/tags/:num-percent-return",
       "permanent": true

@@ -11,9 +11,12 @@ const RegulatoryIdentifiers: React.FC<RegulatoryIdentifiersProps> = ({ fund }) =
   // Use cmvmId directly from database, no fallbacks
   const cmvmId = fund.cmvmId;
   
-  // Extract ISIN from detailed description
-  const isinMatch = fund.detailedDescription?.match(/ISIN[:\s]*([A-Z]{2}[A-Z0-9]{10})/i);
-  const isin = isinMatch ? isinMatch[1] : null;
+  // Use ISIN from dedicated field, fallback to regex extraction for backward compatibility
+  let isin = fund.isin || null;
+  if (!isin) {
+    const isinMatch = fund.detailedDescription?.match(/ISIN[:\s]*([A-Z]{2}[A-Z0-9]{10})/i);
+    isin = isinMatch ? isinMatch[1] : null;
+  }
   
   // Only show component if we have actual data
   if (!cmvmId && !isin) {

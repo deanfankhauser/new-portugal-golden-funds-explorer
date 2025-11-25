@@ -44,7 +44,7 @@ const TrustBadges: React.FC<TrustBadgesProps> = ({ fund }) => {
           </Tooltip>
         )}
 
-        {isGVEligible && (
+        {isGVEligible && fund.isVerified && (
           <Tooltip>
             <TooltipTrigger asChild>
               <Badge className="bg-white/10 text-white border-white/30 flex items-center gap-1.5">

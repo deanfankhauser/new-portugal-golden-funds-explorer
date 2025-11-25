@@ -41,41 +41,14 @@ function extractFAQData(structuredData: any): { mainEntity: any[] } | null {
 
 /**
  * Generate hidden FAQ HTML content for search engine crawlers
- * Uses schema.org microdata attributes for maximum crawlability
+ * DISABLED: We only use JSON-LD FAQPage schema in <head>, duplicate microdata removed
  * @param faqData - FAQ data extracted from structured data
- * @returns HTML string with FAQ content
+ * @returns Empty string (duplicate microdata no longer needed)
  */
 function generateFAQContentHTML(faqData: { mainEntity: any[] }): string {
-  if (!faqData || !faqData.mainEntity || faqData.mainEntity.length === 0) {
-    return '';
-  }
-  
-  const faqHTML = faqData.mainEntity.map((question: any) => {
-    const questionText = question.name || '';
-    const answerText = question.acceptedAnswer?.text || '';
-    
-    // Escape HTML entities in content
-    const escapeHtml = (text: string) => text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-    
-    return `
-    <div itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-      <h3 itemprop="name">${escapeHtml(questionText)}</h3>
-      <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-        <div itemprop="text">${escapeHtml(answerText)}</div>
-      </div>
-    </div>`;
-  }).join('\n');
-  
-  return `
-  <!-- FAQ Content for Search Engine Crawlers (Hidden) -->
-  <div itemscope itemtype="https://schema.org/FAQPage" style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;" aria-hidden="true">
-    ${faqHTML}
-  </div>`;
+  // Return empty string - JSON-LD FAQPage schema in head is sufficient
+  // Duplicate microdata can confuse crawlers and is unnecessary
+  return '';
 }
 
 export function generateMetaTagsHTML(seoData: SEOData): string {
@@ -121,14 +94,14 @@ export function generateMetaTagsHTML(seoData: SEOData): string {
   <meta property="og:url" content="${url}" />
   <meta property="og:type" content="${ogType}" />
   <meta property="og:site_name" content="Movingto Funds" />
-  <meta property="og:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
+  <meta property="og:image" content="https://funds.movingto.com/og-default.png" />
   
   <!-- Twitter Card Meta Tags -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@movingtoio" />
   <meta name="twitter:title" content="${title}" />
   <meta name="twitter:description" content="${description}" />
-  <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
+  <meta name="twitter:image" content="https://funds.movingto.com/og-default.png" />
   
   <!-- SEO Enhancement Meta Tags -->
   <link rel="canonical" href="${canonicalUrl}" />

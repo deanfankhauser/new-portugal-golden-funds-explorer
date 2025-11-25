@@ -14,8 +14,12 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
 
   // Helper function to generate keyword-rich subheader
   const generateSubheader = () => {
+    const fundType = fund.isVerified && fund.tags?.includes('Golden Visa Eligible')
+      ? 'Portugal Golden Visa investment fund'
+      : 'CMVM-regulated investment fund';
+    
     const parts: string[] = [
-      `${fund.name} is a CMVM-regulated Portugal Golden Visa investment fund managed by ${fund.managerName}, investing`
+      `${fund.name} is a ${fundType} managed by ${fund.managerName}, investing`
     ];
 
     // Add investment focus based on category
@@ -59,8 +63,20 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
 
   // Helper function to bold percentages and key investment terms in description
   const formatDescription = (text: string) => {
+    let formatted = text;
+    
+    // For unverified funds, strip Golden Visa mentions from description
+    if (!fund.isVerified) {
+      formatted = formatted
+        .replace(/Portugal Golden Visa[–-]eligible\s*/gi, '')
+        .replace(/Golden Visa[–-]eligible\s*/gi, '')
+        .replace(/Golden Visa eligible\s*/gi, '')
+        .replace(/Golden Visa\s*/gi, '')
+        .trim();
+    }
+    
     // Bold percentages (e.g., "65%", "35%")
-    let formatted = text.replace(/(\d+%)/g, '<strong>$1</strong>');
+    formatted = formatted.replace(/(\d+%)/g, '<strong>$1</strong>');
     
     // Bold key investment terms
     const termsToHighlight = [
@@ -79,8 +95,8 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
       formatted = formatted.replace(regex, '<strong>$1</strong>');
     });
     
-    // Add discrete Golden Visa links if fund is GV eligible
-    if (fund.tags?.includes('Golden Visa Eligible')) {
+    // Add discrete Golden Visa links if fund is GV eligible and verified
+    if (fund.tags?.includes('Golden Visa Eligible') && fund.isVerified) {
       // Link "Golden Visa" text to eligibility requirements
       formatted = formatted.replace(
         /Golden Visa/gi,

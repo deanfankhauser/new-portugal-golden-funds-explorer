@@ -342,7 +342,7 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
                   </TooltipContent>
                 </Tooltip>
               )}
-              {fund.tags?.includes('Golden Visa Eligible') && (
+              {fund.tags?.includes('Golden Visa Eligible') && fund.isVerified && (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="flex items-center gap-2 px-4 py-2.5 bg-warning/10 border border-warning/20 rounded-lg text-[13px] font-semibold text-warning">

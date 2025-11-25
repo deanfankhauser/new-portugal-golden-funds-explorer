@@ -27,10 +27,10 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
       answer: `The minimum investment for ${fund.name} is ${fund.minimumInvestment ? `€${fund.minimumInvestment.toLocaleString()}` : 'available upon request'}. The fund features ${fund.redemptionTerms?.frequency || 'periodic'} redemptions with ${fund.redemptionTerms?.minimumHoldingPeriod ? `a ${fund.redemptionTerms.minimumHoldingPeriod}-month` : 'a'} lock-up period. ${fund.redemptionTerms?.noticePeriod ? `${fund.redemptionTerms.noticePeriod} days notice` : 'Advance notice'} is required for redemptions.`
     },
     {
-      question: fund.tags?.includes('Golden Visa Eligible') 
+      question: fund.tags?.includes('Golden Visa Eligible') && fund.isVerified
         ? `How does the Golden Visa qualification work?`
         : `What are the regulatory requirements?`,
-      answer: fund.tags?.includes('Golden Visa Eligible')
+      answer: fund.tags?.includes('Golden Visa Eligible') && fund.isVerified
         ? `${fund.name} is approved by Portuguese authorities as a Golden Visa qualifying investment. By investing the minimum amount, you become eligible to apply for Portuguese residency through the Golden Visa program. The fund maintains full compliance with CMVM regulations${fund.cmvmId ? ` and is registered under CMVM #${fund.cmvmId}` : ''}. Our team works closely with investors to ensure all documentation meets Golden Visa requirements.`
         : `${fund.name} operates under strict regulatory oversight${fund.regulatedBy ? ` by ${fund.regulatedBy}` : ''}${fund.cmvmId ? ` and is registered with CMVM #${fund.cmvmId}` : ''}. The fund maintains full compliance with all applicable securities regulations and reporting requirements.`
     },
