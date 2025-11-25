@@ -42,7 +42,9 @@ const KeyTermsTable: React.FC<KeyTermsTableProps> = ({ fund }) => {
     { label: "Domicile", value: fund.location || "N/A", type: "text" },
     { label: "Custodian", value: fund.custodian || "N/A", type: "text" },
     { label: "Auditor", value: fund.auditor || "N/A", type: "text" },
-    { label: "ISIN", value: fund.cmvmId || "N/A", type: "text" },
+    { label: "ISIN", value: fund.isin || "N/A", type: "text" },
+    { label: "Typical Ticket", value: fund.typicalTicket ? formatCurrency(fund.typicalTicket) : "N/A", type: "currency" },
+    { label: "Risk Band", value: fund.riskBand || "N/A", type: "text" },
     { label: "Fund Status", value: fund.fundStatus || "N/A", type: "status" },
     { label: "Inception Date", value: fund.established ? `${fund.established}` : "N/A", type: "date" },
   ];

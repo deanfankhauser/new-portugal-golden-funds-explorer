@@ -12,6 +12,7 @@ import { getReturnTargetDisplay } from '../utils/returnTarget';
 import { CompanyLogo } from './shared/CompanyLogo';
 import { formatManagementFee, formatPerformanceFee } from '../utils/feeFormatters';
 import { formatFundSize } from '../utils/fundSizeFormatters';
+import { calculateRiskBand, getRiskBandLabel, getRiskBandColor, getRiskBandBgColor } from '../utils/riskCalculation';
 
 interface FundCardProps {
   fund: Fund;
@@ -21,6 +22,9 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
   const { addToComparison, removeFromComparison, isInComparison } = useComparison();
   
   const isSelected = isInComparison(fund.id);
+  const riskBand = calculateRiskBand(fund);
+  const riskBandLabel = getRiskBandLabel(riskBand);
+  const riskBandBgColor = getRiskBandBgColor(riskBand);
   
   const handleCompareClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation when clicking on the button
@@ -66,8 +70,9 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
                   </Link>
                 </div>
               ) : (
-                <div className="mt-2">
+                <div className="mt-2 flex gap-2">
                   <Badge variant="outline" className="text-xs">UNVERIFIED</Badge>
+                  <Badge className={`text-xs ${riskBandBgColor}`}>{riskBandLabel}</Badge>
                 </div>
               )}
             </div>

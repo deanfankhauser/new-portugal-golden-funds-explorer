@@ -11,11 +11,11 @@ import { useComparison } from '../contexts/ComparisonContext';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
-
 import { DATA_AS_OF_LABEL } from '../utils/constants';
 import { SaveFundButton } from './common/SaveFundButton';
 import { CompanyLogo } from './shared/CompanyLogo';
 import { formatManagementFee, formatPerformanceFee } from '../utils/feeFormatters';
+import { calculateRiskBand, getRiskBandLabel, getRiskBandBgColor } from '../utils/riskCalculation';
 
 interface FundListItemProps {
   fund: Fund;
@@ -25,6 +25,9 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
   const { addToComparison, removeFromComparison, isInComparison } = useComparison();
   const isSelected = isInComparison(fund.id);
   const isGVEligible = isFundGVEligible(fund);
+  const riskBand = calculateRiskBand(fund);
+  const riskBandLabel = getRiskBandLabel(riskBand);
+  const riskBandBgColor = getRiskBandBgColor(riskBand);
 
   const handleCompareClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -69,6 +72,9 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             className="bg-muted/40 text-muted-foreground border-border/50 px-2.5 py-0.5 text-[12px] font-medium"
           >
             {fund.fundStatus}
+          </Badge>
+          <Badge className={`text-xs ${riskBandBgColor}`}>
+            {riskBandLabel}
           </Badge>
         </div>
         </div>
