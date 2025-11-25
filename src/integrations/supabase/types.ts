@@ -673,6 +673,7 @@ export type Database = {
           algo_rank: number | null
           auditor: string | null
           aum: number | null
+          aum_as_of_date: string | null
           category: string | null
           cmvm_id: string | null
           created_at: string | null
@@ -692,6 +693,8 @@ export type Database = {
           id: string
           inception_date: string | null
           is_verified: boolean | null
+          isin: string | null
+          last_data_review_date: string | null
           last_modified_by: string | null
           location: string | null
           lock_up_period_months: number | null
@@ -704,6 +707,7 @@ export type Database = {
           pdf_documents: Json | null
           performance_fee: number | null
           pfic_status: string | null
+          realised_exits: number | null
           redemption_fee: number | null
           redemption_terms: Json | null
           regulated_by: string | null
@@ -711,6 +715,8 @@ export type Database = {
           subscription_fee: number | null
           tags: string[] | null
           team_members: Json | null
+          total_distributions: number | null
+          typical_ticket: number | null
           updated_at: string | null
           verified_at: string | null
           verified_by: string | null
@@ -721,6 +727,7 @@ export type Database = {
           algo_rank?: number | null
           auditor?: string | null
           aum?: number | null
+          aum_as_of_date?: string | null
           category?: string | null
           cmvm_id?: string | null
           created_at?: string | null
@@ -740,6 +747,8 @@ export type Database = {
           id: string
           inception_date?: string | null
           is_verified?: boolean | null
+          isin?: string | null
+          last_data_review_date?: string | null
           last_modified_by?: string | null
           location?: string | null
           lock_up_period_months?: number | null
@@ -752,6 +761,7 @@ export type Database = {
           pdf_documents?: Json | null
           performance_fee?: number | null
           pfic_status?: string | null
+          realised_exits?: number | null
           redemption_fee?: number | null
           redemption_terms?: Json | null
           regulated_by?: string | null
@@ -759,6 +769,8 @@ export type Database = {
           subscription_fee?: number | null
           tags?: string[] | null
           team_members?: Json | null
+          total_distributions?: number | null
+          typical_ticket?: number | null
           updated_at?: string | null
           verified_at?: string | null
           verified_by?: string | null
@@ -769,6 +781,7 @@ export type Database = {
           algo_rank?: number | null
           auditor?: string | null
           aum?: number | null
+          aum_as_of_date?: string | null
           category?: string | null
           cmvm_id?: string | null
           created_at?: string | null
@@ -788,6 +801,8 @@ export type Database = {
           id?: string
           inception_date?: string | null
           is_verified?: boolean | null
+          isin?: string | null
+          last_data_review_date?: string | null
           last_modified_by?: string | null
           location?: string | null
           lock_up_period_months?: number | null
@@ -800,6 +815,7 @@ export type Database = {
           pdf_documents?: Json | null
           performance_fee?: number | null
           pfic_status?: string | null
+          realised_exits?: number | null
           redemption_fee?: number | null
           redemption_terms?: Json | null
           regulated_by?: string | null
@@ -807,6 +823,8 @@ export type Database = {
           subscription_fee?: number | null
           tags?: string[] | null
           team_members?: Json | null
+          total_distributions?: number | null
+          typical_ticket?: number | null
           updated_at?: string | null
           verified_at?: string | null
           verified_by?: string | null
