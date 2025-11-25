@@ -63,8 +63,20 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
 
   // Helper function to bold percentages and key investment terms in description
   const formatDescription = (text: string) => {
+    let formatted = text;
+    
+    // For unverified funds, strip Golden Visa mentions from description
+    if (!fund.isVerified) {
+      formatted = formatted
+        .replace(/Portugal Golden Visa[–-]eligible\s*/gi, '')
+        .replace(/Golden Visa[–-]eligible\s*/gi, '')
+        .replace(/Golden Visa eligible\s*/gi, '')
+        .replace(/Golden Visa\s*/gi, '')
+        .trim();
+    }
+    
     // Bold percentages (e.g., "65%", "35%")
-    let formatted = text.replace(/(\d+%)/g, '<strong>$1</strong>');
+    formatted = formatted.replace(/(\d+%)/g, '<strong>$1</strong>');
     
     // Bold key investment terms
     const termsToHighlight = [
