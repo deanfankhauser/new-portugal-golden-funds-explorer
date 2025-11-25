@@ -114,7 +114,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                     {/* Team Information Section */}
                     <section id="team-information" className="scroll-mt-28 md:scroll-mt-24">
                       <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Team Information</h2>
-                      <TeamSection team={fund.team} />
+                      <TeamSection team={fund.team} managerName={fund.managerName} />
                     </section>
 
                     {/* Enquiry Form Section */}

@@ -1,17 +1,65 @@
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Users, Briefcase, Linkedin } from 'lucide-react';
-import { TeamMember } from '../../data/types/funds';
+import { TeamMember, FundTeamMemberReference } from '../../data/types/funds';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import AuthGate from '../auth/AuthGate';
+import { useCompanyTeamMembers } from '@/hooks/useCompanyTeamMembers';
+import { Badge } from '@/components/ui/badge';
 
 interface TeamSectionProps {
-  team?: TeamMember[];
+  team?: TeamMember[] | FundTeamMemberReference[];
+  managerName: string;
 }
 
-const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
-  if (!team || team.length === 0) {
+const TeamSection: React.FC<TeamSectionProps> = ({ team, managerName }) => {
+  const { members: companyTeam, loading } = useCompanyTeamMembers(managerName);
+
+  // Resolve team members: if team contains references, look up from company profile
+  const resolvedTeam = useMemo(() => {
+    if (!team || team.length === 0) return [];
+
+    // Check if team contains references (has member_id) or legacy format
+    const firstMember = team[0] as any;
+    const isReferenceFormat = firstMember?.member_id && !firstMember?.name;
+
+    if (isReferenceFormat && companyTeam.length > 0) {
+      // Map references to full member data from company profile
+      return (team as FundTeamMemberReference[])
+        .map(ref => {
+          const companyMember = companyTeam.find(m => m.member_id === ref.member_id);
+          if (!companyMember) return null;
+
+          return {
+            ...companyMember,
+            // Use fund-specific role if provided, otherwise use company role
+            position: ref.fund_role || companyMember.role,
+            fund_role: ref.fund_role, // Keep for badge display
+          };
+        })
+        .filter(Boolean);
+    }
+
+    // Legacy format or direct team data
+    return team as TeamMember[];
+  }, [team, companyTeam]);
+
+  if (!resolvedTeam || resolvedTeam.length === 0) {
     return null;
+  }
+
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Team</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">Loading team information...</p>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
@@ -21,7 +69,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
         Fund Team
       </h2>
       <p className="text-sm text-muted-foreground mb-8">
-        {team.length} {team.length === 1 ? 'team member' : 'team members'}
+        {resolvedTeam.length} {resolvedTeam.length === 1 ? 'team member' : 'team members'}
       </p>
 
       <AuthGate 
@@ -30,7 +78,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
       >
         {/* Team Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {team.map((member, index) => (
+          {resolvedTeam.map((member: any, index) => (
             <div 
               key={member.name || index} 
               className="group relative flex gap-4 items-start p-6 bg-muted/20 border border-border/40 rounded-xl transition-all duration-200 hover:bg-muted/30 hover:border-primary/20 hover:shadow-lg"
@@ -58,9 +106,16 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team }) => {
 
               {/* Member Info */}
               <div className="flex-1 min-w-0 space-y-2">
-                <h3 className="text-xl font-semibold text-foreground tracking-tight leading-tight">
-                  {member.name}
-                </h3>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-xl font-semibold text-foreground tracking-tight leading-tight">
+                    {member.name}
+                  </h3>
+                  {member.fund_role && (
+                    <Badge variant="secondary" className="text-xs">
+                      Fund-specific
+                    </Badge>
+                  )}
+                </div>
                 
                 <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
                   <Briefcase className="h-3.5 w-3.5 opacity-50" />
