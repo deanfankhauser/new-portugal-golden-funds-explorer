@@ -40,7 +40,10 @@ export const FundTeamPicker: React.FC<FundTeamPickerProps> = ({
       if (error) throw error;
 
       if (data?.team_members) {
-        setCompanyTeam(data.team_members as unknown as CompanyTeamMember[]);
+        const allMembers = data.team_members as unknown as CompanyTeamMember[];
+        // Filter to only include members with valid member_id
+        const validMembers = allMembers.filter(m => m.member_id);
+        setCompanyTeam(validMembers);
       }
     } catch (error) {
       console.error('Error fetching company team:', error);
@@ -90,7 +93,7 @@ export const FundTeamPicker: React.FC<FundTeamPickerProps> = ({
     return (
       <div className="p-4 border rounded-lg bg-muted/30">
         <p className="text-sm text-muted-foreground">
-          No team members found in company profile. Add team members to your company profile first.
+          No valid team members found in company profile. Add team members to your company profile first, or ensure existing members have been migrated with member IDs.
         </p>
       </div>
     );

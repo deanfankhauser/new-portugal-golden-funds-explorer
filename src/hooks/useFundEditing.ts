@@ -405,6 +405,7 @@ export const useFundEditing = () => {
     // Field name changes
     if ('websiteUrl' in updates) dbUpdates.website = updates.websiteUrl;
     if ('team' in updates) dbUpdates.team_members = updates.team;
+    if ('teamReferences' in updates) dbUpdates.team_members = updates.teamReferences;
     if ('documents' in updates) dbUpdates.pdf_documents = updates.documents;
     
     // Value transformations
