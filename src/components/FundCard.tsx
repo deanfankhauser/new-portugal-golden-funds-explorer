@@ -70,9 +70,8 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
                   </Link>
                 </div>
               ) : (
-                <div className="mt-2 flex gap-2">
+                <div className="mt-2">
                   <Badge variant="outline" className="text-xs">UNVERIFIED</Badge>
-                  <Badge className={`text-xs ${riskBandBgColor}`}>{riskBandLabel}</Badge>
                 </div>
               )}
             </div>

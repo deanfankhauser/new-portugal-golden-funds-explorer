@@ -73,9 +73,6 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           >
             {fund.fundStatus}
           </Badge>
-          <Badge className={`text-xs ${riskBandBgColor}`}>
-            {riskBandLabel}
-          </Badge>
         </div>
         </div>
       </div>
