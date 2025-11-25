@@ -294,6 +294,16 @@ export default function FundManagerSidebar() {
                       </SidebarMenuButton>
                     </SidebarMenuItem>
 
+                    {/* Team Members Management */}
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild isActive={location.pathname === `/dashboard/company/${company.profileId}/team-members`}>
+                        <Link to={`/dashboard/company/${company.profileId}/team-members`} onClick={handleNavClick}>
+                          <User className="h-4 w-4" />
+                          <span>Team Members</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+
                     {/* Team Access at company level */}
                     <SidebarMenuItem>
                       <SidebarMenuButton asChild isActive={location.pathname === `/dashboard/company/${company.profileId}/team`}>
