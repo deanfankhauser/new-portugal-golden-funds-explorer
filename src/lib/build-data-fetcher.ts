@@ -54,7 +54,7 @@ export async function fetchAllFundsForBuild(): Promise<Fund[]> {
       subscriptionFee: fund.subscription_fee || undefined,
       redemptionFee: fund.redemption_fee || undefined,
       hurdleRate: fund.hurdle_rate || undefined,
-      fundSize: fund.aum || 0,
+      fundSize: (fund.aum || 0) / 1000000, // Convert to millions for consistency with client-side
       inceptionDate: fund.inception_date || undefined,
       riskLevel: fund.risk_level || undefined,
       website: fund.website || undefined,

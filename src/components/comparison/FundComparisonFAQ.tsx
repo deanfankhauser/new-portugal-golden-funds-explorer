@@ -63,6 +63,7 @@ const FundComparisonFAQ: React.FC<FundComparisonFAQProps> = ({ fund1, fund2 }) =
       faqs={faqs}
       title={`Frequently Asked Questions: ${fund1.name} vs ${fund2.name}`}
       schemaId="comparison-faq"
+      skipStructuredData={true} // SSG already generates FAQ schema
     />
   );
 };
