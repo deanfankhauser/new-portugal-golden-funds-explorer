@@ -6,6 +6,7 @@ import FundManagerSidebar from '@/components/fund-manager/FundManagerSidebar';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 import MyLeads from '@/pages/MyLeads';
 import CompanyDetails from '@/components/fund-manager/CompanyDetails';
+import CompanyTeamManagement from '@/components/fund-manager/CompanyTeamManagement';
 import FundUpdate from '@/components/fund-manager/FundUpdate';
 import FundAnalytics from '@/components/fund-manager/FundAnalytics';
 import FundAdvertising from '@/components/fund-manager/FundAdvertising';
@@ -40,6 +41,7 @@ const FundManagerPanel: React.FC = () => {
               
               {/* Company Management */}
               <Route path="company/:profileId" element={<CompanyDetails />} />
+              <Route path="company/:profileId/team-members" element={<CompanyTeamManagement />} />
               <Route path="company/:profileId/team" element={<FundTeam />} />
               
               {/* Fund Management */}

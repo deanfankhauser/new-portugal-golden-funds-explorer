@@ -18,6 +18,9 @@ import { uploadTeamMemberPhoto, deleteTeamMemberPhoto } from '@/utils/imageUploa
 import { useToast } from '@/hooks/use-toast';
 import HistoricalPerformanceEditor from '../fund-editing/HistoricalPerformanceEditor';
 import { useAllFunds } from '@/hooks/useFundsQuery';
+import { FundTeamPicker } from '@/components/fund-editing/FundTeamPicker';
+import { FundTeamMemberReference } from '@/types/team';
+import { useFundTeamMembers } from '@/hooks/useTeamMemberData';
 
 interface UpdateFundTabProps {
   fund: Fund;
@@ -25,12 +28,27 @@ interface UpdateFundTabProps {
 }
 
 const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) => {
-  const { directUpdateFund, submitFundEditSuggestion, loading } = useFundEditing();
+  const { directUpdateFund, submitFundEditSuggestion, updateFundTeamMembers, loading } = useFundEditing();
   const { toast } = useToast();
   const { data: allFundsData } = useAllFunds();
   const allDatabaseFunds = allFundsData || [];
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  
+  // Fetch current fund team assignments
+  const { data: currentFundTeam } = useFundTeamMembers(fund.id);
+  const [selectedTeamMembers, setSelectedTeamMembers] = useState<FundTeamMemberReference[]>([]);
+  
+  // Initialize selected team members from database
+  useEffect(() => {
+    if (currentFundTeam) {
+      const teamRefs: FundTeamMemberReference[] = currentFundTeam.map(tm => ({
+        member_id: tm.team_member_id,
+        fund_role: tm.fund_role || undefined,
+      }));
+      setSelectedTeamMembers(teamRefs);
+    }
+  }, [currentFundTeam]);
 
   const buildFormData = (f: Fund) => ({
     description: f.description ?? '',
@@ -973,124 +991,21 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
 
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Team Members</CardTitle>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => addArrayItem('team', { name: '', position: '', bio: '', linkedinUrl: '', photoUrl: '' })}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Team Member
-                </Button>
-              </div>
+              <CardTitle>Team Members</CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                Select team members from your company roster to assign to this fund
+              </p>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {formData.team.map((member: TeamMember, index: number) => (
-                <div key={index} className="p-4 border rounded-lg space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-medium">Team Member {index + 1}</h4>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => removeArrayItem('team', index)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label>Name</Label>
-                      <Input
-                        value={member.name}
-                        onChange={(e) => handleArrayChange('team', index, 'name', e.target.value)}
-                        placeholder="Full name"
-                      />
-                    </div>
-                    <div>
-                      <Label>Position</Label>
-                      <Input
-                        value={member.position}
-                        onChange={(e) => handleArrayChange('team', index, 'position', e.target.value)}
-                        placeholder="Job title"
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <Label>LinkedIn URL</Label>
-                      <Input
-                        value={member.linkedinUrl || ''}
-                        onChange={(e) => handleArrayChange('team', index, 'linkedinUrl', e.target.value)}
-                        placeholder="https://linkedin.com/in/..."
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <Label>Profile Picture</Label>
-                      <div className="space-y-2">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => handleProfilePictureUpload(e, index)}
-                          className="hidden"
-                          id={`photo-upload-${index}`}
-                        />
-                        <div className="flex items-center space-x-4">
-                          {member.photoUrl && (
-                            <img 
-                              src={member.photoUrl} 
-                              alt={member.name}
-                              className="w-16 h-16 rounded-full object-cover border"
-                            />
-                          )}
-                          <div className="space-y-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => document.getElementById(`photo-upload-${index}`)?.click()}
-                              disabled={isUploadingPhoto}
-                            >
-                              {isUploadingPhoto ? 'Uploading...' : (member.photoUrl ? 'Change Photo' : 'Upload Photo')}
-                            </Button>
-                            {member.photoUrl && (
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleRemoveProfilePicture(index)}
-                              >
-                                Remove Photo
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="md:col-span-2">
-                      <div className="flex items-center justify-between">
-                        <Label>Bio</Label>
-                        <span className={`text-xs ${(member.bio || '').length > 120 ? 'text-destructive' : (member.bio || '').length > 100 ? 'text-warning' : 'text-muted-foreground'}`}>
-                          {(member.bio || '').length}/140
-                        </span>
-                      </div>
-                      <Textarea
-                        value={member.bio || ''}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          if (value.length <= 140) {
-                            handleArrayChange('team', index, 'bio', value);
-                          }
-                        }}
-                        rows={3}
-                        placeholder="Professional background and experience (max 140 characters)"
-                        maxLength={140}
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <CardContent>
+              <FundTeamPicker
+                managerName={fund.managerName}
+                selectedMembers={selectedTeamMembers}
+                onChange={(members) => {
+                  setSelectedTeamMembers(members);
+                  setIsDirty(true);
+                }}
+                hasLegacyData={fund.team && fund.team.length > 0}
+              />
             </CardContent>
           </Card>
         </TabsContent>
