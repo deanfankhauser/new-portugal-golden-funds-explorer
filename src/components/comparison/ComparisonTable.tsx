@@ -53,13 +53,6 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
               ))}
             </tr>
             
-            <StandardRow
-              funds={funds}
-              field={(fund) => fund.riskBand || "Not classified"}
-              label="Risk Band"
-              allSame={allSame}
-            />
-            
             {/* Risk Band Row */}
             <tr className="border-b">
               <td className="py-3 px-4 font-medium">Risk Band</td>
