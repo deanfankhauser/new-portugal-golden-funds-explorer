@@ -318,14 +318,38 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
     return changes;
   };
 
+  // Check if team members have changed
+  const hasTeamChanges = () => {
+    if (!currentFundTeam) return selectedTeamMembers.length > 0;
+    
+    const currentIds = currentFundTeam.map(tm => tm.team_member_id).sort();
+    const selectedIds = selectedTeamMembers.map(tm => tm.member_id).sort();
+    
+    if (currentIds.length !== selectedIds.length) return true;
+    
+    for (let i = 0; i < currentIds.length; i++) {
+      if (currentIds[i] !== selectedIds[i]) return true;
+    }
+    
+    // Check for role changes
+    for (const selected of selectedTeamMembers) {
+      const current = currentFundTeam.find(tm => tm.team_member_id === selected.member_id);
+      if (current && current.fund_role !== selected.fund_role) return true;
+    }
+    
+    return false;
+  };
+
   const handleSubmit = async () => {
     try {
       console.log('🚀 [handleSubmit] Starting submission...');
       const suggestedChanges = getSuggestedChanges();
+      const teamHasChanges = hasTeamChanges();
       
       console.log('📊 [handleSubmit] Suggested changes:', suggestedChanges);
+      console.log('👥 [handleSubmit] Team changes detected:', teamHasChanges);
       
-      if (Object.keys(suggestedChanges).length === 0) {
+      if (Object.keys(suggestedChanges).length === 0 && !teamHasChanges) {
         console.warn('⚠️ [handleSubmit] No changes detected');
         toast({
           title: "No changes detected",
@@ -336,7 +360,18 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
 
       if (canDirectEdit) {
         console.log('✅ [handleSubmit] User has direct edit permission, updating fund...');
-        await directUpdateFund(fund.id, suggestedChanges);
+        
+        // Save fund changes if any
+        if (Object.keys(suggestedChanges).length > 0) {
+          await directUpdateFund(fund.id, suggestedChanges);
+        }
+        
+        // Save team member assignments if changed
+        if (teamHasChanges) {
+          console.log('👥 [handleSubmit] Saving team member assignments...');
+          await updateFundTeamMembers(fund.id, selectedTeamMembers);
+        }
+        
         setIsDirty(false); // Clear dirty state after successful save
         toast({
           title: "Fund Updated!",
