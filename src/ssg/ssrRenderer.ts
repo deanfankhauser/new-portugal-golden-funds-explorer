@@ -131,8 +131,8 @@ export class SSRRenderer {
         tagName: route.params?.tagName,
         comparisonSlug: route.params?.slug,
         // Team member params for team-member page type
-        memberName: route.params?.name,
-        memberRole: route.params?.role,
+        name: route.params?.name,
+        role: route.params?.role,
         linkedinUrl: route.params?.linkedinUrl,
       },
       allFunds

@@ -166,14 +166,14 @@ export async function fetchAllManagersForBuild(): Promise<Array<{ name: string; 
 /**
  * Fetch all team members from database during build time
  */
-export async function fetchAllTeamMembersForBuild(): Promise<Array<{ id: string; slug: string; name: string; role: string; profile_id: string }>> {
+export async function fetchAllTeamMembersForBuild(): Promise<Array<{ id: string; slug: string; name: string; role: string; profile_id: string; linkedin_url?: string }>> {
   const supabase = getSupabaseBuildClient();
   
   console.log('📊 Build: Fetching all team members from database...');
   
   const { data: teamMembers, error } = await supabase
     .from('team_members')
-    .select('id, slug, name, role, profile_id')
+    .select('id, slug, name, role, profile_id, linkedin_url')
     .order('name', { ascending: true });
     
   if (error) {
@@ -195,7 +195,7 @@ let buildDataCache: {
   categories?: FundCategory[];
   tags?: FundTag[];
   managers?: Array<{ name: string; fundsCount: number }>;
-  teamMembers?: Array<{ id: string; slug: string; name: string; role: string; profile_id: string }>;
+  teamMembers?: Array<{ id: string; slug: string; name: string; role: string; profile_id: string; linkedin_url?: string }>;
 } = {};
 
 /**

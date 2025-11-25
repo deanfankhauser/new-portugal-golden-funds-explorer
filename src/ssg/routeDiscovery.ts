@@ -80,7 +80,8 @@ export class RouteDiscovery {
           params: { 
             slug: member.slug,
             name: member.name,
-            role: member.role
+            role: member.role,
+            linkedinUrl: member.linkedin_url
           }
         });
       });
