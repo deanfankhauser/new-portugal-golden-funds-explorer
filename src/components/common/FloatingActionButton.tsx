@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bookmark, GitCompare, X } from 'lucide-react';
+import { Star, GitCompare, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useSavedFunds } from '@/hooks/useSavedFunds';
@@ -40,13 +40,13 @@ export const FloatingActionButton: React.FC = () => {
             : 'opacity-0 translate-y-4 pointer-events-none'
         )}
       >
-        {/* Saved Funds Button */}
+        {/* Watchlist Button */}
         <button
           onClick={handleSavedClick}
           className="relative flex items-center justify-center h-12 w-12 rounded-full bg-card border-2 border-border shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95"
-          aria-label="View saved funds"
+          aria-label="View watchlist"
         >
-          <Bookmark className="h-5 w-5 text-primary" />
+          <Star className="h-5 w-5 text-primary" />
           {savedCount > 0 && (
             <span className="absolute -top-1 -right-1 flex items-center justify-center h-5 min-w-[20px] px-1 text-[11px] font-bold text-white bg-primary rounded-full">
               {savedCount}
@@ -88,7 +88,7 @@ export const FloatingActionButton: React.FC = () => {
             <X className="h-6 w-6" />
           ) : (
             <div className="relative">
-              <Bookmark className="h-6 w-6" />
+              <Star className="h-6 w-6" />
               {(savedCount > 0 || compareCount > 0) && (
                 <span className="absolute -top-2 -right-2 h-3 w-3 bg-accent rounded-full animate-pulse" />
               )}

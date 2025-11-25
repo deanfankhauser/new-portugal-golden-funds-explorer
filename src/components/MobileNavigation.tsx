@@ -5,7 +5,7 @@ import { buildContactUrl } from "../utils/urlHelpers";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Menu, Calculator, ClipboardCheck, Mail, ExternalLink, Users, FileText, Heart, User, Settings, LogOut, Building, TrendingUp, Shield, LogIn } from 'lucide-react';
+import { Menu, Calculator, ClipboardCheck, Mail, ExternalLink, Users, FileText, Star, User, Settings, LogOut, Building, TrendingUp, Shield, LogIn } from 'lucide-react';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 
 const getSupabase = async () => (await import('@/integrations/supabase/client')).supabase;
@@ -161,8 +161,8 @@ const MobileNavigation = () => {
               <div className="space-y-2">
                 <Link to="/saved-funds" onClick={closeMenu}>
                   <Button variant="ghost" className="w-full justify-start gap-3 h-12">
-                    <Heart className="h-5 w-5" />
-                    <span>Saved Funds</span>
+                    <Star className="h-5 w-5" />
+                    <span>Watchlist</span>
                   </Button>
                 </Link>
                 <Link to="/account-settings" onClick={closeMenu}>

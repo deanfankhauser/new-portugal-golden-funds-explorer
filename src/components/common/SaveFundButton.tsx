@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bookmark } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSavedFunds } from '@/hooks/useSavedFunds';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
@@ -98,7 +98,7 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
       size={showText ? 'sm' : 'icon'}
       onClick={handleClick}
       aria-pressed={displaySaved}
-      title={displaySaved ? 'Remove from saved funds' : 'Save fund'}
+      title={displaySaved ? 'Remove from watchlist' : 'Add to watchlist'}
       className={cn(
         showText ? 'gap-2' : getSizeClasses(),
         'transition-colors duration-200',
@@ -106,12 +106,12 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
         className
       )}
     >
-      <Bookmark 
+      <Star 
         className={getIconSize()}
         fill={displaySaved ? 'currentColor' : 'none'}
       />
       {showText && (
-        <span>{displaySaved ? 'Saved' : 'Save'}</span>
+        <span>{displaySaved ? 'On watchlist' : 'Add to watchlist'}</span>
       )}
     </Button>
   );

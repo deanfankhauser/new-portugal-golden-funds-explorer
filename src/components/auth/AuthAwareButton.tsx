@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Heart, User, Settings, LogOut, Shield, Building, TrendingUp } from 'lucide-react';
+import { Star, User, Settings, LogOut, Shield, Building, TrendingUp } from 'lucide-react';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import UniversalAuthButton from './UniversalAuthButton';
 import { getDisplayName, getAvatarUrl, isManagerProfile } from '@/types/profile';
@@ -193,8 +193,8 @@ const AuthAwareButton: React.FC = () => {
         
         <DropdownMenuItem asChild>
           <Link to="/saved-funds" className="w-full cursor-pointer">
-            <Heart className="mr-2 h-4 w-4" />
-            Saved Funds
+            <Star className="mr-2 h-4 w-4" />
+            Watchlist
           </Link>
         </DropdownMenuItem>
         
