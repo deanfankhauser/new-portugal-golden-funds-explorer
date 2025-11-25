@@ -22,6 +22,8 @@ import { FundTeamPicker } from '@/components/fund-editing/FundTeamPicker';
 import { FundTeamMemberReference } from '@/types/team';
 import { useFundTeamMembers } from '@/hooks/useTeamMemberData';
 import { ManagerNameCombobox } from '@/components/fund-editing/ManagerNameCombobox';
+import { AutocompleteInput } from '@/components/fund-editing/AutocompleteInput';
+import { useFundCategories, useCustodianNames, useAuditorNames } from '@/hooks/useFundFieldAutocomplete';
 
 interface UpdateFundTabProps {
   fund: Fund;
@@ -35,6 +37,11 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
   const allDatabaseFunds = allFundsData || [];
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  
+  // Fetch autocomplete suggestions
+  const { data: categories = [], isLoading: categoriesLoading } = useFundCategories();
+  const { data: custodians = [], isLoading: custodiansLoading } = useCustodianNames();
+  const { data: auditors = [], isLoading: auditorsLoading } = useAuditorNames();
   
   // Fetch current fund team assignments
   const { data: currentFundTeam } = useFundTeamMembers(fund.id);
@@ -624,11 +631,17 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
 
               <div>
                 <Label htmlFor="category">Fund Category</Label>
-                <Input
+                <AutocompleteInput
                   id="category"
                   value={formData.category}
-                  onChange={(e) => handleInputChange('category', e.target.value)}
+                  onChange={(value) => handleInputChange('category', value)}
+                  suggestions={categories}
+                  isLoading={categoriesLoading}
+                  placeholder="Select or type category..."
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Select an existing category or type a new one
+                </p>
               </div>
               
               <div>
@@ -907,20 +920,32 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
 
               <div>
                 <Label htmlFor="auditor">Auditor</Label>
-                <Input
+                <AutocompleteInput
                   id="auditor"
                   value={formData.auditor || ''}
-                  onChange={(e) => handleInputChange('auditor', e.target.value)}
+                  onChange={(value) => handleInputChange('auditor', value)}
+                  suggestions={auditors}
+                  isLoading={auditorsLoading}
+                  placeholder="Select or type auditor name..."
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Select an existing auditor or type a new one
+                </p>
               </div>
 
               <div>
                 <Label htmlFor="custodian">Custodian</Label>
-                <Input
+                <AutocompleteInput
                   id="custodian"
                   value={formData.custodian || ''}
-                  onChange={(e) => handleInputChange('custodian', e.target.value)}
+                  onChange={(value) => handleInputChange('custodian', value)}
+                  suggestions={custodians}
+                  isLoading={custodiansLoading}
+                  placeholder="Select or type custodian name..."
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Select an existing custodian or type a new one
+                </p>
               </div>
 
               <div>
