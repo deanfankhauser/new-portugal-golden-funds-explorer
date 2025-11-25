@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -6,8 +6,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Users, ChevronDown, ChevronUp } from 'lucide-react';
-import { CompanyTeamMember, FundTeamMemberReference } from '@/types/team';
-import { supabase } from '@/integrations/supabase/client';
+import { FundTeamMemberReference } from '@/types/team';
+import { useCompanyTeamMembers } from '@/hooks/useCompanyTeamMembers';
 
 interface FundTeamPickerProps {
   managerName: string;
@@ -22,65 +22,8 @@ export const FundTeamPicker: React.FC<FundTeamPickerProps> = ({
   onChange,
   hasLegacyData = false,
 }) => {
-  const [companyTeam, setCompanyTeam] = useState<CompanyTeamMember[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { members: companyTeam, loading, error } = useCompanyTeamMembers(managerName);
   const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    fetchCompanyTeam();
-  }, [managerName]);
-
-  const fetchCompanyTeam = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, team_members, company_name')
-        .ilike('company_name', managerName)
-        .single();
-
-      if (error) throw error;
-
-      if (data?.team_members) {
-        let allMembers = data.team_members as unknown as CompanyTeamMember[];
-        
-        // Check if any member needs member_id (auto-migration)
-        const needsMigration = allMembers.some(m => !m.member_id);
-        
-        if (needsMigration) {
-          console.log('Auto-migrating company team members to add member_id...');
-          
-          // Generate member_id for members that don't have one
-          const updatedMembers = allMembers.map(m => ({
-            ...m,
-            member_id: m.member_id || crypto.randomUUID()
-          }));
-          
-          // Persist to database (self-healing)
-          const { error: updateError } = await supabase
-            .from('profiles')
-            .update({ team_members: updatedMembers })
-            .eq('id', data.id);
-          
-          if (updateError) {
-            console.error('Failed to auto-migrate team members:', updateError);
-            // Continue with existing data even if update fails
-          } else {
-            console.log('Successfully auto-migrated team members');
-            allMembers = updatedMembers;
-          }
-        }
-        
-        // Now all members should have valid member_id
-        const validMembers = allMembers.filter(m => m.member_id);
-        setCompanyTeam(validMembers);
-      }
-    } catch (error) {
-      console.error('Error fetching company team:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleToggleMember = (memberId: string) => {
     const isSelected = selectedMembers.some(m => m.member_id === memberId);
@@ -119,11 +62,21 @@ export const FundTeamPicker: React.FC<FundTeamPickerProps> = ({
     );
   }
 
+  if (error) {
+    return (
+      <div className="p-4 border rounded-lg bg-destructive/10">
+        <p className="text-sm text-destructive">
+          Error loading team members: {error.message}
+        </p>
+      </div>
+    );
+  }
+
   if (companyTeam.length === 0) {
     return (
       <div className="p-4 border rounded-lg bg-muted/30">
         <p className="text-sm text-muted-foreground">
-          No valid team members found in company profile. Add team members to your company profile first, or ensure existing members have been migrated with member IDs.
+          No team members found. Add team members to your company profile first.
         </p>
       </div>
     );
