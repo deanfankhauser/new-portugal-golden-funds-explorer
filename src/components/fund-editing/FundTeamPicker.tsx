@@ -35,15 +35,43 @@ export const FundTeamPicker: React.FC<FundTeamPickerProps> = ({
       setLoading(true);
       const { data, error } = await supabase
         .from('profiles')
-        .select('team_members, company_name')
+        .select('id, team_members, company_name')
         .ilike('company_name', managerName)
         .single();
 
       if (error) throw error;
 
       if (data?.team_members) {
-        const allMembers = data.team_members as unknown as CompanyTeamMember[];
-        // Filter to only include members with valid member_id
+        let allMembers = data.team_members as unknown as CompanyTeamMember[];
+        
+        // Check if any member needs member_id (auto-migration)
+        const needsMigration = allMembers.some(m => !m.member_id);
+        
+        if (needsMigration) {
+          console.log('Auto-migrating company team members to add member_id...');
+          
+          // Generate member_id for members that don't have one
+          const updatedMembers = allMembers.map(m => ({
+            ...m,
+            member_id: m.member_id || crypto.randomUUID()
+          }));
+          
+          // Persist to database (self-healing)
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ team_members: updatedMembers })
+            .eq('id', data.id);
+          
+          if (updateError) {
+            console.error('Failed to auto-migrate team members:', updateError);
+            // Continue with existing data even if update fails
+          } else {
+            console.log('Successfully auto-migrated team members');
+            allMembers = updatedMembers;
+          }
+        }
+        
+        // Now all members should have valid member_id
         const validMembers = allMembers.filter(m => m.member_id);
         setCompanyTeam(validMembers);
       }
