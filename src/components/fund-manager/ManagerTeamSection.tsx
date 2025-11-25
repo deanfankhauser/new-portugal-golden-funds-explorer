@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Mail, Linkedin } from 'lucide-react';
+import { useCompanyTeamMembers } from '@/hooks/useCompanyTeamMembers';
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface TeamMember {
   name: string;
@@ -22,6 +24,12 @@ interface ManagerTeamSectionProps {
 
 const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, teamMembers }) => {
   const [expandedBios, setExpandedBios] = useState<Record<number, boolean>>({});
+  
+  // Fetch team members from the new team_members table
+  const { members, loading } = useCompanyTeamMembers(managerName);
+  
+  // Use fetched members (which include slug) or fallback to prop data
+  const displayMembers = members.length > 0 ? members : teamMembers;
   
   const getInitials = (name: string) => {
     return name
@@ -46,6 +54,28 @@ const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, te
     }));
   };
 
+  if (loading) {
+    return (
+      <div>
+        <h2 className="text-3xl font-semibold text-foreground mb-12">
+          Team
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-card rounded-xl border border-border p-8">
+              <div className="flex flex-col items-center gap-4">
+                <Skeleton className="h-24 w-24 rounded-full" />
+                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-20 w-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h2 className="text-3xl font-semibold text-foreground mb-12">
@@ -53,7 +83,7 @@ const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, te
       </h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {teamMembers.map((member, index) => {
+        {displayMembers.map((member, index) => {
           const isExpanded = expandedBios[index];
           const shouldTruncate = member.bio && member.bio.length > 150;
           
@@ -116,9 +146,9 @@ const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, te
                         <Mail className="h-4 w-4" />
                       </a>
                     )}
-                    {member.linkedin && (
+                    {(member.linkedin || member.linkedinUrl) && (
                       <a
-                        href={member.linkedin}
+                        href={member.linkedin || member.linkedinUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center justify-center h-9 w-9 rounded-lg bg-muted hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all"
