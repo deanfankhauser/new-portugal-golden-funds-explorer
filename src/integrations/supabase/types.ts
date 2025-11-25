@@ -1479,6 +1479,19 @@ export type Database = {
           email: string
         }[]
       }
+      get_team_members_by_company_name: {
+        Args: { company_name_input: string }
+        Returns: {
+          bio: string
+          email: string
+          id: string
+          linkedin_url: string
+          name: string
+          photo_url: string
+          role: string
+          slug: string
+        }[]
+      }
       get_user_admin_role: {
         Args: { check_user_id?: string }
         Returns: Database["public"]["Enums"]["admin_role"]
