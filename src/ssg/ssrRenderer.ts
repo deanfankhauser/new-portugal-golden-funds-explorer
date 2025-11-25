@@ -130,6 +130,10 @@ export class SSRRenderer {
         categoryName: route.params?.categoryName,
         tagName: route.params?.tagName,
         comparisonSlug: route.params?.slug,
+        // Team member params for team-member page type
+        memberName: route.params?.name,
+        memberRole: route.params?.role,
+        linkedinUrl: route.params?.linkedinUrl,
       },
       allFunds
     );
