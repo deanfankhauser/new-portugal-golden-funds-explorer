@@ -1521,6 +1521,15 @@ export type Database = {
         Returns: boolean
       }
       mark_expired_invitations: { Args: never; Returns: undefined }
+      migrate_fund_team_members: {
+        Args: never
+        Returns: {
+          members_created: number
+          members_linked: number
+          members_migrated: number
+          result_fund_id: string
+        }[]
+      }
       migrate_team_members_from_jsonb: {
         Args: never
         Returns: {
