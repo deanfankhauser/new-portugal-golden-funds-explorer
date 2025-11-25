@@ -1,7 +1,6 @@
 
 import React, { useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -18,13 +17,13 @@ import type { Fund } from '@/data/types/funds';
 
 interface FundComparisonProps {
   initialSlug?: string;
+  initialFunds?: Fund[];
 }
 
-const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug }) => {
+const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug, initialFunds }) => {
   const { slug: routerSlug } = useParams<{ slug: string }>();
-  const queryClient = useQueryClient();
   
-  // During SSR, directly access prefetched cache data
+  // During SSR, use passed initialFunds prop
   // During client-side, use the hook normally
   const isSSR = typeof window === 'undefined';
   
@@ -36,9 +35,9 @@ const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug }) => {
   let error = null;
   
   if (isSSR) {
-    // SSR: Direct cache access
-    allFunds = queryClient.getQueryData<Fund[]>(['funds-all']);
-    console.log('🔥 SSR FundComparison: slug=%s, funds-all length=%s', slug, allFunds?.length ?? 'undefined');
+    // SSR: Use directly passed funds data
+    allFunds = initialFunds;
+    console.log('🔥 SSR FundComparison: slug=%s, initialFunds length=%s', slug, allFunds?.length ?? 'undefined');
   } else {
     // Client-side: Use React Query hook
     const queryResult = useAllFunds();

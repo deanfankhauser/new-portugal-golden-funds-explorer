@@ -11,16 +11,19 @@ interface FAQSectionProps {
   title?: string;
   schemaId?: string;
   noWrapper?: boolean;
+  skipStructuredData?: boolean; // Skip client-side schema injection when SSG handles it
 }
 
 const FAQSection: React.FC<FAQSectionProps> = ({ 
   faqs, 
   title = "Frequently Asked Questions",
   schemaId = "faq",
-  noWrapper = false
+  noWrapper = false,
+  skipStructuredData = false
 }) => {
   useEffect(() => {
-    if (!faqs || faqs.length === 0) return;
+    // Skip structured data injection if SSG already handled it
+    if (!faqs || faqs.length === 0 || skipStructuredData) return;
 
     const faqSchema = {
       '@context': 'https://schema.org',

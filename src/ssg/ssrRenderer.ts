@@ -327,7 +327,7 @@ export class SSRRenderer {
                 React.createElement(Route, { 
                   path: '/compare/:slug', 
                   element: isSSG 
-                    ? React.createElement(getComponent('FundComparison'), { initialSlug: route.params?.slug })
+                    ? React.createElement(getComponent('FundComparison'), { initialSlug: route.params?.slug, initialFunds: allFunds })
                     : React.createElement(getComponent('FundComparison'))
                 }),
                 
