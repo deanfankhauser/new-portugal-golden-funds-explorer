@@ -629,6 +629,45 @@ export type Database = {
           },
         ]
       }
+      fund_team_members: {
+        Row: {
+          assigned_at: string
+          fund_id: string
+          fund_role: string | null
+          id: string
+          team_member_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          fund_id: string
+          fund_role?: string | null
+          id?: string
+          team_member_id: string
+        }
+        Update: {
+          assigned_at?: string
+          fund_id?: string
+          fund_role?: string | null
+          id?: string
+          team_member_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_team_members_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "funds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fund_team_members_team_member_id_fkey"
+            columns: ["team_member_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       funds: {
         Row: {
           algo_rank: number | null
@@ -1199,6 +1238,56 @@ export type Database = {
           },
         ]
       }
+      team_members: {
+        Row: {
+          bio: string | null
+          created_at: string
+          email: string | null
+          id: string
+          linkedin_url: string | null
+          name: string
+          photo_url: string | null
+          profile_id: string
+          role: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          linkedin_url?: string | null
+          name: string
+          photo_url?: string | null
+          profile_id: string
+          role: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          linkedin_url?: string | null
+          name?: string
+          photo_url?: string | null
+          profile_id?: string
+          role?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_members_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -1432,6 +1521,15 @@ export type Database = {
         Returns: boolean
       }
       mark_expired_invitations: { Args: never; Returns: undefined }
+      migrate_team_members_from_jsonb: {
+        Args: never
+        Returns: {
+          company_name: string
+          funds_linked: number
+          members_migrated: number
+          profile_id: string
+        }[]
+      }
       query: {
         Args: { query_text: string }
         Returns: {
