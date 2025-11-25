@@ -135,6 +135,9 @@ export class SSRRenderer {
         role: route.params?.role,
         linkedinUrl: route.params?.linkedinUrl,
         slug: route.params?.slug,
+        photoUrl: route.params?.photoUrl,
+        bio: route.params?.bio,
+        companyName: route.params?.companyName,
       },
       allFunds
     );
