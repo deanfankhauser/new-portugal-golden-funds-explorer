@@ -136,8 +136,8 @@ ${sitemapElements}
     
     // Fetch all data from database (cached)
     console.log('📊 Fetching data from database for sitemap generation...');
-    const { funds, categories, tags, managers } = await fetchAllBuildDataCached();
-    console.log(`✅ Loaded ${funds.length} funds, ${categories.length} categories, ${tags.length} tags, ${managers.length} managers from database`);
+    const { funds, categories, tags, managers, teamMembers } = await fetchAllBuildDataCached();
+    console.log(`✅ Loaded ${funds.length} funds, ${categories.length} categories, ${tags.length} tags, ${managers.length} managers, ${teamMembers.length} team members from database`);
 
     // Homepage
     urls.push({
@@ -237,6 +237,20 @@ ${sitemapElements}
       });
     } catch (error) {
       console.warn('Failed to generate manager URLs:', error);
+    }
+
+    // Team member profile pages
+    try {
+      teamMembers.forEach(member => {
+        urls.push({
+          loc: `${PRODUCTION_BASE_URL}/team/${member.slug}`,
+          lastmod: currentDate,
+          changefreq: 'monthly',
+          priority: 0.6
+        });
+      });
+    } catch (error) {
+      console.warn('Failed to generate team member URLs:', error);
     }
 
     // Comparison pages
