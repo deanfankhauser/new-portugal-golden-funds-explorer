@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Briefcase, Linkedin } from 'lucide-react';
+import { Briefcase, Linkedin, ArrowRight } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface TeamMemberCardProps {
   name: string;
@@ -24,14 +25,24 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
   slug,
   fundRole
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
   };
 
+  const truncateBio = (text: string, maxLength: number = 150) => {
+    if (text.length <= maxLength) return text;
+    const truncated = text.slice(0, maxLength);
+    const lastSpace = truncated.lastIndexOf(' ');
+    return lastSpace > 0 ? truncated.slice(0, lastSpace) + '...' : truncated + '...';
+  };
+
   const displayRole = fundRole || role;
+  const shouldTruncate = bio && bio.length > 150;
 
   return (
-    <div className="group relative flex gap-4 items-start p-6 bg-muted/20 border border-border/40 rounded-xl transition-all duration-200 hover:bg-muted/30 hover:border-primary/20 hover:shadow-lg">
+    <div className="group relative flex gap-4 items-start p-6 bg-card border border-border/40 rounded-xl transition-all duration-200 hover:border-primary/20 hover:shadow-lg">
       {/* Left border accent on hover */}
       <div className="absolute left-0 top-6 bottom-6 w-[3px] rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
       
@@ -81,26 +92,46 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
         </div>
 
         {bio && (
-          <p className="text-sm text-muted-foreground leading-relaxed pt-1">
-            {bio}
-          </p>
+          <div className="pt-1">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {isExpanded ? bio : truncateBio(bio)}
+            </p>
+            {shouldTruncate && !slug && (
+              <Button
+                variant="link"
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="px-0 h-auto font-normal text-primary hover:text-primary/80 mt-2 text-sm"
+              >
+                {isExpanded ? 'Read less' : 'Read more'}
+              </Button>
+            )}
+          </div>
         )}
 
         {/* Actions */}
-        {linkedinUrl && (
-          <div className="pt-3">
+        <div className="flex items-center gap-3 pt-3">
+          {slug && (
+            <Link
+              to={`/team/${slug}`}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+            >
+              View profile
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          )}
+          {linkedinUrl && (
             <a
               href={linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-2 px-3 py-1.5 bg-transparent border border-border/50 rounded-md text-[13px] font-medium text-[#0077b5] hover:bg-[#0077b5]/8 hover:border-[#0077b5]/30 transition-all duration-150"
+              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               <Linkedin className="h-3.5 w-3.5" />
               LinkedIn
             </a>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
