@@ -26,8 +26,8 @@ const EmptyComparison = () => {
         </Button>
       </div>
       
-      {/* Premium CTA for comparison features */}
-      <PremiumCTA variant="full" location="empty-comparison" />
+      {/* PREMIUM CTA DISABLED - Uncomment to re-enable */}
+      {/* <PremiumCTA variant="full" location="empty-comparison" /> */}
     </div>
   );
 };
