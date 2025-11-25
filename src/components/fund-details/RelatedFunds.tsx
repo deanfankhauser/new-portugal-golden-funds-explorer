@@ -16,7 +16,7 @@ const RelatedFundCard: React.FC<{ fund: Fund }> = ({ fund }) => {
     <Link 
       to={`/${fund.id}`} 
       onClick={() => window.scrollTo(0, 0)}
-      className="group block bg-background border border-border/40 rounded-xl p-5 lg:p-8 transition-all duration-200 hover:border-border/80 hover:shadow-lg hover:translate-y-[-2px] relative overflow-hidden"
+      className="group block bg-card border border-border/40 rounded-xl p-5 lg:p-8 transition-all duration-200 hover:border-border/80 hover:shadow-lg hover:translate-y-[-2px] relative overflow-hidden"
     >
       {/* Top accent border on hover */}
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary to-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-t-xl" />
@@ -86,7 +86,7 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
     <div className="space-y-6 md:space-y-8">
       {/* Same Category Funds */}
       {sameCategoryFunds.length > 0 && (
-        <section className="bg-background rounded-xl border border-border/40 p-6 lg:p-10">
+        <section className="bg-card rounded-xl border border-border/40 p-6 lg:p-10">
           <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-6">
             More {currentFund.category} Funds
           </h2>
@@ -109,7 +109,7 @@ const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
 
       {/* Similar Investment Amount Funds */}
       {similarInvestmentFunds.length > 0 && (
-        <section className="bg-background rounded-xl border border-border/40 p-6 lg:p-10">
+        <section className="bg-card rounded-xl border border-border/40 p-6 lg:p-10">
           <h2 className="text-xl sm:text-2xl font-semibold text-foreground tracking-tight mb-6">
             Similar Investment Range
           </h2>

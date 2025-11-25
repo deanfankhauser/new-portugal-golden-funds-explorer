@@ -64,7 +64,7 @@ const PremiumCTA: React.FC<PremiumCTAProps> = ({ variant = 'full', location = 'g
   }
   
   return (
-    <Card className="border border-border shadow-sm hover:shadow-md transition-all duration-200 bg-background overflow-hidden">
+    <Card className="border border-border shadow-sm hover:shadow-md transition-all duration-200 bg-card overflow-hidden">
       <CardContent className="p-0">
         <div className="text-center space-y-8 p-10">
           {/* Header with Icon */}

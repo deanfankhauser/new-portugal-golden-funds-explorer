@@ -5,7 +5,7 @@ import PageSEO from '../components/common/PageSEO';
 
 const Disclaimer = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-background">
       <PageSEO pageType="disclaimer" />
       
       <Header />
@@ -26,7 +26,7 @@ const Disclaimer = () => {
           </a>
         </div>
         
-        <div className="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
+        <div className="bg-card p-6 rounded-lg shadow-md max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold mb-6">Legal Disclaimer</h1>
           
           <p className="text-sm text-muted-foreground mb-6">

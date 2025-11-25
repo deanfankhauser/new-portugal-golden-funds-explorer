@@ -530,6 +530,50 @@ export const useFundEditing = () => {
     }
   }, [user, canEditFund, clearPendingChangesForFund, transformToDbFormat]);
 
+  // Update fund team members assignments
+  const updateFundTeamMembers = useCallback(async (
+    fundId: string,
+    teamMembers: { member_id: string; fund_role?: string }[]
+  ) => {
+    if (!user) {
+      throw new Error('User must be authenticated');
+    }
+
+    try {
+      console.log('👥 [updateFundTeamMembers] Updating team for fund:', fundId);
+      console.log('Team members:', teamMembers);
+
+      // Delete all existing assignments
+      const { error: deleteError } = await supabase
+        .from('fund_team_members')
+        .delete()
+        .eq('fund_id', fundId);
+
+      if (deleteError) throw deleteError;
+
+      // Insert new assignments
+      if (teamMembers.length > 0) {
+        const assignments = teamMembers.map(tm => ({
+          fund_id: fundId,
+          team_member_id: tm.member_id,
+          fund_role: tm.fund_role || null,
+        }));
+
+        const { error: insertError } = await supabase
+          .from('fund_team_members')
+          .insert(assignments);
+
+        if (insertError) throw insertError;
+      }
+
+      console.log('✅ [updateFundTeamMembers] Team updated successfully');
+      return true;
+    } catch (error) {
+      console.error('❌ [updateFundTeamMembers] Error:', error);
+      throw error;
+    }
+  }, [user]);
+
   return {
     user,
     loading: authLoading || loading,
@@ -548,5 +592,6 @@ export const useFundEditing = () => {
     canEditFund,
     canDirectEditAssigned,
     directUpdateFund,
+    updateFundTeamMembers,
   };
 };

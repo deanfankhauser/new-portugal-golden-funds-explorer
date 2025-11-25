@@ -679,15 +679,15 @@ export class ConsolidatedSEOService {
 
       case 'saved-funds':
         return {
-          title: this.optimizeText('My Saved Funds | Portugal Golden Visa Investment Portfolio | Movingto', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Access your saved Portugal Golden Visa investment funds. Compare your shortlisted funds and track your investment research progress.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('My Watchlist | Portugal Golden Visa Investment Funds | Movingto', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Your Portugal Golden Visa funds watchlist. Track and compare funds you\'re interested in to make informed investment decisions.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/saved-funds'),
           canonical: URL_CONFIG.buildUrl('/saved-funds'),
           robots: 'noindex, follow', // User-specific page
           keywords: [
-            'saved funds',
-            'investment portfolio',
-            'shortlisted funds',
+            'watchlist',
+            'investment watchlist',
+            'fund tracking',
             'saved investment funds',
             'fund watchlist',
             'tracked investments'
@@ -1483,7 +1483,7 @@ export class ConsolidatedSEOService {
           'name': 'Can I save my fund comparisons?',
           'acceptedAnswer': {
             '@type': 'Answer',
-            'text': 'Each comparison generates a unique URL you can bookmark or share. The URL preserves the exact fund pair comparison for future reference. You can also save individual funds to your "Saved Funds" list by clicking the bookmark icon on any fund card. Create an account to access your saved funds across devices and receive updates on saved fund performance.'
+            'text': 'Each comparison generates a unique URL you can bookmark or share. The URL preserves the exact fund pair comparison for future reference. You can also add individual funds to your watchlist by clicking the star icon on any fund card. Create an account to access your watchlist across devices and receive alerts when watchlist fund data changes.'
           }
         },
         {
@@ -2621,13 +2621,13 @@ export class ConsolidatedSEOService {
     ];
   }
 
-  // Saved Funds structured data (user-specific, minimal schema)
+  // Watchlist structured data (user-specific, minimal schema)
   private static getSavedFundsStructuredData(): any {
     return {
       '@context': 'https://schema.org',
       '@type': 'WebPage',
-      'name': 'Saved Investment Funds',
-      'description': 'User\'s saved Portugal Golden Visa investment funds',
+      'name': 'Investment Funds Watchlist',
+      'description': 'User\'s Portugal Golden Visa investment funds watchlist',
       'url': URL_CONFIG.buildUrl('/saved-funds')
     };
   }

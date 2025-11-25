@@ -42,7 +42,7 @@ const ROICalculator = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-background">
       <PageSEO pageType="roi-calculator" />
       
       <Header />
@@ -90,7 +90,7 @@ const ROICalculator = () => {
           />
           
           {results && (
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="bg-card p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4">Your Portugal Golden Visa Investment Fund Projection</h2>
               <ROICalculatorResults results={results} />
             </div>
