@@ -6,6 +6,7 @@ import { parseComparisonSlug } from '../data/services/comparison-service';
 import { InvestmentFundStructuredDataService } from './investmentFundStructuredDataService';
 import { EnhancedStructuredDataService } from './enhancedStructuredDataService';
 import { normalizeTagLabel, formatMinimumForTitle } from '../utils/tagLabelNormalizer';
+import { managerToSlug } from '../lib/utils';
 
 
 export class ConsolidatedSEOService {
@@ -336,14 +337,16 @@ export class ConsolidatedSEOService {
       case 'team-member':
         const memberName = params.name || 'Team Member';
         const memberRole = params.role || 'Team Member';
+        const companyName = params.companyName || '';
         return {
           title: this.optimizeText(`${memberName} – ${memberRole} | Movingto Funds`, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText(`${memberName} is a ${memberRole}. View their professional background, funds managed, and contact information.`, this.MAX_DESCRIPTION_LENGTH),
+          description: this.optimizeText(`${memberName} is ${memberRole} at ${companyName}, managing Portugal Golden Visa investment funds. View their background, managed funds, and professional credentials.`, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl(`/team/${params.slug}`),
           canonical: URL_CONFIG.buildUrl(`/team/${params.slug}`),
           keywords: [
             memberName,
             memberRole,
+            companyName,
             'fund team member',
             'investment professional',
             'Portugal fund management',
@@ -2629,26 +2632,55 @@ export class ConsolidatedSEOService {
     };
   }
 
-  // Team Member structured data
+  // Team Member structured data with @graph format for Rich Results
   private static getTeamMemberStructuredData(params: any): any {
-    return [
-      {
-        '@context': 'https://schema.org',
-        '@type': 'Person',
-        'name': params.name,
-        'jobTitle': params.role,
-        'url': URL_CONFIG.buildUrl(`/team/${params.slug}`),
-        'sameAs': params.linkedinUrl ? [params.linkedinUrl] : undefined
-      },
-      {
-        '@context': 'https://schema.org',
-        '@type': 'BreadcrumbList',
-        'itemListElement': [
-          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
-          { '@type': 'ListItem', 'position': 2, 'name': params.name, 'item': URL_CONFIG.buildUrl(`/team/${params.slug}`) }
-        ]
-      }
-    ];
+    const pageUrl = URL_CONFIG.buildUrl(`/team/${params.slug}`);
+    const personId = `${pageUrl}#person`;
+    const companyUrl = params.companyName ? URL_CONFIG.buildUrl(`/manager/${managerToSlug(params.companyName)}`) : undefined;
+    const companyId = companyUrl ? `${companyUrl}#organization` : undefined;
+
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'Person',
+          '@id': personId,
+          'name': params.name,
+          'jobTitle': params.role,
+          'url': pageUrl,
+          'mainEntityOfPage': {
+            '@type': 'WebPage',
+            '@id': pageUrl
+          },
+          ...(params.photoUrl && { image: params.photoUrl }),
+          ...(params.bio && { description: params.bio }),
+          ...(params.linkedinUrl && { sameAs: [params.linkedinUrl] }),
+          ...(params.companyName && {
+            worksFor: {
+              '@type': 'Organization',
+              '@id': companyId,
+              'name': params.companyName,
+              'url': companyUrl
+            }
+          })
+        },
+        {
+          '@type': 'WebPage',
+          '@id': pageUrl,
+          'name': `${params.name} – ${params.role}`,
+          'description': `Team member profile for ${params.name}${params.companyName ? ` at ${params.companyName}` : ''}`,
+          'mainEntity': { '@id': personId }
+        },
+        {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+            { '@type': 'ListItem', 'position': 2, 'name': params.companyName || 'Fund Manager', 'item': params.companyName ? companyUrl : URL_CONFIG.BASE_URL },
+            { '@type': 'ListItem', 'position': 3, 'name': params.name, 'item': pageUrl }
+          ]
+        }
+      ]
+    };
   }
 
 }
