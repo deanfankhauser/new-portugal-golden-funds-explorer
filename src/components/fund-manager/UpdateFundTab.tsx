@@ -21,6 +21,7 @@ import { useAllFunds } from '@/hooks/useFundsQuery';
 import { FundTeamPicker } from '@/components/fund-editing/FundTeamPicker';
 import { FundTeamMemberReference } from '@/types/team';
 import { useFundTeamMembers } from '@/hooks/useTeamMemberData';
+import { ManagerNameCombobox } from '@/components/fund-editing/ManagerNameCombobox';
 
 interface UpdateFundTabProps {
   fund: Fund;
@@ -670,11 +671,13 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
 
               <div>
                 <Label htmlFor="managerName">Manager Name</Label>
-                <Input
-                  id="managerName"
+                <ManagerNameCombobox
                   value={formData.managerName}
-                  onChange={(e) => handleInputChange('managerName', e.target.value)}
+                  onChange={(value) => handleInputChange('managerName', value)}
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Select an existing manager or type a new name
+                </p>
               </div>
             </CardContent>
           </Card>
