@@ -15,17 +15,17 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Save, Loader2, Plus, Trash2, X, Building2, TrendingUp, FileText, Settings } from 'lucide-react';
-import { Fund, GeographicAllocation, TeamMember, PdfDocument, RedemptionTerms, FAQItem } from '@/data/types/funds';
+import { Fund, GeographicAllocation, TeamMember, PdfDocument, RedemptionTerms, FAQItem, FundTeamMemberReference } from '@/data/types/funds';
 import { getAllTags } from '@/data/services/tags-service';
 import { useFundEditing } from '@/hooks/useFundEditing';
 import { toast } from 'sonner';
-import { uploadTeamMemberPhoto, deleteTeamMemberPhoto } from '../../utils/imageUpload';
 import { useToast } from '../../hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import HistoricalPerformanceEditor from './HistoricalPerformanceEditor';
 import { useAllFunds } from '@/hooks/useFundsQuery';
+import { FundTeamPicker } from './FundTeamPicker';
 
 interface FundEditModalProps {
   fund: Fund;
@@ -68,8 +68,13 @@ const buildFormData = (f: Fund) => {
     regulatedBy: f.regulatedBy,
     // Geographic allocation - always present as array
     geographicAllocation: f.geographicAllocation || [],
-    // Team members - always present as array
-    team: f.team?.map(member => ({ ...member, photoUrl: member.photoUrl || '' })) || [],
+    // Team members - convert to references, filter out invalid legacy entries
+    teamReferences: (f.team || [])
+      .filter((member: any) => member.member_id && member.member_id !== '')
+      .map((member: any) => ({
+        member_id: member.member_id,
+        fund_role: member.fund_role
+      } as FundTeamMemberReference)),
     // Documents - always present as array
     documents: f.documents || [],
     // Historical performance - always present as object
@@ -195,73 +200,11 @@ useEffect(() => {
     }));
   };
 
-  const handleProfilePictureUpload = async (event: React.ChangeEvent<HTMLInputElement>, memberIndex: number) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      toast({
-        title: "Invalid file type",
-        description: "Please select an image file.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast({
-        title: "File too large",
-        description: "Please select an image smaller than 5MB.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsUploadingPhoto(true);
-    try {
-      const teamMember = formData.team[memberIndex];
-      const photoUrl = await uploadTeamMemberPhoto(file, teamMember.name || `member-${memberIndex}`);
-      
-      // Update the team member with the new photo URL
-      handleArrayChange('team', memberIndex, 'photoUrl', photoUrl);
-      
-      toast({
-        title: "Photo uploaded",
-        description: "Profile picture has been uploaded successfully.",
-      });
-    } catch (error) {
-      console.error('Upload error:', error);
-      toast({
-        title: "Upload failed",
-        description: "Failed to upload photo. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsUploadingPhoto(false);
-    }
-  };
-
-  const handleRemoveProfilePicture = async (memberIndex: number) => {
-    const teamMember = formData.team[memberIndex];
-    if (teamMember.photoUrl) {
-      try {
-        await deleteTeamMemberPhoto(teamMember.photoUrl);
-        handleArrayChange('team', memberIndex, 'photoUrl', '');
-        toast({
-          title: "Photo removed",
-          description: "Profile picture has been removed.",
-        });
-      } catch (error) {
-        console.error('Delete error:', error);
-        toast({
-          title: "Failed to remove photo",
-          description: "Photo removal failed. Please try again.",
-          variant: "destructive",
-        });
-      }
-    }
+  const handleTeamReferencesChange = (references: FundTeamMemberReference[]) => {
+    setFormData(prev => ({
+      ...prev,
+      teamReferences: references
+    }));
   };
 
   const getCurrentValues = () => ({
@@ -283,7 +226,9 @@ useEffect(() => {
     established: fund.established,
     regulatedBy: fund.regulatedBy,
     geographicAllocation: fund.geographicAllocation,
-    team: fund.team,
+    teamReferences: (fund.team || []).map((m: any) => 
+      m.member_id ? { member_id: m.member_id, fund_role: m.fund_role } : { member_id: '', fund_role: m.position }
+    ),
     documents: fund.documents,
     redemptionTerms: fund.redemptionTerms,
     cmvmId: fund.cmvmId,
@@ -1035,123 +980,17 @@ useEffect(() => {
 
               {/* Team Members */}
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">Team Members</h3>
-                   <Button
-                     type="button"
-                     variant="outline"
-                     size="sm"
-                     onClick={() => addArrayItem('team', { name: '', position: '', bio: '', linkedinUrl: '', photoUrl: '' })}
-                   >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Team Member
-                  </Button>
-                </div>
+                <h3 className="text-lg font-semibold">Fund Team</h3>
+                <p className="text-sm text-muted-foreground">
+                  Select team members from your company roster. Photos and bios are automatically synced from the company profile.
+                </p>
                 
-                {formData.team.map((member: TeamMember, index: number) => (
-                  <div key={index} className="p-4 border rounded-lg space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-medium">Team Member {index + 1}</h4>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => removeArrayItem('team', index)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Name</Label>
-                        <Input
-                          value={member.name}
-                          onChange={(e) => handleArrayChange('team', index, 'name', e.target.value)}
-                          placeholder="Full name"
-                        />
-                      </div>
-                      <div>
-                        <Label>Position</Label>
-                        <Input
-                          value={member.position}
-                          onChange={(e) => handleArrayChange('team', index, 'position', e.target.value)}
-                          placeholder="Job title"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <Label>LinkedIn URL</Label>
-                        <Input
-                          value={member.linkedinUrl || ''}
-                          onChange={(e) => handleArrayChange('team', index, 'linkedinUrl', e.target.value)}
-                          placeholder="https://linkedin.com/in/..."
-                        />
-                      </div>
-                       <div className="md:col-span-2">
-                         <Label>Profile Picture</Label>
-                         <div className="space-y-2">
-                           <input
-                             type="file"
-                             accept="image/*"
-                             onChange={(e) => handleProfilePictureUpload(e, index)}
-                             className="hidden"
-                             id={`photo-upload-${index}`}
-                           />
-                           <div className="flex items-center space-x-4">
-                             {member.photoUrl && (
-                               <img 
-                                 src={member.photoUrl} 
-                                 alt={member.name}
-                                 className="w-16 h-16 rounded-full object-cover border"
-                               />
-                             )}
-                             <div className="space-y-2">
-                               <Button
-                                 type="button"
-                                 variant="outline"
-                                 size="sm"
-                                 onClick={() => document.getElementById(`photo-upload-${index}`)?.click()}
-                                 disabled={isUploadingPhoto}
-                               >
-                                 {isUploadingPhoto ? 'Uploading...' : (member.photoUrl ? 'Change Photo' : 'Upload Photo')}
-                               </Button>
-                               {member.photoUrl && (
-                                 <Button
-                                   type="button"
-                                   variant="outline"
-                                   size="sm"
-                                   onClick={() => handleRemoveProfilePicture(index)}
-                                 >
-                                   Remove Photo
-                                 </Button>
-                               )}
-                             </div>
-                           </div>
-                         </div>
-                       </div>
-                       <div className="md:col-span-2">
-                         <div className="flex items-center justify-between">
-                           <Label>Bio</Label>
-                           <span className={`text-xs ${(member.bio || '').length > 120 ? 'text-destructive' : (member.bio || '').length > 100 ? 'text-warning' : 'text-muted-foreground'}`}>
-                             {(member.bio || '').length}/140
-                           </span>
-                         </div>
-                         <Textarea
-                           value={member.bio || ''}
-                           onChange={(e) => {
-                             const value = e.target.value;
-                             if (value.length <= 140) {
-                               handleArrayChange('team', index, 'bio', value);
-                             }
-                           }}
-                           rows={3}
-                           placeholder="Professional background and experience (max 140 characters)"
-                           maxLength={140}
-                         />
-                       </div>
-                    </div>
-                  </div>
-                ))}
+                <FundTeamPicker
+                  managerName={fund.managerName}
+                  selectedMembers={formData.teamReferences || []}
+                  onChange={handleTeamReferencesChange}
+                  hasLegacyData={(fund.team || []).some((m: any) => !m.member_id || m.member_id === '')}
+                />
               </div>
             </TabsContent>
 

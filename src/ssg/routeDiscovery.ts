@@ -20,13 +20,14 @@ export class RouteDiscovery {
     console.log(`   VITE_SUPABASE_ANON_KEY: ${process.env.VITE_SUPABASE_ANON_KEY ? '✅ Set' : '❌ Missing'}`);
     
     // Fetch all data from database (cached for efficiency)
-    const { funds, categories, tags, managers } = await fetchAllBuildDataCached();
+    const { funds, categories, tags, managers, teamMembers } = await fetchAllBuildDataCached();
     
     console.log('📊 Data fetched successfully:');
     console.log(`   Funds: ${funds.length}`);
     console.log(`   Categories: ${categories.length}`);
     console.log(`   Tags: ${tags.length}`);
     console.log(`   Managers: ${managers.length}`);
+    console.log(`   Team Members: ${teamMembers?.length || 0}`);
 
     // Homepage (main fund listing)
     routes.push({ path: '/', pageType: 'homepage' });
@@ -69,6 +70,22 @@ export class RouteDiscovery {
         params: { managerName: manager.name }
       });
     });
+
+    // Team member profile pages
+    if (teamMembers && teamMembers.length > 0) {
+      teamMembers.forEach(member => {
+        routes.push({
+          path: `/team/${member.slug}`,
+          pageType: 'team-member',
+          params: { 
+            slug: member.slug,
+            name: member.name,
+            role: member.role,
+            linkedinUrl: member.linkedin_url
+          }
+        });
+      });
+    }
 
     // Category pages
     categories.forEach(category => {

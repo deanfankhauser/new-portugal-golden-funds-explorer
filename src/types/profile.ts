@@ -29,7 +29,8 @@ export interface Profile {
   manager_about?: string;
   manager_faqs?: any; // JSONB array
   manager_highlights?: any; // JSONB array
-  team_members?: any; // JSONB array
+  team_members?: any; // JSONB array (CompanyTeamMember[] after parsing)
+  email_notification_preferences?: any; // JSONB object
   
   // Investor fields
   first_name?: string;
