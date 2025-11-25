@@ -386,6 +386,7 @@ export class ConsolidatedSEOService {
               description: this.optimizeText(`Compare ${fund1.name} vs ${fund2.name} – see differences in performance, fees, risk, liquidity and minimum investment for these Portugal Golden Visa funds.`, this.MAX_DESCRIPTION_LENGTH),
               url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
               canonical: URL_CONFIG.buildComparisonUrl(normalizedSlug),
+              robots: 'index, follow',
               keywords: [
                 `${fund1.name} vs ${fund2.name}`,
                 'Golden Visa fund comparison',
@@ -404,6 +405,7 @@ export class ConsolidatedSEOService {
           description: this.optimizeText('Compare Portugal Golden Visa funds side by side. Check performance, fees, risk, liquidity, minimum investment and more before choosing your fund.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
           canonical: URL_CONFIG.buildComparisonUrl(normalizedSlug),
+          robots: 'index, follow',
           keywords: [
             'Golden Visa fund comparison',
             'investment fund analysis',
