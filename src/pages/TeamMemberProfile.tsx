@@ -66,6 +66,7 @@ const TeamMemberProfile: React.FC = () => {
         memberRole={teamMemberData.role}
         managerName={companyName || undefined}
         linkedinUrl={teamMemberData.linkedin_url || undefined}
+        memberSlug={slug}
       />
       
       <Header />
