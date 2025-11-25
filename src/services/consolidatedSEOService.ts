@@ -1483,7 +1483,7 @@ export class ConsolidatedSEOService {
           'name': 'Can I save my fund comparisons?',
           'acceptedAnswer': {
             '@type': 'Answer',
-            'text': 'Each comparison generates a unique URL you can bookmark or share. The URL preserves the exact fund pair comparison for future reference. You can also save individual funds to your "Saved Funds" list by clicking the bookmark icon on any fund card. Create an account to access your saved funds across devices and receive updates on saved fund performance.'
+            'text': 'Each comparison generates a unique URL you can bookmark or share. The URL preserves the exact fund pair comparison for future reference. You can also add individual funds to your watchlist by clicking the star icon on any fund card. Create an account to access your watchlist across devices and receive alerts when watchlist fund data changes.'
           }
         },
         {
