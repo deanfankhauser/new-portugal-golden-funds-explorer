@@ -1539,6 +1539,8 @@ export type Database = {
           profile_id: string
         }[]
       }
+      normalize_slug: { Args: { input_text: string }; Returns: string }
+      normalize_slug_fixed: { Args: { input_text: string }; Returns: string }
       query: {
         Args: { query_text: string }
         Returns: {
@@ -1561,6 +1563,7 @@ export type Database = {
           status: string
         }[]
       }
+      unaccent: { Args: { "": string }; Returns: string }
       validate_historical_performance: {
         Args: { performance_data: Json }
         Returns: boolean

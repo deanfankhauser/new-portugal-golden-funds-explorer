@@ -33,6 +33,7 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
   memberName,
   memberRole,
   linkedinUrl,
+  memberSlug,
   children 
 }) => {
   // This useEffect only runs in the browser after hydration, NOT during SSR/SSG build
@@ -51,6 +52,7 @@ const seoData = ConsolidatedSEOService.getSEOData(
           name: memberName,
           role: memberRole,
           linkedinUrl,
+          slug: memberSlug,
         },
         funds
       );
@@ -77,7 +79,7 @@ const seoData = ConsolidatedSEOService.getSEOData(
     } catch (error) {
       console.error('SEO Error:', error);
     }
-  }, [pageType, fundName, managerName, categoryName, tagName, comparisonTitle, comparisonSlug, funds, memberName, memberRole, linkedinUrl]);
+  }, [pageType, fundName, managerName, categoryName, tagName, comparisonTitle, comparisonSlug, funds, memberName, memberRole, linkedinUrl, memberSlug]);
 
   return (
     <SEOErrorBoundary>

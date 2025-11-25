@@ -12,6 +12,7 @@ export interface PageSEOProps {
   memberName?: string;
   memberRole?: string;
   linkedinUrl?: string;
+  memberSlug?: string;
 }
 
 export interface SEOData {
