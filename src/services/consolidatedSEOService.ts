@@ -2340,6 +2340,7 @@ export class ConsolidatedSEOService {
     const comparisonUrl = URL_CONFIG.buildComparisonUrl(normalizedSlug);
 
     const faqSchema = {
+      '@context': 'https://schema.org',
       '@type': 'FAQPage',
       'name': `${fund1.name} vs ${fund2.name} Comparison FAQs`,
       'description': `Frequently asked questions about comparing ${fund1.name} and ${fund2.name}`,
@@ -2403,43 +2404,52 @@ export class ConsolidatedSEOService {
       ]
     };
 
+    // Return array with separate root-level schemas for better SEO
     return [
-      // Main WebPage schema
+      // Separate BreadcrumbList at root level (not nested in WebPage)
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": URL_CONFIG.BASE_URL
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Comparisons Hub",
+            "item": URL_CONFIG.buildUrl('/comparisons')
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": `${fund1.name} vs ${fund2.name}`,
+            "item": comparisonUrl
+          }
+        ]
+      },
+      // WebPage schema
       {
         "@context": "https://schema.org",
         "@type": "WebPage",
-        "name": `${fund1.name} vs ${fund2.name} Comparison`,
-        "description": `Compare ${fund1.name} and ${fund2.name} investment funds side-by-side to make informed investment decisions`,
-        "url": comparisonUrl,
-        "breadcrumb": {
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Home",
-              "item": URL_CONFIG.BASE_URL
-            },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "Fund Comparisons",
-              "item": URL_CONFIG.buildUrl('comparisons')
-            },
-            {
-              "@type": "ListItem",
-              "position": 3,
-              "name": `${fund1.name} vs ${fund2.name}`,
-              "item": comparisonUrl
-            }
-          ]
-        },
-        "mainEntity": {
-          "@type": "ItemList",
-          "name": "Fund Comparison",
-          "numberOfItems": 2,
-          "itemListElement": [
-            {
+        "name": `${fund1.name} vs ${fund2.name} | Portugal Golden Visa Fund Comparison`,
+        "description": `Compare ${fund1.name} vs ${fund2.name}: fees, minimum investment, target returns, fund size, Golden Visa eligibility, redemption terms and more to choose the right Portugal Golden Visa fund.`,
+        "url": comparisonUrl
+      },
+      // ItemList for the two funds being compared
+      {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Compared Funds",
+        "numberOfItems": 2,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
               "@type": "FinancialProduct",
               "name": fund1.name,
               "description": fund1.description || `Investment fund: ${fund1.name}`,
@@ -2449,8 +2459,12 @@ export class ConsolidatedSEOService {
                 "price": fund1.minimumInvestment || 0,
                 "priceCurrency": "EUR"
               }
-            },
-            {
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
               "@type": "FinancialProduct", 
               "name": fund2.name,
               "description": fund2.description || `Investment fund: ${fund2.name}`,
@@ -2461,9 +2475,10 @@ export class ConsolidatedSEOService {
                 "priceCurrency": "EUR"
               }
             }
-          ]
-        }
+          }
+        ]
       },
+      // FAQPage schema (sole source - client-side FAQSection skips injection)
       faqSchema
     ];
   }

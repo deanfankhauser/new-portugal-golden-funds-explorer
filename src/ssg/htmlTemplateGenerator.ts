@@ -120,7 +120,7 @@ export function generateMetaTagsHTML(seoData: SEOData): string {
   <meta property="og:description" content="${description}" />
   <meta property="og:url" content="${url}" />
   <meta property="og:type" content="${ogType}" />
-  <meta property="og:site_name" content="Movingto - Portugal Golden Visa Funds" />
+  <meta property="og:site_name" content="Movingto Funds" />
   <meta property="og:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
   
   <!-- Twitter Card Meta Tags -->
