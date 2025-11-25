@@ -10,7 +10,7 @@ import { managerToSlug } from '../lib/utils';
 
 
 export class ConsolidatedSEOService {
-  private static readonly DEFAULT_IMAGE = 'https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg';
+  private static readonly DEFAULT_IMAGE = 'https://funds.movingto.com/og-default.png';
   private static readonly MAX_TITLE_LENGTH = 60;
   private static readonly MAX_DESCRIPTION_LENGTH = 155;
 
@@ -88,26 +88,24 @@ export class ConsolidatedSEOService {
       : truncated + '...';
   }
 
-  // Generate optimized fund title with key metrics
+  // Generate optimized fund title - clean and concise
   private static generateFundTitle(fund: any): string {
-    // Pattern: [Fund Name] – [Category / Strategy] Portugal Golden Visa Fund from €[Min] | Movingto Funds
+    // Pattern: {Fund Name} | Golden Visa Fund
+    // Keep under 60 characters to avoid SERP truncation
     
-    const parts: string[] = [fund.name];
+    const fundName = fund.name;
+    const suffix = '| Golden Visa Fund';
+    const maxLength = 60;
     
-    // Add category/strategy for context
-    if (fund.category) {
-      parts.push(`${fund.category} Portugal Golden Visa Fund`);
-    } else {
-      parts.push('Portugal Golden Visa Fund');
+    // If fund name + suffix fits within limit, use it
+    if (`${fundName} ${suffix}`.length <= maxLength) {
+      return `${fundName} ${suffix}`;
     }
     
-    // Add minimum investment if known
-    const minFormatted = formatMinimumForTitle(fund.minimumInvestment);
-    if (minFormatted) {
-      return `${parts.join(' – ')} from ${minFormatted} | Movingto Funds`;
-    }
-    
-    return `${parts.join(' – ')} | Movingto Funds`;
+    // If fund name is too long, truncate gracefully
+    const maxNameLength = maxLength - suffix.length - 4; // -4 for space and ellipsis
+    const truncatedName = fundName.substring(0, maxNameLength).trim() + '...';
+    return `${truncatedName} ${suffix}`;
   }
 
   // Generate optimized fund description with USPs and performance
