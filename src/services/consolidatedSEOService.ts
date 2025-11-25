@@ -333,6 +333,25 @@ export class ConsolidatedSEOService {
           structuredData: this.getManagerStructuredData(params.managerName, params.managerProfile, params.funds || [])
         };
 
+      case 'team-member':
+        const memberName = params.name || 'Team Member';
+        const memberRole = params.role || 'Team Member';
+        return {
+          title: this.optimizeText(`${memberName} – ${memberRole} | Movingto Funds`, this.MAX_TITLE_LENGTH),
+          description: this.optimizeText(`${memberName} is a ${memberRole}. View their professional background, funds managed, and contact information.`, this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl(`/team/${params.slug}`),
+          canonical: URL_CONFIG.buildUrl(`/team/${params.slug}`),
+          keywords: [
+            memberName,
+            memberRole,
+            'fund team member',
+            'investment professional',
+            'Portugal fund management',
+            'Golden Visa fund professional'
+          ],
+          structuredData: this.getTeamMemberStructuredData(params)
+        };
+
       case 'comparison':
         return {
           title: this.optimizeText('Portugal Golden Visa Fund Comparison Tool – Compare Any Two Funds | Movingto Funds', this.MAX_TITLE_LENGTH),
@@ -2608,6 +2627,28 @@ export class ConsolidatedSEOService {
       'description': 'User\'s saved Portugal Golden Visa investment funds',
       'url': URL_CONFIG.buildUrl('/saved-funds')
     };
+  }
+
+  // Team Member structured data
+  private static getTeamMemberStructuredData(params: any): any {
+    return [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        'name': params.name,
+        'jobTitle': params.role,
+        'url': URL_CONFIG.buildUrl(`/team/${params.slug}`),
+        'sameAs': params.linkedinUrl ? [params.linkedinUrl] : undefined
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+          { '@type': 'ListItem', 'position': 2, 'name': params.name, 'item': URL_CONFIG.buildUrl(`/team/${params.slug}`) }
+        ]
+      }
+    ];
   }
 
 }

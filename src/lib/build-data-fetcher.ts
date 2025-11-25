@@ -164,6 +164,29 @@ export async function fetchAllManagersForBuild(): Promise<Array<{ name: string; 
 }
 
 /**
+ * Fetch all team members from database during build time
+ */
+export async function fetchAllTeamMembersForBuild(): Promise<Array<{ id: string; slug: string; name: string; role: string; profile_id: string }>> {
+  const supabase = getSupabaseBuildClient();
+  
+  console.log('📊 Build: Fetching all team members from database...');
+  
+  const { data: teamMembers, error } = await supabase
+    .from('team_members')
+    .select('id, slug, name, role, profile_id')
+    .order('name', { ascending: true });
+    
+  if (error) {
+    console.error('❌ Build: Failed to fetch team members from database:', error.message);
+    throw new Error(`Database fetch failed: ${error.message}`);
+  }
+  
+  console.log(`✅ Build: Fetched ${teamMembers?.length || 0} team members from database`);
+  
+  return teamMembers || [];
+}
+
+/**
  * Cache for build data to avoid multiple database calls
  * during single build process
  */
@@ -172,6 +195,7 @@ let buildDataCache: {
   categories?: FundCategory[];
   tags?: FundTag[];
   managers?: Array<{ name: string; fundsCount: number }>;
+  teamMembers?: Array<{ id: string; slug: string; name: string; role: string; profile_id: string }>;
 } = {};
 
 /**
@@ -200,6 +224,10 @@ export async function fetchAllBuildDataCached() {
   
   if (!buildDataCache.managers) {
     buildDataCache.managers = await fetchAllManagersForBuild();
+  }
+  
+  if (!buildDataCache.teamMembers) {
+    buildDataCache.teamMembers = await fetchAllTeamMembersForBuild();
   }
   
   return buildDataCache;
