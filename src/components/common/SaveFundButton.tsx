@@ -40,7 +40,7 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
 
     if (!user) {
       toast({
-        title: 'Please sign in to save funds',
+        title: 'Please sign in to add funds to your watchlist',
         variant: 'destructive'
       });
       return;
