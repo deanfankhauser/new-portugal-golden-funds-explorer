@@ -30,6 +30,7 @@ export interface FundTeamMemberWithDetails extends FundTeamAssignment {
 // Legacy types for backward compatibility during transition
 export interface CompanyTeamMember {
   member_id: string;
+  slug: string;
   name: string;
   role: string;
   bio?: string;
