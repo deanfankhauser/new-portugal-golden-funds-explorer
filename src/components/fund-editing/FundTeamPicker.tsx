@@ -13,12 +13,14 @@ interface FundTeamPickerProps {
   managerName: string;
   selectedMembers: FundTeamMemberReference[];
   onChange: (members: FundTeamMemberReference[]) => void;
+  hasLegacyData?: boolean;
 }
 
 export const FundTeamPicker: React.FC<FundTeamPickerProps> = ({
   managerName,
   selectedMembers,
   onChange,
+  hasLegacyData = false,
 }) => {
   const [companyTeam, setCompanyTeam] = useState<CompanyTeamMember[]>([]);
   const [loading, setLoading] = useState(true);
@@ -101,6 +103,14 @@ export const FundTeamPicker: React.FC<FundTeamPickerProps> = ({
 
   return (
     <div className="space-y-4">
+      {hasLegacyData && (
+        <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800">
+          <p className="text-sm text-blue-900 dark:text-blue-100">
+            This fund had team members in the old format. Please re-select team members from your company roster below.
+          </p>
+        </div>
+      )}
+      
       <div className="flex items-center justify-between">
         <Label>Select Team Members for This Fund</Label>
         <Button

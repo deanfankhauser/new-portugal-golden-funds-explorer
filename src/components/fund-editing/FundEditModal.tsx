@@ -68,12 +68,13 @@ const buildFormData = (f: Fund) => {
     regulatedBy: f.regulatedBy,
     // Geographic allocation - always present as array
     geographicAllocation: f.geographicAllocation || [],
-    // Team members - convert to references if needed
-    teamReferences: (f.team || []).map((member: any) => 
-      member.member_id 
-        ? { member_id: member.member_id, fund_role: member.fund_role }
-        : { member_id: '', fund_role: member.position } // Legacy format fallback
-    ) as FundTeamMemberReference[],
+    // Team members - convert to references, filter out invalid legacy entries
+    teamReferences: (f.team || [])
+      .filter((member: any) => member.member_id && member.member_id !== '')
+      .map((member: any) => ({
+        member_id: member.member_id,
+        fund_role: member.fund_role
+      } as FundTeamMemberReference)),
     // Documents - always present as array
     documents: f.documents || [],
     // Historical performance - always present as object
@@ -988,6 +989,7 @@ useEffect(() => {
                   managerName={fund.managerName}
                   selectedMembers={formData.teamReferences || []}
                   onChange={handleTeamReferencesChange}
+                  hasLegacyData={(fund.team || []).some((m: any) => !m.member_id || m.member_id === '')}
                 />
               </div>
             </TabsContent>
