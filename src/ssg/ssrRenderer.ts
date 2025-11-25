@@ -219,6 +219,7 @@ export class SSRRenderer {
         case 'verified-funds': return ['VerifiedFunds'];
         case 'verification-program': return ['VerificationProgram'];
         case 'compare': return ['ComparisonPage'];
+        case 'team-member': return ['TeamMemberProfile'];
         
         default: return ['Index'];
       }
@@ -299,6 +300,7 @@ export class SSRRenderer {
                 React.createElement(Route, { path: '/categories/:category', element: React.createElement(getComponent('CategoryPage')) }),
                 React.createElement(Route, { path: '/managers', element: React.createElement(getComponent('ManagersHub')) }),
                 React.createElement(Route, { path: '/manager/:name', element: React.createElement(getComponent('FundManager')) }),
+                React.createElement(Route, { path: '/team/:slug', element: React.createElement(getComponent('TeamMemberProfile')) }),
                 
                 // Static pages
                 React.createElement(Route, { path: '/about', element: React.createElement(getComponent('About')) }),
