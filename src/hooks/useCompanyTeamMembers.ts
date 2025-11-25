@@ -19,21 +19,25 @@ export function useCompanyTeamMembers(companyName: string) {
         setLoading(true);
         setError(null);
 
-        // Fetch team members from the new team_members table
+        // Step 1: Find profile by company name
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('id')
+          .ilike('company_name', companyName)
+          .single();
+
+        if (profileError || !profileData) {
+          console.log('No profile found for company:', companyName);
+          setMembers([]);
+          setLoading(false);
+          return;
+        }
+
+        // Step 2: Get team members for that profile
         const { data, error: fetchError } = await supabase
           .from('team_members')
-          .select(`
-            id,
-            slug,
-            name,
-            role,
-            bio,
-            photo_url,
-            linkedin_url,
-            email,
-            profiles!inner(company_name)
-          `)
-          .ilike('profiles.company_name', companyName)
+          .select('id, slug, name, role, bio, photo_url, linkedin_url, email')
+          .eq('profile_id', profileData.id)
           .order('created_at', { ascending: true });
 
         if (fetchError) throw fetchError;
