@@ -15,8 +15,8 @@ const ManagerTrustIndicators: React.FC<ManagerTrustIndicatorsProps> = ({
 }) => {
   if (funds.length === 0) return null;
 
-  // Check if manager has Golden Visa eligible funds
-  const hasGVEligibleFunds = funds.some(fund => isFundGVEligible(fund));
+  // Check if manager has Golden Visa eligible funds (only verified funds)
+  const hasGVEligibleFunds = funds.some(fund => isFundGVEligible(fund) && fund.isVerified);
   
   // Check if manager has CMVM regulated funds
   const hasCMVMFunds = funds.some(fund => 

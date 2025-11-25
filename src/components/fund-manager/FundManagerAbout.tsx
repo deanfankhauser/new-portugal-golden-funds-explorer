@@ -72,7 +72,7 @@ const FundManagerAbout: React.FC<FundManagerAboutProps> = ({ fund }) => {
             <li>• Management fee: {fund.managementFee}% annually</li>
             <li>• Fund term: {fund.term} years</li>
             <li>• Regulated by: {fund.regulatedBy}</li>
-            {isFundGVEligible(fund) && (
+            {isFundGVEligible(fund) && fund.isVerified && (
               <li>• ✅ Golden Visa eligible investment</li>
             )}
           </ul>

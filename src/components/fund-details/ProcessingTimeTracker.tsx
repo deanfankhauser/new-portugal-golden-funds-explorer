@@ -37,8 +37,8 @@ const ProcessingTimeTracker: React.FC<ProcessingTimeTrackerProps> = ({ fund }) =
       }
     ];
 
-    // Add fund-specific steps
-    if (isFundGVEligible(fund)) {
+    // Add fund-specific steps (only for verified GV eligible funds)
+    if (isFundGVEligible(fund) && fund.isVerified) {
       baseSteps.push({
         id: 'golden-visa-review',
         title: 'Golden Visa Review',
