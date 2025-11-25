@@ -105,12 +105,31 @@ export interface GeographicAllocation {
   percentage: number;
 }
 
+// Company team member structure (stored in profiles.team_members)
+export interface CompanyTeamMember {
+  member_id: string; // UUID for linking
+  name: string;
+  role: string;
+  bio?: string;
+  photoUrl?: string;
+  email?: string;
+  linkedinUrl?: string;
+}
+
+// Fund team member reference (stored in funds.team_members)
+export interface FundTeamMemberReference {
+  member_id: string; // References CompanyTeamMember
+  fund_role?: string; // Optional fund-specific role override
+}
+
+// Legacy team member structure (for backward compatibility during migration)
 export interface TeamMember {
   name: string;
   position: string;
   bio?: string;
   photoUrl?: string;
   linkedinUrl?: string;
+  member_id?: string; // Optional for migration compatibility
 }
 
 export interface PdfDocument {

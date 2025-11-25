@@ -11,7 +11,7 @@ const FundTeamTab: React.FC<FundTeamTabProps> = ({ fund }) => {
   return (
     <div className="animate-fade-in">
       {/* Team Section */}
-      <TeamSection team={fund.team} />
+      <TeamSection team={fund.team} managerName={fund.managerName} />
     </div>
   );
 };

@@ -7,15 +7,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/types/profile';
+import { CompanyTeamMember, generateMemberId } from '@/types/team';
 import { Save, Upload, X, Plus, Trash2 } from 'lucide-react';
 import { z } from 'zod';
-
-interface TeamMember {
-  name: string;
-  role: string;
-  bio?: string;
-  photoUrl?: string;
-}
 
 interface ManagerHighlight {
   title: string;
@@ -75,9 +69,14 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
   const [registrationNumber, setRegistrationNumber] = useState(profile.registration_number || '');
   const [licenseNumber, setLicenseNumber] = useState(profile.license_number || '');
   
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(() => {
+  const [teamMembers, setTeamMembers] = useState<CompanyTeamMember[]>(() => {
     try {
-      return profile.team_members ? JSON.parse(JSON.stringify(profile.team_members)) : [];
+      const members = profile.team_members ? JSON.parse(JSON.stringify(profile.team_members)) : [];
+      // Ensure all members have member_id
+      return members.map((m: any) => ({
+        ...m,
+        member_id: m.member_id || generateMemberId()
+      }));
     } catch {
       return [];
     }
@@ -173,14 +172,19 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
   };
 
   const handleAddTeamMember = () => {
-    setTeamMembers([...teamMembers, { name: '', role: '', bio: '' }]);
+    setTeamMembers([...teamMembers, { 
+      member_id: generateMemberId(),
+      name: '', 
+      role: '', 
+      bio: '' 
+    }]);
   };
 
   const handleRemoveTeamMember = (index: number) => {
     setTeamMembers(teamMembers.filter((_, i) => i !== index));
   };
 
-  const handleTeamMemberChange = (index: number, field: keyof TeamMember, value: string) => {
+  const handleTeamMemberChange = (index: number, field: keyof CompanyTeamMember, value: string) => {
     const updated = [...teamMembers];
     updated[index] = { ...updated[index], [field]: value };
     setTeamMembers(updated);
