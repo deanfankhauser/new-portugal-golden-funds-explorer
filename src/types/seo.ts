@@ -9,6 +9,9 @@ export interface PageSEOProps {
   comparisonSlug?: string;
   funds?: any[];
   managerProfile?: any;
+  memberName?: string;
+  memberRole?: string;
+  linkedinUrl?: string;
 }
 
 export interface SEOData {

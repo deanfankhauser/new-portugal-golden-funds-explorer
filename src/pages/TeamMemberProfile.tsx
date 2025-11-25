@@ -61,8 +61,11 @@ const TeamMemberProfile: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <PageSEO 
-        pageType="fund" 
-        fundName={`${teamMemberData.name} - Team Profile`}
+        pageType="team-member" 
+        memberName={teamMemberData.name}
+        memberRole={teamMemberData.role}
+        managerName={companyName || undefined}
+        linkedinUrl={teamMemberData.linkedin_url || undefined}
       />
       
       <Header />
