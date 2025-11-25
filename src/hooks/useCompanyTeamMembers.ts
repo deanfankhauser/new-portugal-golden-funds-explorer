@@ -19,16 +19,38 @@ export function useCompanyTeamMembers(companyName: string) {
         setLoading(true);
         setError(null);
 
+        // Fetch team members from the new team_members table
         const { data, error: fetchError } = await supabase
-          .from('profiles')
-          .select('team_members')
-          .ilike('company_name', companyName)
-          .single();
+          .from('team_members')
+          .select(`
+            id,
+            slug,
+            name,
+            role,
+            bio,
+            photo_url,
+            linkedin_url,
+            email,
+            profiles!inner(company_name)
+          `)
+          .ilike('profiles.company_name', companyName)
+          .order('created_at', { ascending: true });
 
         if (fetchError) throw fetchError;
 
-        if (data?.team_members) {
-          setMembers(data.team_members as unknown as CompanyTeamMember[]);
+        if (data) {
+          // Map to CompanyTeamMember format
+          const mappedMembers: CompanyTeamMember[] = data.map(member => ({
+            member_id: member.id,
+            slug: member.slug,
+            name: member.name,
+            role: member.role,
+            bio: member.bio || undefined,
+            photoUrl: member.photo_url || undefined,
+            linkedinUrl: member.linkedin_url || undefined,
+            email: member.email || undefined,
+          }));
+          setMembers(mappedMembers);
         } else {
           setMembers([]);
         }

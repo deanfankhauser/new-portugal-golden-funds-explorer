@@ -172,8 +172,10 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
   };
 
   const handleAddTeamMember = () => {
+    const newMemberId = generateMemberId();
     setTeamMembers([...teamMembers, { 
-      member_id: generateMemberId(),
+      member_id: newMemberId,
+      slug: '', // Will be generated from name when saved
       name: '', 
       role: '', 
       bio: '' 
