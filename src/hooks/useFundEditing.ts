@@ -403,6 +403,15 @@ export const useFundEditing = () => {
     if ('gvEligible' in updates) dbUpdates.gv_eligible = updates.gvEligible;
     if ('inceptionDate' in updates) dbUpdates.inception_date = updates.inceptionDate;
     
+    // New data model fields
+    if ('isin' in updates) dbUpdates.isin = updates.isin;
+    if ('typicalTicket' in updates) dbUpdates.typical_ticket = updates.typicalTicket;
+    if ('aumAsOfDate' in updates) dbUpdates.aum_as_of_date = updates.aumAsOfDate;
+    if ('realisedExits' in updates) dbUpdates.realised_exits = updates.realisedExits;
+    if ('totalDistributions' in updates) dbUpdates.total_distributions = updates.totalDistributions;
+    if ('lastDataReviewDate' in updates) dbUpdates.last_data_review_date = updates.lastDataReviewDate;
+    if ('riskBand' in updates) dbUpdates.risk_band = updates.riskBand;
+    
     // Field name changes
     if ('websiteUrl' in updates) dbUpdates.website = updates.websiteUrl;
     if ('team' in updates) dbUpdates.team_members = updates.team;
