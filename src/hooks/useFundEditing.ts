@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { toast } from '@/hooks/use-toast';
+import { managerNamesMatch } from '@/utils/managerNameMatching';
 
 export interface FundEditSuggestion {
   id: string;
@@ -443,7 +444,8 @@ export const useFundEditing = () => {
 
   const directUpdateFund = useCallback(async (
     fundId: string,
-    updates: Record<string, any>
+    updates: Record<string, any>,
+    skipDuplicateCheck: boolean = false
   ) => {
     if (!user) {
       throw new Error('User must be authenticated to update funds');
@@ -462,6 +464,32 @@ export const useFundEditing = () => {
       
       if (!canEdit) {
         throw new Error('You do not have permission to edit this fund');
+      }
+
+      // Check for potential duplicate manager names if manager_name is being updated
+      if (!skipDuplicateCheck && updates.managerName) {
+        console.log('🔍 [directUpdateFund] Checking for similar manager names...');
+        const { data: existingManagers, error: managersError } = await supabase
+          .from('funds')
+          .select('manager_name')
+          .neq('id', fundId);
+
+        if (!managersError && existingManagers) {
+          const uniqueManagers = Array.from(new Set(existingManagers.map(m => m.manager_name).filter(Boolean)));
+          const similarNames = uniqueManagers.filter(existingName => 
+            existingName !== updates.managerName && 
+            managerNamesMatch(existingName, updates.managerName)
+          );
+
+          if (similarNames.length > 0) {
+            console.warn('⚠️ [directUpdateFund] Found similar manager names:', similarNames);
+            throw new Error(JSON.stringify({
+              type: 'DUPLICATE_WARNING',
+              message: 'Similar manager names found in database',
+              similarNames
+            }));
+          }
+        }
       }
 
       // Transform to database format

@@ -20,18 +20,24 @@ const AuthGate: React.FC<AuthGateProps> = ({
   const navigate = useNavigate();
   const { user } = useEnhancedAuth();
 
+  // GATED CONTENT DISABLED - All content now visible to everyone
+  // To re-enable gating, uncomment the code below and remove the direct return
+  
+  return <>{children}</>;
+
+  /* ORIGINAL GATING LOGIC - COMMENTED OUT FOR LATER RE-ACTIVATION
   if (user) {
     return <>{children}</>;
   }
 
   return (
     <div className="relative" style={{ minHeight: height }}>
-      {/* Blurred content */}
+      {/* Blurred content *\/}
       <div className={blur ? "filter blur-sm pointer-events-none select-none" : "hidden"}>
         {children}
       </div>
       
-      {/* Overlay */}
+      {/* Overlay *\/}
       <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-background/60 via-background/80 to-background/60 backdrop-blur-sm">
         <div className="text-center space-y-4 px-6 py-8 bg-card/95 backdrop-blur-md rounded-xl border-2 border-primary/20 shadow-lg max-w-md">
           <div className="flex justify-center">
@@ -54,6 +60,7 @@ const AuthGate: React.FC<AuthGateProps> = ({
       </div>
     </div>
   );
+  */
 };
 
 export default AuthGate;

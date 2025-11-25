@@ -21,6 +21,19 @@ import { useAllFunds } from '@/hooks/useFundsQuery';
 import { FundTeamPicker } from '@/components/fund-editing/FundTeamPicker';
 import { FundTeamMemberReference } from '@/types/team';
 import { useFundTeamMembers } from '@/hooks/useTeamMemberData';
+import { ManagerNameCombobox } from '@/components/fund-editing/ManagerNameCombobox';
+import { AutocompleteInput } from '@/components/fund-editing/AutocompleteInput';
+import { useFundCategories, useCustodianNames, useAuditorNames } from '@/hooks/useFundFieldAutocomplete';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface UpdateFundTabProps {
   fund: Fund;
@@ -34,6 +47,16 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
   const allDatabaseFunds = allFundsData || [];
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  
+  // Duplicate warning state
+  const [showDuplicateWarning, setShowDuplicateWarning] = useState(false);
+  const [duplicateNames, setDuplicateNames] = useState<string[]>([]);
+  const [pendingChanges, setPendingChanges] = useState<Record<string, any>>({});
+  
+  // Fetch autocomplete suggestions
+  const { data: categories = [], isLoading: categoriesLoading } = useFundCategories();
+  const { data: custodians = [], isLoading: custodiansLoading } = useCustodianNames();
+  const { data: auditors = [], isLoading: auditorsLoading } = useAuditorNames();
   
   // Fetch current fund team assignments
   const { data: currentFundTeam } = useFundTeamMembers(fund.id);
@@ -340,7 +363,7 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
     return false;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (skipDuplicateCheck: boolean = false) => {
     try {
       console.log('🚀 [handleSubmit] Starting submission...');
       const suggestedChanges = getSuggestedChanges();
@@ -363,7 +386,7 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
         
         // Save fund changes if any
         if (Object.keys(suggestedChanges).length > 0) {
-          await directUpdateFund(fund.id, suggestedChanges);
+          await directUpdateFund(fund.id, suggestedChanges, skipDuplicateCheck);
         }
         
         // Save team member assignments if changed
@@ -388,6 +411,22 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
       }
     } catch (error) {
       console.error('❌ [handleSubmit] Error submitting changes:', error);
+      
+      // Check if this is a duplicate warning
+      if (error instanceof Error && error.message.startsWith('{')) {
+        try {
+          const errorData = JSON.parse(error.message);
+          if (errorData.type === 'DUPLICATE_WARNING') {
+            setPendingChanges(getSuggestedChanges());
+            setDuplicateNames(errorData.similarNames);
+            setShowDuplicateWarning(true);
+            return;
+          }
+        } catch (parseError) {
+          // Not a JSON error, continue with regular error handling
+        }
+      }
+      
       console.error('Error details:', {
         message: error instanceof Error ? error.message : 'Unknown error',
         stack: error instanceof Error ? error.stack : undefined,
@@ -401,6 +440,11 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
         variant: "destructive",
       });
     }
+  };
+  
+  const handleConfirmDuplicate = async () => {
+    setShowDuplicateWarning(false);
+    await handleSubmit(true); // Skip duplicate check on retry
   };
 
   const hasChanges = Object.keys(getSuggestedChanges()).length > 0;
@@ -623,11 +667,17 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
 
               <div>
                 <Label htmlFor="category">Fund Category</Label>
-                <Input
+                <AutocompleteInput
                   id="category"
                   value={formData.category}
-                  onChange={(e) => handleInputChange('category', e.target.value)}
+                  onChange={(value) => handleInputChange('category', value)}
+                  suggestions={categories}
+                  isLoading={categoriesLoading}
+                  placeholder="Select or type category..."
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Select an existing category or type a new one
+                </p>
               </div>
               
               <div>
@@ -670,11 +720,13 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
 
               <div>
                 <Label htmlFor="managerName">Manager Name</Label>
-                <Input
-                  id="managerName"
+                <ManagerNameCombobox
                   value={formData.managerName}
-                  onChange={(e) => handleInputChange('managerName', e.target.value)}
+                  onChange={(value) => handleInputChange('managerName', value)}
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Select an existing manager or type a new name
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -904,20 +956,32 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
 
               <div>
                 <Label htmlFor="auditor">Auditor</Label>
-                <Input
+                <AutocompleteInput
                   id="auditor"
                   value={formData.auditor || ''}
-                  onChange={(e) => handleInputChange('auditor', e.target.value)}
+                  onChange={(value) => handleInputChange('auditor', value)}
+                  suggestions={auditors}
+                  isLoading={auditorsLoading}
+                  placeholder="Select or type auditor name..."
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Select an existing auditor or type a new one
+                </p>
               </div>
 
               <div>
                 <Label htmlFor="custodian">Custodian</Label>
-                <Input
+                <AutocompleteInput
                   id="custodian"
                   value={formData.custodian || ''}
-                  onChange={(e) => handleInputChange('custodian', e.target.value)}
+                  onChange={(value) => handleInputChange('custodian', value)}
+                  suggestions={custodians}
+                  isLoading={custodiansLoading}
+                  placeholder="Select or type custodian name..."
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Select an existing custodian or type a new one
+                </p>
               </div>
 
               <div>
@@ -1157,7 +1221,7 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
 
       <div className="flex justify-end gap-4 pt-6 border-t">
         <Button 
-          onClick={handleSubmit} 
+          onClick={() => handleSubmit(false)} 
           disabled={!hasChanges || loading}
           className="gap-2"
         >
@@ -1180,6 +1244,37 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
           {Object.keys(getSuggestedChanges()).length} field(s) modified
         </p>
       )}
+      
+      {/* Duplicate Warning Dialog */}
+      <AlertDialog open={showDuplicateWarning} onOpenChange={setShowDuplicateWarning}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>⚠️ Similar Manager Names Detected</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-3">
+              <p>
+                The manager name you entered appears similar to existing names in the database:
+              </p>
+              <ul className="list-disc pl-5 space-y-1">
+                {duplicateNames.map((name, index) => (
+                  <li key={index} className="text-foreground font-medium">{name}</li>
+                ))}
+              </ul>
+              <p className="text-destructive font-medium">
+                This may indicate a typo or spelling inconsistency. Different spellings create separate manager profiles.
+              </p>
+              <p>
+                Would you like to proceed with "<strong>{pendingChanges.managerName}</strong>" or go back to correct it?
+              </p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Go Back and Correct</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDuplicate} className="bg-destructive hover:bg-destructive/90">
+              Proceed Anyway
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
