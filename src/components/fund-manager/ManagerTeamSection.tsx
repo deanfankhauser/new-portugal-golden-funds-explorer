@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Mail, Linkedin } from 'lucide-react';
@@ -10,6 +11,8 @@ interface TeamMember {
   photoUrl?: string;
   email?: string;
   linkedin?: string;
+  slug?: string;
+  member_id?: string;
 }
 
 interface ManagerTeamSectionProps {
@@ -68,9 +71,18 @@ const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, te
                 </Avatar>
                 
                 <div>
-                  <h3 className="font-semibold text-foreground text-xl mb-1">
-                    {member.name}
-                  </h3>
+                  {member.slug ? (
+                    <Link 
+                      to={`/team/${member.slug}`}
+                      className="font-semibold text-foreground text-xl mb-1 hover:text-primary transition-colors block"
+                    >
+                      {member.name}
+                    </Link>
+                  ) : (
+                    <h3 className="font-semibold text-foreground text-xl mb-1">
+                      {member.name}
+                    </h3>
+                  )}
                   <p className="text-sm text-muted-foreground font-medium">
                     {member.role}
                   </p>
