@@ -1,6 +1,6 @@
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 const getSupabase = async () => (await import('../integrations/supabase/client')).supabase;
-import { Fund, FundTag, FundCategory, GeographicAllocation, TeamMember, PdfDocument, FAQItem, RedemptionFrequency } from '../data/types/funds';
+import { Fund, FundTag, FundCategory, GeographicAllocation, TeamMember, PdfDocument, FAQItem, RedemptionFrequency, RiskBand } from '../data/types/funds';
 import { addTagsToFunds } from '../data/services/funds-service';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
 
@@ -109,7 +109,15 @@ const transformFund = ({ fund, ranking = 999 }: TransformFundParams): Fund => {
     updatedAt: fund.updated_at || fund.created_at || undefined,
     isVerified: fund.is_verified || false,
     verifiedAt: fund.verified_at || undefined,
-    verifiedBy: fund.verified_by || undefined
+    verifiedBy: fund.verified_by || undefined,
+    // New data model fields
+    isin: fund.isin || undefined,
+    typicalTicket: fund.typical_ticket ? Number(fund.typical_ticket) : undefined,
+    aumAsOfDate: fund.aum_as_of_date || undefined,
+    realisedExits: fund.realised_exits ? Number(fund.realised_exits) : undefined,
+    totalDistributions: fund.total_distributions ? Number(fund.total_distributions) : undefined,
+    lastDataReviewDate: fund.last_data_review_date || undefined,
+    riskBand: fund.risk_band as RiskBand || undefined
   };
 };
 
