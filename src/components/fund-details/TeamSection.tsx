@@ -1,5 +1,6 @@
 
 import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { Users, Briefcase, Linkedin } from 'lucide-react';
 import { TeamMember, FundTeamMemberReference } from '../../data/types/funds';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -107,9 +108,18 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team, managerName }) => {
               {/* Member Info */}
               <div className="flex-1 min-w-0 space-y-2">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-xl font-semibold text-foreground tracking-tight leading-tight">
-                    {member.name}
-                  </h3>
+                  {member.slug ? (
+                    <Link 
+                      to={`/team/${member.slug}`}
+                      className="text-xl font-semibold text-foreground tracking-tight leading-tight hover:text-primary transition-colors"
+                    >
+                      {member.name}
+                    </Link>
+                  ) : (
+                    <h3 className="text-xl font-semibold text-foreground tracking-tight leading-tight">
+                      {member.name}
+                    </h3>
+                  )}
                   {member.fund_role && (
                     <Badge variant="secondary" className="text-xs">
                       Fund-specific
