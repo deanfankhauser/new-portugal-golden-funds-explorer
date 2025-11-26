@@ -229,4 +229,8 @@ export interface Fund {
   totalDistributions?: number; // Total distributions paid to investors in EUR
   lastDataReviewDate?: string; // ISO 8601 date when data was last manually reviewed
   riskBand?: RiskBand; // 3-band risk classification (Conservative/Balanced/Aggressive)
+  
+  // Quiz system fields
+  isQuizEligible?: boolean; // Controls whether fund appears in Fund Matcher Quiz
+  usCompliant?: boolean; // Indicates if fund is compliant for US citizens/residents (PFIC/QEF)
 }

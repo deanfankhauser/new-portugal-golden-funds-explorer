@@ -412,6 +412,10 @@ export const useFundEditing = () => {
     if ('lastDataReviewDate' in updates) dbUpdates.last_data_review_date = updates.lastDataReviewDate;
     if ('riskBand' in updates) dbUpdates.risk_band = updates.riskBand;
     
+    // Quiz system fields
+    if ('isQuizEligible' in updates) dbUpdates.is_quiz_eligible = updates.isQuizEligible;
+    if ('usCompliant' in updates) dbUpdates.us_compliant = updates.usCompliant;
+    
     // Field name changes
     if ('websiteUrl' in updates) dbUpdates.website = updates.websiteUrl;
     if ('team' in updates) dbUpdates.team_members = updates.team;
