@@ -40,6 +40,41 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
     }
   };
 
+  // Smart middle column logic: Target Return > Lock-up Period > Risk Profile
+  const getMiddleColumnContent = () => {
+    const returnDisplay = getReturnTargetDisplay(fund);
+    if (returnDisplay !== 'Not disclosed') {
+      return (
+        <>
+          <span className="text-[11px] uppercase tracking-wider text-muted-foreground block mb-1">
+            Target Return
+          </span>
+          <span className="text-lg font-semibold text-foreground">{returnDisplay}</span>
+        </>
+      );
+    }
+    
+    if (fund.term && fund.term > 0) {
+      return (
+        <>
+          <span className="text-[11px] uppercase tracking-wider text-muted-foreground block mb-1">
+            Lock-up Period
+          </span>
+          <span className="text-lg font-semibold text-foreground">{fund.term} years</span>
+        </>
+      );
+    }
+    
+    return (
+      <>
+        <span className="text-[11px] uppercase tracking-wider text-muted-foreground block mb-1">
+          Risk Profile
+        </span>
+        <span className="text-lg font-semibold text-foreground">{riskBandLabel}</span>
+      </>
+    );
+  };
+
   return (
     <Card className="border border-border/60 rounded-xl bg-card w-full group">
       <CardContent className="p-6 lg:p-10">
@@ -63,7 +98,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             </Link>
           )}
           {fund.isVerified && isGVEligible && (
-            <Badge variant="outline" className="bg-primary/8 text-primary border-primary/20 px-3 py-1 text-[13px] font-medium">
+            <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/20 px-3 py-1 text-[13px] font-medium">
               GV Eligible
             </Badge>
           )}
@@ -78,94 +113,56 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
       </div>
         </div>
         
+        {/* Strategy Tag */}
+        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/80 mb-2 block">
+          {fund.category}
+        </span>
+
         {/* Description */}
-        <p className="text-[16px] leading-relaxed text-muted-foreground mb-8 line-clamp-2 max-w-[90%]">
+        <p className="text-[14px] leading-relaxed text-muted-foreground mb-6 line-clamp-2 max-w-[85%]">
           {fund.description}
         </p>
         
-        {/* Key Metrics Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
-          {/* Minimum Investment */}
-          <div className="bg-muted/20 border border-border/40 rounded-[10px] p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <Euro className="w-3.5 h-3.5 text-muted-foreground/60" />
-              <span className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground">
-                Minimum Investment
-              </span>
-            </div>
-            <p className="text-[24px] font-semibold text-foreground tracking-tight leading-none">
+        {/* Key Metrics Row - 3 Equal Columns */}
+        <div className="grid grid-cols-3 divide-x divide-border/40 border border-border/40 rounded-lg bg-muted/10 mb-6">
+          {/* Column 1: Minimum Investment */}
+          <div className="p-4 text-center">
+            <span className="text-[11px] uppercase tracking-wider text-muted-foreground block mb-1">
+              Min. Investment
+            </span>
+            <span className="text-lg font-semibold text-foreground">
               €{fund.minimumInvestment?.toLocaleString() || '—'}
-            </p>
+            </span>
           </div>
           
-          {/* Target Return */}
-          <div className="bg-muted/20 border border-border/40 rounded-[10px] p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <PieChart className="w-3.5 h-3.5 text-muted-foreground/60" />
-              <span className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground">
-                Target Return
-              </span>
-            </div>
-            <p className="text-[24px] font-semibold text-foreground tracking-tight leading-none">
-              {getReturnTargetDisplay(fund)}
-            </p>
-          </div>
-        </div>
-
-        {/* Structure & Redemption */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 pb-8 border-b border-border/60">
-          <div className="flex flex-col gap-1">
-            <h4 className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground mb-0">
-              Fund Structure
-            </h4>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-[16px] font-medium text-foreground">
-                {getFundType(fund) === 'Open-Ended' ? 'Open-ended' : 'Closed-ended'}
-              </span>
-              {getFundType(fund) === 'Closed-End' && fund.term > 0 && (
-                <span className="text-[14px] text-muted-foreground">({fund.term} years)</span>
-              )}
-            </div>
+          {/* Column 2: Dynamic - Target Return OR Lock-up OR Risk */}
+          <div className="p-4 text-center">
+            {getMiddleColumnContent()}
           </div>
           
-          <div className="flex flex-col gap-1">
-            <h4 className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground mb-0">
-              Redemption Terms
-            </h4>
-            {fund.redemptionTerms ? (
-              <div className="space-y-0.5 mt-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-[16px] font-medium text-foreground">
-                    {fund.redemptionTerms.frequency}
-                  </span>
-                  {!fund.redemptionTerms.redemptionOpen && (
-                    <Badge variant="outline" className="text-[11px] px-2 py-0">Closed</Badge>
-                  )}
-                </div>
-                {fund.redemptionTerms.noticePeriod && fund.redemptionTerms.noticePeriod > 0 && (
-                  <p className="text-[14px] text-muted-foreground mt-0.5">
-                    {fund.redemptionTerms.noticePeriod} days notice required
-                  </p>
-                )}
-              </div>
-            ) : (
-              <span className="text-[16px] font-medium text-foreground mt-1">N/A</span>
-            )}
+          {/* Column 3: Redemption Terms */}
+          <div className="p-4 text-center">
+            <span className="text-[11px] uppercase tracking-wider text-muted-foreground block mb-1">
+              Redemption
+            </span>
+            <span className="text-lg font-semibold text-foreground">
+              {fund.redemptionTerms?.frequency || 'End of Term'}
+            </span>
           </div>
         </div>
 
         {/* Footer: Fees & Actions */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          {/* Fees */}
-          <div className="flex items-center gap-6 text-[14px] text-muted-foreground">
-            <div className="flex items-center gap-1.5">
-              <span>Management:</span>
-              <span className="font-medium text-foreground">{formatManagementFee(fund.managementFee)}</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span>Performance:</span>
-              <span className="font-medium text-foreground">{formatPerformanceFee(fund.performanceFee)}</span>
-            </div>
+          {/* Fees - Cleaner format */}
+          <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
+            <span className="font-medium">Fees:</span>
+            <span>
+              <span className="font-semibold text-foreground">{formatManagementFee(fund.managementFee)}</span>
+              <span className="mx-1">Mgmt</span>
+              <span className="text-muted-foreground/60">·</span>
+              <span className="ml-1 font-semibold text-foreground">{formatPerformanceFee(fund.performanceFee)}</span>
+              <span className="mx-1">Perf</span>
+            </span>
           </div>
           
           {/* Action Buttons */}
@@ -182,14 +179,11 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             </Button>
             <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
               <Button 
-                variant="default"
+                variant="secondary"
                 size="default"
-                className="font-medium bg-primary hover:bg-primary/90 h-11"
+                className="font-medium h-11 hover:bg-primary hover:text-primary-foreground transition-colors"
               >
-                See more
-                <svg className="ml-2 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/>
-                </svg>
+                View Details
               </Button>
             </Link>
           </div>
