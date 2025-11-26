@@ -44,7 +44,7 @@ const InvestorPathways: React.FC = () => {
     {
       icon: Shield,
       title: 'Verified & Trusted',
-      subtitle: 'CMVM-verified funds with proven track records.',
+      subtitle: 'Movingto-verified funds',
       filterAction: () => {
         navigate('/?verified=true');
         setTimeout(() => {
