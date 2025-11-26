@@ -44,7 +44,7 @@ const questions = [
     id: 'usTaxAccount',
     question: 'Are you investing through a US tax account (IRA/401k)?',
     options: [
-      { value: 'yes', label: 'Yes', description: 'I need QEF-eligible funds for favorable US tax treatment' },
+      { value: 'yes', label: 'Yes', description: 'We\'ll highlight QEF-eligible funds for you' },
       { value: 'no', label: 'No', description: 'Standard investment account' }
     ]
   }
@@ -126,7 +126,12 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
               </div>
             ) : showResults ? (
               matchedFunds && matchedFunds.length > 0 ? (
-                <QuizResults funds={matchedFunds} onReset={handleReset} onClose={handleClose} />
+                <QuizResults 
+                  funds={matchedFunds} 
+                  onReset={handleReset} 
+                  onClose={handleClose}
+                  showQEFHighlight={answers.usTaxAccount === 'yes'}
+                />
               ) : (
                 <QuizNoResults onReset={handleReset} onClose={handleClose} />
               )
