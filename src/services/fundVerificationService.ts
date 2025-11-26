@@ -130,4 +130,32 @@ export class FundVerificationService {
       return { success: false, error: error.message };
     }
   }
+
+  /**
+   * Toggle quiz eligibility for a fund
+   */
+  static async toggleQuizEligibility(fundId: string, isEligible: boolean): Promise<{ success: boolean; error?: string }> {
+    try {
+      const { error } = await supabase
+        .from('funds')
+        .update({
+          is_quiz_eligible: isEligible
+        })
+        .eq('id', fundId);
+
+      if (error) throw error;
+
+      // Log admin activity
+      await supabase.rpc('log_admin_activity', {
+        p_action_type: isEligible ? 'FUND_QUIZ_ENABLED' : 'FUND_QUIZ_DISABLED',
+        p_target_type: 'fund',
+        p_target_id: fundId,
+        p_details: { is_quiz_eligible: isEligible }
+      });
+
+      return { success: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
 }
