@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, Users, CheckCircle2, Share2, XCircle, AlertTriangle } from 'lucide-react';
 import { QuizFunnelChart } from './QuizFunnelChart';
+import { QuizAbandonmentBreakdown } from './QuizAbandonmentBreakdown';
 
 interface QuizStats {
   total_started: number;
@@ -37,11 +38,20 @@ interface FunnelStep {
   retentionRate: number;
 }
 
+interface AbandonmentPattern {
+  step: number;
+  stepLabel: string;
+  answers: Record<string, string>;
+  count: number;
+  percentage: number;
+}
+
 export const QuizAnalyticsTab: React.FC = () => {
   const [stats, setStats] = useState<QuizStats | null>(null);
   const [popularAnswers, setPopularAnswers] = useState<PopularAnswer[]>([]);
   const [underservedSegments, setUnderservedSegments] = useState<UnderservedSegment[]>([]);
   const [funnelData, setFunnelData] = useState<FunnelStep[]>([]);
+  const [abandonmentPatterns, setAbandonmentPatterns] = useState<AbandonmentPattern[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -180,6 +190,43 @@ export const QuizAnalyticsTab: React.FC = () => {
       }
 
       setFunnelData(funnel);
+
+      // Calculate abandonment patterns - group by step and answer combination
+      const abandonmentMap = new Map<string, { step: number; answers: Record<string, string>; count: number }>();
+      
+      events?.filter(e => e.event_type === 'abandoned' && e.abandoned_at_step != null).forEach(event => {
+        const step = event.abandoned_at_step!;
+        const answers = event.answers as Record<string, string> || {};
+        const key = `${step}_${JSON.stringify(answers)}`;
+        
+        if (abandonmentMap.has(key)) {
+          abandonmentMap.get(key)!.count++;
+        } else {
+          abandonmentMap.set(key, { step, answers, count: 1 });
+        }
+      });
+
+      // Convert to array and calculate percentages
+      const abandonmentList: AbandonmentPattern[] = Array.from(abandonmentMap.values()).map(pattern => {
+        const stepLabel = pattern.step === 0 
+          ? 'Quiz Started' 
+          : questionLabels[pattern.step - 1];
+        
+        const percentage = abandoned > 0 ? (pattern.count / abandoned) * 100 : 0;
+        
+        return {
+          step: pattern.step,
+          stepLabel,
+          answers: pattern.answers,
+          count: pattern.count,
+          percentage,
+        };
+      });
+
+      // Sort by count descending
+      abandonmentList.sort((a, b) => b.count - a.count);
+      
+      setAbandonmentPatterns(abandonmentList);
     } catch (error) {
       console.error('Failed to fetch quiz analytics:', error);
     } finally {
@@ -248,6 +295,14 @@ export const QuizAnalyticsTab: React.FC = () => {
       {/* Funnel Analysis */}
       {funnelData.length > 0 && (
         <QuizFunnelChart funnelData={funnelData} totalStarted={stats?.total_started || 0} />
+      )}
+
+      {/* Abandonment Breakdown */}
+      {abandonmentPatterns.length > 0 && (
+        <QuizAbandonmentBreakdown 
+          patterns={abandonmentPatterns} 
+          totalAbandoned={stats?.total_abandoned || 0} 
+        />
       )}
 
       {/* Stats Cards */}
