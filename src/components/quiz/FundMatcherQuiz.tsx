@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Loader2 } from 'lucide-react';
@@ -56,7 +56,17 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
   const [showResults, setShowResults] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
 
-  const { data: matchedFunds, isLoading } = useFundMatcherQuery(answers);
+  const { data: matchedFunds, isLoading, isFetched } = useFundMatcherQuery(answers);
+
+  // Show results when query completes
+  useEffect(() => {
+    if (Object.keys(answers).length === 4 && isSearching) {
+      if (isFetched && !isLoading) {
+        setIsSearching(false);
+        setShowResults(true);
+      }
+    }
+  }, [answers, isSearching, isFetched, isLoading]);
 
   const handleAnswer = (questionId: string, value: string) => {
     const newAnswers = { ...answers, [questionId]: value };
@@ -66,12 +76,8 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
     if (currentStep < questions.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      // All questions answered, show searching animation
+      // Show searching state - results will show when query completes
       setIsSearching(true);
-      setTimeout(() => {
-        setIsSearching(false);
-        setShowResults(true);
-      }, 1500);
     }
   };
 
