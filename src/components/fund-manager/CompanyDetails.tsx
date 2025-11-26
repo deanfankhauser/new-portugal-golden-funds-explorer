@@ -16,6 +16,13 @@ const CompanyDetails: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Track when profileId changes to show transition state
+  useEffect(() => {
+    setIsTransitioning(true);
+    setLoading(true);
+  }, [profileId]);
 
   useEffect(() => {
     const checkAccessAndFetchProfile = async () => {
@@ -55,6 +62,7 @@ const CompanyDetails: React.FC = () => {
         console.error('Error:', error);
       } finally {
         setLoading(false);
+        setIsTransitioning(false);
       }
     };
 
@@ -101,7 +109,16 @@ const CompanyDetails: React.FC = () => {
     <>
       <PageSEO pageType="about" />
       
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto relative">
+        {isTransitioning && (
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center rounded-lg">
+            <div className="flex flex-col items-center gap-3">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+              <p className="text-sm font-medium text-muted-foreground">Loading company data...</p>
+            </div>
+          </div>
+        )}
+        
         <div className="mb-6">
           <h1 className="text-2xl font-bold">{profile.company_name}</h1>
           <p className="text-muted-foreground mt-1">
