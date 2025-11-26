@@ -1,16 +1,18 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Fund } from '@/data/types/funds';
 import FundCard from '@/components/FundCard';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, CheckCircle2 } from 'lucide-react';
 
 interface QuizResultsProps {
   funds: Fund[];
   onReset: () => void;
   onClose: () => void;
+  showQEFHighlight?: boolean;
 }
 
-export const QuizResults: React.FC<QuizResultsProps> = ({ funds, onReset, onClose }) => {
+export const QuizResults: React.FC<QuizResultsProps> = ({ funds, onReset, onClose, showQEFHighlight = false }) => {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
@@ -18,11 +20,27 @@ export const QuizResults: React.FC<QuizResultsProps> = ({ funds, onReset, onClos
         <p className="text-muted-foreground">
           Based on your preferences, here are the funds that match your criteria
         </p>
+        {showQEFHighlight && (
+          <p className="text-sm text-muted-foreground">
+            QEF-eligible funds are highlighted for your US tax account
+          </p>
+        )}
       </div>
 
       <div className="grid gap-4">
         {funds.map((fund) => (
-          <FundCard key={fund.id} fund={fund} />
+          <div key={fund.id} className="relative">
+            <FundCard fund={fund} />
+            {showQEFHighlight && fund.pficStatus && (
+              <Badge 
+                variant="success" 
+                className="absolute top-4 right-4 gap-1"
+              >
+                <CheckCircle2 className="h-3 w-3" />
+                QEF-Eligible
+              </Badge>
+            )}
+          </div>
         ))}
       </div>
 

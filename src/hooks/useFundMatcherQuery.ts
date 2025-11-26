@@ -35,6 +35,7 @@ const transformFund = (fund: any): Fund => {
     isVerified: fund.is_verified || false,
     isQuizEligible: fund.is_quiz_eligible || false,
     usCompliant: fund.us_compliant || false,
+    pficStatus: fund.pfic_status || undefined,
     redemptionTerms: (() => {
       const rt = fund.redemption_terms;
       if (rt && typeof rt === 'object' && !Array.isArray(rt)) {
@@ -85,11 +86,6 @@ export const useFundMatcherQuery = (answers: QuizAnswers) => {
         query = query.lte('lock_up_period_months', 72);
       }
 
-      // Apply US tax account filter (QEF-eligible funds)
-      if (answers.usTaxAccount === 'yes') {
-        query = query.not('pfic_status', 'is', null);
-      }
-
       console.log('📊 Executing quiz query...');
       const { data, error } = await query.order('is_verified', { ascending: false });
 
@@ -116,6 +112,15 @@ export const useFundMatcherQuery = (answers: QuizAnswers) => {
         filteredFunds = fundsWithTags.filter(fund => {
           const freq = fund.redemptionTerms?.frequency;
           return freq && ['Annual', 'Quarterly', 'Weekly', 'Daily', 'Monthly'].includes(freq);
+        });
+      }
+
+      // Sort QEF-eligible funds to top if user needs them (soft preference, not hard filter)
+      if (answers.usTaxAccount === 'yes') {
+        filteredFunds.sort((a, b) => {
+          const aHasQEF = a.pficStatus ? 1 : 0;
+          const bHasQEF = b.pficStatus ? 1 : 0;
+          return bHasQEF - aHasQEF; // QEF funds first
         });
       }
 
