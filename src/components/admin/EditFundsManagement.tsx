@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, Edit3, ExternalLink, CheckCircle2 } from 'lucide-react';
+import { Search, Edit3, ExternalLink, CheckCircle2, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -17,6 +17,7 @@ interface FundData {
   manager_name?: string;
   is_verified?: boolean;
   minimum_investment?: number;
+  is_quiz_eligible?: boolean;
 }
 
 export const EditFundsManagement: React.FC = () => {
@@ -34,7 +35,7 @@ export const EditFundsManagement: React.FC = () => {
       setLoading(true);
       const { data, error } = await supabase
         .from('funds')
-        .select('id, name, category, manager_name, is_verified, minimum_investment')
+        .select('id, name, category, manager_name, is_verified, minimum_investment, is_quiz_eligible')
         .order('name');
 
       if (error) throw error;
@@ -121,6 +122,12 @@ export const EditFundsManagement: React.FC = () => {
                               <Badge variant="outline" className="bg-success/10 text-success border-success/20 shrink-0">
                                 <CheckCircle2 className="w-3 h-3 mr-1" />
                                 Verified
+                              </Badge>
+                            )}
+                            {fund.is_quiz_eligible && (
+                              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 shrink-0">
+                                <Sparkles className="w-3 h-3 mr-1" />
+                                Quiz Active
                               </Badge>
                             )}
                           </div>

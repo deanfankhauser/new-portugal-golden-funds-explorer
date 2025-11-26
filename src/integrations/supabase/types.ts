@@ -692,6 +692,7 @@ export type Database = {
           hurdle_rate: number | null
           id: string
           inception_date: string | null
+          is_quiz_eligible: boolean | null
           is_verified: boolean | null
           isin: string | null
           last_data_review_date: string | null
@@ -719,6 +720,7 @@ export type Database = {
           total_distributions: number | null
           typical_ticket: number | null
           updated_at: string | null
+          us_compliant: boolean | null
           verified_at: string | null
           verified_by: string | null
           version: number | null
@@ -747,6 +749,7 @@ export type Database = {
           hurdle_rate?: number | null
           id: string
           inception_date?: string | null
+          is_quiz_eligible?: boolean | null
           is_verified?: boolean | null
           isin?: string | null
           last_data_review_date?: string | null
@@ -774,6 +777,7 @@ export type Database = {
           total_distributions?: number | null
           typical_ticket?: number | null
           updated_at?: string | null
+          us_compliant?: boolean | null
           verified_at?: string | null
           verified_by?: string | null
           version?: number | null
@@ -802,6 +806,7 @@ export type Database = {
           hurdle_rate?: number | null
           id?: string
           inception_date?: string | null
+          is_quiz_eligible?: boolean | null
           is_verified?: boolean | null
           isin?: string | null
           last_data_review_date?: string | null
@@ -829,6 +834,7 @@ export type Database = {
           total_distributions?: number | null
           typical_ticket?: number | null
           updated_at?: string | null
+          us_compliant?: boolean | null
           verified_at?: string | null
           verified_by?: string | null
           version?: number | null

@@ -6,11 +6,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Save, Loader2, Plus, Trash2, X, Building2, TrendingUp, FileText, Settings, AlertCircle } from 'lucide-react';
+import { Save, Loader2, Plus, Trash2, X, Building2, TrendingUp, FileText, Settings, AlertCircle, Sparkles } from 'lucide-react';
 import { Fund, GeographicAllocation, TeamMember, PdfDocument, FAQItem } from '@/data/types/funds';
 import { getAllTags } from '@/data/services/tags-service';
 import { useFundEditing } from '@/hooks/useFundEditing';
@@ -111,6 +112,9 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
     totalDistributions: f.totalDistributions != null ? f.totalDistributions.toString() : '',
     lastDataReviewDate: f.lastDataReviewDate ?? '',
     riskBand: f.riskBand ?? '',
+    // Quiz system fields
+    isQuizEligible: f.isQuizEligible ?? false,
+    usCompliant: f.usCompliant ?? false,
   });
 
   const [formData, setFormData] = useState(buildFormData(fund));
@@ -276,6 +280,9 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
     totalDistributions: fund.totalDistributions,
     lastDataReviewDate: fund.lastDataReviewDate,
     riskBand: fund.riskBand,
+    // Quiz system fields
+    isQuizEligible: fund.isQuizEligible,
+    usCompliant: fund.usCompliant,
   });
 
   const getSuggestedChanges = () => {
@@ -683,16 +690,29 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
 
               <div>
                 <Label htmlFor="category">Fund Category</Label>
-                <AutocompleteInput
-                  id="category"
+                <Select
                   value={formData.category}
-                  onChange={(value) => handleInputChange('category', value)}
-                  suggestions={categories}
-                  isLoading={categoriesLoading}
-                  placeholder="Select or type category..."
-                />
+                  onValueChange={(value) => handleInputChange('category', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Real Estate">Real Estate</SelectItem>
+                    <SelectItem value="Private Equity">Private Equity</SelectItem>
+                    <SelectItem value="Venture Capital">Venture Capital</SelectItem>
+                    <SelectItem value="Debt">Debt</SelectItem>
+                    <SelectItem value="Credit">Credit</SelectItem>
+                    <SelectItem value="Infrastructure">Infrastructure</SelectItem>
+                    <SelectItem value="Crypto">Crypto</SelectItem>
+                    <SelectItem value="Bitcoin">Bitcoin</SelectItem>
+                    <SelectItem value="Clean Energy">Clean Energy</SelectItem>
+                    <SelectItem value="Fund-of-Funds">Fund-of-Funds</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Select an existing category or type a new one
+                  Select the primary investment category
                 </p>
               </div>
               
@@ -1194,6 +1214,51 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
                     <SelectItem value="false">No</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                Fund Matcher Quiz Settings
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                Control whether this fund appears in the interactive Fund Matcher Quiz
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="space-y-1">
+                  <Label htmlFor="isQuizEligible" className="text-base font-medium">
+                    Include in Fund Matcher Quiz
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    Enable this fund to appear as a match result in the homepage quiz
+                  </p>
+                </div>
+                <Switch
+                  id="isQuizEligible"
+                  checked={formData.isQuizEligible}
+                  onCheckedChange={(checked) => handleInputChange('isQuizEligible', checked)}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="space-y-1">
+                  <Label htmlFor="usCompliant" className="text-base font-medium">
+                    US Investor Compliant
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    Fund has PFIC/QEF status suitable for US citizens and residents
+                  </p>
+                </div>
+                <Switch
+                  id="usCompliant"
+                  checked={formData.usCompliant}
+                  onCheckedChange={(checked) => handleInputChange('usCompliant', checked)}
+                />
               </div>
             </CardContent>
           </Card>

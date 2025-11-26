@@ -117,7 +117,10 @@ const transformFund = ({ fund, ranking = 999 }: TransformFundParams): Fund => {
     realisedExits: fund.realised_exits ? Number(fund.realised_exits) : undefined,
     totalDistributions: fund.total_distributions ? Number(fund.total_distributions) : undefined,
     lastDataReviewDate: fund.last_data_review_date || undefined,
-    riskBand: fund.risk_band as RiskBand || undefined
+    riskBand: fund.risk_band as RiskBand || undefined,
+    // Quiz system fields
+    isQuizEligible: fund.is_quiz_eligible || false,
+    usCompliant: fund.us_compliant || false
   };
 };
 
