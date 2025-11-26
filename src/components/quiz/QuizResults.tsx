@@ -4,8 +4,9 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Fund } from '@/data/types/funds';
 import FundCard from '@/components/FundCard';
-import { RotateCcw, CheckCircle2 } from 'lucide-react';
+import { RotateCcw, CheckCircle2, Share2, Check } from 'lucide-react';
 import { QuizAnswers } from '@/hooks/useFundMatcherQuery';
+import { useToast } from '@/hooks/use-toast';
 
 interface QuizResultsProps {
   funds: Fund[];
@@ -57,6 +58,50 @@ const getQuestionLabel = (questionId: string): string => {
 };
 
 export const QuizResults: React.FC<QuizResultsProps> = ({ funds, answers, onReset, onClose, onEditPreferences, showQEFHighlight = false }) => {
+  const { toast } = useToast();
+  const [copied, setCopied] = React.useState(false);
+
+  const handleShare = async () => {
+    // Generate shareable URL with quiz answers
+    const params = new URLSearchParams();
+    Object.entries(answers).forEach(([key, value]) => {
+      params.append(key, value);
+    });
+    
+    const shareUrl = `${window.location.origin}${window.location.pathname}?quiz=${encodeURIComponent(params.toString())}`;
+    
+    // Try native share API first
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'My Portugal Golden Visa Fund Matches',
+          text: `I found ${funds.length} matching funds using the Fund Matcher Quiz`,
+          url: shareUrl,
+        });
+        return;
+      } catch (err) {
+        // User cancelled or share failed, fall back to clipboard
+      }
+    }
+    
+    // Fall back to clipboard
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      toast({
+        title: "Link copied!",
+        description: "Share this link to show your quiz results",
+      });
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast({
+        title: "Failed to copy link",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Preferences Summary Card */}
@@ -122,6 +167,19 @@ export const QuizResults: React.FC<QuizResultsProps> = ({ funds, answers, onRese
         <Button variant="outline" onClick={onReset}>
           <RotateCcw className="h-4 w-4 mr-2" />
           Start Over
+        </Button>
+        <Button variant="outline" onClick={handleShare}>
+          {copied ? (
+            <>
+              <Check className="h-4 w-4 mr-2" />
+              Copied!
+            </>
+          ) : (
+            <>
+              <Share2 className="h-4 w-4 mr-2" />
+              Share Results
+            </>
+          )}
         </Button>
         <Button onClick={onClose}>
           View Full Directory
