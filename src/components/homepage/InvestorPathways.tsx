@@ -16,7 +16,7 @@ const InvestorPathways: React.FC = () => {
     {
       icon: Shield,
       title: 'Conservative Strategy',
-      subtitle: 'Capital preservation & Real Estate backed.',
+      subtitle: 'Focus on capital preservation',
       filterAction: () => {
         navigate('/?category=Real+Estate&tag=Low-risk');
         setTimeout(() => {
