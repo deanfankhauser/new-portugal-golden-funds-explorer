@@ -13,7 +13,7 @@ interface TransformFundParams {
 }
 
 // Transform database fund to UI Fund type
-const transformFund = ({ fund, ranking = 999 }: TransformFundParams): Fund => {
+export const transformFund = ({ fund, ranking = 999 }: TransformFundParams): Fund => {
   return {
     id: fund.id,
     name: fund.name,
