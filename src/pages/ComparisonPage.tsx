@@ -11,8 +11,9 @@ import ComparisonBreadcrumbs from '../components/comparison/ComparisonBreadcrumb
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Share2, Check } from 'lucide-react';
+import { Share2, Check, Download } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
+import { exportComparisonToPDF } from '@/utils/comparisonPdfExport';
 
 const ComparisonPage = () => {
   const { compareFunds, clearComparison, loadFundsFromIds } = useComparison();
@@ -63,6 +64,23 @@ const ComparisonPage = () => {
     }
   };
 
+  const handleExportPDF = () => {
+    try {
+      exportComparisonToPDF(compareFunds);
+      toast({
+        title: "PDF generated!",
+        description: "Your fund comparison has been downloaded.",
+      });
+    } catch (error) {
+      console.error('Failed to generate PDF:', error);
+      toast({
+        title: "Export failed",
+        description: "Could not generate PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <PageSEO pageType="comparison" />
@@ -90,6 +108,15 @@ const ComparisonPage = () => {
               )}
               {compareFunds.length > 0 && (
                 <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleExportPDF}
+                    className="gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    Export PDF
+                  </Button>
                   <Button
                     variant="outline"
                     size="sm"
