@@ -103,6 +103,13 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
     setIsSearching(false);
   };
 
+  const handleEditPreferences = () => {
+    setCurrentStep(0);
+    setShowResults(false);
+    setIsSearching(false);
+    // Keep answers so user can modify them
+  };
+
   const handleClose = () => {
     handleReset();
     onOpenChange(false);
@@ -138,7 +145,8 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
                 <QuizResults 
                   funds={matchedFunds}
                   answers={answers}
-                  onReset={handleReset} 
+                  onReset={handleReset}
+                  onEditPreferences={handleEditPreferences}
                   onClose={handleClose}
                   showQEFHighlight={answers.usTaxAccount === 'yes'}
                 />

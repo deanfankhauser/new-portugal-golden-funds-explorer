@@ -12,6 +12,7 @@ interface QuizResultsProps {
   answers: QuizAnswers;
   onReset: () => void;
   onClose: () => void;
+  onEditPreferences: () => void;
   showQEFHighlight?: boolean;
 }
 
@@ -55,14 +56,23 @@ const getQuestionLabel = (questionId: string): string => {
   return questions[questionId] || questionId;
 };
 
-export const QuizResults: React.FC<QuizResultsProps> = ({ funds, answers, onReset, onClose, showQEFHighlight = false }) => {
+export const QuizResults: React.FC<QuizResultsProps> = ({ funds, answers, onReset, onClose, onEditPreferences, showQEFHighlight = false }) => {
   return (
     <div className="space-y-6">
       {/* Preferences Summary Card */}
       <Card className="p-6 bg-muted/30">
-        <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-4">
-          Your Preferences
-        </h4>
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+            Your Preferences
+          </h4>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={onEditPreferences}
+          >
+            Edit Preferences
+          </Button>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {Object.entries(answers).map(([key, value]) => (
             <div key={key} className="flex items-start gap-3">
