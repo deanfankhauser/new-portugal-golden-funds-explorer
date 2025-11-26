@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Check } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { Fund } from '../../data/types/funds';
 import { Button } from '../ui/button';
 
@@ -28,7 +28,7 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
           {/* Trust Badge */}
           <div className="flex justify-center mb-8">
             <div className="inline-flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-full px-6 py-3 border border-border shadow-sm">
-              <Check className="h-5 w-5 text-accent" />
+              <ShieldCheck className="h-5 w-5 text-accent" />
               <span className="text-sm font-medium text-high-contrast tracking-[0.15em] uppercase">
                 Verified Market Analysis
               </span>
@@ -41,7 +41,7 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
               Portugal Golden Visa Investment Funds
             </h1>
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-high-contrast">
-              <span className="text-accent italic font-cheltenham">Compare Fees, Performance, and Risk.</span>
+              Don't Just Invest. <span className="text-accent italic font-cheltenham">Compare Fees, Performance, and Risk.</span>
             </h2>
             
             <p className="text-lg sm:text-xl text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-8">
@@ -65,8 +65,7 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
                 onClick={scrollToFunds}
                 className="inline-flex items-center text-medium-contrast hover:text-high-contrast font-medium text-base transition-colors duration-200 group"
               >
-                or Browse Full Directory
-                <span className="ml-2 transition-transform group-hover:translate-x-1">→</span>
+                or Browse Full Directory ↓
               </button>
             </div>
           </div>
