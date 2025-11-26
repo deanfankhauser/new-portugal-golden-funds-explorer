@@ -18,7 +18,6 @@ const InvestorPathways: React.FC = () => {
       title: 'Conservative Strategy',
       subtitle: 'Capital preservation & Real Estate backed.',
       filterAction: () => {
-        // Navigate to homepage with conservative/debt filters
         navigate('/?category=Real+Estate&risk=Conservative');
       }
     },
@@ -27,17 +26,15 @@ const InvestorPathways: React.FC = () => {
       title: 'Growth Strategy',
       subtitle: 'Private Equity & VC with higher upside.',
       filterAction: () => {
-        // Navigate to homepage with PE/VC filters
-        navigate('/?category=Private+Equity,Venture+Capital');
+        navigate('/?category=Private+Equity');
       }
     },
     {
-      icon: Clock,
-      title: 'Fast Track',
-      subtitle: 'Shortest lock-up periods (5-6 years).',
+      icon: Shield,
+      title: 'Verified & Trusted',
+      subtitle: 'CMVM-verified funds with proven track records.',
       filterAction: () => {
-        // Navigate to homepage with short lock-up filter
-        navigate('/?tag=Lock-up+<+5+years');
+        navigate('/?verified=true');
       }
     }
   ];
