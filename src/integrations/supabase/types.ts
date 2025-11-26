@@ -1128,6 +1128,45 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_analytics: {
+        Row: {
+          abandoned_at_step: number | null
+          answers: Json | null
+          created_at: string | null
+          event_type: string
+          id: string
+          referrer: string | null
+          results_count: number | null
+          session_id: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          abandoned_at_step?: number | null
+          answers?: Json | null
+          created_at?: string | null
+          event_type: string
+          id?: string
+          referrer?: string | null
+          results_count?: number | null
+          session_id: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          abandoned_at_step?: number | null
+          answers?: Json | null
+          created_at?: string | null
+          event_type?: string
+          id?: string
+          referrer?: string | null
+          results_count?: number | null
+          session_id?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       saved_funds: {
         Row: {
           created_at: string

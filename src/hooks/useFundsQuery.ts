@@ -146,7 +146,7 @@ const fetchFundsPage = async ({ pageParam = 0 }) => {
         manual_rank
       )
     `, { count: 'exact' })
-    .order('created_at', { ascending: true })
+    .order('final_rank', { ascending: true, nullsFirst: false })
     .range(from, to);
   
   if (error) {
@@ -265,7 +265,7 @@ export const useAllFunds = () => {
             manual_rank
           )
         `)
-        .order('created_at', { ascending: true });
+        .order('final_rank', { ascending: true, nullsFirst: false });
       
       if (error) {
         console.error('❌ Error fetching all funds:', error);

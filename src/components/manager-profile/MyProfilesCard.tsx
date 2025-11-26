@@ -97,7 +97,7 @@ const MyProfilesCard: React.FC = () => {
             return (
               <Link
                 key={assignment.id}
-                to={`/manage-profile/${profile.id}`}
+                to={`/dashboard/company/${profile.id}`}
                 className="block"
               >
                 <div className="flex items-center justify-between p-4 rounded-lg border hover:border-primary transition-colors">

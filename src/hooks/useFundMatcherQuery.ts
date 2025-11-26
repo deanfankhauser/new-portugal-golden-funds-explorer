@@ -7,7 +7,8 @@ export interface QuizAnswers {
   budget?: 'under250k' | 'under500k' | '500k+';
   strategy?: 'safety' | 'growth' | 'fast_exit';
   income?: 'yes' | 'no';
-  usTaxAccount?: 'yes' | 'no';
+  riskTolerance?: 'conservative' | 'moderate' | 'aggressive';
+  timeline?: '1-3years' | '3-5years' | '5plus';
 }
 
 const transformFund = (fund: any): Fund => {
@@ -35,6 +36,7 @@ const transformFund = (fund: any): Fund => {
     isVerified: fund.is_verified || false,
     isQuizEligible: fund.is_quiz_eligible || false,
     usCompliant: fund.us_compliant || false,
+    pficStatus: fund.pfic_status || undefined,
     redemptionTerms: (() => {
       const rt = fund.redemption_terms;
       if (rt && typeof rt === 'object' && !Array.isArray(rt)) {
@@ -85,9 +87,13 @@ export const useFundMatcherQuery = (answers: QuizAnswers) => {
         query = query.lte('lock_up_period_months', 72);
       }
 
-      // Apply US tax account filter (QEF-eligible funds)
-      if (answers.usTaxAccount === 'yes') {
-        query = query.not('pfic_status', 'is', null);
+      // Apply timeline filter (lock-up period based)
+      if (answers.timeline === '1-3years') {
+        query = query.lte('lock_up_period_months', 36);
+      } else if (answers.timeline === '3-5years') {
+        query = query.gte('lock_up_period_months', 37).lte('lock_up_period_months', 60);
+      } else if (answers.timeline === '5plus') {
+        query = query.gt('lock_up_period_months', 60);
       }
 
       console.log('📊 Executing quiz query...');
@@ -119,10 +125,30 @@ export const useFundMatcherQuery = (answers: QuizAnswers) => {
         });
       }
 
+      // Apply risk tolerance as soft preference (sort by risk-appropriate categories)
+      if (answers.riskTolerance === 'conservative') {
+        // Sort safer categories to top: Debt, Real Estate, Infrastructure
+        filteredFunds.sort((a, b) => {
+          const safeCategories = ['Debt', 'Real Estate', 'Infrastructure'];
+          const aIsSafe = safeCategories.includes(a.category) ? 1 : 0;
+          const bIsSafe = safeCategories.includes(b.category) ? 1 : 0;
+          return bIsSafe - aIsSafe;
+        });
+      } else if (answers.riskTolerance === 'aggressive') {
+        // Sort growth categories to top: Crypto, Venture Capital, Private Equity
+        filteredFunds.sort((a, b) => {
+          const growthCategories = ['Crypto', 'Venture Capital', 'Private Equity'];
+          const aIsGrowth = growthCategories.includes(a.category) ? 1 : 0;
+          const bIsGrowth = growthCategories.includes(b.category) ? 1 : 0;
+          return bIsGrowth - aIsGrowth;
+        });
+      }
+      // Moderate = no special sorting, show balanced mix
+
       console.log('📊 Final filtered count:', filteredFunds.length);
       return filteredFunds;
     },
-    enabled: Object.keys(answers).length === 4, // Only run when all answers provided
+    enabled: Object.keys(answers).length === 5, // Only run when all answers provided
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 };

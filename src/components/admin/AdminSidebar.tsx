@@ -13,7 +13,8 @@ import {
   Home,
   LogOut,
   Edit,
-  Building
+  Building,
+  PieChart
 } from "lucide-react";
 import {
   Sidebar,
@@ -50,6 +51,7 @@ const adminNavItems: NavItem[] = [
   { title: "Email Captures", url: "/admin/emails", icon: Mail },
   { title: "Leads", url: "/admin/leads", icon: Target },
   { title: "Performance", url: "/admin/performance", icon: Activity },
+  { title: "Quiz Analytics", url: "/admin/quiz-analytics", icon: PieChart },
   { title: "Settings", url: "/admin/settings", icon: Settings },
 ];
 

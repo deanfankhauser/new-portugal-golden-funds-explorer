@@ -7,6 +7,7 @@ import { QuizQuestion } from './QuizQuestion';
 import { QuizResults } from './QuizResults';
 import { QuizNoResults } from './QuizNoResults';
 import { useFundMatcherQuery, QuizAnswers } from '@/hooks/useFundMatcherQuery';
+import { trackQuizEvent } from '@/services/quizAnalytics';
 
 interface FundMatcherQuizProps {
   open: boolean;
@@ -41,11 +42,21 @@ const questions = [
     ]
   },
   {
-    id: 'usTaxAccount',
-    question: 'Are you investing through a US tax account (IRA/401k)?',
+    id: 'riskTolerance',
+    question: 'How comfortable are you with investment volatility?',
     options: [
-      { value: 'yes', label: 'Yes', description: 'I need QEF-eligible funds for favorable US tax treatment' },
-      { value: 'no', label: 'No', description: 'Standard investment account' }
+      { value: 'conservative', label: 'Conservative', description: 'Prefer stable, predictable returns even if lower' },
+      { value: 'moderate', label: 'Moderate', description: 'Accept some fluctuation for better potential returns' },
+      { value: 'aggressive', label: 'Aggressive', description: 'Comfortable with high volatility for maximum growth' }
+    ]
+  },
+  {
+    id: 'timeline',
+    question: 'What is your investment timeline?',
+    options: [
+      { value: '1-3years', label: '1–3 years', description: 'Short-term investment with early liquidity' },
+      { value: '3-5years', label: '3–5 years', description: 'Medium-term commitment for balanced returns' },
+      { value: '5plus', label: '5+ years', description: 'Long-term investment for maximum growth potential' }
     ]
   }
 ];
@@ -55,18 +66,60 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
   const [answers, setAnswers] = useState<QuizAnswers>({});
   const [showResults, setShowResults] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [isEditingPreferences, setIsEditingPreferences] = useState(false);
 
   const { data: matchedFunds, isLoading, isFetched } = useFundMatcherQuery(answers);
 
+  // Track quiz start
+  useEffect(() => {
+    if (open && currentStep === 0 && Object.keys(answers).length === 0) {
+      trackQuizEvent('started');
+    }
+  }, [open]);
+
+  // Parse URL parameters on mount to handle shared links
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const quizParam = params.get('quiz');
+    
+    if (quizParam && open) {
+      try {
+        const quizParams = new URLSearchParams(decodeURIComponent(quizParam));
+        const parsedAnswers: Partial<QuizAnswers> = {};
+        
+        // Parse each answer from URL
+        const validKeys = ['budget', 'strategy', 'income', 'riskTolerance', 'timeline'];
+        quizParams.forEach((value, key) => {
+          if (validKeys.includes(key)) {
+            (parsedAnswers as any)[key] = value;
+          }
+        });
+        
+        // If we have valid answers, set them and trigger search
+        if (Object.keys(parsedAnswers).length > 0) {
+          setAnswers(parsedAnswers as QuizAnswers);
+          setIsSearching(true);
+        }
+      } catch (err) {
+        console.error('Failed to parse quiz URL parameters:', err);
+      }
+    }
+  }, [open]);
+
   // Show results when query completes
   useEffect(() => {
-    if (Object.keys(answers).length === 4 && isSearching) {
+    if (Object.keys(answers).length === 5 && isSearching) {
       if (isFetched && !isLoading) {
         setIsSearching(false);
         setShowResults(true);
+        // Track quiz completion
+        trackQuizEvent('completed', {
+          answers,
+          resultsCount: matchedFunds?.length || 0,
+        });
       }
     }
-  }, [answers, isSearching, isFetched, isLoading]);
+  }, [answers, isSearching, isFetched, isLoading, matchedFunds]);
 
   const handleAnswer = (questionId: string, value: string) => {
     const newAnswers = { ...answers, [questionId]: value };
@@ -92,9 +145,30 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
     setAnswers({});
     setShowResults(false);
     setIsSearching(false);
+    setIsEditingPreferences(false);
+  };
+
+  const handleEditPreferences = () => {
+    setCurrentStep(0);
+    setShowResults(false);
+    setIsSearching(false);
+    setIsEditingPreferences(true);
+    // Keep answers so user can modify them
+  };
+
+  const handleSkipToResults = () => {
+    setShowResults(true);
+    setIsEditingPreferences(false);
   };
 
   const handleClose = () => {
+    // Track abandonment if quiz was started but not completed
+    if (Object.keys(answers).length > 0 && Object.keys(answers).length < 5 && !showResults) {
+      trackQuizEvent('abandoned', {
+        abandonedAtStep: currentStep,
+        answers: answers as QuizAnswers,
+      });
+    }
     handleReset();
     onOpenChange(false);
   };
@@ -126,9 +200,15 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
               </div>
             ) : showResults ? (
               matchedFunds && matchedFunds.length > 0 ? (
-                <QuizResults funds={matchedFunds} onReset={handleReset} onClose={handleClose} />
+                <QuizResults 
+                  funds={matchedFunds}
+                  answers={answers}
+                  onReset={handleReset}
+                  onEditPreferences={handleEditPreferences}
+                  onClose={handleClose}
+                />
               ) : (
-                <QuizNoResults onReset={handleReset} onClose={handleClose} />
+                <QuizNoResults onReset={handleReset} onClose={handleClose} answers={answers} />
               )
             ) : (
               <div className="space-y-6">
@@ -141,6 +221,16 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
                   >
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back
+                  </Button>
+                )}
+                
+                {isEditingPreferences && (
+                  <Button
+                    variant="outline"
+                    className="w-full mb-4"
+                    onClick={handleSkipToResults}
+                  >
+                    Skip to Results
                   </Button>
                 )}
                 

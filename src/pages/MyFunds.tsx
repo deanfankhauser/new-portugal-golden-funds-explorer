@@ -268,7 +268,7 @@ const MyFunds = () => {
                         </div>
                         <div className="flex gap-2">
                           {assignment.permissions.can_edit_profile && (
-                            <Link to={`/manage-profile/${profile.id}`}>
+                            <Link to={`/dashboard/company/${profile.id}`}>
                               <Button>
                                 <Edit3 className="h-4 w-4 mr-2" />
                                 Edit Profile
@@ -302,7 +302,7 @@ const MyFunds = () => {
                                     </span>
                                   </div>
                                 </div>
-                                <Link to={`/manage-fund/${fund.id}/update`}>
+                                <Link to={`/dashboard/fund/${fund.id}/update`}>
                                   <Button variant="outline" size="sm">
                                     <Edit3 className="h-4 w-4 mr-2" />
                                     Manage

@@ -152,7 +152,7 @@ export const EditFundsManagement: React.FC = () => {
                               <ExternalLink className="h-4 w-4" />
                             </Button>
                           </Link>
-                          <Link to={`/manage-fund/${fund.id}`}>
+                          <Link to={`/dashboard/fund/${fund.id}/update`}>
                             <Button size="sm">
                               <Edit3 className="h-4 w-4 mr-2" />
                               Edit Fund
