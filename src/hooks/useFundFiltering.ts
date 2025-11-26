@@ -12,8 +12,12 @@ export const useFundFiltering = () => {
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   const { data: funds, isLoading, isError, isFetching } = useAllFunds();
 
-  // Get search query from URL params
+  // Get filters from URL params
   const searchQuery = searchParams.get('search') || '';
+  const categoryParam = searchParams.get('category');
+  const riskParam = searchParams.get('risk');
+  const tagParam = searchParams.get('tag');
+  const verifiedParam = searchParams.get('verified') === 'true';
 
   const filteredFunds = useMemo(() => {
     // Return empty array while loading or on error
@@ -35,21 +39,30 @@ export const useFundFiltering = () => {
         if (!matchesSearch) return false;
       }
 
-      // Tag filter
-      if (selectedTags.length > 0) {
+      // Tag filter (from selectedTags state or URL param)
+      const tagsToFilter = selectedTags.length > 0 ? selectedTags : (tagParam ? [tagParam] : []);
+      if (tagsToFilter.length > 0) {
         const fundTagsLower = fund.tags.map(t => t.toLowerCase());
-        const hasAllTags = selectedTags.every(selectedTag => 
+        const hasAllTags = tagsToFilter.every(selectedTag => 
           fundTagsLower.includes(selectedTag.toLowerCase())
         );
         if (!hasAllTags) return false;
       }
 
+      // Risk filter from URL param
+      if (riskParam) {
+        const riskLower = riskParam.toLowerCase();
+        const matchesRisk = fund.tags.some(tag => tag.toLowerCase().includes(riskLower));
+        if (!matchesRisk) return false;
+      }
+
       return true;
     });
     
-    // Apply category filter
-    if (selectedCategory) {
-      result = result.filter(fund => fund.category === selectedCategory);
+    // Apply category filter (from selectedCategory state or URL param)
+    const categoryToFilter = selectedCategory || categoryParam;
+    if (categoryToFilter) {
+      result = result.filter(fund => fund.category === categoryToFilter);
     }
     
     // Apply manager filter
@@ -59,8 +72,8 @@ export const useFundFiltering = () => {
       );
     }
     
-    // Apply verified filter
-    if (showOnlyVerified) {
+    // Apply verified filter (from showOnlyVerified state or URL param)
+    if (showOnlyVerified || verifiedParam) {
       result = result.filter(fund => fund.isVerified === true);
     }
     
@@ -75,7 +88,7 @@ export const useFundFiltering = () => {
     });
     
     return sorted;
-  }, [selectedTags, selectedCategory, selectedManager, searchQuery, showOnlyVerified, funds]);
+  }, [selectedTags, selectedCategory, selectedManager, searchQuery, showOnlyVerified, funds, categoryParam, riskParam, tagParam, verifiedParam]);
 
   return {
     selectedTags,
