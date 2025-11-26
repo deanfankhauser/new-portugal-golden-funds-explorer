@@ -353,8 +353,8 @@ export class ConsolidatedSEOService {
         const memberRole = params.role || 'Team Member';
         const companyName = params.companyName || '';
         return {
-          title: this.optimizeText(`${memberName} – ${memberRole} | Movingto Funds`, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText(`${memberName} is ${memberRole} at ${companyName}, managing Portugal Golden Visa investment funds. View their background, managed funds, and professional credentials.`, this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText(`${memberName}: Professional Profile & Managed Funds - ${companyName}`, this.MAX_TITLE_LENGTH),
+          description: this.optimizeText(`Professional profile of ${memberName}, ${memberRole} at ${companyName}. View their investment track record and currently active Golden Visa funds.`, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl(`/team/${params.slug}`),
           canonical: URL_CONFIG.buildUrl(`/team/${params.slug}`),
           keywords: [
