@@ -41,7 +41,7 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
               Portugal Golden Visa Investment Funds
             </h1>
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-high-contrast">
-              Don't Just Invest. <span className="text-accent italic font-cheltenham">Compare Fees, Performance, and Risk.</span>
+              <span className="text-accent italic font-cheltenham">Compare Fees, Performance, and Risk.</span>
             </h2>
             
             <p className="text-lg sm:text-xl text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-8">
