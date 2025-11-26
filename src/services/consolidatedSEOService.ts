@@ -704,6 +704,27 @@ export class ConsolidatedSEOService {
           structuredData: this.getHomepageStructuredData()
         };
 
+      case 'ira-401k-eligible':
+        return {
+          title: this.optimizeText('IRA & 401k Eligible Portugal Golden Visa Funds | QEF-Eligible Investments | Movingto Funds', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Invest in Portugal Golden Visa funds through your IRA or 401k with favorable US tax treatment. Browse QEF-eligible funds with transparent PFIC reporting and reduced tax complexity.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('/ira-401k-eligible-funds'),
+          canonical: URL_CONFIG.buildUrl('/ira-401k-eligible-funds'),
+          keywords: [
+            'IRA eligible Golden Visa funds',
+            '401k eligible Portugal funds',
+            'QEF eligible funds',
+            'PFIC QEF election',
+            'US retirement account Portugal investment',
+            'IRA Golden Visa investment',
+            '401k Portugal real estate',
+            'QEF reporting funds',
+            'US tax advantaged Golden Visa',
+            'retirement account foreign investment'
+          ],
+          structuredData: this.getIRAEligibleStructuredData(funds)
+        };
+
       default:
         return this.getSEOData('homepage');
     }
@@ -2696,6 +2717,71 @@ export class ConsolidatedSEOService {
         }
       ]
     };
+  }
+
+  // IRA/401k eligible funds page structured data
+  private static getIRAEligibleStructuredData(funds?: Fund[]): any[] {
+    const pageUrl = URL_CONFIG.buildUrl('/ira-401k-eligible-funds');
+    const qefFunds = funds?.filter(f => f.pficStatus) || [];
+
+    return [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        'name': 'IRA & 401k Eligible Portugal Golden Visa Funds',
+        'description': 'QEF-eligible Portugal Golden Visa funds suitable for US retirement accounts with favorable PFIC tax treatment',
+        'url': pageUrl,
+        'mainEntity': {
+          '@type': 'ItemList',
+          'numberOfItems': qefFunds.length,
+          'itemListElement': qefFunds.slice(0, 10).map((fund, index) => ({
+            '@type': 'InvestmentFund',
+            'position': index + 1,
+            'name': fund.name,
+            'description': fund.description,
+            'url': URL_CONFIG.buildFundUrl(fund.id)
+          }))
+        }
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': [
+          {
+            '@type': 'Question',
+            'name': 'What is a QEF-eligible fund?',
+            'acceptedAnswer': {
+              '@type': 'Answer',
+              'text': 'A Qualified Electing Fund (QEF) eligible fund provides annual PFIC statements allowing US investors to elect QEF treatment, which enables preferential capital gains tax rates instead of punitive ordinary income rates on PFIC distributions.'
+            }
+          },
+          {
+            '@type': 'Question',
+            'name': 'Can I invest in Portugal Golden Visa funds through my IRA or 401k?',
+            'acceptedAnswer': {
+              '@type': 'Answer',
+              'text': 'Yes, QEF-eligible Portugal Golden Visa funds can be held in US retirement accounts with proper structuring. The QEF election simplifies tax reporting and eliminates the complex interest charges that typically apply to PFIC investments.'
+            }
+          },
+          {
+            '@type': 'Question',
+            'name': 'What are the tax benefits of QEF election?',
+            'acceptedAnswer': {
+              '@type': 'Answer',
+              'text': 'QEF election provides long-term capital gains treatment (15-20% tax rates instead of up to 37%), eliminates interest charges on deferred gains, simplifies Form 8621 filing, and makes funds suitable for tax-deferred retirement accounts.'
+            }
+          }
+        ]
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+          { '@type': 'ListItem', 'position': 2, 'name': 'IRA & 401k Eligible Funds', 'item': pageUrl }
+        ]
+      }
+    ];
   }
 
 }
