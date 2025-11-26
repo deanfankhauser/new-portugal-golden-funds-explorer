@@ -5,7 +5,7 @@ import { categoryToSlug, tagToSlug, managerToSlug } from '../lib/utils';
 export interface StaticRoute {
   path: string;
   pageType: string;
-  params?: Record<string, string>;
+  params?: Record<string, any>; // Allow any type for flexible param passing
   fundId?: string;
   isCanonical?: boolean; // true = include in sitemap, false = exclude (non-canonical pages)
 }
@@ -62,12 +62,27 @@ export class RouteDiscovery {
     });
 
     // Manager pages
+    const { managerProfiles = [] } = await fetchAllBuildDataCached();
     managers.forEach(manager => {
       const slug = managerToSlug(manager.name);
+      // Find matching profile
+      const managerProfile = managerProfiles.find(p => 
+        p.name.toLowerCase() === manager.name.toLowerCase() ||
+        p.company_name.toLowerCase() === manager.name.toLowerCase()
+      );
+      // Find associated funds
+      const managerFunds = funds.filter(f => 
+        f.managerName.toLowerCase() === manager.name.toLowerCase()
+      );
+      
       routes.push({
         path: `/manager/${slug}`,
         pageType: 'manager',
-        params: { managerName: manager.name }
+        params: { 
+          managerName: manager.name,
+          managerProfile,
+          funds: managerFunds
+        }
       });
     });
 

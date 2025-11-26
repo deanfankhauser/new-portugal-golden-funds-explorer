@@ -321,14 +321,14 @@ export class ConsolidatedSEOService {
         };
 
       case 'manager':
-        const currentYear = new Date().getFullYear();
         const fundCount = params.funds?.length || 0;
+        const goldenVisaFundCount = params.funds?.filter((f: any) => f.tags?.includes('Golden Visa Eligible')).length || fundCount;
         
-        // SEO Title: "[Manager Name]: Corporate Profile & Track Record ({Current Year})"
-        const managerTitle = `${params.managerName}: Corporate Profile & Track Record (${currentYear})`;
+        // SEO Title: "[Manager Name]: Corporate Profile, Track Record & Active Funds"
+        const managerTitle = `${params.managerName}: Corporate Profile, Track Record & Active Funds`;
         
-        // SEO Description: "View the corporate profile of [Manager Name]. Analysis of their [Fund_Count] active funds, investment focus, and CMVM regulatory standing."
-        const managerDescription = `View the corporate profile of ${params.managerName}. Analysis of their ${fundCount} active fund${fundCount !== 1 ? 's' : ''}, investment focus, and CMVM regulatory standing.`;
+        // SEO Description: "View the corporate profile of [Manager Name]. Regulated Portuguese fund manager with [X] active Golden Visa funds. View AUM and investment strategy."
+        const managerDescription = `View the corporate profile of ${params.managerName}. Regulated Portuguese fund manager with ${goldenVisaFundCount} active Golden Visa fund${goldenVisaFundCount !== 1 ? 's' : ''}. View AUM and investment strategy.`;
         
         return {
           title: this.optimizeText(managerTitle, this.MAX_TITLE_LENGTH),
@@ -343,7 +343,9 @@ export class ConsolidatedSEOService {
             'Golden Visa fund manager',
             'investment fund management Portugal',
             'CMVM regulated',
-            'fund manager analysis'
+            'fund manager analysis',
+            'active funds',
+            'AUM'
           ],
           structuredData: this.getManagerStructuredData(params.managerName, params.managerProfile, params.funds || [])
         };
@@ -1291,9 +1293,9 @@ export class ConsolidatedSEOService {
     // Base Organization Schema (Enhanced with complete company details)
     const organizationSchema: any = {
       '@context': 'https://schema.org',
-      '@type': 'Organization',
+      '@type': ['Organization', 'FinancialService'],
       'name': managerName,
-      'url': managerUrl,
+      'url': managerProfile?.website || managerUrl,
       ...(managerProfile?.logo_url && { 'logo': managerProfile.logo_url }),
       ...(managerProfile?.description && { 'description': managerProfile.description }),
       'address': postalAddress,
@@ -1304,7 +1306,12 @@ export class ConsolidatedSEOService {
         'name': 'Portugal'
       },
       'serviceType': 'Investment Fund Management',
-      'knowsAbout': 'Golden Visa Investment Funds'
+      'knowsAbout': 'Golden Visa Investment Funds',
+      'parentOrganization': {
+        '@type': 'Organization',
+        'name': 'CMVM',
+        'url': 'https://www.cmvm.pt/'
+      }
     };
     
     // Add registration and license numbers as identifiers

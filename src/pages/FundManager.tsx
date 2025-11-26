@@ -15,7 +15,16 @@ import { FloatingActionButton } from '../components/common/FloatingActionButton'
 
 const isSSG = typeof window === 'undefined';
 
-const FundManager = () => {
+interface FundManagerProps {
+  managerData?: {
+    name: string;
+    profile?: Profile;
+    funds: Fund[];
+    isVerified: boolean;
+  };
+}
+
+const FundManager: React.FC<FundManagerProps> = ({ managerData }) => {
   const { name } = useParams<{ name: string }>();
   const navigate = useNavigate();
   const slugName = name || '';
@@ -108,21 +117,28 @@ const FundManager = () => {
     window.scrollTo(0, 0);
   }, [name]);
 
-  // Return minimal shell during SSG
-  if (isSSG) {
+  // Use SSR data if available during SSG
+  if (isSSG && managerData) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
-        <PageSEO pageType="manager" managerName={displayManagerName} />
+        <PageSEO 
+          pageType="manager" 
+          managerName={managerData.name}
+          managerProfile={managerData.profile}
+          funds={managerData.funds}
+        />
         <Header />
         <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
-          <div className="flex items-center justify-center min-h-[400px]">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Loading fund manager...</p>
-            </div>
-          </div>
+          <FundManagerBreadcrumbs managerName={managerData.name} />
+          <FundManagerContent 
+            managerFunds={managerData.funds} 
+            managerName={managerData.name} 
+            isManagerVerified={managerData.isVerified}
+            managerProfile={managerData.profile}
+          />
         </main>
         <Footer />
+        <FloatingActionButton />
       </div>
     );
   }

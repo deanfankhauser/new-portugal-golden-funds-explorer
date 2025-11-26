@@ -164,6 +164,86 @@ export async function fetchAllManagersForBuild(): Promise<Array<{ name: string; 
 }
 
 /**
+ * Fetch all manager profiles from database during build time
+ */
+export async function fetchAllManagerProfilesForBuild(): Promise<Array<{
+  name: string;
+  company_name: string;
+  description?: string;
+  city?: string;
+  country?: string;
+  entity_type?: string;
+  founded_year?: number;
+  website?: string;
+  logo_url?: string;
+  linkedin_url?: string;
+  twitter_url?: string;
+  registration_number?: string;
+  license_number?: string;
+  assets_under_management?: number;
+  manager_about?: string;
+  manager_faqs?: any;
+  manager_highlights?: any;
+}>> {
+  const supabase = getSupabaseBuildClient();
+  
+  console.log('📊 Build: Fetching all manager profiles from database...');
+  
+  const { data: profiles, error } = await supabase
+    .from('profiles')
+    .select(`
+      company_name,
+      manager_name,
+      description,
+      city,
+      country,
+      entity_type,
+      founded_year,
+      website,
+      logo_url,
+      linkedin_url,
+      twitter_url,
+      registration_number,
+      license_number,
+      assets_under_management,
+      manager_about,
+      manager_faqs,
+      manager_highlights
+    `)
+    .not('company_name', 'is', null)
+    .order('company_name', { ascending: true });
+    
+  if (error) {
+    console.error('❌ Build: Failed to fetch manager profiles from database:', error.message);
+    return [];
+  }
+  
+  const transformedProfiles = profiles?.map(p => ({
+    name: p.manager_name || p.company_name,
+    company_name: p.company_name,
+    description: p.description,
+    city: p.city,
+    country: p.country,
+    entity_type: p.entity_type,
+    founded_year: p.founded_year,
+    website: p.website,
+    logo_url: p.logo_url,
+    linkedin_url: p.linkedin_url,
+    twitter_url: p.twitter_url,
+    registration_number: p.registration_number,
+    license_number: p.license_number,
+    assets_under_management: p.assets_under_management,
+    manager_about: p.manager_about,
+    manager_faqs: p.manager_faqs,
+    manager_highlights: p.manager_highlights
+  })) || [];
+  
+  console.log(`✅ Build: Fetched ${transformedProfiles.length} manager profiles from database`);
+  
+  return transformedProfiles;
+}
+
+/**
  * Fetch all team members from database during build time
  */
 export async function fetchAllTeamMembersForBuild(): Promise<Array<{ id: string; slug: string; name: string; role: string; profile_id: string; linkedin_url?: string; photo_url?: string; bio?: string; company_name?: string }>> {
@@ -219,6 +299,25 @@ let buildDataCache: {
   tags?: FundTag[];
   managers?: Array<{ name: string; fundsCount: number }>;
   teamMembers?: Array<{ id: string; slug: string; name: string; role: string; profile_id: string; linkedin_url?: string; photo_url?: string; bio?: string; company_name?: string }>;
+  managerProfiles?: Array<{
+    name: string;
+    company_name: string;
+    description?: string;
+    city?: string;
+    country?: string;
+    entity_type?: string;
+    founded_year?: number;
+    website?: string;
+    logo_url?: string;
+    linkedin_url?: string;
+    twitter_url?: string;
+    registration_number?: string;
+    license_number?: string;
+    assets_under_management?: number;
+    manager_about?: string;
+    manager_faqs?: any;
+    manager_highlights?: any;
+  }>;
 } = {};
 
 /**
@@ -251,6 +350,10 @@ export async function fetchAllBuildDataCached() {
   
   if (!buildDataCache.teamMembers) {
     buildDataCache.teamMembers = await fetchAllTeamMembersForBuild();
+  }
+  
+  if (!buildDataCache.managerProfiles) {
+    buildDataCache.managerProfiles = await fetchAllManagerProfilesForBuild();
   }
   
   return buildDataCache;

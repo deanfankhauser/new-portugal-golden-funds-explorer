@@ -88,19 +88,25 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
     return 'Investment Manager';
   };
 
-  // Enhance short bios with dynamic boilerplate
+  // Enhance short bios with dynamic boilerplate (Corporate Bio Template)
   const getEnhancedDescription = (
     description: string | undefined,
     managerName: string,
-    city: string | undefined,
-    fundCount: number
+    fundCount: number,
+    isVerified: boolean,
+    primaryStrategy: string
   ): string => {
     const baseDesc = description || '';
     
     // If description is short (<100 chars), append dynamic boilerplate
     if (baseDesc.length < 100) {
-      const location = city || 'Portugal';
-      const boilerplate = `${managerName} is a Portuguese investment management firm based in ${location}. They currently manage ${fundCount} investment vehicle${fundCount !== 1 ? 's' : ''} listed on our platform.`;
+      const verifiedText = isVerified ? 'verified ' : '';
+      // Remove " Specialist" or " Manager" from strategy for cleaner text
+      const strategyText = primaryStrategy
+        .replace(' Specialist', '')
+        .replace(' Manager', '');
+      
+      const boilerplate = `${managerName} is a ${verifiedText}investment management entity operating in Portugal. They currently manage ${fundCount} active investment fund${fundCount !== 1 ? 's' : ''} listed on our platform, specializing in ${strategyText} strategies. The firm is subject to CMVM regulatory oversight.`;
       
       return baseDesc ? `${baseDesc} ${boilerplate}` : boilerplate;
     }
@@ -130,8 +136,9 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
   const fullHeroDescription = getEnhancedDescription(
     managerProfile?.description,
     managerName,
-    managerProfile?.city,
-    managerFunds.length
+    managerFunds.length,
+    isManagerVerified,
+    primaryStrategy
   );
   
   const getTruncatedHeroText = (text: string) => {
