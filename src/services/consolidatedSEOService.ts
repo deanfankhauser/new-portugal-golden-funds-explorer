@@ -407,18 +407,25 @@ export class ConsolidatedSEOService {
           
           if (fund1 && fund2) {
             return {
-              title: this.optimizeText(`${fund1.name} vs ${fund2.name} – Portugal Golden Visa Fund Comparison | Movingto Funds`, this.MAX_TITLE_LENGTH),
-              description: this.optimizeText(`Compare ${fund1.name} vs ${fund2.name} – see differences in performance, fees, risk, liquidity and minimum investment for these Portugal Golden Visa funds.`, this.MAX_DESCRIPTION_LENGTH),
+              title: this.optimizeText(`${fund1.name} vs ${fund2.name} Review: Fees, Risk & Golden Visa Comparison`, this.MAX_TITLE_LENGTH),
+              description: this.optimizeText(`Detailed comparison of ${fund1.name} and ${fund2.name}. Analyze the differences in Management Fees, Risk Profiles, and Target Returns to find the right Golden Visa fund for you.`, this.MAX_DESCRIPTION_LENGTH),
               url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
               canonical: URL_CONFIG.buildComparisonUrl(normalizedSlug),
               robots: 'index, follow',
               keywords: [
                 `${fund1.name} vs ${fund2.name}`,
+                'fund comparison',
+                'investment comparison',
+                'fund review',
+                'fees comparison',
+                'risk comparison',
                 'Golden Visa fund comparison',
                 'investment fund analysis',
                 `${fund1.managerName}`,
                 `${fund2.managerName}`,
-                'fund performance comparison'
+                'fund performance comparison',
+                'compare funds',
+                'investment analysis'
               ],
               structuredData: this.getFundComparisonStructuredData(fund1, fund2)
             };
