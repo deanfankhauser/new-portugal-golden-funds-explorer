@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -9,10 +10,58 @@ import EmptyComparison from '../components/comparison/EmptyComparison';
 import ComparisonBreadcrumbs from '../components/comparison/ComparisonBreadcrumbs';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Share2, Check } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
 
 const ComparisonPage = () => {
-  const { compareFunds, clearComparison } = useComparison();
+  const { compareFunds, clearComparison, loadFundsFromIds } = useComparison();
   const [highlightDifferences, setHighlightDifferences] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [copied, setCopied] = useState(false);
+
+  // Load funds from URL on mount
+  useEffect(() => {
+    const fundIds = searchParams.get('funds');
+    if (fundIds && fundIds.trim()) {
+      const ids = fundIds.split(',').map(id => id.trim()).filter(Boolean);
+      if (ids.length > 0) {
+        loadFundsFromIds(ids);
+      }
+    }
+  }, []);
+
+  // Update URL when comparison changes
+  useEffect(() => {
+    if (compareFunds.length > 0) {
+      const fundIds = compareFunds.map(f => f.id).join(',');
+      setSearchParams({ funds: fundIds }, { replace: true });
+    } else {
+      setSearchParams({}, { replace: true });
+    }
+  }, [compareFunds, setSearchParams]);
+
+  const handleShare = async () => {
+    const fundIds = compareFunds.map(f => f.id).join(',');
+    const shareUrl = `${window.location.origin}/compare?funds=${fundIds}`;
+    
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      toast({
+        title: "Link copied!",
+        description: "Shareable comparison link copied to clipboard.",
+      });
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error('Failed to copy:', error);
+      toast({
+        title: "Copy failed",
+        description: "Please copy the URL manually from the address bar.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -40,12 +89,33 @@ const ComparisonPage = () => {
                 </div>
               )}
               {compareFunds.length > 0 && (
-                <button
-                  onClick={clearComparison}
-                  className="px-4 py-2 text-sm font-medium text-destructive-foreground bg-destructive hover:bg-destructive/90 rounded-md transition-colors"
-                >
-                  Clear All
-                </button>
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleShare}
+                    className="gap-2"
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="h-4 w-4" />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Share2 className="h-4 w-4" />
+                        Share
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={clearComparison}
+                  >
+                    Clear All
+                  </Button>
+                </>
               )}
             </div>
           </div>
