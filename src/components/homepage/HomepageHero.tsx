@@ -28,8 +28,8 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
           <div className="flex justify-center mb-8">
             <div className="inline-flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-full px-6 py-3 border border-border shadow-sm">
               <ShieldCheck className="h-5 w-5 text-accent" />
-              <span className="text-sm font-medium text-high-contrast">
-                Expert-Curated Golden Visa Fund Analysis
+              <span className="text-sm font-medium text-high-contrast tracking-[0.15em] uppercase">
+                Independent Market Analysis
               </span>
             </div>
           </div>
@@ -37,34 +37,26 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
           {/* Main Headline */}
           <div className="text-center mb-8">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-high-contrast leading-[1.1] tracking-tight">
-              Portugal Golden Visa Fund Directory & Comparison Tool
+              Portugal Golden Visa Investment Funds
             </h1>
             <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              <span className="text-accent italic font-cheltenham">Profiles, Metrics, Comparisons</span>
+              <span className="text-accent italic font-cheltenham">Compare Fees, Performance, and Risk.</span>
             </div>
             
-            <p className="text-lg sm:text-xl text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-4">
-              Browse independent fund profiles, compare fees, performance and risk, and shortlist the best options for your Golden Visa.
-            </p>
-            
-            <p className="text-base sm:text-lg text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-8 font-medium">
-              Filter by risk, minimum ticket and strategy, then shortlist 2–3 funds to discuss with our legal team.
+            <p className="text-lg sm:text-xl text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-8">
+              The only independent directory of CMVM-regulated investment funds eligible for the Portugal Golden Visa. We analyze the market to help you compare strategies, scrutinize management fees, and verify track records. Use our data to shortlist the best funds before you invest.
             </p>
           </div>
 
-          {/* Learn More Links */}
+          {/* CTA Button */}
           <div className="text-center mb-8">
-            <a 
-              href="https://www.movingto.com/portugal-golden-visa-funds" 
-              target="_blank" 
-              rel="noopener noreferrer"
+            <button 
+              onClick={scrollToFunds}
               className="inline-flex items-center text-accent hover:text-accent/80 font-semibold text-base sm:text-lg transition-colors duration-200 group"
             >
-              Browse All Portugal Golden Visa Funds
-              <svg className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </a>
+              Compare All Portugal Funds
+              <span className="ml-2 transition-transform group-hover:translate-x-1">→</span>
+            </button>
           </div>
         </div>
       </div>
