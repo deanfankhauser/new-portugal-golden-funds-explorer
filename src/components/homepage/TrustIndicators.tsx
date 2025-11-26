@@ -49,9 +49,6 @@ const TrustIndicators: React.FC = () => {
                     <span className="text-sm text-medium-contrast whitespace-nowrap">
                       {indicator}
                     </span>
-                    {index < indicators.length - 1 && (
-                      <span className="text-medium-contrast mx-2">•</span>
-                    )}
                   </div>
                 ))}
               </div>
