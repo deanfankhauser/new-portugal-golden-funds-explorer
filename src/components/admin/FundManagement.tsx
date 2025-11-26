@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { Search, ExternalLink, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { Search, ExternalLink, CheckCircle2, XCircle, Loader2, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -25,6 +25,7 @@ interface FundData {
   website?: string;
   is_verified?: boolean;
   verified_at?: string;
+  is_quiz_eligible?: boolean;
 }
 
 const FundManagement: React.FC = () => {
@@ -63,7 +64,7 @@ const FundManagement: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('funds')
-        .select('id, name, category, manager_name, website, is_verified, verified_at')
+        .select('id, name, category, manager_name, website, is_verified, verified_at, is_quiz_eligible')
         .order('is_verified', { ascending: false })
         .order('name');
 
@@ -105,6 +106,36 @@ const FundManagement: React.FC = () => {
       toast({
         title: 'Error',
         description: error.message || 'Failed to update verification status',
+        variant: 'destructive'
+      });
+    } finally {
+      setTogglingFunds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(fundId);
+        return newSet;
+      });
+    }
+  };
+
+  const handleQuizToggle = async (fundId: string, currentStatus: boolean) => {
+    setTogglingFunds(prev => new Set(prev).add(fundId));
+
+    try {
+      const result = await FundVerificationService.toggleQuizEligibility(fundId, !currentStatus);
+
+      if (result.success) {
+        toast({
+          title: 'Success',
+          description: `Quiz eligibility ${!currentStatus ? 'enabled' : 'disabled'} successfully`,
+        });
+        fetchFunds();
+      } else {
+        throw new Error(result.error || 'Unknown error');
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to update quiz eligibility',
         variant: 'destructive'
       });
     } finally {
@@ -235,7 +266,7 @@ const FundManagement: React.FC = () => {
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-4">
                         {fund.website && (
                           <Button
                             variant="ghost"
@@ -245,6 +276,17 @@ const FundManagement: React.FC = () => {
                             <ExternalLink className="h-4 w-4" />
                           </Button>
                         )}
+                        <div className="flex items-center gap-2">
+                          <Sparkles className={`h-4 w-4 ${fund.is_quiz_eligible ? 'text-primary' : 'text-muted-foreground'}`} />
+                          <span className="text-sm text-muted-foreground">
+                            Quiz
+                          </span>
+                          <Switch
+                            checked={fund.is_quiz_eligible || false}
+                            onCheckedChange={() => handleQuizToggle(fund.id, fund.is_quiz_eligible || false)}
+                            disabled={togglingFunds.has(fund.id)}
+                          />
+                        </div>
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-muted-foreground">
                             {fund.is_verified ? 'Verified' : 'Unverified'}

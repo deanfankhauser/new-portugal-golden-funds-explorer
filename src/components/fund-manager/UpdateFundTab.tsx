@@ -1220,31 +1220,12 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
 
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary" />
-                Fund Matcher Quiz Settings
-              </CardTitle>
+              <CardTitle>US Investor Compliance</CardTitle>
               <p className="text-sm text-muted-foreground mt-1">
-                Control whether this fund appears in the interactive Fund Matcher Quiz
+                PFIC/QEF status for US citizens and residents
               </p>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="space-y-1">
-                  <Label htmlFor="isQuizEligible" className="text-base font-medium">
-                    Include in Fund Matcher Quiz
-                  </Label>
-                  <p className="text-sm text-muted-foreground">
-                    Enable this fund to appear as a match result in the homepage quiz
-                  </p>
-                </div>
-                <Switch
-                  id="isQuizEligible"
-                  checked={formData.isQuizEligible}
-                  onCheckedChange={(checked) => handleInputChange('isQuizEligible', checked)}
-                />
-              </div>
-
+            <CardContent>
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="space-y-1">
                   <Label htmlFor="usCompliant" className="text-base font-medium">
