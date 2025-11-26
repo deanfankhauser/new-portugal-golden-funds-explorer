@@ -42,11 +42,12 @@ const questions = [
     ]
   },
   {
-    id: 'usTaxAccount',
-    question: 'Are you investing through a US tax account (IRA/401k)?',
+    id: 'riskTolerance',
+    question: 'How comfortable are you with investment volatility?',
     options: [
-      { value: 'yes', label: 'Yes', description: 'We\'ll highlight QEF-eligible funds for you' },
-      { value: 'no', label: 'No', description: 'Standard investment account' }
+      { value: 'conservative', label: 'Conservative', description: 'Prefer stable, predictable returns even if lower' },
+      { value: 'moderate', label: 'Moderate', description: 'Accept some fluctuation for better potential returns' },
+      { value: 'aggressive', label: 'Aggressive', description: 'Comfortable with high volatility for maximum growth' }
     ]
   },
   {
@@ -87,7 +88,7 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
         const parsedAnswers: Partial<QuizAnswers> = {};
         
         // Parse each answer from URL
-        const validKeys = ['budget', 'strategy', 'income', 'usTaxAccount', 'timeline'];
+        const validKeys = ['budget', 'strategy', 'income', 'riskTolerance', 'timeline'];
         quizParams.forEach((value, key) => {
           if (validKeys.includes(key)) {
             (parsedAnswers as any)[key] = value;
@@ -205,7 +206,6 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
                   onReset={handleReset}
                   onEditPreferences={handleEditPreferences}
                   onClose={handleClose}
-                  showQEFHighlight={answers.usTaxAccount === 'yes'}
                 />
               ) : (
                 <QuizNoResults onReset={handleReset} onClose={handleClose} answers={answers} />
