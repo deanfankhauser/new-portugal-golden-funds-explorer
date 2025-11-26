@@ -64,6 +64,7 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
   const [answers, setAnswers] = useState<QuizAnswers>({});
   const [showResults, setShowResults] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [isEditingPreferences, setIsEditingPreferences] = useState(false);
 
   const { data: matchedFunds, isLoading, isFetched } = useFundMatcherQuery(answers);
 
@@ -101,13 +102,20 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
     setAnswers({});
     setShowResults(false);
     setIsSearching(false);
+    setIsEditingPreferences(false);
   };
 
   const handleEditPreferences = () => {
     setCurrentStep(0);
     setShowResults(false);
     setIsSearching(false);
+    setIsEditingPreferences(true);
     // Keep answers so user can modify them
+  };
+
+  const handleSkipToResults = () => {
+    setShowResults(true);
+    setIsEditingPreferences(false);
   };
 
   const handleClose = () => {
@@ -164,6 +172,16 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
                   >
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back
+                  </Button>
+                )}
+                
+                {isEditingPreferences && (
+                  <Button
+                    variant="outline"
+                    className="w-full mb-4"
+                    onClick={handleSkipToResults}
+                  >
+                    Skip to Results
                   </Button>
                 )}
                 
