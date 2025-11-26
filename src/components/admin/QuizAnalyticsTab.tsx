@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, Users, CheckCircle2, Share2, XCircle, AlertTriangle } from 'lucide-react';
+import { QuizFunnelChart } from './QuizFunnelChart';
 
 interface QuizStats {
   total_started: number;
@@ -27,10 +28,20 @@ interface UnderservedSegment {
   lastOccurred: string;
 }
 
+interface FunnelStep {
+  step: number;
+  label: string;
+  count: number;
+  dropOffCount: number;
+  dropOffRate: number;
+  retentionRate: number;
+}
+
 export const QuizAnalyticsTab: React.FC = () => {
   const [stats, setStats] = useState<QuizStats | null>(null);
   const [popularAnswers, setPopularAnswers] = useState<PopularAnswer[]>([]);
   const [underservedSegments, setUnderservedSegments] = useState<UnderservedSegment[]>([]);
+  const [funnelData, setFunnelData] = useState<FunnelStep[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -44,7 +55,7 @@ export const QuizAnalyticsTab: React.FC = () => {
       // Fetch event counts
       const { data: events, error: eventsError } = await supabase
         .from('quiz_analytics')
-        .select('event_type, results_count, answers, created_at');
+        .select('event_type, results_count, answers, created_at, abandoned_at_step');
 
       if (eventsError) throw eventsError;
 
@@ -122,6 +133,53 @@ export const QuizAnalyticsTab: React.FC = () => {
         .slice(0, 5);
 
       setUnderservedSegments(underserved);
+
+      // Calculate funnel data
+      const questionLabels = ['Budget', 'Strategy', 'Income', 'US Tax Account', 'Timeline'];
+      const totalStarted = started;
+      
+      // Count users who reached each step (0 = started, 1-5 = questions)
+      const stepCounts = new Array(6).fill(0);
+      stepCounts[0] = totalStarted; // Everyone who started
+
+      // Count completed (reached step 5 and finished)
+      stepCounts[5] = completed;
+
+      // Count abandoned at each step
+      const abandonedAtStep = new Array(6).fill(0);
+      events?.filter(e => e.event_type === 'abandoned').forEach(event => {
+        const step = event.abandoned_at_step || 0;
+        if (step >= 0 && step < 6) {
+          abandonedAtStep[step]++;
+        }
+      });
+
+      // Calculate cumulative counts working backwards
+      for (let i = 4; i >= 0; i--) {
+        // Users at this step = users at next step + users who abandoned at this step
+        stepCounts[i] = stepCounts[i + 1] + abandonedAtStep[i];
+      }
+
+      // Build funnel data
+      const funnel: FunnelStep[] = [];
+      for (let i = 0; i <= 5; i++) {
+        const count = stepCounts[i];
+        const nextCount = i < 5 ? stepCounts[i + 1] : count;
+        const dropOffCount = count - nextCount;
+        const dropOffRate = count > 0 ? (dropOffCount / count) * 100 : 0;
+        const retentionRate = totalStarted > 0 ? (count / totalStarted) * 100 : 0;
+
+        funnel.push({
+          step: i,
+          label: i === 0 ? 'Quiz Started' : questionLabels[i - 1],
+          count,
+          dropOffCount,
+          dropOffRate,
+          retentionRate,
+        });
+      }
+
+      setFunnelData(funnel);
     } catch (error) {
       console.error('Failed to fetch quiz analytics:', error);
     } finally {
@@ -187,6 +245,11 @@ export const QuizAnalyticsTab: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Funnel Analysis */}
+      {funnelData.length > 0 && (
+        <QuizFunnelChart funnelData={funnelData} totalStarted={stats?.total_started || 0} />
+      )}
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="p-6">
