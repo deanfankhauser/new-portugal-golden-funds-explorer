@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -7,9 +7,12 @@ import { useComparison } from '../contexts/ComparisonContext';
 import ComparisonTable from '../components/comparison/ComparisonTable';
 import EmptyComparison from '../components/comparison/EmptyComparison';
 import ComparisonBreadcrumbs from '../components/comparison/ComparisonBreadcrumbs';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 const ComparisonPage = () => {
   const { compareFunds, clearComparison } = useComparison();
+  const [highlightDifferences, setHighlightDifferences] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -23,14 +26,28 @@ const ComparisonPage = () => {
           
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-3xl font-bold">Compare Portugal Golden Visa Investment Funds</h1>
-            {compareFunds.length > 0 && (
-              <button
-                onClick={clearComparison}
-                className="px-4 py-2 text-sm font-medium text-destructive-foreground bg-destructive hover:bg-destructive/90 rounded-md transition-colors"
-              >
-                Clear All
-              </button>
-            )}
+            <div className="flex items-center gap-4">
+              {compareFunds.length > 1 && (
+                <div className="flex items-center gap-2">
+                  <Switch
+                    id="highlight-mode"
+                    checked={highlightDifferences}
+                    onCheckedChange={setHighlightDifferences}
+                  />
+                  <Label htmlFor="highlight-mode" className="text-sm cursor-pointer">
+                    Highlight Differences
+                  </Label>
+                </div>
+              )}
+              {compareFunds.length > 0 && (
+                <button
+                  onClick={clearComparison}
+                  className="px-4 py-2 text-sm font-medium text-destructive-foreground bg-destructive hover:bg-destructive/90 rounded-md transition-colors"
+                >
+                  Clear All
+                </button>
+              )}
+            </div>
           </div>
           <p className="text-muted-foreground mb-4">
             {compareFunds.length > 0 
@@ -72,7 +89,7 @@ const ComparisonPage = () => {
 
         {compareFunds.length > 0 ? (
           <div className="bg-card rounded-lg shadow-sm border p-6">
-            <ComparisonTable funds={compareFunds} />
+            <ComparisonTable funds={compareFunds} highlightDifferences={highlightDifferences} />
           </div>
         ) : (
           <EmptyComparison />

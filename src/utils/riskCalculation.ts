@@ -63,7 +63,7 @@ export const getRiskBandColor = (band: RiskBand): string => {
   const colors: Record<RiskBand, string> = {
     'Conservative': 'text-green-600',
     'Balanced': 'text-orange-600',
-    'Aggressive': 'text-red-600'
+    'Aggressive': 'text-blue-600'
   };
   return colors[band];
 };
@@ -75,7 +75,7 @@ export const getRiskBandBgColor = (band: RiskBand): string => {
   const colors: Record<RiskBand, string> = {
     'Conservative': 'bg-green-100 text-green-800',
     'Balanced': 'bg-orange-100 text-orange-800',
-    'Aggressive': 'bg-red-100 text-red-800'
+    'Aggressive': 'bg-blue-100 text-blue-800'
   };
   return colors[band];
 };
