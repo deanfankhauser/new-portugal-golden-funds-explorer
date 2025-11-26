@@ -62,6 +62,16 @@ export const QuizResults: React.FC<QuizResultsProps> = ({ funds, answers, onRese
   const { toast } = useToast();
   const [copied, setCopied] = React.useState(false);
 
+  // Track zero results for underserved segments
+  React.useEffect(() => {
+    if (funds.length === 0) {
+      trackQuizEvent('completed', {
+        answers,
+        resultsCount: 0,
+      });
+    }
+  }, [funds.length, answers]);
+
   const handleShare = async () => {
     // Generate shareable URL with quiz answers
     const params = new URLSearchParams();
