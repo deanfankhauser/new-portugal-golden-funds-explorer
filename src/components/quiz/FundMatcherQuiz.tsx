@@ -41,11 +41,11 @@ const questions = [
     ]
   },
   {
-    id: 'usCitizen',
-    question: 'Are you a US Citizen or Resident?',
+    id: 'usTaxAccount',
+    question: 'Are you investing through a US tax account (IRA/401k)?',
     options: [
-      { value: 'yes', label: 'Yes', description: 'I need PFIC-compliant funds' },
-      { value: 'no', label: 'No', description: 'I\'m not a US tax resident' }
+      { value: 'yes', label: 'Yes', description: 'I need QEF-eligible funds for favorable US tax treatment' },
+      { value: 'no', label: 'No', description: 'Standard investment account' }
     ]
   }
 ];
