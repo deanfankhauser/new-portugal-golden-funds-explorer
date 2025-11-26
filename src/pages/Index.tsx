@@ -4,6 +4,9 @@ import { useFundFiltering } from '../hooks/useFundFiltering';
 import PageSEO from '../components/common/PageSEO';
 import HomepageLayout from '../components/homepage/HomepageLayout';
 import HomepageHero from '../components/homepage/HomepageHero';
+import InvestorPathways from '../components/homepage/InvestorPathways';
+import VerifiedTopPicks from '../components/homepage/VerifiedTopPicks';
+import TrustIndicators from '../components/homepage/TrustIndicators';
 import HomepageContent from '../components/homepage/HomepageContent';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
@@ -46,8 +49,19 @@ const IndexPage = () => {
     <HomepageLayout>
       <PageSEO pageType="homepage" />
       
+      {/* 1. Hero Section */}
       <HomepageHero funds={allFunds || []} />
 
+      {/* 2. Investor Pathways */}
+      <InvestorPathways />
+
+      {/* 3. Verified Top Picks */}
+      <VerifiedTopPicks funds={allFunds || []} />
+
+      {/* 4. Trust Indicators */}
+      <TrustIndicators />
+
+      {/* 5. Full Directory */}
       <HomepageContent
         filteredFunds={filteredFunds}
         selectedTags={selectedTags}

@@ -97,7 +97,14 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
   }, [filteredFunds, sortBy]);
 
   return (
-    <div className="spacing-responsive-md" id="funds-section">
+    <section id="funds-section" className="spacing-responsive-md">
+      {/* Section Heading */}
+      <div className="max-w-7xl mx-auto container-responsive-padding mb-8 pt-12">
+        <h2 className="text-3xl sm:text-4xl font-bold text-high-contrast text-center">
+          Browse the Complete Directory
+        </h2>
+      </div>
+
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
@@ -160,7 +167,7 @@ const HomepageContent: React.FC<HomepageContentProps> = ({
           )}
         </main>
       </div>
-    </div>
+    </section>
   );
 };
 
