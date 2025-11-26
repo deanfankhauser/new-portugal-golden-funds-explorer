@@ -208,7 +208,7 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
                   showQEFHighlight={answers.usTaxAccount === 'yes'}
                 />
               ) : (
-                <QuizNoResults onReset={handleReset} onClose={handleClose} />
+                <QuizNoResults onReset={handleReset} onClose={handleClose} answers={answers} />
               )
             ) : (
               <div className="space-y-6">

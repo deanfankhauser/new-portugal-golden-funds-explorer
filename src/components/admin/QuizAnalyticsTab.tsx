@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Users, CheckCircle2, Share2, XCircle } from 'lucide-react';
+import { Loader2, Users, CheckCircle2, Share2, XCircle, AlertTriangle } from 'lucide-react';
 
 interface QuizStats {
   total_started: number;
@@ -11,6 +12,7 @@ interface QuizStats {
   completion_rate: number;
   share_rate: number;
   avg_results: number;
+  zero_results: number;
 }
 
 interface PopularAnswer {
@@ -19,9 +21,16 @@ interface PopularAnswer {
   count: number;
 }
 
+interface UnderservedSegment {
+  answers: Record<string, string>;
+  count: number;
+  lastOccurred: string;
+}
+
 export const QuizAnalyticsTab: React.FC = () => {
   const [stats, setStats] = useState<QuizStats | null>(null);
   const [popularAnswers, setPopularAnswers] = useState<PopularAnswer[]>([]);
+  const [underservedSegments, setUnderservedSegments] = useState<UnderservedSegment[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -35,7 +44,7 @@ export const QuizAnalyticsTab: React.FC = () => {
       // Fetch event counts
       const { data: events, error: eventsError } = await supabase
         .from('quiz_analytics')
-        .select('event_type, results_count, answers');
+        .select('event_type, results_count, answers, created_at');
 
       if (eventsError) throw eventsError;
 
@@ -50,6 +59,9 @@ export const QuizAnalyticsTab: React.FC = () => {
         ? completedEvents.reduce((sum, e) => sum + (e.results_count || 0), 0) / completedEvents.length
         : 0;
 
+      // Track zero results
+      const zeroResultEvents = completedEvents.filter(e => e.results_count === 0);
+
       setStats({
         total_started: started,
         total_completed: completed,
@@ -58,6 +70,7 @@ export const QuizAnalyticsTab: React.FC = () => {
         completion_rate: started > 0 ? (completed / started) * 100 : 0,
         share_rate: completed > 0 ? (shared / completed) * 100 : 0,
         avg_results: Math.round(avgResults * 10) / 10,
+        zero_results: zeroResultEvents.length,
       });
 
       // Analyze popular answers
@@ -83,6 +96,32 @@ export const QuizAnalyticsTab: React.FC = () => {
       });
 
       setPopularAnswers(popular);
+
+      // Analyze underserved segments (zero results)
+      const segmentMap = new Map<string, { answers: Record<string, string>; count: number; lastOccurred: string }>();
+      
+      zeroResultEvents.forEach(event => {
+        if (event.answers) {
+          const key = JSON.stringify(event.answers);
+          if (segmentMap.has(key)) {
+            const existing = segmentMap.get(key)!;
+            existing.count++;
+          } else {
+            segmentMap.set(key, {
+              answers: event.answers as Record<string, string>,
+              count: 1,
+              lastOccurred: event.created_at || new Date().toISOString(),
+            });
+          }
+        }
+      });
+
+      // Sort by frequency and get top underserved segments
+      const underserved = Array.from(segmentMap.values())
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+
+      setUnderservedSegments(underserved);
     } catch (error) {
       console.error('Failed to fetch quiz analytics:', error);
     } finally {
@@ -223,6 +262,44 @@ export const QuizAnalyticsTab: React.FC = () => {
           </div>
         </div>
       </Card>
+
+      {/* Underserved Segments Alert */}
+      {underservedSegments.length > 0 && (
+        <Card className="p-6 border-destructive/50 bg-destructive/5">
+          <div className="flex items-start gap-3 mb-4">
+            <AlertTriangle className="h-5 w-5 text-destructive mt-0.5" />
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-destructive">Underserved Segments</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                These answer combinations frequently return zero results. Consider adding funds to serve these investor needs.
+              </p>
+            </div>
+            <Badge variant="destructive">{stats?.zero_results || 0} zero results</Badge>
+          </div>
+          <div className="space-y-4">
+            {underservedSegments.map((segment, index) => (
+              <Card key={index} className="p-4 bg-background">
+                <div className="flex items-start justify-between mb-3">
+                  <Badge variant="outline" className="text-destructive border-destructive">
+                    {segment.count} occurrences
+                  </Badge>
+                  <span className="text-xs text-muted-foreground">
+                    Last: {new Date(segment.lastOccurred).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {Object.entries(segment.answers).map(([key, value]) => (
+                    <div key={key}>
+                      <p className="text-xs text-muted-foreground">{formatQuestionLabel(key)}</p>
+                      <p className="text-sm font-medium">{formatAnswerLabel(key, value)}</p>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            ))}
+          </div>
+        </Card>
+      )}
 
       {/* Popular Answers */}
       {popularAnswers.length > 0 && (
