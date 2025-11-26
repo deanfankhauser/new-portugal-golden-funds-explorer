@@ -54,7 +54,7 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
             manual_rank
           )
         `)
-        .order('created_at', { ascending: true });
+        .order('final_rank', { ascending: true, nullsFirst: false });
 
       console.log('📊 Supabase response:', { 
         fundsCount: supabaseFunds?.length, 

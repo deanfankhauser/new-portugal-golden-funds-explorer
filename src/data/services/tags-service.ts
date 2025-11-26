@@ -1,5 +1,6 @@
 
 import { FundTag, Fund } from '../types/funds';
+import { sortFundsByRank } from '../../utils/fundSorting';
 
 // Function to get all unique tags from funds (now includes investment tags)
 export const getAllTags = (funds: Fund[]): FundTag[] => {
@@ -15,6 +16,8 @@ export const getAllTags = (funds: Fund[]): FundTag[] => {
 };
 
 // Function to get funds by tag (now works with investment tags)
+// Returns funds sorted by verification status and rank
 export const getFundsByTag = (funds: Fund[], tag: FundTag): Fund[] => {
-  return funds.filter(fund => fund.tags.includes(tag));
+  const filtered = funds.filter(fund => fund.tags.includes(tag));
+  return sortFundsByRank(filtered);
 };

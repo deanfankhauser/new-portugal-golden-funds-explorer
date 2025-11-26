@@ -12,13 +12,14 @@ interface VerifiedTopPicksProps {
 const VerifiedTopPicks: React.FC<VerifiedTopPicksProps> = ({ funds }) => {
   const navigate = useNavigate();
 
-  // Filter to verified funds and take top 3 by target return
+  // Filter to verified funds and take top 3 by admin-set ranking
   const topVerifiedFunds = funds
     .filter(fund => fund.isVerified === true)
     .sort((a, b) => {
-      const aReturn = a.expectedReturnMax || a.expectedReturnMin || 0;
-      const bReturn = b.expectedReturnMax || b.expectedReturnMin || 0;
-      return bReturn - aReturn;
+      // Sort by final rank (lower rank = higher priority)
+      const aRank = a.finalRank ?? 999;
+      const bRank = b.finalRank ?? 999;
+      return aRank - bRank;
     })
     .slice(0, 3);
 
