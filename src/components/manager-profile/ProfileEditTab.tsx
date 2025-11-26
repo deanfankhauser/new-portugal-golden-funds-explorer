@@ -8,8 +8,18 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/types/profile';
 import { CompanyTeamMember, generateMemberId, teamMemberToSlug } from '@/types/team';
-import { Save, Upload, X, Plus, Trash2 } from 'lucide-react';
+import { Save, Upload, X, Plus, Trash2, AlertTriangle } from 'lucide-react';
 import { z } from 'zod';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface ManagerHighlight {
   title: string;
@@ -72,6 +82,44 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
   const [teamMembers, setTeamMembers] = useState<CompanyTeamMember[]>([]);
   const [loadingTeam, setLoadingTeam] = useState(true);
   const [initialTeamMemberIds, setInitialTeamMemberIds] = useState<string[]>([]);
+
+  // Check if form has unsaved changes
+  const hasUnsavedChanges = () => {
+    // Compare basic fields
+    if (companyName !== (profile.company_name || '')) return true;
+    if (managerName !== (profile.manager_name || '')) return true;
+    if (description !== (profile.description || '')) return true;
+    if (website !== (profile.website || '')) return true;
+    if (linkedinUrl !== (profile.linkedin_url || '')) return true;
+    if (twitterUrl !== (profile.twitter_url || '')) return true;
+    if (facebookUrl !== (profile.facebook_url || '')) return true;
+    if (instagramUrl !== (profile.instagram_url || '')) return true;
+    if (city !== (profile.city || '')) return true;
+    if (country !== (profile.country || '')) return true;
+    if (foundedYear !== (profile.founded_year?.toString() || '')) return true;
+    if (aum !== (profile.assets_under_management?.toString() || '')) return true;
+    if (about !== (profile.manager_about || '')) return true;
+    if (logoUrl !== (profile.logo_url || '')) return true;
+    if (registrationNumber !== (profile.registration_number || '')) return true;
+    if (licenseNumber !== (profile.license_number || '')) return true;
+    
+    return false;
+  };
+
+  // Warn before closing tab/window with unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges()) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [companyName, managerName, description, website, linkedinUrl, twitterUrl, 
+      facebookUrl, instagramUrl, city, country, foundedYear, aum, about, 
+      logoUrl, registrationNumber, licenseNumber]);
 
   // Fetch team members from the new team_members table
   useEffect(() => {
@@ -1004,7 +1052,13 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
       )}
 
       {/* Save Button */}
-      <div className="flex justify-end gap-3">
+      <div className="flex justify-end gap-3 items-center">
+        {hasUnsavedChanges() && !saving && (
+          <div className="flex items-center gap-2 text-amber-600 dark:text-amber-500">
+            <AlertTriangle className="h-4 w-4" />
+            <span className="text-sm font-medium">Unsaved changes</span>
+          </div>
+        )}
         <Button
           onClick={handleSave}
           disabled={saving}
