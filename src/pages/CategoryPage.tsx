@@ -8,7 +8,8 @@ import { slugToCategory, categoryToSlug } from '@/lib/utils';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
-import CategoryPageHeader from '../components/category/CategoryPageHeader';
+import CategorySnapshotHero from '../components/category/CategorySnapshotHero';
+import CategoryEditorialBlock from '../components/category/CategoryEditorialBlock';
 import CategoryBreadcrumbs from '../components/category/CategoryBreadcrumbs';
 import CategoryPageFundList from '../components/category/CategoryPageFundList';
 import CategoryPageFundSummary from '../components/category/CategoryPageFundSummary';
@@ -115,7 +116,9 @@ const CategoryPage = () => {
         <div className="container mx-auto px-4 max-w-7xl">
           <CategoryBreadcrumbs categoryName={displayCategoryName} />
           
-          <CategoryPageHeader categoryName={displayCategoryName} />
+          <CategorySnapshotHero categoryName={displayCategoryName} funds={allFunds} />
+          
+          <CategoryEditorialBlock categoryName={displayCategoryName} />
           
           
           {/* Verification Filter */}
@@ -148,7 +151,8 @@ const CategoryPage = () => {
               <CategoryPageFAQ 
                 categoryName={displayCategoryName} 
                 categorySlug={categorySlug || ''} 
-                fundsCount={funds.length} 
+                fundsCount={funds.length}
+                funds={allFunds}
               />
               
               <RelatedCategories allCategories={allCategories} currentCategory={displayCategoryName} />
