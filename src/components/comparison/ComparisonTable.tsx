@@ -35,15 +35,15 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
           <ComparisonTableHeader funds={funds} />
           <tbody>
             {/* Verification Status Row */}
-            <tr className="border-b bg-success/5">
-              <td className="py-3 px-4 font-medium">Verification Status</td>
+            <tr className="border-b bg-muted/20">
+              <td className="py-4 px-4 font-medium text-foreground">Verification Status</td>
               {funds.map(fund => (
-                <td key={fund.id} className="py-3 px-4">
+                <td key={fund.id} className="py-4 px-4">
                   {fund.isVerified ? (
                     <Link to="/verification-program" className="inline-block hover:opacity-80 transition-opacity">
-                      <div className="bg-success text-success-foreground px-3 py-1.5 rounded-full text-xs font-bold inline-flex items-center gap-1.5 shadow-md border-2 border-success/70 ring-2 ring-success/20 w-fit">
+                      <div className="bg-success/10 text-success px-3 py-1.5 rounded-full text-xs font-semibold inline-flex items-center gap-1.5 border border-success/20 w-fit">
                         <CheckCircle2 className="w-3.5 h-3.5" />
-                        ✓ VERIFIED
+                        Verified Partner
                       </div>
                     </Link>
                   ) : (
@@ -55,14 +55,14 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             
             {/* Risk Band Row */}
             <tr className="border-b">
-              <td className="py-3 px-4 font-medium">Risk Band</td>
+              <td className="py-4 px-4 font-medium text-foreground">Risk Band</td>
               {funds.map(fund => {
                 const riskBand = calculateRiskBand(fund);
                 const riskLabel = getRiskBandLabel(riskBand);
                 const riskBgColor = getRiskBandBgColor(riskBand);
                 return (
-                  <td key={fund.id} className="py-3 px-4">
-                    <Badge className={`${riskBgColor} text-xs`}>
+                  <td key={fund.id} className="py-4 px-4">
+                    <Badge className={`${riskBgColor} text-xs font-medium`}>
                       {riskLabel}
                     </Badge>
                   </td>
@@ -130,21 +130,25 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
               allSame={allSame}
             />
             
-            <StandardRow 
-              funds={funds}
-              field={(fund) => formatManagementFee(fund.managementFee)}
-              label="Management Fee"
-              allSame={allSame}
-              bestType="lowest"
-            />
-            
-            <StandardRow 
-              funds={funds}
-              field={(fund) => formatPerformanceFee(fund.performanceFee)}
-              label="Performance Fee"
-              allSame={allSame}
-              bestType="lowest"
-            />
+            {/* Fees Row - Consolidated */}
+            <tr className="border-b">
+              <td className="py-4 px-4 font-medium text-foreground">Fees</td>
+              {funds.map(fund => (
+                <td key={fund.id} className="py-4 px-4">
+                  <div className="flex flex-col gap-1 text-sm">
+                    <span>
+                      <span className="font-semibold text-foreground">{formatManagementFee(fund.managementFee)}</span>
+                      <span className="text-muted-foreground"> Mgmt</span>
+                    </span>
+                    <span className="text-muted-foreground/60">·</span>
+                    <span>
+                      <span className="font-semibold text-foreground">{formatPerformanceFee(fund.performanceFee)}</span>
+                      <span className="text-muted-foreground"> Perf</span>
+                    </span>
+                  </div>
+                </td>
+              ))}
+            </tr>
             
             {(funds.some(f => f.subscriptionFee !== undefined)) && (
               <StandardRow 
@@ -208,17 +212,17 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
 
             {/* Tags - Always visible */}
             <tr className="border-b">
-              <td className="py-3 px-4 font-medium">Tags</td>
+              <td className="py-4 px-4 font-medium text-foreground">Tags</td>
               {funds.map(fund => (
                 <TagsCell key={fund.id} tags={fund.tags} />
               ))}
             </tr>
 
             {/* Data Freshness - Always visible */}
-            <tr className="border-b bg-muted/30">
-              <td className="py-3 px-4 font-medium text-foreground">Data Last Verified</td>
+            <tr className="border-b bg-muted/20">
+              <td className="py-4 px-4 font-medium text-foreground">Data Last Verified</td>
               {funds.map(fund => (
-                <td key={fund.id} className="py-3 px-4">
+                <td key={fund.id} className="py-4 px-4">
                   <DataFreshnessIndicator fund={fund} variant="full" className="justify-start" />
                 </td>
               ))}
