@@ -8,6 +8,7 @@ export interface QuizAnswers {
   strategy?: 'safety' | 'growth' | 'fast_exit';
   income?: 'yes' | 'no';
   usTaxAccount?: 'yes' | 'no';
+  timeline?: '1-3years' | '3-5years' | '5plus';
 }
 
 const transformFund = (fund: any): Fund => {
@@ -86,6 +87,15 @@ export const useFundMatcherQuery = (answers: QuizAnswers) => {
         query = query.lte('lock_up_period_months', 72);
       }
 
+      // Apply timeline filter (lock-up period based)
+      if (answers.timeline === '1-3years') {
+        query = query.lte('lock_up_period_months', 36);
+      } else if (answers.timeline === '3-5years') {
+        query = query.gte('lock_up_period_months', 37).lte('lock_up_period_months', 60);
+      } else if (answers.timeline === '5plus') {
+        query = query.gt('lock_up_period_months', 60);
+      }
+
       console.log('📊 Executing quiz query...');
       const { data, error } = await query.order('is_verified', { ascending: false });
 
@@ -127,7 +137,7 @@ export const useFundMatcherQuery = (answers: QuizAnswers) => {
       console.log('📊 Final filtered count:', filteredFunds.length);
       return filteredFunds;
     },
-    enabled: Object.keys(answers).length === 4, // Only run when all answers provided
+    enabled: Object.keys(answers).length === 5, // Only run when all answers provided
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 };
