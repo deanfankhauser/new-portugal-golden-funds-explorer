@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { PageSEO } from '../components/common/PageSEO';
@@ -7,9 +7,10 @@ import { PageLoader } from '../components/common/LoadingSkeleton';
 import { useTeamMemberBySlug } from '../hooks/useTeamMemberData';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { TeamMemberCredentials } from '@/components/team/TeamMemberCredentials';
+import FundListItem from '@/components/FundListItem';
 import { managerToSlug } from '@/lib/utils';
+import { Fund } from '@/data/types/funds';
 
 const TeamMemberProfile: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -113,36 +114,17 @@ const TeamMemberProfile: React.FC = () => {
 
               {/* Managed Funds Section */}
               {teamMemberData.funds && teamMemberData.funds.length > 0 && (
-                <Card>
-                  <CardContent className="pt-6">
-                    <h2 className="text-2xl font-semibold text-foreground mb-6">
-                      Funds Managed by {firstName}
-                    </h2>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {teamMemberData.funds.map((fund: any) => (
-                        <div
-                          key={fund.id}
-                          className="border rounded-lg p-4 hover:border-primary/50 transition-colors"
-                        >
-                          <h3 className="font-semibold text-foreground mb-2">
-                            {fund.name}
-                          </h3>
-                          {fund.category && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary mb-3">
-                              {fund.category}
-                            </span>
-                          )}
-                          <Button asChild variant="secondary" size="sm" className="w-full mt-2">
-                            <Link to={`/${fund.id}`}>
-                              View Fund →
-                            </Link>
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                <div className="space-y-6">
+                  <h2 className="text-2xl font-semibold text-foreground">
+                    Funds Managed by {firstName}
+                  </h2>
+                  
+                  <div className="space-y-4">
+                    {teamMemberData.funds.map((fund: Fund) => (
+                      <FundListItem key={fund.id} fund={fund} />
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
 

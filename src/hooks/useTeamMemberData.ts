@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { TeamMember, FundTeamMemberWithDetails } from '@/types/team';
+import { transformFund } from './useFundsQuery';
 
 // Fetch single team member by slug with company info and funds
 export function useTeamMemberBySlug(slug: string | undefined) {
@@ -32,24 +33,20 @@ export function useTeamMemberBySlug(slug: string | undefined) {
         .from('fund_team_members')
         .select(`
           fund_role,
-          funds:fund_id (
-            id,
-            name,
-            category,
-            description,
-            manager_name
-          )
+          funds:fund_id (*)
         `)
         .eq('team_member_id', teamMember.id);
 
       if (fundsError) throw fundsError;
 
+      // Transform fund data to match Fund type
+      const transformedFunds = fundAssignments?.map(a => 
+        transformFund({ fund: a.funds })
+      ) || [];
+
       return {
         ...teamMember,
-        funds: fundAssignments?.map(a => ({
-          ...a.funds,
-          fund_role: a.fund_role
-        })) || []
+        funds: transformedFunds
       };
     },
     enabled: !!slug
