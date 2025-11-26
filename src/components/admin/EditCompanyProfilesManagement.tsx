@@ -149,7 +149,7 @@ export const EditCompanyProfilesManagement: React.FC = () => {
                               </Button>
                             </Link>
                           )}
-                          <Link to={`/manage-profile/${profile.id}`}>
+                          <Link to={`/dashboard/company/${profile.id}`}>
                             <Button size="sm">
                               <Edit3 className="h-4 w-4 mr-2" />
                               Edit Profile
