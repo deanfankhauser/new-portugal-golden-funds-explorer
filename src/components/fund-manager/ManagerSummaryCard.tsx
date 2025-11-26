@@ -60,10 +60,18 @@ const ManagerSummaryCard: React.FC<ManagerSummaryCardProps> = ({
 
       {/* Key Stats */}
       <div className="space-y-3 mb-6">
-        {/* Active Funds */}
+        {/* Total Funds */}
         <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Active Funds</span>
+          <span className="text-muted-foreground">Total Funds</span>
           <span className="font-semibold text-foreground">{fundCount}</span>
+        </div>
+
+        {/* Regulatory Status */}
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-muted-foreground">Status</span>
+          <span className="font-semibold text-foreground text-xs text-right">
+            {managerProfile?.entity_type ? `${managerProfile.entity_type} Entity` : 'CMVM Regulated'}
+          </span>
         </div>
 
         {/* AUM */}
@@ -100,7 +108,7 @@ const ManagerSummaryCard: React.FC<ManagerSummaryCardProps> = ({
         {(managerProfile?.license_number || managerProfile?.registration_number) && (
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">
-              Regulated
+              License
             </span>
             <span className="font-semibold text-foreground text-xs">
               {managerProfile?.license_number || managerProfile?.registration_number}

@@ -714,6 +714,7 @@ export type Database = {
           regulated_by: string | null
           risk_band: string | null
           risk_level: string | null
+          status: string | null
           subscription_fee: number | null
           tags: string[] | null
           team_members: Json | null
@@ -771,6 +772,7 @@ export type Database = {
           regulated_by?: string | null
           risk_band?: string | null
           risk_level?: string | null
+          status?: string | null
           subscription_fee?: number | null
           tags?: string[] | null
           team_members?: Json | null
@@ -828,6 +830,7 @@ export type Database = {
           regulated_by?: string | null
           risk_band?: string | null
           risk_level?: string | null
+          status?: string | null
           subscription_fee?: number | null
           tags?: string[] | null
           team_members?: Json | null
@@ -1030,6 +1033,7 @@ export type Database = {
           date_of_birth: string | null
           description: string | null
           email: string
+          entity_type: string | null
           facebook_url: string | null
           first_name: string | null
           founded_year: number | null
@@ -1066,6 +1070,7 @@ export type Database = {
           date_of_birth?: string | null
           description?: string | null
           email: string
+          entity_type?: string | null
           facebook_url?: string | null
           first_name?: string | null
           founded_year?: number | null
@@ -1102,6 +1107,7 @@ export type Database = {
           date_of_birth?: string | null
           description?: string | null
           email?: string
+          entity_type?: string | null
           facebook_url?: string | null
           first_name?: string | null
           founded_year?: number | null

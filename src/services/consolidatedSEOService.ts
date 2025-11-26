@@ -321,18 +321,29 @@ export class ConsolidatedSEOService {
         };
 
       case 'manager':
+        const currentYear = new Date().getFullYear();
+        const fundCount = params.funds?.length || 0;
+        
+        // SEO Title: "[Manager Name]: Corporate Profile & Track Record ({Current Year})"
+        const managerTitle = `${params.managerName}: Corporate Profile & Track Record (${currentYear})`;
+        
+        // SEO Description: "View the corporate profile of [Manager Name]. Analysis of their [Fund_Count] active funds, investment focus, and CMVM regulatory standing."
+        const managerDescription = `View the corporate profile of ${params.managerName}. Analysis of their ${fundCount} active fund${fundCount !== 1 ? 's' : ''}, investment focus, and CMVM regulatory standing.`;
+        
         return {
-          title: this.optimizeText(`${params.managerName} – Portugal Golden Visa Fund Manager Profile | Movingto Funds`, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText(`${params.managerName} is a CMVM-regulated Portugal Golden Visa fund manager. View their eligible funds, strategies, fee structures and key metrics.`, this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText(managerTitle, this.MAX_TITLE_LENGTH),
+          description: this.optimizeText(managerDescription, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildManagerUrl(params.managerName),
           canonical: URL_CONFIG.buildManagerUrl(params.managerName),
           keywords: [
             `${params.managerName}`,
             'Portugal fund manager',
+            'corporate profile',
+            'track record',
             'Golden Visa fund manager',
             'investment fund management Portugal',
-            'fund manager profile',
-            'Golden Visa investment professionals'
+            'CMVM regulated',
+            'fund manager analysis'
           ],
           structuredData: this.getManagerStructuredData(params.managerName, params.managerProfile, params.funds || [])
         };
