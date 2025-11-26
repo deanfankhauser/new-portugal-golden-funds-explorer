@@ -51,6 +51,7 @@ export const loadComponents = async (only?: string[]) => {
       EmailConfirmation: () => import('../pages/EmailConfirmation').then(m => m.default),
       VerifiedFunds: () => import('../pages/VerifiedFunds').then(m => m.default),
       VerificationProgram: () => import('../pages/VerificationProgram').then(m => m.default),
+      IRAEligibleFunds: () => import('../pages/IRAEligibleFunds').then(m => m.default),
       TeamMemberProfile: () => import('../pages/TeamMemberProfile').then(m => m.default),
     };
 

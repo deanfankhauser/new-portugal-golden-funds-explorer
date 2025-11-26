@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Loader2 } from 'lucide-react';
@@ -41,11 +41,11 @@ const questions = [
     ]
   },
   {
-    id: 'usCitizen',
-    question: 'Are you a US Citizen or Resident?',
+    id: 'usTaxAccount',
+    question: 'Are you investing through a US tax account (IRA/401k)?',
     options: [
-      { value: 'yes', label: 'Yes', description: 'I need PFIC-compliant funds' },
-      { value: 'no', label: 'No', description: 'I\'m not a US tax resident' }
+      { value: 'yes', label: 'Yes', description: 'I need QEF-eligible funds for favorable US tax treatment' },
+      { value: 'no', label: 'No', description: 'Standard investment account' }
     ]
   }
 ];
@@ -56,7 +56,17 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
   const [showResults, setShowResults] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
 
-  const { data: matchedFunds, isLoading } = useFundMatcherQuery(answers);
+  const { data: matchedFunds, isLoading, isFetched } = useFundMatcherQuery(answers);
+
+  // Show results when query completes
+  useEffect(() => {
+    if (Object.keys(answers).length === 4 && isSearching) {
+      if (isFetched && !isLoading) {
+        setIsSearching(false);
+        setShowResults(true);
+      }
+    }
+  }, [answers, isSearching, isFetched, isLoading]);
 
   const handleAnswer = (questionId: string, value: string) => {
     const newAnswers = { ...answers, [questionId]: value };
@@ -66,12 +76,8 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
     if (currentStep < questions.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      // All questions answered, show searching animation
+      // Show searching state - results will show when query completes
       setIsSearching(true);
-      setTimeout(() => {
-        setIsSearching(false);
-        setShowResults(true);
-      }, 1500);
     }
   };
 

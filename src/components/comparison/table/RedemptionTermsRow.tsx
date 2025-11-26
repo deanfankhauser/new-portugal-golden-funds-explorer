@@ -9,6 +9,7 @@ interface RedemptionTermsRowProps {
   label: string;
   allSame: (values: any[]) => boolean;
   bestType?: 'lowest' | 'highest' | null;
+  hideIfSame?: boolean;
 }
 
 const RedemptionTermsRow: React.FC<RedemptionTermsRowProps> = ({ 
@@ -16,7 +17,8 @@ const RedemptionTermsRow: React.FC<RedemptionTermsRowProps> = ({
   field, 
   label,
   allSame,
-  bestType = null
+  bestType = null,
+  hideIfSame = false
 }) => {
   const getDisplayValue = (fund: Fund) => {
     if (!fund.redemptionTerms) return 'N/A';
@@ -43,6 +45,11 @@ const RedemptionTermsRow: React.FC<RedemptionTermsRowProps> = ({
 
   const highlight = funds.length > 1 && allSame(values);
 
+  // Hide row if all values are the same and hideIfSame is true
+  if (hideIfSame && highlight) {
+    return null;
+  }
+
   // Calculate best value index if bestType is specified and we have multiple funds
   let bestIndex = -1;
   if (bestType && funds.length > 1 && (field === 'noticePeriod' || field === 'minimumHoldingPeriod')) {
@@ -68,15 +75,20 @@ const RedemptionTermsRow: React.FC<RedemptionTermsRowProps> = ({
 
   return (
     <tr className="border-b">
-      <td className="py-3 px-4 font-medium">{label}</td>
-      {funds.map((fund, idx) => (
-        <ComparisonCell 
-          key={fund.id} 
-          value={getDisplayValue(fund)} 
-          highlight={highlight}
-          isBest={bestIndex === idx}
-        />
-      ))}
+      <td className="py-3 px-4 font-medium sticky left-0 bg-card z-10">{label}</td>
+      {funds.map((fund, idx) => {
+        const displayValue = getDisplayValue(fund);
+        const isNotDisclosed = displayValue === 'Not disclosed' || displayValue === 'N/A';
+        
+        return (
+          <ComparisonCell 
+            key={fund.id} 
+            value={<span className={isNotDisclosed ? 'text-muted-foreground/60' : ''}>{displayValue}</span>}
+            highlight={highlight}
+            isBest={bestIndex === idx}
+          />
+        );
+      })}
     </tr>
   );
 };

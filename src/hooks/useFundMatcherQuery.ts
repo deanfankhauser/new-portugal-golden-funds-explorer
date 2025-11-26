@@ -7,7 +7,7 @@ export interface QuizAnswers {
   budget?: 'under250k' | 'under500k' | '500k+';
   strategy?: 'safety' | 'growth' | 'fast_exit';
   income?: 'yes' | 'no';
-  usCitizen?: 'yes' | 'no';
+  usTaxAccount?: 'yes' | 'no';
 }
 
 const transformFund = (fund: any): Fund => {
@@ -35,6 +35,21 @@ const transformFund = (fund: any): Fund => {
     isVerified: fund.is_verified || false,
     isQuizEligible: fund.is_quiz_eligible || false,
     usCompliant: fund.us_compliant || false,
+    redemptionTerms: (() => {
+      const rt = fund.redemption_terms;
+      if (rt && typeof rt === 'object' && !Array.isArray(rt)) {
+        const rtObj = rt as Record<string, any>;
+        return {
+          frequency: rtObj.frequency || 'End of Term',
+          redemptionOpen: Boolean(rtObj.redemptionOpen ?? rtObj.redemption_open ?? true),
+          noticePeriod: rtObj.noticePeriod ?? rtObj.notice_period,
+          earlyRedemptionFee: rtObj.earlyRedemptionFee ?? rtObj.early_redemption_fee,
+          minimumHoldingPeriod: rtObj.minimumHoldingPeriod ?? rtObj.minimum_holding_period,
+          notes: rtObj.notes
+        };
+      }
+      return undefined;
+    })(),
   };
 };
 
@@ -70,9 +85,9 @@ export const useFundMatcherQuery = (answers: QuizAnswers) => {
         query = query.lte('lock_up_period_months', 72);
       }
 
-      // Apply US citizen filter
-      if (answers.usCitizen === 'yes') {
-        query = query.eq('us_compliant', true);
+      // Apply US tax account filter (QEF-eligible funds)
+      if (answers.usTaxAccount === 'yes') {
+        query = query.not('pfic_status', 'is', null);
       }
 
       console.log('📊 Executing quiz query...');
@@ -91,15 +106,20 @@ export const useFundMatcherQuery = (answers: QuizAnswers) => {
       // Apply tag generation
       const fundsWithTags = addTagsToFunds(transformedFunds);
 
+      console.log('📊 Funds before income filter:', fundsWithTags.length);
+      console.log('📊 Income answer:', answers.income);
+
       // Apply income filter client-side (JSONB redemption_terms filtering)
       let filteredFunds = fundsWithTags;
       if (answers.income === 'yes') {
+        console.log('📊 Funds with distribution frequency:', fundsWithTags.filter(f => f.redemptionTerms?.frequency).length);
         filteredFunds = fundsWithTags.filter(fund => {
           const freq = fund.redemptionTerms?.frequency;
           return freq && ['Annual', 'Quarterly', 'Weekly', 'Daily', 'Monthly'].includes(freq);
         });
       }
 
+      console.log('📊 Final filtered count:', filteredFunds.length);
       return filteredFunds;
     },
     enabled: Object.keys(answers).length === 4, // Only run when all answers provided

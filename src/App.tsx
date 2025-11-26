@@ -41,6 +41,7 @@ const FundAlternatives = lazy(() => import('./pages/FundAlternatives'));
 const AlternativesHub = lazy(() => import('./pages/AlternativesHub'));
 const VerifiedFunds = lazy(() => import('./pages/VerifiedFunds'));
 const VerificationProgram = lazy(() => import('./pages/VerificationProgram'));
+const IRAEligibleFunds = lazy(() => import('./pages/IRAEligibleFunds'));
 const Auth = lazy(() => import('./pages/Auth'));
 const AccountSettings = lazy(() => import('./pages/AccountSettings'));
 const EmailConfirmation = lazy(() => import('./pages/EmailConfirmation'));
@@ -245,6 +246,11 @@ function App() {
                       <Route path="/roi-calculator" element={
                         <Suspense fallback={<ROICalculatorLoader />}>
                           <ROICalculator />
+                        </Suspense>
+                      } />
+                      <Route path="/ira-401k-eligible-funds" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <IRAEligibleFunds />
                         </Suspense>
                       } />
                         
