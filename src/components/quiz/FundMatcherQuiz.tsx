@@ -7,6 +7,7 @@ import { QuizQuestion } from './QuizQuestion';
 import { QuizResults } from './QuizResults';
 import { QuizNoResults } from './QuizNoResults';
 import { useFundMatcherQuery, QuizAnswers } from '@/hooks/useFundMatcherQuery';
+import { trackQuizEvent } from '@/services/quizAnalytics';
 
 interface FundMatcherQuizProps {
   open: boolean;
@@ -68,6 +69,13 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
 
   const { data: matchedFunds, isLoading, isFetched } = useFundMatcherQuery(answers);
 
+  // Track quiz start
+  useEffect(() => {
+    if (open && currentStep === 0 && Object.keys(answers).length === 0) {
+      trackQuizEvent('started');
+    }
+  }, [open]);
+
   // Parse URL parameters on mount to handle shared links
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -103,9 +111,14 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
       if (isFetched && !isLoading) {
         setIsSearching(false);
         setShowResults(true);
+        // Track quiz completion
+        trackQuizEvent('completed', {
+          answers,
+          resultsCount: matchedFunds?.length || 0,
+        });
       }
     }
-  }, [answers, isSearching, isFetched, isLoading]);
+  }, [answers, isSearching, isFetched, isLoading, matchedFunds]);
 
   const handleAnswer = (questionId: string, value: string) => {
     const newAnswers = { ...answers, [questionId]: value };
@@ -148,6 +161,13 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
   };
 
   const handleClose = () => {
+    // Track abandonment if quiz was started but not completed
+    if (Object.keys(answers).length > 0 && Object.keys(answers).length < 5 && !showResults) {
+      trackQuizEvent('abandoned', {
+        abandonedAtStep: currentStep,
+        answers: answers as QuizAnswers,
+      });
+    }
     handleReset();
     onOpenChange(false);
   };

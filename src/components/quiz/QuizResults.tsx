@@ -7,6 +7,7 @@ import FundCard from '@/components/FundCard';
 import { RotateCcw, CheckCircle2, Share2, Check } from 'lucide-react';
 import { QuizAnswers } from '@/hooks/useFundMatcherQuery';
 import { useToast } from '@/hooks/use-toast';
+import { trackQuizEvent } from '@/services/quizAnalytics';
 
 interface QuizResultsProps {
   funds: Fund[];
@@ -92,6 +93,13 @@ export const QuizResults: React.FC<QuizResultsProps> = ({ funds, answers, onRese
         title: "Link copied!",
         description: "Share this link to show your quiz results",
       });
+      
+      // Track share event
+      trackQuizEvent('shared', {
+        answers,
+        resultsCount: funds.length,
+      });
+      
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       toast({

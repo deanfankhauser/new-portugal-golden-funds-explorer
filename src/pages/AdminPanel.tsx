@@ -14,6 +14,7 @@ import UsersManagement from "@/components/admin/UsersManagement";
 import EmailCapturesManagement from "@/components/admin/EmailCapturesManagement";
 import { AllLeadsManagement } from "@/components/admin/AllLeadsManagement";
 import { PerformanceMonitoring } from "@/components/admin/PerformanceMonitoring";
+import { QuizAnalyticsTab } from "@/components/admin/QuizAnalyticsTab";
 import { DataCopyButton } from "@/components/admin/DataCopyButton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EditFundsManagement } from "@/components/admin/EditFundsManagement";
@@ -105,6 +106,7 @@ export default function AdminPanel() {
               <Route path="emails" element={<EmailCapturesManagement />} />
               <Route path="leads" element={<AllLeadsManagement />} />
               <Route path="performance" element={<PerformanceMonitoring />} />
+              <Route path="quiz-analytics" element={<QuizAnalyticsTab />} />
               <Route path="edit-funds" element={<EditFundsManagement />} />
               <Route path="edit-profiles" element={<EditCompanyProfilesManagement />} />
               <Route
