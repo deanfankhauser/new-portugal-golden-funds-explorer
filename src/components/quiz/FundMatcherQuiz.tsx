@@ -136,7 +136,8 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
             ) : showResults ? (
               matchedFunds && matchedFunds.length > 0 ? (
                 <QuizResults 
-                  funds={matchedFunds} 
+                  funds={matchedFunds}
+                  answers={answers}
                   onReset={handleReset} 
                   onClose={handleClose}
                   showQEFHighlight={answers.usTaxAccount === 'yes'}
