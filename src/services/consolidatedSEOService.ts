@@ -275,17 +275,24 @@ export class ConsolidatedSEOService {
         };
 
       case 'category':
-        // Pattern: [Category Name] Portugal Golden Visa Investment Funds – Compare Options | Movingto Funds
         const categoryName = params.categoryName;
-        const categoryTitle = `${categoryName} Portugal Golden Visa Investment Funds – Compare Options | Movingto Funds`;
-        const categoryDescription = `Browse ${categoryName.toLowerCase()} Portugal Golden Visa funds. Compare strategy, risk, fees, minimums and target returns for all funds in this category.`;
+        const categoryFunds = params.funds || [];
+        const currentYear = new Date().getFullYear();
+        
+        // SEO Title: "Best [Category Name] Funds for Portugal Golden Visa ({Current Year})"
+        const categoryTitle = `Best ${categoryName} Funds for Portugal Golden Visa (${currentYear})`;
+        
+        // SEO Description: "Compare the top [Category Name] investment funds eligible for the Portugal Golden Visa. Analysis of fees, yields, and risk profiles for [Count] funds."
+        const categoryDescription = `Compare the top ${categoryName} investment funds eligible for the Portugal Golden Visa. Analysis of fees, yields, and risk profiles for ${categoryFunds.length} fund${categoryFunds.length !== 1 ? 's' : ''}.`;
+        
         const categoryKeywords = [
-          `${categoryName} Golden Visa funds`,
-          `${categoryName} investment Portugal`,
+          `best ${categoryName} Golden Visa funds`,
+          `${categoryName} investment Portugal ${currentYear}`,
           `Portugal ${categoryName} funds`,
           'Golden Visa investment categories',
           `${categoryName} fund comparison`,
-          `best ${categoryName} funds Portugal`
+          `top ${categoryName} funds Portugal`,
+          `${categoryName} fund fees yields`
         ];
         
         return {
@@ -294,7 +301,7 @@ export class ConsolidatedSEOService {
           url: URL_CONFIG.buildCategoryUrl(params.categoryName),
           canonical: URL_CONFIG.buildCategoryUrl(params.categoryName),
           keywords: categoryKeywords,
-          structuredData: this.getCategoryStructuredData(params.categoryName, params.funds || [])
+          structuredData: this.getCategoryStructuredData(params.categoryName, categoryFunds)
         };
 
       case 'tag':

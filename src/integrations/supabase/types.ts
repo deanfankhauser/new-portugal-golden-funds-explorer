@@ -112,6 +112,33 @@ export type Database = {
         }
         Relationships: []
       }
+      category_editorial: {
+        Row: {
+          category_name: string
+          category_slug: string
+          created_at: string | null
+          editorial_content: string
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          category_name: string
+          category_slug: string
+          created_at?: string | null
+          editorial_content: string
+          id?: string
+          updated_at?: string | null
+        }
+        Update: {
+          category_name?: string
+          category_slug?: string
+          created_at?: string | null
+          editorial_content?: string
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       email_captures: {
         Row: {
           confirmation_token: string | null
