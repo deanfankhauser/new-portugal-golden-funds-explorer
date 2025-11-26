@@ -1,6 +1,7 @@
 import React from 'react';
 import FAQSection from '../common/FAQSection';
 import { Fund } from '../../data/types/funds';
+import { formatManagementFee, formatPerformanceFee, formatSubscriptionFee } from '../../utils/feeFormatters';
 
 interface FAQItem {
   question: string;
@@ -10,6 +11,63 @@ interface FAQItem {
 interface FundFAQSectionProps {
   fund: Fund;
 }
+
+// Generate system FAQs based on fund data
+const generateSystemFAQs = (fund: Fund): FAQItem[] => {
+  const systemFAQs: FAQItem[] = [];
+  
+  // FAQ 1: CMVM Regulation
+  if (fund.cmvmId) {
+    systemFAQs.push({
+      question: `Is ${fund.name} CMVM regulated?`,
+      answer: `Yes, it is registered under CMVM ID ${fund.cmvmId}.${fund.custodian ? ` The custodian is ${fund.custodian}.` : ''}`
+    });
+  }
+  
+  // FAQ 2: Total Fees
+  const mgmtFee = formatManagementFee(fund.managementFee);
+  const perfFee = formatPerformanceFee(fund.performanceFee);
+  const subFee = formatSubscriptionFee(fund.subscriptionFee);
+  
+  systemFAQs.push({
+    question: `What are the total fees for ${fund.name}?`,
+    answer: `Management Fee: ${mgmtFee}. Performance Fee: ${perfFee}. Subscription Fee: ${subFee}.`
+  });
+  
+  // FAQ 3: Golden Visa Eligibility (only if GV eligible AND verified)
+  if (fund.tags?.includes('Golden Visa Eligible') && fund.isVerified) {
+    systemFAQs.push({
+      question: `Is ${fund.name} eligible for the 2025 Golden Visa?`,
+      answer: `Yes, ${fund.name} meets the €500,000 fund route requirement for the Portugal Golden Visa program.`
+    });
+  }
+  
+  return systemFAQs;
+};
+
+// Check if manual FAQs already cover fee-related topics
+const hasFeeRelatedQuestion = (faqs: FAQItem[]): boolean => {
+  const feeKeywords = ['fee', 'fees', 'cost', 'costs', 'charges', 'pricing'];
+  return faqs.some(faq => 
+    feeKeywords.some(keyword => 
+      faq.question.toLowerCase().includes(keyword)
+    )
+  );
+};
+
+// Filter out system FAQs that duplicate manual FAQ topics
+const filterDuplicateSystemFAQs = (
+  manualFAQs: FAQItem[], 
+  systemFAQs: FAQItem[]
+): FAQItem[] => {
+  return systemFAQs.filter(systemFaq => {
+    // If manual FAQs already cover fees, skip the fee system FAQ
+    if (systemFaq.question.toLowerCase().includes('fees') && hasFeeRelatedQuestion(manualFAQs)) {
+      return false;
+    }
+    return true;
+  });
+};
 
 const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
   // Default FAQs if none provided in fund data
@@ -40,12 +98,22 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
     }
   ];
 
-  // Use fund-specific FAQs if available, otherwise use default FAQs
-  const activeFAQs = (fund as any).faqs && (fund as any).faqs.length > 0 ? (fund as any).faqs : defaultFAQs;
+  // Source A: Manual FAQs from database
+  const manualFAQs: FAQItem[] = (fund as any).faqs || [];
+  
+  // Source B: System-generated FAQs
+  const allSystemFAQs = generateSystemFAQs(fund);
+  
+  // Apply duplicate protection
+  const filteredSystemFAQs = filterDuplicateSystemFAQs(manualFAQs, allSystemFAQs);
+  
+  // If no manual FAQs, use existing default fallback FAQs instead
+  const effectiveManualFAQs = manualFAQs.length > 0 ? manualFAQs : defaultFAQs;
 
   return (
     <FAQSection 
-      faqs={activeFAQs}
+      faqs={effectiveManualFAQs}
+      systemFaqs={filteredSystemFAQs}
       title="Frequently Asked Questions"
       schemaId="fund-faq"
     />
