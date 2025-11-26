@@ -226,6 +226,7 @@ export class SSRRenderer {
         case 'saved-funds': return ['SavedFunds'];
         case 'verified-funds': return ['VerifiedFunds'];
         case 'verification-program': return ['VerificationProgram'];
+        case 'ira-401k-eligible': return ['IRAEligibleFunds'];
         case 'compare': return ['ComparisonPage'];
         case 'team-member': return ['TeamMemberProfile'];
         
