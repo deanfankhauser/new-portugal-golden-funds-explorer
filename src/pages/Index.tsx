@@ -62,21 +62,23 @@ const IndexPage = () => {
       <TrustIndicators />
 
       {/* 5. Full Directory */}
-      <HomepageContent
-        filteredFunds={filteredFunds}
-        selectedTags={selectedTags}
-        setSelectedTags={setSelectedTags}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        selectedManager={selectedManager}
-        setSelectedManager={setSelectedManager}
-        showOnlyVerified={showOnlyVerified}
-        setShowOnlyVerified={setShowOnlyVerified}
-        searchQuery={searchQuery}
-        allFunds={allFunds}
-        loading={loading}
-        error={error ? String(error) : undefined}
-      />
+      <div id="funds-section">
+        <HomepageContent
+          filteredFunds={filteredFunds}
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          selectedManager={selectedManager}
+          setSelectedManager={setSelectedManager}
+          showOnlyVerified={showOnlyVerified}
+          setShowOnlyVerified={setShowOnlyVerified}
+          searchQuery={searchQuery}
+          allFunds={allFunds}
+          loading={loading}
+          error={error ? String(error) : undefined}
+        />
+      </div>
 
       <section className="mt-12 sm:mt-16 lg:mt-20 mb-16 md:mb-0" aria-label="Additional resources">
         <Suspense fallback={<FundListSkeleton />}>
