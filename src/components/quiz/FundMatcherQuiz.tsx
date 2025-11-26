@@ -47,6 +47,15 @@ const questions = [
       { value: 'yes', label: 'Yes', description: 'We\'ll highlight QEF-eligible funds for you' },
       { value: 'no', label: 'No', description: 'Standard investment account' }
     ]
+  },
+  {
+    id: 'timeline',
+    question: 'What is your investment timeline?',
+    options: [
+      { value: '1-3years', label: '1–3 years', description: 'Short-term investment with early liquidity' },
+      { value: '3-5years', label: '3–5 years', description: 'Medium-term commitment for balanced returns' },
+      { value: '5plus', label: '5+ years', description: 'Long-term investment for maximum growth potential' }
+    ]
   }
 ];
 
@@ -60,7 +69,7 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
 
   // Show results when query completes
   useEffect(() => {
-    if (Object.keys(answers).length === 4 && isSearching) {
+    if (Object.keys(answers).length === 5 && isSearching) {
       if (isFetched && !isLoading) {
         setIsSearching(false);
         setShowResults(true);
