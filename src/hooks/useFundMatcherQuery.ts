@@ -7,7 +7,7 @@ export interface QuizAnswers {
   budget?: 'under250k' | 'under500k' | '500k+';
   strategy?: 'safety' | 'growth' | 'fast_exit';
   income?: 'yes' | 'no';
-  usTaxAccount?: 'yes' | 'no';
+  riskTolerance?: 'conservative' | 'moderate' | 'aggressive';
   timeline?: '1-3years' | '3-5years' | '5plus';
 }
 
@@ -125,14 +125,25 @@ export const useFundMatcherQuery = (answers: QuizAnswers) => {
         });
       }
 
-      // Sort QEF-eligible funds to top if user needs them (soft preference, not hard filter)
-      if (answers.usTaxAccount === 'yes') {
+      // Apply risk tolerance as soft preference (sort by risk-appropriate categories)
+      if (answers.riskTolerance === 'conservative') {
+        // Sort safer categories to top: Debt, Real Estate, Infrastructure
         filteredFunds.sort((a, b) => {
-          const aHasQEF = a.pficStatus ? 1 : 0;
-          const bHasQEF = b.pficStatus ? 1 : 0;
-          return bHasQEF - aHasQEF; // QEF funds first
+          const safeCategories = ['Debt', 'Real Estate', 'Infrastructure'];
+          const aIsSafe = safeCategories.includes(a.category) ? 1 : 0;
+          const bIsSafe = safeCategories.includes(b.category) ? 1 : 0;
+          return bIsSafe - aIsSafe;
+        });
+      } else if (answers.riskTolerance === 'aggressive') {
+        // Sort growth categories to top: Crypto, Venture Capital, Private Equity
+        filteredFunds.sort((a, b) => {
+          const growthCategories = ['Crypto', 'Venture Capital', 'Private Equity'];
+          const aIsGrowth = growthCategories.includes(a.category) ? 1 : 0;
+          const bIsGrowth = growthCategories.includes(b.category) ? 1 : 0;
+          return bIsGrowth - aIsGrowth;
         });
       }
+      // Moderate = no special sorting, show balanced mix
 
       console.log('📊 Final filtered count:', filteredFunds.length);
       return filteredFunds;

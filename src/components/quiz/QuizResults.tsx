@@ -15,7 +15,6 @@ interface QuizResultsProps {
   onReset: () => void;
   onClose: () => void;
   onEditPreferences: () => void;
-  showQEFHighlight?: boolean;
 }
 
 const getAnswerLabel = (questionId: string, value: string): string => {
@@ -34,9 +33,10 @@ const getAnswerLabel = (questionId: string, value: string): string => {
       'yes': 'Yes, I need distributions',
       'no': 'No, prefer accumulation'
     },
-    usTaxAccount: {
-      'yes': 'Yes, IRA/401k account',
-      'no': 'No, standard account'
+    riskTolerance: {
+      'conservative': 'Conservative',
+      'moderate': 'Moderate',
+      'aggressive': 'Aggressive'
     },
     timeline: {
       '1-3years': '1–3 years',
@@ -52,13 +52,13 @@ const getQuestionLabel = (questionId: string): string => {
     budget: 'Investment Budget',
     strategy: 'Primary Goal',
     income: 'Income Distributions',
-    usTaxAccount: 'US Tax Account',
+    riskTolerance: 'Risk Tolerance',
     timeline: 'Investment Timeline'
   };
   return questions[questionId] || questionId;
 };
 
-export const QuizResults: React.FC<QuizResultsProps> = ({ funds, answers, onReset, onClose, onEditPreferences, showQEFHighlight = false }) => {
+export const QuizResults: React.FC<QuizResultsProps> = ({ funds, answers, onReset, onClose, onEditPreferences }) => {
   const { toast } = useToast();
   const [copied, setCopied] = React.useState(false);
 
@@ -157,27 +157,11 @@ export const QuizResults: React.FC<QuizResultsProps> = ({ funds, answers, onRese
         <p className="text-muted-foreground">
           Based on your preferences, here are the funds that match your criteria
         </p>
-        {showQEFHighlight && (
-          <p className="text-sm text-muted-foreground">
-            QEF-eligible funds are highlighted for your US tax account
-          </p>
-        )}
       </div>
 
       <div className="grid gap-4">
         {funds.map((fund) => (
-          <div key={fund.id} className="relative">
-            <FundCard fund={fund} />
-            {showQEFHighlight && fund.pficStatus && (
-              <Badge 
-                variant="success" 
-                className="absolute top-4 right-4 gap-1"
-              >
-                <CheckCircle2 className="h-3 w-3" />
-                QEF-Eligible
-              </Badge>
-            )}
-          </div>
+          <FundCard key={fund.id} fund={fund} />
         ))}
       </div>
 

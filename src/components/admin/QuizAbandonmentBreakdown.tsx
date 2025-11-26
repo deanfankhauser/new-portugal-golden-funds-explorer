@@ -22,7 +22,7 @@ const formatQuestionLabel = (key: string): string => {
     budget: 'Budget',
     strategy: 'Strategy',
     income: 'Income',
-    usTaxAccount: 'US Tax Account',
+    riskTolerance: 'Risk Tolerance',
     timeline: 'Timeline',
   };
   return labels[key] || key;
@@ -44,9 +44,10 @@ const formatAnswerLabel = (questionKey: string, value: string): string => {
       yes: 'Yes',
       no: 'No',
     },
-    usTaxAccount: {
-      yes: 'Yes',
-      no: 'No',
+    riskTolerance: {
+      conservative: 'Conservative',
+      moderate: 'Moderate',
+      aggressive: 'Aggressive',
     },
     timeline: {
       '1-3years': '1–3 years',
