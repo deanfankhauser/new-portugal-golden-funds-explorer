@@ -110,6 +110,7 @@ const CompanyDetails: React.FC = () => {
         </div>
 
         <ProfileEditTab 
+          key={profileId}
           profile={profile}
         />
       </div>
