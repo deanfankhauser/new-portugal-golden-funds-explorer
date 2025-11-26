@@ -172,7 +172,7 @@ export interface Fund {
   returnTarget: string; // e.g., "8-10% annually"
   expectedReturnMin?: number; // Direct access to min return percentage
   expectedReturnMax?: number; // Direct access to max return percentage
-  fundStatus: 'Open' | 'Soft-closed' | 'Closed' | 'Closing Soon';
+  fundStatus: 'Open' | 'Soft-closed' | 'Closed' | 'Closing Soon' | 'Liquidated';
   websiteUrl?: string;
   established: number; // year
   regulatedBy: string;

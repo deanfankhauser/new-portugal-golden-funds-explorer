@@ -18,6 +18,7 @@ export interface Profile {
   logo_url?: string;
   assets_under_management?: number;
   founded_year?: number;
+  entity_type?: string; // SCR, SGOIC, Gestora, Other
   
   // Social media links
   linkedin_url?: string;

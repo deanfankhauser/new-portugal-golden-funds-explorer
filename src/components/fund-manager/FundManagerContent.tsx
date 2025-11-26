@@ -51,15 +51,95 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
     return `${new Date().getFullYear() - foundedYear}+`;
   };
 
+  // Calculate Primary Strategy based on fund distribution
+  const calculatePrimaryStrategy = (funds: Fund[]): string => {
+    if (funds.length === 0) return 'Multi-Strategy Manager';
+    
+    const categoryCount: Record<string, number> = {};
+    funds.forEach(fund => {
+      const cat = fund.category || 'Other';
+      categoryCount[cat] = (categoryCount[cat] || 0) + 1;
+    });
+    
+    const totalFunds = funds.length;
+    const sortedCategories = Object.entries(categoryCount)
+      .sort(([,a], [,b]) => b - a);
+    
+    const [topCategory, topCount] = sortedCategories[0];
+    
+    // If >50% in one category, they're a specialist
+    if (topCount / totalFunds > 0.5) {
+      return `${topCategory} Specialist`;
+    }
+    
+    return 'Multi-Strategy Manager';
+  };
+
+  // Get regulatory status from entity type or default
+  const getRegulatoryStatus = (profile?: Profile | null): string => {
+    // Use entity_type if available (new column)
+    if (profile?.entity_type) {
+      return `${profile.entity_type} Regulated Entity`;
+    }
+    // Fallback: check license/registration
+    if (profile?.license_number || profile?.registration_number) {
+      return 'CMVM Regulated Entity';
+    }
+    return 'Investment Manager';
+  };
+
+  // Enhance short bios with dynamic boilerplate (Corporate Bio Template)
+  const getEnhancedDescription = (
+    description: string | undefined,
+    managerName: string,
+    fundCount: number,
+    isVerified: boolean,
+    primaryStrategy: string
+  ): string => {
+    const baseDesc = description || '';
+    
+    // If description is short (<100 chars), append dynamic boilerplate
+    if (baseDesc.length < 100) {
+      const verifiedText = isVerified ? 'verified ' : '';
+      // Remove " Specialist" or " Manager" from strategy for cleaner text
+      const strategyText = primaryStrategy
+        .replace(' Specialist', '')
+        .replace(' Manager', '');
+      
+      const boilerplate = `${managerName} is a ${verifiedText}investment management entity operating in Portugal. They currently manage ${fundCount} active investment fund${fundCount !== 1 ? 's' : ''} listed on our platform, specializing in ${strategyText} strategies. The firm is subject to CMVM regulatory oversight.`;
+      
+      return baseDesc ? `${baseDesc} ${boilerplate}` : boilerplate;
+    }
+    
+    return baseDesc;
+  };
+
   const scrollToForm = () => {
     const formElement = document.getElementById('manager-enquiry-form');
     if (formElement) {
       formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
+
+  // Group funds by status for "Fund Shelf"
+  const openFunds = managerFunds.filter(f => 
+    f.fundStatus === 'Open' || f.fundStatus === 'Closing Soon'
+  );
+  const trackRecordFunds = managerFunds.filter(f => 
+    f.fundStatus === 'Closed' || f.fundStatus === 'Liquidated'
+  );
+
+  const primaryStrategy = calculatePrimaryStrategy(managerFunds);
+  const regulatoryStatus = getRegulatoryStatus(managerProfile);
   
-  const fullHeroDescription = managerProfile?.description || 
-    `Strategic investment solutions across Portugal's Golden Visa real estate and technology sectors`;
+  // Use enhanced description with auto-generated boilerplate if needed
+  const fullHeroDescription = getEnhancedDescription(
+    managerProfile?.description,
+    managerName,
+    managerFunds.length,
+    isManagerVerified,
+    primaryStrategy
+  );
   
   const getTruncatedHeroText = (text: string) => {
     const sentences = text.split(/[.!?]+/).filter(s => s.trim());
@@ -109,53 +189,37 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                   )}
                 </div>
 
-                {/* Stats Grid */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                  {/* Active Funds */}
+                {/* Dynamic Header Stats - Corporate Dossier Style */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Total Funds */}
                   <StandardCard padding="sm" className="text-center">
-                    <div className="text-2xl font-bold text-primary mb-1">
+                    <div className="text-3xl font-bold text-primary mb-1">
                       {managerFunds.length}
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                      Active Fund{managerFunds.length !== 1 ? 's' : ''}
+                      Total Fund{managerFunds.length !== 1 ? 's' : ''}
                     </div>
                   </StandardCard>
 
-                  {/* AUM */}
-                  {managerProfile?.assets_under_management && managerProfile.assets_under_management > 0 && (
-                    <StandardCard padding="sm" className="text-center">
-                      <div className="text-2xl font-bold text-primary mb-1">
-                        {formatAUM(managerProfile.assets_under_management)}
-                      </div>
-                      <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                        AUM
-                      </div>
-                    </StandardCard>
-                  )}
+                  {/* Primary Strategy */}
+                  <StandardCard padding="sm" className="text-center">
+                    <div className="text-lg font-bold text-primary mb-1 leading-tight">
+                      {primaryStrategy}
+                    </div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider">
+                      Primary Strategy
+                    </div>
+                  </StandardCard>
 
-                  {/* License Number */}
-                  {managerProfile?.registration_number && (
-                    <StandardCard padding="sm" className="text-center">
-                      <div className="text-2xl font-bold text-primary mb-1">
-                        {managerProfile.registration_number}
-                      </div>
-                      <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                        License Number
-                      </div>
-                    </StandardCard>
-                  )}
-
-                  {/* CMVM Number */}
-                  {managerProfile?.license_number && (
-                    <StandardCard padding="sm" className="text-center">
-                      <div className="text-2xl font-bold text-primary mb-1">
-                        {managerProfile.license_number}
-                      </div>
-                      <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                        CMVM Number
-                      </div>
-                    </StandardCard>
-                  )}
+                  {/* Regulatory Status */}
+                  <StandardCard padding="sm" className="text-center">
+                    <div className="text-lg font-bold text-primary mb-1 leading-tight">
+                      {regulatoryStatus}
+                    </div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider">
+                      Regulatory Status
+                    </div>
+                  </StandardCard>
                 </div>
               </div>
 
@@ -169,20 +233,39 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                 </div>
               )}
 
-              {/* Fund Portfolio Section */}
-              <div className="border-t border-border pt-20 pb-20">
-                <div className="mb-12">
-                  <h2 className="text-3xl font-bold text-primary mb-2">Fund Portfolio</h2>
-                  <p className="text-muted-foreground">
-                    Explore all investment funds managed by {managerName}
-                  </p>
+              {/* Fund Shelf - Open Opportunities */}
+              {openFunds.length > 0 && (
+                <div className="border-t border-border pt-20 pb-20">
+                  <div className="mb-12">
+                    <h2 className="text-3xl font-bold text-primary mb-2">Open Opportunities</h2>
+                    <p className="text-muted-foreground">
+                      Currently accepting new investments
+                    </p>
+                  </div>
+                  <div className="space-y-6">
+                    {openFunds.map((fund) => (
+                      <FundListItem key={fund.id} fund={fund} />
+                    ))}
+                  </div>
                 </div>
-                <div className="space-y-6">
-                  {managerFunds.map((fund) => (
-                    <FundListItem key={fund.id} fund={fund} />
-                  ))}
+              )}
+
+              {/* Fund Shelf - Track Record / Closed */}
+              {trackRecordFunds.length > 0 && (
+                <div className="border-t border-border pt-20 pb-20">
+                  <div className="mb-12">
+                    <h2 className="text-3xl font-bold text-primary mb-2">Track Record / Closed</h2>
+                    <p className="text-muted-foreground">
+                      Historical funds demonstrating proven execution experience
+                    </p>
+                  </div>
+                  <div className="space-y-6">
+                    {trackRecordFunds.map((fund) => (
+                      <FundListItem key={fund.id} fund={fund} />
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
               
               {/* Manager Highlights Section */}
               {managerProfile?.manager_highlights && Array.isArray(managerProfile.manager_highlights) && managerProfile.manager_highlights.length > 0 && (

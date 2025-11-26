@@ -13,7 +13,7 @@ interface TransformFundParams {
 }
 
 // Transform database fund to UI Fund type
-const transformFund = ({ fund, ranking = 999 }: TransformFundParams): Fund => {
+export const transformFund = ({ fund, ranking = 999 }: TransformFundParams): Fund => {
   return {
     id: fund.id,
     name: fund.name,
@@ -36,7 +36,7 @@ const transformFund = ({ fund, ranking = 999 }: TransformFundParams): Fund => {
     })(),
     expectedReturnMin: fund.expected_return_min || undefined,
     expectedReturnMax: fund.expected_return_max || undefined,
-    fundStatus: 'Open' as const,
+    fundStatus: (fund.status || 'Open') as 'Open' | 'Soft-closed' | 'Closed' | 'Liquidated' | 'Closing Soon',
     established: fund.inception_date 
       ? new Date(fund.inception_date).getFullYear() 
       : new Date().getFullYear(),

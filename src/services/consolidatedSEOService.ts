@@ -7,6 +7,7 @@ import { InvestmentFundStructuredDataService } from './investmentFundStructuredD
 import { EnhancedStructuredDataService } from './enhancedStructuredDataService';
 import { normalizeTagLabel, formatMinimumForTitle } from '../utils/tagLabelNormalizer';
 import { managerToSlug } from '../lib/utils';
+import { getTagSeoTitle } from '../utils/tagSeoMappings';
 
 
 export class ConsolidatedSEOService {
@@ -88,55 +89,60 @@ export class ConsolidatedSEOService {
       : truncated + '...';
   }
 
-  // Generate optimized fund title - clean and concise
+  // Generate optimized fund title - dynamic year, fees & yield focused
   private static generateFundTitle(fund: any): string {
-    // Pattern: {Fund Name} | Golden Visa Fund
-    // Keep under 60 characters to avoid SERP truncation
+    // Pattern: [Fund Name]: {Current Year} Fees, Yield & Golden Visa Fact Sheet
+    // Truncate to: [Fund Name]: {Current Year} Golden Visa Fact Sheet if over 60 chars
+    // Note: Year is updated client-side via useYearUpdate hook to avoid SSG rebuilds on New Year's Day
     
+    const currentYear = new Date().getFullYear();
     const fundName = fund.name;
-    const suffix = '| Golden Visa Fund';
     const maxLength = 60;
     
-    // If fund name + suffix fits within limit, use it
-    if (`${fundName} ${suffix}`.length <= maxLength) {
-      return `${fundName} ${suffix}`;
+    // Primary title: [Fund Name]: {Year} Fees, Yield & Golden Visa Fact Sheet
+    const fullTitle = `${fundName}: ${currentYear} Fees, Yield & Golden Visa Fact Sheet`;
+    
+    if (fullTitle.length <= maxLength) {
+      return fullTitle;
     }
     
-    // If fund name is too long, truncate gracefully
-    const maxNameLength = maxLength - suffix.length - 4; // -4 for space and ellipsis
+    // Truncated fallback: [Fund Name]: {Year} Golden Visa Fact Sheet
+    const shortTitle = `${fundName}: ${currentYear} Golden Visa Fact Sheet`;
+    
+    if (shortTitle.length <= maxLength) {
+      return shortTitle;
+    }
+    
+    // Final fallback: Truncate fund name to fit
+    const suffixLength = `: ${currentYear} Golden Visa Fact Sheet`.length;
+    const maxNameLength = maxLength - suffixLength - 3; // -3 for ellipsis
     const truncatedName = fundName.substring(0, maxNameLength).trim() + '...';
-    return `${truncatedName} ${suffix}`;
+    return `${truncatedName}: ${currentYear} Golden Visa Fact Sheet`;
   }
 
-  // Generate optimized fund description with USPs and performance
+  // Generate optimized fund description with conditional logic
   private static generateFundDescription(fund: any): string {
-    // Pattern: {Fund Name} is a CMVM-regulated Portugal Golden Visa investment fund managed by {Manager}, investing in {category} {liquidity} and {minimum}.
+    // Pattern: View objective data for [Fund Name]. {TrustSignal} Analysis covers {FeeSignal}, Minimum Investment ([Min_Investment]), and Golden Visa eligibility.
     
-    const parts: string[] = [
-      `${fund.name} is a CMVM-regulated Portugal Golden Visa investment fund managed by ${fund.managerName}, investing in ${fund.category?.toLowerCase() || 'diversified assets'}`
-    ];
+    const fundName = fund.name;
     
-    // Add liquidity info if available
-    const hasHighLiquidity = fund.tags?.some((tag: string) => 
-      tag.includes('Daily NAV') || tag.includes('No Lock-Up') || tag.toLowerCase().includes('daily liquidity')
-    );
-    if (hasHighLiquidity) {
-      parts.push('with daily liquidity');
-    } else if (fund.lockUpPeriodMonths) {
-      if (fund.lockUpPeriodMonths <= 12) {
-        parts.push('with short lock-up');
-      }
-    }
+    // Step A: Trust Signal Variable (conditional on cmvmId)
+    const trustSignal = fund.cmvmId 
+      ? `Regulated by CMVM #${fund.cmvmId}.`
+      : `Managed by ${fund.managerName}.`;
     
-    // Add minimum investment if available
-    if (fund.minimumInvestment) {
-      const minFormatted = formatMinimumForTitle(fund.minimumInvestment);
-      if (minFormatted) {
-        parts.push(`and ${minFormatted} minimum`);
-      }
-    }
+    // Step B: Fee Signal Variable (conditional on managementFee)
+    const feeSignal = (fund.managementFee !== null && fund.managementFee !== undefined)
+      ? `Management Fee (${fund.managementFee}%)`
+      : 'fee structure';
     
-    const description = parts.join(' ') + '.';
+    // Step C: Minimum Investment Formatting
+    const minInvestment = fund.minimumInvestment 
+      ? `€${(fund.minimumInvestment / 1000).toFixed(0)}k`
+      : 'available minimums';
+    
+    // Final Description Construction
+    const description = `View objective data for ${fundName}. ${trustSignal} Analysis covers ${feeSignal}, Minimum Investment (${minInvestment}), and Golden Visa eligibility.`;
     
     // Ensure we stay within character limit
     return this.optimizeText(description, this.MAX_DESCRIPTION_LENGTH);
@@ -270,17 +276,24 @@ export class ConsolidatedSEOService {
         };
 
       case 'category':
-        // Pattern: [Category Name] Portugal Golden Visa Investment Funds – Compare Options | Movingto Funds
         const categoryName = params.categoryName;
-        const categoryTitle = `${categoryName} Portugal Golden Visa Investment Funds – Compare Options | Movingto Funds`;
-        const categoryDescription = `Browse ${categoryName.toLowerCase()} Portugal Golden Visa funds. Compare strategy, risk, fees, minimums and target returns for all funds in this category.`;
+        const categoryFunds = params.funds || [];
+        const currentYear = new Date().getFullYear();
+        
+        // SEO Title: "Best [Category Name] Funds for Portugal Golden Visa ({Current Year})"
+        const categoryTitle = `Best ${categoryName} Funds for Portugal Golden Visa (${currentYear})`;
+        
+        // SEO Description: "Compare the top [Category Name] investment funds eligible for the Portugal Golden Visa. Analysis of fees, yields, and risk profiles for [Count] funds."
+        const categoryDescription = `Compare the top ${categoryName} investment funds eligible for the Portugal Golden Visa. Analysis of fees, yields, and risk profiles for ${categoryFunds.length} fund${categoryFunds.length !== 1 ? 's' : ''}.`;
+        
         const categoryKeywords = [
-          `${categoryName} Golden Visa funds`,
-          `${categoryName} investment Portugal`,
+          `best ${categoryName} Golden Visa funds`,
+          `${categoryName} investment Portugal ${currentYear}`,
           `Portugal ${categoryName} funds`,
           'Golden Visa investment categories',
           `${categoryName} fund comparison`,
-          `best ${categoryName} funds Portugal`
+          `top ${categoryName} funds Portugal`,
+          `${categoryName} fund fees yields`
         ];
         
         return {
@@ -289,20 +302,21 @@ export class ConsolidatedSEOService {
           url: URL_CONFIG.buildCategoryUrl(params.categoryName),
           canonical: URL_CONFIG.buildCategoryUrl(params.categoryName),
           keywords: categoryKeywords,
-          structuredData: this.getCategoryStructuredData(params.categoryName, params.funds || [])
+          structuredData: this.getCategoryStructuredData(params.categoryName, categoryFunds)
         };
 
       case 'tag':
-        // Pattern: [Clean Tag Label] Portugal Golden Visa Investment Funds – Filtered List | Movingto Funds
+        // Smart SEO title using mappings
         const cleanTagLabel = normalizeTagLabel(params.tagName);
-        const tagTitle = `${cleanTagLabel} Portugal Golden Visa Investment Funds – Filtered List | Movingto Funds`;
-        const tagDescription = `Portugal Golden Visa funds tagged "${cleanTagLabel}" – filter the list by this characteristic and compare performance, fees, risk and minimums.`;
+        const fundsCount = params.funds?.length || 0;
+        const tagTitle = `${getTagSeoTitle(params.tagName)} | Movingto Funds`;
+        const tagDescription = `Browse ${fundsCount} ${cleanTagLabel} funds eligible for Portugal Golden Visa. Compare average yields, lock-up periods, and fees for this investment theme.`;
         const tagKeywords = [
           `${params.tagName} Golden Visa funds`,
           `${params.tagName} investment funds Portugal`,
-          'Golden Visa fund characteristics',
-          `${params.tagName} fund features`,
-          'Portugal investment fund tags',
+          'thematic investing Portugal',
+          `${params.tagName} fund comparison`,
+          'Portugal investment themes',
           `best ${params.tagName} funds`
         ];
         
@@ -316,18 +330,31 @@ export class ConsolidatedSEOService {
         };
 
       case 'manager':
+        const fundCount = params.funds?.length || 0;
+        const goldenVisaFundCount = params.funds?.filter((f: any) => f.tags?.includes('Golden Visa Eligible')).length || fundCount;
+        
+        // SEO Title: "[Manager Name]: Corporate Profile, Track Record & Active Funds"
+        const managerTitle = `${params.managerName}: Corporate Profile, Track Record & Active Funds`;
+        
+        // SEO Description: "View the corporate profile of [Manager Name]. Regulated Portuguese fund manager with [X] active Golden Visa funds. View AUM and investment strategy."
+        const managerDescription = `View the corporate profile of ${params.managerName}. Regulated Portuguese fund manager with ${goldenVisaFundCount} active Golden Visa fund${goldenVisaFundCount !== 1 ? 's' : ''}. View AUM and investment strategy.`;
+        
         return {
-          title: this.optimizeText(`${params.managerName} – Portugal Golden Visa Fund Manager Profile | Movingto Funds`, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText(`${params.managerName} is a CMVM-regulated Portugal Golden Visa fund manager. View their eligible funds, strategies, fee structures and key metrics.`, this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText(managerTitle, this.MAX_TITLE_LENGTH),
+          description: this.optimizeText(managerDescription, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildManagerUrl(params.managerName),
           canonical: URL_CONFIG.buildManagerUrl(params.managerName),
           keywords: [
             `${params.managerName}`,
             'Portugal fund manager',
+            'corporate profile',
+            'track record',
             'Golden Visa fund manager',
             'investment fund management Portugal',
-            'fund manager profile',
-            'Golden Visa investment professionals'
+            'CMVM regulated',
+            'fund manager analysis',
+            'active funds',
+            'AUM'
           ],
           structuredData: this.getManagerStructuredData(params.managerName, params.managerProfile, params.funds || [])
         };
@@ -337,8 +364,8 @@ export class ConsolidatedSEOService {
         const memberRole = params.role || 'Team Member';
         const companyName = params.companyName || '';
         return {
-          title: this.optimizeText(`${memberName} – ${memberRole} | Movingto Funds`, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText(`${memberName} is ${memberRole} at ${companyName}, managing Portugal Golden Visa investment funds. View their background, managed funds, and professional credentials.`, this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText(`${memberName}: Professional Profile & Managed Funds - ${companyName}`, this.MAX_TITLE_LENGTH),
+          description: this.optimizeText(`Professional profile of ${memberName}, ${memberRole} at ${companyName}. View their investment track record and currently active Golden Visa funds.`, this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl(`/team/${params.slug}`),
           canonical: URL_CONFIG.buildUrl(`/team/${params.slug}`),
           keywords: [
@@ -380,18 +407,25 @@ export class ConsolidatedSEOService {
           
           if (fund1 && fund2) {
             return {
-              title: this.optimizeText(`${fund1.name} vs ${fund2.name} – Portugal Golden Visa Fund Comparison | Movingto Funds`, this.MAX_TITLE_LENGTH),
-              description: this.optimizeText(`Compare ${fund1.name} vs ${fund2.name} – see differences in performance, fees, risk, liquidity and minimum investment for these Portugal Golden Visa funds.`, this.MAX_DESCRIPTION_LENGTH),
+              title: this.optimizeText(`${fund1.name} vs ${fund2.name} Review: Fees, Risk & Golden Visa Comparison`, this.MAX_TITLE_LENGTH),
+              description: this.optimizeText(`Detailed comparison of ${fund1.name} and ${fund2.name}. Analyze the differences in Management Fees, Risk Profiles, and Target Returns to find the right Golden Visa fund for you.`, this.MAX_DESCRIPTION_LENGTH),
               url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
               canonical: URL_CONFIG.buildComparisonUrl(normalizedSlug),
               robots: 'index, follow',
               keywords: [
                 `${fund1.name} vs ${fund2.name}`,
+                'fund comparison',
+                'investment comparison',
+                'fund review',
+                'fees comparison',
+                'risk comparison',
                 'Golden Visa fund comparison',
                 'investment fund analysis',
                 `${fund1.managerName}`,
                 `${fund2.managerName}`,
-                'fund performance comparison'
+                'fund performance comparison',
+                'compare funds',
+                'investment analysis'
               ],
               structuredData: this.getFundComparisonStructuredData(fund1, fund2)
             };
@@ -815,17 +849,15 @@ export class ConsolidatedSEOService {
     if (seoData.url.includes('/compare/') && seoData.url.includes('-vs-')) {
       ogType = 'article';
     } else if (seoData.structuredData) {
-      // Check for fund pages (multiple schemas)
+      // Fund pages use 'website' type (not 'product') per SEO requirements
+      // Only Person schemas use 'profile' type
       if (Array.isArray(seoData.structuredData)) {
-        const hasInvestmentFund = seoData.structuredData.some(schema => schema['@type'] === 'InvestmentFund');
-        if (hasInvestmentFund) ogType = 'product';
-      } else if (seoData.structuredData['@type'] === 'InvestmentFund') {
-        ogType = 'product';
-      } else if (seoData.structuredData['@type'] === 'FinancialProduct') {
-        ogType = 'product';
+        const hasPerson = seoData.structuredData.some(schema => schema['@type'] === 'Person');
+        if (hasPerson) ogType = 'profile';
       } else if (seoData.structuredData['@type'] === 'Person') {
         ogType = 'profile';
       }
+      // All fund pages default to 'website' type
     }
     
     // DEV-only verification log
@@ -842,8 +874,8 @@ export class ConsolidatedSEOService {
       { property: 'og:site_name', content: 'Movingto' },
     ];
 
-    // Add article:modified_time for fund pages
-    if (ogType === 'product' && seoData.structuredData) {
+    // Add article:modified_time for comparison articles
+    if (ogType === 'article' && seoData.structuredData) {
       let modifiedTime = new Date().toISOString();
       if (Array.isArray(seoData.structuredData)) {
         const webPageSchema = seoData.structuredData.find(schema => schema['@type'] === 'WebPage');
@@ -1277,9 +1309,9 @@ export class ConsolidatedSEOService {
     // Base Organization Schema (Enhanced with complete company details)
     const organizationSchema: any = {
       '@context': 'https://schema.org',
-      '@type': 'Organization',
+      '@type': ['Organization', 'FinancialService'],
       'name': managerName,
-      'url': managerUrl,
+      'url': managerProfile?.website || managerUrl,
       ...(managerProfile?.logo_url && { 'logo': managerProfile.logo_url }),
       ...(managerProfile?.description && { 'description': managerProfile.description }),
       'address': postalAddress,
@@ -1290,7 +1322,12 @@ export class ConsolidatedSEOService {
         'name': 'Portugal'
       },
       'serviceType': 'Investment Fund Management',
-      'knowsAbout': 'Golden Visa Investment Funds'
+      'knowsAbout': 'Golden Visa Investment Funds',
+      'parentOrganization': {
+        '@type': 'Organization',
+        'name': 'CMVM',
+        'url': 'https://www.cmvm.pt/'
+      }
     };
     
     // Add registration and license numbers as identifiers

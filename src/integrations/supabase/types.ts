@@ -112,6 +112,33 @@ export type Database = {
         }
         Relationships: []
       }
+      category_editorial: {
+        Row: {
+          category_name: string
+          category_slug: string
+          created_at: string | null
+          editorial_content: string
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          category_name: string
+          category_slug: string
+          created_at?: string | null
+          editorial_content: string
+          id?: string
+          updated_at?: string | null
+        }
+        Update: {
+          category_name?: string
+          category_slug?: string
+          created_at?: string | null
+          editorial_content?: string
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       email_captures: {
         Row: {
           confirmation_token: string | null
@@ -714,6 +741,7 @@ export type Database = {
           regulated_by: string | null
           risk_band: string | null
           risk_level: string | null
+          status: string | null
           subscription_fee: number | null
           tags: string[] | null
           team_members: Json | null
@@ -771,6 +799,7 @@ export type Database = {
           regulated_by?: string | null
           risk_band?: string | null
           risk_level?: string | null
+          status?: string | null
           subscription_fee?: number | null
           tags?: string[] | null
           team_members?: Json | null
@@ -828,6 +857,7 @@ export type Database = {
           regulated_by?: string | null
           risk_band?: string | null
           risk_level?: string | null
+          status?: string | null
           subscription_fee?: number | null
           tags?: string[] | null
           team_members?: Json | null
@@ -1030,6 +1060,7 @@ export type Database = {
           date_of_birth: string | null
           description: string | null
           email: string
+          entity_type: string | null
           facebook_url: string | null
           first_name: string | null
           founded_year: number | null
@@ -1066,6 +1097,7 @@ export type Database = {
           date_of_birth?: string | null
           description?: string | null
           email: string
+          entity_type?: string | null
           facebook_url?: string | null
           first_name?: string | null
           founded_year?: number | null
@@ -1102,6 +1134,7 @@ export type Database = {
           date_of_birth?: string | null
           description?: string | null
           email?: string
+          entity_type?: string | null
           facebook_url?: string | null
           first_name?: string | null
           founded_year?: number | null

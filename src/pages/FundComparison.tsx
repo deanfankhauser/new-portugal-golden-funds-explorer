@@ -8,6 +8,8 @@ import ComparisonTable from '../components/comparison/ComparisonTable';
 import FundComparisonBreadcrumbs from '../components/comparison/FundComparisonBreadcrumbs';
 import RelatedComparisons from '../components/comparison/RelatedComparisons';
 import FundComparisonFAQ from '../components/comparison/FundComparisonFAQ';
+import ComparisonExecutiveSummary from '../components/comparison/ComparisonExecutiveSummary';
+import TotalCostSimulator from '../components/comparison/TotalCostSimulator';
 import { parseComparisonSlug } from '../data/services/comparison-service';
 import { normalizeComparisonSlug, isCanonicalComparisonSlug } from '../utils/comparisonUtils';
 import { useAllFunds } from '@/hooks/useFundsQuery';
@@ -148,9 +150,13 @@ const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug, initialFun
           </p>
         </div>
 
+        <ComparisonExecutiveSummary fund1={comparisonData.fund1} fund2={comparisonData.fund2} />
+
         <div className="bg-card rounded-lg shadow-sm border">
           <ComparisonTable funds={[comparisonData.fund1, comparisonData.fund2]} />
         </div>
+
+        <TotalCostSimulator fund1={comparisonData.fund1} fund2={comparisonData.fund2} />
 
         <RelatedComparisons 
           currentFund1={comparisonData.fund1} 

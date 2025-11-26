@@ -7,8 +7,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import TagBreadcrumbs from '../components/tag/TagBreadcrumbs';
-import TagPageHeader from '../components/tag/TagPageHeader';
-import TagPageFundSummary from '../components/tag/TagPageFundSummary';
+import TagThemeHero from '../components/tag/TagThemeHero';
 import TagPageFundList from '../components/tag/TagPageFundList';
 import TagPageEmptyState from '../components/tag/TagPageEmptyState';
 import TagPageFAQ from '../components/tag/TagPageFAQ';
@@ -103,7 +102,7 @@ const TagPage = () => {
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <TagPageEmptyState tagName={displayTagName} />
+          <TagPageEmptyState tagName={displayTagName} allFunds={allDatabaseFunds} />
         </main>
         <Footer />
       </div>
@@ -120,7 +119,7 @@ const TagPage = () => {
       
       <main className="container mx-auto px-4 py-8 flex-1" itemScope itemType="https://schema.org/CollectionPage">
         <TagBreadcrumbs tagName={displayTagName} tagSlug={tagSlug || ''} />
-        <TagPageHeader tagName={displayTagName} />
+        <TagThemeHero tagName={displayTagName} funds={allFunds} />
         
         
         {/* Verification Filter */}
@@ -133,7 +132,6 @@ const TagPage = () => {
         
         {funds.length > 0 ? (
           <>
-            <TagPageFundSummary count={funds.length} tagName={displayTagName} />
             <TagPageFundList funds={funds} />
           </>
         ) : showOnlyVerified && allFunds.length > 0 ? (
@@ -146,7 +144,7 @@ const TagPage = () => {
             </p>
           </div>
         ) : (
-          <TagPageEmptyState tagName={displayTagName} />
+          <TagPageEmptyState tagName={displayTagName} allFunds={allDatabaseFunds} />
         )}
         
         <TagPageFAQ tagName={displayTagName} tagSlug={tagSlug || ''} fundsCount={funds.length} />

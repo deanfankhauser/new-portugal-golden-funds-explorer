@@ -52,6 +52,9 @@ export class SSRRenderer {
     
     // Extract fund ID and find fund data for SSR injection
     let fundDataForSSR: Fund | null = null;
+    let managerDataForSSR: { name: string; profile?: any; funds: Fund[]; isVerified: boolean } | null = null;
+    
+    // Handle fund detail pages
     if (route.path.match(/^\/[^\/]+$/)) {
       const fundId = route.path.replace('/', '');
       if (shouldLog) {
@@ -65,6 +68,24 @@ export class SSRRenderer {
       
       if (shouldLog) {
         console.log(`🔥 SSR: Fund data found for SSR:`, fundDataForSSR ? `✅ ${fundDataForSSR.name}` : '❌ Not found');
+      }
+    }
+    
+    // Handle manager profile pages
+    if (route.pageType === 'manager' && route.params?.managerName) {
+      if (shouldLog) {
+        console.log(`🔥 SSR: Detected manager page. Manager: "${route.params.managerName}"`);
+      }
+      
+      managerDataForSSR = {
+        name: route.params.managerName,
+        profile: route.params.managerProfile,
+        funds: route.params.funds || [],
+        isVerified: !!route.params.managerProfile
+      };
+      
+      if (shouldLog) {
+        console.log(`🔥 SSR: Manager data prepared for SSR:`, managerDataForSSR ? `✅ ${managerDataForSSR.name} (${managerDataForSSR.funds.length} funds)` : '❌ Not found');
       }
     }
     
@@ -308,7 +329,12 @@ export class SSRRenderer {
                 React.createElement(Route, { path: '/categories', element: React.createElement(getComponent('CategoriesHub')) }),
                 React.createElement(Route, { path: '/categories/:category', element: React.createElement(getComponent('CategoryPage')) }),
                 React.createElement(Route, { path: '/managers', element: React.createElement(getComponent('ManagersHub')) }),
-                React.createElement(Route, { path: '/manager/:name', element: React.createElement(getComponent('FundManager')) }),
+                React.createElement(Route, { 
+                  path: '/manager/:name', 
+                  element: isSSG && managerDataForSSR
+                    ? React.createElement(getComponent('FundManager'), { managerData: managerDataForSSR })
+                    : React.createElement(getComponent('FundManager'))
+                }),
                 React.createElement(Route, { path: '/team/:slug', element: React.createElement(getComponent('TeamMemberProfile')) }),
                 
                 // Static pages
