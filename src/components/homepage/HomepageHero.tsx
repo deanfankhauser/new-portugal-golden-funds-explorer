@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { ShieldCheck } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Fund } from '../../data/types/funds';
+import { Button } from '../ui/button';
 
 interface HomepageHeroProps {
   funds: Fund[];
@@ -27,9 +28,9 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
           {/* Trust Badge */}
           <div className="flex justify-center mb-8">
             <div className="inline-flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-full px-6 py-3 border border-border shadow-sm">
-              <ShieldCheck className="h-5 w-5 text-accent" />
+              <Check className="h-5 w-5 text-accent" />
               <span className="text-sm font-medium text-high-contrast tracking-[0.15em] uppercase">
-                Independent Market Analysis
+                Verified Market Analysis
               </span>
             </div>
           </div>
@@ -39,24 +40,35 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-high-contrast leading-[1.1] tracking-tight">
               Portugal Golden Visa Investment Funds
             </h1>
-            <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              <span className="text-accent italic font-cheltenham">Compare Fees, Performance, and Risk.</span>
-            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-high-contrast">
+              Don't Just Invest. <span className="text-accent italic font-cheltenham">Compare Fees, Performance, and Risk.</span>
+            </h2>
             
             <p className="text-lg sm:text-xl text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-8">
-              The only independent directory of CMVM-regulated investment funds eligible for the Portugal Golden Visa. We analyze the market to help you compare strategies, scrutinize management fees, and verify track records. Use our data to shortlist the best funds before you invest.
+              Access the definitive directory of 25+ CMVM-regulated funds. We verify track records and expose hidden management fees to help you shortlist the safest options.
             </p>
           </div>
 
-          {/* CTA Button */}
-          <div className="text-center mb-8">
-            <button 
-              onClick={scrollToFunds}
-              className="inline-flex items-center text-accent hover:text-accent/80 font-semibold text-base sm:text-lg transition-colors duration-200 group"
-            >
-              Compare All Portugal Funds
-              <span className="ml-2 transition-transform group-hover:translate-x-1">→</span>
-            </button>
+          {/* CTA Buttons */}
+          <div className="text-center mb-8 space-y-4">
+            <div>
+              <Button 
+                onClick={scrollToFunds}
+                size="lg"
+                className="bg-[hsl(25,45%,25%)] hover:bg-[hsl(25,45%,20%)] text-white font-semibold px-8 py-6 text-lg"
+              >
+                Find My Fund Match
+              </Button>
+            </div>
+            <div>
+              <button 
+                onClick={scrollToFunds}
+                className="inline-flex items-center text-medium-contrast hover:text-high-contrast font-medium text-base transition-colors duration-200 group"
+              >
+                or Browse Full Directory
+                <span className="ml-2 transition-transform group-hover:translate-x-1">→</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
