@@ -130,4 +130,88 @@ export class FundVerificationService {
       return { success: false, error: error.message };
     }
   }
+
+  /**
+   * Toggle quiz eligibility for a fund
+   */
+  static async toggleQuizEligibility(fundId: string, isEligible: boolean): Promise<{ success: boolean; error?: string }> {
+    try {
+      const { error } = await supabase
+        .from('funds')
+        .update({
+          is_quiz_eligible: isEligible
+        })
+        .eq('id', fundId);
+
+      if (error) throw error;
+
+      // Log admin activity
+      await supabase.rpc('log_admin_activity', {
+        p_action_type: isEligible ? 'FUND_QUIZ_ENABLED' : 'FUND_QUIZ_DISABLED',
+        p_target_type: 'fund',
+        p_target_id: fundId,
+        p_details: { is_quiz_eligible: isEligible }
+      });
+
+      return { success: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Bulk enable quiz eligibility for multiple funds
+   */
+  static async bulkEnableQuiz(fundIds: string[]): Promise<{ success: boolean; error?: string }> {
+    try {
+      const { error } = await supabase
+        .from('funds')
+        .update({
+          is_quiz_eligible: true
+        })
+        .in('id', fundIds);
+
+      if (error) throw error;
+
+      // Log bulk activity
+      await supabase.rpc('log_admin_activity', {
+        p_action_type: 'BULK_FUND_QUIZ_ENABLED',
+        p_target_type: 'funds',
+        p_target_id: `bulk_${fundIds.length}`,
+        p_details: { fund_ids: fundIds, count: fundIds.length }
+      });
+
+      return { success: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Bulk disable quiz eligibility for multiple funds
+   */
+  static async bulkDisableQuiz(fundIds: string[]): Promise<{ success: boolean; error?: string }> {
+    try {
+      const { error } = await supabase
+        .from('funds')
+        .update({
+          is_quiz_eligible: false
+        })
+        .in('id', fundIds);
+
+      if (error) throw error;
+
+      // Log bulk activity
+      await supabase.rpc('log_admin_activity', {
+        p_action_type: 'BULK_FUND_QUIZ_DISABLED',
+        p_target_type: 'funds',
+        p_target_id: `bulk_${fundIds.length}`,
+        p_details: { fund_ids: fundIds, count: fundIds.length }
+      });
+
+      return { success: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
 }

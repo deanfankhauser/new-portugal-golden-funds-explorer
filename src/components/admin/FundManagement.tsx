@@ -4,11 +4,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { Search, ExternalLink, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { Search, ExternalLink, CheckCircle2, XCircle, Loader2, Sparkles, Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { FundVerificationService } from '@/services/fundVerificationService';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -25,6 +26,7 @@ interface FundData {
   website?: string;
   is_verified?: boolean;
   verified_at?: string;
+  is_quiz_eligible?: boolean;
 }
 
 const FundManagement: React.FC = () => {
@@ -33,6 +35,8 @@ const FundManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [verificationFilter, setVerificationFilter] = useState<'all' | 'verified' | 'unverified'>('all');
   const [togglingFunds, setTogglingFunds] = useState<Set<string>>(new Set());
+  const [selectedFunds, setSelectedFunds] = useState<Set<string>>(new Set());
+  const [bulkActionLoading, setBulkActionLoading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -63,7 +67,7 @@ const FundManagement: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('funds')
-        .select('id, name, category, manager_name, website, is_verified, verified_at')
+        .select('id, name, category, manager_name, website, is_verified, verified_at, is_quiz_eligible')
         .order('is_verified', { ascending: false })
         .order('name');
 
@@ -113,6 +117,112 @@ const FundManagement: React.FC = () => {
         newSet.delete(fundId);
         return newSet;
       });
+    }
+  };
+
+  const handleQuizToggle = async (fundId: string, currentStatus: boolean) => {
+    setTogglingFunds(prev => new Set(prev).add(fundId));
+
+    try {
+      const result = await FundVerificationService.toggleQuizEligibility(fundId, !currentStatus);
+
+      if (result.success) {
+        toast({
+          title: 'Success',
+          description: `Quiz eligibility ${!currentStatus ? 'enabled' : 'disabled'} successfully`,
+        });
+        fetchFunds();
+      } else {
+        throw new Error(result.error || 'Unknown error');
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to update quiz eligibility',
+        variant: 'destructive'
+      });
+    } finally {
+      setTogglingFunds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(fundId);
+        return newSet;
+      });
+    }
+  };
+
+  const handleSelectFund = (fundId: string, checked: boolean) => {
+    setSelectedFunds(prev => {
+      const newSet = new Set(prev);
+      if (checked) {
+        newSet.add(fundId);
+      } else {
+        newSet.delete(fundId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedFunds(new Set(filteredFunds.map(f => f.id)));
+    } else {
+      setSelectedFunds(new Set());
+    }
+  };
+
+  const handleBulkEnableQuiz = async () => {
+    if (selectedFunds.size === 0) return;
+
+    setBulkActionLoading(true);
+    try {
+      const result = await FundVerificationService.bulkEnableQuiz(Array.from(selectedFunds));
+
+      if (result.success) {
+        toast({
+          title: 'Success',
+          description: `Enabled quiz eligibility for ${selectedFunds.size} fund(s)`,
+        });
+        setSelectedFunds(new Set());
+        fetchFunds();
+      } else {
+        throw new Error(result.error || 'Unknown error');
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to bulk enable quiz eligibility',
+        variant: 'destructive'
+      });
+    } finally {
+      setBulkActionLoading(false);
+    }
+  };
+
+  const handleBulkDisableQuiz = async () => {
+    if (selectedFunds.size === 0) return;
+
+    setBulkActionLoading(true);
+    try {
+      const result = await FundVerificationService.bulkDisableQuiz(Array.from(selectedFunds));
+
+      if (result.success) {
+        toast({
+          title: 'Success',
+          description: `Disabled quiz eligibility for ${selectedFunds.size} fund(s)`,
+        });
+        setSelectedFunds(new Set());
+        fetchFunds();
+      } else {
+        throw new Error(result.error || 'Unknown error');
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to bulk disable quiz eligibility',
+        variant: 'destructive'
+      });
+    } finally {
+      setBulkActionLoading(false);
     }
   };
 
@@ -196,6 +306,51 @@ const FundManagement: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
+          
+          {/* Bulk Actions */}
+          {selectedFunds.size > 0 && (
+            <div className="flex items-center justify-between gap-4 mt-4 p-4 bg-muted rounded-lg">
+              <span className="text-sm font-medium">
+                {selectedFunds.size} fund{selectedFunds.size !== 1 ? 's' : ''} selected
+              </span>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleBulkEnableQuiz}
+                  disabled={bulkActionLoading}
+                >
+                  {bulkActionLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  ) : (
+                    <Sparkles className="h-4 w-4 mr-2" />
+                  )}
+                  Enable Quiz
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleBulkDisableQuiz}
+                  disabled={bulkActionLoading}
+                >
+                  {bulkActionLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  ) : (
+                    <XCircle className="h-4 w-4 mr-2" />
+                  )}
+                  Disable Quiz
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedFunds(new Set())}
+                  disabled={bulkActionLoading}
+                >
+                  Clear
+                </Button>
+              </div>
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -205,6 +360,19 @@ const FundManagement: React.FC = () => {
           ) : (
             <ScrollArea className="h-[500px]">
               <div className="space-y-2">
+                {/* Select All Header */}
+                {filteredFunds.length > 0 && (
+                  <div className="flex items-center gap-3 p-3 border-b">
+                    <Checkbox
+                      checked={selectedFunds.size === filteredFunds.length && filteredFunds.length > 0}
+                      onCheckedChange={handleSelectAll}
+                    />
+                    <span className="text-sm font-medium text-muted-foreground">
+                      Select All ({filteredFunds.length})
+                    </span>
+                  </div>
+                )}
+                
                 {filteredFunds.map((fund) => (
                   <div
                     key={fund.id}
@@ -212,9 +380,13 @@ const FundManagement: React.FC = () => {
                       fund.is_verified 
                         ? 'bg-green-50/50 border-green-200' 
                         : 'hover:bg-muted'
-                    }`}
+                    } ${selectedFunds.has(fund.id) ? 'ring-2 ring-primary' : ''}`}
                   >
                     <div className="flex items-center gap-3">
+                      <Checkbox
+                        checked={selectedFunds.has(fund.id)}
+                        onCheckedChange={(checked) => handleSelectFund(fund.id, checked as boolean)}
+                      />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <h4 className="font-medium truncate">{fund.name}</h4>
@@ -235,7 +407,7 @@ const FundManagement: React.FC = () => {
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-4">
                         {fund.website && (
                           <Button
                             variant="ghost"
@@ -245,6 +417,17 @@ const FundManagement: React.FC = () => {
                             <ExternalLink className="h-4 w-4" />
                           </Button>
                         )}
+                        <div className="flex items-center gap-2">
+                          <Sparkles className={`h-4 w-4 ${fund.is_quiz_eligible ? 'text-primary' : 'text-muted-foreground'}`} />
+                          <span className="text-sm text-muted-foreground">
+                            Quiz
+                          </span>
+                          <Switch
+                            checked={fund.is_quiz_eligible || false}
+                            onCheckedChange={() => handleQuizToggle(fund.id, fund.is_quiz_eligible || false)}
+                            disabled={togglingFunds.has(fund.id)}
+                          />
+                        </div>
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-muted-foreground">
                             {fund.is_verified ? 'Verified' : 'Unverified'}

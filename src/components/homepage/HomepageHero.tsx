@@ -48,7 +48,7 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
             </h2>
             
             <p className="text-lg sm:text-xl text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-8">
-              Access the definitive directory of 25+ CMVM-regulated funds. We verify track records and expose hidden management fees to help you shortlist the safest options.
+              Access the definitive directory of 25+ CMVM-regulated funds. We verify track records and expose hidden management fees to help you shortlist funds.
             </p>
           </div>
 

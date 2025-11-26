@@ -18,7 +18,13 @@ const InvestorPathways: React.FC = () => {
       title: 'Conservative Strategy',
       subtitle: 'Capital preservation & Real Estate backed.',
       filterAction: () => {
-        navigate('/?category=Real+Estate&risk=Conservative');
+        navigate('/?category=Real+Estate&tag=Low-risk');
+        setTimeout(() => {
+          const fundsSection = document.getElementById('funds-section');
+          if (fundsSection) {
+            fundsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
       }
     },
     {
@@ -26,15 +32,27 @@ const InvestorPathways: React.FC = () => {
       title: 'Growth Strategy',
       subtitle: 'Private Equity & VC with higher upside.',
       filterAction: () => {
-        navigate('/?category=Private+Equity');
+        navigate('/?category=Private+Equity&tag=High-risk');
+        setTimeout(() => {
+          const fundsSection = document.getElementById('funds-section');
+          if (fundsSection) {
+            fundsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
       }
     },
     {
       icon: Shield,
       title: 'Verified & Trusted',
-      subtitle: 'CMVM-verified funds with proven track records.',
+      subtitle: 'Movingto-verified funds',
       filterAction: () => {
         navigate('/?verified=true');
+        setTimeout(() => {
+          const fundsSection = document.getElementById('funds-section');
+          if (fundsSection) {
+            fundsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
       }
     }
   ];
