@@ -92,6 +92,7 @@ export class ConsolidatedSEOService {
   private static generateFundTitle(fund: any): string {
     // Pattern: [Fund Name]: {Current Year} Fees, Yield & Golden Visa Fact Sheet
     // Truncate to: [Fund Name]: {Current Year} Golden Visa Fact Sheet if over 60 chars
+    // Note: Year is updated client-side via useYearUpdate hook to avoid SSG rebuilds on New Year's Day
     
     const currentYear = new Date().getFullYear();
     const fundName = fund.name;

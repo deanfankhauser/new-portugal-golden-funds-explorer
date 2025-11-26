@@ -5,6 +5,7 @@ import { ConsolidatedSEOService } from '../../services/consolidatedSEOService';
 import { EnhancedSEOValidationService } from '../../services/enhancedSEOValidationService';
 import { PerformanceOptimizationService } from '../../services/performanceOptimizationService';
 import { SEOErrorBoundary } from './SEOErrorBoundary';
+import { useYearUpdate } from '../../hooks/useYearUpdate';
 
 interface PageSEOComponentProps extends PageSEOProps {
   children?: React.ReactNode;
@@ -36,6 +37,9 @@ export const PageSEO: React.FC<PageSEOComponentProps> = ({
   memberSlug,
   children 
 }) => {
+  // Auto-update year in titles when New Year passes (avoids SSG rebuilds)
+  useYearUpdate(pageType);
+  
   // This useEffect only runs in the browser after hydration, NOT during SSR/SSG build
   useEffect(() => {
     try {
