@@ -88,55 +88,59 @@ export class ConsolidatedSEOService {
       : truncated + '...';
   }
 
-  // Generate optimized fund title - clean and concise
+  // Generate optimized fund title - dynamic year, fees & yield focused
   private static generateFundTitle(fund: any): string {
-    // Pattern: {Fund Name} | Golden Visa Fund
-    // Keep under 60 characters to avoid SERP truncation
+    // Pattern: [Fund Name]: {Current Year} Fees, Yield & Golden Visa Fact Sheet
+    // Truncate to: [Fund Name]: {Current Year} Golden Visa Fact Sheet if over 60 chars
     
+    const currentYear = new Date().getFullYear();
     const fundName = fund.name;
-    const suffix = '| Golden Visa Fund';
     const maxLength = 60;
     
-    // If fund name + suffix fits within limit, use it
-    if (`${fundName} ${suffix}`.length <= maxLength) {
-      return `${fundName} ${suffix}`;
+    // Primary title: [Fund Name]: {Year} Fees, Yield & Golden Visa Fact Sheet
+    const fullTitle = `${fundName}: ${currentYear} Fees, Yield & Golden Visa Fact Sheet`;
+    
+    if (fullTitle.length <= maxLength) {
+      return fullTitle;
     }
     
-    // If fund name is too long, truncate gracefully
-    const maxNameLength = maxLength - suffix.length - 4; // -4 for space and ellipsis
+    // Truncated fallback: [Fund Name]: {Year} Golden Visa Fact Sheet
+    const shortTitle = `${fundName}: ${currentYear} Golden Visa Fact Sheet`;
+    
+    if (shortTitle.length <= maxLength) {
+      return shortTitle;
+    }
+    
+    // Final fallback: Truncate fund name to fit
+    const suffixLength = `: ${currentYear} Golden Visa Fact Sheet`.length;
+    const maxNameLength = maxLength - suffixLength - 3; // -3 for ellipsis
     const truncatedName = fundName.substring(0, maxNameLength).trim() + '...';
-    return `${truncatedName} ${suffix}`;
+    return `${truncatedName}: ${currentYear} Golden Visa Fact Sheet`;
   }
 
-  // Generate optimized fund description with USPs and performance
+  // Generate optimized fund description with conditional logic
   private static generateFundDescription(fund: any): string {
-    // Pattern: {Fund Name} is a CMVM-regulated Portugal Golden Visa investment fund managed by {Manager}, investing in {category} {liquidity} and {minimum}.
+    // Pattern: View objective data for [Fund Name]. {TrustSignal} Analysis covers {FeeSignal}, Minimum Investment ([Min_Investment]), and Golden Visa eligibility.
     
-    const parts: string[] = [
-      `${fund.name} is a CMVM-regulated Portugal Golden Visa investment fund managed by ${fund.managerName}, investing in ${fund.category?.toLowerCase() || 'diversified assets'}`
-    ];
+    const fundName = fund.name;
     
-    // Add liquidity info if available
-    const hasHighLiquidity = fund.tags?.some((tag: string) => 
-      tag.includes('Daily NAV') || tag.includes('No Lock-Up') || tag.toLowerCase().includes('daily liquidity')
-    );
-    if (hasHighLiquidity) {
-      parts.push('with daily liquidity');
-    } else if (fund.lockUpPeriodMonths) {
-      if (fund.lockUpPeriodMonths <= 12) {
-        parts.push('with short lock-up');
-      }
-    }
+    // Step A: Trust Signal Variable (conditional on cmvmId)
+    const trustSignal = fund.cmvmId 
+      ? `Regulated by CMVM #${fund.cmvmId}.`
+      : `Managed by ${fund.managerName}.`;
     
-    // Add minimum investment if available
-    if (fund.minimumInvestment) {
-      const minFormatted = formatMinimumForTitle(fund.minimumInvestment);
-      if (minFormatted) {
-        parts.push(`and ${minFormatted} minimum`);
-      }
-    }
+    // Step B: Fee Signal Variable (conditional on managementFee)
+    const feeSignal = (fund.managementFee !== null && fund.managementFee !== undefined)
+      ? `Management Fee (${fund.managementFee}%)`
+      : 'fee structure';
     
-    const description = parts.join(' ') + '.';
+    // Step C: Minimum Investment Formatting
+    const minInvestment = fund.minimumInvestment 
+      ? `€${(fund.minimumInvestment / 1000).toFixed(0)}k`
+      : 'available minimums';
+    
+    // Final Description Construction
+    const description = `View objective data for ${fundName}. ${trustSignal} Analysis covers ${feeSignal}, Minimum Investment (${minInvestment}), and Golden Visa eligibility.`;
     
     // Ensure we stay within character limit
     return this.optimizeText(description, this.MAX_DESCRIPTION_LENGTH);
@@ -815,17 +819,15 @@ export class ConsolidatedSEOService {
     if (seoData.url.includes('/compare/') && seoData.url.includes('-vs-')) {
       ogType = 'article';
     } else if (seoData.structuredData) {
-      // Check for fund pages (multiple schemas)
+      // Fund pages use 'website' type (not 'product') per SEO requirements
+      // Only Person schemas use 'profile' type
       if (Array.isArray(seoData.structuredData)) {
-        const hasInvestmentFund = seoData.structuredData.some(schema => schema['@type'] === 'InvestmentFund');
-        if (hasInvestmentFund) ogType = 'product';
-      } else if (seoData.structuredData['@type'] === 'InvestmentFund') {
-        ogType = 'product';
-      } else if (seoData.structuredData['@type'] === 'FinancialProduct') {
-        ogType = 'product';
+        const hasPerson = seoData.structuredData.some(schema => schema['@type'] === 'Person');
+        if (hasPerson) ogType = 'profile';
       } else if (seoData.structuredData['@type'] === 'Person') {
         ogType = 'profile';
       }
+      // All fund pages default to 'website' type
     }
     
     // DEV-only verification log
@@ -842,8 +844,8 @@ export class ConsolidatedSEOService {
       { property: 'og:site_name', content: 'Movingto' },
     ];
 
-    // Add article:modified_time for fund pages
-    if (ogType === 'product' && seoData.structuredData) {
+    // Add article:modified_time for comparison articles
+    if (ogType === 'article' && seoData.structuredData) {
       let modifiedTime = new Date().toISOString();
       if (Array.isArray(seoData.structuredData)) {
         const webPageSchema = seoData.structuredData.find(schema => schema['@type'] === 'WebPage');

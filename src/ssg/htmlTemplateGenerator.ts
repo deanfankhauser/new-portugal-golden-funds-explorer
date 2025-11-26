@@ -63,23 +63,19 @@ export function generateMetaTagsHTML(seoData: SEOData): string {
   const ogType = (() => {
     if (url.includes('/compare/') && url.includes('-vs-')) return 'article';
     
-    // Handle both single structured data object and arrays
+    // Fund pages use 'website' type (not 'product') per SEO requirements
+    // Only Person schemas use 'profile' type
     const structuredData = seoData.structuredData;
     if (structuredData) {
-      // If it's an array, check the first schema or look for FinancialProduct/Person
       if (Array.isArray(structuredData)) {
-        const primarySchema = structuredData.find((s: any) => 
-          s['@type'] === 'FinancialProduct' || s['@type'] === 'Person'
-        ) || structuredData[0];
-        if (primarySchema?.['@type'] === 'FinancialProduct') return 'product';
-        if (primarySchema?.['@type'] === 'Person') return 'profile';
+        const hasPerson = structuredData.some((s: any) => s['@type'] === 'Person');
+        if (hasPerson) return 'profile';
       } else {
-        // Single object
-        if (structuredData['@type'] === 'FinancialProduct') return 'product';
         if (structuredData['@type'] === 'Person') return 'profile';
       }
     }
     
+    // All fund pages default to 'website' type
     return 'website';
   })();
   
