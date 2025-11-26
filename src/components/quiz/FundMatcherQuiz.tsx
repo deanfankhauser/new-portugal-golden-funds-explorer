@@ -68,6 +68,35 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
 
   const { data: matchedFunds, isLoading, isFetched } = useFundMatcherQuery(answers);
 
+  // Parse URL parameters on mount to handle shared links
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const quizParam = params.get('quiz');
+    
+    if (quizParam && open) {
+      try {
+        const quizParams = new URLSearchParams(decodeURIComponent(quizParam));
+        const parsedAnswers: Partial<QuizAnswers> = {};
+        
+        // Parse each answer from URL
+        const validKeys = ['budget', 'strategy', 'income', 'usTaxAccount', 'timeline'];
+        quizParams.forEach((value, key) => {
+          if (validKeys.includes(key)) {
+            (parsedAnswers as any)[key] = value;
+          }
+        });
+        
+        // If we have valid answers, set them and trigger search
+        if (Object.keys(parsedAnswers).length > 0) {
+          setAnswers(parsedAnswers as QuizAnswers);
+          setIsSearching(true);
+        }
+      } catch (err) {
+        console.error('Failed to parse quiz URL parameters:', err);
+      }
+    }
+  }, [open]);
+
   // Show results when query completes
   useEffect(() => {
     if (Object.keys(answers).length === 5 && isSearching) {

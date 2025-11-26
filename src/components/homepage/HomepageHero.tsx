@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShieldCheck } from 'lucide-react';
 import { Fund } from '../../data/types/funds';
 import { Button } from '../ui/button';
@@ -11,6 +11,14 @@ interface HomepageHeroProps {
 
 const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
   const [quizOpen, setQuizOpen] = useState(false);
+
+  // Auto-open quiz if URL contains shared quiz parameters
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('quiz')) {
+      setQuizOpen(true);
+    }
+  }, []);
 
   const scrollToFunds = () => {
     const fundsSection = document.getElementById('funds-section');
