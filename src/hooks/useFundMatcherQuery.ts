@@ -7,7 +7,7 @@ export interface QuizAnswers {
   budget?: 'under250k' | 'under500k' | '500k+';
   strategy?: 'safety' | 'growth' | 'fast_exit';
   income?: 'yes' | 'no';
-  usCitizen?: 'yes' | 'no';
+  usTaxAccount?: 'yes' | 'no';
 }
 
 const transformFund = (fund: any): Fund => {
@@ -85,9 +85,9 @@ export const useFundMatcherQuery = (answers: QuizAnswers) => {
         query = query.lte('lock_up_period_months', 72);
       }
 
-      // Apply US citizen filter
-      if (answers.usCitizen === 'yes') {
-        query = query.eq('us_compliant', true);
+      // Apply US tax account filter (QEF-eligible funds)
+      if (answers.usTaxAccount === 'yes') {
+        query = query.not('pfic_status', 'is', null);
       }
 
       console.log('📊 Executing quiz query...');
