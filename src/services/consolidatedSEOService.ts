@@ -7,6 +7,7 @@ import { InvestmentFundStructuredDataService } from './investmentFundStructuredD
 import { EnhancedStructuredDataService } from './enhancedStructuredDataService';
 import { normalizeTagLabel, formatMinimumForTitle } from '../utils/tagLabelNormalizer';
 import { managerToSlug } from '../lib/utils';
+import { getTagSeoTitle } from '../utils/tagSeoMappings';
 
 
 export class ConsolidatedSEOService {
@@ -305,16 +306,17 @@ export class ConsolidatedSEOService {
         };
 
       case 'tag':
-        // Pattern: [Clean Tag Label] Portugal Golden Visa Investment Funds – Filtered List | Movingto Funds
+        // Smart SEO title using mappings
         const cleanTagLabel = normalizeTagLabel(params.tagName);
-        const tagTitle = `${cleanTagLabel} Portugal Golden Visa Investment Funds – Filtered List | Movingto Funds`;
-        const tagDescription = `Portugal Golden Visa funds tagged "${cleanTagLabel}" – filter the list by this characteristic and compare performance, fees, risk and minimums.`;
+        const fundsCount = params.funds?.length || 0;
+        const tagTitle = `${getTagSeoTitle(params.tagName)} | Movingto Funds`;
+        const tagDescription = `Browse ${fundsCount} ${cleanTagLabel} funds eligible for Portugal Golden Visa. Compare average yields, lock-up periods, and fees for this investment theme.`;
         const tagKeywords = [
           `${params.tagName} Golden Visa funds`,
           `${params.tagName} investment funds Portugal`,
-          'Golden Visa fund characteristics',
-          `${params.tagName} fund features`,
-          'Portugal investment fund tags',
+          'thematic investing Portugal',
+          `${params.tagName} fund comparison`,
+          'Portugal investment themes',
           `best ${params.tagName} funds`
         ];
         
