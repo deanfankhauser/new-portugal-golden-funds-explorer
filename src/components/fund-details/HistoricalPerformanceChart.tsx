@@ -309,7 +309,7 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
 
           {chartView === 'cumulative' && (
             <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod} className="mb-6">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger 
                 value="YTD" 
                 disabled={!hasDataForPeriod('YTD')}
@@ -337,6 +337,12 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                 className="disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 5 Years
+              </TabsTrigger>
+              <TabsTrigger 
+                value="MAX"
+                className="font-semibold"
+              >
+                MAX
               </TabsTrigger>
             </TabsList>
             
