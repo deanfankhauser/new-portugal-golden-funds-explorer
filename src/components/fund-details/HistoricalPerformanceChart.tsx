@@ -84,17 +84,44 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
     return getFilteredData(period).length > 0;
   };
 
-  const chartData = getFilteredData(selectedPeriod);
+  // Calculate cumulative performance from monthly returns
+  const calculateCumulativeReturns = (data: typeof allChartData) => {
+    let cumulativeValue = 1; // Start at 100% (or 1.0 multiplier)
+    
+    return data.map(item => {
+      // Convert percentage to decimal and compound
+      // e.g., 0.3% = 0.003, so multiplier is 1.003
+      const monthlyDecimal = item.returns / 100;
+      cumulativeValue *= (1 + monthlyDecimal);
+      
+      // Calculate cumulative return as percentage
+      const cumulativeReturn = (cumulativeValue - 1) * 100;
+      
+      return {
+        ...item,
+        monthlyReturn: item.returns, // Keep original for tooltip
+        returns: cumulativeReturn    // Override with cumulative for display
+      };
+    });
+  };
+
+  const filteredData = getFilteredData(selectedPeriod);
+  const chartData = calculateCumulativeReturns(filteredData);
 
   // Calculate performance metrics
   const latestData = chartData[chartData.length - 1];
   const previousData = chartData[chartData.length - 2];
   const returnsTrend = latestData && previousData ? latestData.returns - previousData.returns : 0;
-  const avgReturns = chartData.reduce((sum, item) => sum + item.returns, 0) / chartData.length;
+  
+  // Average should use monthly returns, not cumulative
+  const avgMonthlyReturns = filteredData.reduce((sum, item) => sum + item.returns, 0) / filteredData.length;
 
   const formatTooltipValue = (value: number, name: string) => {
     if (name === 'returns') {
-      return [`${value >= 0 ? '+' : ''}${value.toFixed(2)}%`, 'Returns'];
+      return [`${value >= 0 ? '+' : ''}${value.toFixed(2)}%`, 'Cumulative Return'];
+    }
+    if (name === 'monthlyReturn') {
+      return [`${value >= 0 ? '+' : ''}${value.toFixed(2)}%`, 'Monthly Return'];
     }
     if (name === 'aum') {
       return [`€${value.toFixed(1)}M`, 'AUM'];
@@ -107,9 +134,31 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
+      // Get the monthly return from the data point
+      const dataPoint = payload[0]?.payload;
+      const monthlyReturnValue = dataPoint?.monthlyReturn;
+      
       return (
         <div className="bg-background/95 backdrop-blur-sm border border-border rounded-xl p-4 shadow-lg">
           <p className="font-semibold text-sm mb-3 text-foreground">{label}</p>
+          
+          {/* Show monthly return first */}
+          {monthlyReturnValue !== undefined && (
+            <div className="flex items-center justify-between gap-6 mb-2 pb-2 border-b border-border">
+              <div className="flex items-center gap-2">
+                <div 
+                  className="w-3 h-3 rounded-full" 
+                  style={{ backgroundColor: 'hsl(var(--primary))' }}
+                />
+                <span className="text-sm text-muted-foreground">Monthly Return</span>
+              </div>
+              <span className="text-sm font-medium text-foreground">
+                {monthlyReturnValue >= 0 ? '+' : ''}{monthlyReturnValue.toFixed(2)}%
+              </span>
+            </div>
+          )}
+          
+          {/* Then show all other metrics */}
           {payload.map((entry: any, index: number) => (
             <div key={index} className="flex items-center justify-between gap-6 mb-2 last:mb-0">
               <div className="flex items-center gap-2">
@@ -141,7 +190,7 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
               Historical Performance
             </CardTitle>
             <p className="text-sm text-muted-foreground">
-              Monthly returns and fund metrics over time
+              Cumulative returns compounded from monthly data
             </p>
           </div>
           
@@ -163,7 +212,7 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
               )}
             </div>
             <div className="text-xs text-muted-foreground">
-              Avg: {avgReturns >= 0 ? '+' : ''}{avgReturns.toFixed(2)}%
+              Avg Monthly: {avgMonthlyReturns >= 0 ? '+' : ''}{avgMonthlyReturns.toFixed(2)}%
             </div>
           </div>
         </div>
@@ -337,7 +386,7 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                     stroke: 'hsl(var(--background))',
                     strokeWidth: 2
                   }}
-                  name="Returns (%)"
+                  name="Cumulative Return (%)"
                   connectNulls={false}
                 />
                 
