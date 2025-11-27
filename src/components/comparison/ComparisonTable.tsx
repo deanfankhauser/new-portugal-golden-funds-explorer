@@ -1,291 +1,176 @@
 import React, { useState } from 'react';
-import { Fund } from '../../data/types/funds';
-import ComparisonTableHeader from './table/ComparisonTableHeader';
-import StandardRow from './table/StandardRow';
-import GeographicAllocationCell from './table/GeographicAllocationCell';
-import RedemptionTermsRow from './table/RedemptionTermsRow';
-import DataFreshnessIndicator from '../common/DataFreshnessIndicator';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, CheckCircle2 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { calculateRiskBand, getRiskBandLabel, getRiskBandBgColor } from '@/utils/riskCalculation';
+import { Fund } from '@/data/types/funds';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import CompareRow from './CompareRow';
 import { formatManagementFee, formatPerformanceFee, formatSubscriptionFee, formatRedemptionFee } from '@/utils/feeFormatters';
-import { formatFundSize } from '@/utils/fundSizeFormatters';
-import { formatCurrency } from '../fund-details/utils/formatters';
-import { getReturnTargetDisplay, getReturnTargetNumbers } from '@/utils/returnTarget';
-import { getFundType } from '@/utils/fundTypeUtils';
-import { Link } from 'react-router-dom';
 
 interface ComparisonTableProps {
   funds: Fund[];
   highlightDifferences?: boolean;
 }
 
-const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds, highlightDifferences = false }) => {
-  const [keyFinancialsOpen, setKeyFinancialsOpen] = useState(true);
-  const [feesTermsOpen, setFeesTermsOpen] = useState(true);
-  const [riskProfileOpen, setRiskProfileOpen] = useState(true);
+const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
+  const [expandedSections, setExpandedSections] = useState<{
+    keyFinancials: boolean;
+    feesTerms: boolean;
+    riskProfile: boolean;
+  }>({
+    keyFinancials: true,
+    feesTerms: true,
+    riskProfile: true,
+  });
 
-  const allSame = (values: any[]) => {
-    if (values.length <= 1) return false;
-    return values.every((val) => JSON.stringify(val) === JSON.stringify(values[0]));
+  const fund1 = funds[0];
+  const fund2 = funds[1];
+
+  const formatCurrency = (value: number | null | undefined): string => {
+    if (!value) return 'Not disclosed';
+    return `€${value.toLocaleString()}`;
   };
 
-  const SectionHeader = ({ title, isOpen, onToggle }: { title: string; isOpen: boolean; onToggle: () => void }) => (
-    <tr className="bg-muted/40 cursor-pointer hover:bg-muted/50" onClick={onToggle}>
-      <td colSpan={funds.length + 1} className="py-3 px-4">
-        <div className="flex items-center gap-2 font-semibold text-foreground">
-          <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? '' : '-rotate-90'}`} />
-          {title}
+  const formatTargetReturn = (fund: Fund): string => {
+    if (fund.expectedReturnMin && fund.expectedReturnMax) {
+      return `${fund.expectedReturnMin}–${fund.expectedReturnMax}% p.a.`;
+    }
+    if (fund.expectedReturnMin) {
+      return `${fund.expectedReturnMin}% p.a.`;
+    }
+    return 'Not disclosed';
+  };
+
+  const formatRedemption = (fund: Fund): string => {
+    if (!fund.redemptionTerms || (Array.isArray(fund.redemptionTerms) && fund.redemptionTerms.length === 0)) {
+      return 'Not specified';
+    }
+    if (Array.isArray(fund.redemptionTerms)) {
+      return fund.redemptionTerms.map(term => term.description || term.frequency || 'Available').join(', ');
+    }
+    return fund.redemptionTerms.frequency || 'Available';
+  };
+
+  const SectionHeader = ({ title, sectionKey }: { title: string; sectionKey: keyof typeof expandedSections }) => {
+    const isExpanded = expandedSections[sectionKey];
+    const Icon = isExpanded ? ChevronUp : ChevronDown;
+
+    return (
+      <div 
+        className="py-5 px-7 bg-muted cursor-pointer hover:bg-muted/80 transition-colors"
+        onClick={() => setExpandedSections(prev => ({ ...prev, [sectionKey]: !prev[sectionKey] }))}
+      >
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{title}</h3>
+          <Icon className="w-4 h-4 text-muted-foreground" />
         </div>
-      </td>
-    </tr>
-  );
+      </div>
+    );
+  };
+
+  // Determine winners for each metric
+  const minInvestmentWinner = (fund1.minimumInvestment || Infinity) < (fund2.minimumInvestment || Infinity) ? 'fund1' : 
+                               (fund2.minimumInvestment || Infinity) < (fund1.minimumInvestment || Infinity) ? 'fund2' : null;
+  
+  const targetReturnWinner = (fund1.expectedReturnMax || 0) > (fund2.expectedReturnMax || 0) ? 'fund1' :
+                             (fund2.expectedReturnMax || 0) > (fund1.expectedReturnMax || 0) ? 'fund2' : null;
+  
+  const mgmtFeeWinner = (fund1.managementFee || Infinity) < (fund2.managementFee || Infinity) ? 'fund1' :
+                        (fund2.managementFee || Infinity) < (fund1.managementFee || Infinity) ? 'fund2' : null;
+  
+  const redemptionWinner = (fund1.redemptionTerms && (!fund2.redemptionTerms || (Array.isArray(fund2.redemptionTerms) && fund2.redemptionTerms.length === 0))) ? 'fund1' :
+                           (fund2.redemptionTerms && (!fund1.redemptionTerms || (Array.isArray(fund1.redemptionTerms) && fund1.redemptionTerms.length === 0))) ? 'fund2' : null;
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse">
-        <ComparisonTableHeader funds={funds} />
-        <tbody>
-          {/* KEY FINANCIALS SECTION */}
-          <SectionHeader 
-            title="Key Financials" 
-            isOpen={keyFinancialsOpen} 
-            onToggle={() => setKeyFinancialsOpen(!keyFinancialsOpen)} 
+    <div className="bg-card rounded-2xl border border-border overflow-hidden mb-8">
+      <SectionHeader title="Key Financials" sectionKey="keyFinancials" />
+      {expandedSections.keyFinancials && (
+        <div className="px-7 py-2">
+          <CompareRow 
+            label="Min. Investment" 
+            valueA={formatCurrency(fund1.minimumInvestment)}
+            valueB={formatCurrency(fund2.minimumInvestment)}
+            winnerA={minInvestmentWinner === 'fund1'}
+            winnerB={minInvestmentWinner === 'fund2'}
           />
-          {keyFinancialsOpen && (
-            <>
-              {/* Verification Status */}
-              <tr className="border-b bg-muted/20">
-                <td className="py-4 px-4 font-medium sticky left-0 bg-muted/20 z-10">Verification Status</td>
-                {funds.map(fund => (
-                  <td key={fund.id} className="py-4 px-4 text-center">
-                    {fund.isVerified ? (
-                      <Link to="/verification-program" className="inline-block hover:opacity-80 transition-opacity">
-                        <Badge className="bg-success/10 text-success px-3 py-1.5 rounded-full text-xs font-semibold inline-flex items-center gap-1.5 border border-success/20">
-                          <CheckCircle2 className="w-3.5 h-3.5" />
-                          Verified Partner
-                        </Badge>
-                      </Link>
-                    ) : (
-                      <span className="text-sm text-muted-foreground">Unverified</span>
-                    )}
-                  </td>
-                ))}
-              </tr>
-
-              <StandardRow
-                funds={funds}
-                field="minimumInvestment"
-                label="Minimum Investment"
-                formatter={formatCurrency}
-                allSame={allSame}
-                bestType="lowest"
-                hideIfSame={highlightDifferences}
-              />
-
-              <StandardRow
-                funds={funds}
-                field={(fund) => getReturnTargetDisplay(fund)}
-                label="Target Return"
-                allSame={allSame}
-                bestType="highest"
-                hideIfSame={highlightDifferences}
-              />
-
-              <StandardRow
-                funds={funds}
-                field={(fund) => formatFundSize(fund.fundSize)}
-                label="Fund Size (AUM)"
-                allSame={allSame}
-                hideIfSame={highlightDifferences}
-              />
-            </>
-          )}
-
-          {/* FEES & TERMS SECTION */}
-          <SectionHeader 
-            title="Fees & Terms" 
-            isOpen={feesTermsOpen} 
-            onToggle={() => setFeesTermsOpen(!feesTermsOpen)} 
+          <CompareRow 
+            label="Target Return" 
+            valueA={formatTargetReturn(fund1)}
+            valueB={formatTargetReturn(fund2)}
+            winnerA={targetReturnWinner === 'fund1'}
+            winnerB={targetReturnWinner === 'fund2'}
           />
-          {feesTermsOpen && (
-            <>
-              {/* Combined Fees Row */}
-              <tr className="border-b">
-                <td className="py-4 px-4 font-medium sticky left-0 bg-card z-10">Fees</td>
-                {funds.map(fund => (
-                  <td key={fund.id} className="py-4 px-4">
-                    <div className="flex items-center gap-2 text-sm">
-                      <span>
-                        <span className="font-semibold text-foreground">{formatManagementFee(fund.managementFee)}</span>
-                        <span className="text-muted-foreground"> Mgmt</span>
-                      </span>
-                      <span className="text-muted-foreground/60">·</span>
-                      <span>
-                        <span className="font-semibold text-foreground">{formatPerformanceFee(fund.performanceFee)}</span>
-                        <span className="text-muted-foreground"> Perf</span>
-                      </span>
-                    </div>
-                  </td>
-                ))}
-              </tr>
-
-              {funds.some(f => f.subscriptionFee !== undefined) && (
-                <StandardRow
-                  funds={funds}
-                  field={(fund) => formatSubscriptionFee(fund.subscriptionFee)}
-                  label="Subscription Fee"
-                  allSame={allSame}
-                  bestType="lowest"
-                  hideIfSame={highlightDifferences}
-                />
-              )}
-
-              {funds.some(f => f.redemptionFee !== undefined) && (
-                <StandardRow
-                  funds={funds}
-                  field={(fund) => formatRedemptionFee(fund.redemptionFee)}
-                  label="Redemption Fee"
-                  allSame={allSame}
-                  bestType="lowest"
-                  hideIfSame={highlightDifferences}
-                />
-              )}
-
-              <StandardRow
-                funds={funds}
-                field={fund => {
-                  if (fund.hurdleRate != null) return `${fund.hurdleRate}%`;
-                  const { min } = getReturnTargetNumbers(fund);
-                  if (min != null) return `${min}%`;
-                  return "Not disclosed";
-                }}
-                label="Performance Fee Hurdle"
-                allSame={allSame}
-                hideIfSame={highlightDifferences}
-              />
-
-              <StandardRow
-                funds={funds}
-                field={(fund) => getFundType(fund) === 'Open-Ended' ? "Perpetual (open-ended)" : `${fund.term} years`}
-                label="Fund Term"
-                allSame={allSame}
-                hideIfSame={highlightDifferences}
-              />
-
-              <StandardRow
-                funds={funds}
-                field={(fund) => fund.redemptionTerms?.minimumHoldingPeriod}
-                label="Lock-up Period"
-                formatter={(val) => val ? `${val} months` : 'Not disclosed'}
-                allSame={allSame}
-                bestType="lowest"
-                hideIfSame={highlightDifferences}
-              />
-
-              <RedemptionTermsRow
-                funds={funds}
-                field="frequency"
-                label="Redemption Frequency"
-                allSame={allSame}
-                hideIfSame={highlightDifferences}
-              />
-
-              <RedemptionTermsRow
-                funds={funds}
-                field="noticePeriod"
-                label="Notice Period"
-                allSame={allSame}
-                bestType="lowest"
-                hideIfSame={highlightDifferences}
-              />
-
-              <RedemptionTermsRow
-                funds={funds}
-                field="minimumHoldingPeriod"
-                label="Minimum Holding Period"
-                allSame={allSame}
-                bestType="lowest"
-                hideIfSame={highlightDifferences}
-              />
-            </>
-          )}
-
-          {/* RISK & PROFILE SECTION */}
-          <SectionHeader 
-            title="Risk & Profile" 
-            isOpen={riskProfileOpen} 
-            onToggle={() => setRiskProfileOpen(!riskProfileOpen)} 
+          <CompareRow 
+            label="Fund Size" 
+            valueA={formatCurrency(fund1.fundSize)}
+            valueB={formatCurrency(fund2.fundSize)}
           />
-          {riskProfileOpen && (
-            <>
-              {/* Risk Band */}
-              <tr className="border-b">
-                <td className="py-4 px-4 font-medium sticky left-0 bg-card z-10">Risk Band</td>
-                {funds.map(fund => {
-                  const riskBand = calculateRiskBand(fund);
-                  const riskLabel = getRiskBandLabel(riskBand);
-                  const riskBgColor = getRiskBandBgColor(riskBand);
-                  return (
-                    <td key={fund.id} className="py-4 px-4 text-center">
-                      <Badge className={`${riskBgColor} font-medium`}>
-                        {riskLabel}
-                      </Badge>
-                    </td>
-                  );
-                })}
-              </tr>
+          <CompareRow 
+            label="Established" 
+            valueA={fund1.established ? fund1.established.toString() : 'N/A'}
+            valueB={fund2.established ? fund2.established.toString() : 'N/A'}
+          />
+        </div>
+      )}
 
-              <StandardRow
-                funds={funds}
-                field="category"
-                label="Fund Type"
-                allSame={allSame}
-                hideIfSame={highlightDifferences}
-              />
+      <SectionHeader title="Fees & Costs" sectionKey="feesTerms" />
+      {expandedSections.feesTerms && (
+        <div className="px-7 py-2">
+          <CompareRow 
+            label="Management Fee" 
+            valueA={formatManagementFee(fund1.managementFee)}
+            valueB={formatManagementFee(fund2.managementFee)}
+            winnerA={mgmtFeeWinner === 'fund1'}
+            winnerB={mgmtFeeWinner === 'fund2'}
+          />
+          <CompareRow 
+            label="Performance Fee" 
+            valueA={formatPerformanceFee(fund1.performanceFee)}
+            valueB={formatPerformanceFee(fund2.performanceFee)}
+          />
+          <CompareRow 
+            label="Subscription Fee" 
+            valueA={formatSubscriptionFee(fund1.subscriptionFee)}
+            valueB={formatSubscriptionFee(fund2.subscriptionFee)}
+          />
+          <CompareRow 
+            label="Redemption Fee" 
+            valueA={formatRedemptionFee(fund1.redemptionFee)}
+            valueB={formatRedemptionFee(fund2.redemptionFee)}
+          />
+          <CompareRow 
+            label="Hurdle Rate" 
+            valueA={fund1.hurdleRate ? `${fund1.hurdleRate}%` : 'N/A'}
+            valueB={fund2.hurdleRate ? `${fund2.hurdleRate}%` : 'N/A'}
+          />
+        </div>
+      )}
 
-              <StandardRow
-                funds={funds}
-                field="managerName"
-                label="Fund Manager"
-                allSame={allSame}
-                hideIfSame={highlightDifferences}
-              />
-
-              <StandardRow
-                funds={funds}
-                field="established"
-                label="Established"
-                formatter={(val) => val ? val.toString() : 'Not disclosed'}
-                allSame={allSame}
-                hideIfSame={highlightDifferences}
-              />
-
-              {/* Geographic Allocation */}
-              <tr className="border-b">
-                <td className="py-4 px-4 font-medium sticky left-0 bg-card z-10">Geographic Allocation</td>
-                {funds.map(fund => (
-                  <GeographicAllocationCell
-                    key={fund.id}
-                    allocations={fund.geographicAllocation}
-                  />
-                ))}
-              </tr>
-            </>
-          )}
-
-          {/* Data Freshness */}
-          <tr className="border-b bg-muted/20">
-            <td className="py-4 px-4 font-medium sticky left-0 bg-muted/20 z-10">Data Last Verified</td>
-            {funds.map(fund => (
-              <td key={fund.id} className="py-4 px-4">
-                <DataFreshnessIndicator fund={fund} variant="full" className="justify-start" />
-              </td>
-            ))}
-          </tr>
-        </tbody>
-      </table>
+      <SectionHeader title="Liquidity & Terms" sectionKey="riskProfile" />
+      {expandedSections.riskProfile && (
+        <div className="px-7 py-2">
+          <CompareRow 
+            label="Redemption" 
+            valueA={formatRedemption(fund1)}
+            valueB={formatRedemption(fund2)}
+            winnerA={redemptionWinner === 'fund1'}
+            winnerB={redemptionWinner === 'fund2'}
+            muted={!fund1.redemptionTerms && !fund2.redemptionTerms}
+          />
+          <CompareRow 
+            label="Lock-up Period" 
+            valueA={fund1.redemptionTerms?.minimumHoldingPeriod ? `${fund1.redemptionTerms.minimumHoldingPeriod} months` : 'None'}
+            valueB={fund2.redemptionTerms?.minimumHoldingPeriod ? `${fund2.redemptionTerms.minimumHoldingPeriod} months` : 'None'}
+          />
+          <CompareRow 
+            label="Risk Band" 
+            valueA={fund1.riskBand || 'Not disclosed'}
+            valueB={fund2.riskBand || 'Not disclosed'}
+          />
+          <CompareRow 
+            label="Category" 
+            valueA={fund1.category || 'Not disclosed'}
+            valueB={fund2.category || 'Not disclosed'}
+          />
+        </div>
+      )}
     </div>
   );
 };

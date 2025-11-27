@@ -1,7 +1,7 @@
-import React from 'react';
-import FAQSection from '../common/FAQSection';
+import React, { useState } from 'react';
 import { Fund } from '../../data/types/funds';
 import { formatManagementFee, formatPerformanceFee } from '../../utils/feeFormatters';
+import { ChevronDown } from 'lucide-react';
 
 interface FAQItem {
   question: string;
@@ -57,14 +57,45 @@ const FundComparisonFAQ: React.FC<FundComparisonFAQProps> = ({ fund1, fund2 }) =
   };
 
   const faqs = generateComparisonFAQs(fund1, fund2);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+
+  const toggleFAQ = (index: number) => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
 
   return (
-    <FAQSection 
-      faqs={faqs}
-      title={`Frequently Asked Questions: ${fund1.name} vs ${fund2.name}`}
-      schemaId="comparison-faq"
-      skipStructuredData={true} // SSG already generates FAQ schema
-    />
+    <div className="mb-12">
+      <h2 className="text-[22px] font-semibold text-foreground mb-6">
+        Frequently Asked Questions
+      </h2>
+      <div className="bg-card rounded-2xl border border-border overflow-hidden">
+        {faqs.map((faq, index) => (
+          <div
+            key={index}
+            className={`${index < faqs.length - 1 ? 'border-b border-border' : ''}`}
+          >
+            <button
+              onClick={() => toggleFAQ(index)}
+              className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-muted/50 transition-colors"
+            >
+              <span className="text-[15px] font-medium text-foreground pr-4">
+                {faq.question}
+              </span>
+              <ChevronDown 
+                className={`w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform duration-200 ${
+                  expandedIndex === index ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
+            {expandedIndex === index && (
+              <div className="px-6 pb-5 text-sm text-muted-foreground leading-relaxed">
+                {faq.answer}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 

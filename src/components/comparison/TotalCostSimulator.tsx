@@ -1,7 +1,5 @@
 import React from 'react';
 import { Fund } from '@/data/types/funds';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 interface TotalCostSimulatorProps {
   fund1: Fund;
@@ -27,90 +25,59 @@ const TotalCostSimulator: React.FC<TotalCostSimulatorProps> = ({ fund1, fund2 })
   const cost1 = calculateTotalCost(fund1);
   const cost2 = calculateTotalCost(fund2);
   
-  const data = [
-    {
-      name: fund1.name.length > 20 ? fund1.name.substring(0, 20) + '...' : fund1.name,
-      cost: cost1,
-      fullName: fund1.name
-    },
-    {
-      name: fund2.name.length > 20 ? fund2.name.substring(0, 20) + '...' : fund2.name,
-      cost: cost2,
-      fullName: fund2.name
-    }
-  ];
-  
   const formatCurrency = (value: number) => {
     return `€${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
   };
   
-  // Determine which fund has lower cost for coloring
-  const lowerCostFund = cost1 <= cost2 ? 0 : 1;
+  const lowerCostFund = cost1 < cost2 ? 1 : cost1 > cost2 ? 2 : null;
 
   return (
-    <Card className="mb-8">
-      <CardHeader>
-        <CardTitle className="text-xl">Estimated Fees on €500,000 Investment (6 Years)</CardTitle>
-        <p className="text-sm text-muted-foreground mt-1">
-          Total cost includes management fees over 6 years plus subscription fees
-        </p>
-      </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={data} layout="vertical" margin={{ top: 5, right: 30, left: 100, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-            <XAxis 
-              type="number" 
-              tickFormatter={formatCurrency}
-              className="text-muted-foreground"
-            />
-            <YAxis 
-              type="category" 
-              dataKey="name" 
-              width={90}
-              className="text-sm text-muted-foreground"
-            />
-            <Tooltip 
-              formatter={(value: number) => formatCurrency(value)}
-              labelFormatter={(label, payload) => {
-                const item = payload?.[0]?.payload;
-                return item?.fullName || label;
-              }}
-              contentStyle={{ 
-                backgroundColor: 'hsl(var(--card))',
-                border: '1px solid hsl(var(--border))',
-                borderRadius: '6px'
-              }}
-            />
-            <Bar dataKey="cost" radius={[0, 8, 8, 0]}>
-              {data.map((entry, index) => (
-                <Cell 
-                  key={`cell-${index}`} 
-                  fill={index === lowerCostFund ? 'hsl(var(--success))' : 'hsl(var(--accent))'}
-                />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-        
-        <div className="grid grid-cols-2 gap-4 mt-6">
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground mb-1">{fund1.name}</p>
-            <p className="text-2xl font-bold text-foreground">{formatCurrency(cost1)}</p>
-            {lowerCostFund === 0 && (
-              <p className="text-xs text-success mt-1 font-semibold">Lower Cost</p>
-            )}
+    <div className="bg-card rounded-2xl border border-border p-7 mb-8">
+      <h3 className="text-base font-semibold text-foreground mb-1.5">
+        Estimated Fees on €500,000 Investment
+      </h3>
+      <p className="text-sm text-muted-foreground mb-6">
+        Management fees over 6 years (excludes performance fees)
+      </p>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className={`p-5 rounded-xl border transition-all ${
+          lowerCostFund === 1 
+            ? 'bg-gradient-to-br from-success/10 to-emerald-50 border-success/30' 
+            : 'bg-muted border-border'
+        }`}>
+          {lowerCostFund === 1 && (
+            <div className="absolute top-3 right-3 bg-success text-white text-[10px] font-semibold px-2 py-1 rounded uppercase tracking-wide">
+              Lower Cost
+            </div>
+          )}
+          <div className={`text-[13px] mb-2 ${lowerCostFund === 1 ? 'text-success font-medium' : 'text-muted-foreground'}`}>
+            {fund1.name}
           </div>
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground mb-1">{fund2.name}</p>
-            <p className="text-2xl font-bold text-foreground">{formatCurrency(cost2)}</p>
-            {lowerCostFund === 1 && (
-              <p className="text-xs text-success mt-1 font-semibold">Lower Cost</p>
-            )}
+          <div className={`text-[28px] font-semibold ${lowerCostFund === 1 ? 'text-success' : 'text-foreground'}`}>
+            {formatCurrency(cost1)}
           </div>
         </div>
-      </CardContent>
-    </Card>
+        
+        <div className={`p-5 rounded-xl border transition-all ${
+          lowerCostFund === 2 
+            ? 'bg-gradient-to-br from-success/10 to-emerald-50 border-success/30' 
+            : 'bg-muted border-border'
+        }`}>
+          {lowerCostFund === 2 && (
+            <div className="absolute top-3 right-3 bg-success text-white text-[10px] font-semibold px-2 py-1 rounded uppercase tracking-wide">
+              Lower Cost
+            </div>
+          )}
+          <div className={`text-[13px] mb-2 ${lowerCostFund === 2 ? 'text-success font-medium' : 'text-muted-foreground'}`}>
+            {fund2.name}
+          </div>
+          <div className={`text-[28px] font-semibold ${lowerCostFund === 2 ? 'text-success' : 'text-foreground'}`}>
+            {formatCurrency(cost2)}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
