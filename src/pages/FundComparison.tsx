@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import Header from '../components/Header';
@@ -8,13 +7,16 @@ import ComparisonTable from '../components/comparison/ComparisonTable';
 import FundComparisonBreadcrumbs from '../components/comparison/FundComparisonBreadcrumbs';
 import RelatedComparisons from '../components/comparison/RelatedComparisons';
 import FundComparisonFAQ from '../components/comparison/FundComparisonFAQ';
-import ComparisonExecutiveSummary from '../components/comparison/ComparisonExecutiveSummary';
+import ComparisonFundCards from '../components/comparison/ComparisonFundCards';
+import ComparisonQuickDecision from '../components/comparison/ComparisonQuickDecision';
+import ComparisonCTASection from '../components/comparison/ComparisonCTASection';
+import GeographicAllocationComparison from '../components/comparison/GeographicAllocationComparison';
 import TotalCostSimulator from '../components/comparison/TotalCostSimulator';
 import { parseComparisonSlug } from '../data/services/comparison-service';
 import { normalizeComparisonSlug, isCanonicalComparisonSlug } from '../utils/comparisonUtils';
 import { useAllFunds } from '@/hooks/useFundsQuery';
 import { Card, CardContent } from '@/components/ui/card';
-import { AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2, BarChart3 } from 'lucide-react';
 import type { Fund } from '@/data/types/funds';
 
 interface FundComparisonProps {
@@ -114,58 +116,61 @@ const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug, initialFun
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-background">
       <PageSEO pageType="fund-comparison" comparisonTitle={comparisonTitle} comparisonSlug={slug} />
+      
+      {/* Subtle gradient overlay at top */}
+      <div className="absolute top-0 left-0 right-0 h-[400px] bg-gradient-to-b from-muted/40 to-transparent pointer-events-none" />
       
       <Header />
       
-      <main className="container mx-auto px-4 py-8 flex-1">
-        <FundComparisonBreadcrumbs fund1={comparisonData.fund1} fund2={comparisonData.fund2} />
-        
-        {/* Link to Main Hub */}
-        <div className="mb-6 text-center">
-          <a 
-            href="https://www.movingto.com/portugal-golden-visa-funds" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
-          >
-            Browse All Portugal Golden Visa Funds
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+      <main className="relative container mx-auto px-4 py-8 flex-1 max-w-5xl">
+        {/* Breadcrumbs */}
+        <nav className="mb-6">
+          <div className="flex items-center gap-2 text-sm">
+            <a href="/" className="text-primary hover:text-primary/80 font-medium transition-colors">Funds</a>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="9 18 15 12 9 6" />
             </svg>
-          </a>
-        </div>
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">
-            {comparisonData.fund1.name} vs {comparisonData.fund2.name}: Portugal Golden Visa Fund Comparison
+            <span className="text-muted-foreground">Compare</span>
+          </div>
+        </nav>
+
+        {/* Header with pill badge */}
+        <header className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-card rounded-full text-[13px] font-medium text-muted-foreground mb-5 border border-border">
+            <BarChart3 className="w-4 h-4 text-primary" />
+            Golden Visa Fund Comparison
+          </div>
+          
+          <h1 className="text-4xl font-bold text-foreground mb-3 tracking-tight">
+            {comparisonData.fund1.name} vs {comparisonData.fund2.name}
           </h1>
-          <h2 className="text-xl text-muted-foreground mb-4 font-medium">
-            Compare Investment Fees, Minimum Investment, and Performance Metrics
-          </h2>
-          <p className="text-muted-foreground">
-            Detailed side-by-side analysis of {comparisonData.fund1.name} (managed by {comparisonData.fund1.managerName}) 
-            and {comparisonData.fund2.name} (managed by {comparisonData.fund2.managerName}) 
-            Portugal Golden Visa investment funds.
+          <p className="text-[17px] text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Compare {comparisonData.fund1.name} and {comparisonData.fund2.name} side-by-side: fees, terms, performance metrics, and Golden Visa eligibility.
           </p>
-        </div>
+        </header>
 
-        <ComparisonExecutiveSummary fund1={comparisonData.fund1} fund2={comparisonData.fund2} />
+        <ComparisonFundCards fund1={comparisonData.fund1} fund2={comparisonData.fund2} />
 
-        <div className="bg-card rounded-lg shadow-sm border">
-          <ComparisonTable funds={[comparisonData.fund1, comparisonData.fund2]} />
-        </div>
+        <ComparisonQuickDecision fund1={comparisonData.fund1} fund2={comparisonData.fund2} />
+
+        <ComparisonTable funds={[comparisonData.fund1, comparisonData.fund2]} />
 
         <TotalCostSimulator fund1={comparisonData.fund1} fund2={comparisonData.fund2} />
 
-        <RelatedComparisons 
-          currentFund1={comparisonData.fund1} 
-          currentFund2={comparisonData.fund2} 
-        />
+        <GeographicAllocationComparison fund1={comparisonData.fund1} fund2={comparisonData.fund2} />
+
+        <ComparisonCTASection />
 
         <FundComparisonFAQ 
           fund1={comparisonData.fund1} 
           fund2={comparisonData.fund2} 
+        />
+
+        <RelatedComparisons 
+          currentFund1={comparisonData.fund1} 
+          currentFund2={comparisonData.fund2} 
         />
       </main>
       

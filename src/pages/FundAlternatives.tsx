@@ -20,6 +20,7 @@ import {
   BreadcrumbSeparator,
 } from '../components/ui/breadcrumb';
 import { URL_CONFIG } from '../utils/urlConfig';
+import { buildContactUrl, openExternalLink } from '../utils/urlHelpers';
 
 const FundAlternatives = () => {
   const { id } = useParams<{ id: string }>();
@@ -272,8 +273,9 @@ const FundAlternatives = () => {
             <p className="text-muted-foreground mb-4">
               We can facilitate introductions to fund managers to help you evaluate these alternatives and find the perfect investment match.
             </p>
-            <Button asChild>
-              <Link to="/about">Get Expert Introduction</Link>
+            <Button onClick={() => openExternalLink(buildContactUrl('alternatives-introduction'))} className="gap-2">
+              Get Expert Introduction
+              <ExternalLink className="w-4 h-4" />
             </Button>
           </div>
         </div>
