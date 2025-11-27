@@ -1,10 +1,9 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { ExternalLink } from 'lucide-react';
+import { buildContactUrl, openExternalLink } from '@/utils/urlHelpers';
 
 const ComparisonCTASection: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
     <div className="bg-card rounded-2xl border border-border p-8 text-center mb-12">
       <h3 className="text-xl font-semibold text-foreground mb-2">
@@ -16,10 +15,11 @@ const ComparisonCTASection: React.FC = () => {
       <div className="flex flex-col sm:flex-row gap-3 justify-center">
         <Button 
           size="lg"
-          className="bg-gradient-to-br from-primary to-primary-700 hover:from-primary/90 hover:to-primary-700/90 shadow-md"
-          onClick={() => navigate('/contact')}
+          className="bg-gradient-to-br from-primary to-primary-700 hover:from-primary/90 hover:to-primary-700/90 shadow-md gap-2"
+          onClick={() => openExternalLink(buildContactUrl('comparison-cta'))}
         >
           Book a Consultation
+          <ExternalLink className="w-4 h-4" />
         </Button>
         <Button 
           size="lg"

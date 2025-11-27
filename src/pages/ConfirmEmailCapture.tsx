@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { CheckCircle, XCircle, Loader2, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import PageSEO from '@/components/common/PageSEO';
+import { buildContactUrl, openExternalLink } from '@/utils/urlHelpers';
 
 export default function ConfirmEmailCapture() {
   const [searchParams] = useSearchParams();
@@ -147,11 +148,12 @@ export default function ConfirmEmailCapture() {
                     Return to Home
                   </Button>
                   <Button
-                    onClick={() => navigate('/contact')}
+                    onClick={() => openExternalLink(buildContactUrl('email-capture-support'))}
                     variant="outline"
-                    className="w-full"
+                    className="w-full gap-2"
                   >
                     Contact Support
+                    <ExternalLink className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
