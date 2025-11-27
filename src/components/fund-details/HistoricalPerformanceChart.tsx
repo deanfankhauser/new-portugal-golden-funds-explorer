@@ -151,7 +151,7 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
 
   const annualReturnsData = calculateAnnualReturns();
 
-  // Format large numbers with appropriate scale (K, M, B)
+  // Format large numbers with appropriate scale (K, M, B) for axis
   const formatLargeNumber = (value: number): string => {
     if (value === 0) return '€0';
     
@@ -159,18 +159,21 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
     const sign = value < 0 ? '-' : '';
     
     if (absValue >= 1_000_000_000) {
-      // Billions
       return `${sign}€${(absValue / 1_000_000_000).toFixed(1)}B`;
     } else if (absValue >= 1_000_000) {
-      // Millions
       return `${sign}€${(absValue / 1_000_000).toFixed(1)}M`;
     } else if (absValue >= 1_000) {
-      // Thousands
       return `${sign}€${(absValue / 1_000).toFixed(1)}K`;
     } else {
-      // Less than 1000
       return `${sign}€${absValue.toFixed(0)}`;
     }
+  };
+
+  // Format numbers with thousand separators for tooltips
+  const formatWithThousandSeparators = (value: number): string => {
+    const sign = value < 0 ? '-' : '';
+    const absValue = Math.abs(value);
+    return `${sign}€${absValue.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
   };
 
   const formatTooltipValue = (value: number, name: string) => {
@@ -181,10 +184,10 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
       return [`${value >= 0 ? '+' : ''}${value.toFixed(2)}%`, 'Monthly Return'];
     }
     if (name === 'aum') {
-      return [formatLargeNumber(value), 'AUM'];
+      return [formatWithThousandSeparators(value), 'AUM'];
     }
     if (name === 'nav') {
-      return [value.toFixed(3), 'NAV'];
+      return [value.toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 }), 'NAV'];
     }
     return [value, name];
   };
