@@ -18,7 +18,7 @@ interface HistoricalPerformanceChartProps {
 const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({ 
   historicalPerformance 
 }) => {
-  const [selectedPeriod, setSelectedPeriod] = useState('1Y');
+  const [selectedPeriod, setSelectedPeriod] = useState('5Y');
   const [chartView, setChartView] = useState<'cumulative' | 'annual'>('cumulative');
   if (!historicalPerformance || Object.keys(historicalPerformance).length === 0) {
     return (
