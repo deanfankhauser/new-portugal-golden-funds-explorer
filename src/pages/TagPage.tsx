@@ -18,13 +18,23 @@ import { slugToTag, tagToSlug } from '../lib/utils';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
 import { useAllFunds } from '../hooks/useFundsQuery';
 import FundListSkeleton from '../components/common/FundListSkeleton';
+import { Fund } from '../data/types/funds';
 
-const TagPage = () => {
+interface TagPageProps {
+  tagData?: {
+    tagName: string;
+    tagSlug: string;
+    funds: Fund[];
+  };
+}
+
+const TagPage: React.FC<TagPageProps> = ({ tagData: ssrData }) => {
   const { tag: tagSlug } = useParams<{ tag: string }>();
   const { data: allFundsData, isLoading } = useAllFunds();
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   
-  const allDatabaseFunds = allFundsData || [];
+  // Use SSR data if available, otherwise fetch from hook
+  const allDatabaseFunds = ssrData ? ssrData.funds : (allFundsData || []);
   const allTags = getAllTags(allDatabaseFunds);
   
   // Processing tag slug and available tags
