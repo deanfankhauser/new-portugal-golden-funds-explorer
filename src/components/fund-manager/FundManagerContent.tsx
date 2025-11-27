@@ -278,14 +278,10 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
               )}
               
               {/* Manager Team Section */}
-              {managerProfile?.team_members && Array.isArray(managerProfile.team_members) && managerProfile.team_members.length > 0 && (
-                <div className="border-t border-border pt-16 pb-16">
-                  <ManagerTeamSection 
-                    managerName={managerName}
-                    teamMembers={managerProfile.team_members}
-                  />
-                </div>
-              )}
+              <ManagerTeamSection 
+                managerName={managerName}
+                teamMembers={managerProfile?.team_members || []}
+              />
               
               {/* Manager FAQs Section */}
               {managerProfile?.manager_faqs && Array.isArray(managerProfile.manager_faqs) && managerProfile.manager_faqs.length > 0 && (
