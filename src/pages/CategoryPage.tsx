@@ -21,13 +21,23 @@ import VerificationFilterChip from '../components/common/VerificationFilterChip'
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
 import { useAllFunds } from '../hooks/useFundsQuery';
 import FundListSkeleton from '../components/common/FundListSkeleton';
+import { Fund } from '../data/types/funds';
 
-const CategoryPage = () => {
+interface CategoryPageProps {
+  categoryData?: {
+    categoryName: string;
+    categorySlug: string;
+    funds: Fund[];
+  };
+}
+
+const CategoryPage: React.FC<CategoryPageProps> = ({ categoryData: ssrData }) => {
   const { category: categorySlug } = useParams<{ category: string }>();
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
-  const { data: allFundsData, isLoading } = useAllFunds();
   
-  const allDatabaseFunds = allFundsData || [];
+  // Use SSR data if available, otherwise fetch from hook
+  const { data: allFundsData, isLoading } = useAllFunds();
+  const allDatabaseFunds = ssrData ? ssrData.funds : (allFundsData || []);
   
   // Convert URL slug to actual category
   const category = categorySlug ? slugToCategory(categorySlug) : '';
