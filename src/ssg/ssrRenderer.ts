@@ -88,6 +88,36 @@ export class SSRRenderer {
         console.log(`🔥 SSR: Manager data prepared for SSR:`, managerDataForSSR ? `✅ ${managerDataForSSR.name} (${managerDataForSSR.funds.length} funds)` : '❌ Not found');
       }
     }
+
+    // Handle team member profile pages
+    let teamMemberDataForSSR: {
+      slug: string;
+      name: string;
+      role: string;
+      bio?: string;
+      photo_url?: string;
+      linkedin_url?: string;
+      profiles?: { company_name?: string; manager_name?: string };
+      funds?: any[];
+    } | null = null;
+
+    if (route.pageType === 'team-member' && route.params?.slug) {
+      teamMemberDataForSSR = {
+        slug: route.params.slug,
+        name: route.params.name,
+        role: route.params.role,
+        bio: route.params.bio,
+        photo_url: route.params.photoUrl,
+        linkedin_url: route.params.linkedinUrl,
+        profiles: { 
+          company_name: route.params.companyName,
+          manager_name: route.params.companyName
+        },
+        funds: [] // Fund assignments require additional fetch
+      };
+      
+      console.log(`🔥 SSR: Team member data prepared for SSR: ${teamMemberDataForSSR.name}`);
+    }
     
     // Create query client and prefetch data for SSG
     const queryClient = new QueryClient({
@@ -112,6 +142,12 @@ export class SSRRenderer {
     if (fundDataForSSR) {
       queryClient.setQueryData(['fund', fundDataForSSR.id], fundDataForSSR);
       console.log(`🔥 SSR: Cached fund data for ${fundDataForSSR.id}`);
+    }
+
+    // For team member pages, also set the specific team member in cache
+    if (teamMemberDataForSSR) {
+      queryClient.setQueryData(['team-member', teamMemberDataForSSR.slug], teamMemberDataForSSR);
+      console.log(`🔥 SSR: Cached team member data for ${teamMemberDataForSSR.slug}`);
     }
 
     // Get SEO data for this route with detailed logging
@@ -335,7 +371,12 @@ export class SSRRenderer {
                     ? React.createElement(getComponent('FundManager'), { managerData: managerDataForSSR })
                     : React.createElement(getComponent('FundManager'))
                 }),
-                React.createElement(Route, { path: '/team/:slug', element: React.createElement(getComponent('TeamMemberProfile')) }),
+                React.createElement(Route, { 
+                  path: '/team/:slug', 
+                  element: isSSG && teamMemberDataForSSR
+                    ? React.createElement(getComponent('TeamMemberProfile'), { teamMemberData: teamMemberDataForSSR })
+                    : React.createElement(getComponent('TeamMemberProfile'))
+                }),
                 
                 // Static pages
                 React.createElement(Route, { path: '/about', element: React.createElement(getComponent('About')) }),
