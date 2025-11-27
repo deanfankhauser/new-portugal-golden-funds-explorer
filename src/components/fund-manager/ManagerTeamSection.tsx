@@ -26,6 +26,11 @@ const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, te
   // Use fetched members (which include slug) or fallback to prop data
   const displayMembers = members.length > 0 ? members : teamMembers;
 
+  // Don't render anything if there are no team members after loading
+  if (!loading && displayMembers.length === 0) {
+    return null;
+  }
+
   if (loading) {
     return (
       <div>
@@ -51,7 +56,7 @@ const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, te
   }
 
   return (
-    <div>
+    <div className="border-t border-border pt-16 pb-16">
       <h2 className="text-3xl font-semibold text-foreground mb-12">
         Team
       </h2>
