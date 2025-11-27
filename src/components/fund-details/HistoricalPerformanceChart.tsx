@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ComposedChart } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, ComposedChart, BarChart, Bar, Cell, Legend } from 'recharts';
 import { TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import AuthGate from '../auth/AuthGate';
 
@@ -19,6 +19,7 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
   historicalPerformance 
 }) => {
   const [selectedPeriod, setSelectedPeriod] = useState('1Y');
+  const [chartView, setChartView] = useState<'cumulative' | 'annual'>('cumulative');
   if (!historicalPerformance || Object.keys(historicalPerformance).length === 0) {
     return (
       <Card className="border-0 shadow-sm bg-card/50">
@@ -116,6 +117,65 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
   // Average should use monthly returns, not cumulative
   const avgMonthlyReturns = filteredData.reduce((sum, item) => sum + item.returns, 0) / filteredData.length;
 
+  // Calculate year-over-year annual returns
+  const calculateAnnualReturns = () => {
+    // Group monthly data by year
+    const yearlyData: Record<number, typeof allChartData> = {};
+    
+    allChartData.forEach(item => {
+      const year = item.dateObj.getFullYear();
+      if (!yearlyData[year]) {
+        yearlyData[year] = [];
+      }
+      yearlyData[year].push(item);
+    });
+    
+    // Calculate annual return for each year by compounding monthly returns
+    return Object.entries(yearlyData)
+      .map(([year, months]) => {
+        let annualValue = 1;
+        months.forEach(month => {
+          const monthlyDecimal = month.returns / 100;
+          annualValue *= (1 + monthlyDecimal);
+        });
+        const annualReturn = (annualValue - 1) * 100;
+        
+        return {
+          year: parseInt(year),
+          return: annualReturn,
+          monthCount: months.length
+        };
+      })
+      .sort((a, b) => a.year - b.year);
+  };
+
+  const annualReturnsData = calculateAnnualReturns();
+
+  // Format large numbers with appropriate scale (K, M, B) for axis
+  const formatLargeNumber = (value: number): string => {
+    if (value === 0) return '€0';
+    
+    const absValue = Math.abs(value);
+    const sign = value < 0 ? '-' : '';
+    
+    if (absValue >= 1_000_000_000) {
+      return `${sign}€${(absValue / 1_000_000_000).toFixed(1)}B`;
+    } else if (absValue >= 1_000_000) {
+      return `${sign}€${(absValue / 1_000_000).toFixed(1)}M`;
+    } else if (absValue >= 1_000) {
+      return `${sign}€${(absValue / 1_000).toFixed(1)}K`;
+    } else {
+      return `${sign}€${absValue.toFixed(0)}`;
+    }
+  };
+
+  // Format numbers with thousand separators for tooltips
+  const formatWithThousandSeparators = (value: number): string => {
+    const sign = value < 0 ? '-' : '';
+    const absValue = Math.abs(value);
+    return `${sign}€${absValue.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+  };
+
   const formatTooltipValue = (value: number, name: string) => {
     if (name === 'returns') {
       return [`${value >= 0 ? '+' : ''}${value.toFixed(2)}%`, 'Cumulative Return'];
@@ -124,10 +184,10 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
       return [`${value >= 0 ? '+' : ''}${value.toFixed(2)}%`, 'Monthly Return'];
     }
     if (name === 'aum') {
-      return [`€${value.toFixed(1)}M`, 'AUM'];
+      return [formatWithThousandSeparators(value), 'AUM'];
     }
     if (name === 'nav') {
-      return [value.toFixed(3), 'NAV'];
+      return [value.toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 }), 'NAV'];
     }
     return [value, name];
   };
@@ -223,7 +283,32 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
           message="Sign in to see detailed historical performance data and charts"
           height="400px"
         >
-          <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod} className="mb-6">
+          {/* View Toggle */}
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <button
+              onClick={() => setChartView('cumulative')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                chartView === 'cumulative'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+              }`}
+            >
+              Cumulative Performance
+            </button>
+            <button
+              onClick={() => setChartView('annual')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                chartView === 'annual'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+              }`}
+            >
+              Annual Returns
+            </button>
+          </div>
+
+          {chartView === 'cumulative' && (
+            <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod} className="mb-6">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger 
                 value="YTD" 
@@ -325,7 +410,7 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                     fill: 'hsl(var(--muted-foreground))',
                     fontWeight: 500
                   }}
-                  tickFormatter={(value) => `€${value.toFixed(0)}M`}
+                  tickFormatter={(value) => formatLargeNumber(value)}
                   dx={5}
                 />
                 
@@ -339,7 +424,7 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                     fill: 'hsl(var(--muted-foreground))',
                     fontWeight: 500
                   }}
-                  tickFormatter={(value) => value.toFixed(2)}
+                  tickFormatter={(value) => `${value.toFixed(2)}%`}
                   dx={40}
                 />
                 
@@ -429,6 +514,139 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
               </div>
             </TabsContent>
           </Tabs>
+          )}
+
+          {chartView === 'annual' && (
+            <div className="space-y-4">
+              <div className="text-center mb-4">
+                <h3 className="text-sm font-semibold text-foreground mb-1">
+                  Year-Over-Year Performance Comparison
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  Annual returns calculated by compounding monthly performance data
+                </p>
+              </div>
+
+              <div className="h-80 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={annualReturnsData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 40 }}
+                  >
+                    <CartesianGrid 
+                      strokeDasharray="3 3" 
+                      stroke="hsl(var(--border))" 
+                      strokeOpacity={0.3}
+                      vertical={false}
+                    />
+                    
+                    <XAxis 
+                      dataKey="year" 
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ 
+                        fontSize: 12, 
+                        fill: 'hsl(var(--muted-foreground))',
+                        fontWeight: 500
+                      }}
+                      dy={10}
+                    />
+                    
+                    <YAxis 
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ 
+                        fontSize: 11, 
+                        fill: 'hsl(var(--muted-foreground))',
+                        fontWeight: 500
+                      }}
+                      tickFormatter={(value) => `${value}%`}
+                      dx={-5}
+                    />
+                    
+                    <Tooltip 
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const data = payload[0].payload;
+                          return (
+                            <div className="bg-background/95 backdrop-blur-sm border border-border rounded-xl p-4 shadow-lg">
+                              <p className="font-semibold text-sm mb-2 text-foreground">
+                                {data.year}
+                              </p>
+                              <div className="flex items-center justify-between gap-6">
+                                <span className="text-sm text-muted-foreground">
+                                  Annual Return
+                                </span>
+                                <span className={`text-sm font-medium ${
+                                  data.return >= 0 ? 'text-emerald-600' : 'text-red-600'
+                                }`}>
+                                  {data.return >= 0 ? '+' : ''}{data.return.toFixed(2)}%
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between gap-6 mt-1">
+                                <span className="text-xs text-muted-foreground">
+                                  Data Points
+                                </span>
+                                <span className="text-xs text-muted-foreground">
+                                  {data.monthCount} months
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                    
+                    <Bar 
+                      dataKey="return" 
+                      radius={[8, 8, 0, 0]}
+                    >
+                      {annualReturnsData.map((entry, index) => (
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={entry.return >= 0 ? 'hsl(var(--chart-1))' : 'hsl(var(--chart-5))'}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Annual Returns Summary Table */}
+              <div className="mt-6 border border-border rounded-lg overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead className="bg-muted/50 border-b border-border">
+                    <tr>
+                      <th className="text-left py-3 px-4 font-semibold text-foreground">Year</th>
+                      <th className="text-right py-3 px-4 font-semibold text-foreground">Annual Return</th>
+                      <th className="text-right py-3 px-4 font-semibold text-foreground">Data Points</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {annualReturnsData.map((data, index) => (
+                      <tr 
+                        key={data.year}
+                        className={`border-b border-border last:border-0 ${
+                          index % 2 === 0 ? 'bg-background' : 'bg-muted/20'
+                        }`}
+                      >
+                        <td className="py-3 px-4 font-medium text-foreground">{data.year}</td>
+                        <td className={`py-3 px-4 text-right font-semibold ${
+                          data.return >= 0 ? 'text-emerald-600' : 'text-red-600'
+                        }`}>
+                          {data.return >= 0 ? '+' : ''}{data.return.toFixed(2)}%
+                        </td>
+                        <td className="py-3 px-4 text-right text-muted-foreground">
+                          {data.monthCount} months
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
           
           {/* Performance Disclaimer */}
           <div className="mt-6 p-4 bg-gradient-to-br from-muted/5 to-muted/10 border border-border rounded-lg">
