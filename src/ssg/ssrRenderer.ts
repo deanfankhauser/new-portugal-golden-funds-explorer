@@ -88,6 +88,36 @@ export class SSRRenderer {
         console.log(`🔥 SSR: Manager data prepared for SSR:`, managerDataForSSR ? `✅ ${managerDataForSSR.name} (${managerDataForSSR.funds.length} funds)` : '❌ Not found');
       }
     }
+
+    // Handle team member profile pages
+    let teamMemberDataForSSR: {
+      slug: string;
+      name: string;
+      role: string;
+      bio?: string;
+      photo_url?: string;
+      linkedin_url?: string;
+      profiles?: { company_name?: string; manager_name?: string };
+      funds?: any[];
+    } | null = null;
+
+    if (route.pageType === 'team-member' && route.params?.slug) {
+      teamMemberDataForSSR = {
+        slug: route.params.slug,
+        name: route.params.name,
+        role: route.params.role,
+        bio: route.params.bio,
+        photo_url: route.params.photoUrl,
+        linkedin_url: route.params.linkedinUrl,
+        profiles: { 
+          company_name: route.params.companyName,
+          manager_name: route.params.companyName
+        },
+        funds: [] // Fund assignments require additional fetch
+      };
+      
+      console.log(`🔥 SSR: Team member data prepared for SSR: ${teamMemberDataForSSR.name}`);
+    }
     
     // Create query client and prefetch data for SSG
     const queryClient = new QueryClient({
@@ -104,6 +134,48 @@ export class SSRRenderer {
     console.log(`🔥 SSR: Prefetching data for SSG...`);
     const allFunds = await fetchAllFundsForBuild();
     console.log(`🔥 SSR: Prefetched ${allFunds.length} funds for SSG`);
+
+    // Handle category pages
+    let categoryDataForSSR: {
+      categoryName: string;
+      categorySlug: string;
+      funds: Fund[];
+    } | null = null;
+
+    if (route.pageType === 'category' && route.params?.categoryName) {
+      const categoryFunds = allFunds.filter(f => 
+        f.category?.toLowerCase() === route.params.categoryName.toLowerCase()
+      );
+      
+      categoryDataForSSR = {
+        categoryName: route.params.categoryName,
+        categorySlug: route.path.split('/').pop() || '',
+        funds: categoryFunds
+      };
+      
+      console.log(`🔥 SSR: Category data prepared for SSR: ${categoryDataForSSR.categoryName} (${categoryFunds.length} funds)`);
+    }
+
+    // Handle tag pages
+    let tagDataForSSR: {
+      tagName: string;
+      tagSlug: string;
+      funds: Fund[];
+    } | null = null;
+
+    if (route.pageType === 'tag' && route.params?.tagName) {
+      const tagFunds = allFunds.filter(f => 
+        f.tags?.some(t => t.toLowerCase() === route.params.tagName.toLowerCase())
+      );
+      
+      tagDataForSSR = {
+        tagName: route.params.tagName,
+        tagSlug: route.path.split('/').pop() || '',
+        funds: tagFunds
+      };
+      
+      console.log(`🔥 SSR: Tag data prepared for SSR: ${tagDataForSSR.tagName} (${tagFunds.length} funds)`);
+    }
     
     // Populate the React Query cache with SSG data
     queryClient.setQueryData(['funds-all'], allFunds);
@@ -112,6 +184,24 @@ export class SSRRenderer {
     if (fundDataForSSR) {
       queryClient.setQueryData(['fund', fundDataForSSR.id], fundDataForSSR);
       console.log(`🔥 SSR: Cached fund data for ${fundDataForSSR.id}`);
+    }
+
+    // For team member pages, also set the specific team member in cache
+    if (teamMemberDataForSSR) {
+      queryClient.setQueryData(['team-member', teamMemberDataForSSR.slug], teamMemberDataForSSR);
+      console.log(`🔥 SSR: Cached team member data for ${teamMemberDataForSSR.slug}`);
+    }
+
+    // For category pages, also set the specific category in cache
+    if (categoryDataForSSR) {
+      queryClient.setQueryData(['category-funds', categoryDataForSSR.categoryName], categoryDataForSSR.funds);
+      console.log(`🔥 SSR: Cached category funds for ${categoryDataForSSR.categoryName}`);
+    }
+
+    // For tag pages, also set the specific tag in cache  
+    if (tagDataForSSR) {
+      queryClient.setQueryData(['tag-funds', tagDataForSSR.tagName], tagDataForSSR.funds);
+      console.log(`🔥 SSR: Cached tag funds for ${tagDataForSSR.tagName}`);
     }
 
     // Get SEO data for this route with detailed logging
@@ -325,9 +415,19 @@ export class SSRRenderer {
                 
                 // Hub pages
                 React.createElement(Route, { path: '/tags', element: React.createElement(getComponent('TagsHub')) }),
-                React.createElement(Route, { path: '/tags/:tag', element: React.createElement(getComponent('TagPage')) }),
+                React.createElement(Route, { 
+                  path: '/tags/:tag', 
+                  element: isSSG && tagDataForSSR
+                    ? React.createElement(getComponent('TagPage'), { tagData: tagDataForSSR })
+                    : React.createElement(getComponent('TagPage'))
+                }),
                 React.createElement(Route, { path: '/categories', element: React.createElement(getComponent('CategoriesHub')) }),
-                React.createElement(Route, { path: '/categories/:category', element: React.createElement(getComponent('CategoryPage')) }),
+                React.createElement(Route, { 
+                  path: '/categories/:category', 
+                  element: isSSG && categoryDataForSSR
+                    ? React.createElement(getComponent('CategoryPage'), { categoryData: categoryDataForSSR })
+                    : React.createElement(getComponent('CategoryPage'))
+                }),
                 React.createElement(Route, { path: '/managers', element: React.createElement(getComponent('ManagersHub')) }),
                 React.createElement(Route, { 
                   path: '/manager/:name', 
@@ -335,7 +435,12 @@ export class SSRRenderer {
                     ? React.createElement(getComponent('FundManager'), { managerData: managerDataForSSR })
                     : React.createElement(getComponent('FundManager'))
                 }),
-                React.createElement(Route, { path: '/team/:slug', element: React.createElement(getComponent('TeamMemberProfile')) }),
+                React.createElement(Route, { 
+                  path: '/team/:slug', 
+                  element: isSSG && teamMemberDataForSSR
+                    ? React.createElement(getComponent('TeamMemberProfile'), { teamMemberData: teamMemberDataForSSR })
+                    : React.createElement(getComponent('TeamMemberProfile'))
+                }),
                 
                 // Static pages
                 React.createElement(Route, { path: '/about', element: React.createElement(getComponent('About')) }),

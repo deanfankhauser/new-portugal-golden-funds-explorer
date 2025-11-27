@@ -28,6 +28,9 @@ export class RouteDiscovery {
     console.log(`   Tags: ${tags.length}`);
     console.log(`   Managers: ${managers.length}`);
     console.log(`   Team Members: ${teamMembers?.length || 0}`);
+    if (teamMembers && teamMembers.length > 0) {
+      console.log(`   Sample team member slugs: ${teamMembers.slice(0, 3).map(m => m.slug).join(', ')}`);
+    }
 
     // Homepage (main fund listing)
     routes.push({ path: '/', pageType: 'homepage' });
@@ -104,6 +107,16 @@ export class RouteDiscovery {
           }
         });
       });
+      
+      // Validate critical team member exists
+      const criticalTeamMemberSlug = 'joaquim-maria-magalhes-luiz-gomes';
+      const hasCriticalTeamMember = routes.some(r => r.path === `/team/${criticalTeamMemberSlug}`);
+      if (!hasCriticalTeamMember) {
+        console.warn(`⚠️ WARNING: Critical team member route /team/${criticalTeamMemberSlug} not discovered!`);
+        console.warn(`⚠️ Available team member slugs: ${teamMembers.map(m => m.slug).join(', ')}`);
+      }
+    } else {
+      console.warn('⚠️ WARNING: No team members found in database! Team member routes will not be generated.');
     }
 
     // Category pages
@@ -159,7 +172,17 @@ export class RouteDiscovery {
       return true;
     });
 
-    console.log(`🔍 RouteDiscovery: Generated ${filteredRoutes.length} static routes from database (filtered from ${routes.length} total, including ${comparisons.length} comparisons and ${funds.length} alternatives pages)`);
+    // Log route counts by type
+    const teamMemberRouteCount = filteredRoutes.filter(r => r.pageType === 'team-member').length;
+    const fundRouteCount = filteredRoutes.filter(r => r.pageType === 'fund').length;
+    const categoryRouteCount = filteredRoutes.filter(r => r.pageType === 'category').length;
+    const tagRouteCount = filteredRoutes.filter(r => r.pageType === 'tag').length;
+    const managerRouteCount = filteredRoutes.filter(r => r.pageType === 'manager').length;
+    
+    console.log(`🔍 RouteDiscovery: Generated ${filteredRoutes.length} static routes from database (filtered from ${routes.length} total)`);
+    console.log(`   📄 Route breakdown: ${fundRouteCount} funds, ${teamMemberRouteCount} team members, ${categoryRouteCount} categories, ${tagRouteCount} tags, ${managerRouteCount} managers`);
+    console.log(`   🔗 Additional: ${comparisons.length} comparisons, ${funds.length} alternatives pages`);
+    
     return filteredRoutes;
   }
 

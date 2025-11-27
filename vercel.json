@@ -29,6 +29,10 @@
     {
       "source": "/manage-profile/(.*)",
       "destination": "/index.html"
+    },
+    {
+      "source": "/dashboard/(.*)",
+      "destination": "/index.html"
     }
   ],
   "redirects": [
