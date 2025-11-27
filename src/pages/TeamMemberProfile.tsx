@@ -12,9 +12,30 @@ import FundListItem from '@/components/FundListItem';
 import { managerToSlug } from '@/lib/utils';
 import { Fund } from '@/data/types/funds';
 
-const TeamMemberProfile: React.FC = () => {
+interface TeamMemberProfileProps {
+  teamMemberData?: {
+    slug: string;
+    name: string;
+    role: string;
+    bio?: string;
+    photo_url?: string;
+    linkedin_url?: string;
+    profiles?: { company_name?: string; manager_name?: string };
+    funds?: Fund[];
+  };
+}
+
+const TeamMemberProfile: React.FC<TeamMemberProfileProps> = ({ teamMemberData: ssrData }) => {
   const { slug } = useParams<{ slug: string }>();
-  const { data: teamMemberData, isLoading, error } = useTeamMemberBySlug(slug);
+  const effectiveSlug = ssrData?.slug || slug;
+  
+  // Skip hook if we have SSR data
+  const { data: fetchedData, isLoading, error } = useTeamMemberBySlug(
+    ssrData ? undefined : effectiveSlug
+  );
+  
+  // Use SSR data if available, otherwise use fetched data
+  const teamMemberData = ssrData || fetchedData;
 
   useEffect(() => {
     window.scrollTo(0, 0);
