@@ -33,26 +33,6 @@
     {
       "source": "/dashboard/(.*)",
       "destination": "/index.html"
-    },
-    {
-      "source": "/team/:path*",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/categories/:path*",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/tags/:path*",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/manager/:path*",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/compare/:path*",
-      "destination": "/index.html"
     }
   ],
   "redirects": [

@@ -154,11 +154,38 @@ export async function generateStaticFiles() {
     throw canonicalError;
   }
 
+  // Verify critical static files exist
+  console.log('\n🔍 Verifying critical static files...');
+  const criticalRoutes = [
+    '/team/joaquim-maria-magalhes-luiz-gomes',
+    '/categories/venture-capital',
+    '/tags/golden-visa-eligible',
+    '/manager/heed-capital'
+  ];
+
+  const missingCriticalFiles: string[] = [];
+  for (const route of criticalRoutes) {
+    const filePath = path.join(distDir, route, 'index.html');
+    if (fs.existsSync(filePath)) {
+      console.log(`   ✅ ${route}`);
+    } else {
+      console.error(`   ❌ MISSING: ${route}`);
+      missingCriticalFiles.push(route);
+    }
+  }
+
+  if (missingCriticalFiles.length > 0) {
+    console.error('\n❌ BUILD FAILED: Critical static files missing');
+    console.error(`   Missing files: ${missingCriticalFiles.join(', ')}`);
+    throw new Error(`SSG failed to generate ${missingCriticalFiles.length} critical routes`);
+  }
+
   // Final report
   console.log('\n🎉 SSG: Static site generation completed!');
   console.log(`🗺️  Comprehensive sitemap generated with full URL coverage`);
   console.log(`✅ Sitemap URL validation passed`);
   console.log(`✅ Sitemap canonical validation passed`);
+  console.log(`✅ Critical static files verified`);
   
   if (failedRoutes.length > 0) {
     console.log(`   ⚠️  Warning: ${failedRoutes.length} routes had issues but build continued`);
