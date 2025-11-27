@@ -144,10 +144,10 @@ const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug, initialFun
           </div>
           
           <h1 className="text-4xl font-bold text-foreground mb-3 tracking-tight">
-            Compare Investment Funds
+            {comparisonData.fund1.name} vs {comparisonData.fund2.name}
           </h1>
           <p className="text-[17px] text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Side-by-side analysis of fees, terms, and performance metrics to help you make an informed decision.
+            Compare {comparisonData.fund1.name} and {comparisonData.fund2.name} side-by-side: fees, terms, performance metrics, and Golden Visa eligibility.
           </p>
         </header>
 
