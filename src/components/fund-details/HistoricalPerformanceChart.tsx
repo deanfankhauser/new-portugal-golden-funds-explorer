@@ -424,7 +424,7 @@ const HistoricalPerformanceChart: React.FC<HistoricalPerformanceChartProps> = ({
                     fill: 'hsl(var(--muted-foreground))',
                     fontWeight: 500
                   }}
-                  tickFormatter={(value) => value.toFixed(2)}
+                  tickFormatter={(value) => `${value.toFixed(2)}%`}
                   dx={40}
                 />
                 
