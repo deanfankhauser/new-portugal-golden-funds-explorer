@@ -268,7 +268,8 @@ export async function fetchAllTeamMembersForBuild(): Promise<Array<{ id: string;
     
   if (error) {
     console.error('❌ Build: Failed to fetch team members from database:', error.message);
-    throw new Error(`Database fetch failed: ${error.message}`);
+    console.error('⚠️ Build: Returning empty team members array to allow build to continue');
+    return []; // Return empty instead of throwing to allow build to continue
   }
   
   // Transform data to flatten the profiles join
