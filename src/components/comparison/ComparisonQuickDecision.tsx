@@ -52,13 +52,13 @@ const ComparisonQuickDecision: React.FC<ComparisonQuickDecisionProps> = ({ fund1
     <div className="bg-gradient-to-br from-primary to-primary-700 rounded-2xl p-7 mb-12 text-white">
       <div className="flex items-start gap-4">
         <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
-          <Lightbulb className="w-5 h-5" />
+          <Lightbulb className="w-5 h-5 text-white" />
         </div>
         <div className="flex-1">
-          <h3 className="text-base font-semibold mb-2">Quick Decision Guide</h3>
-          <p className="text-[14px] leading-relaxed opacity-95">
-            Choose <strong className="font-semibold">{fund1.name}</strong> if you prioritize {buildRecommendation(fund1, fund2, true)}.
-            {' '}Choose <strong className="font-semibold">{fund2.name}</strong> if you prefer {buildRecommendation(fund2, fund1, false)}.
+          <h3 className="text-base font-semibold mb-2 text-white">Quick Decision Guide</h3>
+          <p className="text-[14px] leading-relaxed text-white/95">
+            Choose <strong className="font-semibold text-white">{fund1.name}</strong> if you prioritize {buildRecommendation(fund1, fund2, true)}.
+            {' '}Choose <strong className="font-semibold text-white">{fund2.name}</strong> if you prefer {buildRecommendation(fund2, fund1, false)}.
           </p>
         </div>
       </div>
