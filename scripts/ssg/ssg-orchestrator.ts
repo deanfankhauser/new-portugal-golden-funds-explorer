@@ -97,7 +97,7 @@ export async function generateStaticFiles() {
   }
 
   // Validate critical routes
-  const criticalRoutes = [
+  const requiredSEORoutes = [
     '/verification-program',
     '/compare',
     '/categories/venture-capital',
@@ -107,7 +107,7 @@ export async function generateStaticFiles() {
     '/categories/real-estate'
   ];
   
-  const missingCriticalRoutes = criticalRoutes.filter(path => !successfulRoutes.some(r => r.path === path));
+  const missingCriticalRoutes = requiredSEORoutes.filter(path => !successfulRoutes.some(r => r.path === path));
   
   if (missingCriticalRoutes.length > 0) {
     console.error(`\n❌ CRITICAL: The following required routes failed to generate:`);
