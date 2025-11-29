@@ -625,7 +625,8 @@ export class SSRRenderer {
 
       return { html, seoData: finalSeoData };
     } catch (error) {
-      const isSSG = typeof process !== 'undefined' && process.env.NODE_ENV === 'production';
+      // Detect SSG by checking if we're in Node.js without browser window
+      const isSSG = typeof process !== 'undefined' && typeof window === 'undefined';
       
       console.error(`❌ SSR: CRITICAL ERROR rendering route ${route.path}`);
       console.error(`   Error message:`, error.message);
