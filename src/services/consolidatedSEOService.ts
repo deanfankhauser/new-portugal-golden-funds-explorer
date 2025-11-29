@@ -89,35 +89,34 @@ export class ConsolidatedSEOService {
       : truncated + '...';
   }
 
-  // Generate optimized fund title - dynamic year, fees & yield focused
+  // Generate optimized fund title - dynamic year, fees & risk focused
   private static generateFundTitle(fund: any): string {
-    // Pattern: [Fund Name]: {Current Year} Fees, Yield & Golden Visa Fact Sheet
-    // Truncate to: [Fund Name]: {Current Year} Golden Visa Fact Sheet if over 60 chars
+    // Pattern: [Fund Name]: Fees, Risk, Returns & Terms (2025)
     // Note: Year is updated client-side via useYearUpdate hook to avoid SSG rebuilds on New Year's Day
     
     const currentYear = new Date().getFullYear();
     const fundName = fund.name;
     const maxLength = 60;
     
-    // Primary title: [Fund Name]: {Year} Fees, Yield & Golden Visa Fact Sheet
-    const fullTitle = `${fundName}: ${currentYear} Fees, Yield & Golden Visa Fact Sheet`;
+    // Primary title: [Fund Name]: Fees, Risk, Returns & Terms (2025)
+    const fullTitle = `${fundName}: Fees, Risk, Returns & Terms (${currentYear})`;
     
     if (fullTitle.length <= maxLength) {
       return fullTitle;
     }
     
-    // Truncated fallback: [Fund Name]: {Year} Golden Visa Fact Sheet
-    const shortTitle = `${fundName}: ${currentYear} Golden Visa Fact Sheet`;
+    // Truncated fallback: [Fund Name]: Fees & Terms (2025)
+    const shortTitle = `${fundName}: Fees & Terms (${currentYear})`;
     
     if (shortTitle.length <= maxLength) {
       return shortTitle;
     }
     
     // Final fallback: Truncate fund name to fit
-    const suffixLength = `: ${currentYear} Golden Visa Fact Sheet`.length;
+    const suffixLength = `: Fees & Terms (${currentYear})`.length;
     const maxNameLength = maxLength - suffixLength - 3; // -3 for ellipsis
     const truncatedName = fundName.substring(0, maxNameLength).trim() + '...';
-    return `${truncatedName}: ${currentYear} Golden Visa Fact Sheet`;
+    return `${truncatedName}: Fees & Terms (${currentYear})`;
   }
 
   // Generate optimized fund description with conditional logic
