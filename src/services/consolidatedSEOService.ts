@@ -380,6 +380,7 @@ export class ConsolidatedSEOService {
           structuredData: this.getTeamMemberStructuredData(params)
         };
 
+      case 'compare':
       case 'comparison':
         return {
           title: this.optimizeText('Portugal Golden Visa Fund Comparison Tool – Compare Any Two Funds | Movingto Funds', this.MAX_TITLE_LENGTH),
