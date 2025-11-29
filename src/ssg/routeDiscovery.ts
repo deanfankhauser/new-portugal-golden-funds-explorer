@@ -40,7 +40,7 @@ export class RouteDiscovery {
     routes.push({ path: '/disclaimer', pageType: 'disclaimer' });
     routes.push({ path: '/privacy', pageType: 'privacy' });
     routes.push({ path: '/faqs', pageType: 'faqs' });
-    routes.push({ path: '/compare', pageType: 'comparison' });
+    routes.push({ path: '/compare', pageType: 'compare' });
     routes.push({ path: '/comparisons', pageType: 'comparisons-hub' });
     routes.push({ path: '/roi-calculator', pageType: 'roi-calculator' });
     routes.push({ path: '/saved-funds', pageType: 'saved-funds' });
