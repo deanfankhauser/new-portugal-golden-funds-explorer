@@ -84,7 +84,7 @@ export default function EmailConfirmation() {
         // Check if we have token parameters (for processing)
         const accessToken = hashParams.get('access_token');
         const refreshToken = hashParams.get('refresh_token');
-        const tokenHash = queryParams.get('token_hash') || queryParams.get('token');
+        const tokenHash = queryParams.get('token_hash') || hashParams.get('token_hash') || queryParams.get('token');
         const type = hashParams.get('type') || queryParams.get('type') || 'signup';
 
         console.log('🔐 Available tokens:', {
@@ -165,7 +165,7 @@ export default function EmailConfirmation() {
   };
 
   const handleGoToLogin = () => {
-    navigate('/manager-auth');
+    navigate('/auth');
   };
 
   return (

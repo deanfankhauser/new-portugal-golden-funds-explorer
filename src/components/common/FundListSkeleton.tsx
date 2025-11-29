@@ -2,10 +2,14 @@
 import React from 'react';
 import { Skeleton } from '../ui/skeleton';
 
-const FundListSkeleton: React.FC = () => {
+interface FundListSkeletonProps {
+  count?: number;
+}
+
+const FundListSkeleton: React.FC<FundListSkeletonProps> = ({ count = 3 }) => {
   return (
     <div className="space-y-8">
-      {Array.from({ length: 3 }).map((_, index) => (
+      {Array.from({ length: count }).map((_, index) => (
         <div
           key={index}
           className="card-modern p-6 sm:p-8 animate-pulse"

@@ -1,12 +1,12 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate, useParams, useSearchParams } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from "@/components/ui/toaster";
 import { ComparisonProvider } from './contexts/ComparisonContext';
 import { RecentlyViewedProvider } from './contexts/RecentlyViewedContext';
 import { ShortlistProvider } from './contexts/ShortlistContext';
 import { EnhancedAuthProvider } from './contexts/EnhancedAuthContext';
+import { QueryProvider } from './providers/QueryProvider';
 
 // Lazy load all pages for optimal performance
 
@@ -15,13 +15,11 @@ import Index from './pages/Index'; // Keep homepage non-lazy for instant load
 import { 
   PageLoader, 
   FundDetailsLoader, 
-  FundIndexLoader, 
   ComparisonLoader,
   ROICalculatorLoader 
 } from './components/common/LoadingSkeleton';
 
 // Lazy load all secondary pages
-const FundIndex = lazy(() => import('./pages/FundIndex'));
 const FundDetails = lazy(() => import('./pages/FundDetails'));
 const TagPage = lazy(() => import('./pages/TagPage'));
 const CategoryPage = lazy(() => import('./pages/CategoryPage'));
@@ -29,6 +27,7 @@ const TagsHub = lazy(() => import('./pages/TagsHub'));
 const CategoriesHub = lazy(() => import('./pages/CategoriesHub'));
 const ManagersHub = lazy(() => import('./pages/ManagersHub'));
 const FundManager = lazy(() => import('./pages/FundManager'));
+const TeamMemberProfile = lazy(() => import('./pages/TeamMemberProfile'));
 const About = lazy(() => import('./pages/About'));
 const Disclaimer = lazy(() => import('./pages/Disclaimer'));
 const Privacy = lazy(() => import('./pages/Privacy'));
@@ -40,31 +39,25 @@ const ROICalculator = lazy(() => import('./pages/ROICalculator'));
 const FundComparison = lazy(() => import('./pages/FundComparison'));
 const FundAlternatives = lazy(() => import('./pages/FundAlternatives'));
 const AlternativesHub = lazy(() => import('./pages/AlternativesHub'));
-import ManagerAuth from './pages/ManagerAuth'; // Make non-lazy for debugging
-const InvestorAuth = lazy(() => import('./pages/InvestorAuth'));
+const VerifiedFunds = lazy(() => import('./pages/VerifiedFunds'));
+const VerificationProgram = lazy(() => import('./pages/VerificationProgram'));
+const IRAEligibleFunds = lazy(() => import('./pages/IRAEligibleFunds'));
+const Auth = lazy(() => import('./pages/Auth'));
 const AccountSettings = lazy(() => import('./pages/AccountSettings'));
 const EmailConfirmation = lazy(() => import('./pages/EmailConfirmation'));
-const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const ConfirmEmailCapture = lazy(() => import('./pages/ConfirmEmailCapture'));
 const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const SavedFunds = lazy(() => import('./pages/SavedFunds'));
-const TempMigrationPage = lazy(() => import('./pages/TempMigrationPage'));
+
+const FundManagerPanel = lazy(() => import('./pages/FundManagerPanel'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
-// Import funds data to validate direct fund routes
-import { fundsData } from './data/mock/funds/index';
+// Import hook to fetch funds from database
+import { useAllFunds } from './hooks/useFundsQuery';
 
 import './App.css';
 import SEODebugger from './components/common/SEODebugger';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 1,
-    },
-  },
-});
 
 // Component to handle scroll to top on route change
 const ScrollToTop = () => {
@@ -96,17 +89,45 @@ const ScrollToTop = () => {
   return null;
 };
 
+// Component to handle invitation redirects
+const InviteRedirect = () => {
+  const { token } = useParams<{ token: string }>();
+  console.log('🎫 Redirecting invite token:', token);
+  return <Navigate to={`/auth?invite=${token}`} replace />;
+};
+
+// Component to handle legacy invitation URLs with query params
+const LegacyInviteRedirect = () => {
+  const [searchParams] = useSearchParams();
+  const invite = searchParams.get('invite') || searchParams.get('token');
+  console.log('🎫 LegacyRedirect saw invite/token:', invite);
+  return <Navigate to={invite ? `/auth?invite=${invite}` : '/auth'} replace />;
+};
+
 
 // Component to handle direct fund routes (e.g., /horizon-fund)
 const DirectFundRoute = () => {
   const location = useLocation();
   const pathname = location.pathname;
+  const { data: funds, isLoading, isError, isFetching } = useAllFunds();
   
   // Extract potential fund ID from pathname (remove leading slash)
   const potentialFundId = pathname.slice(1);
   
+  // Show loading while fetching funds OR during error retry states
+  // This prevents false 404s during slow connections or Supabase issues
+  if (isLoading || isFetching) {
+    return <FundDetailsLoader />;
+  }
+  
+  // If there was an error fetching funds, show loader instead of 404
+  // React Query will retry, so we wait instead of showing false 404
+  if (isError || !funds) {
+    return <FundDetailsLoader />;
+  }
+  
   // Check if this path matches a fund ID
-  const fund = fundsData.find(f => f.id === potentialFundId);
+  const fund = funds.find(f => f.id === potentialFundId);
   
   if (fund) {
     // Valid fund found, render fund details with lazy loading
@@ -117,7 +138,7 @@ const DirectFundRoute = () => {
     );
   }
   
-  // No fund found, show 404 with lazy loading
+  // Only show 404 when we successfully loaded funds AND confirmed no match
   return (
     <Suspense fallback={<PageLoader />}>
       <NotFound />
@@ -130,6 +151,7 @@ const DirectFundRoute = () => {
 import SEOProvider from './components/providers/SEOProvider';
 
 import SEOEnhancer from './components/common/SEOEnhancer';
+import ExitIntentModal from './components/ExitIntentModal';
 
 function App() {
   // SEO optimization handled by consolidated service
@@ -138,7 +160,7 @@ function App() {
   
   
   return (
-    <QueryClientProvider client={queryClient}>
+    <QueryProvider>
       <ComparisonProvider>
         <ShortlistProvider>
           <RecentlyViewedProvider>
@@ -150,11 +172,7 @@ function App() {
                   <div className="min-h-screen w-full bg-background">
                     <Routes>
                       <Route path="/" element={<Index />} />
-                      <Route path="/index" element={
-                        <Suspense fallback={<FundIndexLoader />}>
-                          <FundIndex />
-                        </Suspense>
-                      } />
+                      <Route path="/index" element={<Navigate to="/" replace />} />
                       <Route path="/tags" element={
                         <Suspense fallback={<PageLoader />}>
                           <TagsHub />
@@ -183,6 +201,11 @@ function App() {
                       <Route path="/manager/:name" element={
                         <Suspense fallback={<PageLoader />}>
                           <FundManager />
+                        </Suspense>
+                      } />
+                      <Route path="/team/:slug" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <TeamMemberProfile />
                         </Suspense>
                       } />
                       <Route path="/about" element={
@@ -225,14 +248,37 @@ function App() {
                           <ROICalculator />
                         </Suspense>
                       } />
+                      <Route path="/ira-401k-eligible-funds" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <IRAEligibleFunds />
+                        </Suspense>
+                      } />
                         
-                        {/* Manager Authentication */}
-                        <Route path="/manager-auth" element={<ManagerAuth />} />
+                        {/* Unified Authentication */}
+                        <Route path="/auth" element={
+                          <Suspense fallback={<PageLoader />}>
+                            <Auth />
+                          </Suspense>
+                        } />
                         
-                        {/* Investor Authentication */}
+                        {/* Invitation redirect routes - handle all possible URL patterns */}
+                        <Route path="/invite/:token" element={<InviteRedirect />} />
+                        <Route path="/invite/:token/*" element={<InviteRedirect />} />
+                        <Route path="/invite" element={<LegacyInviteRedirect />} />
+                        <Route path="/auth/accept" element={<LegacyInviteRedirect />} />
+                        <Route path="/accept-invitation" element={<LegacyInviteRedirect />} />
+                        <Route path="/team-invite" element={<LegacyInviteRedirect />} />
+                        <Route path="/api/accept-team-invitation" element={<LegacyInviteRedirect />} />
+                        
+                        {/* Legacy auth routes - redirect to unified auth */}
+                        <Route path="/manager-auth" element={
+                          <Suspense fallback={<PageLoader />}>
+                            <Auth />
+                          </Suspense>
+                        } />
                         <Route path="/investor-auth" element={
                           <Suspense fallback={<PageLoader />}>
-                            <InvestorAuth />
+                            <Auth />
                           </Suspense>
                         } />
                        
@@ -250,26 +296,20 @@ function App() {
                           </Suspense>
                         } />
                         
-                         {/* Password Reset */}
-                         <Route path="/reset-password" element={
-                           <Suspense fallback={<PageLoader />}>
-                             <ResetPassword />
-                           </Suspense>
-                         } />
-                         
-                       {/* Admin Panel */}
-                       <Route path="/admin" element={
+                        {/* Email Capture Confirmation */}
+                        <Route path="/confirm-email" element={
+                          <Suspense fallback={<PageLoader />}>
+                            <ConfirmEmailCapture />
+                          </Suspense>
+                        } />
+                        
+                       {/* Admin Panel with nested routes */}
+                       <Route path="/admin/*" element={
                          <Suspense fallback={<PageLoader />}>
                            <AdminPanel />
                          </Suspense>
                        } />
 
-                       {/* Temporary Migration Page */}
-                       <Route path="/migrate-funds" element={
-                         <Suspense fallback={<PageLoader />}>
-                           <TempMigrationPage />
-                         </Suspense>
-                       } />
 
                        {/* Saved Funds */}
                        <Route path="/saved-funds" element={
@@ -278,7 +318,14 @@ function App() {
                          </Suspense>
                        } />
 
-                      {/* Alternatives hub */}
+                       {/* Fund Manager Dashboard */}
+                       <Route path="/dashboard/*" element={
+                         <Suspense fallback={<PageLoader />}>
+                           <FundManagerPanel />
+                         </Suspense>
+                       } />
+
+                       {/* Alternatives hub */}
                       <Route path="/alternatives" element={
                         <Suspense fallback={<PageLoader />}>
                           <AlternativesHub />
@@ -288,6 +335,20 @@ function App() {
                       <Route path="/:id/alternatives" element={
                         <Suspense fallback={<PageLoader />}>
                           <FundAlternatives />
+                        </Suspense>
+                      } />
+
+                      {/* Verified Funds */}
+                      <Route path="/verified-funds" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <VerifiedFunds />
+                        </Suspense>
+                      } />
+
+                      {/* Verification Program */}
+                      <Route path="/verification-program" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <VerificationProgram />
                         </Suspense>
                       } />
                       
@@ -302,7 +363,8 @@ function App() {
                   </div>
                   <Toaster />
                   <SEODebugger />
-                  <SEOEnhancer enableMonitoring={import.meta.env.DEV} />
+                  <SEOEnhancer enableMonitoring={typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false} />
+                  <ExitIntentModal />
                   
                 </SEOProvider>
               </Router>
@@ -311,7 +373,7 @@ function App() {
           </RecentlyViewedProvider>
         </ShortlistProvider>
       </ComparisonProvider>
-    </QueryClientProvider>
+    </QueryProvider>
   );
 }
 

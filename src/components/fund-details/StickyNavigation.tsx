@@ -12,6 +12,10 @@ interface StickyNavigationProps {
 
 const StickyNavigation: React.FC<StickyNavigationProps> = ({ fund }) => {
   const [isVisible, setIsVisible] = useState(false);
+  
+  // SSR-safe: Don't render during server-side rendering
+  if (typeof window === 'undefined') return null;
+  
   const { isInComparison, addToComparison, removeFromComparison } = useComparison();
   const isComparing = isInComparison(fund.id);
 

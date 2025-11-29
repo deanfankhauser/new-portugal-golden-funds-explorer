@@ -1,10 +1,11 @@
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { getFundType } from '../../utils/fundTypeUtils';
 import { Card, CardContent } from "@/components/ui/card";
 import FeeDisclaimer from './FeeDisclaimer';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
 import { getReturnTargetDisplay } from '../../utils/returnTarget';
+import { formatManagementFee, formatPerformanceFee, formatSubscriptionFee, formatRedemptionFee } from '../../utils/feeFormatters';
 
 interface FundMetricsProps {
   fund: Fund;
@@ -23,10 +24,9 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
     {
       label: "Minimum Investment",
       value: fund.minimumInvestment <= 0 ? "Not provided" : formatCurrency(fund.minimumInvestment),
-      subtitle: fund.id === '3cc-golden-income' ? 'Class A (€300,000 for Class D)' : undefined,
     },
     {
-      label: "Target Annual Return", 
+      label: "Target Return", 
       value: `${getReturnTargetDisplay(fund)} ${DATA_AS_OF_LABEL}`,
     },
     {
@@ -35,11 +35,11 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
     },
     {
       label: "Management Fee",
-      value: `${fund.managementFee}%`,
+      value: formatManagementFee(fund.managementFee),
     },
     {
       label: "Performance Fee",
-      value: `${fund.performanceFee}%`,
+      value: formatPerformanceFee(fund.performanceFee),
     },
     {
       label: "Term",
@@ -54,14 +54,14 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
   if (fund.subscriptionFee !== undefined) {
     metrics.push({
       label: "Subscription Fee",
-      value: `${fund.subscriptionFee}%`
+      value: formatSubscriptionFee(fund.subscriptionFee)
     });
   }
 
   if (fund.redemptionFee !== undefined) {
     metrics.push({
       label: "Redemption Fee",
-      value: `${fund.redemptionFee}%`
+      value: formatRedemptionFee(fund.redemptionFee)
     });
   }
 

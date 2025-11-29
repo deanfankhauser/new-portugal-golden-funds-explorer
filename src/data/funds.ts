@@ -8,26 +8,8 @@ export type {
   PdfDocument
 } from './types/funds';
 
-// Re-export funds data (now with investment tags)
-export { funds } from './services/funds-service';
-
-// Re-export tag related functions
-export { 
-  getAllTags,
-  getFundsByTag
-} from './services/tags-service';
-
-// Re-export category related functions
-export {
-  getAllCategories,
-  getFundsByCategory
-} from './services/categories-service';
-
-// Re-export fund related functions
-export {
-  getFundById,
-  searchFunds
-} from './services/funds-service';
+// Re-export tag generation utility
+export { addTagsToFunds } from './services/funds-service';
 
 // Re-export investment-related functions
 export {
@@ -71,10 +53,3 @@ export {
   generateAudienceTags,
   getFundsByAudienceSegment
 } from './services/audience-tags-service';
-
-// Re-export comparison-related functions
-export {
-  generateFundComparisons,
-  getComparisonBySlug,
-  getAllComparisonSlugs
-} from './services/comparison-service';

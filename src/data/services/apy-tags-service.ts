@@ -29,19 +29,18 @@ export const generateAPYTags = (fund: Fund): FundTag[] => {
   
   // Only assign APY tags if we can extract a meaningful percentage
   if (expectedReturn !== null) {
-    if (expectedReturn < 3) {
-      tags.push('< 3% annual yield');
-    } else if (expectedReturn >= 3 && expectedReturn <= 5) {
-      tags.push('3-5% annual yield');
+    if (expectedReturn >= 3 && expectedReturn <= 5) {
+      tags.push('Target yield 3–5%');
     } else if (expectedReturn > 5) {
-      tags.push('> 5% annual yield');
+      tags.push('Target yield 5%+');
     }
+    // Note: Low yield (<3%) removed as per restructuring
   }
   
   return tags;
 };
 
 // Function to get funds by APY level
-export const getFundsByAPYLevel = (funds: Fund[], apyLevel: '< 3% annual yield' | '3-5% annual yield' | '> 5% annual yield'): Fund[] => {
+export const getFundsByAPYLevel = (funds: Fund[], apyLevel: 'Target yield 3–5%' | 'Target yield 5%+'): Fund[] => {
   return funds.filter(fund => fund.tags.includes(apyLevel));
 };
