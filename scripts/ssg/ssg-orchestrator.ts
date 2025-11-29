@@ -96,6 +96,26 @@ export async function generateStaticFiles() {
     console.warn('⚠️  Could not write ssg-manifest.json:', (e as Error).message);
   }
 
+  // Validate critical routes
+  const requiredSEORoutes = [
+    '/verification-program',
+    '/compare',
+    '/categories/venture-capital',
+    '/categories/debt',
+    '/categories/clean-energy',
+    '/categories/other',
+    '/categories/real-estate'
+  ];
+  
+  const missingCriticalRoutes = requiredSEORoutes.filter(path => !successfulRoutes.some(r => r.path === path));
+  
+  if (missingCriticalRoutes.length > 0) {
+    console.error(`\n❌ CRITICAL: The following required routes failed to generate:`);
+    missingCriticalRoutes.forEach(path => console.error(`   - ${path}`));
+    console.error(`\n🛑 Build cannot proceed with missing critical routes.`);
+    process.exit(1);
+  }
+  
   // Fail build if any critical pages failed
   if (failedCount > 0) {
     console.error('\n❌ SSG BUILD FAILED: Some routes could not be generated');

@@ -37,14 +37,8 @@ export async function buildSSG() {
     
   } catch (error) {
     console.error('\n❌ Build failed:', error.message);
-    
-    // Fallback: ensure basic build exists
-    try {
-      execSync('vite build', { stdio: 'inherit' });
-    } catch (fallbackError) {
-      console.error('❌ Fallback build also failed:', fallbackError.message);
-      process.exit(1);
-    }
+    console.error('❌ SSG build must succeed. Failing deployment to prevent broken site.');
+    process.exit(1);
   }
 }
 
