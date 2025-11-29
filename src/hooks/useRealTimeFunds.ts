@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Fund, FundTag, FundCategory, GeographicAllocation, TeamMember, PdfDocument, FAQItem, RedemptionFrequency } from '../data/types/funds';
+import { managerNamesMatch } from '@/utils/managerNameMatching';
 // Supabase client is lazy-loaded to keep SSR safe
 const getSupabase = async () => (await import('../integrations/supabase/client')).supabase;
 
@@ -464,8 +465,6 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
 
   // Memoized manager funds lookup (with fuzzy name matching)
   const getFundsByManager = useCallback((managerName: string): Fund[] => {
-    // Import inline to avoid SSG issues
-    const { managerNamesMatch } = require('@/utils/managerNameMatching');
     return funds.filter(fund => managerNamesMatch(fund.managerName, managerName));
   }, [funds]);
 
