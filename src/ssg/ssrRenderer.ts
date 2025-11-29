@@ -347,22 +347,30 @@ export class SSRRenderer {
     const components = await loadComponents(needed);
     const FallbackComponent = () => React.createElement(
       'div',
-      { className: 'p-8 text-center' },
-      React.createElement('div', { className: 'mb-6 font-semibold' }, 'Page Loading...'),
+      { className: 'min-h-screen bg-background' },
       React.createElement(
-        'nav',
-        { 'aria-label': 'Continue exploring', className: 'mt-2' },
+        'main',
+        { className: 'container mx-auto px-4 py-16 text-center' },
+        React.createElement('h1', { className: 'text-4xl font-bold mb-6' }, 'Portugal Golden Visa Investment Funds'),
+        React.createElement('p', { className: 'text-lg text-muted-foreground mb-4 max-w-2xl mx-auto' },
+          'Compare Portugal Golden Visa funds by performance, fees, risk, strategy and minimum ticket. Use our independent directory to shortlist funds for your residency plan.'
+        ),
+        React.createElement('p', { className: 'text-muted-foreground mb-8 max-w-2xl mx-auto' },
+          'Browse our comprehensive database of CMVM-regulated investment funds eligible for the Portugal Golden Visa program.'
+        ),
         React.createElement(
-          'ul',
-          { className: 'flex flex-wrap justify-center gap-3 text-sm' },
-          React.createElement('li', null, React.createElement('a', { href: '/' }, 'Home')),
-          React.createElement('li', null, React.createElement('a', { href: '/' }, 'All Funds')),
-          React.createElement('li', null, React.createElement('a', { href: '/comparisons' }, 'Comparisons')),
-          React.createElement('li', null, React.createElement('a', { href: '/alternatives' }, 'Alternatives')),
-          React.createElement('li', null, React.createElement('a', { href: '/categories' }, 'Categories')),
-          React.createElement('li', null, React.createElement('a', { href: '/tags' }, 'Tags')),
-          React.createElement('li', null, React.createElement('a', { href: '/managers' }, 'Fund Managers')),
-          React.createElement('li', null, React.createElement('a', { href: '/roi-calculator' }, 'ROI Calculator'))
+          'nav',
+          { 'aria-label': 'Main navigation', className: 'mt-8' },
+          React.createElement(
+            'ul',
+            { className: 'flex flex-wrap justify-center gap-4 text-sm' },
+            React.createElement('li', null, React.createElement('a', { href: '/', className: 'text-primary hover:underline' }, 'Browse All Funds')),
+            React.createElement('li', null, React.createElement('a', { href: '/comparisons', className: 'text-primary hover:underline' }, 'Compare Funds')),
+            React.createElement('li', null, React.createElement('a', { href: '/categories', className: 'text-primary hover:underline' }, 'Fund Categories')),
+            React.createElement('li', null, React.createElement('a', { href: '/managers', className: 'text-primary hover:underline' }, 'Fund Managers')),
+            React.createElement('li', null, React.createElement('a', { href: '/verified-funds', className: 'text-primary hover:underline' }, 'Verified Funds')),
+            React.createElement('li', null, React.createElement('a', { href: '/faqs', className: 'text-primary hover:underline' }, 'FAQs'))
+          )
         )
       )
     );
