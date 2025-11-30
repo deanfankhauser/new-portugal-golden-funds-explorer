@@ -375,10 +375,18 @@ export class SSRRenderer {
       )
     );
 
-    // Create a proper fallback for missing components
+    // During SSG, missing components must fail the build
+    const isSSG = typeof window === 'undefined';
     const getComponent = (componentName: string) => {
       const component = components[componentName];
       if (!component) {
+        const errorMsg = `SSG CRITICAL: Component ${componentName} not loaded for route ${route.path}`;
+        console.error(`❌ ${errorMsg}`);
+        
+        if (isSSG) {
+          throw new Error(errorMsg);
+        }
+        
         if (shouldLog) {
           console.warn(`🔥 SSR: Component ${componentName} not available, using fallback`);
         }
@@ -388,7 +396,6 @@ export class SSRRenderer {
     };
 
     // During SSG, avoid importing EnhancedAuthProvider to prevent Supabase client initialization
-    const isSSG = typeof window === 'undefined';
     let AuthWrapper: React.ComponentType<any> = React.Fragment as any;
     
     if (!isSSG) {
