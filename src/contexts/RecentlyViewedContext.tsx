@@ -10,28 +10,32 @@ interface RecentlyViewedContextType {
 const RecentlyViewedContext = React.createContext<RecentlyViewedContextType | undefined>(undefined);
 
 export const RecentlyViewedProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // SSG-safe: Don't access localStorage during SSG
+  const isSSG = typeof window === 'undefined';
   const [recentlyViewed, setRecentlyViewed] = React.useState<Fund[]>([]);
   const [isHydrated, setIsHydrated] = React.useState(false);
 
-  // Load from localStorage only after hydration
+  // Load from localStorage only after hydration (skip during SSG)
   React.useEffect(() => {
     setIsHydrated(true);
-    const stored = localStorage.getItem('recentlyViewedFunds');
-    if (stored) {
-      try {
-        setRecentlyViewed(JSON.parse(stored));
-      } catch (error) {
-        console.error('Error parsing recently viewed funds:', error);
+    if (!isSSG) {
+      const stored = localStorage.getItem('recentlyViewedFunds');
+      if (stored) {
+        try {
+          setRecentlyViewed(JSON.parse(stored));
+        } catch (error) {
+          console.error('Error parsing recently viewed funds:', error);
+        }
       }
     }
-  }, []);
+  }, [isSSG]);
 
-  // Save to localStorage whenever recentlyViewed changes (but only after hydration)
+  // Save to localStorage whenever recentlyViewed changes (skip during SSG)
   React.useEffect(() => {
-    if (isHydrated) {
+    if (!isSSG && isHydrated) {
       localStorage.setItem('recentlyViewedFunds', JSON.stringify(recentlyViewed));
     }
-  }, [recentlyViewed, isHydrated]);
+  }, [recentlyViewed, isHydrated, isSSG]);
 
   const addToRecentlyViewed = (fund: Fund) => {
     setRecentlyViewed(prev => {

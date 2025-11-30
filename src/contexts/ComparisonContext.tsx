@@ -17,13 +17,15 @@ interface ComparisonContextType {
 const ComparisonContext = React.createContext<ComparisonContextType | undefined>(undefined);
 
 export const ComparisonProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // SSG-safe: Don't access localStorage during SSG
+  const isSSG = typeof window === 'undefined';
   const [compareFunds, setCompareFunds] = React.useState<Fund[]>([]);
   const [isHydrated, setIsHydrated] = React.useState(false);
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount (skip during SSG)
   React.useEffect(() => {
     setIsHydrated(true);
-    if (typeof window !== 'undefined') {
+    if (!isSSG && typeof window !== 'undefined') {
       const stored = localStorage.getItem('compareFunds');
       if (stored) {
         try {
@@ -36,18 +38,18 @@ export const ComparisonProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         }
       }
     }
-  }, []);
+  }, [isSSG]);
 
-  // Persist to localStorage whenever compareFunds changes
+  // Persist to localStorage whenever compareFunds changes (skip during SSG)
   React.useEffect(() => {
-    if (isHydrated && typeof window !== 'undefined') {
+    if (!isSSG && isHydrated && typeof window !== 'undefined') {
       if (compareFunds.length > 0) {
         localStorage.setItem('compareFunds', JSON.stringify(compareFunds));
       } else {
         localStorage.removeItem('compareFunds');
       }
     }
-  }, [compareFunds, isHydrated]);
+  }, [compareFunds, isHydrated, isSSG]);
 
   const addToComparison = (fund: Fund) => {
     // Check if we already have this fund
