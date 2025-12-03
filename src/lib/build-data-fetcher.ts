@@ -143,6 +143,12 @@ export async function fetchAllManagersForBuild(): Promise<Array<{ name: string; 
   const managersMap = new Map<string, { name: string; fundsCount: number }>();
   
   funds.forEach(fund => {
+    // Skip funds without a valid manager name
+    if (!fund.managerName || fund.managerName.trim() === '') {
+      console.warn(`⚠️ Build: Skipping fund ${fund.id} - no manager name`);
+      return;
+    }
+    
     const managerKey = fund.managerName.toLowerCase();
     if (!managersMap.has(managerKey)) {
       managersMap.set(managerKey, {
