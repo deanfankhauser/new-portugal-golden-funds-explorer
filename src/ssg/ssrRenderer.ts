@@ -191,6 +191,13 @@ export class SSRRenderer {
     // Populate the React Query cache with SSG data
     queryClient.setQueryData(['funds-all'], allFunds);
     
+    // Pre-cache QEF-eligible funds for IRA/401k page
+    const qefEligibleFunds = allFunds.filter(f => f.pficStatus != null);
+    queryClient.setQueryData(['qef-eligible-funds'], qefEligibleFunds);
+    if (shouldLog) {
+      console.log(`🔥 SSR: Cached ${qefEligibleFunds.length} QEF-eligible funds`);
+    }
+    
     // For fund detail pages, also set the specific fund in cache
     if (fundDataForSSR) {
       queryClient.setQueryData(['fund', fundDataForSSR.id], fundDataForSSR);
