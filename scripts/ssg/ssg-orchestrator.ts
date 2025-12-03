@@ -58,8 +58,31 @@ export async function generateStaticFiles() {
     
     if (result.success && result.outputPath && result.seoData) {
       successCount++;
-      successfulRoutes.push(route);
-      validateGeneratedFile(result.outputPath, result.seoData, validCss, validJs);
+      
+      // Additional validation: Check the generated HTML file for error content
+      if (fs.existsSync(result.outputPath)) {
+        const generatedHTML = fs.readFileSync(result.outputPath, 'utf-8');
+        const errorMarkers = [
+          'Page Loading...',
+          'Error rendering page',
+          'require is not defined',
+          'Cannot find module'
+        ];
+        
+        const hasError = errorMarkers.some(marker => generatedHTML.includes(marker));
+        if (hasError) {
+          const foundMarker = errorMarkers.find(marker => generatedHTML.includes(marker));
+          console.error(`❌ SSG ERROR: Generated file ${result.outputPath} contains error marker: "${foundMarker}"`);
+          failedCount++;
+          failedRoutes.push(route.path);
+        } else {
+          successfulRoutes.push(route);
+          validateGeneratedFile(result.outputPath, result.seoData, validCss, validJs);
+        }
+      } else {
+        successfulRoutes.push(route);
+        validateGeneratedFile(result.outputPath, result.seoData, validCss, validJs);
+      }
     } else {
       failedCount++;
       failedRoutes.push(route.path);

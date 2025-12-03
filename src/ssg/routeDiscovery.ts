@@ -68,7 +68,20 @@ export class RouteDiscovery {
     // Manager pages
     const { managerProfiles = [] } = await fetchAllBuildDataCached();
     managers.forEach(manager => {
+      // Skip managers with empty names (defensive check)
+      if (!manager.name || manager.name.trim() === '') {
+        console.warn('⚠️ RouteDiscovery: Skipping manager with empty name');
+        return;
+      }
+      
       const slug = managerToSlug(manager.name);
+      
+      // Skip if slug is empty (defensive check)
+      if (!slug) {
+        console.warn(`⚠️ RouteDiscovery: Skipping manager with empty slug: "${manager.name}"`);
+        return;
+      }
+      
       // Find matching profile
       const managerProfile = managerProfiles.find(p => 
         p.name.toLowerCase() === manager.name.toLowerCase() ||

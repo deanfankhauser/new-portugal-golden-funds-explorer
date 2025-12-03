@@ -69,6 +69,17 @@ export class SSRRenderer {
       if (shouldLog) {
         console.log(`🔥 SSR: Fund data found for SSR:`, fundDataForSSR ? `✅ ${fundDataForSSR.name}` : '❌ Not found');
       }
+      
+      // CRITICAL: Fail SSG build if fund not found (prevents broken fund pages)
+      // Skip validation for known static routes that match the /:id pattern
+      const staticRoutes = ['saved-funds', 'verified-funds', 'verification-program', 'ira-401k-eligible-funds', 
+                           'about', 'disclaimer', 'privacy', 'compare', 'comparisons', 'faqs', 'roi-calculator',
+                           'auth', 'account-settings', 'confirm', 'managers', 'categories', 'tags', 'alternatives'];
+      const isStaticRoute = staticRoutes.includes(fundId) || fundId.startsWith('categories') || fundId.startsWith('tags') || fundId.startsWith('manager') || fundId.startsWith('team') || fundId.startsWith('compare');
+      
+      if (!fundDataForSSR && !isStaticRoute && route.pageType === 'fund') {
+        throw new Error(`SSG CRITICAL: Fund "${fundId}" not found in database. Route: ${route.path}. This prevents deploying broken fund pages.`);
+      }
     }
     
     // Handle manager profile pages
@@ -179,6 +190,13 @@ export class SSRRenderer {
     
     // Populate the React Query cache with SSG data
     queryClient.setQueryData(['funds-all'], allFunds);
+    
+    // Pre-cache QEF-eligible funds for IRA/401k page
+    const qefEligibleFunds = allFunds.filter(f => f.pficStatus != null);
+    queryClient.setQueryData(['qef-eligible-funds'], qefEligibleFunds);
+    if (shouldLog) {
+      console.log(`🔥 SSR: Cached ${qefEligibleFunds.length} QEF-eligible funds`);
+    }
     
     // For fund detail pages, also set the specific fund in cache
     if (fundDataForSSR) {
@@ -344,7 +362,7 @@ export class SSRRenderer {
         default: return ['Index'];
       }
     })();
-    const components = await loadComponents(needed);
+    const components = await loadComponents(); // Load all components - Routes requires all to be available
     const FallbackComponent = () => React.createElement(
       'div',
       { className: 'min-h-screen bg-background' },
@@ -375,10 +393,18 @@ export class SSRRenderer {
       )
     );
 
-    // Create a proper fallback for missing components
+    // During SSG, missing components must fail the build
+    const isSSG = typeof window === 'undefined';
     const getComponent = (componentName: string) => {
       const component = components[componentName];
       if (!component) {
+        const errorMsg = `SSG CRITICAL: Component ${componentName} not loaded for route ${route.path}`;
+        console.error(`❌ ${errorMsg}`);
+        
+        if (isSSG) {
+          throw new Error(errorMsg);
+        }
+        
         if (shouldLog) {
           console.warn(`🔥 SSR: Component ${componentName} not available, using fallback`);
         }
@@ -388,7 +414,6 @@ export class SSRRenderer {
     };
 
     // During SSG, avoid importing EnhancedAuthProvider to prevent Supabase client initialization
-    const isSSG = typeof window === 'undefined';
     let AuthWrapper: React.ComponentType<any> = React.Fragment as any;
     
     if (!isSSG) {
@@ -458,6 +483,12 @@ export class SSRRenderer {
                 React.createElement(Route, { path: '/comparisons', element: React.createElement(getComponent('ComparisonsHub')) }),
                 React.createElement(Route, { path: '/faqs', element: React.createElement(getComponent('FAQs')) }),
                 React.createElement(Route, { path: '/roi-calculator', element: React.createElement(getComponent('ROICalculator')) }),
+                
+                // Special pages that need explicit routes (before catch-all fund route)
+                React.createElement(Route, { path: '/saved-funds', element: React.createElement(getComponent('SavedFunds')) }),
+                React.createElement(Route, { path: '/verified-funds', element: React.createElement(getComponent('VerifiedFunds')) }),
+                React.createElement(Route, { path: '/verification-program', element: React.createElement(getComponent('VerificationProgram')) }),
+                React.createElement(Route, { path: '/ira-401k-eligible-funds', element: React.createElement(getComponent('IRAEligibleFunds')) }),
                 
                 // Auth page
                 React.createElement(Route, { path: '/auth', element: React.createElement(getComponent('Auth')) }),
