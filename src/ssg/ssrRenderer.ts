@@ -362,7 +362,7 @@ export class SSRRenderer {
         default: return ['Index'];
       }
     })();
-    const components = await loadComponents(needed);
+    const components = await loadComponents(); // Load all components - Routes requires all to be available
     const FallbackComponent = () => React.createElement(
       'div',
       { className: 'min-h-screen bg-background' },
