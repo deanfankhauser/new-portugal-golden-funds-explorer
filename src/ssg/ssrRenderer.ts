@@ -45,7 +45,14 @@ export class SSRRenderer {
     const isSSGDebug = typeof process !== 'undefined' ? process.env.SSG_DEBUG === '1' : false;
     const shouldLog = isDev || isSSGDebug;
     
-    if (shouldLog) {
+    // Always log for verification-program to debug SSG issue
+    const isVerificationProgram = route.path === '/verification-program';
+    if (isVerificationProgram) {
+      console.log(`\n🔥🔥🔥 SSR: VERIFICATION-PROGRAM ROUTE DETECTED`);
+      console.log(`🔥 SSR: Route path: ${route.path}, pageType: ${route.pageType}`);
+    }
+    
+    if (shouldLog || isVerificationProgram) {
       console.log(`\n🔥 SSR: Starting render for route ${route.path} (type: ${route.pageType})`);
       console.log(`🔥 SSR: Environment - isDev: ${isDev}, SSG_DEBUG: ${isSSGDebug}`);
     }
@@ -395,8 +402,22 @@ export class SSRRenderer {
 
     // During SSG, missing components must fail the build
     const isSSG = typeof window === 'undefined';
+    
+    // Log component loading status for verification-program specifically
+    if (isVerificationProgram) {
+      console.log(`🔥🔥🔥 SSR: Components loaded for verification-program:`, Object.keys(components).slice(0, 10));
+      console.log(`🔥🔥🔥 SSR: VerificationProgram component exists:`, !!components['VerificationProgram']);
+      console.log(`🔥🔥🔥 SSR: VerificationProgram component type:`, typeof components['VerificationProgram']);
+    }
+    
     const getComponent = (componentName: string) => {
       const component = components[componentName];
+      
+      // Extra logging for verification-program route
+      if (isVerificationProgram) {
+        console.log(`🔥🔥🔥 SSR: getComponent called for '${componentName}', found: ${!!component}`);
+      }
+      
       if (!component) {
         const errorMsg = `SSG CRITICAL: Component ${componentName} not loaded for route ${route.path}`;
         console.error(`❌ ${errorMsg}`);
@@ -582,6 +603,17 @@ export class SSRRenderer {
       // Log after rendering fund detail routes
       if (route.pageType === 'fund' && fundDataForSSR) {
         console.log(`🔥 SSR: Finished rendering FundDetails (${fundDataForSSR.id}), content length: ${html.length}`);
+      }
+      
+      // Log after rendering verification-program
+      if (isVerificationProgram) {
+        console.log(`🔥🔥🔥 SSR: Finished rendering verification-program, content length: ${html.length}`);
+        console.log(`🔥🔥🔥 SSR: HTML contains 'Verification Program': ${html.includes('Verification Program')}`);
+        console.log(`🔥🔥🔥 SSR: HTML contains 'Fund Verification': ${html.includes('Fund Verification')}`);
+        console.log(`🔥🔥🔥 SSR: HTML contains 'Portugal Golden Visa Fund Verification': ${html.includes('Portugal Golden Visa Fund Verification')}`);
+        console.log(`🔥🔥🔥 SSR: HTML contains generic hero 'Portugal Golden Visa Investment Funds': ${html.includes('Portugal Golden Visa Investment Funds')}`);
+        // Log first 500 chars of HTML for debugging
+        console.log(`🔥🔥🔥 SSR: First 500 chars of HTML:`, html.substring(0, 500));
       }
       
       // Ensure the HTML has substantial content - if not, it might be a lazy loading issue
