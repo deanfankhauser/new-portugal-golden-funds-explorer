@@ -62,6 +62,7 @@ const FAQsContent = () => {
         faqs={faqs}
         title="Common Questions About Golden Visa Investment Funds"
         schemaId="global-faq"
+        skipStructuredData={true}
       />
     </div>
   );

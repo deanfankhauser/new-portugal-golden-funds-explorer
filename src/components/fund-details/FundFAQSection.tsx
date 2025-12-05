@@ -116,6 +116,7 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
       systemFaqs={filteredSystemFAQs}
       title="Frequently Asked Questions"
       schemaId="fund-faq"
+      skipStructuredData={true}
     />
   );
 };

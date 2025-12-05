@@ -54,6 +54,7 @@ const TagPageFAQ: React.FC<TagPageFAQProps> = ({ tagName, tagSlug, fundsCount })
       faqs={faqs}
       title={`Frequently Asked Questions about ${tagName} Portugal Golden Visa Investment Funds`}
       schemaId="tag-faq"
+      skipStructuredData={true}
     />
   );
 };
