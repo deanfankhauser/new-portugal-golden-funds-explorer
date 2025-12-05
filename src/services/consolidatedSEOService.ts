@@ -1199,11 +1199,69 @@ export class ConsolidatedSEOService {
     // Use fund-specific FAQs if available, otherwise use defaults
     const activeFAQs = (fund.faqs && fund.faqs.length > 0) ? fund.faqs : defaultFAQs;
     
-    // Generate FAQ schema with active FAQs
+    // Generate system FAQs matching FundFAQSection.tsx display logic
+    const systemFAQs: any[] = [];
+    const formatFee = (fee: number | string | undefined) => fee ? `${fee}%` : 'Not disclosed';
+    
+    // FAQ: CMVM regulation (if cmvm_id exists)
+    if (fund.cmvmId) {
+      systemFAQs.push({
+        question: `Is ${fund.name} CMVM regulated?`,
+        answer: `Yes, ${fund.name} is registered under CMVM ID ${fund.cmvmId}.${fund.custodian ? ` The custodian is ${fund.custodian}.` : ''} This regulatory oversight ensures investor protection and compliance with Portuguese securities law.`
+      });
+    }
+    
+    // FAQ: Total fees (always include)
+    systemFAQs.push({
+      question: `What are the total fees for ${fund.name}?`,
+      answer: `Management Fee: ${formatFee(fund.managementFee)}. Performance Fee: ${formatFee(fund.performanceFee)}. Subscription Fee: ${formatFee(fund.subscriptionFee)}. Fee structures may vary based on share class and investment amount.`
+    });
+    
+    // FAQ: Golden Visa eligibility (if GV eligible AND verified)
+    if (fund.tags?.includes('Golden Visa Eligible') && fund.isVerified) {
+      systemFAQs.push({
+        question: `Is ${fund.name} eligible for the Portugal Golden Visa in 2025?`,
+        answer: `Yes, ${fund.name} meets the €500,000 fund route requirement for the Portugal Golden Visa program. The fund is verified by Movingto as a qualifying investment vehicle for Portuguese residency by investment.`
+      });
+    }
+    
+    // High-value SEO FAQs targeting featured snippets
+    const seoFAQs: any[] = [];
+    
+    // FAQ: Minimum investment (high-intent keyword)
+    if (fund.minimumInvestment) {
+      seoFAQs.push({
+        question: `What is the minimum investment for ${fund.name}?`,
+        answer: `The minimum investment for ${fund.name} is €${fund.minimumInvestment.toLocaleString()}. ${fund.typicalTicket ? `The typical investment size is €${fund.typicalTicket.toLocaleString()}.` : ''}`
+      });
+    }
+    
+    // FAQ: Lock-up terms (liquidity question)
+    if (fund.lockUpPeriodMonths || fund.redemptionTerms) {
+      const lockUp = fund.lockUpPeriodMonths ? `${fund.lockUpPeriodMonths} months` : 'varies';
+      const redemption = fund.redemptionTerms?.frequency || 'upon maturity';
+      seoFAQs.push({
+        question: `What are the lock-up terms for ${fund.name}?`,
+        answer: `${fund.name} has a lock-up period of ${lockUp}. Redemptions are available ${redemption}.${fund.redemptionTerms?.noticePeriod ? ` A ${fund.redemptionTerms.noticePeriod}-day notice period is required.` : ''}`
+      });
+    }
+    
+    // FAQ: Manager (authority question)
+    if (fund.managerName) {
+      seoFAQs.push({
+        question: `Who manages ${fund.name}?`,
+        answer: `${fund.name} is managed by ${fund.managerName}${fund.regulatedBy ? `, regulated by ${fund.regulatedBy}` : ''}.${fund.cmvmId ? ` The fund is registered with CMVM under ID ${fund.cmvmId}.` : ''}`
+      });
+    }
+    
+    // Combine all FAQs: active (custom/default) + system + SEO
+    const allFAQsForSchema = [...activeFAQs, ...systemFAQs, ...seoFAQs];
+    
+    // Generate FAQ schema with all FAQs
     const faqSchema = {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      'mainEntity': activeFAQs.map((faq: any) => ({
+      'mainEntity': allFAQsForSchema.map((faq: any) => ({
         '@type': 'Question',
         'name': faq.question,
         'acceptedAnswer': {
