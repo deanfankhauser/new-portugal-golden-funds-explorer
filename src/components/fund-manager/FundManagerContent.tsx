@@ -170,7 +170,7 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
 
                 {/* Title */}
                 <h1 className="text-5xl font-bold text-primary mb-4 tracking-tight">
-                  {managerName}
+                  {managerName} – Portugal Golden Visa Fund Manager
                 </h1>
 
                 {/* Tagline */}
