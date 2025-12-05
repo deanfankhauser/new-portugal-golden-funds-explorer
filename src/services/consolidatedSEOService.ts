@@ -1969,6 +1969,22 @@ export class ConsolidatedSEOService {
                 '@type': 'Answer',
                 'text': 'Early exit terms vary by fund. Some funds offer liquidity windows at specific intervals, while others may have lock-up periods. Early withdrawal may result in penalties or reduced returns. Review the fund\'s redemption terms carefully before investing.'
               }
+            },
+            {
+              '@type': 'Question',
+              'name': 'Are Portugal Golden Visa funds safe?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'Portugal Golden Visa funds carry investment risk like all equity investments. However, funds on Movingto are CMVM-regulated, providing regulatory oversight. Due diligence, diversification, and understanding lock-up periods reduce risk. Capital is at risk and past performance does not guarantee future returns.'
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'How long do I need to hold a Golden Visa investment?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'Portugal Golden Visa requires a minimum 5-year investment holding period to maintain residency status and apply for citizenship. Individual funds may have additional lock-up periods (typically 5-10 years). Redeeming early may affect visa eligibility and incur penalties.'
+              }
             }
           ]
         },

@@ -171,8 +171,18 @@ export function generateHTMLTemplate(
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="format-detection" content="telephone=no" />
   
-  <!-- Structured Data -->
-  ${hasStructuredData ? `<script type="application/ld+json" data-managed="consolidated-seo">${JSON.stringify(structuredData, null, 2)}</script>` : ''}
+  <!-- Structured Data - Separate script tags for each schema type for better parsing -->
+  ${hasStructuredData ? (
+    Array.isArray(structuredData)
+      ? structuredData.map((schema: any) => 
+          `<script type="application/ld+json" data-managed="consolidated-seo" data-schema-type="${schema['@type'] || 'Unknown'}">${JSON.stringify(schema)}</script>`
+        ).join('\n  ')
+      : (structuredData['@graph'] && Array.isArray(structuredData['@graph']))
+        ? structuredData['@graph'].map((schema: any) =>
+            `<script type="application/ld+json" data-managed="consolidated-seo" data-schema-type="${schema['@type'] || 'Unknown'}">${JSON.stringify({ '@context': 'https://schema.org', ...schema })}</script>`
+          ).join('\n  ')
+        : `<script type="application/ld+json" data-managed="consolidated-seo" data-schema-type="${structuredData['@type'] || 'Unknown'}">${JSON.stringify(structuredData)}</script>`
+  ) : ''}
   
   <!-- Other Helmet-managed tags (excluding title) -->
   ${seoData.helmetData?.meta || ''}
