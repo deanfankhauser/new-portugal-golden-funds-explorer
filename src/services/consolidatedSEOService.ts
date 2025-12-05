@@ -450,7 +450,7 @@ export class ConsolidatedSEOService {
 
       case 'roi-calculator':
         return {
-          title: this.optimizeText('Portugal Golden Visa Fund ROI Calculator – Estimate Returns | Movingto Funds', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('Golden Visa Fund ROI Calculator | Estimate Returns', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Estimate potential returns from Portugal Golden Visa funds. Adjust investment amount, target yield and holding period to see projected outcomes.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('roi-calculator'),
           canonical: URL_CONFIG.buildUrl('roi-calculator'),
@@ -476,7 +476,7 @@ export class ConsolidatedSEOService {
 
       case 'managers-hub':
         return {
-          title: this.optimizeText('Browse 28+ Golden Visa Fund Managers – Compare Track Records | Movingto Funds', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('Golden Visa Fund Managers | Compare Track Records', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Compare verified Golden Visa fund managers in Portugal. Analyze track records, AUM and performance. Connect with Movingto\'s legal team.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('managers'),
           canonical: URL_CONFIG.buildUrl('managers'),
@@ -497,7 +497,7 @@ export class ConsolidatedSEOService {
 
       case 'categories-hub':
         return {
-          title: this.optimizeText('Portugal Golden Visa Fund Categories – Debt, Equity, VC & More | Movingto Funds', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('Golden Visa Fund Categories | Debt, Equity & VC', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Explore Portugal Golden Visa fund categories – debt, equity, venture capital, real estate, clean energy, crypto. See all funds and compare metrics.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('categories'),
           canonical: URL_CONFIG.buildUrl('categories'),
@@ -518,7 +518,7 @@ export class ConsolidatedSEOService {
 
       case 'tags-hub':
         return {
-          title: this.optimizeText('Portugal Golden Visa Fund Tags – Filter by Strategy, Risk & Minimums | Movingto Funds', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('Golden Visa Fund Tags | Filter by Strategy & Risk', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Filter Portugal Golden Visa funds by 40+ tags including risk level, strategy, minimum investment, liquidity and investor profile to match your goals.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('tags'),
           canonical: URL_CONFIG.buildUrl('tags'),
@@ -581,7 +581,7 @@ export class ConsolidatedSEOService {
 
       case 'about':
         return {
-          title: this.optimizeText('About Movingto Funds – Portugal Golden Visa Investment Fund Platform | Movingto Funds', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('About Movingto Funds | Golden Visa Fund Directory', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Movingto Funds is an independent directory for Portugal Golden Visa funds. Compare data, fees and performance to choose funds with confidence.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('about'),
           canonical: URL_CONFIG.buildUrl('about'),
@@ -598,7 +598,7 @@ export class ConsolidatedSEOService {
 
       case 'disclaimer':
         return {
-          title: this.optimizeText('Disclaimer – Portugal Golden Visa Investment Fund Information | Movingto Funds', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('Disclaimer | Portugal Golden Visa Fund Directory', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Important disclaimer for Movingto Funds. Understand the limits of our Portugal Golden Visa investment fund information and advice.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('disclaimer'),
           canonical: URL_CONFIG.buildUrl('disclaimer'),
@@ -615,7 +615,7 @@ export class ConsolidatedSEOService {
 
       case 'faqs':
         return {
-          title: this.optimizeText('Portugal Golden Visa Investment Funds – FAQs & Common Questions | Movingto Funds', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('Portugal Golden Visa Funds FAQ | Common Questions', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Answers to common questions about Portugal Golden Visa investment funds. Learn how eligibility, risk, performance, fees and minimums work.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('faqs'),
           canonical: URL_CONFIG.buildUrl('faqs'),
@@ -636,7 +636,7 @@ export class ConsolidatedSEOService {
 
       case 'privacy':
         return {
-          title: this.optimizeText('Privacy Policy – Portugal Golden Visa Investment Fund Platform | Movingto Funds', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('Privacy Policy | Movingto Funds Directory', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Read the privacy policy for Movingto Funds, our Portugal Golden Visa investment fund directory and analysis platform.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('privacy'),
           canonical: URL_CONFIG.buildUrl('privacy'),
@@ -1950,8 +1950,8 @@ export class ConsolidatedSEOService {
       '@graph': [
         {
           '@type': 'AboutPage',
-          'name': 'About Movingto',
-          'description': 'About our investment fund analysis platform',
+          'name': 'About Movingto Funds',
+          'description': 'About our independent Portugal Golden Visa investment fund directory and analysis platform',
           'url': URL_CONFIG.buildUrl('about')
         },
         {
@@ -1968,6 +1968,59 @@ export class ConsolidatedSEOService {
               'position': 2,
               'name': 'About',
               'item': URL_CONFIG.buildUrl('about')
+            }
+          ]
+        },
+        {
+          '@type': 'FAQPage',
+          'mainEntity': [
+            {
+              '@type': 'Question',
+              'name': 'Is this service free?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'Yes, completely free. All fund data, comparison tools, and analysis features are available at no cost. We believe investors deserve access to quality information without paywalls.'
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'How do you make money?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': "We're supported by our parent company, Movingto.com, which provides comprehensive relocation services to Portugal. We don't charge investors or accept payments from fund managers for listings or rankings."
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'How often is data updated?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'We update fund data monthly, with critical changes (like fee structures or regulatory status) updated as soon as we\'re notified. Each fund page shows the last update date.'
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'Are you affiliated with any fund managers?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'No. We maintain complete independence from all fund managers. We don\'t receive commissions, referral fees, or promotional payments that could bias our analysis.'
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'Can fund managers edit their profiles?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': 'Fund managers can suggest updates to their fund information through our verification process. All changes are reviewed and fact-checked by our team before publication to ensure accuracy and prevent bias.'
+              }
+            },
+            {
+              '@type': 'Question',
+              'name': 'What is your connection to Movingto.com?',
+              'acceptedAnswer': {
+                '@type': 'Answer',
+                'text': "Movingto Funds is part of the Movingto family, Portugal's leading relocation platform. We leverage their expertise in Portuguese residency, tax planning, and legal matters to provide comprehensive fund analysis."
+              }
             }
           ]
         }

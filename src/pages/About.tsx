@@ -141,7 +141,7 @@ const About = () => {
               </div>
               
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
-                About <span className="text-accent italic font-cheltenham">Movingto Funds</span>
+                About <span className="text-accent italic font-cheltenham">Movingto Funds</span> – Portugal Golden Visa Fund Directory
               </h1>
               
               <p className="text-xl text-medium-contrast leading-relaxed mb-8">
