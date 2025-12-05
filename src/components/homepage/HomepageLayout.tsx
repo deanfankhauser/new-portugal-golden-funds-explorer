@@ -68,12 +68,13 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
           </div>
         </section>
 
-        {/* FAQ Section for SEO */}
+        {/* FAQ Section for SEO - skipStructuredData since SSG handles FAQPage schema */}
         <section className="mt-12 pt-8 border-t border-border">
           <FAQSection 
             faqs={homepageFAQs}
             title="Frequently Asked Questions"
             schemaId="homepage-faq"
+            skipStructuredData={true}
           />
         </section>
       </main>

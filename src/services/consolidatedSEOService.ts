@@ -203,9 +203,9 @@ export class ConsolidatedSEOService {
     switch (pageType) {
       case 'homepage':
         return {
-          title: this.optimizeText('Compare Portugal Golden Visa Funds – Directory of CMVM-Regulated Funds | Movingto Funds', this.MAX_TITLE_LENGTH),
+          title: 'Portugal Golden Visa Funds | Compare 32+ CMVM Funds', // 52 chars - under 60 limit
           keywords: ['Portugal Golden Visa funds', 'Golden Visa investment', 'Portugal investment funds', 'CMVM funds', 'investment immigration', 'residence by investment', 'Portugal capital transfer', 'VC funds Portugal', 'real estate funds Portugal', 'fund comparison'],
-          description: this.optimizeText('Compare Portugal Golden Visa funds by performance, fees, risk and minimum. Use our independent directory to shortlist funds for residency.', this.MAX_DESCRIPTION_LENGTH),
+          description: 'Compare 32+ Portugal Golden Visa investment funds. Independent analysis of fees, returns, and risk. CMVM-regulated funds from €50k-€650k. Free comparison tool.',
           url: URL_CONFIG.buildUrl('/'),
           canonical: URL_CONFIG.buildUrl('/'),
           structuredData: this.getHomepageStructuredData(funds)
@@ -1068,6 +1068,58 @@ export class ConsolidatedSEOService {
             }
           }
         }))
+      },
+      // BreadcrumbList schema for homepage
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+          {
+            '@type': 'ListItem',
+            'position': 1,
+            'name': 'Home',
+            'item': URL_CONFIG.BASE_URL
+          }
+        ]
+      },
+      // FAQPage schema for homepage FAQs
+      {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': [
+          {
+            '@type': 'Question',
+            'name': "What's the minimum for the fund route?",
+            'acceptedAnswer': {
+              '@type': 'Answer',
+              'text': "€500,000 total investment required for Golden Visa fund route, with no real-estate exposure permitted (post-October 2023 regulatory changes). A fund's subscription minimum can be lower, but you still need €500,000 across one or more qualifying funds."
+            }
+          },
+          {
+            '@type': 'Question',
+            'name': 'How long does the Golden Visa application process take?',
+            'acceptedAnswer': {
+              '@type': 'Answer',
+              'text': 'The application process typically takes 6-12 months from investment to visa approval, depending on the fund and documentation completeness.'
+            }
+          },
+          {
+            '@type': 'Question',
+            'name': 'Are these funds regulated by Portuguese authorities?',
+            'acceptedAnswer': {
+              '@type': 'Answer',
+              'text': "We source from CMVM-regulated managers where applicable. Verify each fund's registration and GV suitability with counsel."
+            }
+          },
+          {
+            '@type': 'Question',
+            'name': 'Can I compare different fund options?',
+            'acceptedAnswer': {
+              '@type': 'Answer',
+              'text': 'Movingto clients get access to comprehensive fund comparison tools, detailed performance data, and personalized recommendations based on risk tolerance and investment goals.'
+            }
+          }
+        ]
       }
     ];
   }
