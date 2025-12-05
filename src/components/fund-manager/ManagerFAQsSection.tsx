@@ -21,6 +21,7 @@ const ManagerFAQsSection: React.FC<ManagerFAQsSectionProps> = ({
       title="Frequently Asked Questions"
       schemaId="manager-faq"
       noWrapper={true}
+      skipStructuredData={true}
     />
   );
 };

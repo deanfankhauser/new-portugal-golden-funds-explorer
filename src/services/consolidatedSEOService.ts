@@ -1766,93 +1766,117 @@ export class ConsolidatedSEOService {
   }
 
   private static getManagersHubStructuredData(): any {
+    const managersFaqs = [
+      { question: "How do I find the right fund manager for Golden Visa?", answer: "Compare managers by their track record, fund categories, minimum investments, and CMVM regulatory status. Look for managers with experience in your preferred asset class (PE, VC, real estate, debt) and review their historical fund performance." },
+      { question: "What should I look for in a fund manager's track record?", answer: "Evaluate years of operation, assets under management (AUM), number of funds launched, historical returns, investor testimonials, and regulatory compliance history. Experienced managers typically have 5+ years managing Golden Visa funds." },
+      { question: "Are all fund managers CMVM regulated?", answer: "All Portugal Golden Visa qualifying funds must be registered with CMVM (Comissão do Mercado de Valores Mobiliários). Verify each manager's regulatory status on their profile page or directly with CMVM before investing." },
+      { question: "Can I invest with multiple fund managers?", answer: "Yes, diversifying across multiple managers can reduce concentration risk. However, ensure your total investment meets the €500,000 Golden Visa requirement, and consider the added complexity of managing multiple relationships." }
+    ];
+
     return {
       '@context': 'https://schema.org',
       '@graph': [
         {
           '@type': 'CollectionPage',
-          'name': 'Fund Managers Directory',
-          'description': 'Directory of investment fund managers',
+          'name': 'Portugal Golden Visa Fund Managers Directory',
+          'description': 'Complete directory of CMVM-regulated fund managers offering Portugal Golden Visa investment funds',
           'url': URL_CONFIG.buildUrl('managers')
         },
         {
           '@type': 'BreadcrumbList',
           'itemListElement': [
-            {
-              '@type': 'ListItem',
-              'position': 1,
-              'name': 'Home',
-              'item': URL_CONFIG.BASE_URL
-            },
-            {
-              '@type': 'ListItem',
-              'position': 2,
-              'name': 'Fund Managers',
-              'item': URL_CONFIG.buildUrl('managers')
-            }
+            { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+            { '@type': 'ListItem', 'position': 2, 'name': 'Fund Managers', 'item': URL_CONFIG.buildUrl('managers') }
           ]
+        },
+        {
+          '@type': 'FAQPage',
+          'name': 'Fund Managers Directory FAQs',
+          'description': 'Frequently asked questions about Portugal Golden Visa fund managers',
+          'url': URL_CONFIG.buildUrl('managers'),
+          'mainEntity': managersFaqs.map(faq => ({
+            '@type': 'Question',
+            'name': faq.question,
+            'acceptedAnswer': { '@type': 'Answer', 'text': faq.answer }
+          }))
         }
       ]
     };
   }
 
   private static getCategoriesHubStructuredData(): any {
+    const categoriesFaqs = [
+      { question: "What types of funds qualify for Portugal Golden Visa?", answer: "Private equity, venture capital, debt funds, real estate funds, infrastructure funds, and other CMVM-registered investment vehicles qualify for the €500,000 Golden Visa route. Since October 2023, real estate funds are excluded from direct real estate investment routes." },
+      { question: "Which fund category is safest for Golden Visa?", answer: "Debt and infrastructure funds typically carry lower risk profiles compared to venture capital. However, 'safer' depends on your risk tolerance, time horizon, and investment goals. Diversifying across categories can balance risk and return." },
+      { question: "Can I invest in multiple fund categories?", answer: "Yes, you can diversify your €500,000 investment across multiple fund categories. This strategy can balance risk while meeting Golden Visa requirements. Consult with your advisor on optimal allocation." },
+      { question: "What is the difference between PE and VC funds?", answer: "Private Equity (PE) funds invest in established companies with proven cash flows, while Venture Capital (VC) funds invest in early-stage startups with high growth potential. VC typically carries higher risk but potentially higher returns." }
+    ];
+
     return {
       '@context': 'https://schema.org',
       '@graph': [
         {
           '@type': 'CollectionPage',
-          'name': 'Fund Categories',
-          'description': 'Browse investment fund categories',
+          'name': 'Portugal Golden Visa Fund Categories',
+          'description': 'Browse all fund categories for Portugal Golden Visa investments: private equity, venture capital, debt, real estate, infrastructure, and more',
           'url': URL_CONFIG.buildUrl('categories')
         },
         {
           '@type': 'BreadcrumbList',
           'itemListElement': [
-            {
-              '@type': 'ListItem',
-              'position': 1,
-              'name': 'Home',
-              'item': URL_CONFIG.BASE_URL
-            },
-            {
-              '@type': 'ListItem',
-              'position': 2,
-              'name': 'Categories',
-              'item': URL_CONFIG.buildUrl('categories')
-            }
+            { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+            { '@type': 'ListItem', 'position': 2, 'name': 'Categories', 'item': URL_CONFIG.buildUrl('categories') }
           ]
+        },
+        {
+          '@type': 'FAQPage',
+          'name': 'Fund Categories FAQs',
+          'description': 'Frequently asked questions about Portugal Golden Visa fund categories',
+          'url': URL_CONFIG.buildUrl('categories'),
+          'mainEntity': categoriesFaqs.map(faq => ({
+            '@type': 'Question',
+            'name': faq.question,
+            'acceptedAnswer': { '@type': 'Answer', 'text': faq.answer }
+          }))
         }
       ]
     };
   }
 
   private static getTagsHubStructuredData(): any {
+    const tagsFaqs = [
+      { question: "How do I filter Golden Visa funds?", answer: "Use fund tags to filter by risk level (Conservative, Balanced, Aggressive), minimum investment bands, liquidity terms, sector focus, and investor profile requirements. Combine multiple tags to find funds matching your specific criteria." },
+      { question: "What do the fund tags mean?", answer: "Tags describe fund characteristics: risk bands indicate investment risk level, minimum subscription shows entry amounts, liquidity tags describe redemption terms, and sector tags highlight investment focus areas like healthcare, real estate, or technology." },
+      { question: "How do I find low-risk Golden Visa funds?", answer: "Filter by the 'Conservative' risk band tag to see funds focused on capital preservation, typically including debt funds, infrastructure, and diversified strategies. Review each fund's detailed risk assessment for complete information." },
+      { question: "Can I search by minimum investment amount?", answer: "Yes, use minimum subscription tags like '€100k–€250k', '€250k–€500k' to filter funds by their entry requirements. Remember the total Golden Visa investment must reach €500,000." }
+    ];
+
     return {
       '@context': 'https://schema.org',
       '@graph': [
         {
           '@type': 'CollectionPage',
-          'name': 'Fund Tags',
-          'description': 'Explore funds by characteristics',
+          'name': 'Portugal Golden Visa Fund Tags',
+          'description': 'Filter Portugal Golden Visa funds by 40+ characteristics including risk level, strategy, minimum investment, liquidity, and sector',
           'url': URL_CONFIG.buildUrl('tags')
         },
         {
           '@type': 'BreadcrumbList',
           'itemListElement': [
-            {
-              '@type': 'ListItem',
-              'position': 1,
-              'name': 'Home',
-              'item': URL_CONFIG.BASE_URL
-            },
-            {
-              '@type': 'ListItem',
-              'position': 2,
-              'name': 'Tags',
-              'item': URL_CONFIG.buildUrl('tags')
-            }
+            { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+            { '@type': 'ListItem', 'position': 2, 'name': 'Tags', 'item': URL_CONFIG.buildUrl('tags') }
           ]
+        },
+        {
+          '@type': 'FAQPage',
+          'name': 'Fund Tags FAQs',
+          'description': 'Frequently asked questions about filtering Portugal Golden Visa funds by tags',
+          'url': URL_CONFIG.buildUrl('tags'),
+          'mainEntity': tagsFaqs.map(faq => ({
+            '@type': 'Question',
+            'name': faq.question,
+            'acceptedAnswer': { '@type': 'Answer', 'text': faq.answer }
+          }))
         }
       ]
     };
@@ -1871,6 +1895,13 @@ export class ConsolidatedSEOService {
         ).slice(0, 10)
       : [];
 
+    const comparisonsFaqs = [
+      { question: "How do I compare Golden Visa funds?", answer: "Use our comparison tool to select any two funds and view side-by-side analysis of fees, returns, risk, minimums, liquidity terms, and Golden Visa eligibility. Each comparison highlights key differences to help you decide." },
+      { question: "What metrics should I compare?", answer: "Focus on: minimum investment, management and performance fees, target/historical returns, lock-up period, redemption terms, fund size (AUM), manager track record, and CMVM regulatory status. Our tool displays all critical metrics in one view." },
+      { question: "Can I compare funds from different categories?", answer: "Yes, comparing across categories (e.g., PE vs debt) helps you understand different risk-return profiles. Cross-category comparisons reveal tradeoffs between growth potential, capital preservation, and liquidity." },
+      { question: "How do I choose between two similar funds?", answer: "Look beyond headline returns—compare total fees (management + performance), manager experience, fund size, liquidity windows, and verification status. Small fee differences compound significantly over the 5+ year Golden Visa holding period." }
+    ];
+
     return {
       '@context': 'https://schema.org',
       '@graph': [
@@ -1883,18 +1914,8 @@ export class ConsolidatedSEOService {
           'breadcrumb': {
             '@type': 'BreadcrumbList',
             'itemListElement': [
-              {
-                '@type': 'ListItem',
-                'position': 1,
-                'name': 'Home',
-                'item': URL_CONFIG.buildUrl('/')
-              },
-              {
-                '@type': 'ListItem',
-                'position': 2,
-                'name': 'Fund Comparisons',
-                'item': URL_CONFIG.buildUrl('comparisons')
-              }
+              { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.buildUrl('/') },
+              { '@type': 'ListItem', 'position': 2, 'name': 'Fund Comparisons', 'item': URL_CONFIG.buildUrl('comparisons') }
             ]
           },
           'mainEntity': {
@@ -1912,11 +1933,7 @@ export class ConsolidatedSEOService {
           'url': URL_CONFIG.buildUrl('comparisons'),
           'applicationCategory': 'FinanceApplication',
           'operatingSystem': 'Web Browser',
-          'offers': {
-            '@type': 'Offer',
-            'price': '0',
-            'priceCurrency': 'EUR'
-          },
+          'offers': { '@type': 'Offer', 'price': '0', 'priceCurrency': 'EUR' },
           'featureList': [
             'Side-by-side fund comparison',
             'Performance metrics analysis',
@@ -1930,46 +1947,61 @@ export class ConsolidatedSEOService {
           '@type': 'Service',
           'name': 'Investment Fund Comparison Service',
           'description': 'Free comparison service for analyzing Portugal Golden Visa investment funds',
-          'provider': {
-            '@type': 'Organization',
-            'name': 'Movingto'
-          },
+          'provider': { '@type': 'Organization', 'name': 'Movingto' },
           'serviceType': 'Financial Analysis',
-          'areaServed': {
-            '@type': 'Country',
-            'name': 'Portugal'
-          }
+          'areaServed': { '@type': 'Country', 'name': 'Portugal' }
+        },
+        {
+          '@type': 'FAQPage',
+          'name': 'Fund Comparisons Hub FAQs',
+          'description': 'Frequently asked questions about comparing Portugal Golden Visa funds',
+          'url': URL_CONFIG.buildUrl('comparisons'),
+          'mainEntity': comparisonsFaqs.map(faq => ({
+            '@type': 'Question',
+            'name': faq.question,
+            'acceptedAnswer': { '@type': 'Answer', 'text': faq.answer }
+          }))
         }
       ]
     };
   }
 
   private static getAboutStructuredData(): any {
+    const aboutFaqs = [
+      { question: "Is this service free?", answer: "Yes, completely free. All fund data, comparison tools, and analysis features are available at no cost. We believe investors deserve access to quality information without paywalls." },
+      { question: "How do you make money?", answer: "We're supported by our parent company, Movingto.com, which provides comprehensive relocation services to Portugal. We don't charge investors or accept payments from fund managers for listings or rankings." },
+      { question: "How often is data updated?", answer: "We update fund data monthly, with critical changes (like fee structures or regulatory status) updated as soon as we're notified. Each fund page shows the last update date." },
+      { question: "Are you affiliated with any fund managers?", answer: "No. We maintain complete independence from all fund managers. We don't receive commissions, referral fees, or promotional payments that could bias our analysis." },
+      { question: "Can fund managers edit their profiles?", answer: "Fund managers can suggest updates to their fund information through our verification process. All changes are reviewed and fact-checked by our team before publication to ensure accuracy and prevent bias." },
+      { question: "What is your connection to Movingto.com?", answer: "Movingto Funds is part of the Movingto family, Portugal's leading relocation platform. We leverage their expertise in Portuguese residency, tax planning, and legal matters to provide comprehensive fund analysis." }
+    ];
+
     return {
       '@context': 'https://schema.org',
       '@graph': [
         {
           '@type': 'AboutPage',
-          'name': 'About Movingto',
-          'description': 'About our investment fund analysis platform',
+          'name': 'About Movingto Funds',
+          'description': 'Your trusted resource for Portugal Golden Visa investment fund analysis. Independent, comprehensive, and always up-to-date.',
           'url': URL_CONFIG.buildUrl('about')
         },
         {
           '@type': 'BreadcrumbList',
           'itemListElement': [
-            {
-              '@type': 'ListItem',
-              'position': 1,
-              'name': 'Home',
-              'item': URL_CONFIG.BASE_URL
-            },
-            {
-              '@type': 'ListItem',
-              'position': 2,
-              'name': 'About',
-              'item': URL_CONFIG.buildUrl('about')
-            }
+            { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+            { '@type': 'ListItem', 'position': 2, 'name': 'About', 'item': URL_CONFIG.buildUrl('about') }
           ]
+        },
+        {
+          '@type': 'FAQPage',
+          'name': 'About Movingto Funds FAQs',
+          'description': 'Frequently asked questions about Movingto Funds investment fund analysis platform',
+          'url': URL_CONFIG.buildUrl('about'),
+          'mainEntity': aboutFaqs.map(faq => ({
+            '@type': 'Question',
+            'name': faq.question,
+            'acceptedAnswer': { '@type': 'Answer', 'text': faq.answer }
+          }))
         }
       ]
     };
@@ -2681,6 +2713,13 @@ export class ConsolidatedSEOService {
     // Use a simple list of funds for structured data to avoid SSR issues
     const topFunds = funds ? funds.filter((f: any) => f && typeof f.name === 'string' && typeof f.id === 'string').slice(0, 20) : [];
 
+    const alternativesFaqs = [
+      { question: "How do I find alternative Golden Visa funds?", answer: "Select any fund to see similar alternatives based on category, risk profile, minimum investment, and fee structure. Our algorithm identifies funds with comparable characteristics to help you diversify or find better fits." },
+      { question: "What makes funds similar?", answer: "Similarity is based on multiple factors: investment category (PE, VC, debt, etc.), risk band (Conservative, Balanced, Aggressive), minimum investment range, fee structure, liquidity terms, and Golden Visa eligibility. Funds with 3+ matching criteria appear as alternatives." },
+      { question: "Should I diversify across multiple funds?", answer: "Diversifying can reduce manager-specific risk and expose you to different strategies. However, consider the complexity of managing multiple fund relationships. Consult your advisor on whether diversification aligns with your investment goals and Golden Visa timeline." },
+      { question: "Why would I look for fund alternatives?", answer: "Common reasons include: finding lower-fee options, seeking different liquidity terms, diversifying across managers or sectors, comparing track records, or identifying funds with lower minimum investments to complete your €500,000 Golden Visa requirement." }
+    ];
+
     return {
       "@context": "https://schema.org",
       "@graph": [
@@ -2724,10 +2763,18 @@ export class ConsolidatedSEOService {
           "name": "Fund Alternatives Finder",
           "description": "Tool for discovering alternative investment funds similar to your preferred options",
           "url": URL_CONFIG.buildUrl('/alternatives'),
-          "about": {
-            "@type": "FinancialProduct",
-            "name": "Portugal Golden Visa Investment Funds"
-          }
+          "about": { "@type": "FinancialProduct", "name": "Portugal Golden Visa Investment Funds" }
+        },
+        {
+          "@type": "FAQPage",
+          "name": "Fund Alternatives Hub FAQs",
+          "description": "Frequently asked questions about finding alternative Portugal Golden Visa funds",
+          "url": URL_CONFIG.buildUrl('/alternatives'),
+          "mainEntity": alternativesFaqs.map(faq => ({
+            "@type": "Question",
+            "name": faq.question,
+            "acceptedAnswer": { "@type": "Answer", "text": faq.answer }
+          }))
         }
       ]
     };
@@ -2737,17 +2784,21 @@ export class ConsolidatedSEOService {
   private static getVerifiedFundsStructuredData(funds: Fund[] = []): any {
     const verifiedFunds = funds.filter(f => f.isVerified);
     
+    const verifiedFundsFaqs = [
+      { question: "What does fund verification mean?", answer: "Verification confirms that a fund's submitted documents are consistent with official records—including CMVM registration, entity names, fee tables, and Golden Visa eligibility claims. It does NOT assess investment performance, risk, or suitability." },
+      { question: "How are funds verified by Movingto?", answer: "Our 6-point verification checks: regulatory status with CMVM, entity name consistency, presence of core documents (prospectus, KID), custodian confirmation, audit evidence (when available), and Golden Visa claim consistency. Funds must re-attest quarterly." },
+      { question: "Are verified funds safer?", answer: "Verification confirms document accuracy, not investment safety. All investments carry risk. Verified funds have passed factual consistency checks, but you must still conduct your own due diligence and seek professional advice before investing." },
+      { question: "How do I know when a fund was last verified?", answer: "Each verified fund profile shows the 'Last Verified' date. Funds must re-attest quarterly or when material changes occur. If a fund fails to re-attest, its status changes to 'Update Pending' or 'Paused/Revoked'." }
+    ];
+    
     return [
       {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
         'name': 'Verified Portugal Golden Visa Investment Funds',
-        'description': 'Collection of independently verified Portugal Golden Visa investment funds',
+        'description': 'Collection of independently verified Portugal Golden Visa investment funds with confirmed CMVM registration and document consistency',
         'url': URL_CONFIG.buildUrl('/verified-funds'),
-        'about': {
-          '@type': 'FinancialProduct',
-          'name': 'Portugal Golden Visa Investment Funds'
-        }
+        'about': { '@type': 'FinancialProduct', 'name': 'Portugal Golden Visa Investment Funds' }
       },
       {
         '@context': 'https://schema.org',
@@ -2772,27 +2823,41 @@ export class ConsolidatedSEOService {
           { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
           { '@type': 'ListItem', 'position': 2, 'name': 'Verified Funds', 'item': URL_CONFIG.buildUrl('/verified-funds') }
         ]
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'name': 'Verified Funds FAQs',
+        'description': 'Frequently asked questions about Movingto-verified Portugal Golden Visa funds',
+        'url': URL_CONFIG.buildUrl('/verified-funds'),
+        'mainEntity': verifiedFundsFaqs.map(faq => ({
+          '@type': 'Question',
+          'name': faq.question,
+          'acceptedAnswer': { '@type': 'Answer', 'text': faq.answer }
+        }))
       }
     ];
   }
 
   // Verification Program structured data
   private static getVerificationProgramStructuredData(): any {
+    const verificationFaqs = [
+      { question: "Does \"Verified\" mean the fund is safe or high-performing?", answer: "No. We do not assess performance, risk, or asset quality—only documents and factual consistency." },
+      { question: "Do you guarantee a Portugal Golden Visa if I invest in a Verified fund?", answer: "No. We confirm the fund's own claim about GV eligibility and that it's consistently stated. You must obtain independent legal advice." },
+      { question: "How fresh is the information?", answer: "Profiles show the last verified date. Funds must re-attest quarterly or when something material changes." },
+      { question: "What happens if a fund stops responding?", answer: "We mark Paused/Revoked until the issues are resolved." },
+      { question: "Do you get paid by funds?", answer: "Sometimes, yes—if we introduce an investor who subscribes. That does not affect verification." }
+    ];
+
     return [
       {
         '@context': 'https://schema.org',
         '@type': 'Service',
         'name': 'Fund Verification Program',
         'description': 'Independent verification service for Portugal Golden Visa investment funds',
-        'provider': {
-          '@type': 'Organization',
-          'name': 'Movingto'
-        },
+        'provider': { '@type': 'Organization', 'name': 'Movingto' },
         'serviceType': 'Investment Fund Verification',
-        'areaServed': {
-          '@type': 'Country',
-          'name': 'Portugal'
-        },
+        'areaServed': { '@type': 'Country', 'name': 'Portugal' },
         'url': URL_CONFIG.buildUrl('/verification-program')
       },
       {
@@ -2816,6 +2881,18 @@ export class ConsolidatedSEOService {
           { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
           { '@type': 'ListItem', 'position': 2, 'name': 'Verification Program', 'item': URL_CONFIG.buildUrl('/verification-program') }
         ]
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'name': 'Verification Program FAQs',
+        'description': 'Frequently asked questions about the Movingto Fund Verification Program',
+        'url': URL_CONFIG.buildUrl('/verification-program'),
+        'mainEntity': verificationFaqs.map(faq => ({
+          '@type': 'Question',
+          'name': faq.question,
+          'acceptedAnswer': { '@type': 'Answer', 'text': faq.answer }
+        }))
       }
     ];
   }
