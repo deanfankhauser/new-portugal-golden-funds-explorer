@@ -24,7 +24,7 @@ site_name = "Investment Funds Platform"
 enable_confirmations = true
 
 [functions.deploy-functions-to-develop]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-notification-email]
 verify_jwt = false
@@ -72,7 +72,7 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.get-develop-funds]
-verify_jwt = false
+verify_jwt = true
 
 [functions.submit-fund-enquiry]
 verify_jwt = false
