@@ -36,40 +36,40 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.sync-production-to-develop]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-welcome-email]
 verify_jwt = false
 
 [functions.sync-funds-to-develop]
-verify_jwt = false
+verify_jwt = true
 
 [functions.copy-data-to-develop]
-verify_jwt = false
+verify_jwt = true
 
 [functions.sync-database-dump]
-verify_jwt = false
+verify_jwt = true
 
 [functions.full-database-sync]
-verify_jwt = false
+verify_jwt = true
 
 [functions.test-funds-develop]
-verify_jwt = false
+verify_jwt = true
 
 [functions.fix-funds-develop]
-verify_jwt = false
+verify_jwt = true
 
 [functions.update-funds-develop-schema]
-verify_jwt = false
+verify_jwt = true
 
 [functions.cleanup-funds-develop]
-verify_jwt = false
+verify_jwt = true
 
 [functions.create-test-dataset]
-verify_jwt = false
+verify_jwt = true
 
 [functions.full-project-sync]
-verify_jwt = false
+verify_jwt = true
 
 [functions.get-develop-funds]
 verify_jwt = false
@@ -87,10 +87,10 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.backfill-company-assignments]
-verify_jwt = false
+verify_jwt = true
 
 [functions.create-company-profiles]
-verify_jwt = false
+verify_jwt = true
 
 [functions.request-lead-status-check]
 verify_jwt = false
