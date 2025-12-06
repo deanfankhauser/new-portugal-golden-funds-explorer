@@ -25,11 +25,42 @@ serve(async (req) => {
     const results: SyncResult[] = [];
     const startTime = new Date().toISOString();
 
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
+    // Verify admin access using JWT from request
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: 'Missing authorization header' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const anonClient = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY')!);
+    const { data: { user }, error: userError } = await anonClient.auth.getUser(authHeader.replace('Bearer ', ''));
+    
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: 'Invalid authentication' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     // Initialize Supabase clients
-    const prodSupabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    );
+    const prodSupabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Check if user is admin
+    const { data: isAdmin } = await prodSupabase.rpc('is_user_admin', { check_user_id: user.id });
+    if (!isAdmin) {
+      console.error('Non-admin user attempted to run sync-production-to-develop:', user.id);
+      return new Response(JSON.stringify({ error: 'Admin access required' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    console.log('✅ Admin access verified for user:', user.id);
 
     const devSupabase = createClient(
       Deno.env.get('FUNDS_DEV_SUPABASE_URL')!,
