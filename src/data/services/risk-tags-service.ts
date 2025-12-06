@@ -12,23 +12,20 @@ export const generateRiskTags = (fund: Fund): FundTag[] => {
     fund.tags.includes('Deposits') ||
     fund.tags.includes('Capital Preservation') ||
     fund.tags.includes('UCITS') ||
-    // Balanced funds with diversification
-    fund.category === 'Balanced' ||
-    fund.category === 'Fixed Income & Digital Assets' ||
-    // Infrastructure tends to be lower risk
+    // Infrastructure and debt tend to be lower risk
     fund.category === 'Infrastructure' ||
+    fund.category === 'Debt' ||
     // Low management fees often indicate conservative strategies
     fund.managementFee <= 1.5
   );
   
   const isHighRisk = (
-    // Venture capital and crypto are high risk
-    fund.tags.includes('Venture Capital') ||
-    fund.tags.includes('Crypto') ||
+    // Venture capital and crypto categories are high risk
+    fund.category === 'Venture Capital' ||
+    fund.category === 'Crypto' ||
     fund.tags.includes('Bitcoin') ||
     fund.tags.includes('Ethereum') ||
     fund.tags.includes('Solana') ||
-    fund.category === 'Venture Capital' ||
     // High performance fees indicate higher risk/return strategies
     fund.performanceFee >= 20 ||
     // High target returns typically mean higher risk

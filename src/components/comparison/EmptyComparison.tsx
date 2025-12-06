@@ -8,12 +8,12 @@ const EmptyComparison = () => {
   const navigate = useNavigate();
   
   const handleBrowseFunds = () => {
-    navigate('/index');
+    navigate('/');
   };
   
   return (
     <div className="space-y-8">
-      <div className="bg-card rounded-lg shadow-sm border border-border p-10 text-center">
+      <div className="bg-card rounded-xl border border-border p-12 text-center">
         <h2 className="text-2xl font-bold mb-4 text-foreground">No Funds Selected for Comparison</h2>
         <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
           You haven't selected any funds to compare yet. Browse our collection of Portugal Golden Visa eligible funds
@@ -21,14 +21,13 @@ const EmptyComparison = () => {
         </p>
         <Button
           onClick={handleBrowseFunds}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground"
         >
-          Browse Portugal Golden Visa Investment Fund Index
+          Browse All Funds
         </Button>
       </div>
       
-      {/* Premium CTA for comparison features */}
-      <PremiumCTA variant="full" location="empty-comparison" />
+      {/* PREMIUM CTA DISABLED - Uncomment to re-enable */}
+      {/* <PremiumCTA variant="full" location="empty-comparison" /> */}
     </div>
   );
 };

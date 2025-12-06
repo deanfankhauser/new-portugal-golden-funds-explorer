@@ -1,4 +1,4 @@
-import { Fund } from '../data/funds';
+import { Fund } from '../data/types/funds';
 
 export const getReturnTargetNumbers = (fund: Fund): { min?: number; max?: number } => {
   // Prioritize direct database fields
@@ -34,15 +34,31 @@ export const getReturnTargetDisplay = (fund: Fund): string => {
   const { min, max } = getReturnTargetNumbers(fund);
   
   if (min != null && max != null) {
-    if (min === max) {
-      return `${min}% annually`;
+    // If max is 0 or invalid, treat as single value
+    if (max <= 0 || max < min) {
+      const formatted = Number(min.toFixed(2)).toString();
+      return `${formatted}% p.a.`;
     }
-    return `${min}-${max}% annually`;
+    
+    if (min === max) {
+      // Format with max 2 decimal places, remove trailing zeros
+      const formatted = Number(min.toFixed(2)).toString();
+      return `${formatted}% p.a.`;
+    }
+    // Format range with max 2 decimal places
+    const minFormatted = Number(min.toFixed(2)).toString();
+    const maxFormatted = Number(max.toFixed(2)).toString();
+    return `${minFormatted}–${maxFormatted}% p.a.`;
   }
   
-  if (fund.returnTarget) {
+  if (min != null) {
+    const formatted = Number(min.toFixed(2)).toString();
+    return `${formatted}% p.a.`;
+  }
+  
+  if (fund.returnTarget && fund.returnTarget !== 'Unspecified') {
     return fund.returnTarget;
   }
   
-  return 'Contact for details';
+  return 'Not disclosed';
 };

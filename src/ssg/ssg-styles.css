@@ -715,52 +715,6 @@ a:focus-visible {
   }
 }
 
-/* Enhanced button styles - Match index.css */
-.btn-primary-enhanced {
-  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%);
-  color: hsl(var(--primary-foreground));
-  font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.75rem;
-  transition: all 0.3s ease-out;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-primary-enhanced:hover {
-  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-600)) 100%);
-  transform: scale(1.05);
-  box-shadow: var(--shadow-lg);
-}
-
-.btn-primary-enhanced:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px hsl(var(--ring));
-}
-
-.btn-secondary-enhanced {
-  background-color: white;
-  color: hsl(var(--gray-700));
-  border: 1px solid hsl(var(--gray-300));
-  font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.75rem;
-  transition: all 0.3s ease-out;
-  cursor: pointer;
-}
-
-.btn-secondary-enhanced:hover {
-  background-color: hsl(var(--gray-50));
-  border-color: hsl(var(--gray-400));
-  transform: scale(1.05);
-  box-shadow: var(--shadow-md);
-}
-
-.btn-secondary-enhanced:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px hsl(var(--gray-500));
-}
-
 /* Card effects - Match index.css */
 .card-hover-effect {
   transition: all 0.3s ease-out;

@@ -1,55 +1,37 @@
 import { SitemapService, SitemapEntry } from './sitemapService';
-import { getAllComparisonSlugs } from '../data/services/comparison-service';
+import { generateComparisonsFromFunds } from '../data/services/comparison-service';
 import { URL_CONFIG } from '../utils/urlConfig';
 import { DateManagementService } from './dateManagementService';
-import { funds } from '../data/funds';
+import { fetchAllFundsForBuild } from '../lib/build-data-fetcher';
 
 export class EnhancedSitemapService extends SitemapService {
   
-  // Generate comparison pages for sitemap
-  private static getComparisonPages(): SitemapEntry[] {
-    const comparisonSlugs = getAllComparisonSlugs();
+  // Generate comparison pages for sitemap (canonical with self-referencing canonical tags)
+  private static async getComparisonPages(): Promise<SitemapEntry[]> {
+    const funds = await fetchAllFundsForBuild();
+    const comparisons = generateComparisonsFromFunds(funds);
     const contentDates = DateManagementService.getContentDates('comparison');
     
-    return comparisonSlugs.map(slug => ({
-      url: URL_CONFIG.buildComparisonUrl(slug),
+    return comparisons.map(comparison => ({
+      url: URL_CONFIG.buildComparisonUrl(comparison.slug),
       lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
       changefreq: 'weekly' as const,
       priority: 0.85
     }));
   }
 
-  // Generate alternatives pages for sitemap
-  private static getAlternativesPages(): SitemapEntry[] {
-    return funds.map(fund => {
-      const contentDates = DateManagementService.getFundContentDates(fund);
-      return {
-        url: `${URL_CONFIG.buildFundUrl(fund.id)}/alternatives`,
-        lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
-        changefreq: contentDates.changeFrequency,
-        priority: 0.8
-      };
-    });
-  }
-
-  // Generate fund index page
-  private static getFundIndexPage(): SitemapEntry {
-    const contentDates = DateManagementService.getContentDates('fund-index');
-    return {
-      url: `${URL_CONFIG.BASE_URL}/index`,
-      lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
-      changefreq: 'daily',
-      priority: 0.9
-    };
-  }
-
-  // Enhanced sitemap generation with all pages
-  static generateEnhancedSitemapEntries(): SitemapEntry[] {
+  // Enhanced sitemap generation with canonical pages only
+  // NOTE: Alternatives pages excluded - they have non-self-referencing canonical tags
+  static async generateEnhancedSitemapEntries(): Promise<SitemapEntry[]> {
+    const funds = await fetchAllFundsForBuild();
+    const [baseEntries, comparisonPages] = await Promise.all([
+      Promise.resolve(super.generateSitemapEntries(funds)),
+      this.getComparisonPages()
+    ]);
+    
     return [
-      ...super.generateSitemapEntries(),
-      this.getFundIndexPage(),
-      ...this.getComparisonPages(),
-      ...this.getAlternativesPages()
+      ...baseEntries,
+      ...comparisonPages
     ];
   }
 
@@ -73,12 +55,9 @@ Sitemap: ${URL_CONFIG.BASE_URL}/sitemap-index.xml
 # Disallow admin and auth pages
 Disallow: /admin
 Disallow: /auth
-Disallow: /manager-auth
-Disallow: /investor-auth
 Disallow: /api/
 
 # Allow important pages
-Allow: /index
 Allow: /categories
 Allow: /tags
 Allow: /managers
@@ -87,8 +66,8 @@ Allow: /alternatives`;
   }
 
   // Generate enhanced XML sitemap with proper indexing hints
-  static generateEnhancedSitemapXML(): string {
-    const entries = this.generateEnhancedSitemapEntries();
+  static async generateEnhancedSitemapXML(): Promise<string> {
+    const entries = await this.generateEnhancedSitemapEntries();
     
     const urlElements = entries.map(entry => `  <url>
     <loc>${entry.url}</loc>

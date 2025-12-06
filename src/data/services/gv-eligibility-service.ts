@@ -4,7 +4,7 @@ import { Fund, FundCategory, FundTag } from '../types/funds';
 const GV_INELIGIBLE_CATEGORIES: FundCategory[] = ['Real Estate'];
 
 const GV_INELIGIBLE_TAGS: FundTag[] = [
-  'Real Estate'
+  // Real Estate removed - it's a category, not a tag
 ];
 
 // Check if a fund is Golden Visa eligible

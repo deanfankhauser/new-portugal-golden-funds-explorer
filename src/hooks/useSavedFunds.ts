@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 
 export interface SavedFund {
   id: string;
@@ -14,6 +14,7 @@ export const useSavedFunds = () => {
   const [savedFunds, setSavedFunds] = useState<SavedFund[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useEnhancedAuth();
+  const { toast } = useToast();
 
   const fetchSavedFunds = async () => {
     if (!user) {
@@ -31,14 +32,20 @@ export const useSavedFunds = () => {
 
       if (error) {
         console.error('Error fetching saved funds:', error);
-        toast.error('Failed to load saved funds');
+        toast({
+          title: 'Failed to load saved funds',
+          variant: 'destructive'
+        });
         return;
       }
 
       setSavedFunds(data || []);
     } catch (error) {
       console.error('Error fetching saved funds:', error);
-      toast.error('Failed to load saved funds');
+      toast({
+        title: 'Failed to load saved funds',
+        variant: 'destructive'
+      });
     } finally {
       setLoading(false);
     }
@@ -46,7 +53,10 @@ export const useSavedFunds = () => {
 
   const saveFund = async (fundId: string) => {
     if (!user) {
-      toast.error('You must be logged in to save funds');
+      toast({
+        title: 'You must be logged in to save funds',
+        variant: 'destructive'
+      });
       return false;
     }
 
@@ -60,27 +70,40 @@ export const useSavedFunds = () => {
 
       if (error) {
         if (error.code === '23505') { // Unique constraint violation
-          toast.info('Fund is already saved');
+          toast({
+            title: 'Fund is already saved'
+          });
           return false;
         }
         console.error('Error saving fund:', error);
-        toast.error('Failed to save fund');
+        toast({
+          title: 'Failed to save fund',
+          variant: 'destructive'
+        });
         return false;
       }
 
-      toast.success('Fund saved successfully');
+      toast({
+        title: 'Added to watchlist'
+      });
       fetchSavedFunds(); // Refresh the list
       return true;
     } catch (error) {
-      console.error('Error saving fund:', error);
-      toast.error('Failed to save fund');
+        console.error('Error saving fund:', error);
+        toast({
+          title: 'Failed to add to watchlist',
+          variant: 'destructive'
+        });
       return false;
     }
   };
 
   const unsaveFund = async (fundId: string) => {
     if (!user) {
-      toast.error('You must be logged in to unsave funds');
+      toast({
+        title: 'You must be logged in to unsave funds',
+        variant: 'destructive'
+      });
       return false;
     }
 
@@ -93,16 +116,24 @@ export const useSavedFunds = () => {
 
       if (error) {
         console.error('Error unsaving fund:', error);
-        toast.error('Failed to unsave fund');
+        toast({
+          title: 'Failed to unsave fund',
+          variant: 'destructive'
+        });
         return false;
       }
 
-      toast.success('Fund removed from saved funds');
+      toast({
+        title: 'Removed from watchlist'
+      });
       fetchSavedFunds(); // Refresh the list
       return true;
     } catch (error) {
-      console.error('Error unsaving fund:', error);
-      toast.error('Failed to unsave fund');
+        console.error('Error unsaving fund:', error);
+        toast({
+          title: 'Failed to remove from watchlist',
+          variant: 'destructive'
+        });
       return false;
     }
   };

@@ -81,23 +81,14 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Perform deletion operations directly
     try {
-      // Delete any profiles associated with the user
+      // Delete profile associated with the user (unified profiles table)
       const { error: profileError } = await supabase
-        .from('investor_profiles')
+        .from('profiles')
         .delete()
         .eq('user_id', user.id);
 
       if (profileError) {
-        console.log('⚠️ Error deleting investor profile (may not exist):', profileError);
-      }
-
-      const { error: managerProfileError } = await supabase
-        .from('manager_profiles')
-        .delete()
-        .eq('user_id', user.id);
-
-      if (managerProfileError) {
-        console.log('⚠️ Error deleting manager profile (may not exist):', managerProfileError);
+        console.log('⚠️ Error deleting profile (may not exist):', profileError);
       }
 
       // Delete the user account using admin client

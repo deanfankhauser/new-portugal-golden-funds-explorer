@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from 'react-router-dom';
@@ -57,7 +57,7 @@ const FundManagerAbout: React.FC<FundManagerAboutProps> = ({ fund }) => {
             {fund.fundStatus}
           </Badge>
           <Badge variant="outline">
-            {getReturnTargetDisplay(fund)} Target Annual Return
+            {getReturnTargetDisplay(fund)} Target Return
           </Badge>
         </div>
 
@@ -72,7 +72,7 @@ const FundManagerAbout: React.FC<FundManagerAboutProps> = ({ fund }) => {
             <li>• Management fee: {fund.managementFee}% annually</li>
             <li>• Fund term: {fund.term} years</li>
             <li>• Regulated by: {fund.regulatedBy}</li>
-            {isFundGVEligible(fund) && (
+            {isFundGVEligible(fund) && fund.isVerified && (
               <li>• ✅ Golden Visa eligible investment</li>
             )}
           </ul>

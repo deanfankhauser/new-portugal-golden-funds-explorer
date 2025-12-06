@@ -1,10 +1,11 @@
 import React from 'react';
-import { Heart } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSavedFunds } from '@/hooks/useSavedFunds';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { trackInteraction } from '@/utils/analyticsTracking';
 
 interface SaveFundButtonProps {
   fundId: string;
@@ -21,23 +22,51 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
   showText = false,
   className
 }) => {
+  // SSR-safe: Don't render during server-side rendering
+  if (typeof window === 'undefined') return null;
+  
   const { user } = useEnhancedAuth();
+  const { toast } = useToast();
   const { isFundSaved, saveFund, unsaveFund } = useSavedFunds();
   const isSaved = isFundSaved(fundId);
+  
+  // Optimistic UI state for instant feedback
+  const [optimisticSaved, setOptimisticSaved] = React.useState<boolean | null>(null);
+  const displaySaved = optimisticSaved !== null ? optimisticSaved : isSaved;
 
-  const handleClick = async (e: React.MouseEvent) => {
+  const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (!user) {
-      toast.error('Please sign in to save funds');
+      toast({
+        title: 'Please sign in to add funds to your watchlist',
+        variant: 'destructive'
+      });
       return;
     }
 
-    if (isSaved) {
-      await unsaveFund(fundId);
+    // Optimistic update - instant feedback
+    const newSavedState = !displaySaved;
+    setOptimisticSaved(newSavedState);
+
+    // Perform save/unsave in background
+    if (displaySaved) {
+      unsaveFund(fundId).then(success => {
+        if (!success) {
+          // Revert on failure
+          setOptimisticSaved(!newSavedState);
+        }
+      });
     } else {
-      await saveFund(fundId);
+      saveFund(fundId).then(success => {
+        if (success) {
+          trackInteraction(fundId, 'save_fund');
+        } else {
+          // Revert on failure
+          setOptimisticSaved(!newSavedState);
+        }
+      });
     }
   };
 
@@ -68,24 +97,21 @@ export const SaveFundButton: React.FC<SaveFundButtonProps> = ({
       variant={variant}
       size={showText ? 'sm' : 'icon'}
       onClick={handleClick}
+      aria-pressed={displaySaved}
+      title={displaySaved ? 'Remove from watchlist' : 'Add to watchlist'}
       className={cn(
         showText ? 'gap-2' : getSizeClasses(),
         'transition-colors duration-200',
-        isSaved 
-          ? 'text-red-500 hover:text-red-600' 
-          : 'text-muted-foreground hover:text-red-500',
+        displaySaved && 'bg-primary text-primary-foreground',
         className
       )}
-      title={isSaved ? 'Remove from saved funds' : 'Save fund'}
     >
-      <Heart 
-        className={cn(
-          getIconSize(),
-          isSaved && 'fill-current'
-        )} 
+      <Star 
+        className={getIconSize()}
+        fill={displaySaved ? 'currentColor' : 'none'}
       />
       {showText && (
-        <span>{isSaved ? 'Saved' : 'Save'}</span>
+        <span>{displaySaved ? 'On watchlist' : 'Add to watchlist'}</span>
       )}
     </Button>
   );

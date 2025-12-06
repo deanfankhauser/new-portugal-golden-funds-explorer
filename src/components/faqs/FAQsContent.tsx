@@ -1,12 +1,6 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import FAQSection from '../common/FAQSection';
 
 interface FAQItem {
   question: string;
@@ -17,11 +11,11 @@ const FAQsContent = () => {
   const faqs: FAQItem[] = [
     {
       question: "What is a Golden Visa investment fund?",
-      answer: "A Golden Visa investment fund is a regulated investment vehicle that allows foreign investors to obtain Portuguese residency by making a qualifying investment. For Portugal's Golden Visa program, eligible funds must focus on private equity/venture capital with €500,000 minimum investment and cannot be linked to real estate (rule changed October 2023). Sources: Nomad Gate Guide & IMI Daily change documentation."
+      answer: "A Golden Visa investment fund is a regulated investment vehicle that allows foreign investors to obtain Portuguese residency by making a qualifying investment. For Portugal's Golden Visa program, eligible funds must focus on private equity/venture capital with €500,000 minimum investment and cannot be linked to real estate (rule changed October 2023). Source: IMI Daily regulatory documentation."
     },
     {
       question: "What are the minimum investment amounts?",
-      answer: "Portugal Golden Visa fund route requires €500,000 total investment (post-October 2023 changes), with no real estate exposure permitted. Individual fund subscription minimums may be lower, but total qualifying investment must reach €500,000. Sources: Nomad Gate analysis and IMI Daily regulatory updates."
+      answer: "Portugal Golden Visa fund route requires €500,000 total investment (post-October 2023 changes), with no real estate exposure permitted. Individual fund subscription minimums may be lower, but total qualifying investment must reach €500,000. Source: IMI Daily regulatory updates."
     },
     {
       question: "How long does the Golden Visa process take?",
@@ -50,36 +44,25 @@ const FAQsContent = () => {
   ];
 
   return (
-    <div className="bg-card p-8 rounded-lg shadow-sm">
-      <div className="mb-8">
+    <div className="max-w-7xl mx-auto">
+      <div className="bg-card p-8 rounded-xl border border-border mb-16">
         <h1 className="text-3xl font-bold mb-4 text-foreground">
           Portugal Golden Visa Investment Funds - Frequently Asked Questions
         </h1>
         <p className="text-muted-foreground text-lg">
           Find answers to common questions about Portugal Golden Visa investment funds, eligibility requirements, and the application process.
-          Browse our comprehensive <Link to="/index" className="text-primary hover:underline">Portugal Golden Visa Investment Fund Index</Link> for detailed fund rankings and comparisons.
+          Browse our comprehensive <Link to="/" className="text-primary hover:underline">fund directory</Link> for detailed fund rankings and comparisons.
         </p>
         <h2 className="text-xl font-semibold mt-6 mb-2 text-foreground">
           Portugal Golden Visa Investment Fund Questions and Answers
         </h2>
       </div>
 
-      <Accordion type="single" collapsible className="w-full space-y-4">
-        {faqs.map((faq, index) => (
-          <AccordionItem 
-            key={index} 
-            value={`item-${index}`}
-            className="border border-border rounded-lg"
-          >
-            <AccordionTrigger className="px-6 py-4 text-left hover:no-underline hover:bg-muted/50 rounded-t-lg">
-              <span className="font-semibold text-foreground">{faq.question}</span>
-            </AccordionTrigger>
-            <AccordionContent className="px-6 pb-4 text-muted-foreground leading-relaxed">
-              {faq.answer}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+      <FAQSection 
+        faqs={faqs}
+        title="Common Questions About Golden Visa Investment Funds"
+        schemaId="global-faq"
+      />
     </div>
   );
 };
