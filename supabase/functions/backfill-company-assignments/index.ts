@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
+import { verifyAdminAuth, createUnauthorizedResponse } from '../_shared/adminAuth.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -23,6 +24,18 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // ========== ADMIN AUTHENTICATION CHECK ==========
+    const authResult = await verifyAdminAuth(req);
+    if (!authResult.isAdmin) {
+      console.warn(`Unauthorized access attempt to backfill-company-assignments: ${authResult.error}`);
+      return createUnauthorizedResponse(
+        authResult.error || 'Admin privileges required to access this function',
+        corsHeaders
+      );
+    }
+    console.log(`Admin access verified for user: ${authResult.userId}`);
+    // ================================================
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     

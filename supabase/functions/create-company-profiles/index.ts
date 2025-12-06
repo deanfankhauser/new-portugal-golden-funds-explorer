@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
 import { corsHeaders } from '../_shared/cors.ts';
+import { verifyAdminAuth, createUnauthorizedResponse } from '../_shared/adminAuth.ts';
 
 Deno.serve(async (req) => {
   // Handle CORS preflight
@@ -8,6 +9,18 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // ========== ADMIN AUTHENTICATION CHECK ==========
+    const authResult = await verifyAdminAuth(req);
+    if (!authResult.isAdmin) {
+      console.warn(`Unauthorized access attempt to create-company-profiles: ${authResult.error}`);
+      return createUnauthorizedResponse(
+        authResult.error || 'Admin privileges required to access this function',
+        corsHeaders
+      );
+    }
+    console.log(`Admin access verified for user: ${authResult.userId}`);
+    // ================================================
+
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
