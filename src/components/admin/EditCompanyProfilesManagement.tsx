@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, Edit3, ExternalLink, Building2 } from 'lucide-react';
+import { Search, Edit3, ExternalLink, Building2, Plus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -23,6 +23,7 @@ interface ProfileData {
 }
 
 export const EditCompanyProfilesManagement: React.FC = () => {
+  const navigate = useNavigate();
   const [profiles, setProfiles] = useState<ProfileData[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -69,9 +70,15 @@ export const EditCompanyProfilesManagement: React.FC = () => {
             Direct access to edit all company profile pages as super admin
           </p>
         </div>
-        <Badge variant="outline" className="bg-primary/10 text-primary">
-          {filteredProfiles.length} Profile{filteredProfiles.length !== 1 ? 's' : ''}
-        </Badge>
+        <div className="flex items-center gap-3">
+          <Button onClick={() => navigate('/admin/edit-profiles/new')}>
+            <Plus className="h-4 w-4 mr-2" />
+            New Company Profile
+          </Button>
+          <Badge variant="outline" className="bg-primary/10 text-primary">
+            {filteredProfiles.length} Profile{filteredProfiles.length !== 1 ? 's' : ''}
+          </Badge>
+        </div>
       </div>
 
       <Card>
