@@ -108,7 +108,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.invite-team-member]
-verify_jwt = false
+verify_jwt = true
 
 [functions.remove-team-member]
-verify_jwt = false
+verify_jwt = true
