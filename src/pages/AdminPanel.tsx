@@ -79,7 +79,8 @@ export default function AdminPanel() {
     return <PageLoader />;
   }
 
-  if (!user) {
+  // In dev mode, skip user check since we're using mock user
+  if (!user && !isDevelopment()) {
     return null;
   }
 
