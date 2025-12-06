@@ -9,9 +9,15 @@ export function getEnvironment(): Environment {
   
   const hostname = window.location.hostname;
   
+  // Production environment - explicit check first
+  if (hostname === 'funds.movingto.com') {
+    return 'production';
+  }
+  
   // Development/preview environments
   if (
     hostname === 'localhost' ||
+    hostname.includes('lovable.dev') ||
     hostname.includes('vercel.app') ||
     hostname.includes('preview') ||
     hostname.includes('staging') ||
@@ -20,7 +26,7 @@ export function getEnvironment(): Environment {
     return 'development';
   }
   
-  // Production environment
+  // Default to production for unknown domains
   return 'production';
 }
 
