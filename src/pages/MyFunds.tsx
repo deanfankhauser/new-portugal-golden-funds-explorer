@@ -15,6 +15,7 @@ import { Fund } from '@/data/types/funds';
 import { Profile } from '@/types/profile';
 import { CompanyLogo } from '@/components/shared/CompanyLogo';
 import { Badge } from '@/components/ui/badge';
+import { isDevelopment } from '@/lib/environment';
 
 interface ProfileAssignment {
   id: string;
@@ -198,7 +199,8 @@ const MyFunds = () => {
     return <PageLoader />;
   }
 
-  if (!user) {
+  // DEV MODE BYPASS - skip auth check in preview/localhost
+  if (!user && !isDevelopment()) {
     return <Navigate to="/auth" replace />;
   }
 

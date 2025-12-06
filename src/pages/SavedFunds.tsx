@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
 import FundListSkeleton from '../components/common/FundListSkeleton';
+import { isDevelopment } from '@/lib/environment';
 
 const SavedFunds = () => {
   const navigate = useNavigate();
@@ -18,8 +19,8 @@ const SavedFunds = () => {
   const { savedFunds, loading: savedLoading } = useSavedFunds();
   const { data: allFunds, isLoading: fundsLoading, isError, isFetching } = useAllFunds();
 
-  // Redirect if not authenticated (wait for auth to finish)
-  if (!authLoading && !user) {
+  // Redirect if not authenticated (wait for auth to finish) - skip in dev mode
+  if (!authLoading && !user && !isDevelopment()) {
     navigate('/auth');
     return null;
   }
