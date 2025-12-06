@@ -4,7 +4,6 @@ import { corsHeaders } from '../_shared/cors.ts';
 interface RemoveRequest {
   profileId: string;
   userIdToRemove: string;
-  requesterUserId: string;
 }
 
 Deno.serve(async (req) => {
@@ -17,12 +16,37 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { profileId, userIdToRemove, requesterUserId }: RemoveRequest = await req.json();
+    // Extract user from JWT - verify_jwt=true ensures this is authenticated
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      console.error('[remove-team-member] No authorization header');
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Create a client with the user's JWT to verify their identity
+    const supabaseClient = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY')!, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    if (userError || !user) {
+      console.error('[remove-team-member] Failed to get user from JWT', userError);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const requesterUserId = user.id;
+    const { profileId, userIdToRemove }: RemoveRequest = await req.json();
 
     console.log('[remove-team-member] Request received', { profileId, userIdToRemove, requesterUserId });
 
     // Validate input
-    if (!profileId || !userIdToRemove || !requesterUserId) {
+    if (!profileId || !userIdToRemove) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

@@ -97,14 +97,11 @@ export function useInviteTeamMember() {
       inviteeEmail: string;
       personalMessage?: string;
     }) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-
+      // User ID is now extracted from JWT on the server - no need to send it
       const { data, error } = await supabase.functions.invoke('invite-team-member', {
         body: {
           companyName,
           inviteeEmail,
-          inviterUserId: user.id,
           personalMessage,
         },
       });
@@ -163,14 +160,11 @@ export function useBulkInviteTeamMembers() {
       emails: string[];
       personalMessage?: string;
     }) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-
+      // User ID is now extracted from JWT on the server - no need to send it
       const { data, error } = await supabase.functions.invoke('bulk-invite-team-members', {
         body: {
           companyName,
           emails,
-          inviterUserId: user.id,
           personalMessage,
         },
       });
@@ -227,14 +221,11 @@ export function useRemoveTeamMember() {
       userIdToRemove: string;
       companyName: string;
     }) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-
+      // User ID is now extracted from JWT on the server - no need to send requesterUserId
       const { data, error } = await supabase.functions.invoke('remove-team-member', {
         body: {
           profileId,
           userIdToRemove,
-          requesterUserId: user.id,
         },
       });
 

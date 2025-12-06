@@ -6,7 +6,6 @@ import { generateEmailWrapper, generateContentCard, generateCTAButton, COMPANY_I
 interface InviteRequest {
   companyName: string;
   inviteeEmail: string;
-  inviterUserId: string;
   personalMessage?: string;
 }
 
@@ -22,12 +21,39 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { companyName, inviteeEmail, inviterUserId, personalMessage }: InviteRequest = await req.json();
+    // Extract user from JWT - verify_jwt=true ensures this is authenticated
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      console.error('[invite-team-member] No authorization header');
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - no authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Create a client with the user's JWT to verify their identity
+    const supabaseClient = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY')!, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    if (userError || !user) {
+      console.error('[invite-team-member] Failed to get user from JWT', userError);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - invalid token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Use the authenticated user's ID instead of trusting client-provided value
+    const inviterUserId = user.id;
+
+    const { companyName, inviteeEmail, personalMessage }: InviteRequest = await req.json();
 
     console.log('[invite-team-member] Request received', { companyName, inviteeEmail, inviterUserId });
 
     // Validate input
-    if (!companyName || !inviteeEmail || !inviterUserId) {
+    if (!companyName || !inviteeEmail) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -67,7 +93,7 @@ Deno.serve(async (req) => {
     if (!inviterAccess) {
       console.error('[invite-team-member] Inviter does not have access');
       return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
+        JSON.stringify({ error: 'Unauthorized - you do not have access to manage this company' }),
         { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
