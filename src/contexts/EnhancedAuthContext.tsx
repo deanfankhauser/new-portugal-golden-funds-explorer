@@ -4,6 +4,26 @@ import { supabase } from '@/integrations/supabase/client';
 import { getEmailRedirectUrl } from '@/utils/authRedirect';
 import { Profile } from '@/types/profile';
 import { queryClient } from '@/providers/QueryProvider';
+import { isDevelopment } from '@/lib/environment';
+
+// Dev mode mock user for preview/localhost access
+const DEV_MOCK_USER: User = {
+  id: 'dev-superadmin-uuid',
+  email: 'dev-admin@preview.local',
+  app_metadata: {},
+  user_metadata: { first_name: 'Dev', last_name: 'Admin' },
+  aud: 'authenticated',
+  created_at: new Date().toISOString(),
+};
+
+const DEV_MOCK_SESSION: Session = {
+  access_token: 'dev-preview-token',
+  refresh_token: 'dev-refresh-token',
+  expires_in: 3600,
+  expires_at: Math.floor(Date.now() / 1000) + 3600,
+  token_type: 'bearer',
+  user: DEV_MOCK_USER,
+};
 
 interface EnhancedAuthContextType {
   user: User | null;
@@ -57,6 +77,15 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   useEffect(() => {
     if (!isHydrated) return;
+
+    // DEV MODE BYPASS - auto-login as mock superadmin in preview/localhost
+    if (isDevelopment()) {
+      console.log('🔧 DEV MODE: Auto-login as mock superadmin');
+      setUser(DEV_MOCK_USER);
+      setSession(DEV_MOCK_SESSION);
+      setLoading(false);
+      return; // Skip real auth initialization
+    }
 
     let subscription: any = null;
     let timeoutId: NodeJS.Timeout;
