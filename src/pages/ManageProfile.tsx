@@ -21,7 +21,6 @@ import { Profile } from '@/types/profile';
 import ProfileEditTab from '@/components/manager-profile/ProfileEditTab';
 import CompanyLeadsTab from '@/components/manager-profile/CompanyLeadsTab';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
-import { isDevelopment } from '@/lib/environment';
 
 const ManageProfile: React.FC = () => {
   const { profileId } = useParams<{ profileId: string }>();
@@ -140,9 +139,9 @@ const ManageProfile: React.FC = () => {
     checkAccessAndLoadProfile();
   }, [user, profileId]);
 
-  // Redirect to auth if not logged in - skip in dev mode
+  // Redirect to auth if not logged in
   useEffect(() => {
-    if (!authLoading && !user && !isDevelopment()) {
+    if (!authLoading && !user) {
       navigate('/auth');
     }
   }, [authLoading, user, navigate]);

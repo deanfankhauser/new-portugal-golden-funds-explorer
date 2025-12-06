@@ -24,7 +24,7 @@ site_name = "Investment Funds Platform"
 enable_confirmations = true
 
 [functions.deploy-functions-to-develop]
-verify_jwt = true
+verify_jwt = false
 
 [functions.send-notification-email]
 verify_jwt = false
@@ -36,43 +36,43 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.sync-production-to-develop]
-verify_jwt = true
+verify_jwt = false
 
 [functions.send-welcome-email]
 verify_jwt = false
 
 [functions.sync-funds-to-develop]
-verify_jwt = true
+verify_jwt = false
 
 [functions.copy-data-to-develop]
-verify_jwt = true
+verify_jwt = false
 
 [functions.sync-database-dump]
-verify_jwt = true
+verify_jwt = false
 
 [functions.full-database-sync]
-verify_jwt = true
+verify_jwt = false
 
 [functions.test-funds-develop]
-verify_jwt = true
+verify_jwt = false
 
 [functions.fix-funds-develop]
-verify_jwt = true
+verify_jwt = false
 
 [functions.update-funds-develop-schema]
-verify_jwt = true
+verify_jwt = false
 
 [functions.cleanup-funds-develop]
-verify_jwt = true
+verify_jwt = false
 
 [functions.create-test-dataset]
-verify_jwt = true
+verify_jwt = false
 
 [functions.full-project-sync]
-verify_jwt = true
+verify_jwt = false
 
 [functions.get-develop-funds]
-verify_jwt = true
+verify_jwt = false
 
 [functions.submit-fund-enquiry]
 verify_jwt = false
@@ -87,10 +87,10 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.backfill-company-assignments]
-verify_jwt = true
+verify_jwt = false
 
 [functions.create-company-profiles]
-verify_jwt = true
+verify_jwt = false
 
 [functions.request-lead-status-check]
 verify_jwt = false
@@ -108,7 +108,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.invite-team-member]
-verify_jwt = true
+verify_jwt = false
 
 [functions.remove-team-member]
-verify_jwt = true
+verify_jwt = false

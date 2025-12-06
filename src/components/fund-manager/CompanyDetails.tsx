@@ -8,15 +8,14 @@ import { AlertCircle } from 'lucide-react';
 import { Profile } from '@/types/profile';
 import PageSEO from '@/components/common/PageSEO';
 import ProfileEditTab from '@/components/manager-profile/ProfileEditTab';
-import { isDevelopment } from '@/lib/environment';
 
 const CompanyDetails: React.FC = () => {
   const { profileId } = useParams<{ profileId: string }>();
   const { user, loading: authLoading } = useEnhancedAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [hasAccess, setHasAccess] = useState(isDevelopment()); // Auto-grant in dev mode
-  const [isAdmin, setIsAdmin] = useState(isDevelopment()); // Auto-grant in dev mode
+  const [hasAccess, setHasAccess] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Track when profileId changes to show transition state
@@ -27,34 +26,7 @@ const CompanyDetails: React.FC = () => {
 
   useEffect(() => {
     const checkAccessAndFetchProfile = async () => {
-      if (!profileId) {
-        setLoading(false);
-        return;
-      }
-
-      // Skip permission check in dev mode, just fetch profile
-      if (isDevelopment()) {
-        try {
-          const { data: profileData, error } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', profileId)
-            .single();
-
-          if (error) throw error;
-          setProfile(profileData as unknown as Profile);
-          setHasAccess(true);
-          setIsAdmin(true);
-        } catch (error) {
-          console.error('Error:', error);
-        } finally {
-          setLoading(false);
-          setIsTransitioning(false);
-        }
-        return;
-      }
-
-      if (!user) {
+      if (!user || !profileId) {
         setLoading(false);
         return;
       }
@@ -101,8 +73,7 @@ const CompanyDetails: React.FC = () => {
     return <PageLoader />;
   }
 
-  // DEV MODE BYPASS - skip auth check in preview/localhost
-  if (!user && !isDevelopment()) {
+  if (!user) {
     return <Navigate to="/auth" replace />;
   }
 

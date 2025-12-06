@@ -74,16 +74,6 @@
       "permanent": true
     },
     {
-      "source": "/manager",
-      "destination": "/managers",
-      "permanent": true
-    },
-    {
-      "source": "/mercurio-fund-ii-fcr",
-      "destination": "/mercurio-fund-ii",
-      "permanent": true
-    },
-    {
       "source": "/:num(\\d+)-return",
       "destination": "/tags/:num-percent-return",
       "permanent": true

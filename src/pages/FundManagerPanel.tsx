@@ -11,7 +11,6 @@ import FundUpdate from '@/components/fund-manager/FundUpdate';
 import FundAnalytics from '@/components/fund-manager/FundAnalytics';
 import FundAdvertising from '@/components/fund-manager/FundAdvertising';
 import FundTeam from '@/components/fund-manager/FundTeam';
-import { isDevelopment } from '@/lib/environment';
 
 const FundManagerPanel: React.FC = () => {
   const { user, loading: authLoading } = useEnhancedAuth();
@@ -21,8 +20,7 @@ const FundManagerPanel: React.FC = () => {
     return <PageLoader />;
   }
 
-  // DEV MODE BYPASS - skip auth check in preview/localhost
-  if (!user && !isDevelopment()) {
+  if (!user) {
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 

@@ -33,36 +33,6 @@ Deno.serve(async (req) => {
       },
     });
 
-    // Verify admin access using JWT from request
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'Missing authorization header' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    const anonClient = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY')!);
-    const { data: { user }, error: userError } = await anonClient.auth.getUser(authHeader.replace('Bearer ', ''));
-    
-    if (userError || !user) {
-      return new Response(JSON.stringify({ error: 'Invalid authentication' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Check if user is admin
-    const { data: isAdmin } = await supabase.rpc('is_user_admin', { check_user_id: user.id });
-    if (!isAdmin) {
-      console.error('Non-admin user attempted to run backfill-company-assignments:', user.id);
-      return new Response(JSON.stringify({ error: 'Admin access required' }), {
-        status: 403,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    console.log('[backfill-company-assignments] Admin access verified for user:', user.id);
     console.log('Starting backfill process...');
 
     // Get all active fund_managers assignments

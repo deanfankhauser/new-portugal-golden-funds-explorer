@@ -5,15 +5,12 @@ import { Loader2, Shield, TrendingUp, AlertCircle, CheckCircle2 } from 'lucide-r
 import FundCard from '@/components/FundCard';
 import { useQEFEligibleFunds } from '@/hooks/useQEFEligibleFunds';
 import { Card, CardContent } from '@/components/ui/card';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
 export const IRAEligibleFunds: React.FC = () => {
   const { data: funds, isLoading } = useQEFEligibleFunds();
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
+    <div className="min-h-screen bg-background">
       <PageSEO pageType="ira-401k-eligible" />
       
       <Helmet>
@@ -203,8 +200,6 @@ export const IRAEligibleFunds: React.FC = () => {
           </div>
         </div>
       </div>
-      
-      <Footer />
     </div>
   );
 };

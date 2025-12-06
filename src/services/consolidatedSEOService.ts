@@ -89,34 +89,35 @@ export class ConsolidatedSEOService {
       : truncated + '...';
   }
 
-  // Generate optimized fund title - dynamic year, fees & risk focused
+  // Generate optimized fund title - dynamic year, fees & yield focused
   private static generateFundTitle(fund: any): string {
-    // Pattern: [Fund Name]: Fees, Risk, Returns & Terms (2025)
+    // Pattern: [Fund Name]: {Current Year} Fees, Yield & Golden Visa Fact Sheet
+    // Truncate to: [Fund Name]: {Current Year} Golden Visa Fact Sheet if over 60 chars
     // Note: Year is updated client-side via useYearUpdate hook to avoid SSG rebuilds on New Year's Day
     
     const currentYear = new Date().getFullYear();
     const fundName = fund.name;
     const maxLength = 60;
     
-    // Primary title: [Fund Name]: Fees, Risk, Returns & Terms (2025)
-    const fullTitle = `${fundName}: Fees, Risk, Returns & Terms (${currentYear})`;
+    // Primary title: [Fund Name]: {Year} Fees, Yield & Golden Visa Fact Sheet
+    const fullTitle = `${fundName}: ${currentYear} Fees, Yield & Golden Visa Fact Sheet`;
     
     if (fullTitle.length <= maxLength) {
       return fullTitle;
     }
     
-    // Truncated fallback: [Fund Name]: Fees & Terms (2025)
-    const shortTitle = `${fundName}: Fees & Terms (${currentYear})`;
+    // Truncated fallback: [Fund Name]: {Year} Golden Visa Fact Sheet
+    const shortTitle = `${fundName}: ${currentYear} Golden Visa Fact Sheet`;
     
     if (shortTitle.length <= maxLength) {
       return shortTitle;
     }
     
     // Final fallback: Truncate fund name to fit
-    const suffixLength = `: Fees & Terms (${currentYear})`.length;
+    const suffixLength = `: ${currentYear} Golden Visa Fact Sheet`.length;
     const maxNameLength = maxLength - suffixLength - 3; // -3 for ellipsis
     const truncatedName = fundName.substring(0, maxNameLength).trim() + '...';
-    return `${truncatedName}: Fees & Terms (${currentYear})`;
+    return `${truncatedName}: ${currentYear} Golden Visa Fact Sheet`;
   }
 
   // Generate optimized fund description with conditional logic
@@ -203,9 +204,9 @@ export class ConsolidatedSEOService {
     switch (pageType) {
       case 'homepage':
         return {
-          title: 'Portugal Golden Visa Funds | Compare 32+ CMVM Funds', // 52 chars - under 60 limit
+          title: this.optimizeText('Compare Portugal Golden Visa Funds – Directory of CMVM-Regulated Funds | Movingto Funds', this.MAX_TITLE_LENGTH),
           keywords: ['Portugal Golden Visa funds', 'Golden Visa investment', 'Portugal investment funds', 'CMVM funds', 'investment immigration', 'residence by investment', 'Portugal capital transfer', 'VC funds Portugal', 'real estate funds Portugal', 'fund comparison'],
-          description: 'Compare 32+ Portugal Golden Visa investment funds. Independent analysis of fees, returns, and risk. CMVM-regulated funds from €50k-€650k. Free comparison tool.',
+          description: this.optimizeText('Compare Portugal Golden Visa funds by performance, fees, risk and minimum. Use our independent directory to shortlist funds for residency.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/'),
           canonical: URL_CONFIG.buildUrl('/'),
           structuredData: this.getHomepageStructuredData(funds)
@@ -379,7 +380,6 @@ export class ConsolidatedSEOService {
           structuredData: this.getTeamMemberStructuredData(params)
         };
 
-      case 'compare':
       case 'comparison':
         return {
           title: this.optimizeText('Portugal Golden Visa Fund Comparison Tool – Compare Any Two Funds | Movingto Funds', this.MAX_TITLE_LENGTH),
@@ -450,7 +450,7 @@ export class ConsolidatedSEOService {
 
       case 'roi-calculator':
         return {
-          title: this.optimizeText('Golden Visa Fund ROI Calculator | Estimate Returns', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('Portugal Golden Visa Fund ROI Calculator – Estimate Returns | Movingto Funds', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Estimate potential returns from Portugal Golden Visa funds. Adjust investment amount, target yield and holding period to see projected outcomes.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('roi-calculator'),
           canonical: URL_CONFIG.buildUrl('roi-calculator'),
@@ -476,7 +476,7 @@ export class ConsolidatedSEOService {
 
       case 'managers-hub':
         return {
-          title: this.optimizeText('Golden Visa Fund Managers | Compare Track Records', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('Browse 28+ Golden Visa Fund Managers – Compare Track Records | Movingto Funds', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Compare verified Golden Visa fund managers in Portugal. Analyze track records, AUM and performance. Connect with Movingto\'s legal team.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('managers'),
           canonical: URL_CONFIG.buildUrl('managers'),
@@ -497,7 +497,7 @@ export class ConsolidatedSEOService {
 
       case 'categories-hub':
         return {
-          title: this.optimizeText('Golden Visa Fund Categories | Debt, Equity & VC', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('Portugal Golden Visa Fund Categories – Debt, Equity, VC & More | Movingto Funds', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Explore Portugal Golden Visa fund categories – debt, equity, venture capital, real estate, clean energy, crypto. See all funds and compare metrics.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('categories'),
           canonical: URL_CONFIG.buildUrl('categories'),
@@ -518,7 +518,7 @@ export class ConsolidatedSEOService {
 
       case 'tags-hub':
         return {
-          title: this.optimizeText('Golden Visa Fund Tags | Filter by Strategy & Risk', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('Portugal Golden Visa Fund Tags – Filter by Strategy, Risk & Minimums | Movingto Funds', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Filter Portugal Golden Visa funds by 40+ tags including risk level, strategy, minimum investment, liquidity and investor profile to match your goals.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('tags'),
           canonical: URL_CONFIG.buildUrl('tags'),
@@ -581,7 +581,7 @@ export class ConsolidatedSEOService {
 
       case 'about':
         return {
-          title: this.optimizeText('About Movingto Funds | Golden Visa Fund Directory', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('About Movingto Funds – Portugal Golden Visa Investment Fund Platform | Movingto Funds', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Movingto Funds is an independent directory for Portugal Golden Visa funds. Compare data, fees and performance to choose funds with confidence.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('about'),
           canonical: URL_CONFIG.buildUrl('about'),
@@ -598,7 +598,7 @@ export class ConsolidatedSEOService {
 
       case 'disclaimer':
         return {
-          title: this.optimizeText('Disclaimer | Portugal Golden Visa Fund Directory', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('Disclaimer – Portugal Golden Visa Investment Fund Information | Movingto Funds', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Important disclaimer for Movingto Funds. Understand the limits of our Portugal Golden Visa investment fund information and advice.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('disclaimer'),
           canonical: URL_CONFIG.buildUrl('disclaimer'),
@@ -615,7 +615,7 @@ export class ConsolidatedSEOService {
 
       case 'faqs':
         return {
-          title: this.optimizeText('Portugal Golden Visa Funds FAQ | Common Questions', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('Portugal Golden Visa Investment Funds – FAQs & Common Questions | Movingto Funds', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Answers to common questions about Portugal Golden Visa investment funds. Learn how eligibility, risk, performance, fees and minimums work.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('faqs'),
           canonical: URL_CONFIG.buildUrl('faqs'),
@@ -636,7 +636,7 @@ export class ConsolidatedSEOService {
 
       case 'privacy':
         return {
-          title: this.optimizeText('Privacy Policy | Movingto Funds Directory', this.MAX_TITLE_LENGTH),
+          title: this.optimizeText('Privacy Policy – Portugal Golden Visa Investment Fund Platform | Movingto Funds', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Read the privacy policy for Movingto Funds, our Portugal Golden Visa investment fund directory and analysis platform.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('privacy'),
           canonical: URL_CONFIG.buildUrl('privacy'),
@@ -1068,58 +1068,6 @@ export class ConsolidatedSEOService {
             }
           }
         }))
-      },
-      // BreadcrumbList schema for homepage
-      {
-        '@context': 'https://schema.org',
-        '@type': 'BreadcrumbList',
-        'itemListElement': [
-          {
-            '@type': 'ListItem',
-            'position': 1,
-            'name': 'Home',
-            'item': URL_CONFIG.BASE_URL
-          }
-        ]
-      },
-      // FAQPage schema for homepage FAQs
-      {
-        '@context': 'https://schema.org',
-        '@type': 'FAQPage',
-        'mainEntity': [
-          {
-            '@type': 'Question',
-            'name': "What's the minimum for the fund route?",
-            'acceptedAnswer': {
-              '@type': 'Answer',
-              'text': "€500,000 total investment required for Golden Visa fund route, with no real-estate exposure permitted (post-October 2023 regulatory changes). A fund's subscription minimum can be lower, but you still need €500,000 across one or more qualifying funds."
-            }
-          },
-          {
-            '@type': 'Question',
-            'name': 'How long does the Golden Visa application process take?',
-            'acceptedAnswer': {
-              '@type': 'Answer',
-              'text': 'The application process typically takes 6-12 months from investment to visa approval, depending on the fund and documentation completeness.'
-            }
-          },
-          {
-            '@type': 'Question',
-            'name': 'Are these funds regulated by Portuguese authorities?',
-            'acceptedAnswer': {
-              '@type': 'Answer',
-              'text': "We source from CMVM-regulated managers where applicable. Verify each fund's registration and GV suitability with counsel."
-            }
-          },
-          {
-            '@type': 'Question',
-            'name': 'Can I compare different fund options?',
-            'acceptedAnswer': {
-              '@type': 'Answer',
-              'text': 'Movingto clients get access to comprehensive fund comparison tools, detailed performance data, and personalized recommendations based on risk tolerance and investment goals.'
-            }
-          }
-        ]
       }
     ];
   }
@@ -1199,69 +1147,11 @@ export class ConsolidatedSEOService {
     // Use fund-specific FAQs if available, otherwise use defaults
     const activeFAQs = (fund.faqs && fund.faqs.length > 0) ? fund.faqs : defaultFAQs;
     
-    // Generate system FAQs matching FundFAQSection.tsx display logic
-    const systemFAQs: any[] = [];
-    const formatFee = (fee: number | string | undefined) => fee ? `${fee}%` : 'Not disclosed';
-    
-    // FAQ: CMVM regulation (if cmvm_id exists)
-    if (fund.cmvmId) {
-      systemFAQs.push({
-        question: `Is ${fund.name} CMVM regulated?`,
-        answer: `Yes, ${fund.name} is registered under CMVM ID ${fund.cmvmId}.${fund.custodian ? ` The custodian is ${fund.custodian}.` : ''} This regulatory oversight ensures investor protection and compliance with Portuguese securities law.`
-      });
-    }
-    
-    // FAQ: Total fees (always include)
-    systemFAQs.push({
-      question: `What are the total fees for ${fund.name}?`,
-      answer: `Management Fee: ${formatFee(fund.managementFee)}. Performance Fee: ${formatFee(fund.performanceFee)}. Subscription Fee: ${formatFee(fund.subscriptionFee)}. Fee structures may vary based on share class and investment amount.`
-    });
-    
-    // FAQ: Golden Visa eligibility (if GV eligible AND verified)
-    if (fund.tags?.includes('Golden Visa Eligible') && fund.isVerified) {
-      systemFAQs.push({
-        question: `Is ${fund.name} eligible for the Portugal Golden Visa in 2025?`,
-        answer: `Yes, ${fund.name} meets the €500,000 fund route requirement for the Portugal Golden Visa program. The fund is verified by Movingto as a qualifying investment vehicle for Portuguese residency by investment.`
-      });
-    }
-    
-    // High-value SEO FAQs targeting featured snippets
-    const seoFAQs: any[] = [];
-    
-    // FAQ: Minimum investment (high-intent keyword)
-    if (fund.minimumInvestment) {
-      seoFAQs.push({
-        question: `What is the minimum investment for ${fund.name}?`,
-        answer: `The minimum investment for ${fund.name} is €${fund.minimumInvestment.toLocaleString()}. ${fund.typicalTicket ? `The typical investment size is €${fund.typicalTicket.toLocaleString()}.` : ''}`
-      });
-    }
-    
-    // FAQ: Lock-up terms (liquidity question)
-    if (fund.lockUpPeriodMonths || fund.redemptionTerms) {
-      const lockUp = fund.lockUpPeriodMonths ? `${fund.lockUpPeriodMonths} months` : 'varies';
-      const redemption = fund.redemptionTerms?.frequency || 'upon maturity';
-      seoFAQs.push({
-        question: `What are the lock-up terms for ${fund.name}?`,
-        answer: `${fund.name} has a lock-up period of ${lockUp}. Redemptions are available ${redemption}.${fund.redemptionTerms?.noticePeriod ? ` A ${fund.redemptionTerms.noticePeriod}-day notice period is required.` : ''}`
-      });
-    }
-    
-    // FAQ: Manager (authority question)
-    if (fund.managerName) {
-      seoFAQs.push({
-        question: `Who manages ${fund.name}?`,
-        answer: `${fund.name} is managed by ${fund.managerName}${fund.regulatedBy ? `, regulated by ${fund.regulatedBy}` : ''}.${fund.cmvmId ? ` The fund is registered with CMVM under ID ${fund.cmvmId}.` : ''}`
-      });
-    }
-    
-    // Combine all FAQs: active (custom/default) + system + SEO
-    const allFAQsForSchema = [...activeFAQs, ...systemFAQs, ...seoFAQs];
-    
-    // Generate FAQ schema with all FAQs
+    // Generate FAQ schema with active FAQs
     const faqSchema = {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      'mainEntity': allFAQsForSchema.map((faq: any) => ({
+      'mainEntity': activeFAQs.map((faq: any) => ({
         '@type': 'Question',
         'name': faq.question,
         'acceptedAnswer': {
@@ -1950,8 +1840,8 @@ export class ConsolidatedSEOService {
       '@graph': [
         {
           '@type': 'AboutPage',
-          'name': 'About Movingto Funds',
-          'description': 'About our independent Portugal Golden Visa investment fund directory and analysis platform',
+          'name': 'About Movingto',
+          'description': 'About our investment fund analysis platform',
           'url': URL_CONFIG.buildUrl('about')
         },
         {
@@ -1968,59 +1858,6 @@ export class ConsolidatedSEOService {
               'position': 2,
               'name': 'About',
               'item': URL_CONFIG.buildUrl('about')
-            }
-          ]
-        },
-        {
-          '@type': 'FAQPage',
-          'mainEntity': [
-            {
-              '@type': 'Question',
-              'name': 'Is this service free?',
-              'acceptedAnswer': {
-                '@type': 'Answer',
-                'text': 'Yes, completely free. All fund data, comparison tools, and analysis features are available at no cost. We believe investors deserve access to quality information without paywalls.'
-              }
-            },
-            {
-              '@type': 'Question',
-              'name': 'How do you make money?',
-              'acceptedAnswer': {
-                '@type': 'Answer',
-                'text': "We're supported by our parent company, Movingto.com, which provides comprehensive relocation services to Portugal. We don't charge investors or accept payments from fund managers for listings or rankings."
-              }
-            },
-            {
-              '@type': 'Question',
-              'name': 'How often is data updated?',
-              'acceptedAnswer': {
-                '@type': 'Answer',
-                'text': 'We update fund data monthly, with critical changes (like fee structures or regulatory status) updated as soon as we\'re notified. Each fund page shows the last update date.'
-              }
-            },
-            {
-              '@type': 'Question',
-              'name': 'Are you affiliated with any fund managers?',
-              'acceptedAnswer': {
-                '@type': 'Answer',
-                'text': 'No. We maintain complete independence from all fund managers. We don\'t receive commissions, referral fees, or promotional payments that could bias our analysis.'
-              }
-            },
-            {
-              '@type': 'Question',
-              'name': 'Can fund managers edit their profiles?',
-              'acceptedAnswer': {
-                '@type': 'Answer',
-                'text': 'Fund managers can suggest updates to their fund information through our verification process. All changes are reviewed and fact-checked by our team before publication to ensure accuracy and prevent bias.'
-              }
-            },
-            {
-              '@type': 'Question',
-              'name': 'What is your connection to Movingto.com?',
-              'acceptedAnswer': {
-                '@type': 'Answer',
-                'text': "Movingto Funds is part of the Movingto family, Portugal's leading relocation platform. We leverage their expertise in Portuguese residency, tax planning, and legal matters to provide comprehensive fund analysis."
-              }
             }
           ]
         }
@@ -2131,22 +1968,6 @@ export class ConsolidatedSEOService {
               'acceptedAnswer': {
                 '@type': 'Answer',
                 'text': 'Early exit terms vary by fund. Some funds offer liquidity windows at specific intervals, while others may have lock-up periods. Early withdrawal may result in penalties or reduced returns. Review the fund\'s redemption terms carefully before investing.'
-              }
-            },
-            {
-              '@type': 'Question',
-              'name': 'Are Portugal Golden Visa funds safe?',
-              'acceptedAnswer': {
-                '@type': 'Answer',
-                'text': 'Portugal Golden Visa funds carry investment risk like all equity investments. However, funds on Movingto are CMVM-regulated, providing regulatory oversight. Due diligence, diversification, and understanding lock-up periods reduce risk. Capital is at risk and past performance does not guarantee future returns.'
-              }
-            },
-            {
-              '@type': 'Question',
-              'name': 'How long do I need to hold a Golden Visa investment?',
-              'acceptedAnswer': {
-                '@type': 'Answer',
-                'text': 'Portugal Golden Visa requires a minimum 5-year investment holding period to maintain residency status and apply for citizenship. Individual funds may have additional lock-up periods (typically 5-10 years). Redeeming early may affect visa eligibility and incur penalties.'
               }
             }
           ]

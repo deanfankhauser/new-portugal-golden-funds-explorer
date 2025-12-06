@@ -2,7 +2,6 @@ import React from 'react';
 import { TrendingUp, Euro, Clock } from 'lucide-react';
 import { calculateCategoryStatistics } from '../../utils/categoryStatistics';
 import { Fund } from '../../data/types/funds';
-import { getReturnTargetNumbers } from '../../utils/returnTarget';
 
 interface CategorySnapshotHeroProps {
   categoryName: string;
@@ -52,7 +51,7 @@ const CategorySnapshotHero: React.FC<CategorySnapshotHeroProps> = ({ categoryNam
           </p>
           <p className="text-sm text-muted-foreground mt-1">
             Based on {funds.filter(f => {
-              const { min, max } = getReturnTargetNumbers(f);
+              const { min, max } = require('../../utils/returnTarget').getReturnTargetNumbers(f);
               return min != null || max != null;
             }).length} funds with disclosed returns
           </p>

@@ -5,7 +5,6 @@ import { PageLoader } from '@/components/common/LoadingSkeleton';
 import PageSEO from '@/components/common/PageSEO';
 import TeamAccessTab from './TeamAccessTab';
 import { supabase } from '@/integrations/supabase/client';
-import { isDevelopment } from '@/lib/environment';
 
 const FundTeam: React.FC = () => {
   const { profileId } = useParams<{ profileId: string }>();
@@ -34,8 +33,7 @@ const FundTeam: React.FC = () => {
     return <PageLoader />;
   }
 
-  // DEV MODE BYPASS - skip auth check in preview/localhost
-  if (!user && !isDevelopment()) {
+  if (!user) {
     return <Navigate to="/auth" replace />;
   }
 

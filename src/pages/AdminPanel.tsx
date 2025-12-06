@@ -19,8 +19,6 @@ import { DataCopyButton } from "@/components/admin/DataCopyButton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EditFundsManagement } from "@/components/admin/EditFundsManagement";
 import { EditCompanyProfilesManagement } from "@/components/admin/EditCompanyProfilesManagement";
-import { AdminCreateCompanyProfile } from "@/components/admin/AdminCreateCompanyProfile";
-import { isDevelopment } from "@/lib/environment";
 
 export default function AdminPanel() {
   const navigate = useNavigate();
@@ -31,15 +29,6 @@ export default function AdminPanel() {
 
   useEffect(() => {
     const checkAdminStatus = async () => {
-      // DEV MODE BYPASS - auto-grant superadmin access in preview/localhost
-      if (isDevelopment()) {
-        console.log('🔧 DEV MODE: Auto-granting superadmin access');
-        setIsAdmin(true);
-        setAdminRole('super_admin');
-        setCheckingAdmin(false);
-        return;
-      }
-
       if (!user) {
         navigate('/auth');
         return;
@@ -79,8 +68,7 @@ export default function AdminPanel() {
     return <PageLoader />;
   }
 
-  // In dev mode, skip user check since we're using mock user
-  if (!user && !isDevelopment()) {
+  if (!user) {
     return null;
   }
 
@@ -106,13 +94,6 @@ export default function AdminPanel() {
       <div className="flex min-h-screen w-full">
         <AdminSidebar />
         
-        {/* DEV MODE indicator badge */}
-        {isDevelopment() && (
-          <div className="fixed top-2 right-2 bg-yellow-500 text-black px-2 py-1 rounded text-xs font-bold z-50">
-            DEV MODE - Auth Bypassed
-          </div>
-        )}
-        
         <main className="flex-1 overflow-auto">
           <div className="p-6">
             <Routes>
@@ -127,7 +108,6 @@ export default function AdminPanel() {
               <Route path="performance" element={<PerformanceMonitoring />} />
               <Route path="quiz-analytics" element={<QuizAnalyticsTab />} />
               <Route path="edit-funds" element={<EditFundsManagement />} />
-              <Route path="edit-profiles/new" element={<AdminCreateCompanyProfile />} />
               <Route path="edit-profiles" element={<EditCompanyProfilesManagement />} />
               <Route
                 path="settings" 

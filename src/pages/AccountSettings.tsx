@@ -16,7 +16,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import MyEditsSection from '@/components/manager/MyEditsSection';
-import { isDevelopment } from '@/lib/environment';
 
 const AccountSettings = () => {
   const { user, profile, updateProfile, uploadAvatar, loading, signOut } = useEnhancedAuth();
@@ -115,8 +114,7 @@ const AccountSettings = () => {
     );
   }
 
-  // DEV MODE BYPASS - skip auth check in preview/localhost
-  if (!user && !isDevelopment()) {
+  if (!user) {
     return <Navigate to="/auth" replace />;
   }
 

@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from '../ui/badge';
 import { CheckCircle2 } from 'lucide-react';
-import DOMPurify from 'dompurify';
 import { Fund } from '../../data/types/funds';
 
 
@@ -144,15 +143,10 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
             {generateSubheader()}
           </p>
           
-          {/* Description with bold key terms - sanitized to prevent XSS */}
+          {/* Description with bold key terms */}
           <p 
             className="text-lg text-foreground/70 max-w-3xl leading-relaxed"
-            dangerouslySetInnerHTML={{ 
-              __html: DOMPurify.sanitize(formatDescription(fund.description), {
-                ALLOWED_TAGS: ['strong', 'a'],
-                ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
-              })
-            }}
+            dangerouslySetInnerHTML={{ __html: formatDescription(fund.description) }}
           />
         </div>
         

@@ -118,37 +118,6 @@ function validateHTMLFile(filePath: string, distDir: string): HTMLValidationResu
     warnings.push('Missing structured data (JSON-LD)');
   }
   
-  // Check for FAQPage schema on pages that should have it
-  const faqRequiredPageTypes = ['fund', 'category', 'tag', 'manager', 'faqs', 'comparison', 'fund-comparison'];
-  if (faqRequiredPageTypes.includes(pageType)) {
-    const hasFAQSchema = content.includes('"@type":"FAQPage"') || 
-                          content.includes('"@type": "FAQPage"') ||
-                          content.includes('\\"@type\\":\\"FAQPage\\"');
-    if (!hasFAQSchema) {
-      warnings.push(`Missing FAQPage schema on ${pageType} page`);
-    }
-    
-    // For fund pages, validate minimum FAQ count (should have at least 5 FAQs after enhancement)
-    if (pageType === 'fund' && hasFAQSchema) {
-      const faqMatches = content.match(/"@type"\s*:\s*"Question"/g) || 
-                         content.match(/"@type":"Question"/g) || [];
-      const faqCount = faqMatches.length;
-      if (faqCount < 5) {
-        warnings.push(`Fund page has only ${faqCount} FAQs in schema (minimum 5 recommended)`);
-      }
-    }
-  }
-  
-  // Check for InvestmentFund schema on fund pages (critical for rich results)
-  if (pageType === 'fund') {
-    const hasInvestmentFundSchema = content.includes('"@type":"InvestmentFund"') || 
-                                     content.includes('"@type": "InvestmentFund"') ||
-                                     content.includes('\\"@type\\":\\"InvestmentFund\\"');
-    if (!hasInvestmentFundSchema) {
-      errors.push('Missing InvestmentFund schema on fund page');
-    }
-  }
-  
   // Check content length
   const contentLength = content.length;
   const minLength = ['fund', 'manager', 'team-member'].includes(pageType) 

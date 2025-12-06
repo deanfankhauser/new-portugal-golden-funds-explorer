@@ -11,24 +11,16 @@ import { useFund } from '@/hooks/useFundsQuery';
 import { supabase } from '@/integrations/supabase/client';
 import PageSEO from '@/components/common/PageSEO';
 import UpdateFundTab from './UpdateFundTab';
-import { isDevelopment } from '@/lib/environment';
 
 const FundUpdate: React.FC = () => {
   const { fundId } = useParams<{ fundId: string }>();
   const { user, loading: authLoading } = useEnhancedAuth();
-  const [hasAccess, setHasAccess] = useState(isDevelopment()); // Auto-grant in dev mode
-  const [canDirectEdit, setCanDirectEdit] = useState(isDevelopment()); // Auto-grant in dev mode
+  const [hasAccess, setHasAccess] = useState(false);
+  const [canDirectEdit, setCanDirectEdit] = useState(false);
   const { data: fund, isLoading: fundLoading } = useFund(fundId);
 
   useEffect(() => {
     const checkAccess = async () => {
-      // Skip permission check in dev mode
-      if (isDevelopment()) {
-        setHasAccess(true);
-        setCanDirectEdit(true);
-        return;
-      }
-
       if (!user || !fund) return;
 
       try {
@@ -59,8 +51,7 @@ const FundUpdate: React.FC = () => {
     return <PageLoader />;
   }
 
-  // DEV MODE BYPASS - skip auth check in preview/localhost
-  if (!user && !isDevelopment()) {
+  if (!user) {
     return <Navigate to="/auth" replace />;
   }
 

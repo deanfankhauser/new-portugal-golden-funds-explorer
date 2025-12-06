@@ -5,7 +5,6 @@ import { useFund } from '@/hooks/useFundsQuery';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 import PageSEO from '@/components/common/PageSEO';
 import AdvertisingTab from './AdvertisingTab';
-import { isDevelopment } from '@/lib/environment';
 
 const FundAdvertising: React.FC = () => {
   const { fundId } = useParams<{ fundId: string }>();
@@ -16,8 +15,7 @@ const FundAdvertising: React.FC = () => {
     return <PageLoader />;
   }
 
-  // DEV MODE BYPASS - skip auth check in preview/localhost
-  if (!user && !isDevelopment()) {
+  if (!user) {
     return <Navigate to="/auth" replace />;
   }
 

@@ -71,7 +71,6 @@ const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categor
       faqs={faqs}
       title={`Frequently Asked Questions about ${categoryName} Portugal Golden Visa Investment Funds`}
       schemaId="category-faq"
-      skipStructuredData={true}
     />
   );
 };

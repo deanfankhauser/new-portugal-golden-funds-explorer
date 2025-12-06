@@ -40,7 +40,7 @@ export class RouteDiscovery {
     routes.push({ path: '/disclaimer', pageType: 'disclaimer' });
     routes.push({ path: '/privacy', pageType: 'privacy' });
     routes.push({ path: '/faqs', pageType: 'faqs' });
-    routes.push({ path: '/compare', pageType: 'compare' });
+    routes.push({ path: '/compare', pageType: 'comparison' });
     routes.push({ path: '/comparisons', pageType: 'comparisons-hub' });
     routes.push({ path: '/roi-calculator', pageType: 'roi-calculator' });
     routes.push({ path: '/saved-funds', pageType: 'saved-funds' });
@@ -68,20 +68,7 @@ export class RouteDiscovery {
     // Manager pages
     const { managerProfiles = [] } = await fetchAllBuildDataCached();
     managers.forEach(manager => {
-      // Skip managers with empty names (defensive check)
-      if (!manager.name || manager.name.trim() === '') {
-        console.warn('⚠️ RouteDiscovery: Skipping manager with empty name');
-        return;
-      }
-      
       const slug = managerToSlug(manager.name);
-      
-      // Skip if slug is empty (defensive check)
-      if (!slug) {
-        console.warn(`⚠️ RouteDiscovery: Skipping manager with empty slug: "${manager.name}"`);
-        return;
-      }
-      
       // Find matching profile
       const managerProfile = managerProfiles.find(p => 
         p.name.toLowerCase() === manager.name.toLowerCase() ||

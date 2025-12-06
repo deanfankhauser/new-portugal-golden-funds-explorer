@@ -17,7 +17,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
-import { isDevelopment } from '@/lib/environment';
 
 interface Enquiry {
   id: string;
@@ -272,8 +271,7 @@ const MyLeads = () => {
     return <PageLoader />;
   }
 
-  // DEV MODE BYPASS - skip auth check in preview/localhost
-  if (!user && !isDevelopment()) {
+  if (!user) {
     return <Navigate to="/auth" replace />;
   }
 

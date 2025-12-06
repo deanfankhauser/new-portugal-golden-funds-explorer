@@ -24,23 +24,19 @@ export interface PublicManagerData {
 }
 
 // Function to get all approved managers from database (public safe data only)
-// Uses the public_company_profiles view which is safe for unauthenticated access
 export const getAllApprovedManagers = async (): Promise<PublicManagerData[]> => {
   try {
     // Lazy load supabase only when this function is called (not during SSG)
     const { supabase } = await import('../../integrations/supabase/client');
     
-    // Use the public_company_profiles view instead of RPC for unauthenticated access
-    const { data, error } = await supabase
-      .from('public_company_profiles')
-      .select('*');
+    const { data, error } = await supabase.rpc('get_public_manager_profiles');
     
     if (error) {
       console.error('Error fetching approved managers:', error);
       return [];
     }
     
-    return (data || []) as PublicManagerData[];
+    return data || [];
   } catch (error) {
     console.error('Error in getAllApprovedManagers:', error);
     return [];
