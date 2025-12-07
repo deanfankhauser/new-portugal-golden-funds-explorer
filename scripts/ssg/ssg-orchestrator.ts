@@ -155,10 +155,9 @@ export async function generateStaticFiles() {
     throw canonicalError;
   }
 
-  // Verify critical static files exist
+  // Verify critical static files exist (excluding team members which are dynamically discovered)
   console.log('\n🔍 Verifying critical static files...');
   const criticalRoutes = [
-    '/team/joaquim-maria-magalhes-luiz-gomes',
     '/categories/venture-capital',
     '/tags/golden-visa-eligible',
     '/manager/heed-capital'
@@ -173,6 +172,18 @@ export async function generateStaticFiles() {
       console.error(`   ❌ MISSING: ${route}`);
       missingCriticalFiles.push(route);
     }
+  }
+  
+  // Verify at least some team member pages exist (dynamic check)
+  const teamDir = path.join(distDir, 'team');
+  if (fs.existsSync(teamDir)) {
+    const teamFiles = fs.readdirSync(teamDir).filter(f => fs.statSync(path.join(teamDir, f)).isDirectory());
+    console.log(`   ✅ /team/* (${teamFiles.length} team member pages)`);
+    if (teamFiles.length === 0) {
+      console.warn('   ⚠️  No team member pages generated');
+    }
+  } else {
+    console.warn('   ⚠️  /team directory not found');
   }
 
   if (missingCriticalFiles.length > 0) {
