@@ -212,3 +212,4 @@ export async function generateStaticFiles() {
   
   // Verify critical pages (legacy check)
   verifyCriticalPages(distDir);
+}
