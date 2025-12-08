@@ -60,12 +60,12 @@
     },
     {
       "source": "/funds",
-      "destination": "/index",
+      "destination": "/",
       "permanent": true
     },
     {
       "source": "/funds/",
-      "destination": "/index",
+      "destination": "/",
       "permanent": true
     },
     {

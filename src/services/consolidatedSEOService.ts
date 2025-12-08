@@ -602,6 +602,7 @@ export class ConsolidatedSEOService {
           description: this.optimizeText('Important disclaimer for Movingto Funds. Understand the limits of our Portugal Golden Visa investment fund information and advice.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('disclaimer'),
           canonical: URL_CONFIG.buildUrl('disclaimer'),
+          robots: 'noindex, follow', // Legal boilerplate page
           keywords: [
             'disclaimer',
             'investment disclaimer',
@@ -640,6 +641,7 @@ export class ConsolidatedSEOService {
           description: this.optimizeText('Read the privacy policy for Movingto Funds, our Portugal Golden Visa investment fund directory and analysis platform.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('privacy'),
           canonical: URL_CONFIG.buildUrl('privacy'),
+          robots: 'noindex, follow', // Legal boilerplate page
           keywords: [
             'privacy policy',
             'data privacy',

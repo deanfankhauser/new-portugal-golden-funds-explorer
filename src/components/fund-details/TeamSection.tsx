@@ -52,21 +52,13 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team, managerName }) => {
     return team as TeamMember[];
   }, [team, companyTeam]);
 
-  if (!resolvedTeam || resolvedTeam.length === 0) {
+  // Don't show placeholder during loading - return null to prevent "Loading..." showing to crawlers
+  if (loading) {
     return null;
   }
 
-  if (loading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Team</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">Loading team information...</p>
-        </CardContent>
-      </Card>
-    );
+  if (!resolvedTeam || resolvedTeam.length === 0) {
+    return null;
   }
 
   return (

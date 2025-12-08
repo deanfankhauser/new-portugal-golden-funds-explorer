@@ -41,7 +41,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
   // Smart middle column logic: Target Return > Lock-up Period > Risk Profile
   const getMiddleColumnContent = () => {
     const returnDisplay = getReturnTargetDisplay(fund);
-    if (returnDisplay !== 'Not disclosed') {
+    if (returnDisplay) {
       return (
         <>
           <span className="text-[11px] uppercase tracking-wider text-muted-foreground block mb-1">

@@ -223,13 +223,15 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
               </span>
               <span className="text-[15px] font-semibold text-foreground">{formatCurrency(fund.minimumInvestment)}</span>
             </div>
-            <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 transition-colors">
-              <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
-                <Calendar className="h-[18px] w-[18px] text-muted-foreground" />
-                Redemptions
-              </span>
-              <span className="text-[15px] font-semibold text-foreground">{fund.redemptionTerms?.frequency || 'N/A'}</span>
-            </div>
+            {fund.redemptionTerms?.frequency && (
+              <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 transition-colors">
+                <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
+                  <Calendar className="h-[18px] w-[18px] text-muted-foreground" />
+                  Redemptions
+                </span>
+                <span className="text-[15px] font-semibold text-foreground">{fund.redemptionTerms.frequency}</span>
+              </div>
+            )}
             <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 transition-colors">
               <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
                 <Globe className="h-[18px] w-[18px] text-muted-foreground" />
@@ -244,13 +246,15 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
               </span>
               <span className="text-[15px] font-semibold text-foreground">{getLockUpPeriod()}</span>
             </div>
-            <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 transition-colors">
-              <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
-                <TrendingUp className="h-[18px] w-[18px] text-muted-foreground" />
-                Fund Size (AUM)
-              </span>
-              <span className="text-[15px] font-semibold text-foreground">{getFundSize()}</span>
-            </div>
+            {getFundSize() !== 'N/A' && (
+              <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 transition-colors">
+                <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
+                  <TrendingUp className="h-[18px] w-[18px] text-muted-foreground" />
+                  Fund Size (AUM)
+                </span>
+                <span className="text-[15px] font-semibold text-foreground">{getFundSize()}</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -281,46 +285,54 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
           <div className="mb-8 pb-8 border-b border-border/60">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-5">Additional Details</h3>
             <div className="flex flex-col gap-4">
+            {fund.navFrequency && (
               <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 transition-colors">
                 <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
                   <Calendar className="h-[18px] w-[18px] text-muted-foreground" />
                   NAV Frequency
                 </span>
-                <span className="text-[15px] font-semibold text-foreground">{fund.navFrequency || 'N/A'}</span>
+                <span className="text-[15px] font-semibold text-foreground">{fund.navFrequency}</span>
               </div>
+            )}
+            {fund.established && (
               <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 transition-colors">
                 <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
                   <Calendar className="h-[18px] w-[18px] text-muted-foreground" />
                   Established
                 </span>
-                <span className="text-[15px] font-semibold text-foreground">{fund.established || 'N/A'}</span>
+                <span className="text-[15px] font-semibold text-foreground">{fund.established}</span>
               </div>
-              {fund.cmvmId && (
-                <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 transition-colors">
-                  <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
-                    <Shield className="h-[18px] w-[18px] text-muted-foreground" />
-                    CMVM ID
-                  </span>
-                  <span className="text-[15px] font-semibold text-foreground">{fund.cmvmId}</span>
-                </div>
-              )}
+            )}
+            {fund.cmvmId && (
+              <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 transition-colors">
+                <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
+                  <Shield className="h-[18px] w-[18px] text-muted-foreground" />
+                  CMVM ID
+                </span>
+                <span className="text-[15px] font-semibold text-foreground">{fund.cmvmId}</span>
+              </div>
+            )}
+            {fund.redemptionTerms?.noticePeriod && (
               <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 transition-colors">
                 <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
                   <Calendar className="h-[18px] w-[18px] text-muted-foreground" />
                   Notice Period
                 </span>
                 <span className="text-[15px] font-semibold text-foreground">
-                  {fund.redemptionTerms?.noticePeriod ? `${fund.redemptionTerms.noticePeriod} days` : 'N/A'}
+                  {fund.redemptionTerms.noticePeriod} days
                 </span>
               </div>
+            )}
+            {fund.regulatedBy && (
               <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 transition-colors">
                 <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
                   <Shield className="h-[18px] w-[18px] text-muted-foreground" />
                   Regulated By
                 </span>
-                <span className="text-[15px] font-semibold text-foreground">{fund.regulatedBy || 'N/A'}</span>
+                <span className="text-[15px] font-semibold text-foreground">{fund.regulatedBy}</span>
               </div>
-            </div>
+            )}
+          </div>
           </div>
         </AuthGate>
 

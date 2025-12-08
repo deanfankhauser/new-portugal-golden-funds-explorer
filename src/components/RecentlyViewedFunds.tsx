@@ -56,13 +56,15 @@ const RecentlyViewedFundCard: React.FC<{ fund: any }> = ({ fund }) => {
             {formatCurrency(fund.minimumInvestment)}
           </span>
         </div>
-        <div className="flex items-center justify-between">
-          <span className="text-[13px] text-muted-foreground">Target Return</span>
-          <span className="text-[15px] font-semibold text-foreground flex items-center gap-1.5">
-            <TrendingUp className="w-3.5 h-3.5 text-success" />
-            {getReturnTargetDisplay(fund)}
-          </span>
-        </div>
+        {getReturnTargetDisplay(fund) && (
+          <div className="flex items-center justify-between">
+            <span className="text-[13px] text-muted-foreground">Target Return</span>
+            <span className="text-[15px] font-semibold text-foreground flex items-center gap-1.5">
+              <TrendingUp className="w-3.5 h-3.5 text-success" />
+              {getReturnTargetDisplay(fund)}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Manager */}
