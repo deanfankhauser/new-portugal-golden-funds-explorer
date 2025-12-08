@@ -54,7 +54,7 @@ const FundManagerPanel = lazy(() => import('./pages/FundManagerPanel'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Import hook to fetch funds from database
-import { useAllFunds } from './hooks/useFundsQuery';
+import { useRealTimeFunds } from './hooks/useRealTimeFunds';
 
 import './App.css';
 import SEODebugger from './components/common/SEODebugger';
@@ -109,20 +109,18 @@ const LegacyInviteRedirect = () => {
 const DirectFundRoute = () => {
   const location = useLocation();
   const pathname = location.pathname;
-  const { data: funds, isLoading, isError, isFetching } = useAllFunds();
+  const { funds, loading, error } = useRealTimeFunds();
   
   // Extract potential fund ID from pathname (remove leading slash)
   const potentialFundId = pathname.slice(1);
   
   // Show loading only during initial load when no data exists
-  // This prevents false 404s during slow connections or Supabase issues
-  if (isLoading && !Array.isArray(funds)) {
+  if (loading && (!funds || funds.length === 0)) {
     return <FundDetailsLoader />;
   }
   
-  // If there was an error fetching funds, show loader instead of 404
-  // React Query will retry, so we wait instead of showing false 404
-  if (isError || !funds) {
+  // If there was an error fetching funds and no data, show loader
+  if (error && (!funds || funds.length === 0)) {
     return <FundDetailsLoader />;
   }
   
