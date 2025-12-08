@@ -2,7 +2,7 @@
 import { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { FundTag, FundCategory, Fund } from '../data/types/funds';
-import { useAllFunds } from './useFundsQuery';
+import { useRealTimeFunds } from './useRealTimeFunds';
 
 export const useFundFiltering = () => {
   const [searchParams] = useSearchParams();
@@ -10,7 +10,7 @@ export const useFundFiltering = () => {
   const [selectedCategory, setSelectedCategory] = useState<FundCategory | null>(null);
   const [selectedManager, setSelectedManager] = useState<string | null>(null);
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
-  const { data: funds, isLoading, isError, isFetching } = useAllFunds();
+  const { funds, loading: isLoading, error: fundsError } = useRealTimeFunds();
 
   // Get filters from URL params
   const searchQuery = searchParams.get('search') || '';
@@ -102,7 +102,7 @@ export const useFundFiltering = () => {
     searchQuery,
     filteredFunds,
     allFunds: funds || [],
-    loading: isLoading || isFetching,
-    error: isError ? 'Failed to load funds' : undefined
+    loading: isLoading,
+    error: fundsError
   };
 };

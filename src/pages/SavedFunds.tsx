@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import FundListItem from '../components/FundListItem';
 import { useSavedFunds } from '../hooks/useSavedFunds';
-import { useAllFunds } from '../hooks/useFundsQuery';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import { useEnhancedAuth } from '../contexts/EnhancedAuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -16,7 +16,7 @@ const SavedFunds = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useEnhancedAuth();
   const { savedFunds, loading: savedLoading } = useSavedFunds();
-  const { data: allFunds, isLoading: fundsLoading, isError, isFetching } = useAllFunds();
+  const { funds: allFunds, loading: fundsLoading } = useRealTimeFunds();
 
   // Redirect if not authenticated (wait for auth to finish)
   if (!authLoading && !user) {
@@ -24,8 +24,8 @@ const SavedFunds = () => {
     return null;
   }
 
-  // Show loading during any loading/error state (allows React Query retry)
-  const loading = savedLoading || fundsLoading || isFetching || isError;
+  // Show loading only during initial load when no data exists
+  const loading = savedLoading || fundsLoading;
 
   // Get the actual fund objects for saved fund IDs
   const savedFundObjects = useMemo(() => {
