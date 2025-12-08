@@ -60,27 +60,17 @@
     },
     {
       "source": "/funds",
-      "destination": "/index",
+      "destination": "/",
       "permanent": true
     },
     {
       "source": "/funds/",
-      "destination": "/index",
+      "destination": "/",
       "permanent": true
     },
     {
       "source": "/manager/tejo-ventures-green-one-capital",
       "destination": "/manager/tejo-ventures",
-      "permanent": true
-    },
-    {
-      "source": "/manager",
-      "destination": "/managers",
-      "permanent": true
-    },
-    {
-      "source": "/mercurio-fund-ii-fcr",
-      "destination": "/mercurio-fund-ii",
       "permanent": true
     },
     {

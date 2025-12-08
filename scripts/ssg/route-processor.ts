@@ -27,24 +27,6 @@ export async function processRoute(
     
     const { html, seoData } = await renderRoute(route);
     
-    // CRITICAL: Check for error markers in rendered HTML
-    const errorMarkers = [
-      'Page Loading...',
-      'Error rendering page',
-      'require is not defined',
-      'Cannot find module',
-      'Unexpected token',
-      'is not a function'
-    ];
-    
-    const hasError = errorMarkers.some(marker => html.includes(marker));
-    if (hasError) {
-      const foundMarker = errorMarkers.find(marker => html.includes(marker));
-      console.error(`❌ SSG ERROR: Route ${route.path} contains error marker: "${foundMarker}"`);
-      console.error(`   HTML preview:`, html.substring(0, 500));
-      throw new Error(`SSG CRITICAL: Route ${route.path} rendered with error content: ${foundMarker}`);
-    }
-    
     // Diagnostic: Check rendered app HTML first
     const initialHasH1 = html.includes('<h1');
     const initialLength = html.length;

@@ -30,18 +30,33 @@ export const getReturnTargetNumbers = (fund: Fund): { min?: number; max?: number
   return {};
 };
 
-export const getReturnTargetDisplay = (fund: Fund): string => {
+export const getReturnTargetDisplay = (fund: Fund): string | null => {
   const { min, max } = getReturnTargetNumbers(fund);
   
+  // If both min and max are 0 or undefined, return null (no data)
+  if ((min === 0 && max === 0) || (min == null && max == null)) {
+    // Check if there's a valid returnTarget string
+    if (fund.returnTarget && fund.returnTarget !== 'Unspecified' && fund.returnTarget !== '0' && fund.returnTarget !== '0%') {
+      return fund.returnTarget;
+    }
+    return null;
+  }
+  
   if (min != null && max != null) {
-    // If max is 0 or invalid, treat as single value
+    // If max is 0 or invalid, treat as single value (but only if min is meaningful)
     if (max <= 0 || max < min) {
+      if (min <= 0) return null; // Both are 0 or invalid
       const formatted = Number(min.toFixed(2)).toString();
       return `${formatted}% p.a.`;
     }
     
+    // If both are 0, return null
+    if (min === 0 && max === 0) {
+      return null;
+    }
+    
     if (min === max) {
-      // Format with max 2 decimal places, remove trailing zeros
+      if (min <= 0) return null; // 0% is not meaningful
       const formatted = Number(min.toFixed(2)).toString();
       return `${formatted}% p.a.`;
     }
@@ -51,14 +66,14 @@ export const getReturnTargetDisplay = (fund: Fund): string => {
     return `${minFormatted}–${maxFormatted}% p.a.`;
   }
   
-  if (min != null) {
+  if (min != null && min > 0) {
     const formatted = Number(min.toFixed(2)).toString();
     return `${formatted}% p.a.`;
   }
   
-  if (fund.returnTarget && fund.returnTarget !== 'Unspecified') {
+  if (fund.returnTarget && fund.returnTarget !== 'Unspecified' && fund.returnTarget !== '0' && fund.returnTarget !== '0%') {
     return fund.returnTarget;
   }
   
-  return 'Not disclosed';
+  return null;
 };

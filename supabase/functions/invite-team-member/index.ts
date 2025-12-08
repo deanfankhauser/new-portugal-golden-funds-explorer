@@ -6,7 +6,6 @@ import { generateEmailWrapper, generateContentCard, generateCTAButton, COMPANY_I
 interface InviteRequest {
   companyName: string;
   inviteeEmail: string;
-  inviterUserId: string;
   personalMessage?: string;
 }
 
@@ -22,12 +21,36 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { companyName, inviteeEmail, inviterUserId, personalMessage }: InviteRequest = await req.json();
+    // Extract and verify JWT token from Authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.error('[invite-team-member] Missing or invalid Authorization header');
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - missing authentication token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+
+    if (authError || !user) {
+      console.error('[invite-team-member] Invalid token', authError);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - invalid authentication token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Use verified user ID from JWT, not from request body
+    const inviterUserId = user.id;
+
+    const { companyName, inviteeEmail, personalMessage }: InviteRequest = await req.json();
 
     console.log('[invite-team-member] Request received', { companyName, inviteeEmail, inviterUserId });
 
     // Validate input
-    if (!companyName || !inviteeEmail || !inviterUserId) {
+    if (!companyName || !inviteeEmail) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -58,7 +81,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Verify inviter has access to this company
+    // Verify inviter has access to this company using verified user ID
     const { data: inviterAccess } = await supabase.rpc('can_user_manage_company_funds', {
       check_user_id: inviterUserId,
       check_manager_name: companyName,

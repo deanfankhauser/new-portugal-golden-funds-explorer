@@ -569,6 +569,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
           },
+          {
+            foreignKeyName: "fund_managers_user_id_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_profiles"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       fund_page_views: {
@@ -917,6 +924,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "manager_profile_assignments_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       manager_profile_edits: {
@@ -953,6 +967,13 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manager_profile_edits_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1335,6 +1356,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "team_invitations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       team_members: {
@@ -1385,11 +1413,98 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "team_members_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "public_company_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
     Views: {
-      [_ in never]: never
+      public_company_profiles: {
+        Row: {
+          assets_under_management: number | null
+          city: string | null
+          company_name: string | null
+          country: string | null
+          created_at: string | null
+          description: string | null
+          entity_type: string | null
+          facebook_url: string | null
+          founded_year: number | null
+          id: string | null
+          instagram_url: string | null
+          license_number: string | null
+          linkedin_url: string | null
+          logo_url: string | null
+          manager_about: string | null
+          manager_faqs: Json | null
+          manager_highlights: Json | null
+          manager_name: string | null
+          registration_number: string | null
+          team_members: Json | null
+          twitter_url: string | null
+          updated_at: string | null
+          user_id: string | null
+          website: string | null
+        }
+        Insert: {
+          assets_under_management?: number | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          entity_type?: string | null
+          facebook_url?: string | null
+          founded_year?: number | null
+          id?: string | null
+          instagram_url?: string | null
+          license_number?: string | null
+          linkedin_url?: string | null
+          logo_url?: string | null
+          manager_about?: string | null
+          manager_faqs?: Json | null
+          manager_highlights?: Json | null
+          manager_name?: string | null
+          registration_number?: string | null
+          team_members?: Json | null
+          twitter_url?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          website?: string | null
+        }
+        Update: {
+          assets_under_management?: number | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          entity_type?: string | null
+          facebook_url?: string | null
+          founded_year?: number | null
+          id?: string | null
+          instagram_url?: string | null
+          license_number?: string | null
+          linkedin_url?: string | null
+          logo_url?: string | null
+          manager_about?: string | null
+          manager_faqs?: Json | null
+          manager_highlights?: Json | null
+          manager_name?: string | null
+          registration_number?: string | null
+          team_members?: Json | null
+          twitter_url?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       admin_assign_fund_managers: {

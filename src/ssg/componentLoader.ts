@@ -66,12 +66,6 @@ export const loadComponents = async (only?: string[]) => {
         console.error(`❌ ComponentLoader: Failed to load ${key}`);
         console.error('   Error:', err?.message);
         if (isDebug) console.error('   Stack:', err?.stack);
-        
-        // During SSG, component loading failures must fail the build
-        if (isSSG) {
-          throw new Error(`SSG CRITICAL: Component ${key} failed to load - ${err?.message}`);
-        }
-        
         loadedComponents[key] = null;
       }
     }

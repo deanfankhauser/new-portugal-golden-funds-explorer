@@ -56,9 +56,11 @@ const FundManagerAbout: React.FC<FundManagerAboutProps> = ({ fund }) => {
           >
             {fund.fundStatus}
           </Badge>
-          <Badge variant="outline">
-            {getReturnTargetDisplay(fund)} Target Return
-          </Badge>
+          {getReturnTargetDisplay(fund) && (
+            <Badge variant="outline">
+              {getReturnTargetDisplay(fund)} Target Return
+            </Badge>
+          )}
         </div>
 
         <p className="text-gray-700 leading-relaxed mb-4">

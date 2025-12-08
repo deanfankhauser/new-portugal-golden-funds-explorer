@@ -89,34 +89,35 @@ export class ConsolidatedSEOService {
       : truncated + '...';
   }
 
-  // Generate optimized fund title - dynamic year, fees & risk focused
+  // Generate optimized fund title - dynamic year, fees & yield focused
   private static generateFundTitle(fund: any): string {
-    // Pattern: [Fund Name]: Fees, Risk, Returns & Terms (2025)
+    // Pattern: [Fund Name]: {Current Year} Fees, Yield & Golden Visa Fact Sheet
+    // Truncate to: [Fund Name]: {Current Year} Golden Visa Fact Sheet if over 60 chars
     // Note: Year is updated client-side via useYearUpdate hook to avoid SSG rebuilds on New Year's Day
     
     const currentYear = new Date().getFullYear();
     const fundName = fund.name;
     const maxLength = 60;
     
-    // Primary title: [Fund Name]: Fees, Risk, Returns & Terms (2025)
-    const fullTitle = `${fundName}: Fees, Risk, Returns & Terms (${currentYear})`;
+    // Primary title: [Fund Name]: {Year} Fees, Yield & Golden Visa Fact Sheet
+    const fullTitle = `${fundName}: ${currentYear} Fees, Yield & Golden Visa Fact Sheet`;
     
     if (fullTitle.length <= maxLength) {
       return fullTitle;
     }
     
-    // Truncated fallback: [Fund Name]: Fees & Terms (2025)
-    const shortTitle = `${fundName}: Fees & Terms (${currentYear})`;
+    // Truncated fallback: [Fund Name]: {Year} Golden Visa Fact Sheet
+    const shortTitle = `${fundName}: ${currentYear} Golden Visa Fact Sheet`;
     
     if (shortTitle.length <= maxLength) {
       return shortTitle;
     }
     
     // Final fallback: Truncate fund name to fit
-    const suffixLength = `: Fees & Terms (${currentYear})`.length;
+    const suffixLength = `: ${currentYear} Golden Visa Fact Sheet`.length;
     const maxNameLength = maxLength - suffixLength - 3; // -3 for ellipsis
     const truncatedName = fundName.substring(0, maxNameLength).trim() + '...';
-    return `${truncatedName}: Fees & Terms (${currentYear})`;
+    return `${truncatedName}: ${currentYear} Golden Visa Fact Sheet`;
   }
 
   // Generate optimized fund description with conditional logic
@@ -205,7 +206,7 @@ export class ConsolidatedSEOService {
         return {
           title: this.optimizeText('Compare Portugal Golden Visa Funds – Directory of CMVM-Regulated Funds | Movingto Funds', this.MAX_TITLE_LENGTH),
           keywords: ['Portugal Golden Visa funds', 'Golden Visa investment', 'Portugal investment funds', 'CMVM funds', 'investment immigration', 'residence by investment', 'Portugal capital transfer', 'VC funds Portugal', 'real estate funds Portugal', 'fund comparison'],
-          description: this.optimizeText('Compare Portugal Golden Visa funds by performance, fees, risk and minimum. Use our independent directory to shortlist funds for residency.', this.MAX_DESCRIPTION_LENGTH),
+          description: this.optimizeText('Compare Portugal Golden Visa funds by performance, fees, risk, strategy and minimum ticket. Use our independent directory to shortlist funds for your residency plan.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('/'),
           canonical: URL_CONFIG.buildUrl('/'),
           structuredData: this.getHomepageStructuredData(funds)
@@ -379,7 +380,6 @@ export class ConsolidatedSEOService {
           structuredData: this.getTeamMemberStructuredData(params)
         };
 
-      case 'compare':
       case 'comparison':
         return {
           title: this.optimizeText('Portugal Golden Visa Fund Comparison Tool – Compare Any Two Funds | Movingto Funds', this.MAX_TITLE_LENGTH),
@@ -602,6 +602,7 @@ export class ConsolidatedSEOService {
           description: this.optimizeText('Important disclaimer for Movingto Funds. Understand the limits of our Portugal Golden Visa investment fund information and advice.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('disclaimer'),
           canonical: URL_CONFIG.buildUrl('disclaimer'),
+          robots: 'noindex, follow', // Legal boilerplate page
           keywords: [
             'disclaimer',
             'investment disclaimer',
@@ -640,6 +641,7 @@ export class ConsolidatedSEOService {
           description: this.optimizeText('Read the privacy policy for Movingto Funds, our Portugal Golden Visa investment fund directory and analysis platform.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('privacy'),
           canonical: URL_CONFIG.buildUrl('privacy'),
+          robots: 'noindex, follow', // Legal boilerplate page
           keywords: [
             'privacy policy',
             'data privacy',

@@ -4,7 +4,6 @@ import { corsHeaders } from '../_shared/cors.ts';
 interface RemoveRequest {
   profileId: string;
   userIdToRemove: string;
-  requesterUserId: string;
 }
 
 Deno.serve(async (req) => {
@@ -17,12 +16,36 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { profileId, userIdToRemove, requesterUserId }: RemoveRequest = await req.json();
+    // Extract and verify JWT token from Authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.error('[remove-team-member] Missing or invalid Authorization header');
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - missing authentication token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+
+    if (authError || !user) {
+      console.error('[remove-team-member] Invalid token', authError);
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - invalid authentication token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Use verified user ID from JWT, not from request body
+    const requesterUserId = user.id;
+
+    const { profileId, userIdToRemove }: RemoveRequest = await req.json();
 
     console.log('[remove-team-member] Request received', { profileId, userIdToRemove, requesterUserId });
 
     // Validate input
-    if (!profileId || !userIdToRemove || !requesterUserId) {
+    if (!profileId || !userIdToRemove) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -44,7 +67,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Verify requester has access to manage this company
+    // Verify requester has access to manage this company using verified user ID
     const { data: requesterAccess } = await supabase.rpc('can_user_manage_company_funds', {
       check_user_id: requesterUserId,
       check_manager_name: profile.company_name,
@@ -95,7 +118,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Log the action
+    // Log the action using verified user ID
     await supabase.rpc('log_admin_activity', {
       p_action_type: 'TEAM_MEMBER_REMOVED',
       p_target_type: 'manager_profile',

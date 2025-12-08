@@ -143,12 +143,6 @@ export async function fetchAllManagersForBuild(): Promise<Array<{ name: string; 
   const managersMap = new Map<string, { name: string; fundsCount: number }>();
   
   funds.forEach(fund => {
-    // Skip funds without a valid manager name
-    if (!fund.managerName || fund.managerName.trim() === '') {
-      console.warn(`⚠️ Build: Skipping fund ${fund.id} - no manager name`);
-      return;
-    }
-    
     const managerKey = fund.managerName.toLowerCase();
     if (!managersMap.has(managerKey)) {
       managersMap.set(managerKey, {
@@ -268,18 +262,23 @@ export async function fetchAllTeamMembersForBuild(): Promise<Array<{ id: string;
       linkedin_url,
       photo_url,
       bio,
-      profiles!inner(company_name)
+      profiles(company_name)
     `)
     .order('name', { ascending: true });
     
   if (error) {
     console.error('❌ Build: Failed to fetch team members from database:', error.message);
-    console.error('⚠️ Build: Returning empty team members array to allow build to continue');
-    return []; // Return empty instead of throwing to allow build to continue
+    console.error('❌ Build: Full error details:', JSON.stringify(error, null, 2));
+    throw new Error(`Team members fetch failed: ${error.message}`);
+  }
+  
+  if (!teamMembers || teamMembers.length === 0) {
+    console.warn('⚠️ Build: No team members found in database');
+    return [];
   }
   
   // Transform data to flatten the profiles join
-  const transformedMembers = teamMembers?.map(member => ({
+  const transformedMembers = teamMembers.map(member => ({
     id: member.id,
     slug: member.slug,
     name: member.name,
@@ -289,9 +288,12 @@ export async function fetchAllTeamMembersForBuild(): Promise<Array<{ id: string;
     photo_url: member.photo_url,
     bio: member.bio,
     company_name: (member.profiles as any)?.company_name
-  })) || [];
+  }));
   
   console.log(`✅ Build: Fetched ${transformedMembers.length} team members from database`);
+  
+  // Log slugs for debugging
+  console.log(`📋 Build: Team member slugs: ${transformedMembers.map(m => m.slug).join(', ')}`);
   
   return transformedMembers;
 }
