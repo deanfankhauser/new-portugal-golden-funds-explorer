@@ -43,8 +43,8 @@ const MyFunds = () => {
   const [openLeadsCounts, setOpenLeadsCounts] = useState<Record<string, number>>({});
   const { data: allFunds, isLoading: fundsLoading, isError, isFetching } = useAllFunds();
   
-  // Show loading during any loading/error state (allows React Query retry)
-  const loading = assignmentsLoading || fundsLoading || isFetching || isError;
+  // Show loading only during initial load when no data exists
+  const loading = assignmentsLoading || (fundsLoading && !Array.isArray(allFunds));
   
   // Get all fund IDs for metrics
   const allFundIds = companiesWithFunds.flatMap(c => c.funds.map(f => f.id));
