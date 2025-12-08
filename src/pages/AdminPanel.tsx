@@ -19,6 +19,7 @@ import { DataCopyButton } from "@/components/admin/DataCopyButton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EditFundsManagement } from "@/components/admin/EditFundsManagement";
 import { EditCompanyProfilesManagement } from "@/components/admin/EditCompanyProfilesManagement";
+import { AdminCreateCompanyProfile } from "@/components/admin/AdminCreateCompanyProfile";
 
 export default function AdminPanel() {
   const navigate = useNavigate();
@@ -108,6 +109,7 @@ export default function AdminPanel() {
               <Route path="performance" element={<PerformanceMonitoring />} />
               <Route path="quiz-analytics" element={<QuizAnalyticsTab />} />
               <Route path="edit-funds" element={<EditFundsManagement />} />
+              <Route path="edit-profiles/new" element={<AdminCreateCompanyProfile />} />
               <Route path="edit-profiles" element={<EditCompanyProfilesManagement />} />
               <Route
                 path="settings" 
