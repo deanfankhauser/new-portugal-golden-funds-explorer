@@ -32,9 +32,8 @@ const IndexPage = () => {
     error
   } = useFundFiltering();
 
-  // Show loading skeleton while fetching data OR during error retry states
-  // This prevents showing empty state during slow connections or Supabase issues
-  if (loading || error) {
+  // Show loading skeleton only during initial load when no data exists
+  if (loading && (!allFunds || allFunds.length === 0)) {
     return (
       <HomepageLayout>
         <PageSEO pageType="homepage" />
