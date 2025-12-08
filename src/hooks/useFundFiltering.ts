@@ -102,7 +102,7 @@ export const useFundFiltering = () => {
     searchQuery,
     filteredFunds,
     allFunds: funds || [],
-    loading: isLoading || isFetching,
+    loading: isLoading && !Array.isArray(funds),
     error: isError ? 'Failed to load funds' : undefined
   };
 };

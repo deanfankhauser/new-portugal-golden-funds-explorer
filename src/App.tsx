@@ -114,9 +114,9 @@ const DirectFundRoute = () => {
   // Extract potential fund ID from pathname (remove leading slash)
   const potentialFundId = pathname.slice(1);
   
-  // Show loading while fetching funds OR during error retry states
+  // Show loading only during initial load when no data exists
   // This prevents false 404s during slow connections or Supabase issues
-  if (isLoading || isFetching) {
+  if (isLoading && !Array.isArray(funds)) {
     return <FundDetailsLoader />;
   }
   

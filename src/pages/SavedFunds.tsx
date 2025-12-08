@@ -24,8 +24,8 @@ const SavedFunds = () => {
     return null;
   }
 
-  // Show loading during any loading/error state (allows React Query retry)
-  const loading = savedLoading || fundsLoading || isFetching || isError;
+  // Show loading only during initial load when no data exists
+  const loading = savedLoading || (fundsLoading && !Array.isArray(allFunds));
 
   // Get the actual fund objects for saved fund IDs
   const savedFundObjects = useMemo(() => {
