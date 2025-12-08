@@ -116,7 +116,7 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
             <SelectContent>
               {funds.map((fund) => (
                 <SelectItem key={fund.id} value={fund.id}>
-                  {fund.name} - {getReturnTargetDisplay(fund)}
+                  {fund.name}{getReturnTargetDisplay(fund) ? ` - ${getReturnTargetDisplay(fund)}` : ''}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -188,9 +188,11 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
                   max="50"
                   step="0.1"
                 />
-                <p className="text-xs text-muted-foreground">
-                  Fund target: {getReturnTargetDisplay(selectedFund)}
-                </p>
+                {getReturnTargetDisplay(selectedFund) && (
+                  <p className="text-xs text-muted-foreground">
+                    Fund target: {getReturnTargetDisplay(selectedFund)}
+                  </p>
+                )}
               </div>
             </div>
 

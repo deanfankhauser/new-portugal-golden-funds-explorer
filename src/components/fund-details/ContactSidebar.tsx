@@ -138,12 +138,14 @@ const ContactSidebar: React.FC<ContactSidebarProps> = ({ fund }) => {
             <p className="text-[11px] font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Min Investment</p>
             <p className="text-base font-semibold text-foreground tracking-tight">{formatCurrency(fund.minimumInvestment)}</p>
           </div>
-          <div className="bg-muted/20 border border-border/40 rounded-xl p-3 transition-all duration-150 hover:bg-muted/30 hover:border-border/60">
-            <p className="text-[11px] font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Target Return</p>
-            <p className="text-base font-semibold text-foreground tracking-tight">
-              {getReturnTargetDisplay(fund)}
-            </p>
-          </div>
+          {getReturnTargetDisplay(fund) && (
+            <div className="bg-muted/20 border border-border/40 rounded-xl p-3 transition-all duration-150 hover:bg-muted/30 hover:border-border/60">
+              <p className="text-[11px] font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">Target Return</p>
+              <p className="text-base font-semibold text-foreground tracking-tight">
+                {getReturnTargetDisplay(fund)}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* CTA Buttons */}

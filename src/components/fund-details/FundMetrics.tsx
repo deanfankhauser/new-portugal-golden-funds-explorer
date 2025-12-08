@@ -20,18 +20,21 @@ interface MetricItem {
 }
 
 const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatFundSize }) => {
+  const targetReturn = getReturnTargetDisplay(fund);
+  
   const metrics: MetricItem[] = [
     {
       label: "Minimum Investment",
-      value: fund.minimumInvestment <= 0 ? "Not provided" : formatCurrency(fund.minimumInvestment),
+      value: fund.minimumInvestment && fund.minimumInvestment > 0 ? formatCurrency(fund.minimumInvestment) : null,
     },
-    {
+    // Only include target return if it exists and is meaningful
+    ...(targetReturn ? [{
       label: "Target Return", 
-      value: `${getReturnTargetDisplay(fund)} ${DATA_AS_OF_LABEL}`,
-    },
+      value: `${targetReturn} ${DATA_AS_OF_LABEL}`,
+    }] : []),
     {
       label: "Fund Size",
-      value: formatFundSize ? formatFundSize() : `${fund.fundSize} Million EUR`,
+      value: formatFundSize ? formatFundSize() : (fund.fundSize ? `${fund.fundSize} Million EUR` : null),
     },
     {
       label: "Management Fee",
@@ -43,13 +46,13 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
     },
     {
       label: "Term",
-      value: getFundType(fund) === 'Open-Ended' ? "Perpetual" : `${fund.term} years`,
+      value: getFundType(fund) === 'Open-Ended' ? "Perpetual" : (fund.term ? `${fund.term} years` : null),
     },
     {
       label: "Established",
-      value: fund.established,
+      value: fund.established || null,
     }
-  ];
+  ].filter(metric => metric.value !== null && metric.value !== 'Not disclosed');
 
   if (fund.subscriptionFee !== undefined) {
     metrics.push({
