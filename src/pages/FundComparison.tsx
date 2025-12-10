@@ -14,7 +14,7 @@ import GeographicAllocationComparison from '../components/comparison/GeographicA
 import TotalCostSimulator from '../components/comparison/TotalCostSimulator';
 import { parseComparisonSlug } from '../data/services/comparison-service';
 import { normalizeComparisonSlug, isCanonicalComparisonSlug } from '../utils/comparisonUtils';
-import { useAllFunds } from '@/hooks/useFundsQuery';
+import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle, Loader2, BarChart3 } from 'lucide-react';
 import type { Fund } from '@/data/types/funds';
@@ -43,10 +43,10 @@ const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug, initialFun
     allFunds = initialFunds;
     console.log('🔥 SSR FundComparison: slug=%s, initialFunds length=%s', slug, allFunds?.length ?? 'undefined');
   } else {
-    // Client-side: Use React Query hook
-    const queryResult = useAllFunds();
-    allFunds = queryResult.data;
-    isLoading = queryResult.isLoading;
+    // Client-side: Use working hook
+    const queryResult = useRealTimeFunds();
+    allFunds = queryResult.funds;
+    isLoading = queryResult.loading;
     error = queryResult.error;
   }
   

@@ -7,13 +7,13 @@ import { Badge } from '@/components/ui/badge';
 import { Tag } from 'lucide-react';
 import { getAllTags } from '@/data/services/tags-service';
 import { tagToSlug, categoryToSlug } from '@/lib/utils';
-import { useAllFunds } from '@/hooks/useFundsQuery';
+import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 import { track404Error } from '@/utils/errorTracking';
 
 const NotFound = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { data: allFundsData } = useAllFunds();
+  const { funds: allFundsData } = useRealTimeFunds();
   const allDatabaseFunds = allFundsData || [];
   
   // Dynamically suggest tag or category page based on actual data

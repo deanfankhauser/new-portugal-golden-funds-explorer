@@ -19,7 +19,7 @@ import RelatedCategories from '../components/category/RelatedCategories';
 import CategoryCrossLinks from '../components/category/CategoryCrossLinks';
 import VerificationFilterChip from '../components/common/VerificationFilterChip';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
-import { useAllFunds } from '../hooks/useFundsQuery';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 import { Fund } from '../data/types/funds';
 
@@ -36,7 +36,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ categoryData: ssrData }) =>
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   
   // Use SSR data if available, otherwise fetch from hook
-  const { data: allFundsData, isLoading } = useAllFunds();
+  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds();
   const allDatabaseFunds = ssrData ? ssrData.funds : (allFundsData || []);
   
   // Convert URL slug to actual category

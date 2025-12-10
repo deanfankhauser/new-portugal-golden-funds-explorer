@@ -2,7 +2,7 @@ import React from 'react';
 import { Fund } from '../../data/types/funds';
 import { Link } from 'react-router-dom';
 import { findAlternativeFunds } from '../../data/services/alternative-funds-service';
-import { useAllFunds } from '../../hooks/useFundsQuery';
+import { useRealTimeFunds } from '../../hooks/useRealTimeFunds';
 import { addTagsToFunds } from '../../data/services/funds-service';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Clock, Users, Building2, Tag } from 'lucide-react';
@@ -108,7 +108,7 @@ interface AlternativeFundsProps {
 }
 
 const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
-  const { data: allFunds = [], isLoading } = useAllFunds();
+  const { funds: allFunds = [], loading: isLoading } = useRealTimeFunds();
   const fundsWithTags = addTagsToFunds(allFunds);
   const alternativeFunds = findAlternativeFunds(fundsWithTags, currentFund);
 

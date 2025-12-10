@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Building2, Edit3, TrendingUp, Eye, Users, Mail } from 'lucide-react';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
 import { supabase } from '@/integrations/supabase/client';
-import { useAllFunds } from '@/hooks/useFundsQuery';
+import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 import { useFundEngagementMetrics } from '@/hooks/useFundEngagementMetrics';
 import { Fund } from '@/data/types/funds';
 import { Profile } from '@/types/profile';
@@ -41,10 +41,10 @@ const MyFunds = () => {
   const [companiesWithFunds, setCompaniesWithFunds] = useState<CompanyWithFunds[]>([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [openLeadsCounts, setOpenLeadsCounts] = useState<Record<string, number>>({});
-  const { data: allFunds, isLoading: fundsLoading, isError, isFetching } = useAllFunds();
+  const { funds: allFunds, loading: fundsLoading } = useRealTimeFunds();
   
   // Show loading only during initial load when no data exists
-  const loading = assignmentsLoading || (fundsLoading && !Array.isArray(allFunds));
+  const loading = assignmentsLoading || fundsLoading;
   
   // Get all fund IDs for metrics
   const allFundIds = companiesWithFunds.flatMap(c => c.funds.map(f => f.id));
