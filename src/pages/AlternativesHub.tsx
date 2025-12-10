@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAllFunds } from '../hooks/useFundsQuery';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import { findAlternativeFunds } from '../data/services/alternative-funds-service';
 import { PageSEO } from '../components/common/PageSEO';
 import VerificationFilterChip from '../components/common/VerificationFilterChip';
@@ -24,7 +24,7 @@ import { URL_CONFIG } from '../utils/urlConfig';
 const AlternativesHub: React.FC = () => {
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   const [displayCount, setDisplayCount] = useState(10);
-  const { data: fundsData = [], isLoading } = useAllFunds();
+  const { funds: fundsData = [], loading: isLoading } = useRealTimeFunds();
   
   // Filter funds by verification status
   const filteredFunds = useMemo(() => {

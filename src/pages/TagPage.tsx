@@ -16,7 +16,7 @@ import VerificationFilterChip from '../components/common/VerificationFilterChip'
 import { FundTag } from '../data/types/funds';
 import { slugToTag, tagToSlug } from '../lib/utils';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
-import { useAllFunds } from '../hooks/useFundsQuery';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 import { Fund } from '../data/types/funds';
 
@@ -30,7 +30,7 @@ interface TagPageProps {
 
 const TagPage: React.FC<TagPageProps> = ({ tagData: ssrData }) => {
   const { tag: tagSlug } = useParams<{ tag: string }>();
-  const { data: allFundsData, isLoading } = useAllFunds();
+  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds();
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   
   // Use SSR data if available, otherwise fetch from hook

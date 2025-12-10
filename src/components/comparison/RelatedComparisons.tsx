@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../../data/types/funds';
 import { generateComparisonsFromFunds } from '../../data/services/comparison-service';
-import { useAllFunds } from '@/hooks/useFundsQuery';
+import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 import CategoryBadge from './CategoryBadge';
 
 interface RelatedComparisonsProps {
@@ -17,7 +17,7 @@ const RelatedComparisons: React.FC<RelatedComparisonsProps> = ({
   maxComparisons = 6 
 }) => {
   // Fetch all funds from database
-  const { data: allFunds } = useAllFunds();
+  const { funds: allFunds } = useRealTimeFunds();
   
   // Generate all comparisons from database funds
   const allComparisons = allFunds ? generateComparisonsFromFunds(allFunds) : [];

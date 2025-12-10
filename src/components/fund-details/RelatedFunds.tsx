@@ -7,7 +7,7 @@ import { Button } from '../ui/button';
 import { ExternalLink, Building2 } from 'lucide-react';
 import { categoryToSlug } from '@/lib/utils';
 import { useManagerProfile } from '../../hooks/useManagerProfile';
-import { useAllFunds } from '../../hooks/useFundsQuery';
+import { useRealTimeFunds } from '../../hooks/useRealTimeFunds';
 
 const RelatedFundCard: React.FC<{ fund: Fund }> = ({ fund }) => {
   const managerProfile = useManagerProfile(fund.managerName);
@@ -66,7 +66,7 @@ interface RelatedFundsProps {
 }
 
 const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
-  const { data: allFundsData } = useAllFunds();
+  const { funds: allFundsData } = useRealTimeFunds();
   const allDatabaseFunds = allFundsData || [];
   
   // Get funds from the same category

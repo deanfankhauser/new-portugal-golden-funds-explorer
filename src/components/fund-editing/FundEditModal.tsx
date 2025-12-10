@@ -24,7 +24,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import HistoricalPerformanceEditor from './HistoricalPerformanceEditor';
-import { useAllFunds } from '@/hooks/useFundsQuery';
+import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 import { FundTeamPicker } from './FundTeamPicker';
 
 interface FundEditModalProps {
@@ -40,7 +40,7 @@ export const FundEditModal: React.FC<FundEditModalProps> = ({
 }) => {
   const { submitFundEditSuggestion, canEditFund, directUpdateFund, loading, user } = useFundEditing();
   const { toast } = useToast();
-  const { data: allFundsData } = useAllFunds();
+  const { funds: allFundsData } = useRealTimeFunds();
   const allDatabaseFunds = allFundsData || [];
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [hasDirectEditAccess, setHasDirectEditAccess] = useState(false);
