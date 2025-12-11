@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, Edit3, ExternalLink, Building2, Plus } from 'lucide-react';
+import { Search, Edit3, ExternalLink, Building2, Plus, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -253,12 +253,20 @@ export const EditCompanyProfilesManagement: React.FC = () => {
                             </Button>
                           </Link>
                           {manager.profile ? (
-                            <Link to={`/dashboard/company/${manager.profile.id}`}>
-                              <Button size="sm">
-                                <Edit3 className="h-4 w-4 mr-2" />
-                                Edit Profile
-                              </Button>
-                            </Link>
+                            <>
+                              <Link to={`/dashboard/company/${manager.profile.id}/team-members`}>
+                                <Button size="sm" variant="outline">
+                                  <Users className="h-4 w-4 mr-2" />
+                                  Edit Team
+                                </Button>
+                              </Link>
+                              <Link to={`/dashboard/company/${manager.profile.id}`}>
+                                <Button size="sm">
+                                  <Edit3 className="h-4 w-4 mr-2" />
+                                  Edit Profile
+                                </Button>
+                              </Link>
+                            </>
                           ) : (
                             <Link to={`/admin/edit-profiles/new?company_name=${encodeURIComponent(manager.name)}`}>
                               <Button size="sm" variant="outline" className="border-amber-500/50 text-amber-600 hover:bg-amber-500/10">
