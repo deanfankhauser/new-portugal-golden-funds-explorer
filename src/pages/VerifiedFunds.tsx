@@ -1,6 +1,6 @@
 import React from 'react';
 import { CheckCircle2, Shield, Award, TrendingUp } from 'lucide-react';
-import { useAllFunds } from '../hooks/useFundsQuery';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -14,16 +14,13 @@ import { Link } from 'react-router-dom';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 
 const VerifiedFunds = () => {
-  const { data: allFunds, isLoading, isError, isFetching } = useAllFunds();
+  const { funds: allFunds, loading } = useRealTimeFunds();
   
   // Filter for verified funds only
   const verifiedFunds = React.useMemo(() => {
     if (!allFunds) return [];
     return allFunds.filter(fund => fund.isVerified);
   }, [allFunds]);
-
-  // Show loading during any loading/error state (allows React Query retry)
-  const loading = isLoading || isFetching || isError;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">

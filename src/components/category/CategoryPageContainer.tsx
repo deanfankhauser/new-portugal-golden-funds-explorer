@@ -4,12 +4,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getFundsByCategory } from '../../data/services/categories-service';
 import { getAllCategories } from '../../data/services/categories-service';
 import { slugToCategory } from '@/lib/utils';
-import { useAllFunds } from '../../hooks/useFundsQuery';
+import { useRealTimeFunds } from '../../hooks/useRealTimeFunds';
 
 const CategoryPageContainer = () => {
   const { category: categorySlug } = useParams<{ category: string }>();
   const navigate = useNavigate();
-  const { data: allFundsData } = useAllFunds();
+  const { funds: allFundsData } = useRealTimeFunds();
   const allDatabaseFunds = allFundsData || [];
   
   // Convert URL slug to actual category

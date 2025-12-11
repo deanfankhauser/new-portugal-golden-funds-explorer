@@ -5,7 +5,7 @@ import { normalizeComparisonSlug } from '../../utils/comparisonUtils';
 import { URL_CONFIG } from '../../utils/urlConfig';
 import { ArrowLeftRight, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAllFunds } from '../../hooks/useFundsQuery';
+import { useRealTimeFunds } from '../../hooks/useRealTimeFunds';
 import { CompanyLogo } from '../shared/CompanyLogo';
 
 interface FundComparisonSuggestionsProps {
@@ -13,7 +13,7 @@ interface FundComparisonSuggestionsProps {
 }
 
 const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ currentFund }) => {
-  const { data: funds = [], isLoading } = useAllFunds();
+  const { funds = [], loading: isLoading } = useRealTimeFunds();
 
   // Find similar funds based on category and size
   const suggestedFunds = funds

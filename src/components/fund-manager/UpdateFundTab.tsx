@@ -18,7 +18,7 @@ import { useFundEditing } from '@/hooks/useFundEditing';
 import { uploadTeamMemberPhoto, deleteTeamMemberPhoto } from '@/utils/imageUpload';
 import { useToast } from '@/hooks/use-toast';
 import HistoricalPerformanceEditor from '../fund-editing/HistoricalPerformanceEditor';
-import { useAllFunds } from '@/hooks/useFundsQuery';
+import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 import { FundTeamPicker } from '@/components/fund-editing/FundTeamPicker';
 import { FundTeamMemberReference } from '@/types/team';
 import { useFundTeamMembers } from '@/hooks/useTeamMemberData';
@@ -44,7 +44,7 @@ interface UpdateFundTabProps {
 const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) => {
   const { directUpdateFund, submitFundEditSuggestion, updateFundTeamMembers, loading } = useFundEditing();
   const { toast } = useToast();
-  const { data: allFundsData } = useAllFunds();
+  const { funds: allFundsData } = useRealTimeFunds();
   const allDatabaseFunds = allFundsData || [];
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [isDirty, setIsDirty] = useState(false);

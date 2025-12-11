@@ -7,11 +7,11 @@ import ManagersList from '../components/managers-hub/ManagersList';
 import ManagersHubHeader from '../components/managers-hub/ManagersHubHeader';
 import ManagersHubBreadcrumbs from '../components/managers-hub/ManagersHubBreadcrumbs';
 import { getAllFundManagers } from '../data/services/managers-service';
-import { useAllFunds } from '../hooks/useFundsQuery';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 
 const ManagersHub = () => {
-  const { data: allFundsData, isLoading } = useAllFunds();
+  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds();
   const allDatabaseFunds = allFundsData || [];
   
   useEffect(() => {

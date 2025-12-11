@@ -7,11 +7,11 @@ import PageSEO from '../components/common/PageSEO';
 import TagsHubBreadcrumbs from '../components/tags-hub/TagsHubBreadcrumbs';
 import TagsHubHeader from '../components/tags-hub/TagsHubHeader';
 import TagsHubTagsList from '../components/tags-hub/TagsHubTagsList';
-import { useAllFunds } from '../hooks/useFundsQuery';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 
 const TagsHub = () => {
-  const { data: allFundsData, isLoading } = useAllFunds();
+  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds();
   const allDatabaseFunds = allFundsData || [];
   const allTags = getAllTags(allDatabaseFunds);
   

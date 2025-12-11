@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useAllFunds } from '../hooks/useFundsQuery';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import { addTagsToFunds } from '../data/services/funds-service';
 import { findAlternativeFunds } from '../data/services/alternative-funds-service';
 import Header from '../components/Header';
@@ -24,7 +24,7 @@ import { buildContactUrl, openExternalLink } from '../utils/urlHelpers';
 
 const FundAlternatives = () => {
   const { id } = useParams<{ id: string }>();
-  const { data: allFunds = [], isLoading } = useAllFunds();
+  const { funds: allFunds = [], loading: isLoading } = useRealTimeFunds();
   const fundsWithTags = addTagsToFunds(allFunds);
   const fund = fundsWithTags.find(f => f.id === id);
 

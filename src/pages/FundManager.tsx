@@ -9,7 +9,7 @@ import FundManagerContent from '../components/fund-manager/FundManagerContent';
 import FundManagerNotFound from '../components/fund-manager/FundManagerNotFound';
 import FundManagerBreadcrumbs from '../components/fund-manager/FundManagerBreadcrumbs';
 import { Profile } from '@/types/profile';
-import { useAllFunds } from '../hooks/useFundsQuery';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import { Fund } from '../data/types/funds';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
 
@@ -35,7 +35,7 @@ const FundManager: React.FC<FundManagerProps> = ({ managerData }) => {
   const [managerFunds, setManagerFunds] = useState<Fund[]>([]);
   
   // Fetch all funds from database
-  const { data: allFunds, isLoading } = useAllFunds();
+  const { funds: allFunds, loading: isLoading } = useRealTimeFunds();
 
   // Find matching manager and their funds from database
   useEffect(() => {

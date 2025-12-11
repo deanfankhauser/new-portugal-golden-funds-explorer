@@ -22,7 +22,7 @@ import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import { Building2, Settings, LogOut, Home, Mail, ChevronRight, TrendingUp, BarChart3, Megaphone, Users as UsersIcon, Edit, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useAllFunds } from '@/hooks/useFundsQuery';
+import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 import { toast } from 'sonner';
 
 interface CompanyWithFunds {
@@ -44,7 +44,7 @@ export default function FundManagerSidebar() {
   const [companies, setCompaniesWithFunds] = useState<CompanyWithFunds[]>([]);
   const [expandedCompany, setExpandedCompany] = useState<string | null>(null);
   const [expandedFunds, setExpandedFunds] = useState<Set<string>>(new Set());
-  const { data: allFunds } = useAllFunds();
+  const { funds: allFunds } = useRealTimeFunds();
 
   // Check admin status
   useEffect(() => {

@@ -7,11 +7,11 @@ import PageSEO from '../components/common/PageSEO';
 import CategoriesHubBreadcrumbs from '../components/categories-hub/CategoriesHubBreadcrumbs';
 import CategoriesHubHeader from '../components/categories-hub/CategoriesHubHeader';
 import CategoriesList from '../components/categories-hub/CategoriesList';
-import { useAllFunds } from '../hooks/useFundsQuery';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 
 const CategoriesHub = () => {
-  const { data: allFundsData, isLoading } = useAllFunds();
+  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds();
   const allDatabaseFunds = allFundsData || [];
   const allCategories = getAllCategories(allDatabaseFunds);
 

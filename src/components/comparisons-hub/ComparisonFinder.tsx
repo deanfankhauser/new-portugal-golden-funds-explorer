@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { useAllFunds } from '@/hooks/useFundsQuery';
+import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 import { createComparisonSlug } from '../../utils/comparisonUtils';
 import { ArrowRight } from 'lucide-react';
 
@@ -13,7 +13,7 @@ const ComparisonFinder = () => {
   const navigate = useNavigate();
   
   // Fetch all funds from database
-  const { data: allFunds, isLoading } = useAllFunds();
+  const { funds: allFunds, loading: isLoading } = useRealTimeFunds();
 
   const handleCompare = () => {
     if (fund1 && fund2 && fund1 !== fund2) {

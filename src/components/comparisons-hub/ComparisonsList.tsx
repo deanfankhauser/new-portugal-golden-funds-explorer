@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { generateComparisonsFromFunds } from '../../data/services/comparison-service';
-import { useAllFunds } from '@/hooks/useFundsQuery';
+import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 import { Button } from '@/components/ui/button';
 import { GitCompare, Loader2 } from 'lucide-react';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
@@ -12,7 +12,7 @@ const ComparisonsList = () => {
   const comparisonsPerPage = 24;
   
   // Fetch all funds from database
-  const { data: allFunds, isLoading } = useAllFunds();
+  const { funds: allFunds, loading: isLoading } = useRealTimeFunds();
   
   // Generate comparisons from database funds
   const comparisons = allFunds ? generateComparisonsFromFunds(allFunds) : [];
