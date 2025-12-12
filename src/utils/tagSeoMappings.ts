@@ -1,4 +1,5 @@
 export const TAG_TITLE_MAPPINGS: Record<string, string> = {
+  'Portugal': 'Portugal Golden Visa Investment Funds',
   'Energy': 'Renewable Energy & Solar Funds for Portugal Golden Visa',
   'Clean Energy': 'Renewable Energy & Solar Funds for Portugal Golden Visa',
   'Tourism': 'Hospitality & Tourism Funds for Portugal Golden Visa',

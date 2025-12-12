@@ -9,6 +9,24 @@ import { normalizeTagLabel, formatMinimumForTitle } from '../utils/tagLabelNorma
 import { managerToSlug } from '../lib/utils';
 import { getTagSeoTitle } from '../utils/tagSeoMappings';
 
+// Import new SEO helpers from centralized module
+import {
+  getHomeSeo,
+  getFundSeo,
+  getFundFallbackSeo,
+  getFundAlternativesSeo,
+  getComparisonSeo,
+  getFundComparisonSeo,
+  getFundComparisonFallbackSeo,
+  getCategorySeo,
+  getTagSeo,
+  getManagerSeo,
+  getFAQsSeo,
+  getROICalculatorSeo,
+  getVerifiedFundsSeo,
+  optimizeText
+} from '../lib/seo';
+
 
 export class ConsolidatedSEOService {
   private static readonly DEFAULT_IMAGE = 'https://funds.movingto.com/og-default.png';
@@ -203,14 +221,8 @@ export class ConsolidatedSEOService {
     
     switch (pageType) {
       case 'homepage':
-        return {
-          title: this.optimizeText('Compare Portugal Golden Visa Funds – Directory of CMVM-Regulated Funds | Movingto Funds', this.MAX_TITLE_LENGTH),
-          keywords: ['Portugal Golden Visa funds', 'Golden Visa investment', 'Portugal investment funds', 'CMVM funds', 'investment immigration', 'residence by investment', 'Portugal capital transfer', 'VC funds Portugal', 'real estate funds Portugal', 'fund comparison'],
-          description: this.optimizeText('Compare Portugal Golden Visa funds by performance, fees, risk, strategy and minimum ticket. Use our independent directory to shortlist funds for your residency plan.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('/'),
-          canonical: URL_CONFIG.buildUrl('/'),
-          structuredData: this.getHomepageStructuredData(funds)
-        };
+        // Delegate to centralized SEO helper
+        return getHomeSeo(funds);
 
       case 'fund':
       case 'fund-details':
@@ -230,7 +242,6 @@ export class ConsolidatedSEOService {
           : this.getFundByName(targetIdOrName);
         
         if (!fund) {
-          // DIAGNOSTIC: Log fund matching failure
           console.error('❌ [SEO] Fund NOT FOUND:', {
             targetIdOrName,
             searchedInArray: !!funds,
@@ -241,123 +252,34 @@ export class ConsolidatedSEOService {
           
           if (targetIdOrName) {
             console.log('⚠️ [SEO] Using self-referencing canonical fallback for:', targetIdOrName);
-            return {
-              title: this.optimizeText(`${targetIdOrName} – Portugal Golden Visa Fund | Movingto Funds`, this.MAX_TITLE_LENGTH),
-              description: this.optimizeText('Explore details for this Portugal Golden Visa investment fund on Movingto.', this.MAX_DESCRIPTION_LENGTH),
-              url: URL_CONFIG.buildFundUrl(targetIdOrName),
-              canonical: URL_CONFIG.buildFundUrl(targetIdOrName),
-              structuredData: []
-            };
+            // Delegate to centralized fallback helper
+            return getFundFallbackSeo(targetIdOrName);
           }
           
           console.error('💥 [SEO] No targetIdOrName - falling back to homepage SEO');
           return this.getSEOData('homepage', {}, funds);
         }
         
-        // DIAGNOSTIC: Log successful fund match
         console.log('✅ [SEO] Fund FOUND:', {
           fundId: fund.id,
           fundName: fund.name,
           targetIdOrName
         });
         
-        // Generate dynamic, metric-rich title and description
-        const fundTitle = this.generateFundTitle(fund);
-        const fundDescription = this.generateFundDescription(fund);
-        const fundKeywords = this.generateFundKeywords(fund);
-        
-        return {
-          title: this.optimizeText(fundTitle, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText(fundDescription, this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildFundUrl(fund.id),
-          canonical: URL_CONFIG.buildFundUrl(fund.id),
-          keywords: fundKeywords,
-          structuredData: this.getFundStructuredData(fund)
-        };
+        // Delegate to centralized SEO helper
+        return getFundSeo(fund);
 
       case 'category':
-        const categoryName = params.categoryName;
-        const categoryFunds = params.funds || [];
-        const currentYear = new Date().getFullYear();
-        
-        // SEO Title: "Best [Category Name] Funds for Portugal Golden Visa ({Current Year})"
-        const categoryTitle = `Best ${categoryName} Funds for Portugal Golden Visa (${currentYear})`;
-        
-        // SEO Description: "Compare the top [Category Name] investment funds eligible for the Portugal Golden Visa. Analysis of fees, yields, and risk profiles for [Count] funds."
-        const categoryDescription = `Compare the top ${categoryName} investment funds eligible for the Portugal Golden Visa. Analysis of fees, yields, and risk profiles for ${categoryFunds.length} fund${categoryFunds.length !== 1 ? 's' : ''}.`;
-        
-        const categoryKeywords = [
-          `best ${categoryName} Golden Visa funds`,
-          `${categoryName} investment Portugal ${currentYear}`,
-          `Portugal ${categoryName} funds`,
-          'Golden Visa investment categories',
-          `${categoryName} fund comparison`,
-          `top ${categoryName} funds Portugal`,
-          `${categoryName} fund fees yields`
-        ];
-        
-        return {
-          title: this.optimizeText(categoryTitle, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText(categoryDescription, this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildCategoryUrl(params.categoryName),
-          canonical: URL_CONFIG.buildCategoryUrl(params.categoryName),
-          keywords: categoryKeywords,
-          structuredData: this.getCategoryStructuredData(params.categoryName, categoryFunds)
-        };
+        // Delegate to centralized SEO helper
+        return getCategorySeo(params.categoryName, params.funds || []);
 
       case 'tag':
-        // Smart SEO title using mappings
-        const cleanTagLabel = normalizeTagLabel(params.tagName);
-        const fundsCount = params.funds?.length || 0;
-        const tagTitle = `${getTagSeoTitle(params.tagName)} | Movingto Funds`;
-        const tagDescription = `Browse ${fundsCount} ${cleanTagLabel} funds eligible for Portugal Golden Visa. Compare average yields, lock-up periods, and fees for this investment theme.`;
-        const tagKeywords = [
-          `${params.tagName} Golden Visa funds`,
-          `${params.tagName} investment funds Portugal`,
-          'thematic investing Portugal',
-          `${params.tagName} fund comparison`,
-          'Portugal investment themes',
-          `best ${params.tagName} funds`
-        ];
-        
-        return {
-          title: this.optimizeText(tagTitle, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText(tagDescription, this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildTagUrl(params.tagName),
-          canonical: URL_CONFIG.buildTagUrl(params.tagName),
-          keywords: tagKeywords,
-          structuredData: this.getTagStructuredData(params.tagName, params.funds || [])
-        };
+        // Delegate to centralized SEO helper
+        return getTagSeo(params.tagName, params.funds || []);
 
       case 'manager':
-        const fundCount = params.funds?.length || 0;
-        const goldenVisaFundCount = params.funds?.filter((f: any) => f.tags?.includes('Golden Visa Eligible')).length || fundCount;
-        
-        // SEO Title: "[Manager Name]: Corporate Profile, Track Record & Active Funds"
-        const managerTitle = `${params.managerName}: Corporate Profile, Track Record & Active Funds`;
-        
-        // SEO Description: "View the corporate profile of [Manager Name]. Regulated Portuguese fund manager with [X] active Golden Visa funds. View AUM and investment strategy."
-        const managerDescription = `View the corporate profile of ${params.managerName}. Regulated Portuguese fund manager with ${goldenVisaFundCount} active Golden Visa fund${goldenVisaFundCount !== 1 ? 's' : ''}. View AUM and investment strategy.`;
-        
-        return {
-          title: this.optimizeText(managerTitle, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText(managerDescription, this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildManagerUrl(params.managerName),
-          canonical: URL_CONFIG.buildManagerUrl(params.managerName),
-          keywords: [
-            `${params.managerName}`,
-            'Portugal fund manager',
-            'corporate profile',
-            'track record',
-            'Golden Visa fund manager',
-            'investment fund management Portugal',
-            'CMVM regulated',
-            'fund manager analysis',
-            'active funds',
-            'AUM'
-          ],
-          structuredData: this.getManagerStructuredData(params.managerName, params.managerProfile, params.funds || [])
-        };
+        // Delegate to centralized SEO helper
+        return getManagerSeo(params.managerName, params.managerProfile, params.funds || []);
 
       case 'team-member':
         const memberName = params.name || 'Team Member';
@@ -381,21 +303,8 @@ export class ConsolidatedSEOService {
         };
 
       case 'comparison':
-        return {
-          title: this.optimizeText('Portugal Golden Visa Fund Comparison Tool – Compare Any Two Funds | Movingto Funds', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Compare Portugal Golden Visa funds side by side. Check performance, fees, risk, liquidity, minimum investment and more before choosing your fund.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('/compare'),
-          canonical: URL_CONFIG.buildUrl('/compare'),
-          keywords: [
-            'Golden Visa fund comparison',
-            'compare investment funds Portugal',
-            'fund comparison tool',
-            'investment fund analysis',
-            'Golden Visa fund comparison tool',
-            'side-by-side fund comparison'
-          ],
-          structuredData: this.getComparisonStructuredData()
-        };
+        // Delegate to centralized SEO helper
+        return getComparisonSeo();
 
       case 'fund-comparison':
         const normalizedSlug = normalizeComparisonSlug(params.comparisonSlug || '');
@@ -656,45 +565,20 @@ export class ConsolidatedSEOService {
         };
 
       case 'fund-alternatives':
-        const altFund = this.getFundByName(params.fundName);
-        if (!altFund) return this.getSEOData('homepage');
+        const fundIdOrName = params.fundId || params.fundName;
+        const altFund = funds?.find(f => f.id === fundIdOrName || f.name === fundIdOrName);
         
-        return {
-          title: this.optimizeText(`${altFund.name} Alternatives | Similar Portugal Golden Visa Funds | Movingto`, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText(`Discover investment alternatives to ${altFund.name}. Compare similar Portugal Golden Visa eligible funds with matching investment profiles and characteristics.`, this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildFundUrl(altFund.id),
-          canonical: URL_CONFIG.buildFundUrl(altFund.id),
-          robots: 'noindex,follow',
-          keywords: [
-            `${altFund.name} alternatives`,
-            'similar funds',
-            'comparable investment funds',
-            'alternative Golden Visa funds',
-            `${altFund.category} alternatives`,
-            'fund substitutes Portugal'
-          ],
-          structuredData: this.getFundAlternativesStructuredData(altFund)
-        };
+        if (!altFund) {
+          console.warn(`[SEO] Fund not found for alternatives page: ${fundIdOrName}`);
+          return this.getSEOData('homepage', {}, funds);
+        }
+        
+        // Delegate to centralized SEO helper
+        return getFundAlternativesSeo(altFund);
 
       case 'verified-funds':
-        return {
-          title: this.optimizeText('12+ CMVM-Verified Golden Visa Funds – Guaranteed Compliance | Movingto Funds', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Discover 12+ CMVM-verified Portugal Golden Visa funds with guaranteed regulatory compliance. Independent validation, transparent fees, confirmed eligibility.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('/verified-funds'),
-          canonical: URL_CONFIG.buildUrl('/verified-funds'),
-          keywords: [
-            'verified Golden Visa funds',
-            'CMVM registered funds',
-            'verified investment funds Portugal',
-            'documented Golden Visa funds',
-            'regulated investment funds',
-            'validated investment funds Portugal',
-            'CMVM verified funds',
-            'compliance verified Golden Visa',
-            'independently validated funds Portugal'
-          ],
-          structuredData: this.getVerifiedFundsStructuredData(funds)
-        };
+        // Delegate to centralized SEO helper
+        return getVerifiedFundsSeo(funds);
 
       case 'verification-program':
         return {
