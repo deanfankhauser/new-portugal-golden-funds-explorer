@@ -4,6 +4,7 @@ import { MAX_TITLE_LENGTH, MAX_DESCRIPTION_LENGTH } from '../constants';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 import { InvestmentFundStructuredDataService } from '@/services/investmentFundStructuredDataService';
+import { getReturnTargetDisplay } from '@/utils/returnTarget';
 
 export function getFundSeo(fund: Fund): SEOData {
   const fundTitle = generateFundTitle(fund);
@@ -58,23 +59,48 @@ function generateFundTitle(fund: Fund): string {
 
 function generateFundDescription(fund: Fund): string {
   const fundName = fund.name;
+  const category = fund.category || 'investment';
   
-  // Trust Signal Variable (conditional on cmvmId)
-  const trustSignal = fund.cmvmId 
-    ? `Regulated by CMVM #${fund.cmvmId}.`
-    : `Managed by ${fund.managerName}.`;
+  // Minimum investment formatting
+  const minInvestmentStr = fund.minimumInvestment 
+    ? `€${(fund.minimumInvestment / 1000).toFixed(0)}k minimum`
+    : null;
   
-  // Fee Signal Variable (conditional on managementFee)
-  const feeSignal = (fund.managementFee !== null && fund.managementFee !== undefined)
-    ? `Management Fee (${fund.managementFee}%)`
-    : 'fee structure';
+  // Target return using existing utility
+  const returnTarget = getReturnTargetDisplay(fund);
   
-  // Minimum Investment Formatting
-  const minInvestment = fund.minimumInvestment 
-    ? `€${(fund.minimumInvestment / 1000).toFixed(0)}k`
-    : 'available minimums';
+  // Lock-up/liquidity - use redemption terms or cast to any for database field
+  const fundAny = fund as any;
+  const lockUpMonths = fund.redemptionTerms?.minimumHoldingPeriod || fundAny.lock_up_period_months;
+  const lockUpStr = lockUpMonths 
+    ? lockUpMonths >= 12 
+      ? `${Math.round(lockUpMonths / 12)}-year lock-up` 
+      : `${lockUpMonths}-month lock-up`
+    : null;
   
-  return `View objective data for ${fundName}. ${trustSignal} Analysis covers ${feeSignal}, Minimum Investment (${minInvestment}), and Golden Visa eligibility.`;
+  // Manager + regulation
+  const managerStr = fund.managerName ? `Managed by ${fund.managerName}` : null;
+  const cmvmStr = fund.cmvmId ? `CMVM #${fund.cmvmId}` : null;
+  
+  // Build description based on available data
+  if (returnTarget) {
+    // Template WITH target return - prioritize key decision data
+    const basePart = `${fundName} is a ${category} Portugal Golden Visa fund`;
+    const minPart = minInvestmentStr ? ` with ${minInvestmentStr}` : '';
+    const returnPart = `Target: ${returnTarget}.`;
+    
+    const details = [lockUpStr, managerStr, cmvmStr].filter(Boolean);
+    const detailsPart = details.length > 0 ? ` ${details.slice(0, 2).join('. ')}.` : '';
+    
+    return `${basePart}${minPart}. ${returnPart}${detailsPart}`;
+  } else {
+    // Template WITHOUT target return
+    const basePart = `${fundName} is a ${category} Portugal Golden Visa fund`;
+    const minPart = minInvestmentStr ? ` with ${minInvestmentStr}` : '';
+    const managerPart = managerStr ? ` ${managerStr}.` : '';
+    
+    return `${basePart}${minPart}.${managerPart} Check fees, lock-up, and risk profile before investing.`;
+  }
 }
 
 function generateFundKeywords(fund: Fund): string[] {

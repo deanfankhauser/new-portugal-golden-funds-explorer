@@ -4,14 +4,13 @@ import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 
 export function getManagerSeo(managerName: string, managerProfile: any, funds: Fund[] = []): SEOData {
-  const fundCount = funds.length;
-  const goldenVisaFundCount = funds.filter((f: any) => f.tags?.includes('Golden Visa Eligible')).length || fundCount;
+  const gvFundCount = funds.filter((f: any) => f.tags?.includes('Golden Visa Eligible')).length || funds.length;
   
   // SEO Title: "[Manager Name]: Corporate Profile, Track Record & Active Funds"
   const managerTitle = `${managerName}: Corporate Profile, Track Record & Active Funds`;
   
-  // SEO Description: "View the corporate profile of [Manager Name]. Regulated Portuguese fund manager with [X] active Golden Visa funds. View AUM and investment strategy."
-  const managerDescription = `View the corporate profile of ${managerName}. Regulated Portuguese fund manager with ${goldenVisaFundCount} active Golden Visa fund${goldenVisaFundCount !== 1 ? 's' : ''}. View AUM and investment strategy.`;
+  // SEO Description: Dynamic with AUM and fund count
+  const managerDescription = generateManagerDescription(managerName, managerProfile, gvFundCount);
   
   return {
     title: optimizeTitle(managerTitle),
@@ -32,6 +31,35 @@ export function getManagerSeo(managerName: string, managerProfile: any, funds: F
     ],
     structuredData: getManagerStructuredData(managerName, managerProfile, funds)
   };
+}
+
+function generateManagerDescription(managerName: string, managerProfile: any, gvFundCount: number): string {
+  // AUM formatting (from managerProfile if available)
+  const aum = managerProfile?.assets_under_management;
+  let aumStr: string | null = null;
+  
+  if (aum && aum > 0) {
+    if (aum >= 1_000_000_000) {
+      aumStr = `€${(aum / 1_000_000_000).toFixed(1)}B AUM`;
+    } else if (aum >= 1_000_000) {
+      aumStr = `€${(aum / 1_000_000).toFixed(0)}M AUM`;
+    } else if (aum >= 1000) {
+      aumStr = `€${(aum / 1000).toFixed(0)}k AUM`;
+    }
+  }
+  
+  // Build description dynamically - avoid "0 funds"
+  const basePart = `${managerName} is a Portugal-based fund manager`;
+  
+  if (aumStr && gvFundCount > 0) {
+    return `${basePart} with ${aumStr} and ${gvFundCount} Portugal Golden Visa fund${gvFundCount !== 1 ? 's' : ''}. Explore strategies, track record, and active funds.`;
+  } else if (aumStr) {
+    return `${basePart} with ${aumStr}. Explore strategies, track record, and active funds.`;
+  } else if (gvFundCount > 0) {
+    return `${basePart} with ${gvFundCount} Portugal Golden Visa fund${gvFundCount !== 1 ? 's' : ''}. Explore strategies, track record, and active funds.`;
+  } else {
+    return `${basePart}. Explore strategies, track record, and active funds on Movingto.`;
+  }
 }
 
 function getManagerStructuredData(managerName: string, managerProfile: any, funds: Fund[] = []): any {
