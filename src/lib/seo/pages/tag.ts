@@ -7,9 +7,13 @@ import { getTagSeoTitle } from '@/utils/tagSeoMappings';
 
 export function getTagSeo(tagName: string, funds: Fund[] = []): SEOData {
   const cleanTagLabel = normalizeTagLabel(tagName);
-  const fundsCount = funds.length;
-  const tagTitle = `${getTagSeoTitle(tagName)} | Movingto Funds`;
-  const tagDescription = `Browse ${fundsCount} ${cleanTagLabel} funds eligible for Portugal Golden Visa. Compare average yields, lock-up periods, and fees for this investment theme.`;
+  const fundCount = funds.length;
+  const tagTitle = `${getTagSeoTitle(tagName)} | Movingto`;
+  
+  // SEO Description: Handle zero-fund case gracefully
+  const tagDescription = fundCount > 0
+    ? `Browse ${fundCount} ${cleanTagLabel} funds eligible for Portugal Golden Visa. Compare average yields, lock-up periods, and fees for this investment theme.`
+    : `Explore ${cleanTagLabel} Portugal Golden Visa investment funds. This section is updated as funds become available. Learn about strategies, risk, and eligibility.`;
   
   const tagKeywords = [
     `${tagName} Golden Visa funds`,
