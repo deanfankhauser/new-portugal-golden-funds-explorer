@@ -5,12 +5,15 @@ import { Fund } from '@/data/types/funds';
 
 export function getCategorySeo(categoryName: string, funds: Fund[] = []): SEOData {
   const currentYear = getCurrentYear();
+  const fundCount = funds.length;
   
-  // SEO Title: "Best [Category Name] Funds for Portugal Golden Visa ({Current Year})"
-  const categoryTitle = `Best ${categoryName} Funds for Portugal Golden Visa (${currentYear})`;
+  // SEO Title: "Best [Category Name] Portugal Golden Visa Funds ({Current Year}) | Movingto"
+  const categoryTitle = `Best ${categoryName} Portugal Golden Visa Funds (${currentYear}) | Movingto`;
   
-  // SEO Description: "Compare the top [Category Name] investment funds eligible for the Portugal Golden Visa. Analysis of fees, yields, and risk profiles for [Count] funds."
-  const categoryDescription = `Compare the top ${categoryName} investment funds eligible for the Portugal Golden Visa. Analysis of fees, yields, and risk profiles for ${funds.length} fund${funds.length !== 1 ? 's' : ''}.`;
+  // SEO Description: Handle zero-fund case gracefully
+  const categoryDescription = fundCount > 0
+    ? `Compare ${fundCount} ${categoryName} investment funds eligible for the Portugal Golden Visa. Analysis of fees, yields, and risk profiles.`
+    : `Explore ${categoryName} Portugal Golden Visa investment funds. This section is updated as funds become available. Learn about strategies, risk, and eligibility.`;
   
   const categoryKeywords = [
     `best ${categoryName} Golden Visa funds`,
