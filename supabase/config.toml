@@ -112,3 +112,6 @@ verify_jwt = false
 
 [functions.remove-team-member]
 verify_jwt = false
+
+[functions.create-admin-company-profile]
+verify_jwt = false
