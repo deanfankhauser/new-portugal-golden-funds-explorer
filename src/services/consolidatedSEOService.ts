@@ -23,6 +23,7 @@ import {
   getManagerSeo,
   getFAQsSeo,
   getROICalculatorSeo,
+  getVerifiedFundsSeo,
   optimizeText
 } from '../lib/seo';
 
@@ -585,24 +586,8 @@ export class ConsolidatedSEOService {
         };
 
       case 'verified-funds':
-        return {
-          title: this.optimizeText('12+ CMVM-Verified Golden Visa Funds – Guaranteed Compliance | Movingto Funds', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Discover 12+ CMVM-verified Portugal Golden Visa funds with guaranteed regulatory compliance. Independent validation, transparent fees, confirmed eligibility.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('/verified-funds'),
-          canonical: URL_CONFIG.buildUrl('/verified-funds'),
-          keywords: [
-            'verified Golden Visa funds',
-            'CMVM registered funds',
-            'verified investment funds Portugal',
-            'documented Golden Visa funds',
-            'regulated investment funds',
-            'validated investment funds Portugal',
-            'CMVM verified funds',
-            'compliance verified Golden Visa',
-            'independently validated funds Portugal'
-          ],
-          structuredData: this.getVerifiedFundsStructuredData(funds)
-        };
+        // Delegate to centralized SEO helper
+        return getVerifiedFundsSeo(funds);
 
       case 'verification-program':
         return {
