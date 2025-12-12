@@ -9,11 +9,19 @@ export function getTagSeo(tagName: string, funds: Fund[] = []): SEOData {
   const cleanTagLabel = normalizeTagLabel(tagName);
   const fundCount = funds.length;
   const tagTitle = `${getTagSeoTitle(tagName)} | Movingto`;
+  const isPortugalTag = tagName.toLowerCase() === 'portugal';
   
-  // SEO Description: Handle zero-fund case gracefully
-  const tagDescription = fundCount > 0
-    ? `Browse ${fundCount} ${cleanTagLabel} funds eligible for Portugal Golden Visa. Compare average yields, lock-up periods, and fees for this investment theme.`
-    : `Explore ${cleanTagLabel} Portugal Golden Visa investment funds. This section is updated as funds become available. Learn about strategies, risk, and eligibility.`;
+  // SEO Description: Handle zero-fund case and Portugal tag duplication
+  let tagDescription: string;
+  if (isPortugalTag) {
+    tagDescription = fundCount > 0
+      ? `Browse ${fundCount} Portugal Golden Visa investment funds. Compare minimum investments, returns, and eligibility requirements.`
+      : `Explore Portugal Golden Visa investment funds. This section is updated as funds become available. Learn about strategies, risk, and eligibility.`;
+  } else {
+    tagDescription = fundCount > 0
+      ? `Browse ${fundCount} ${cleanTagLabel} funds eligible for Portugal Golden Visa. Compare average yields, lock-up periods, and fees for this investment theme.`
+      : `Explore ${cleanTagLabel} Portugal Golden Visa investment funds. This section is updated as funds become available. Learn about strategies, risk, and eligibility.`;
+  }
   
   const tagKeywords = [
     `${tagName} Golden Visa funds`,
