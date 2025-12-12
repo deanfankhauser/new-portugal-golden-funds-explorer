@@ -23,8 +23,8 @@ export function getComparisonSeo(): SEOData {
 
 export function getFundComparisonSeo(fund1: Fund, fund2: Fund, normalizedSlug: string): SEOData {
   return {
-    title: optimizeTitle(`${fund1.name} vs ${fund2.name} Review: Fees, Risk & Golden Visa Comparison`),
-    description: optimizeDescription(`Detailed comparison of ${fund1.name} and ${fund2.name}. Analyze the differences in Management Fees, Risk Profiles, and Target Returns to find the right Golden Visa fund for you.`),
+    title: optimizeTitle(`${fund1.name} vs ${fund2.name} | Portugal Golden Visa Fund Comparison`),
+    description: optimizeDescription(`Compare ${fund1.name} and ${fund2.name} for the Portugal Golden Visa. Review minimum investment, fees, target returns, lock-up periods, and risk side by side.`),
     url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
     canonical: URL_CONFIG.buildComparisonUrl(normalizedSlug),
     robots: 'index, follow',
