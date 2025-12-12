@@ -565,25 +565,16 @@ export class ConsolidatedSEOService {
         };
 
       case 'fund-alternatives':
-        const altFund = this.getFundByName(params.fundName);
-        if (!altFund) return this.getSEOData('homepage');
+        const fundIdOrName = params.fundId || params.fundName;
+        const altFund = funds?.find(f => f.id === fundIdOrName || f.name === fundIdOrName);
         
-        return {
-          title: this.optimizeText(`${altFund.name} Alternatives | Similar Portugal Golden Visa Funds | Movingto`, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText(`Discover investment alternatives to ${altFund.name}. Compare similar Portugal Golden Visa eligible funds with matching investment profiles and characteristics.`, this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildFundUrl(altFund.id),
-          canonical: URL_CONFIG.buildFundUrl(altFund.id),
-          robots: 'noindex,follow',
-          keywords: [
-            `${altFund.name} alternatives`,
-            'similar funds',
-            'comparable investment funds',
-            'alternative Golden Visa funds',
-            `${altFund.category} alternatives`,
-            'fund substitutes Portugal'
-          ],
-          structuredData: this.getFundAlternativesStructuredData(altFund)
-        };
+        if (!altFund) {
+          console.warn(`[SEO] Fund not found for alternatives page: ${fundIdOrName}`);
+          return this.getSEOData('homepage', {}, funds);
+        }
+        
+        // Delegate to centralized SEO helper
+        return getFundAlternativesSeo(altFund);
 
       case 'verified-funds':
         // Delegate to centralized SEO helper
