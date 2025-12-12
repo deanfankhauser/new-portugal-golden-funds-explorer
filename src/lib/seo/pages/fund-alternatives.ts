@@ -4,18 +4,20 @@ import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 
 export function getFundAlternativesSeo(fund: Fund): SEOData {
+  const fundName = fund.name || 'Investment Fund';
+  
   return {
-    title: optimizeTitle(`${fund.name} Alternatives | Similar Portugal Golden Visa Funds | Movingto`),
-    description: optimizeDescription(`Discover investment alternatives to ${fund.name}. Compare similar Portugal Golden Visa eligible funds with matching investment profiles and characteristics.`),
-    url: URL_CONFIG.buildFundUrl(fund.id),
+    title: optimizeTitle(`${fundName} Alternatives | Portugal Golden Visa Funds | Movingto`),
+    description: optimizeDescription(`Discover alternatives to ${fundName} for the Portugal Golden Visa. Compare similar funds by strategy, minimum investment, target returns, and risk profile.`),
+    url: URL_CONFIG.buildFundAlternativesUrl(fund.id),
     canonical: URL_CONFIG.buildFundUrl(fund.id),
     robots: 'noindex,follow',
     keywords: [
-      `${fund.name} alternatives`,
+      `${fundName} alternatives`,
       'similar funds',
       'comparable investment funds',
       'alternative Golden Visa funds',
-      `${fund.category} alternatives`,
+      `${fund.category || 'investment'} alternatives`,
       'fund substitutes Portugal'
     ],
     structuredData: getFundAlternativesStructuredData(fund)
