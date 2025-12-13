@@ -1,5 +1,5 @@
 
-import { Fund } from '../data/funds';
+import { Fund } from '../data/types/funds';
 import { URL_CONFIG } from '../utils/urlConfig';
 import { DateManagementService } from './dateManagementService';
 import { EnhancedSEODateService } from './enhancedSEODateService';

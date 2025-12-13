@@ -1,5 +1,5 @@
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Clock, CheckCircle, Circle } from 'lucide-react';
@@ -37,8 +37,8 @@ const ProcessingTimeTracker: React.FC<ProcessingTimeTrackerProps> = ({ fund }) =
       }
     ];
 
-    // Add fund-specific steps
-    if (isFundGVEligible(fund)) {
+    // Add fund-specific steps (only for verified GV eligible funds)
+    if (isFundGVEligible(fund) && fund.isVerified) {
       baseSteps.push({
         id: 'golden-visa-review',
         title: 'Golden Visa Review',

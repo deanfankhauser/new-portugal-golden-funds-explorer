@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Fund } from '../../../data/funds';
+import { Fund } from '../../../data/types/funds';
 import FundDescription from '../FundDescription';
 import FundManager from '../FundManager';
 import FundWebsite from '../FundWebsite';
@@ -29,7 +29,7 @@ const FundOverviewTab: React.FC<FundOverviewTabProps> = ({ fund }) => {
       <FundWebsite websiteUrl={fund.websiteUrl} />
       
       {/* Introduction Button (compact version in overview) */}
-      <IntroductionButton variant="compact" />
+      <IntroductionButton variant="compact" fundId={fund.id} />
     </div>
   );
 };

@@ -1,13 +1,16 @@
 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { Facebook, Linkedin, ExternalLink } from "lucide-react";
 import RecentlyViewedFunds from "./RecentlyViewedFunds";
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
+  const [currentYear, setCurrentYear] = useState(2025);
 
   useEffect(() => {
+    // Set current year on client-side only
+    setCurrentYear(new Date().getFullYear());
+    
     // Load Fillout script if not already loaded
     if (!document.querySelector('script[src="https://server.fillout.com/embed/v1/"]')) {
       const script = document.createElement('script');
@@ -30,6 +33,8 @@ const Footer = () => {
                 src="/lovable-uploads/9bdf45a5-6a2f-466e-8c2d-b8ba65863e8a.png" 
                 alt="Movingto Logo" 
                 className="h-8"
+                width="155"
+                height="32"
               />
             </Link>
             <p className="text-sm text-muted-foreground mb-4">
@@ -70,7 +75,15 @@ const Footer = () => {
                 <Link to="/" className="text-muted-foreground hover:text-accent text-sm transition-colors">Home</Link>
               </li>
               <li>
-                <Link to="/index" className="text-muted-foreground hover:text-accent text-sm transition-colors">Fund Index</Link>
+                <a 
+                  href="https://www.movingto.com/portugal-golden-visa-funds" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-accent text-sm transition-colors inline-flex items-center gap-1"
+                >
+                  Browse All Golden Visa Funds
+                  <ExternalLink size={12} />
+                </a>
               </li>
               <li>
                 <Link to="/about" className="text-muted-foreground hover:text-accent text-sm transition-colors">About</Link>
@@ -85,7 +98,7 @@ const Footer = () => {
                 <Link to="/managers" className="text-muted-foreground hover:text-accent text-sm transition-colors">Fund Managers</Link>
               </li>
               <li>
-                <Link to="/comparisons" className="text-muted-foreground hover:text-accent text-sm transition-colors">Fund Comparisons</Link>
+                <Link to="/comparisons" className="text-muted-foreground hover:text-accent text-sm transition-colors">Compare Funds</Link>
               </li>
               <li>
                 <Link to="/alternatives" className="text-muted-foreground hover:text-accent text-sm transition-colors">Fund Alternatives</Link>
@@ -114,8 +127,14 @@ const Footer = () => {
             <h3 className="text-base font-semibold mb-4">Resources</h3>
             <ul className="space-y-2">
               <li>
+                <Link to="/verified-funds" className="text-muted-foreground hover:text-accent text-sm transition-colors">Verified Funds</Link>
+              </li>
+              <li>
+                <Link to="/verification-program" className="text-muted-foreground hover:text-accent text-sm transition-colors">Verification Program</Link>
+              </li>
+              <li>
                 <a 
-                  href="https://www.movingto.com/pt/portugal-golden-visa" 
+                  href="https://movingto.com/pt/portugal-golden-visa" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-muted-foreground hover:text-primary text-sm transition-colors inline-flex items-center"

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Badge } from '../ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { Shield, CheckCircle, Award } from 'lucide-react';
@@ -44,7 +44,7 @@ const TrustBadges: React.FC<TrustBadgesProps> = ({ fund }) => {
           </Tooltip>
         )}
 
-        {isGVEligible && (
+        {isGVEligible && fund.isVerified && (
           <Tooltip>
             <TooltipTrigger asChild>
               <Badge className="bg-white/10 text-white border-white/30 flex items-center gap-1.5">

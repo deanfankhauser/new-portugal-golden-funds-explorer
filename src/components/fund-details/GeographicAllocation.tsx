@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { PieChart } from 'lucide-react';
-import { GeographicAllocation as GeoAllocation } from '../../data/funds';
-import { Card, CardContent } from "@/components/ui/card";
+import { Globe } from 'lucide-react';
+import { GeographicAllocation as GeoAllocation } from '../../data/types/funds';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface GeographicAllocationProps {
   allocations?: GeoAllocation[];
@@ -15,17 +15,21 @@ const GeographicAllocation: React.FC<GeographicAllocationProps> = ({ allocations
   }
 
   return (
-    <Card className="border border-border shadow-sm hover:shadow-md transition-all duration-300">
-      <CardContent className="p-6">
-        <div className="flex items-center mb-5">
-          <PieChart className="w-5 h-5 mr-2 text-accent" />
-          <h2 className="text-xl font-bold text-foreground">Geographic Allocation</h2>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {allocations.map((allocation) => (
-            <div key={allocation.region} className="bg-muted/50 p-4 rounded-lg border border-border">
-              <h3 className="font-medium text-muted-foreground text-sm uppercase tracking-wide">{allocation.region}</h3>
-              <p className="text-2xl font-bold text-accent mt-1">{formatPercentage(allocation.percentage)}</p>
+    <Card className="bg-card border border-border/40 rounded-2xl shadow-sm">
+      <CardContent className="p-10">
+        <h2 className="text-xl md:text-2xl font-semibold tracking-tight mb-8">Geographic Allocation</h2>
+        
+        <div className="flex flex-col gap-4">
+          {allocations.map((allocation, index) => (
+            <div 
+              key={allocation.region}
+              className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors"
+            >
+              <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
+                <Globe className="h-[18px] w-[18px] text-muted-foreground" />
+                {allocation.region}
+              </span>
+              <span className="text-[15px] font-semibold text-foreground">{formatPercentage(allocation.percentage)}</span>
             </div>
           ))}
         </div>
