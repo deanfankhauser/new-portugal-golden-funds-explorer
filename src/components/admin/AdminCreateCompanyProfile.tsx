@@ -29,8 +29,6 @@ export function AdminCreateCompanyProfile() {
   const [formData, setFormData] = useState({
     company_name: prefilledCompanyName,
     manager_name: prefilledCompanyName,
-    first_name: "",
-    last_name: "",
     city: "",
     country: "Portugal",
     founded_year: "",
@@ -103,8 +101,6 @@ export function AdminCreateCompanyProfile() {
         body: {
           company_name: formData.company_name.trim(),
           manager_name: formData.manager_name.trim() || formData.company_name.trim(),
-          first_name: formData.first_name.trim() || null,
-          last_name: formData.last_name.trim() || null,
           city: formData.city.trim() || null,
           country: formData.country.trim() || null,
           founded_year: formData.founded_year ? parseInt(formData.founded_year) : null,
@@ -181,24 +177,6 @@ export function AdminCreateCompanyProfile() {
                   value={formData.manager_name}
                   onChange={(e) => handleChange("manager_name", e.target.value)}
                   placeholder="e.g., Lince Capital, SCR, S.A."
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="first_name">Contact First Name</Label>
-                <Input
-                  id="first_name"
-                  value={formData.first_name}
-                  onChange={(e) => handleChange("first_name", e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="last_name">Contact Last Name</Label>
-                <Input
-                  id="last_name"
-                  value={formData.last_name}
-                  onChange={(e) => handleChange("last_name", e.target.value)}
                 />
               </div>
 
