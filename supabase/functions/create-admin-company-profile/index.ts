@@ -121,8 +121,6 @@ Deno.serve(async (req) => {
         email: placeholderEmail,
         company_name: profileData.company_name.trim(),
         manager_name: profileData.manager_name?.trim() || profileData.company_name.trim(),
-        first_name: profileData.first_name?.trim() || null,
-        last_name: profileData.last_name?.trim() || null,
         city: profileData.city?.trim() || null,
         country: profileData.country?.trim() || null,
         founded_year: profileData.founded_year || null,
