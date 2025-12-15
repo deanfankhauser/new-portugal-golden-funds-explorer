@@ -113,10 +113,10 @@ Deno.serve(async (req) => {
 
     console.log(`Auth user created with ID: ${authData.user.id}`);
 
-    // Create profile with the real user_id
+    // Create or update profile with the real user_id (upsert handles trigger-created profiles)
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('profiles')
-      .insert({
+      .upsert({
         user_id: authData.user.id,
         email: placeholderEmail,
         company_name: profileData.company_name.trim(),
@@ -133,6 +133,9 @@ Deno.serve(async (req) => {
         manager_about: profileData.manager_about?.trim() || null,
         manager_highlights: profileData.manager_highlights || [],
         manager_faqs: profileData.manager_faqs || [],
+      }, { 
+        onConflict: 'user_id',
+        ignoreDuplicates: false
       })
       .select('id')
       .single();
