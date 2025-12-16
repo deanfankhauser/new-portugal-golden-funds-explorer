@@ -121,6 +121,9 @@ Deno.serve(async (req) => {
         email: placeholderEmail,
         company_name: profileData.company_name.trim(),
         manager_name: profileData.manager_name?.trim() || profileData.company_name.trim(),
+        // IMPORTANT: override handle_new_user() trigger defaults (''), to satisfy valid_profile_type
+        first_name: null,
+        last_name: null,
         city: profileData.city?.trim() || null,
         country: profileData.country?.trim() || null,
         founded_year: profileData.founded_year || null,
