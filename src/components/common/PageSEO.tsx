@@ -63,8 +63,9 @@ const seoData = ConsolidatedSEOService.getSEOData(
 
       ConsolidatedSEOService.applyMetaTags(seoData);
       
-      // Only noindex true 404 pages, never fund pages
-      if (pageType === '404') {
+      // Handle noindex for 404 pages and zero-fund tag/category pages
+      if (pageType === '404' || 
+          ((pageType === 'tag' || pageType === 'category') && (!funds || funds.length === 0))) {
         let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
         if (!robots) {
           robots = document.createElement('meta');
@@ -72,6 +73,12 @@ const seoData = ConsolidatedSEOService.getSEOData(
           document.head.appendChild(robots);
         }
         robots.setAttribute('content', 'noindex, follow');
+      } else if (pageType === 'tag' || pageType === 'category') {
+        // Ensure index,follow for pages with funds
+        let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+        if (robots) {
+          robots.setAttribute('content', 'index, follow');
+        }
       }
       
       // Defer performance optimizations and SEO fixes to avoid forced reflows
