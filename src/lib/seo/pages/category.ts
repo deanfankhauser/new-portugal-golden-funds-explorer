@@ -31,6 +31,7 @@ export function getCategorySeo(categoryName: string, funds: Fund[] = []): SEODat
     url: URL_CONFIG.buildCategoryUrl(categoryName),
     canonical: URL_CONFIG.buildCategoryUrl(categoryName),
     keywords: categoryKeywords,
+    robots: fundCount === 0 ? 'noindex, follow' : 'index, follow',
     structuredData: getCategoryStructuredData(categoryName, funds)
   };
 }

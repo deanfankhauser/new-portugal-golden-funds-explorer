@@ -20,11 +20,18 @@ import {
 import { InvestmentFundStructuredDataService } from '../services/investmentFundStructuredDataService';
 import { StructuredDataService } from '../services/structuredDataService';
 import { URL_CONFIG } from '../utils/urlConfig';
+import { Fund } from '../data/types/funds';
 
-const AlternativesHub: React.FC = () => {
+interface AlternativesHubProps {
+  initialFunds?: Fund[];
+}
+
+const AlternativesHub: React.FC<AlternativesHubProps> = ({ initialFunds }) => {
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   const [displayCount, setDisplayCount] = useState(10);
-  const { funds: fundsData = [], loading: isLoading } = useRealTimeFunds();
+  const { funds: fundsData = [], loading: isLoading } = useRealTimeFunds({
+    initialData: initialFunds
+  });
   
   // Filter funds by verification status
   const filteredFunds = useMemo(() => {
@@ -62,7 +69,7 @@ const AlternativesHub: React.FC = () => {
 
   // Add structured data for SEO
   useEffect(() => {
-    if (fundsWithAlternatives.length > 0) {
+    if (fundsWithAlternatives.length > 0 && typeof window !== 'undefined') {
       const schemas = [
         InvestmentFundStructuredDataService.generateFundListSchema(
           fundsWithAlternatives.map(item => item.fund),
@@ -92,7 +99,8 @@ const AlternativesHub: React.FC = () => {
   const displayedFunds = fundsWithAlternatives.slice(0, displayCount);
   const hasMore = displayCount < fundsWithAlternatives.length;
 
-  if (isLoading) {
+  // Only show loading when no initial data was provided
+  if (isLoading && !initialFunds) {
     return (
       <HomepageLayout>
         <PageSEO pageType="alternatives-hub" />

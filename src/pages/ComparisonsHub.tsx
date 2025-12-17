@@ -7,8 +7,13 @@ import ComparisonsHubBreadcrumbs from '../components/comparisons-hub/Comparisons
 import ComparisonsHubHeader from '../components/comparisons-hub/ComparisonsHubHeader';
 import ComparisonsList from '../components/comparisons-hub/ComparisonsList';
 import ComparisonFinder from '../components/comparisons-hub/ComparisonFinder';
+import { Fund } from '../data/types/funds';
 
-const ComparisonsHub = () => {
+interface ComparisonsHubProps {
+  initialFunds?: Fund[];
+}
+
+const ComparisonsHub: React.FC<ComparisonsHubProps> = ({ initialFunds }) => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <PageSEO pageType="comparisons-hub" />

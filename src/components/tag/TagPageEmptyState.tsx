@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Fund } from '../../data/types/funds';
 import { getFundsByCategory } from '../../data/services/categories-service';
+import { getAllTags } from '../../data/services/tags-service';
 import { getTagFallbackCategory } from '../../utils/tagCategoryMapping';
+import { tagToSlug } from '@/lib/utils';
 import FundCard from '../FundCard';
 
 interface TagPageEmptyStateProps {
@@ -21,17 +23,42 @@ const TagPageEmptyState = ({ tagName, allFunds }: TagPageEmptyStateProps) => {
     return categoryFunds.slice(0, 5); // Show top 5 alternatives
   }, [allFunds, fallbackCategory]);
   
+  // Get related tags that have funds
+  const relatedTags = useMemo(() => {
+    const allTags = getAllTags(allFunds);
+    return allTags
+      .filter(tag => tag !== tagName)
+      .slice(0, 8);
+  }, [allFunds, tagName]);
+  
   return (
     <div className="space-y-8">
       <div className="bg-card rounded-lg shadow-sm border border-border/40 p-10 text-center">
-        <h3 className="text-2xl font-semibold mb-3">No funds currently available</h3>
+        <h3 className="text-2xl font-semibold mb-3">No funds currently match this filter</h3>
         <p className="text-muted-foreground max-w-2xl mx-auto mb-2">
-          Currently, no {tagName} funds are open for subscription.
+          No {tagName} funds are currently available. Browse all funds or try another tag.
         </p>
         <p className="text-sm text-muted-foreground">
           Check back later or explore recommended alternatives below.
         </p>
       </div>
+
+      {relatedTags.length > 0 && (
+        <div>
+          <h3 className="text-xl font-semibold mb-4">Explore Related Tags</h3>
+          <div className="flex flex-wrap gap-3">
+            {relatedTags.map(tag => (
+              <Link 
+                key={tag}
+                to={`/tags/${tagToSlug(tag)}`}
+                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors"
+              >
+                {tag}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {alternativeFunds.length > 0 && (
         <div>

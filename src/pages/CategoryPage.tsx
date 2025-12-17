@@ -29,14 +29,17 @@ interface CategoryPageProps {
     categorySlug: string;
     funds: Fund[];
   };
+  initialFunds?: Fund[];
 }
 
-const CategoryPage: React.FC<CategoryPageProps> = ({ categoryData: ssrData }) => {
+const CategoryPage: React.FC<CategoryPageProps> = ({ categoryData: ssrData, initialFunds }) => {
   const { category: categorySlug } = useParams<{ category: string }>();
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   
   // Use SSR data if available, otherwise fetch from hook
-  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds();
+  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds({
+    initialData: initialFunds || (ssrData ? ssrData.funds : undefined)
+  });
   const allDatabaseFunds = ssrData ? ssrData.funds : (allFundsData || []);
   
   // Convert URL slug to actual category
@@ -86,8 +89,8 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ categoryData: ssrData }) =>
     window.scrollTo(0, 0);
   }, [categorySlug]);
 
-  // Show loading state (matching TagPage pattern)
-  if (isLoading) {
+  // Show loading state only when no initial data provided
+  if (isLoading && !initialFunds && !ssrData) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
@@ -109,7 +112,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ categoryData: ssrData }) =>
         <Header />
         <main className="flex-1 py-6 md:py-8">
           <div className="container mx-auto px-4 max-w-7xl">
-            <CategoryPageEmptyState categoryName={displayCategoryName} />
+            <CategoryPageEmptyState categoryName={displayCategoryName} allCategories={allCategories} />
           </div>
         </main>
         <Footer />
@@ -140,7 +143,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ categoryData: ssrData }) =>
           </div>
           
           {funds.length === 0 && !showOnlyVerified ? (
-            <CategoryPageEmptyState categoryName={displayCategoryName} />
+            <CategoryPageEmptyState categoryName={displayCategoryName} allCategories={allCategories} />
           ) : funds.length === 0 && showOnlyVerified && allFunds.length > 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground text-lg">

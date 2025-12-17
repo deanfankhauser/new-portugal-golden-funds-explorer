@@ -38,6 +38,7 @@ export function getTagSeo(tagName: string, funds: Fund[] = []): SEOData {
     url: URL_CONFIG.buildTagUrl(tagName),
     canonical: URL_CONFIG.buildTagUrl(tagName),
     keywords: tagKeywords,
+    robots: fundCount === 0 ? 'noindex, follow' : 'index, follow',
     structuredData: getTagStructuredData(tagName, funds)
   };
 }
