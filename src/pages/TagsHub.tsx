@@ -9,9 +9,16 @@ import TagsHubHeader from '../components/tags-hub/TagsHubHeader';
 import TagsHubTagsList from '../components/tags-hub/TagsHubTagsList';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import FundListSkeleton from '../components/common/FundListSkeleton';
+import { Fund } from '../data/types/funds';
 
-const TagsHub = () => {
-  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds();
+interface TagsHubProps {
+  initialFunds?: Fund[];
+}
+
+const TagsHub: React.FC<TagsHubProps> = ({ initialFunds }) => {
+  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds({
+    initialData: initialFunds
+  });
   const allDatabaseFunds = allFundsData || [];
   const allTags = getAllTags(allDatabaseFunds);
   
@@ -20,7 +27,8 @@ const TagsHub = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  if (isLoading) {
+  // Only show loading when no initial data was provided
+  if (isLoading && !initialFunds) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />

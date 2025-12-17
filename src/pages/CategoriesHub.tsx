@@ -9,9 +9,16 @@ import CategoriesHubHeader from '../components/categories-hub/CategoriesHubHeade
 import CategoriesList from '../components/categories-hub/CategoriesList';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import FundListSkeleton from '../components/common/FundListSkeleton';
+import { Fund } from '../data/types/funds';
 
-const CategoriesHub = () => {
-  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds();
+interface CategoriesHubProps {
+  initialFunds?: Fund[];
+}
+
+const CategoriesHub: React.FC<CategoriesHubProps> = ({ initialFunds }) => {
+  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds({
+    initialData: initialFunds
+  });
   const allDatabaseFunds = allFundsData || [];
   const allCategories = getAllCategories(allDatabaseFunds);
 
@@ -20,7 +27,8 @@ const CategoriesHub = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  if (isLoading) {
+  // Only show loading when no initial data was provided
+  if (isLoading && !initialFunds) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />

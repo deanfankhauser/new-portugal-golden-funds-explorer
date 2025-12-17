@@ -12,15 +12,25 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Button } from '../components/ui/button';
 import { Link } from 'react-router-dom';
 import FundListSkeleton from '../components/common/FundListSkeleton';
+import { Fund } from '../data/types/funds';
 
-const VerifiedFunds = () => {
-  const { funds: allFunds, loading } = useRealTimeFunds();
+interface VerifiedFundsProps {
+  initialFunds?: Fund[];
+}
+
+const VerifiedFunds: React.FC<VerifiedFundsProps> = ({ initialFunds }) => {
+  const { funds: allFunds, loading } = useRealTimeFunds({
+    initialData: initialFunds
+  });
   
   // Filter for verified funds only
   const verifiedFunds = React.useMemo(() => {
     if (!allFunds) return [];
     return allFunds.filter(fund => fund.isVerified);
   }, [allFunds]);
+
+  // Only show loading when no initial data was provided
+  const showLoading = loading && !initialFunds;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -187,7 +197,7 @@ const VerifiedFunds = () => {
             All Verified Funds
           </h2>
           
-          {loading ? (
+          {showLoading ? (
             <FundListSkeleton />
           ) : verifiedFunds.length === 0 ? (
             <Card>

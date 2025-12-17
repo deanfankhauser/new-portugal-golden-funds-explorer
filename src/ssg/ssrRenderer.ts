@@ -413,26 +413,41 @@ export class SSRRenderer {
                 // Main routes
                 React.createElement(Route, { path: '/', element: React.createElement(getComponent('Index')) }),
                 
-                // Hub pages
-                React.createElement(Route, { path: '/tags', element: React.createElement(getComponent('TagsHub')) }),
+                // Hub pages - pass SSR funds data for immediate rendering
+                React.createElement(Route, { 
+                  path: '/tags', 
+                  element: isSSG 
+                    ? React.createElement(getComponent('TagsHub'), { initialFunds: allFunds })
+                    : React.createElement(getComponent('TagsHub'))
+                }),
                 React.createElement(Route, { 
                   path: '/tags/:tag', 
                   element: isSSG && tagDataForSSR
-                    ? React.createElement(getComponent('TagPage'), { tagData: tagDataForSSR })
+                    ? React.createElement(getComponent('TagPage'), { tagData: tagDataForSSR, initialFunds: allFunds })
                     : React.createElement(getComponent('TagPage'))
                 }),
-                React.createElement(Route, { path: '/categories', element: React.createElement(getComponent('CategoriesHub')) }),
+                React.createElement(Route, { 
+                  path: '/categories', 
+                  element: isSSG 
+                    ? React.createElement(getComponent('CategoriesHub'), { initialFunds: allFunds })
+                    : React.createElement(getComponent('CategoriesHub'))
+                }),
                 React.createElement(Route, { 
                   path: '/categories/:category', 
                   element: isSSG && categoryDataForSSR
-                    ? React.createElement(getComponent('CategoryPage'), { categoryData: categoryDataForSSR })
+                    ? React.createElement(getComponent('CategoryPage'), { categoryData: categoryDataForSSR, initialFunds: allFunds })
                     : React.createElement(getComponent('CategoryPage'))
                 }),
-                React.createElement(Route, { path: '/managers', element: React.createElement(getComponent('ManagersHub')) }),
+                React.createElement(Route, { 
+                  path: '/managers', 
+                  element: isSSG 
+                    ? React.createElement(getComponent('ManagersHub'), { initialFunds: allFunds })
+                    : React.createElement(getComponent('ManagersHub'))
+                }),
                 React.createElement(Route, { 
                   path: '/manager/:name', 
                   element: isSSG && managerDataForSSR
-                    ? React.createElement(getComponent('FundManager'), { managerData: managerDataForSSR })
+                    ? React.createElement(getComponent('FundManager'), { managerData: managerDataForSSR, initialFunds: allFunds })
                     : React.createElement(getComponent('FundManager'))
                 }),
                 React.createElement(Route, { 
@@ -447,9 +462,21 @@ export class SSRRenderer {
                 React.createElement(Route, { path: '/disclaimer', element: React.createElement(getComponent('Disclaimer')) }),
                 React.createElement(Route, { path: '/privacy', element: React.createElement(getComponent('Privacy')) }),
                 React.createElement(Route, { path: '/compare', element: React.createElement(getComponent('ComparisonPage')) }),
-                React.createElement(Route, { path: '/comparisons', element: React.createElement(getComponent('ComparisonsHub')) }),
+                React.createElement(Route, { 
+                  path: '/comparisons', 
+                  element: isSSG 
+                    ? React.createElement(getComponent('ComparisonsHub'), { initialFunds: allFunds })
+                    : React.createElement(getComponent('ComparisonsHub'))
+                }),
                 React.createElement(Route, { path: '/faqs', element: React.createElement(getComponent('FAQs')) }),
                 React.createElement(Route, { path: '/roi-calculator', element: React.createElement(getComponent('ROICalculator')) }),
+                React.createElement(Route, { 
+                  path: '/verified-funds', 
+                  element: isSSG 
+                    ? React.createElement(getComponent('VerifiedFunds'), { initialFunds: allFunds })
+                    : React.createElement(getComponent('VerifiedFunds'))
+                }),
+                React.createElement(Route, { path: '/verification-program', element: React.createElement(getComponent('VerificationProgram')) }),
                 
                 // Auth page
                 React.createElement(Route, { path: '/auth', element: React.createElement(getComponent('Auth')) }),
@@ -464,7 +491,12 @@ export class SSRRenderer {
                 }),
                 
                 // Alternatives hub
-                React.createElement(Route, { path: '/alternatives', element: React.createElement(getComponent('AlternativesHub')) }),
+                React.createElement(Route, { 
+                  path: '/alternatives', 
+                  element: isSSG 
+                    ? React.createElement(getComponent('AlternativesHub'), { initialFunds: allFunds })
+                    : React.createElement(getComponent('AlternativesHub'))
+                }),
                 
                 // Fund alternatives routes
                 React.createElement(Route, { path: '/:id/alternatives', element: React.createElement(getComponent('FundAlternatives')) }),
