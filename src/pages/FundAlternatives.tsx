@@ -21,10 +21,17 @@ import {
 } from '../components/ui/breadcrumb';
 import { URL_CONFIG } from '../utils/urlConfig';
 import { buildContactUrl, openExternalLink } from '../utils/urlHelpers';
+import { Fund } from '../data/types/funds';
 
-const FundAlternatives = () => {
+interface FundAlternativesProps {
+  initialFunds?: Fund[];
+}
+
+const FundAlternatives: React.FC<FundAlternativesProps> = ({ initialFunds }) => {
   const { id } = useParams<{ id: string }>();
-  const { funds: allFunds = [], loading: isLoading } = useRealTimeFunds();
+  const { funds: allFunds = [], loading: isLoading } = useRealTimeFunds({
+    initialData: initialFunds
+  });
   const fundsWithTags = addTagsToFunds(allFunds);
   const fund = fundsWithTags.find(f => f.id === id);
 

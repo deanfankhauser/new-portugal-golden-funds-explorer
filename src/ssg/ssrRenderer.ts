@@ -499,7 +499,7 @@ export class SSRRenderer {
                 }),
                 
                 // Fund alternatives routes
-                React.createElement(Route, { path: '/:id/alternatives', element: React.createElement(getComponent('FundAlternatives')) }),
+                React.createElement(Route, { path: '/:id/alternatives', element: React.createElement(getComponent('FundAlternatives'), { initialFunds: allFunds }) }),
                 
                 // Fund details routes (must be last due to catch-all nature)
                 // Use SSR-compatible wrapper with direct fund data injection
