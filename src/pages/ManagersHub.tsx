@@ -9,9 +9,16 @@ import ManagersHubBreadcrumbs from '../components/managers-hub/ManagersHubBreadc
 import { getAllFundManagers } from '../data/services/managers-service';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import FundListSkeleton from '../components/common/FundListSkeleton';
+import { Fund } from '../data/types/funds';
 
-const ManagersHub = () => {
-  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds();
+interface ManagersHubProps {
+  initialFunds?: Fund[];
+}
+
+const ManagersHub: React.FC<ManagersHubProps> = ({ initialFunds }) => {
+  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds({
+    initialData: initialFunds
+  });
   const allDatabaseFunds = allFundsData || [];
   
   useEffect(() => {
@@ -21,7 +28,8 @@ const ManagersHub = () => {
 
   const managers = getAllFundManagers(allDatabaseFunds);
 
-  if (isLoading) {
+  // Only show loading when no initial data was provided
+  if (isLoading && !initialFunds) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />

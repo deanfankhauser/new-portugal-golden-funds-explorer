@@ -26,11 +26,14 @@ interface TagPageProps {
     tagSlug: string;
     funds: Fund[];
   };
+  initialFunds?: Fund[];
 }
 
-const TagPage: React.FC<TagPageProps> = ({ tagData: ssrData }) => {
+const TagPage: React.FC<TagPageProps> = ({ tagData: ssrData, initialFunds }) => {
   const { tag: tagSlug } = useParams<{ tag: string }>();
-  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds();
+  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds({
+    initialData: initialFunds || (ssrData ? ssrData.funds : undefined)
+  });
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   
   // Use SSR data if available, otherwise fetch from hook
@@ -92,7 +95,8 @@ const TagPage: React.FC<TagPageProps> = ({ tagData: ssrData }) => {
     // Final processing completed
   }, [tagSlug, matchingTag, displayTagName, tagExists]);
 
-  if (isLoading) {
+  // Show loading state only when no initial data provided
+  if (isLoading && !initialFunds && !ssrData) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />

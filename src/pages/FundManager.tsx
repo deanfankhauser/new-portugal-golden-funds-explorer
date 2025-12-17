@@ -22,9 +22,10 @@ interface FundManagerProps {
     funds: Fund[];
     isVerified: boolean;
   };
+  initialFunds?: Fund[];
 }
 
-const FundManager: React.FC<FundManagerProps> = ({ managerData }) => {
+const FundManager: React.FC<FundManagerProps> = ({ managerData, initialFunds }) => {
   const { name } = useParams<{ name: string }>();
   const navigate = useNavigate();
   const slugName = name || '';
@@ -35,7 +36,9 @@ const FundManager: React.FC<FundManagerProps> = ({ managerData }) => {
   const [managerFunds, setManagerFunds] = useState<Fund[]>([]);
   
   // Fetch all funds from database
-  const { funds: allFunds, loading: isLoading } = useRealTimeFunds();
+  const { funds: allFunds, loading: isLoading } = useRealTimeFunds({
+    initialData: initialFunds || (managerData ? managerData.funds : undefined)
+  });
 
   // Find matching manager and their funds from database
   useEffect(() => {
@@ -143,8 +146,8 @@ const FundManager: React.FC<FundManagerProps> = ({ managerData }) => {
     );
   }
 
-  // Show loading state
-  if (isLoading) {
+  // Show loading state only when no initial data provided
+  if (isLoading && !initialFunds && !managerData) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />

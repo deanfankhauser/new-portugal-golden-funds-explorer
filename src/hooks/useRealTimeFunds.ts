@@ -9,13 +9,16 @@ interface UseRealTimeFundsOptions {
   subscribeTo?: string[];
   // Enable/disable real-time updates
   enableRealTime?: boolean;
+  // Initial data for SSR - when provided, skip loading state
+  initialData?: Fund[];
 }
 
 export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
-  const { subscribeTo, enableRealTime = true } = options;
+  const { subscribeTo, enableRealTime = true, initialData } = options;
   
-  const [funds, setFunds] = useState<Fund[]>([]);
-  const [loading, setLoading] = useState(true);
+  // If initial data provided (SSR), start with that data and loading: false
+  const [funds, setFunds] = useState<Fund[]>(initialData || []);
+  const [loading, setLoading] = useState(initialData ? false : true);
   const [error, setError] = useState<string | null>(null);
   
   // Refs for debouncing and preventing duplicate requests
