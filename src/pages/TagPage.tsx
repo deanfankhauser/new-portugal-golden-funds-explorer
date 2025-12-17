@@ -111,12 +111,15 @@ const TagPage: React.FC<TagPageProps> = ({ tagData: ssrData, initialFunds }) => 
   }
 
   if (!tagExists) {
-    // Tag not found, showing empty state
+    // Tag not found, showing empty state with noindex SEO
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
+        <PageSEO pageType="tag" tagName={displayTagName} funds={[]} />
         <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <TagPageEmptyState tagName={displayTagName} allFunds={allDatabaseFunds} />
+        <main className="flex-1 py-8">
+          <div className="container mx-auto px-4">
+            <TagPageEmptyState tagName={displayTagName} allFunds={allDatabaseFunds} />
+          </div>
         </main>
         <Footer />
       </div>

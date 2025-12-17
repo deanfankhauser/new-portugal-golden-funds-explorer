@@ -112,7 +112,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ categoryData: ssrData, init
         <Header />
         <main className="flex-1 py-6 md:py-8">
           <div className="container mx-auto px-4 max-w-7xl">
-            <CategoryPageEmptyState categoryName={displayCategoryName} />
+            <CategoryPageEmptyState categoryName={displayCategoryName} allCategories={allCategories} />
           </div>
         </main>
         <Footer />
@@ -143,7 +143,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ categoryData: ssrData, init
           </div>
           
           {funds.length === 0 && !showOnlyVerified ? (
-            <CategoryPageEmptyState categoryName={displayCategoryName} />
+            <CategoryPageEmptyState categoryName={displayCategoryName} allCategories={allCategories} />
           ) : funds.length === 0 && showOnlyVerified && allFunds.length > 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground text-lg">
