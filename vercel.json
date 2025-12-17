@@ -59,6 +59,41 @@
       ]
     },
     {
+      "source": "/tags/min.-subscription-100k250k",
+      "destination": "/tags/min-subscription-100k-250k",
+      "permanent": true
+    },
+    {
+      "source": "/tags/min.-subscription-250k350k",
+      "destination": "/tags/min-subscription-250k-350k",
+      "permanent": true
+    },
+    {
+      "source": "/tags/min.-subscription-350k500k",
+      "destination": "/tags/min-subscription-350k-500k",
+      "permanent": true
+    },
+    {
+      "source": "/tags/min.-subscription-500kplus",
+      "destination": "/tags/min-subscription-500k-plus",
+      "permanent": true
+    },
+    {
+      "source": "/tags/long-lock-up-510-years",
+      "destination": "/tags/long-lock-up-5-10-years",
+      "permanent": true
+    },
+    {
+      "source": "/tags/target-yield-35",
+      "destination": "/tags/target-yield-3-5-percent",
+      "permanent": true
+    },
+    {
+      "source": "/tags/target-yield-5",
+      "destination": "/tags/target-yield-5-percent-plus",
+      "permanent": true
+    },
+    {
       "source": "/funds",
       "destination": "/",
       "permanent": true

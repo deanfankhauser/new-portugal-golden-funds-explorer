@@ -39,43 +39,79 @@ export function slugToCategory(slug: string): string {
 }
 
 export function tagToSlug(tag: string): string {
-  // Convert tag to URL slug
+  // Convert tag to URL slug - only lowercase letters, numbers, and hyphens
   
   // Handle special low fees tag
   if (tag.includes('Low fees')) {
     return 'low-fees';
   }
   
-  const slug = tag
+  let slug = tag
     .toLowerCase()
     .trim()
-    .replace(/[><%]/g, '') // Remove special symbols
-    .replace(/\s+/g, '-') // Convert spaces to dashes
-    .replace(/[^\w\-\.]+/g, '') // Keep only word chars, dashes, and dots
-    .replace(/--+/g, '-') // Normalize multiple dashes
-    .replace(/^-+|-+$/g, ''); // Remove leading and trailing dashes
+    // Handle special characters with meaningful replacements
+    .replace(/€/g, '')                    // Remove Euro symbol
+    .replace(/[–—]/g, '-')                // Convert em-dash/en-dash to hyphen
+    .replace(/\s*&\s*/g, '-and-')         // Convert & to -and-
+    .replace(/</g, 'less-than-')          // Convert < to less-than-
+    .replace(/>/g, 'greater-than-')       // Convert > to greater-than-
+    .replace(/%/g, '-percent')            // Convert % to -percent
+    .replace(/\+$/g, '-plus')             // Convert trailing + to -plus
+    .replace(/\./g, '')                   // Remove dots completely
+    .replace(/\s+/g, '-')                 // Convert spaces to hyphens
+    .replace(/(\d+k)(\d)/gi, '$1-$2')     // Insert hyphen between "250k" and "350" → "250k-350"
+    .replace(/(\d)(\d{3}k)/gi, '$1-$2')   // Insert hyphen between numbers like "5" and "10" → "5-10"
+    .replace(/[^a-z0-9-]/g, '')           // Remove any remaining special characters (only keep letters, numbers, hyphens)
+    .replace(/-+/g, '-')                  // Normalize multiple hyphens to single
+    .replace(/^-+|-+$/g, '');             // Remove leading/trailing hyphens
   
-  // Return URL-safe tag slug
   return slug;
 }
 
 export function slugToTag(slug: string): string {
   // Convert URL slug back to tag
   
-  // Handle special low fees tag
+  // Handle special cases
   if (slug === 'low-fees') {
     return 'Low fees (<1% management fee)';
   }
   
+  // Handle min-subscription patterns
+  if (slug.startsWith('min-subscription-')) {
+    const range = slug.replace('min-subscription-', '');
+    // Convert "100k-250k" back to "Min. subscription €100k–€250k"
+    const parts = range.split('-').filter(p => p);
+    if (parts.length === 2) {
+      return `Min. subscription €${parts[0].toUpperCase()}–€${parts[1].toUpperCase()}`;
+    }
+    if (parts.length === 1 && parts[0].includes('plus')) {
+      return `Min. subscription €${parts[0].replace('plus', '+').toUpperCase()}`;
+    }
+  }
+  
+  // Handle target-yield patterns
+  if (slug.startsWith('target-yield-')) {
+    const value = slug.replace('target-yield-', '');
+    if (value.includes('plus')) {
+      return `Target yield >${value.replace('-percent', '%').replace('-plus', '').replace(/-/g, '')}`;
+    }
+    return `Target yield ${value.replace('-percent', '%').replace(/-/g, '–')}`;
+  }
+  
+  // Handle long-lock-up patterns
+  if (slug.startsWith('long-lock-up-')) {
+    const range = slug.replace('long-lock-up-', '').replace('-years', '');
+    return `Long lock-up (${range.replace(/-/g, '–')} years)`;
+  }
+  
   // Clean up the slug first
-  const cleanSlug = slug.replace(/^-+|-+$/g, ''); // Remove leading/trailing dashes
+  const cleanSlug = slug.replace(/^-+|-+$/g, '');
   
   // General conversion
   let converted = cleanSlug
     .replace(/-/g, ' ')
     .replace(/\b\w/g, l => l.toUpperCase());
   
-  // Return readable tag name
   return converted;
 }
 
