@@ -24,8 +24,8 @@ const ComparisonsHub: React.FC<ComparisonsHubProps> = ({ initialFunds }) => {
         <ComparisonsHubBreadcrumbs />
         <ComparisonsHubHeader />
         <ComparisonFinder />
-        <ComparisonsList />
-        
+        <ComparisonsList initialFunds={initialFunds} />
+
         {/* Link to Main Hub */}
         <div className="mt-8 text-center">
           <a 

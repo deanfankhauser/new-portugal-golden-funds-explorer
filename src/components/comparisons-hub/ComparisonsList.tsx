@@ -6,23 +6,31 @@ import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
 import { Button } from '@/components/ui/button';
 import { GitCompare, Loader2 } from 'lucide-react';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '../ui/pagination';
+import { Fund } from '@/data/types/funds';
 
-const ComparisonsList = () => {
+interface ComparisonsListProps {
+  initialFunds?: Fund[];
+}
+
+const ComparisonsList: React.FC<ComparisonsListProps> = ({ initialFunds }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const comparisonsPerPage = 24;
   
-  // Fetch all funds from database
-  const { funds: allFunds, loading: isLoading } = useRealTimeFunds();
+  // Fetch all funds from database (or use initialFunds for SSR)
+  const { funds: queryFunds, loading: isLoading } = useRealTimeFunds({ initialData: initialFunds });
+  
+  // Use initialFunds for SSR, queryFunds for client-side
+  const allFunds = initialFunds || queryFunds;
   
   // Generate comparisons from database funds
   const comparisons = allFunds ? generateComparisonsFromFunds(allFunds) : [];
-  
+
   const totalPages = Math.ceil(comparisons.length / comparisonsPerPage);
   const startIndex = (currentPage - 1) * comparisonsPerPage;
   const currentComparisons = comparisons.slice(startIndex, startIndex + comparisonsPerPage);
 
-  // Show loading state
-  if (isLoading) {
+  // Show loading state only if no initialFunds and still loading from query
+  if (!initialFunds && isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="flex items-center gap-2 text-muted-foreground">
