@@ -10,10 +10,14 @@ import { CompanyLogo } from '../shared/CompanyLogo';
 
 interface FundComparisonSuggestionsProps {
   currentFund: Fund;
+  initialFunds?: Fund[]; // For SSR internal linking
 }
 
-const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ currentFund }) => {
-  const { funds = [], loading: isLoading } = useRealTimeFunds();
+const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ currentFund, initialFunds }) => {
+  const { funds: queryFunds = [], loading: isLoading } = useRealTimeFunds();
+  
+  // Use initialFunds during SSR, queryFunds for client-side
+  const funds = initialFunds && initialFunds.length > 0 ? initialFunds : queryFunds;
 
   // Find similar funds based on category and size
   const suggestedFunds = funds
@@ -24,7 +28,9 @@ const FundComparisonSuggestions: React.FC<FundComparisonSuggestionsProps> = ({ c
     )
     .slice(0, 3);
 
-  if (isLoading || suggestedFunds.length === 0) return null;
+  // During SSR with initialFunds, skip loading check
+  if (!initialFunds && isLoading) return null;
+  if (suggestedFunds.length === 0) return null;
 
   return (
     <div className="mt-12 bg-card rounded-2xl border border-border/40 shadow-sm p-6 lg:p-10">
