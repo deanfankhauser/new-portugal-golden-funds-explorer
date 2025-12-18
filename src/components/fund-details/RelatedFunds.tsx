@@ -63,11 +63,14 @@ const RelatedFundCard: React.FC<{ fund: Fund }> = ({ fund }) => {
 
 interface RelatedFundsProps {
   currentFund: Fund;
+  initialFunds?: Fund[]; // For SSR internal linking
 }
 
-const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund }) => {
-  const { funds: allFundsData } = useRealTimeFunds();
-  const allDatabaseFunds = allFundsData || [];
+const RelatedFunds: React.FC<RelatedFundsProps> = ({ currentFund, initialFunds }) => {
+  const { funds: queryFunds } = useRealTimeFunds();
+  
+  // Use initialFunds during SSR, queryFunds for client-side
+  const allDatabaseFunds = initialFunds && initialFunds.length > 0 ? initialFunds : (queryFunds || []);
   
   // Get funds from the same category
   const sameCategoryFunds = getFundsByCategory(allDatabaseFunds, currentFund.category)

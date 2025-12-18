@@ -40,11 +40,25 @@ import { formatPercentage } from './utils/formatters';
 import { FundEnquirySection } from './FundEnquirySection';
 import ContactSidebar from './ContactSidebar';
 
-interface FundDetailsContentProps {
-  fund: Fund;
+interface TeamMemberSSR {
+  id: string;
+  slug: string;
+  name: string;
+  role: string;
+  profile_id: string;
+  linkedin_url?: string;
+  photo_url?: string;
+  bio?: string;
+  company_name?: string;
 }
 
-const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
+interface FundDetailsContentProps {
+  fund: Fund;
+  initialFunds?: Fund[]; // For SSR internal linking
+  initialTeamMembers?: TeamMemberSSR[]; // For SSR team member links
+}
+
+const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund, initialFunds, initialTeamMembers }) => {
   const isGVEligible = isFundGVEligible(fund);
   
   // Filter out "Golden Visa Eligible" tag for non-GV funds
@@ -114,7 +128,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
                     {/* Team Information Section */}
                     <section id="team-information" className="scroll-mt-28 md:scroll-mt-24">
                       <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Team Information</h2>
-                      <TeamSection team={fund.team} managerName={fund.managerName} />
+                      <TeamSection team={fund.team} managerName={fund.managerName} initialTeamMembers={initialTeamMembers} />
                     </section>
 
                     {/* Enquiry Form Section */}
@@ -164,13 +178,13 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
       {/* Bottom Sections with Proper Spacing */}
       <div className="space-y-8 md:space-y-12 mt-8 md:mt-12">
         {/* Related Funds Section */}
-        <RelatedFunds currentFund={fund} />
+        <RelatedFunds currentFund={fund} initialFunds={initialFunds} />
         
         {/* Alternative Funds Section */}
-        <AlternativeFunds currentFund={fund} />
+        <AlternativeFunds currentFund={fund} initialFunds={initialFunds} />
         
         {/* Fund Comparison Suggestions */}
-        <FundComparisonSuggestions currentFund={fund} />
+        <FundComparisonSuggestions currentFund={fund} initialFunds={initialFunds} />
         
         {/* FAQ Section */}
         <FundFAQSection fund={fund} />

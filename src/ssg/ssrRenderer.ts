@@ -10,7 +10,7 @@ import { StaticRoute } from './routeDiscovery';
 import { loadComponents, TooltipProvider } from './componentLoader';
 import { ComparisonProvider } from '../contexts/ComparisonContext';
 import { RecentlyViewedProvider } from '../contexts/RecentlyViewedContext';
-import { fetchAllFundsForBuild } from '../lib/build-data-fetcher';
+import { fetchAllFundsForBuild, fetchAllTeamMembersForBuild } from '../lib/build-data-fetcher';
 import type { Fund } from '../data/types/funds';
 
 // Ensure React is available globally for SSR
@@ -134,6 +134,10 @@ export class SSRRenderer {
     console.log(`🔥 SSR: Prefetching data for SSG...`);
     const allFunds = await fetchAllFundsForBuild();
     console.log(`🔥 SSR: Prefetched ${allFunds.length} funds for SSG`);
+    
+    // Also prefetch team members for internal linking
+    const allTeamMembers = await fetchAllTeamMembersForBuild();
+    console.log(`🔥 SSR: Prefetched ${allTeamMembers.length} team members for SSG`);
 
     // Handle category pages
     let categoryDataForSSR: {
@@ -508,9 +512,11 @@ export class SSRRenderer {
                   element: isSSG && fundDataForSSR
                     ? React.createElement(getComponent('FundDetails'), { 
                         fund: fundDataForSSR, 
-                        initialId: fundDataForSSR.id 
+                        initialId: fundDataForSSR.id,
+                        initialFunds: allFunds,
+                        initialTeamMembers: allTeamMembers
                       })
-                    : React.createElement(getComponent('FundDetails'), fundDataForSSR ? { fund: fundDataForSSR } : null)
+                    : React.createElement(getComponent('FundDetails'), fundDataForSSR ? { fund: fundDataForSSR, initialFunds: allFunds, initialTeamMembers: allTeamMembers } : null)
                 })
               )
             )

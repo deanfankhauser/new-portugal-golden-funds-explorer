@@ -6,13 +6,51 @@ import AuthGate from '../auth/AuthGate';
 import { useCompanyTeamMembers } from '@/hooks/useCompanyTeamMembers';
 import TeamMemberCard from '../common/TeamMemberCard';
 
+interface TeamMemberSSR {
+  id: string;
+  slug: string;
+  name: string;
+  role: string;
+  profile_id: string;
+  linkedin_url?: string;
+  photo_url?: string;
+  bio?: string;
+  company_name?: string;
+}
+
 interface TeamSectionProps {
   team?: TeamMember[] | FundTeamMemberReference[];
   managerName: string;
+  initialTeamMembers?: TeamMemberSSR[]; // For SSR team member links
 }
 
-const TeamSection: React.FC<TeamSectionProps> = ({ team, managerName }) => {
-  const { members: companyTeam, loading } = useCompanyTeamMembers(managerName);
+const TeamSection: React.FC<TeamSectionProps> = ({ team, managerName, initialTeamMembers }) => {
+  const { members: queryTeamMembers, loading } = useCompanyTeamMembers(managerName);
+  
+  // Use initialTeamMembers during SSR, filter by company_name
+  const companyTeam = useMemo(() => {
+    // For SSR: use initialTeamMembers filtered by managerName
+    if (initialTeamMembers && initialTeamMembers.length > 0) {
+      const filtered = initialTeamMembers.filter(m => 
+        m.company_name?.toLowerCase() === managerName.toLowerCase() ||
+        m.company_name?.toLowerCase().includes(managerName.toLowerCase()) ||
+        managerName.toLowerCase().includes(m.company_name?.toLowerCase() || '')
+      );
+      if (filtered.length > 0) {
+        return filtered.map(m => ({
+          member_id: m.id,
+          slug: m.slug,
+          name: m.name,
+          role: m.role,
+          bio: m.bio,
+          photoUrl: m.photo_url,
+          linkedinUrl: m.linkedin_url,
+        }));
+      }
+    }
+    // For client-side: use queryTeamMembers
+    return queryTeamMembers;
+  }, [initialTeamMembers, queryTeamMembers, managerName]);
 
   // Resolve team members: ALWAYS prefer database data with slugs
   const resolvedTeam = useMemo(() => {
@@ -53,7 +91,8 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team, managerName }) => {
   }, [team, companyTeam]);
 
   // Don't show placeholder during loading - return null to prevent "Loading..." showing to crawlers
-  if (loading) {
+  // But during SSR with initialTeamMembers, skip loading check
+  if (!initialTeamMembers && loading) {
     return null;
   }
 
