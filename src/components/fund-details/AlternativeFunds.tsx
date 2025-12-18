@@ -105,14 +105,20 @@ const AlternativeFundCard: React.FC<{ fund: Fund }> = ({ fund }) => {
 
 interface AlternativeFundsProps {
   currentFund: Fund;
+  initialFunds?: Fund[]; // For SSR internal linking
 }
 
-const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund }) => {
-  const { funds: allFunds = [], loading: isLoading } = useRealTimeFunds();
+const AlternativeFunds: React.FC<AlternativeFundsProps> = ({ currentFund, initialFunds }) => {
+  const { funds: queryFunds = [], loading: isLoading } = useRealTimeFunds();
+  
+  // Use initialFunds during SSR, queryFunds for client-side
+  const allFunds = initialFunds && initialFunds.length > 0 ? initialFunds : queryFunds;
   const fundsWithTags = addTagsToFunds(allFunds);
   const alternativeFunds = findAlternativeFunds(fundsWithTags, currentFund);
 
-  if (isLoading || alternativeFunds.length === 0) {
+  // During SSR with initialFunds, skip loading check
+  if (!initialFunds && isLoading) return null;
+  if (alternativeFunds.length === 0) {
     return null;
   }
 

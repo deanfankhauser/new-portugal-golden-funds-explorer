@@ -12,12 +12,26 @@ import { useFund } from '../hooks/useFundsQuery';
 import { trackPageView } from '../utils/analyticsTracking';
 import type { Fund } from '../data/types/funds';
 
+interface TeamMemberSSR {
+  id: string;
+  slug: string;
+  name: string;
+  role: string;
+  profile_id: string;
+  linkedin_url?: string;
+  photo_url?: string;
+  bio?: string;
+  company_name?: string;
+}
+
 interface FundDetailsProps { 
   fund?: Fund;
   initialId?: string; // For SSR
+  initialFunds?: Fund[]; // For SSR internal linking
+  initialTeamMembers?: TeamMemberSSR[]; // For SSR team member links
 }
 
-const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund, initialId }) => {
+const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund, initialId, initialFunds, initialTeamMembers }) => {
   const isSSR = typeof window === 'undefined';
   const { id, potentialFundId } = useParams<{ id?: string; potentialFundId?: string }>();
   const location = useLocation();
@@ -104,7 +118,7 @@ const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund, initialId }) =
       
       <main className="flex-1 py-6 md:py-8 pb-32 lg:pb-8">
         <div className="container mx-auto px-4 max-w-7xl">
-          <FundDetailsContent fund={fund} />
+          <FundDetailsContent fund={fund} initialFunds={initialFunds} initialTeamMembers={initialTeamMembers} />
         </div>
       </main>
       
