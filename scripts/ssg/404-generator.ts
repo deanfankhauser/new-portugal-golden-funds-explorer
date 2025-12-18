@@ -1,17 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import { generateHTMLTemplate } from '../../src/ssg/htmlTemplateGenerator';
+import { getNotFoundSeo } from '../../src/lib/seo';
 
 export async function generate404Page(distDir: string): Promise<void> {
   try {
-    // Create 404 SEO data with noindex
-    const seoData = {
-      title: '404 - Page Not Found | Movingto - Portugal Golden Visa Funds',
-      description: 'The page you are looking for could not be found. Browse our Portugal Golden Visa investment fund index.',
-      url: 'https://funds.movingto.com/404',
-      robots: 'noindex, follow',
-      keywords: []
-    };
+    // Get SEO data from centralized helper
+    const seoData = getNotFoundSeo();
 
     // Simple 404 HTML content
     const html404Content = `
@@ -43,23 +38,23 @@ export async function generate404Page(distDir: string): Promise<void> {
         <footer class="bg-gray-50 border-t">
           <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <p class="text-center text-gray-500">
-              © 2024 Movingto. All rights reserved.
+              © ${new Date().getFullYear()} Movingto. All rights reserved.
             </p>
           </div>
         </footer>
       </div>
     `;
 
-    // Generate full HTML with proper SEO
+    // Generate full HTML with proper SEO from centralized helper
     const fullHTML = generateHTMLTemplate(html404Content, seoData, [], []);
     
     // Write 404.html to dist directory
     const outputPath = path.join(distDir, '404.html');
     fs.writeFileSync(outputPath, fullHTML);
     
-    console.log('✅ SSG: Generated 404.html with noindex robots');
+    console.log('✅ SSG: Generated 404.html with noindex robots and WebPage structured data');
     
   } catch (error) {
-    console.error('❌ SSG: Failed to generate 404.html:', error.message);
+    console.error('❌ SSG: Failed to generate 404.html:', (error as Error).message);
   }
 }
