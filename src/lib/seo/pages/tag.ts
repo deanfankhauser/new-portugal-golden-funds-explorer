@@ -39,25 +39,51 @@ export function getTagSeo(tagName: string, funds: Fund[] = []): SEOData {
 }
 
 function getTagStructuredData(tagName: string, funds: Fund[] = []): any {
-  return [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      'name': `${tagName} Investment Funds`,
-      'description': `Collection of ${tagName} investment funds in Portugal`,
-      'url': URL_CONFIG.buildTagUrl(tagName)
-    },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'ItemList',
-      'name': `${tagName} Portugal Golden Visa Investment Funds`,
-      'numberOfItems': funds.length,
-      'itemListElement': funds.map((fund, index) => ({
+  const collectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    'name': `${tagName} Investment Funds`,
+    'description': `Collection of ${tagName} investment funds in Portugal`,
+    'url': URL_CONFIG.buildTagUrl(tagName)
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      {
         '@type': 'ListItem',
-        'position': index + 1,
-        'url': URL_CONFIG.buildFundUrl(fund.id),
-        'name': fund.name
-      }))
-    }
-  ];
+        'position': 1,
+        'name': 'Home',
+        'item': URL_CONFIG.BASE_URL
+      },
+      {
+        '@type': 'ListItem',
+        'position': 2,
+        'name': 'Tags',
+        'item': URL_CONFIG.buildUrl('/tags')
+      },
+      {
+        '@type': 'ListItem',
+        'position': 3,
+        'name': tagName,
+        'item': URL_CONFIG.buildTagUrl(tagName)
+      }
+    ]
+  };
+
+  const itemListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    'name': `${tagName} Portugal Golden Visa Investment Funds`,
+    'numberOfItems': funds.length,
+    'itemListElement': funds.map((fund, index) => ({
+      '@type': 'ListItem',
+      'position': index + 1,
+      'url': URL_CONFIG.buildFundUrl(fund.id),
+      'name': fund.name
+    }))
+  };
+
+  return [collectionSchema, breadcrumbSchema, itemListSchema];
 }

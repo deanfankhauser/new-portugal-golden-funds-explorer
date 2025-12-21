@@ -45,6 +45,31 @@ function getCategoryStructuredData(categoryName: string, funds: Fund[] = []): an
     'url': URL_CONFIG.buildCategoryUrl(categoryName)
   };
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      {
+        '@type': 'ListItem',
+        'position': 1,
+        'name': 'Home',
+        'item': URL_CONFIG.BASE_URL
+      },
+      {
+        '@type': 'ListItem',
+        'position': 2,
+        'name': 'Categories',
+        'item': URL_CONFIG.buildUrl('/categories')
+      },
+      {
+        '@type': 'ListItem',
+        'position': 3,
+        'name': categoryName,
+        'item': URL_CONFIG.buildCategoryUrl(categoryName)
+      }
+    ]
+  };
+
   const itemListSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -58,5 +83,5 @@ function getCategoryStructuredData(categoryName: string, funds: Fund[] = []): an
     }))
   };
 
-  return [baseSchema, itemListSchema];
+  return [baseSchema, breadcrumbSchema, itemListSchema];
 }

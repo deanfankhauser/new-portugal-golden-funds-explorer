@@ -82,7 +82,7 @@ export function getFundComparisonFallbackSeo(normalizedSlug: string): SEOData {
 }
 
 function getComparisonStructuredData(): any {
-  return {
+  const webPageSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     'name': 'Portugal Golden Visa Fund Comparison Tool',
@@ -96,6 +96,39 @@ function getComparisonStructuredData(): any {
       }
     }
   };
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'mainEntity': [
+      {
+        '@type': 'Question',
+        'name': 'How do I compare Portugal Golden Visa funds?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': 'Select any two funds from our directory to see a side-by-side comparison of fees, minimums, returns, and strategy differences.'
+        }
+      },
+      {
+        '@type': 'Question',
+        'name': 'What factors should I consider when comparing funds?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': 'Key factors include minimum investment amount, management fees, target returns, lock-up period, redemption frequency, and Golden Visa eligibility.'
+        }
+      },
+      {
+        '@type': 'Question',
+        'name': 'Are all funds on this platform eligible for Portugal Golden Visa?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': 'Yes, all funds listed are eligible for the Portugal Golden Visa program, meeting the €500,000 minimum investment requirement for qualifying investment funds.'
+        }
+      }
+    ]
+  };
+
+  return [webPageSchema, faqSchema];
 }
 
 function getFundComparisonStructuredData(fund1: Fund, fund2: Fund): any {
