@@ -89,6 +89,7 @@ export type FundCategory =
   | 'Bitcoin'
   | 'Crypto'
   | 'Clean Energy'
+  | 'Mixed'
   | 'Other';
 
 export type RiskBand = 'Conservative' | 'Balanced' | 'Aggressive';
