@@ -129,14 +129,18 @@ export class RouteDiscovery {
       });
     });
 
-    // Tag pages
+    // Tag pages - only include tags with funds
+    const { getFundsByTag } = await import('../data/services/tags-service');
     tags.forEach(tag => {
-      const slug = tagToSlug(tag);
-      routes.push({
-        path: `/tags/${slug}`,
-        pageType: 'tag',
-        params: { tagName: tag }
-      });
+      const fundsWithTag = getFundsByTag(funds, tag);
+      if (fundsWithTag.length > 0) {
+        const slug = tagToSlug(tag);
+        routes.push({
+          path: `/tags/${slug}`,
+          pageType: 'tag',
+          params: { tagName: tag }
+        });
+      }
     });
 
     // Fund comparison pages (canonical - keep in sitemap)
@@ -150,14 +154,14 @@ export class RouteDiscovery {
       });
     });
 
-    // Fund alternatives pages (non-canonical - exclude from sitemap, canonical points to main fund page)
+    // Fund alternatives pages (now canonical and indexable)
     funds.forEach(fund => {
       routes.push({
         path: `/${fund.id}/alternatives`,
         pageType: 'fund-alternatives',
         params: { fundName: fund.name },
         fundId: fund.id,
-        isCanonical: false
+        isCanonical: true
       });
     });
 
