@@ -4,8 +4,10 @@ import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 
 export function getHomeSeo(funds?: Fund[]): SEOData {
+  const fundCount = funds?.length || 40;
+  
   return {
-    title: 'Portugal Golden Visa Funds – Compare CMVM-Linked Funds | Movingto',
+    title: 'Portugal Golden Visa Funds Directory | Compare CMVM-Linked Funds',
     keywords: [
       'Portugal Golden Visa funds',
       'CMVM funds',
@@ -15,7 +17,7 @@ export function getHomeSeo(funds?: Fund[]): SEOData {
       'CMVM regulated funds',
       'investment immigration Portugal'
     ],
-    description: 'Compare Portugal Golden Visa investment funds. Independent analysis of CMVM-linked funds with transparent fees, strategies, and risk profiles.',
+    description: `Compare fees, performance, minimums and risk across ${fundCount}+ Portugal Golden Visa investment funds. Independent CMVM-linked fund analysis.`,
     url: URL_CONFIG.buildUrl('/'),
     canonical: URL_CONFIG.buildUrl('/'),
     structuredData: getHomepageStructuredData(funds)

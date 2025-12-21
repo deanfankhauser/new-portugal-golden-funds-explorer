@@ -1,10 +1,9 @@
 import { SEOData } from '../types';
-import { optimizeTitle, optimizeDescription, getCurrentYear } from '../utils';
-import { MAX_TITLE_LENGTH, MAX_DESCRIPTION_LENGTH } from '../constants';
+import { optimizeTitle, optimizeDescription } from '../utils';
+import { MAX_TITLE_LENGTH } from '../constants';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 import { InvestmentFundStructuredDataService } from '@/services/investmentFundStructuredDataService';
-import { getReturnTargetDisplay } from '@/utils/returnTarget';
 
 export function getFundSeo(fund: Fund): SEOData {
   const fundTitle = generateFundTitle(fund);
@@ -32,29 +31,21 @@ export function getFundFallbackSeo(fundIdOrName: string): SEOData {
 }
 
 function generateFundTitle(fund: Fund): string {
-  const currentYear = getCurrentYear();
   const fundName = fund.name;
+  const suffix = ' | Portugal Golden Visa Fund (CMVM)';
   const maxLength = MAX_TITLE_LENGTH;
   
-  // Primary title: [Fund Name]: {Year} Fees, Yield & Golden Visa Fact Sheet
-  const fullTitle = `${fundName}: ${currentYear} Fees, Yield & Golden Visa Fact Sheet`;
+  // Primary title: "{Fund Name} | Portugal Golden Visa Fund (CMVM)"
+  const fullTitle = `${fundName}${suffix}`;
   
   if (fullTitle.length <= maxLength) {
     return fullTitle;
   }
   
-  // Truncated fallback: [Fund Name]: {Year} Golden Visa Fact Sheet
-  const shortTitle = `${fundName}: ${currentYear} Golden Visa Fact Sheet`;
-  
-  if (shortTitle.length <= maxLength) {
-    return shortTitle;
-  }
-  
-  // Final fallback: Truncate fund name to fit
-  const suffixLength = `: ${currentYear} Golden Visa Fact Sheet`.length;
-  const maxNameLength = maxLength - suffixLength - 3;
+  // Truncate fund name to fit within limit
+  const maxNameLength = maxLength - suffix.length - 3;
   const truncatedName = fundName.substring(0, maxNameLength).trim() + '...';
-  return `${truncatedName}: ${currentYear} Golden Visa Fact Sheet`;
+  return `${truncatedName}${suffix}`;
 }
 
 function generateFundDescription(fund: Fund): string {
@@ -66,41 +57,30 @@ function generateFundDescription(fund: Fund): string {
     ? `€${(fund.minimumInvestment / 1000).toFixed(0)}k minimum`
     : null;
   
-  // Target return using existing utility
-  const returnTarget = getReturnTargetDisplay(fund);
+  // Manager name
+  const managerName = fund.managerName || null;
   
-  // Lock-up/liquidity - use redemption terms or cast to any for database field
-  const fundAny = fund as any;
-  const lockUpMonths = fund.redemptionTerms?.minimumHoldingPeriod || fundAny.lock_up_period_months;
-  const lockUpStr = lockUpMonths 
-    ? lockUpMonths >= 12 
-      ? `${Math.round(lockUpMonths / 12)}-year lock-up` 
-      : `${lockUpMonths}-month lock-up`
-    : null;
+  // Build description: "{Fund Name} — {min} minimum. {Category} strategy by {Manager}. Compare fees, returns, lock-up for Golden Visa."
+  const parts: string[] = [];
   
-  // Manager + regulation
-  const managerStr = fund.managerName ? `Managed by ${fund.managerName}` : null;
-  const cmvmStr = fund.cmvmId ? `CMVM #${fund.cmvmId}` : null;
-  
-  // Build description based on available data
-  if (returnTarget) {
-    // Template WITH target return - prioritize key decision data
-    const basePart = `${fundName} is a ${category} Portugal Golden Visa fund`;
-    const minPart = minInvestmentStr ? ` with ${minInvestmentStr}` : '';
-    const returnPart = `Target: ${returnTarget}.`;
-    
-    const details = [lockUpStr, managerStr, cmvmStr].filter(Boolean);
-    const detailsPart = details.length > 0 ? ` ${details.slice(0, 2).join('. ')}.` : '';
-    
-    return `${basePart}${minPart}. ${returnPart}${detailsPart}`;
+  // Start with fund name and minimum
+  if (minInvestmentStr) {
+    parts.push(`${fundName} — ${minInvestmentStr}`);
   } else {
-    // Template WITHOUT target return
-    const basePart = `${fundName} is a ${category} Portugal Golden Visa fund`;
-    const minPart = minInvestmentStr ? ` with ${minInvestmentStr}` : '';
-    const managerPart = managerStr ? ` ${managerStr}.` : '';
-    
-    return `${basePart}${minPart}.${managerPart} Check fees, lock-up, and risk profile before investing.`;
+    parts.push(fundName);
   }
+  
+  // Add category strategy and manager
+  if (managerName) {
+    parts.push(`${category} strategy by ${managerName}`);
+  } else {
+    parts.push(`${category} strategy`);
+  }
+  
+  // Add call to action
+  parts.push('Compare fees, returns, lock-up for Golden Visa');
+  
+  return parts.join('. ') + '.';
 }
 
 function generateFundKeywords(fund: Fund): string[] {

@@ -5,8 +5,8 @@ import { Fund } from '@/data/types/funds';
 
 export function getComparisonSeo(): SEOData {
   return {
-    title: optimizeTitle('Portugal Golden Visa Fund Comparison Tool – Compare Any Two Funds | Movingto Funds'),
-    description: optimizeDescription('Compare Portugal Golden Visa funds side by side. Check performance, fees, risk, liquidity, minimum investment and more before choosing your fund.'),
+    title: 'Compare Portugal Golden Visa Funds Side by Side',
+    description: 'Compare any two Portugal Golden Visa investment funds. Review fees, minimums, returns, and strategy differences before investing.',
     url: URL_CONFIG.buildUrl('/compare'),
     canonical: URL_CONFIG.buildUrl('/compare'),
     keywords: [
@@ -14,7 +14,6 @@ export function getComparisonSeo(): SEOData {
       'compare investment funds Portugal',
       'fund comparison tool',
       'investment fund analysis',
-      'Golden Visa fund comparison tool',
       'side-by-side fund comparison'
     ],
     structuredData: getComparisonStructuredData()
@@ -22,26 +21,43 @@ export function getComparisonSeo(): SEOData {
 }
 
 export function getFundComparisonSeo(fund1: Fund, fund2: Fund, normalizedSlug: string): SEOData {
+  // Format minimum investments
+  const min1 = fund1.minimumInvestment ? `€${(fund1.minimumInvestment / 1000).toFixed(0)}k` : 'N/A';
+  const min2 = fund2.minimumInvestment ? `€${(fund2.minimumInvestment / 1000).toFixed(0)}k` : 'N/A';
+  const cat1 = fund1.category || 'investment';
+  const cat2 = fund2.category || 'investment';
+  
+  // Smart title truncation for long fund names
+  const maxTitleLength = 60;
+  const suffix = ' | Portugal Golden Visa Funds';
+  let title = `Compare ${fund1.name} vs ${fund2.name}${suffix}`;
+  
+  if (title.length > maxTitleLength) {
+    // Use shorter fund names if available, otherwise truncate
+    const shortName1 = fund1.name.split(' ').slice(0, 2).join(' ');
+    const shortName2 = fund2.name.split(' ').slice(0, 2).join(' ');
+    title = `Compare ${shortName1} vs ${shortName2}${suffix}`;
+    
+    if (title.length > maxTitleLength) {
+      title = `${shortName1} vs ${shortName2}${suffix}`;
+    }
+  }
+  
+  // Description with key differences
+  const description = `Compare ${fund1.name} vs ${fund2.name}: ${min1} vs ${min2} minimum, ${cat1} vs ${cat2} strategy. Key differences for Golden Visa.`;
+  
   return {
-    title: optimizeTitle(`${fund1.name} vs ${fund2.name} | Portugal Golden Visa Fund Comparison`),
-    description: optimizeDescription(`Compare ${fund1.name} and ${fund2.name} for the Portugal Golden Visa. Review minimum investment, fees, target returns, lock-up periods, and risk side by side.`),
+    title: title,
+    description: optimizeDescription(description),
     url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
     canonical: URL_CONFIG.buildComparisonUrl(normalizedSlug),
     robots: 'index, follow',
     keywords: [
       `${fund1.name} vs ${fund2.name}`,
       'fund comparison',
-      'investment comparison',
-      'fund review',
-      'fees comparison',
-      'risk comparison',
       'Golden Visa fund comparison',
       'investment fund analysis',
-      `${fund1.managerName}`,
-      `${fund2.managerName}`,
-      'fund performance comparison',
-      'compare funds',
-      'investment analysis'
+      'compare funds Portugal'
     ],
     structuredData: getFundComparisonStructuredData(fund1, fund2)
   };
