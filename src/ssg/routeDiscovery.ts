@@ -119,8 +119,13 @@ export class RouteDiscovery {
       console.warn('⚠️ WARNING: No team members found in database! Team member routes will not be generated.');
     }
 
-    // Category pages
-    categories.forEach(category => {
+    // Category pages - include all known categories even if empty
+    const allKnownCategories = [
+      'Venture Capital', 'Private Equity', 'Real Estate', 'Infrastructure',
+      'Debt', 'Credit', 'Fund-of-Funds', 'Bitcoin', 'Crypto', 'Clean Energy', 'Mixed', 'Other'
+    ];
+    const categorySet = new Set([...categories, ...allKnownCategories]);
+    categorySet.forEach(category => {
       const slug = categoryToSlug(category);
       routes.push({
         path: `/categories/${slug}`,
