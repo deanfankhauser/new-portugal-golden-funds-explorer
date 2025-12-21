@@ -470,7 +470,12 @@ export class SSRRenderer {
                 React.createElement(Route, { path: '/about', element: React.createElement(getComponent('About')) }),
                 React.createElement(Route, { path: '/disclaimer', element: React.createElement(getComponent('Disclaimer')) }),
                 React.createElement(Route, { path: '/privacy', element: React.createElement(getComponent('Privacy')) }),
-                React.createElement(Route, { path: '/compare', element: React.createElement(getComponent('ComparisonPage')) }),
+                React.createElement(Route, { 
+                  path: '/compare', 
+                  element: isSSG 
+                    ? React.createElement(getComponent('ComparisonPage'), { initialFunds: allFunds })
+                    : React.createElement(getComponent('ComparisonPage'))
+                }),
                 React.createElement(Route, { 
                   path: '/comparisons', 
                   element: isSSG 
