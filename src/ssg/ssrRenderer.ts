@@ -414,8 +414,13 @@ export class SSRRenderer {
               React.createElement(
                 Routes,
                 null,
-                // Main routes
-                React.createElement(Route, { path: '/', element: React.createElement(getComponent('Index')) }),
+                // Main routes - pass initialFunds for SSR to include fund directory in static HTML
+                React.createElement(Route, { 
+                  path: '/', 
+                  element: isSSG 
+                    ? React.createElement(getComponent('Index'), { initialFunds: allFunds })
+                    : React.createElement(getComponent('Index'))
+                }),
                 
                 // Hub pages - pass SSR funds data for immediate rendering
                 React.createElement(Route, { 
