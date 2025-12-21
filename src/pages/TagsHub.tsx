@@ -49,7 +49,7 @@ const TagsHub: React.FC<TagsHubProps> = ({ initialFunds }) => {
       <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1" itemScope itemType="https://schema.org/CollectionPage">
         <TagsHubBreadcrumbs />
         <TagsHubHeader />
-        <TagsHubTagsList allTags={allTags} />
+        <TagsHubTagsList allTags={allTags} allFunds={allDatabaseFunds} />
         
         {/* Link to Main Hub */}
         <div className="mt-8 text-center">

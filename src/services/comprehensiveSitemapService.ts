@@ -209,16 +209,20 @@ ${sitemapElements}
       console.warn('Failed to generate category URLs:', error);
     }
 
-    // Tag pages
+    // Tag pages - only include tags with funds
     try {
+      const { getFundsByTag } = await import('../data/services/tags-service');
       tags.forEach(tag => {
-        const slug = tagToSlug(tag);
-        urls.push({
-          loc: `${PRODUCTION_BASE_URL}/tags/${slug}`,
-          lastmod: currentDate,
-          changefreq: 'weekly',
-          priority: 0.7
-        });
+        const fundsWithTag = getFundsByTag(funds, tag);
+        if (fundsWithTag.length > 0) {
+          const slug = tagToSlug(tag);
+          urls.push({
+            loc: `${PRODUCTION_BASE_URL}/tags/${slug}`,
+            lastmod: currentDate,
+            changefreq: 'weekly',
+            priority: 0.7
+          });
+        }
       });
     } catch (error) {
       console.warn('Failed to generate tag URLs:', error);
@@ -267,6 +271,16 @@ ${sitemapElements}
     } catch (error) {
       console.warn('Failed to generate comparison URLs:', error);
     }
+
+    // Fund alternatives pages (now indexable)
+    funds.forEach(fund => {
+      urls.push({
+        loc: `${PRODUCTION_BASE_URL}/${fund.id}/alternatives`,
+        lastmod: fund.dateModified || currentDate,
+        changefreq: 'weekly',
+        priority: 0.7
+      });
+    });
 
     return urls;
   }
@@ -447,19 +461,24 @@ Allow: /alternatives
       console.warn('Failed to verify category routes:', error);
     }
 
-    // Verify all tags are included
+    // Verify all tags with funds are included
     try {
+      const { getFundsByTag } = await import('../data/services/tags-service');
+      const { funds } = await fetchAllBuildDataCached();
       tags.forEach(tag => {
-        const slug = tagToSlug(tag);
-        const expectedURL = `${PRODUCTION_BASE_URL}/tags/${slug}`;
-        if (!existingURLs.has(expectedURL)) {
-          console.warn(`⚠️  Missing tag route: ${expectedURL}`);
-          missingURLs.push({
-            loc: expectedURL,
-            lastmod: currentDate,
-            changefreq: 'weekly',
-            priority: 0.7
-          });
+        const fundsWithTag = getFundsByTag(funds, tag);
+        if (fundsWithTag.length > 0) {
+          const slug = tagToSlug(tag);
+          const expectedURL = `${PRODUCTION_BASE_URL}/tags/${slug}`;
+          if (!existingURLs.has(expectedURL)) {
+            console.warn(`⚠️  Missing tag route: ${expectedURL}`);
+            missingURLs.push({
+              loc: expectedURL,
+              lastmod: currentDate,
+              changefreq: 'weekly',
+              priority: 0.7
+            });
+          }
         }
       });
     } catch (error) {
