@@ -34,9 +34,11 @@ const TagPageEmptyState = ({ tagName, allFunds }: TagPageEmptyStateProps) => {
   return (
     <div className="space-y-8">
       <div className="bg-card rounded-lg shadow-sm border border-border/40 p-10 text-center">
-        <h3 className="text-2xl font-semibold mb-3">No funds currently match this filter</h3>
-        <p className="text-muted-foreground max-w-2xl mx-auto mb-2">
-          No {tagName} funds are currently available. Browse all funds or try another tag.
+        <h1 className="text-3xl font-bold text-foreground mb-4">
+          {tagName} Portugal Golden Visa Funds
+        </h1>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-2">
+          No funds are currently tagged "{tagName}". Browse all funds or try another tag.
         </p>
         <p className="text-sm text-muted-foreground">
           Check back later or explore recommended alternatives below.
