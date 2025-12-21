@@ -3,33 +3,28 @@ import { optimizeTitle, optimizeDescription } from '../utils';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 import { normalizeTagLabel } from '@/utils/tagLabelNormalizer';
-import { getTagSeoTitle } from '@/utils/tagSeoMappings';
 
 export function getTagSeo(tagName: string, funds: Fund[] = []): SEOData {
   const cleanTagLabel = normalizeTagLabel(tagName);
   const fundCount = funds.length;
-  const tagTitle = `${getTagSeoTitle(tagName)} | Movingto`;
-  const isPortugalTag = tagName.toLowerCase() === 'portugal';
   
-  // SEO Description: Handle zero-fund case and Portugal tag duplication
-  let tagDescription: string;
-  if (isPortugalTag) {
-    tagDescription = fundCount > 0
-      ? `Browse ${fundCount} Portugal Golden Visa investment funds. Compare minimum investments, returns, and eligibility requirements.`
-      : `Explore Portugal Golden Visa investment funds. This section is updated as funds become available. Learn about strategies, risk, and eligibility.`;
-  } else {
-    tagDescription = fundCount > 0
-      ? `Browse ${fundCount} ${cleanTagLabel} funds eligible for Portugal Golden Visa. Compare average yields, lock-up periods, and fees for this investment theme.`
-      : `Explore ${cleanTagLabel} Portugal Golden Visa investment funds. This section is updated as funds become available. Learn about strategies, risk, and eligibility.`;
-  }
+  // SEO Title: "{Tag} Portugal Golden Visa Funds | Filter & Compare {Count}+" (under 60 chars)
+  const tagTitle = fundCount > 0
+    ? `${cleanTagLabel} Portugal Golden Visa Funds | Filter & Compare ${fundCount}+`
+    : `${cleanTagLabel} Portugal Golden Visa Funds | Investment Guide`;
+  
+  // SEO Description: "Browse {Count}+ funds tagged {Tag}. Compare fees, minimums and strategy."
+  const tagDescription = fundCount > 0
+    ? `Browse ${fundCount}+ funds tagged ${cleanTagLabel}. Compare fees, minimums and strategy.`
+    : `Explore ${cleanTagLabel} Portugal Golden Visa investment funds. Compare fees, minimums and strategy.`;
   
   const tagKeywords = [
-    `${tagName} Golden Visa funds`,
-    `${tagName} investment funds Portugal`,
+    `${cleanTagLabel} Golden Visa funds`,
+    `${cleanTagLabel} investment funds Portugal`,
     'thematic investing Portugal',
-    `${tagName} fund comparison`,
+    `${cleanTagLabel} fund comparison`,
     'Portugal investment themes',
-    `best ${tagName} funds`
+    `best ${cleanTagLabel} funds`
   ];
   
   return {
@@ -44,25 +39,51 @@ export function getTagSeo(tagName: string, funds: Fund[] = []): SEOData {
 }
 
 function getTagStructuredData(tagName: string, funds: Fund[] = []): any {
-  return [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'CollectionPage',
-      'name': `${tagName} Investment Funds`,
-      'description': `Collection of ${tagName} investment funds in Portugal`,
-      'url': URL_CONFIG.buildTagUrl(tagName)
-    },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'ItemList',
-      'name': `${tagName} Portugal Golden Visa Investment Funds`,
-      'numberOfItems': funds.length,
-      'itemListElement': funds.map((fund, index) => ({
+  const collectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    'name': `${tagName} Investment Funds`,
+    'description': `Collection of ${tagName} investment funds in Portugal`,
+    'url': URL_CONFIG.buildTagUrl(tagName)
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      {
         '@type': 'ListItem',
-        'position': index + 1,
-        'url': URL_CONFIG.buildFundUrl(fund.id),
-        'name': fund.name
-      }))
-    }
-  ];
+        'position': 1,
+        'name': 'Home',
+        'item': URL_CONFIG.BASE_URL
+      },
+      {
+        '@type': 'ListItem',
+        'position': 2,
+        'name': 'Tags',
+        'item': URL_CONFIG.buildUrl('/tags')
+      },
+      {
+        '@type': 'ListItem',
+        'position': 3,
+        'name': tagName,
+        'item': URL_CONFIG.buildTagUrl(tagName)
+      }
+    ]
+  };
+
+  const itemListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    'name': `${tagName} Portugal Golden Visa Investment Funds`,
+    'numberOfItems': funds.length,
+    'itemListElement': funds.map((fund, index) => ({
+      '@type': 'ListItem',
+      'position': index + 1,
+      'url': URL_CONFIG.buildFundUrl(fund.id),
+      'name': fund.name
+    }))
+  };
+
+  return [collectionSchema, breadcrumbSchema, itemListSchema];
 }

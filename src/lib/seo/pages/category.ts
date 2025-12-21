@@ -1,28 +1,28 @@
 import { SEOData } from '../types';
-import { optimizeTitle, optimizeDescription, slugify, getCurrentYear } from '../utils';
+import { optimizeTitle, optimizeDescription } from '../utils';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 
 export function getCategorySeo(categoryName: string, funds: Fund[] = []): SEOData {
-  const currentYear = getCurrentYear();
   const fundCount = funds.length;
   
-  // SEO Title: "Best [Category Name] Portugal Golden Visa Funds ({Current Year}) | Movingto"
-  const categoryTitle = `Best ${categoryName} Portugal Golden Visa Funds (${currentYear}) | Movingto`;
+  // SEO Title: "{Category} Portugal Golden Visa Funds | Compare {Count}+ Options" (under 60 chars)
+  const categoryTitle = fundCount > 0
+    ? `${categoryName} Portugal Golden Visa Funds | Compare ${fundCount}+ Options`
+    : `${categoryName} Portugal Golden Visa Funds | Investment Guide`;
   
-  // SEO Description: Handle zero-fund case gracefully
+  // SEO Description: "Explore {Count}+ {Category} funds eligible for Portugal Golden Visa..."
   const categoryDescription = fundCount > 0
-    ? `Compare ${fundCount} ${categoryName} investment funds eligible for the Portugal Golden Visa. Analysis of fees, yields, and risk profiles.`
-    : `Explore ${categoryName} Portugal Golden Visa investment funds. This section is updated as funds become available. Learn about strategies, risk, and eligibility.`;
+    ? `Explore ${fundCount}+ ${categoryName} funds eligible for Portugal Golden Visa. Compare fees, minimums, risk, strategy.`
+    : `Explore ${categoryName} Portugal Golden Visa investment funds. Compare fees, minimums, risk and strategy.`;
   
   const categoryKeywords = [
-    `best ${categoryName} Golden Visa funds`,
-    `${categoryName} investment Portugal ${currentYear}`,
+    `${categoryName} Golden Visa funds`,
+    `${categoryName} investment Portugal`,
     `Portugal ${categoryName} funds`,
     'Golden Visa investment categories',
     `${categoryName} fund comparison`,
-    `top ${categoryName} funds Portugal`,
-    `${categoryName} fund fees yields`
+    `${categoryName} funds Portugal`
   ];
   
   return {
@@ -45,6 +45,31 @@ function getCategoryStructuredData(categoryName: string, funds: Fund[] = []): an
     'url': URL_CONFIG.buildCategoryUrl(categoryName)
   };
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      {
+        '@type': 'ListItem',
+        'position': 1,
+        'name': 'Home',
+        'item': URL_CONFIG.BASE_URL
+      },
+      {
+        '@type': 'ListItem',
+        'position': 2,
+        'name': 'Categories',
+        'item': URL_CONFIG.buildUrl('/categories')
+      },
+      {
+        '@type': 'ListItem',
+        'position': 3,
+        'name': categoryName,
+        'item': URL_CONFIG.buildCategoryUrl(categoryName)
+      }
+    ]
+  };
+
   const itemListSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -58,5 +83,5 @@ function getCategoryStructuredData(categoryName: string, funds: Fund[] = []): an
     }))
   };
 
-  return [baseSchema, itemListSchema];
+  return [baseSchema, breadcrumbSchema, itemListSchema];
 }

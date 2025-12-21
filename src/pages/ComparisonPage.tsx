@@ -8,14 +8,21 @@ import { useComparison } from '../contexts/ComparisonContext';
 import ComparisonTable from '../components/comparison/ComparisonTable';
 import EmptyComparison from '../components/comparison/EmptyComparison';
 import ComparisonBreadcrumbs from '../components/comparison/ComparisonBreadcrumbs';
+import PopularComparisonsSection from '../components/comparison/PopularComparisonsSection';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Share2, Check, Download } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { exportComparisonToPDF } from '@/utils/comparisonPdfExport';
+import { generateComparisonsFromFunds } from '@/data/services/comparison-service';
+import type { Fund } from '@/data/types/funds';
 
-const ComparisonPage = () => {
+interface ComparisonPageProps {
+  initialFunds?: Fund[];
+}
+
+const ComparisonPage: React.FC<ComparisonPageProps> = ({ initialFunds }) => {
   const { compareFunds, clearComparison, loadFundsFromIds } = useComparison();
   const [highlightDifferences, setHighlightDifferences] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -189,7 +196,15 @@ const ComparisonPage = () => {
             <ComparisonTable funds={compareFunds} highlightDifferences={highlightDifferences} />
           </div>
         ) : (
-          <EmptyComparison />
+          <>
+            {/* Popular comparisons for SSR - renders indexable content */}
+            {initialFunds && initialFunds.length > 0 && (
+              <PopularComparisonsSection 
+                comparisons={generateComparisonsFromFunds(initialFunds).slice(0, 12)} 
+              />
+            )}
+            <EmptyComparison />
+          </>
         )}
       </main>
       

@@ -119,8 +119,13 @@ export class RouteDiscovery {
       console.warn('⚠️ WARNING: No team members found in database! Team member routes will not be generated.');
     }
 
-    // Category pages
-    categories.forEach(category => {
+    // Category pages - include all known categories even if empty
+    const allKnownCategories = [
+      'Venture Capital', 'Private Equity', 'Real Estate', 'Infrastructure',
+      'Debt', 'Credit', 'Fund-of-Funds', 'Bitcoin', 'Crypto', 'Clean Energy', 'Mixed', 'Other'
+    ];
+    const categorySet = new Set([...categories, ...allKnownCategories]);
+    categorySet.forEach(category => {
       const slug = categoryToSlug(category);
       routes.push({
         path: `/categories/${slug}`,
@@ -129,14 +134,18 @@ export class RouteDiscovery {
       });
     });
 
-    // Tag pages
+    // Tag pages - only include tags with funds
+    const { getFundsByTag } = await import('../data/services/tags-service');
     tags.forEach(tag => {
-      const slug = tagToSlug(tag);
-      routes.push({
-        path: `/tags/${slug}`,
-        pageType: 'tag',
-        params: { tagName: tag }
-      });
+      const fundsWithTag = getFundsByTag(funds, tag);
+      if (fundsWithTag.length > 0) {
+        const slug = tagToSlug(tag);
+        routes.push({
+          path: `/tags/${slug}`,
+          pageType: 'tag',
+          params: { tagName: tag }
+        });
+      }
     });
 
     // Fund comparison pages (canonical - keep in sitemap)
@@ -150,14 +159,14 @@ export class RouteDiscovery {
       });
     });
 
-    // Fund alternatives pages (non-canonical - exclude from sitemap, canonical points to main fund page)
+    // Fund alternatives pages (now canonical and indexable)
     funds.forEach(fund => {
       routes.push({
         path: `/${fund.id}/alternatives`,
         pageType: 'fund-alternatives',
         params: { fundName: fund.name },
         fundId: fund.id,
-        isCanonical: false
+        isCanonical: true
       });
     });
 

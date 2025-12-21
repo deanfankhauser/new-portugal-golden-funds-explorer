@@ -4,13 +4,19 @@ import { useSearchParams } from 'react-router-dom';
 import { FundTag, FundCategory, Fund } from '../data/types/funds';
 import { useRealTimeFunds } from './useRealTimeFunds';
 
-export const useFundFiltering = () => {
+interface UseFundFilteringOptions {
+  initialFunds?: Fund[];
+}
+
+export const useFundFiltering = (options: UseFundFilteringOptions = {}) => {
   const [searchParams] = useSearchParams();
   const [selectedTags, setSelectedTags] = useState<FundTag[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<FundCategory | null>(null);
   const [selectedManager, setSelectedManager] = useState<string | null>(null);
   const [showOnlyVerified, setShowOnlyVerified] = useState(false);
-  const { funds, loading: isLoading, error: fundsError } = useRealTimeFunds();
+  const { funds, loading: isLoading, error: fundsError } = useRealTimeFunds({
+    initialData: options.initialFunds
+  });
 
   // Get filters from URL params
   const searchQuery = searchParams.get('search') || '';

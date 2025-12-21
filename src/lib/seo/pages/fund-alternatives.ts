@@ -10,8 +10,8 @@ export function getFundAlternativesSeo(fund: Fund): SEOData {
     title: optimizeTitle(`${fundName} Alternatives | Portugal Golden Visa Funds | Movingto`),
     description: optimizeDescription(`Discover alternatives to ${fundName} for the Portugal Golden Visa. Compare similar funds by strategy, minimum investment, target returns, and risk profile.`),
     url: URL_CONFIG.buildFundAlternativesUrl(fund.id),
-    canonical: URL_CONFIG.buildFundUrl(fund.id),
-    robots: 'noindex,follow',
+    canonical: URL_CONFIG.buildFundAlternativesUrl(fund.id),
+    robots: 'index, follow',
     keywords: [
       `${fundName} alternatives`,
       'similar funds',

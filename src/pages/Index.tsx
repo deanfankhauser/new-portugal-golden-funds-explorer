@@ -11,11 +11,16 @@ import HomepageContent from '../components/homepage/HomepageContent';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
 import StickyHelpBar from '../components/common/StickyHelpBar';
+import type { Fund } from '../data/types/funds';
 
 // Lazy load non-critical components
 const HomepageInfoSections = lazy(() => import('../components/homepage/HomepageInfoSections'));
 
-const IndexPage = () => {
+interface IndexPageProps {
+  initialFunds?: Fund[];
+}
+
+const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
   const {
     selectedTags,
     setSelectedTags,
@@ -30,10 +35,10 @@ const IndexPage = () => {
     allFunds,
     loading,
     error
-  } = useFundFiltering();
+  } = useFundFiltering({ initialFunds });
 
-  // Show loading skeleton only during initial load when no data exists
-  if (loading && (!allFunds || allFunds.length === 0)) {
+  // Show loading skeleton only during initial load when no data exists and no initial data was provided
+  if (loading && !initialFunds && (!allFunds || allFunds.length === 0)) {
     return (
       <HomepageLayout>
         <PageSEO pageType="homepage" />
