@@ -430,7 +430,7 @@ export class SSRRenderer {
                 }),
                 React.createElement(Route, { 
                   path: '/tags/:tag', 
-                  element: isSSG && tagDataForSSR
+                  element: isSSG
                     ? React.createElement(getComponent('TagPage'), { tagData: tagDataForSSR, initialFunds: allFunds })
                     : React.createElement(getComponent('TagPage'))
                 }),
@@ -442,7 +442,7 @@ export class SSRRenderer {
                 }),
                 React.createElement(Route, { 
                   path: '/categories/:category', 
-                  element: isSSG && categoryDataForSSR
+                  element: isSSG
                     ? React.createElement(getComponent('CategoryPage'), { categoryData: categoryDataForSSR, initialFunds: allFunds })
                     : React.createElement(getComponent('CategoryPage'))
                 }),
@@ -526,6 +526,12 @@ export class SSRRenderer {
                         initialTeamMembers: allTeamMembers
                       })
                     : React.createElement(getComponent('FundDetails'), fundDataForSSR ? { fund: fundDataForSSR, initialFunds: allFunds, initialTeamMembers: allTeamMembers } : null)
+                }),
+                
+                // Catch-all 404 route for unmatched paths
+                React.createElement(Route, { 
+                  path: '*', 
+                  element: React.createElement(getComponent('NotFound'))
                 })
               )
             )

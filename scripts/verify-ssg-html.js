@@ -10,14 +10,19 @@ export function verifySSGHTML() {
   const distDir = path.join(process.cwd(), 'dist');
   let failures = 0;
   
-  // Check critical pages
+  // Check critical pages including category/tag pages
   const criticalPages = [
-    { path: 'index.html', name: 'Homepage' },
+    { path: 'index.html', name: 'Homepage', expectH1Contains: 'Golden Visa' },
     { path: 'disclaimer/index.html', name: 'Disclaimer' },
-    { path: 'privacy/index.html', name: 'Privacy' }
+    { path: 'privacy/index.html', name: 'Privacy' },
+    // Category pages - must NOT show homepage content
+    { path: 'categories/mixed/index.html', name: 'Mixed Category', expectH1Contains: 'Mixed', mustNotContain: 'Compare Golden Visa Investment Funds' },
+    { path: 'categories/venture-capital/index.html', name: 'Venture Capital Category', expectH1Contains: 'Venture Capital', mustNotContain: 'Compare Golden Visa Investment Funds' },
+    // Tag pages
+    { path: 'tags/esg/index.html', name: 'ESG Tag', expectH1Contains: 'ESG', mustNotContain: 'Compare Golden Visa Investment Funds' },
   ];
   
-  criticalPages.forEach(({ path: pagePath, name }) => {
+  criticalPages.forEach(({ path: pagePath, name, expectH1Contains, mustNotContain }) => {
     const fullPath = path.join(distDir, pagePath);
     
     if (!fs.existsSync(fullPath)) {
@@ -28,13 +33,33 @@ export function verifySSGHTML() {
     
     const content = fs.readFileSync(fullPath, 'utf-8');
     
+    // Extract H1 content
+    const h1Match = content.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+    const h1Content = h1Match ? h1Match[1].replace(/<[^>]+>/g, '').trim() : null;
+    
     const checks = {
-      hasH1: content.includes('<h1'),
+      hasH1: !!h1Match,
       hasMetaDescription: content.includes('meta name="description"'),
       hasStructuredData: content.includes('application/ld+json'),
       hasContent: content.includes('<main') || content.includes('<article'),
       contentLength: content.length
     };
+    
+    // Check H1 contains expected text (critical for category/tag pages)
+    if (expectH1Contains && h1Content) {
+      if (!h1Content.toLowerCase().includes(expectH1Contains.toLowerCase())) {
+        console.error(`❌ ${name}: H1 "${h1Content.substring(0, 50)}..." does not contain "${expectH1Contains}" - likely rendering wrong page`);
+        failures++;
+        return;
+      }
+    }
+    
+    // Check for unwanted content (e.g., homepage content on category pages)
+    if (mustNotContain && content.includes(mustNotContain)) {
+      console.error(`❌ ${name}: Contains homepage content - route falling back incorrectly`);
+      failures++;
+      return;
+    }
     
     if (!checks.hasH1) {
       console.error(`❌ ${name}: Missing <h1> tag`);
@@ -48,7 +73,7 @@ export function verifySSGHTML() {
     } else if (checks.contentLength < 1000) {
       console.warn(`⚠️  ${name}: Content suspiciously short (${checks.contentLength} chars)`);
     } else {
-      console.log(`✅ ${name}: Valid (${checks.contentLength} chars, H1, meta, structured data)`);
+      console.log(`✅ ${name}: Valid (${checks.contentLength} chars, H1 contains "${expectH1Contains || 'any'}")`);
     }
   });
   
