@@ -41,10 +41,9 @@ const Footer = () => {
               Helping investors navigate the Portuguese Golden Visa investment funds
             </p>
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Moving To Global Pte Ltd</p>
-              <p className="text-sm text-muted-foreground">160 Robinson Road, #14-04</p>
-              <p className="text-sm text-muted-foreground">Singapore Business Federation Center</p>
-              <p className="text-sm text-muted-foreground">Singapore 068914</p>
+              <p className="text-sm text-muted-foreground">Moving To Global Pty Ltd</p>
+              <p className="text-sm text-muted-foreground">Melbourne, Victoria</p>
+              <p className="text-sm text-muted-foreground">Australia</p>
             </div>
             <div className="flex items-center mt-4 space-x-3">
               <a 
@@ -75,15 +74,9 @@ const Footer = () => {
                 <Link to="/" className="text-muted-foreground hover:text-accent text-sm transition-colors">Home</Link>
               </li>
               <li>
-                <a 
-                  href="https://www.movingto.com/portugal-golden-visa-funds" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-accent text-sm transition-colors inline-flex items-center gap-1"
-                >
+                <Link to="/" className="text-muted-foreground hover:text-accent text-sm transition-colors">
                   Browse All Golden Visa Funds
-                  <ExternalLink size={12} />
-                </a>
+                </Link>
               </li>
               <li>
                 <Link to="/about" className="text-muted-foreground hover:text-accent text-sm transition-colors">About</Link>
@@ -198,7 +191,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-border mt-8 pt-6 text-center md:text-left flex flex-col md:flex-row justify-between items-center">
-          <p className="text-muted-foreground text-sm">© {currentYear} Moving To Global Pte Ltd. All rights reserved.</p>
+          <p className="text-muted-foreground text-sm">© {currentYear} Moving To Global Pty Ltd. All rights reserved.</p>
           <p className="text-muted-foreground text-sm mt-2 md:mt-0">This website is for informational purposes only and does not constitute investment information.</p>
         </div>
 
