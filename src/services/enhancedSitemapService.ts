@@ -1,14 +1,22 @@
+/**
+ * Enhanced Sitemap Service - BROWSER-SAFE
+ * 
+ * This service provides sitemap-related utilities that can run in the browser.
+ * Actual sitemap file generation happens at build-time in scripts/ssg/.
+ */
 import { SitemapService, SitemapEntry } from './sitemapService';
 import { generateComparisonsFromFunds } from '../data/services/comparison-service';
 import { URL_CONFIG } from '../utils/urlConfig';
 import { DateManagementService } from './dateManagementService';
-import { fetchAllFundsForBuild } from '../lib/build-data-fetcher';
+import type { Fund } from '../data/types/funds';
 
 export class EnhancedSitemapService extends SitemapService {
   
-  // Generate comparison pages for sitemap (canonical with self-referencing canonical tags)
-  private static async getComparisonPages(): Promise<SitemapEntry[]> {
-    const funds = await fetchAllFundsForBuild();
+  /**
+   * Generate comparison pages for sitemap using provided funds
+   * @param funds - Array of funds to generate comparisons from
+   */
+  private static getComparisonPagesFromFunds(funds: Fund[]): SitemapEntry[] {
     const comparisons = generateComparisonsFromFunds(funds);
     const contentDates = DateManagementService.getContentDates('comparison');
     
@@ -20,19 +28,28 @@ export class EnhancedSitemapService extends SitemapService {
     }));
   }
 
-  // Enhanced sitemap generation with canonical pages only
-  // NOTE: Alternatives pages excluded - they have non-self-referencing canonical tags
-  static async generateEnhancedSitemapEntries(): Promise<SitemapEntry[]> {
-    const funds = await fetchAllFundsForBuild();
-    const [baseEntries, comparisonPages] = await Promise.all([
-      Promise.resolve(super.generateSitemapEntries(funds)),
-      this.getComparisonPages()
-    ]);
+  /**
+   * Enhanced sitemap generation with canonical pages only
+   * NOTE: Alternatives pages excluded - they have non-self-referencing canonical tags
+   * @param funds - Array of funds to generate sitemap entries from
+   */
+  static generateEnhancedSitemapEntriesFromFunds(funds: Fund[]): SitemapEntry[] {
+    const baseEntries = super.generateSitemapEntries(funds);
+    const comparisonPages = this.getComparisonPagesFromFunds(funds);
     
     return [
       ...baseEntries,
       ...comparisonPages
     ];
+  }
+
+  /**
+   * @deprecated Use generateEnhancedSitemapEntriesFromFunds instead
+   * This method is kept for backward compatibility but returns empty array in browser
+   */
+  static async generateEnhancedSitemapEntries(): Promise<SitemapEntry[]> {
+    console.warn('EnhancedSitemapService.generateEnhancedSitemapEntries() requires funds parameter. Use generateEnhancedSitemapEntriesFromFunds() instead.');
+    return [];
   }
 
   // Generate robots.txt content
@@ -65,9 +82,12 @@ Allow: /comparisons
 Allow: /alternatives`;
   }
 
-  // Generate enhanced XML sitemap with proper indexing hints
-  static async generateEnhancedSitemapXML(): Promise<string> {
-    const entries = await this.generateEnhancedSitemapEntries();
+  /**
+   * Generate enhanced XML sitemap with proper indexing hints
+   * @param funds - Array of funds to generate sitemap from
+   */
+  static generateEnhancedSitemapXMLFromFunds(funds: Fund[]): string {
+    const entries = this.generateEnhancedSitemapEntriesFromFunds(funds);
     
     const urlElements = entries.map(entry => `  <url>
     <loc>${entry.url}</loc>
@@ -85,7 +105,15 @@ ${urlElements}
 </urlset>`;
   }
 
-  // Validate sitemap accessibility
+  /**
+   * @deprecated Use generateEnhancedSitemapXMLFromFunds instead
+   */
+  static async generateEnhancedSitemapXML(): Promise<string> {
+    console.warn('EnhancedSitemapService.generateEnhancedSitemapXML() requires funds parameter. Use generateEnhancedSitemapXMLFromFunds() instead.');
+    return '';
+  }
+
+  // Validate sitemap accessibility (browser-safe)
   static async validateSitemapAccess(): Promise<{ accessible: boolean; error?: string }> {
     try {
       const sitemapUrl = `${URL_CONFIG.BASE_URL}/sitemap.xml`;
