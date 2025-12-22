@@ -48,28 +48,47 @@ export async function generateRedirectRules() {
   const categories = await fetchAllCategoriesForBuild();
   const categorySlugs = categories.map(cat => categoryToSlug(cat));
   
-  // Check for overlaps between tags and categories (informational only)
+  // Check for overlaps between tags and categories
+  // Categories take precedence - we generate redirects from /tags/{slug} to /categories/{slug}
   const tagSlugSet = new Set(tagSlugs);
+  const categorySlugSet = new Set(categorySlugs);
   const overlaps = categorySlugs.filter(slug => tagSlugSet.has(slug));
   
+  // Auto-generate tag→category redirects for overlapping slugs
+  const tagToCategoryRedirects: any[] = [];
   if (overlaps.length > 0) {
-    console.log('📌 Note: These slugs exist as both tags AND categories:');
-    overlaps.forEach(slug => console.log(`   - ${slug}`));
-    console.log('   (Both will work correctly with different URL paths: /tags/ vs /categories/)');
+    console.log('🔄 Generating tag→category redirects for overlapping slugs:');
+    overlaps.forEach(slug => {
+      console.log(`   /tags/${slug} → /categories/${slug}`);
+      tagToCategoryRedirects.push({
+        source: `/tags/${slug}`,
+        destination: `/categories/${slug}`,
+        permanent: true
+      });
+      tagToCategoryRedirects.push({
+        source: `/tags/${slug}/`,
+        destination: `/categories/${slug}`,
+        permanent: true
+      });
+    });
   }
   
-  console.log(`📋 Found ${tagSlugs.length} tag slugs`);
+  // Filter out overlapping slugs from tagSlugs (categories take precedence)
+  const uniqueTagSlugs = tagSlugs.filter(slug => !categorySlugSet.has(slug));
+  
+  console.log(`📋 Found ${tagSlugs.length} tag slugs (${uniqueTagSlugs.length} unique, ${overlaps.length} overlap with categories)`);
   console.log(`📋 Found ${categorySlugs.length} category slugs`);
   
-  // Generate chunked redirects
-  const tagRedirects = createChunkedRedirects(tagSlugs, '/tags/:slug');
+  // Generate chunked redirects (using unique tag slugs to avoid duplicates)
+  const tagRedirects = createChunkedRedirects(uniqueTagSlugs, '/tags/:slug');
   const categoryRedirects = createChunkedRedirects(categorySlugs, '/categories/:slug');
   
-  const tagChunkCount = Math.ceil(tagSlugs.length / 25);
+  const tagChunkCount = Math.ceil(uniqueTagSlugs.length / 25);
   const categoryChunkCount = Math.ceil(categorySlugs.length / 25);
   
   console.log(`📦 Generated ${tagChunkCount} tag redirect chunks (${tagRedirects.length} rules)`);
   console.log(`📦 Generated ${categoryChunkCount} category redirect chunks (${categoryRedirects.length} rules)`);
+  console.log(`📦 Generated ${tagToCategoryRedirects.length} tag→category overlap redirects`);
   
   // Legacy alias patterns (more specific, should match first)
   const legacyRedirects = [
@@ -88,12 +107,16 @@ export async function generateRedirectRules() {
     tagRedirects,
     categoryRedirects,
     legacyRedirects,
+    tagToCategoryRedirects,
     stats: {
       tagCount: tagSlugs.length,
+      uniqueTagCount: uniqueTagSlugs.length,
       categoryCount: categorySlugs.length,
+      overlapCount: overlaps.length,
       tagChunks: tagChunkCount,
       categoryChunks: categoryChunkCount,
-      legacyCount: legacyRedirects.length
+      legacyCount: legacyRedirects.length,
+      tagToCategoryCount: tagToCategoryRedirects.length
     }
   };
 }
@@ -110,7 +133,7 @@ export async function updateVercelConfig() {
   }
   
   const config = JSON.parse(fs.readFileSync(vercelConfigPath, 'utf-8'));
-  const { tagRedirects, categoryRedirects, legacyRedirects, stats } = await generateRedirectRules();
+  const { tagRedirects, categoryRedirects, legacyRedirects, tagToCategoryRedirects, stats } = await generateRedirectRules();
   
   // Remove old individual tag/category redirects
   const existingRedirects = config.redirects || [];
@@ -124,18 +147,21 @@ export async function updateVercelConfig() {
   });
   
   // IMPORTANT: Order matters! More specific rules must come first
+  // Tag→category redirects are explicit /tags/X → /categories/X (most specific)
   config.redirects = [
-    ...filteredRedirects,      // Domain redirects, /funds redirects (kept)
-    ...legacyRedirects,        // /:num(\d+)-return (most specific)
-    ...categoryRedirects,      // /:slug(private-equity|...) (medium specificity)
-    ...tagRedirects            // /:slug(solar|wind|...) (least specific, fallback)
+    ...filteredRedirects,         // Domain redirects, /funds redirects (kept)
+    ...tagToCategoryRedirects,    // /tags/private-equity → /categories/private-equity (most specific)
+    ...legacyRedirects,           // /:num(\d+)-return (specific patterns)
+    ...categoryRedirects,         // /:slug(private-equity|...) (medium specificity)
+    ...tagRedirects               // /:slug(solar|wind|...) (least specific, fallback)
   ];
   
   fs.writeFileSync(vercelConfigPath, JSON.stringify(config, null, 2));
   
   console.log('✅ Updated vercel.json with dynamic redirects');
-  console.log(`   - ${stats.tagCount} tag slugs (${stats.tagChunks} chunks, ${tagRedirects.length} rules)`);
+  console.log(`   - ${stats.uniqueTagCount} unique tag slugs (${stats.tagChunks} chunks, ${tagRedirects.length} rules)`);
   console.log(`   - ${stats.categoryCount} category slugs (${stats.categoryChunks} chunks, ${categoryRedirects.length} rules)`);
+  console.log(`   - ${stats.overlapCount} tag→category overlap redirects`);
   console.log(`   - ${stats.legacyCount} legacy patterns`);
   console.log(`   - Total redirect rules: ${config.redirects.length}`);
 }

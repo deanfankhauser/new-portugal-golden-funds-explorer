@@ -12,7 +12,18 @@ interface RouteTest {
   expectedContent?: string[];
   notExpectedContent?: string[];
   shouldExist?: boolean;
+  isOverlapSlug?: boolean; // Slug exists as both tag and category
 }
+
+// Known category slugs that should NOT have tag pages (categories take precedence)
+const CATEGORY_SLUGS = [
+  'private-equity',
+  'venture-capital', 
+  'real-estate',
+  'mixed',
+  'debt',
+  'crypto'
+];
 
 const routeTests: RouteTest[] = [
   // Category pages - must contain category name in H1, not homepage content
@@ -68,6 +79,26 @@ const routeTests: RouteTest[] = [
     path: 'tags/portugal/index.html', 
     expectedH1Contains: '',
     shouldExist: false
+  },
+  
+  // Category slugs should NOT have tag pages (overlap prevention)
+  { 
+    path: 'tags/private-equity/index.html', 
+    expectedH1Contains: '',
+    shouldExist: false,
+    isOverlapSlug: true
+  },
+  { 
+    path: 'tags/venture-capital/index.html', 
+    expectedH1Contains: '',
+    shouldExist: false,
+    isOverlapSlug: true
+  },
+  { 
+    path: 'tags/real-estate/index.html', 
+    expectedH1Contains: '',
+    shouldExist: false,
+    isOverlapSlug: true
   }
 ];
 
@@ -104,12 +135,31 @@ export function testRouteContent(): boolean {
         if (content.includes('404') || content.includes('Not Found') || content.includes('Page not found')) {
           console.log(`✅ ${test.path}: Correctly shows 404 content`);
           passes++;
+        } else if (test.isOverlapSlug) {
+          // For overlap slugs, the file should either not exist OR redirect to category
+          // Check if it contains category content (redirect happened server-side)
+          const categoryMatch = test.path.match(/tags\/([^/]+)/);
+          if (categoryMatch) {
+            const slug = categoryMatch[1];
+            const expectedCategoryH1 = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            if (content.toLowerCase().includes(expectedCategoryH1.toLowerCase())) {
+              console.log(`✅ ${test.path}: Overlap slug correctly redirects to category page`);
+              passes++;
+            } else {
+              console.error(`❌ ${test.path}: Overlap slug should redirect to category, found other content`);
+              failures++;
+            }
+          }
         } else {
           console.error(`❌ ${test.path}: Invalid route exists but doesn't show 404`);
           failures++;
         }
       } else {
-        console.log(`✅ ${test.path}: Correctly does not exist`);
+        if (test.isOverlapSlug) {
+          console.log(`✅ ${test.path}: Overlap slug correctly does not have tag page (uses category)`);
+        } else {
+          console.log(`✅ ${test.path}: Correctly does not exist`);
+        }
         passes++;
       }
       return;
@@ -166,6 +216,10 @@ export function testRouteContent(): boolean {
       const hasFundCount = content.includes('fund') || content.includes('Fund');
       const hasBreadcrumb = content.includes('breadcrumb') || content.includes('Home');
       
+      // Check canonical URL points to category, not tag
+      const canonicalMatch = content.match(/<link[^>]*rel="canonical"[^>]*href="([^"]+)"/i);
+      const hasCorrectCanonical = canonicalMatch && canonicalMatch[1].includes(`/categories/${category}`);
+      
       if (hasFundCount) {
         console.log(`✅ categories/${category}: Contains fund references`);
         passes++;
@@ -177,6 +231,46 @@ export function testRouteContent(): boolean {
         console.log(`✅ categories/${category}: Has breadcrumb navigation`);
         passes++;
       }
+      
+      if (hasCorrectCanonical) {
+        console.log(`✅ categories/${category}: Canonical URL points to category path`);
+        passes++;
+      } else if (canonicalMatch) {
+        console.error(`❌ categories/${category}: Canonical URL "${canonicalMatch[1]}" should point to /categories/${category}`);
+        failures++;
+      }
+    }
+  });
+  
+  // Check for tag/category overlap issues
+  console.log('\n🔍 Checking tag/category overlap handling...');
+  
+  CATEGORY_SLUGS.forEach(slug => {
+    const tagPath = path.join(distDir, 'tags', slug, 'index.html');
+    const categoryPath = path.join(distDir, 'categories', slug, 'index.html');
+    
+    const categoryExists = fs.existsSync(categoryPath);
+    const tagExists = fs.existsSync(tagPath);
+    
+    if (categoryExists && !tagExists) {
+      console.log(`✅ ${slug}: Category page exists, no duplicate tag page`);
+      passes++;
+    } else if (categoryExists && tagExists) {
+      // Tag page exists - check if it's a redirect or duplicate content
+      const tagContent = fs.readFileSync(tagPath, 'utf-8');
+      const categoryContent = fs.readFileSync(categoryPath, 'utf-8');
+      
+      // Check if they're the same content (redirect happened)
+      if (tagContent === categoryContent) {
+        console.log(`✅ ${slug}: Tag and category serve same content (server redirect)`);
+        passes++;
+      } else {
+        console.error(`❌ ${slug}: Duplicate content - both tag and category pages exist with different content`);
+        failures++;
+      }
+    } else if (!categoryExists) {
+      console.error(`❌ ${slug}: Category page should exist but doesn't`);
+      failures++;
     }
   });
   

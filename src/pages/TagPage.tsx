@@ -1,9 +1,10 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom';
 import NotFound from './NotFound';
 import { getFundsByTag } from '../data/services/tags-service';
 import { getAllTags } from '../data/services/tags-service';
+import { getAllCategories } from '../data/services/categories-service';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
@@ -15,7 +16,7 @@ import TagPageFAQ from '../components/tag/TagPageFAQ';
 import RelatedTags from '../components/tag/RelatedTags';
 import VerificationFilterChip from '../components/common/VerificationFilterChip';
 import { FundTag } from '../data/types/funds';
-import { slugToTag, tagToSlug } from '../lib/utils';
+import { slugToTag, tagToSlug, categoryToSlug } from '../lib/utils';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import FundListSkeleton from '../components/common/FundListSkeleton';
@@ -109,6 +110,15 @@ const TagPage: React.FC<TagPageProps> = ({ tagData: ssrData, initialFunds }) => 
         <Footer />
       </div>
     );
+  }
+
+  // Check if this slug is actually a category (redirect to category page)
+  const allCategories = getAllCategories(allDatabaseFunds);
+  const matchingCategory = allCategories.find(cat => categoryToSlug(cat) === tagSlug);
+  
+  if (!tagExists && matchingCategory) {
+    // This slug is a category, not a tag - redirect to the category page
+    return <Navigate to={`/categories/${tagSlug}`} replace />;
   }
 
   // Show 404 for non-existent tags
