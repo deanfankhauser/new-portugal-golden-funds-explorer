@@ -2,6 +2,7 @@ import { SEOData } from '../types';
 import { optimizeTitle, optimizeDescription } from '../utils';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
+import { getSitewideSchemas } from '../schemas';
 
 export function getManagerSeo(managerName: string, managerProfile: any, funds: Fund[] = []): SEOData {
   const gvFundCount = funds.filter((f: any) => f.tags?.includes('Golden Visa Eligible')).length || funds.length;
@@ -127,5 +128,8 @@ function getManagerStructuredData(managerName: string, managerProfile: any, fund
   };
   schemas.push(breadcrumbSchema);
   
-  return schemas;
+  return [
+    ...getSitewideSchemas(),
+    ...schemas
+  ];
 }

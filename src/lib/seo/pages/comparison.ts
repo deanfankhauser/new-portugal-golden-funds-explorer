@@ -1,111 +1,100 @@
 import { SEOData } from '../types';
 import { optimizeTitle, optimizeDescription } from '../utils';
+import { MAX_TITLE_LENGTH } from '../constants';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
+import { getSitewideSchemas } from '../schemas';
 
 export function getComparisonSeo(): SEOData {
   return {
-    title: 'Compare Portugal Golden Visa Funds Side by Side',
-    description: 'Compare any two Portugal Golden Visa investment funds. Review fees, minimums, returns, and strategy differences before investing.',
+    title: 'Compare Portugal Golden Visa Funds Side by Side | Movingto',
+    description: optimizeDescription('Compare Portugal Golden Visa investment funds side by side. Analyze fees, minimums, returns, lock-up periods, and manager track records to find your ideal fund.'),
     url: URL_CONFIG.buildUrl('/compare'),
     canonical: URL_CONFIG.buildUrl('/compare'),
     keywords: [
-      'Golden Visa fund comparison',
-      'compare investment funds Portugal',
-      'fund comparison tool',
-      'investment fund analysis',
-      'side-by-side fund comparison'
+      'compare Golden Visa funds',
+      'Portugal fund comparison',
+      'Golden Visa investment comparison',
+      'side by side fund analysis',
+      'compare investment funds Portugal'
     ],
     structuredData: getComparisonStructuredData()
   };
 }
 
 export function getFundComparisonSeo(fund1: Fund, fund2: Fund, normalizedSlug: string): SEOData {
-  // Format minimum investments
-  const min1 = fund1.minimumInvestment ? `€${(fund1.minimumInvestment / 1000).toFixed(0)}k` : 'N/A';
-  const min2 = fund2.minimumInvestment ? `€${(fund2.minimumInvestment / 1000).toFixed(0)}k` : 'N/A';
-  const cat1 = fund1.category || 'investment';
-  const cat2 = fund2.category || 'investment';
-  const fee1 = fund1.managementFee ? `${fund1.managementFee}%` : '';
-  const fee2 = fund2.managementFee ? `${fund2.managementFee}%` : '';
+  // Format minimum investments for display
+  const formatMin = (min: number | null | undefined) => {
+    if (!min) return 'N/A';
+    if (min >= 1000000) return `€${(min / 1000000).toFixed(1)}M`;
+    return `€${(min / 1000).toFixed(0)}k`;
+  };
   
-  // Smart title truncation for long fund names - never cut mid-word
-  const maxTitleLength = 60;
-  const suffix = ' | Golden Visa';
-  let title = `${fund1.name} vs ${fund2.name}${suffix}`;
+  const min1 = formatMin(fund1.minimumInvestment);
+  const min2 = formatMin(fund2.minimumInvestment);
+  const cat1 = fund1.category || 'Investment';
+  const cat2 = fund2.category || 'Investment';
   
-  if (title.length > maxTitleLength) {
-    // Use shorter fund names (first 2-3 words)
-    const shortName1 = fund1.name.split(' ').slice(0, 2).join(' ');
-    const shortName2 = fund2.name.split(' ').slice(0, 2).join(' ');
-    title = `${shortName1} vs ${shortName2}${suffix}`;
-    
-    if (title.length > maxTitleLength) {
-      // Remove suffix if still too long
-      title = `${shortName1} vs ${shortName2} Comparison`;
-      if (title.length > maxTitleLength) {
-        title = `${shortName1} vs ${shortName2}`;
-      }
+  // Build title with safe truncation at word boundary
+  let title = `Compare ${fund1.name} vs ${fund2.name} – Golden Visa Funds`;
+  if (title.length > MAX_TITLE_LENGTH) {
+    // Try shorter format
+    title = `${fund1.name} vs ${fund2.name} | Fund Comparison`;
+    if (title.length > MAX_TITLE_LENGTH) {
+      // Truncate at word boundary
+      const maxLen = MAX_TITLE_LENGTH - 3;
+      const lastSpace = title.substring(0, maxLen).lastIndexOf(' ');
+      title = title.substring(0, lastSpace > maxLen * 0.6 ? lastSpace : maxLen);
     }
   }
   
-  // Rich description with differentiating details (full 155 chars)
-  let description: string;
-  if (fee1 && fee2) {
-    description = `${fund1.name} vs ${fund2.name}: ${min1} vs ${min2} minimum, ${fee1} vs ${fee2} fees. Compare ${cat1} and ${cat2} strategies for Portugal Golden Visa.`;
-  } else {
-    description = `${fund1.name} vs ${fund2.name}: ${min1} vs ${min2} minimum investment. Compare ${cat1} and ${cat2} fund strategies, fees, and returns for Golden Visa.`;
-  }
+  // Enhanced description with differentiating factors
+  const description = `${fund1.name} vs ${fund2.name}: ${min1} min vs ${min2} min. Compare ${cat1} and ${cat2} strategies, fees, returns, and liquidity for Portugal Golden Visa.`;
   
   return {
-    title: title,
+    title: optimizeTitle(title),
     description: optimizeDescription(description),
     url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
     canonical: URL_CONFIG.buildComparisonUrl(normalizedSlug),
-    robots: 'index, follow',
     keywords: [
-      `${fund1.name} vs ${fund2.name}`,
+      fund1.name,
+      fund2.name,
       'fund comparison',
-      'Golden Visa fund comparison',
-      'investment fund analysis',
-      'compare funds Portugal'
+      'Golden Visa comparison',
+      `${cat1} vs ${cat2}`,
+      'Portugal investment funds',
+      'compare fund fees'
     ],
-    structuredData: getFundComparisonStructuredData(fund1, fund2)
+    structuredData: getFundComparisonStructuredData(fund1, fund2, normalizedSlug)
   };
 }
 
 export function getFundComparisonFallbackSeo(normalizedSlug: string): SEOData {
   return {
-    title: optimizeTitle('Portugal Golden Visa Fund Comparison – Investment Analysis | Movingto Funds'),
-    description: optimizeDescription('Compare Portugal Golden Visa funds side by side. Check performance, fees, risk, liquidity, minimum investment and more before choosing your fund.'),
+    title: optimizeTitle('Compare Portugal Golden Visa Investment Funds | Movingto'),
+    description: optimizeDescription('Compare two Portugal Golden Visa investment funds. Analyze fees, minimums, returns, and lock-up periods to find your ideal investment.'),
     url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
     canonical: URL_CONFIG.buildComparisonUrl(normalizedSlug),
-    robots: 'index, follow',
-    keywords: [
-      'Golden Visa fund comparison',
-      'investment fund analysis',
-      'compare funds Portugal',
-      'fund comparison tool',
-      'investment analysis'
-    ],
-    structuredData: getGenericComparisonStructuredData()
+    structuredData: getGenericComparisonStructuredData(normalizedSlug)
   };
 }
 
 function getComparisonStructuredData(): any {
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+      { '@type': 'ListItem', 'position': 2, 'name': 'Compare Funds', 'item': URL_CONFIG.buildUrl('/compare') }
+    ]
+  };
+
   const webPageSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
-    'name': 'Portugal Golden Visa Fund Comparison Tool',
-    'description': 'Compare Portugal Golden Visa investment funds side by side',
-    'url': URL_CONFIG.buildUrl('/compare'),
-    'potentialAction': {
-      '@type': 'CompareAction',
-      'target': {
-        '@type': 'EntryPoint',
-        'urlTemplate': `${URL_CONFIG.BASE_URL}/compare/{fund1}-vs-{fund2}`
-      }
-    }
+    'name': 'Compare Portugal Golden Visa Investment Funds',
+    'description': 'Side-by-side comparison tool for Portugal Golden Visa investment funds',
+    'url': URL_CONFIG.buildUrl('/compare')
   };
 
   const faqSchema = {
@@ -114,10 +103,10 @@ function getComparisonStructuredData(): any {
     'mainEntity': [
       {
         '@type': 'Question',
-        'name': 'How do I compare Portugal Golden Visa funds?',
+        'name': 'How do I compare Golden Visa funds?',
         'acceptedAnswer': {
           '@type': 'Answer',
-          'text': 'Select any two funds from our directory to see a side-by-side comparison of fees, minimums, returns, and strategy differences.'
+          'text': 'Use our comparison tool to analyze funds side by side. Compare minimum investments, management fees, performance fees, lock-up periods, and manager track records to find the best fund for your investment goals.'
         }
       },
       {
@@ -125,67 +114,120 @@ function getComparisonStructuredData(): any {
         'name': 'What factors should I consider when comparing funds?',
         'acceptedAnswer': {
           '@type': 'Answer',
-          'text': 'Key factors include minimum investment amount, management fees, target returns, lock-up period, redemption frequency, and Golden Visa eligibility.'
-        }
-      },
-      {
-        '@type': 'Question',
-        'name': 'Are all funds on this platform eligible for Portugal Golden Visa?',
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': 'Yes, all funds listed are eligible for the Portugal Golden Visa program, meeting the €500,000 minimum investment requirement for qualifying investment funds.'
+          'text': 'Key factors include minimum investment amount, fee structure (management and performance fees), liquidity terms, historical performance, fund manager experience, and whether the fund meets Golden Visa requirements.'
         }
       }
     ]
   };
 
-  return [webPageSchema, faqSchema];
-}
-
-function getFundComparisonStructuredData(fund1: Fund, fund2: Fund): any {
   return [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'WebPage',
-      'name': `${fund1.name} vs ${fund2.name} - Investment Fund Comparison`,
-      'description': `Detailed comparison of ${fund1.name} and ${fund2.name}`,
-      'dateModified': new Date().toISOString()
-    },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'ItemList',
-      'name': 'Fund Comparison',
-      'numberOfItems': 2,
-      'itemListElement': [
-        {
-          '@type': 'ListItem',
-          'position': 1,
-          'item': {
-            '@type': 'FinancialProduct',
-            'name': fund1.name,
-            'url': URL_CONFIG.buildFundUrl(fund1.id)
-          }
-        },
-        {
-          '@type': 'ListItem',
-          'position': 2,
-          'item': {
-            '@type': 'FinancialProduct',
-            'name': fund2.name,
-            'url': URL_CONFIG.buildFundUrl(fund2.id)
-          }
-        }
-      ]
-    }
+    ...getSitewideSchemas(),
+    breadcrumbSchema,
+    webPageSchema,
+    faqSchema
   ];
 }
 
-function getGenericComparisonStructuredData(): any {
-  return {
+function getFundComparisonStructuredData(fund1: Fund, fund2: Fund, normalizedSlug: string): any {
+  const comparisonUrl = URL_CONFIG.buildComparisonUrl(normalizedSlug);
+  
+  // BreadcrumbList for specific comparison
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+      { '@type': 'ListItem', 'position': 2, 'name': 'Compare Funds', 'item': URL_CONFIG.buildUrl('/compare') },
+      { '@type': 'ListItem', 'position': 3, 'name': `${fund1.name} vs ${fund2.name}`, 'item': comparisonUrl }
+    ]
+  };
+
+  const webPageSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
-    'name': 'Portugal Golden Visa Fund Comparison',
-    'description': 'Compare Portugal Golden Visa investment funds side by side',
-    'url': URL_CONFIG.buildUrl('/compare')
+    'name': `Compare ${fund1.name} vs ${fund2.name}`,
+    'description': `Detailed comparison of ${fund1.name} and ${fund2.name} for Portugal Golden Visa`,
+    'url': comparisonUrl
   };
+
+  // ItemList with both funds as FinancialProducts
+  const itemListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    'name': `${fund1.name} vs ${fund2.name} Comparison`,
+    'numberOfItems': 2,
+    'itemListElement': [
+      {
+        '@type': 'ListItem',
+        'position': 1,
+        'item': {
+          '@type': 'FinancialProduct',
+          'name': fund1.name,
+          'url': URL_CONFIG.buildFundUrl(fund1.id),
+          'category': fund1.category,
+          'offers': {
+            '@type': 'Offer',
+            'price': fund1.minimumInvestment || 500000,
+            'priceCurrency': 'EUR'
+          },
+          'provider': {
+            '@type': 'Organization',
+            'name': fund1.managerName || 'Fund Manager'
+          }
+        }
+      },
+      {
+        '@type': 'ListItem',
+        'position': 2,
+        'item': {
+          '@type': 'FinancialProduct',
+          'name': fund2.name,
+          'url': URL_CONFIG.buildFundUrl(fund2.id),
+          'category': fund2.category,
+          'offers': {
+            '@type': 'Offer',
+            'price': fund2.minimumInvestment || 500000,
+            'priceCurrency': 'EUR'
+          },
+          'provider': {
+            '@type': 'Organization',
+            'name': fund2.managerName || 'Fund Manager'
+          }
+        }
+      }
+    ]
+  };
+
+  return [
+    ...getSitewideSchemas(),
+    breadcrumbSchema,
+    webPageSchema,
+    itemListSchema
+  ];
+}
+
+function getGenericComparisonStructuredData(normalizedSlug: string): any {
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': URL_CONFIG.BASE_URL },
+      { '@type': 'ListItem', 'position': 2, 'name': 'Compare Funds', 'item': URL_CONFIG.buildUrl('/compare') },
+      { '@type': 'ListItem', 'position': 3, 'name': 'Fund Comparison', 'item': URL_CONFIG.buildComparisonUrl(normalizedSlug) }
+    ]
+  };
+
+  const webPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    'name': 'Compare Portugal Golden Visa Investment Funds',
+    'description': 'Compare Portugal Golden Visa investment funds side by side',
+    'url': URL_CONFIG.buildComparisonUrl(normalizedSlug)
+  };
+
+  return [
+    ...getSitewideSchemas(),
+    breadcrumbSchema,
+    webPageSchema
+  ];
 }
