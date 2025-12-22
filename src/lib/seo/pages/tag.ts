@@ -8,15 +8,15 @@ export function getTagSeo(tagName: string, funds: Fund[] = []): SEOData {
   const cleanTagLabel = normalizeTagLabel(tagName);
   const fundCount = funds.length;
   
-  // SEO Title: "{Tag} Portugal Golden Visa Funds | Filter & Compare {Count}+" (under 60 chars)
+  // SEO Title: "{Tag} Golden Visa Funds | Filter & Compare {Count}+" (under 60 chars)
   const tagTitle = fundCount > 0
-    ? `${cleanTagLabel} Portugal Golden Visa Funds | Filter & Compare ${fundCount}+`
-    : `${cleanTagLabel} Portugal Golden Visa Funds | Investment Guide`;
+    ? `${cleanTagLabel} Golden Visa Funds | Filter & Compare ${fundCount}+`
+    : `${cleanTagLabel} Golden Visa Funds Portugal | Investment Guide`;
   
-  // SEO Description: "Browse {Count}+ funds tagged {Tag}. Compare fees, minimums and strategy."
+  // SEO Description: Full 155 chars with unique content per tag
   const tagDescription = fundCount > 0
-    ? `Browse ${fundCount}+ funds tagged ${cleanTagLabel}. Compare fees, minimums and strategy.`
-    : `Explore ${cleanTagLabel} Portugal Golden Visa investment funds. Compare fees, minimums and strategy.`;
+    ? `Browse ${fundCount}+ ${cleanTagLabel} funds for Portugal Golden Visa. Filter by fees, minimum investment, target returns, and fund manager reputation.`
+    : `Explore ${cleanTagLabel} themed Golden Visa investment opportunities in Portugal. Compare fund strategies, risk profiles, and investment terms.`;
   
   const tagKeywords = [
     `${cleanTagLabel} Golden Visa funds`,
