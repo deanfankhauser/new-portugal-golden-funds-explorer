@@ -26,25 +26,36 @@ export function getFundComparisonSeo(fund1: Fund, fund2: Fund, normalizedSlug: s
   const min2 = fund2.minimumInvestment ? `€${(fund2.minimumInvestment / 1000).toFixed(0)}k` : 'N/A';
   const cat1 = fund1.category || 'investment';
   const cat2 = fund2.category || 'investment';
+  const fee1 = fund1.managementFee ? `${fund1.managementFee}%` : '';
+  const fee2 = fund2.managementFee ? `${fund2.managementFee}%` : '';
   
-  // Smart title truncation for long fund names
+  // Smart title truncation for long fund names - never cut mid-word
   const maxTitleLength = 60;
-  const suffix = ' | Portugal Golden Visa Funds';
-  let title = `Compare ${fund1.name} vs ${fund2.name}${suffix}`;
+  const suffix = ' | Golden Visa';
+  let title = `${fund1.name} vs ${fund2.name}${suffix}`;
   
   if (title.length > maxTitleLength) {
-    // Use shorter fund names if available, otherwise truncate
+    // Use shorter fund names (first 2-3 words)
     const shortName1 = fund1.name.split(' ').slice(0, 2).join(' ');
     const shortName2 = fund2.name.split(' ').slice(0, 2).join(' ');
-    title = `Compare ${shortName1} vs ${shortName2}${suffix}`;
+    title = `${shortName1} vs ${shortName2}${suffix}`;
     
     if (title.length > maxTitleLength) {
-      title = `${shortName1} vs ${shortName2}${suffix}`;
+      // Remove suffix if still too long
+      title = `${shortName1} vs ${shortName2} Comparison`;
+      if (title.length > maxTitleLength) {
+        title = `${shortName1} vs ${shortName2}`;
+      }
     }
   }
   
-  // Description with key differences
-  const description = `Compare ${fund1.name} vs ${fund2.name}: ${min1} vs ${min2} minimum, ${cat1} vs ${cat2} strategy. Key differences for Golden Visa.`;
+  // Rich description with differentiating details (full 155 chars)
+  let description: string;
+  if (fee1 && fee2) {
+    description = `${fund1.name} vs ${fund2.name}: ${min1} vs ${min2} minimum, ${fee1} vs ${fee2} fees. Compare ${cat1} and ${cat2} strategies for Portugal Golden Visa.`;
+  } else {
+    description = `${fund1.name} vs ${fund2.name}: ${min1} vs ${min2} minimum investment. Compare ${cat1} and ${cat2} fund strategies, fees, and returns for Golden Visa.`;
+  }
   
   return {
     title: title,
