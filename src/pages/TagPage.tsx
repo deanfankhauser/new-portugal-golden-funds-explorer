@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
+import NotFound from './NotFound';
 import { getFundsByTag } from '../data/services/tags-service';
 import { getAllTags } from '../data/services/tags-service';
 import Header from '../components/Header';
@@ -110,20 +111,9 @@ const TagPage: React.FC<TagPageProps> = ({ tagData: ssrData, initialFunds }) => 
     );
   }
 
+  // Show 404 for non-existent tags
   if (!tagExists) {
-    // Tag not found, showing empty state with noindex SEO
-    return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
-        <PageSEO pageType="tag" tagName={displayTagName} funds={[]} />
-        <Header />
-        <main className="flex-1 py-8">
-          <div className="container mx-auto px-4">
-            <TagPageEmptyState tagName={displayTagName} allFunds={allDatabaseFunds} />
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
+    return <NotFound />;
   }
 
   // Rendering tag page with SEO
