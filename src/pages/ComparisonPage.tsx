@@ -200,7 +200,7 @@ const ComparisonPage: React.FC<ComparisonPageProps> = ({ initialFunds }) => {
             {/* Popular comparisons for SSR - renders indexable content */}
             {initialFunds && initialFunds.length > 0 && (
               <PopularComparisonsSection 
-                comparisons={generateComparisonsFromFunds(initialFunds).slice(0, 12)} 
+                comparisons={generateComparisonsFromFunds(initialFunds).slice(0, 20)} 
               />
             )}
             <EmptyComparison />

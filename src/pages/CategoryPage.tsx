@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
+import NotFound from './NotFound';
 import { getFundsByCategory } from '../data/services/categories-service';
 import { getAllCategories } from '../data/services/categories-service';
 import { FundCategory } from '../data/types/funds';
@@ -104,20 +105,9 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ categoryData: ssrData, init
     );
   }
 
-  // Show empty state for non-existent categories (matching TagPage pattern)
+  // Show 404 for non-existent categories
   if (!categoryExists && category) {
-    return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
-        <PageSEO pageType="category" categoryName={displayCategoryName} funds={[]} />
-        <Header />
-        <main className="flex-1 py-6 md:py-8">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <CategoryPageEmptyState categoryName={displayCategoryName} allCategories={allCategories} />
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
+    return <NotFound />;
   }
 
   return (

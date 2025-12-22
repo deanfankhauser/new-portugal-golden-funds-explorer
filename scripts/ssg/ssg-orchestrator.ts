@@ -6,12 +6,14 @@ import { processRoute } from './route-processor';
 import { validateGeneratedFile, verifyCriticalPages } from './validation';
 import { generateSitemap } from './sitemap-generator';
 import { generateFundsSitemap } from './sitemap-funds-generator';
-import { EnhancedSitemapService } from '../../src/services/enhancedSitemapService';
 import { generate404Page } from './404-generator';
 import { generateComprehensiveSitemaps } from './comprehensive-sitemap-generator';
 import { validateSitemapURLs } from './validate-sitemap-urls';
 import { validateSitemapCanonical } from './validate-sitemap-canonical';
 import { runComprehensiveHTMLValidation } from './comprehensive-html-validation';
+
+// NOTE: EnhancedSitemapService removed from orchestrator to avoid Node.js module leakage
+// Sitemap generation is now fully handled by comprehensive-sitemap-generator
 
 export async function generateStaticFiles() {
   const distDir = path.join(process.cwd(), 'dist');
@@ -110,23 +112,24 @@ export async function generateStaticFiles() {
   try {
     await generateComprehensiveSitemaps(distDir);
   } catch (sitemapError) {
-    console.warn('⚠️  Comprehensive sitemap generation failed, falling back to legacy generators');
+    console.error('❌ Comprehensive sitemap generation failed:', sitemapError);
+    console.warn('⚠️  Falling back to legacy sitemap generators...');
     
-    // Fallback to existing generators
+    // Fallback to existing generators only
     await generateSitemap(routes, distDir);
     await generateFundsSitemap(distDir);
     
-    // Generate enhanced sitemap as a supplemental file
-    const enhancedSitemapXML = await EnhancedSitemapService.generateEnhancedSitemapXML();
-    fs.writeFileSync(path.join(distDir, 'sitemap-enhanced.xml'), enhancedSitemapXML);
-    
-    // Generate sitemap index
-    const sitemapIndex = EnhancedSitemapService.generateSitemapIndex();
-    fs.writeFileSync(path.join(distDir, 'sitemap-index.xml'), sitemapIndex);
-    
-    // Generate robots.txt
-    const robotsTxt = EnhancedSitemapService.generateRobotsTxt();
+    // Generate basic robots.txt
+    const robotsTxt = `User-agent: *
+Allow: /
+
+Sitemap: https://funds.movingto.com/sitemap.xml
+
+Disallow: /admin
+Disallow: /auth
+Disallow: /api/`;
     fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsTxt);
+    console.log('✅ Generated fallback robots.txt');
   }
 
   // Validate sitemap URLs

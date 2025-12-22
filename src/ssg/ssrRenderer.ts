@@ -326,7 +326,7 @@ export class SSRRenderer {
         // Individual pages
         case 'tag': return ['TagPage'];
         case 'category': return ['CategoryPage'];
-        case 'comparison': return ['FundComparison'];
+        case 'comparison': return ['ComparisonPage'];
         case 'fund-comparison': return ['FundComparison'];
         case 'fund-alternatives':
         case 'fund_alternatives': return ['FundAlternatives'];
@@ -342,7 +342,6 @@ export class SSRRenderer {
         case 'verified-funds': return ['VerifiedFunds'];
         case 'verification-program': return ['VerificationProgram'];
         case 'ira-401k-eligible': return ['IRAEligibleFunds'];
-        case 'compare': return ['ComparisonPage'];
         case 'team-member': return ['TeamMemberProfile'];
         
         default: return ['Index'];
