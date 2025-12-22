@@ -4,6 +4,7 @@ import { MAX_TITLE_LENGTH } from '../constants';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 import { InvestmentFundStructuredDataService } from '@/services/investmentFundStructuredDataService';
+import { getSitewideSchemas } from '../schemas';
 
 export function getFundSeo(fund: Fund): SEOData {
   const fundTitle = generateFundTitle(fund);
@@ -163,7 +164,11 @@ function getFundStructuredData(fund: Fund): any {
     'itemListElement': breadcrumbItems
   };
   
-  const schemas: any[] = [investmentFundSchema, breadcrumbSchema];
+  const schemas: any[] = [
+    ...getSitewideSchemas(),
+    investmentFundSchema,
+    breadcrumbSchema
+  ];
   
   // Generate default FAQs
   const defaultFAQs = [
