@@ -194,8 +194,8 @@ ${data.leadPhone ? `- Lead Phone: ${data.leadPhone}` : ''}
 View in Dashboard: https://funds.movingto.com/manage-fund/${data.fundId}?tab=leads
 
 ---
-Moving To Global Pte Ltd
-160 Robinson Road, #14-04, Singapore Business Federation Center, Singapore, 068914
+Moving To Global Pty Ltd
+Melbourne, Victoria, Australia
   `;
   
   return { html, text };
