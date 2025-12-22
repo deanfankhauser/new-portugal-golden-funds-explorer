@@ -1,4 +1,4 @@
-import { ComprehensiveSitemapService } from '../../src/services/comprehensiveSitemapService';
+import { ComprehensiveSitemapService } from './services/comprehensiveSitemapService';
 import path from 'path';
 import { execSync } from 'child_process';
 import fs from 'fs';
@@ -6,6 +6,8 @@ import fs from 'fs';
 /**
  * Generate comprehensive sitemaps for the application
  * This replaces the existing problematic sitemap generation
+ * 
+ * NOTE: This is a BUILD-TIME ONLY script and uses Node.js modules (fs, path)
  */
 export async function generateComprehensiveSitemaps(distDir: string): Promise<void> {
   console.log('🗺️  Starting comprehensive sitemap generation from database...');

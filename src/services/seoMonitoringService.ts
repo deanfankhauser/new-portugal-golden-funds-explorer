@@ -230,7 +230,7 @@ export class SEOMonitoringService {
     return audit;
   }
 
-  // Sitemap health check
+  // Sitemap health check (browser-safe - only validates accessibility)
   static async checkSitemapHealth(): Promise<{
     accessible: boolean;
     lastModified?: string;
@@ -239,11 +239,10 @@ export class SEOMonitoringService {
   }> {
     try {
       const validation = await EnhancedSitemapService.validateSitemapAccess();
-      const entries = await EnhancedSitemapService.generateEnhancedSitemapEntries();
       
       return {
         accessible: validation.accessible,
-        size: entries.length,
+        size: 0, // Size not available in browser context
         error: validation.error,
         lastModified: new Date().toISOString()
       };
