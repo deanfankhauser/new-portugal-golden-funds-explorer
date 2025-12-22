@@ -6,15 +6,15 @@ import { Fund } from '@/data/types/funds';
 export function getCategorySeo(categoryName: string, funds: Fund[] = []): SEOData {
   const fundCount = funds.length;
   
-  // SEO Title: "{Category} Portugal Golden Visa Funds | Compare {Count}+ Options" (under 60 chars)
+  // SEO Title: "{Category} Golden Visa Funds | Compare {Count}+ Options" (under 60 chars)
   const categoryTitle = fundCount > 0
-    ? `${categoryName} Portugal Golden Visa Funds | Compare ${fundCount}+ Options`
-    : `${categoryName} Portugal Golden Visa Funds | Investment Guide`;
+    ? `${categoryName} Golden Visa Funds | Compare ${fundCount}+ Options`
+    : `${categoryName} Golden Visa Funds Portugal | Investment Guide`;
   
-  // SEO Description: "Explore {Count}+ {Category} funds eligible for Portugal Golden Visa..."
+  // SEO Description: Full 155 chars with unique, compelling copy per category
   const categoryDescription = fundCount > 0
-    ? `Explore ${fundCount}+ ${categoryName} funds eligible for Portugal Golden Visa. Compare fees, minimums, risk, strategy.`
-    : `Explore ${categoryName} Portugal Golden Visa investment funds. Compare fees, minimums, risk and strategy.`;
+    ? `Explore ${fundCount}+ ${categoryName} funds for Portugal Golden Visa residency. Compare management fees, minimum investments, risk profiles, and exit strategies.`
+    : `Discover ${categoryName} investment funds for Portugal Golden Visa. Get detailed analysis of fees, returns, liquidity terms, and fund manager track records.`;
   
   const categoryKeywords = [
     `${categoryName} Golden Visa funds`,
