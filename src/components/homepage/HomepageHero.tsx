@@ -49,14 +49,14 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
           {/* Main Headline */}
           <div className="text-center mb-8">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-high-contrast leading-[1.1] tracking-tight">
-              Compare Portugal Golden Visa Investment Funds
+              Portugal Golden Visa Investment Funds
             </h1>
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-high-contrast">
               <span className="text-accent italic font-cheltenham">Compare Fees, Performance, and Risk.</span>
             </h2>
             
             <p className="text-lg sm:text-xl text-medium-contrast max-w-3xl mx-auto leading-relaxed mb-8">
-              Access the definitive directory of 25+ CMVM-regulated funds. We verify track records and expose hidden management fees to help you shortlist funds.
+              Access the definitive directory of 25+ CMVM-regulated golden visa funds. We verify track records and expose hidden management fees to help you shortlist funds.
             </p>
           </div>
 
@@ -76,7 +76,7 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
                 onClick={scrollToFunds}
                 className="inline-flex items-center text-medium-contrast hover:text-high-contrast font-medium text-base transition-colors duration-200 group"
               >
-                or Browse Full Directory ↓
+                or Browse the Complete Golden Visa Fund Directory ↓
               </button>
             </div>
           </div>
