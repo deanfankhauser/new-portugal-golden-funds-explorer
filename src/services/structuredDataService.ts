@@ -1,8 +1,8 @@
-
 import { Fund } from '../data/types/funds';
 import { URL_CONFIG } from '../utils/urlConfig';
 import { DateManagementService } from './dateManagementService';
 import { EnhancedSEODateService } from './enhancedSEODateService';
+import { getReturnTargetDisplay } from '../utils/returnTarget';
 
 export interface StructuredDataSchema {
   '@context': string;
@@ -66,11 +66,11 @@ export class StructuredDataService {
           'name': 'Term',
           'value': fund.term === 0 ? 'Perpetual' : `${fund.term} years`
         },
-        {
+        ...(getReturnTargetDisplay(fund) ? [{
           '@type': 'PropertyValue',
           'name': 'Target Return',
-          'value': fund.returnTarget
-        }
+          'value': getReturnTargetDisplay(fund)
+        }] : [])
       ],
       'keywords': fund.tags.join(', '),
       'url': URL_CONFIG.buildFundUrl(fund.id),
@@ -101,6 +101,7 @@ export class StructuredDataService {
 
   // Generate Investment schema
   static generateInvestmentSchema(fund: Fund): StructuredDataSchema {
+    const targetReturn = getReturnTargetDisplay(fund);
     return {
       '@context': 'https://schema.org',
       '@type': 'Investment',
@@ -112,7 +113,7 @@ export class StructuredDataService {
         'currency': 'EUR',
         'value': fund.minimumInvestment
       },
-      'expectedReturn': fund.returnTarget,
+      ...(targetReturn && { 'expectedReturn': targetReturn }),
       'riskLevel': fund.tags.includes('Low-risk') ? 'Low' : 
                    fund.tags.includes('Medium-risk') ? 'Medium' : 
                    fund.tags.includes('High-risk') ? 'High' : 'Medium',

@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle2 } from 'lucide-react';
+import { getReturnTargetDisplay } from '../../utils/returnTarget';
 
 interface VerifiedTopPicksProps {
   funds: Fund[];
@@ -36,14 +37,7 @@ const VerifiedTopPicks: React.FC<VerifiedTopPicksProps> = ({ funds }) => {
   };
 
   const formatTargetYield = (fund: Fund): string => {
-    if (fund.expectedReturnMax && fund.expectedReturnMin) {
-      return `${fund.expectedReturnMin}–${fund.expectedReturnMax}% p.a.`;
-    } else if (fund.expectedReturnMin) {
-      return `${fund.expectedReturnMin}% p.a.`;
-    } else if (fund.expectedReturnMax) {
-      return `${fund.expectedReturnMax}% p.a.`;
-    }
-    return 'Not disclosed';
+    return getReturnTargetDisplay(fund) || 'Not disclosed';
   };
 
   // Helper to determine what to show in the second metric row

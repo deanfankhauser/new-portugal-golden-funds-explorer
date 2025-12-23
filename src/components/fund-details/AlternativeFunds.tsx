@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Clock, Users, Building2, Tag } from 'lucide-react';
 import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
 import { useManagerProfile } from '../../hooks/useManagerProfile';
-
+import { getReturnTargetDisplay } from '../../utils/returnTarget';
 const AlternativeFundCard: React.FC<{ fund: Fund }> = ({ fund }) => {
   const managerProfile = useManagerProfile(fund.managerName);
 
@@ -52,7 +52,7 @@ const AlternativeFundCard: React.FC<{ fund: Fund }> = ({ fund }) => {
         <div className="flex items-center gap-2.5">
           <div className="flex-1">
             <span className="block text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Target Return</span>
-            <span className="text-[15px] font-semibold text-foreground">{fund.returnTarget}</span>
+            <span className="text-[15px] font-semibold text-foreground">{getReturnTargetDisplay(fund) || 'See prospectus'}</span>
           </div>
         </div>
 
