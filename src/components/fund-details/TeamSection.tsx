@@ -25,17 +25,30 @@ interface TeamSectionProps {
 }
 
 const TeamSection: React.FC<TeamSectionProps> = ({ team, managerName, initialTeamMembers }) => {
-  const { members: queryTeamMembers, loading } = useCompanyTeamMembers(managerName);
+  // Guard against empty or whitespace-only manager names
+  const trimmedManagerName = managerName?.trim() || '';
   
-  // Use initialTeamMembers during SSR, filter by company_name
+  const { members: queryTeamMembers, loading } = useCompanyTeamMembers(trimmedManagerName);
+  
+  // Use initialTeamMembers during SSR, filter by company_name with exact matching
   const companyTeam = useMemo(() => {
-    // For SSR: use initialTeamMembers filtered by managerName
+    // Early return if no manager name
+    if (!trimmedManagerName) {
+      return [];
+    }
+    
+    // For SSR: use initialTeamMembers filtered by exact company_name match
     if (initialTeamMembers && initialTeamMembers.length > 0) {
-      const filtered = initialTeamMembers.filter(m => 
-        m.company_name?.toLowerCase() === managerName.toLowerCase() ||
-        m.company_name?.toLowerCase().includes(managerName.toLowerCase()) ||
-        managerName.toLowerCase().includes(m.company_name?.toLowerCase() || '')
-      );
+      const normalizedManagerName = trimmedManagerName.toLowerCase();
+      
+      // Use exact match or prefix match (to handle "Company" vs "Company, SCR, S.A.")
+      const filtered = initialTeamMembers.filter(m => {
+        const companyName = m.company_name?.trim().toLowerCase() || '';
+        return companyName === normalizedManagerName ||
+               companyName.startsWith(normalizedManagerName) ||
+               normalizedManagerName.startsWith(companyName);
+      });
+      
       if (filtered.length > 0) {
         return filtered.map(m => ({
           member_id: m.id,
@@ -48,9 +61,9 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team, managerName, initialTea
         }));
       }
     }
-    // For client-side: use queryTeamMembers
+    // For client-side: use queryTeamMembers (already filtered by RPC)
     return queryTeamMembers;
-  }, [initialTeamMembers, queryTeamMembers, managerName]);
+  }, [initialTeamMembers, queryTeamMembers, trimmedManagerName]);
 
   // Resolve team members: ALWAYS prefer database data with slugs
   const resolvedTeam = useMemo(() => {
@@ -97,7 +110,17 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team, managerName, initialTea
   }
 
   if (!resolvedTeam || resolvedTeam.length === 0) {
-    return null;
+    // Show empty state message instead of hiding section entirely
+    return (
+      <div className="bg-card border border-border/40 rounded-2xl p-10 shadow-sm">
+        <h2 className="text-xl md:text-2xl font-semibold tracking-tight mb-2">
+          Fund Team
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          Team information coming soon
+        </p>
+      </div>
+    );
   }
 
   return (

@@ -8,7 +8,8 @@ export function useCompanyTeamMembers(companyName: string) {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (!companyName) {
+    // Guard against empty or whitespace-only company names
+    if (!companyName || companyName.trim() === '') {
       setMembers([]);
       setLoading(false);
       return;
