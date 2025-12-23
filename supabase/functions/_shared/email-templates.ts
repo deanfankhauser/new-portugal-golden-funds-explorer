@@ -3,7 +3,7 @@
  * Provides consistent branding across all email communications
  * 
  * Trading Name: Movingto Funds
- * Legal Name: Moving To Global Pte Ltd
+ * Legal Name: Moving To Global Pty Ltd
  */
 
 export const BRAND_COLORS = {
@@ -22,8 +22,8 @@ export const BRAND_COLORS = {
 
 export const COMPANY_INFO = {
   tradingName: 'Movingto Funds',
-  legalName: 'Moving To Global Pte Ltd',
-  address: '160 Robinson Road, #14-04, Singapore Business Federation Center, Singapore, 068914',
+  legalName: 'Moving To Global Pty Ltd',
+  address: 'Melbourne, Victoria, Australia',
   website: 'https://funds.movingto.com',
   email: 'noreply@movingto.com',
   logoUrl: 'https://funds.movingto.com/lovable-uploads/ab17d046-1cb9-44fd-aa6d-c4d338e11090.png',

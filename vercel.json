@@ -94,6 +94,11 @@
       "permanent": true
     },
     {
+      "source": "/privacy-policy",
+      "destination": "/privacy",
+      "permanent": true
+    },
+    {
       "source": "/funds",
       "destination": "/",
       "permanent": true
