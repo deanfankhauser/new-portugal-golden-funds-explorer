@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { Facebook, Linkedin, ExternalLink } from "lucide-react";
 import RecentlyViewedFunds from "./RecentlyViewedFunds";
+import { COMPANY_INFO } from '@/config/company';
 
 const Footer = () => {
   const [currentYear, setCurrentYear] = useState(2025);
@@ -41,13 +42,13 @@ const Footer = () => {
               Helping investors navigate the Portuguese Golden Visa investment funds
             </p>
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Moving To Global Pty Ltd</p>
-              <p className="text-sm text-muted-foreground">Melbourne, Victoria</p>
-              <p className="text-sm text-muted-foreground">Australia</p>
+              <p className="text-sm text-muted-foreground">{COMPANY_INFO.legalName}</p>
+              <p className="text-sm text-muted-foreground">{COMPANY_INFO.address.city}, {COMPANY_INFO.address.state}</p>
+              <p className="text-sm text-muted-foreground">{COMPANY_INFO.address.country}</p>
             </div>
             <div className="flex items-center mt-4 space-x-3">
               <a 
-                href="https://www.facebook.com/groups/zoark" 
+                href={COMPANY_INFO.socialLinks.facebook}
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="text-muted-foreground hover:text-accent transition-colors"
@@ -56,7 +57,7 @@ const Footer = () => {
                 <Facebook size={20} />
               </a>
               <a 
-                href="https://www.linkedin.com/company/90556445" 
+                href={COMPANY_INFO.socialLinks.linkedin}
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="text-muted-foreground hover:text-accent transition-colors"
@@ -191,7 +192,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-border mt-8 pt-6 text-center md:text-left flex flex-col md:flex-row justify-between items-center">
-          <p className="text-muted-foreground text-sm">© {currentYear} Moving To Global Pty Ltd. All rights reserved.</p>
+          <p className="text-muted-foreground text-sm">© {currentYear} {COMPANY_INFO.legalName}. All rights reserved.</p>
           <p className="text-muted-foreground text-sm mt-2 md:mt-0">This website is for informational purposes only and does not constitute investment information.</p>
         </div>
 

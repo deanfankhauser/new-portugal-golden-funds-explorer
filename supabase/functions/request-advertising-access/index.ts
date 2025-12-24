@@ -192,10 +192,10 @@ const handler = async (req: Request): Promise<Response> => {
           <!-- Footer -->
           <tr>
             <td style="background-color: #f8f8f8; padding: 32px 40px; border-top: 1px solid #e5e5e5;">
-              <p style="margin: 0 0 8px 0; color: #1a1a1a; font-size: 14px; font-weight: 600;">Moving To Global Pte Ltd</p>
+              <p style="margin: 0 0 8px 0; color: #1a1a1a; font-size: 14px; font-weight: 600;">Moving To Global Pty Ltd</p>
               <p style="margin: 0; color: #666; font-size: 13px; line-height: 1.6;">
-                160 Robinson Road, #14-04, Singapore Business Federation Center<br>
-                Singapore, 068914
+                Melbourne, Victoria<br>
+                Australia
               </p>
             </td>
           </tr>
@@ -234,8 +234,8 @@ Request submitted at: ${timestamp}
 View Fund Dashboard: https://funds.movingto.com/manage-fund/${fundId}
 
 ---
-Moving To Global Pte Ltd
-160 Robinson Road, #14-04, Singapore Business Federation Center, Singapore, 068914
+Moving To Global Pty Ltd
+Melbourne, Victoria, Australia
     `;
 
     // Send email via Postmark
