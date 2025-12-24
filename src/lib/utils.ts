@@ -130,3 +130,15 @@ export function slugToManager(slug: string): string {
     .replace(/-/g, ' ')
     .replace(/\b\w/g, l => l.toUpperCase());
 }
+
+// Normalize tag slugs to handle common variations (u-s vs us, u-k vs uk)
+export function normalizeTagSlug(slug: string): string {
+  return slug
+    .toLowerCase()
+    // Normalize "u-s" to "us" and "u-k" to "uk"
+    .replace(/\bu-s\b/g, 'us')
+    .replace(/\bu-k\b/g, 'uk')
+    // Remove any double hyphens and trim
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
