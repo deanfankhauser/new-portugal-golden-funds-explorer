@@ -145,47 +145,47 @@
     },
     {
       "source": "/categories/mixed",
-      "destination": "/",
+      "destination": "/tags/mixed",
       "permanent": true
     },
     {
       "source": "/categories/mixed-fixed-income-digital-assets",
-      "destination": "/",
+      "destination": "/tags/mixed",
       "permanent": true
     },
     {
       "source": "/categories/multi-asset",
-      "destination": "/",
+      "destination": "/tags/mixed",
       "permanent": true
     },
     {
       "source": "/categories/balanced",
-      "destination": "/",
+      "destination": "/tags/balanced",
       "permanent": true
     },
     {
       "source": "/categories/private-debt-hybrid-instruments",
-      "destination": "/",
+      "destination": "/categories/debt",
       "permanent": true
     },
     {
       "source": "/categories/private-equity-debt",
-      "destination": "/",
+      "destination": "/categories/debt",
       "permanent": true
     },
     {
       "source": "/categories/fixed-income-digital-assets",
-      "destination": "/",
+      "destination": "/tags/fixed-income",
       "permanent": true
     },
     {
       "source": "/categories/clean-energy-solar-battery-storage",
-      "destination": "/",
+      "destination": "/categories/clean-energy",
       "permanent": true
     },
     {
       "source": "/categories/private-equity-venture-capital",
-      "destination": "/",
+      "destination": "/categories/private-equity",
       "permanent": true
     },
     {
@@ -215,12 +215,7 @@
     },
     {
       "source": "/tags/golden-visa",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/tags/portugal",
-      "destination": "/",
+      "destination": "/tags/golden-visa-eligible",
       "permanent": true
     },
     {
@@ -235,62 +230,7 @@
     },
     {
       "source": "/tags/lock-up",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/tags/fund-subscription-minimums",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/tags/1-1-5-percent-management-fee",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/tags/greater-than-1-5-percent-management-fee",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/tags/5-percent-yield",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/tags/less-than-3-percent-annual-yield",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/tags/12-percent-return",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/tags/small-cap-less-than-50m",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/tags/mid-cap",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/tags/mid-cap-50-100m",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/tags/large-cap-greater-than-100m",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/tags/quadrantis-capital",
-      "destination": "/manager/quadrantis-capital",
+      "destination": "/tags/long-lock-up-5-10-years",
       "permanent": true
     },
     {
@@ -325,7 +265,7 @@
     },
     {
       "source": "/tags/greater-than-10-year-lock-up",
-      "destination": "/",
+      "destination": "/tags/long-lock-up-5-10-years",
       "permanent": true
     },
     {
@@ -379,12 +319,12 @@
       "permanent": true
     },
     {
-      "source": "/:slug(golden-visa-funds-for-u-s-citizens|golden-visa-funds-for-uk-citizens|greater-than-1-5-percent-management-fee|greater-than-10-year-lock-up|greater-than-5-annual-yield|greater-than-5-percent-annual-yield|healthcare|high-risk|hybrid|industrial|infrastructure|large-cap-greater-than-100m|less-than-1-percent-management-fee|less-than-3-percent-annual-yield|less-than-5-year-lock-up|liquid|lock-up|long-term|low-risk|medium-risk|mid-cap|mid-cap-50-100m|no-fees|no-lock-up|open-ended|pfic-compliant|portugal|private-equity|qef-eligible|real-estate|regulated|renewable-energy|secondary-market|small-cap-less-than-50m|smes|solar|solana|special-situations)",
+      "source": "/:slug(golden-visa-funds-for-u-s-citizens|golden-visa-funds-for-uk-citizens|greater-than-1-5-percent-management-fee|greater-than-10-year-lock-up|greater-than-5-annual-yield|greater-than-5-percent-annual-yield|healthcare|high-risk|hybrid|industrial|infrastructure|large-cap-greater-than-100m|less-than-1-percent-management-fee|less-than-3-percent-annual-yield|less-than-5-year-lock-up|liquid|lock-up|long-term|low-risk|medium-risk|mid-cap|mid-cap-50-100m|no-fees|no-lock-up|open-ended|pfic-compliant|private-equity|qef-eligible|real-estate|regulated|renewable-energy|secondary-market|small-cap-less-than-50m|smes|solar|solana|special-situations)",
       "destination": "/tags/:slug",
       "permanent": true
     },
     {
-      "source": "/:slug(golden-visa-funds-for-u-s-citizens|golden-visa-funds-for-uk-citizens|greater-than-1-5-percent-management-fee|greater-than-10-year-lock-up|greater-than-5-annual-yield|greater-than-5-percent-annual-yield|healthcare|high-risk|hybrid|industrial|infrastructure|large-cap-greater-than-100m|less-than-1-percent-management-fee|less-than-3-percent-annual-yield|less-than-5-year-lock-up|liquid|lock-up|long-term|low-risk|medium-risk|mid-cap|mid-cap-50-100m|no-fees|no-lock-up|open-ended|pfic-compliant|portugal|private-equity|qef-eligible|real-estate|regulated|renewable-energy|secondary-market|small-cap-less-than-50m|smes|solar|solana|special-situations)/",
+      "source": "/:slug(golden-visa-funds-for-u-s-citizens|golden-visa-funds-for-uk-citizens|greater-than-1-5-percent-management-fee|greater-than-10-year-lock-up|greater-than-5-annual-yield|greater-than-5-percent-annual-yield|healthcare|high-risk|hybrid|industrial|infrastructure|large-cap-greater-than-100m|less-than-1-percent-management-fee|less-than-3-percent-annual-yield|less-than-5-year-lock-up|liquid|lock-up|long-term|low-risk|medium-risk|mid-cap|mid-cap-50-100m|no-fees|no-lock-up|open-ended|pfic-compliant|private-equity|qef-eligible|real-estate|regulated|renewable-energy|secondary-market|small-cap-less-than-50m|smes|solar|solana|special-situations)/",
       "destination": "/tags/:slug",
       "permanent": true
     },
