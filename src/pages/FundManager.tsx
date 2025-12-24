@@ -40,6 +40,16 @@ const FundManager: React.FC<FundManagerProps> = ({ managerData, initialFunds }) 
     initialData: initialFunds || (managerData ? managerData.funds : undefined)
   });
 
+  // Normalize manager name by removing common suffixes for matching
+  const normalizeForMatching = (name: string): string => {
+    return name
+      .toLowerCase()
+      .replace(/[,\.]/g, '')
+      .replace(/\b(s\.?a\.?|scr|sgoic|sgps|llc|ltd|limited|inc|incorporated)\b/gi, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  };
+
   // Find matching manager and their funds from database
   useEffect(() => {
     if (!allFunds || allFunds.length === 0) return;
@@ -53,19 +63,55 @@ const FundManager: React.FC<FundManagerProps> = ({ managerData, initialFunds }) 
       }
     });
     
-    // Find manager whose slug matches the URL
-    const matchingManager = Array.from(managersMap.values()).find(manager => 
+    // First try exact slug match
+    let matchingManagers = Array.from(managersMap.values()).filter(manager => 
       managerToSlug(manager) === slugName
     );
     
-    if (matchingManager) {
-      setDisplayManagerName(matchingManager);
+    // If no exact match, try normalized matching
+    if (matchingManagers.length === 0) {
+      const normalizedSlugName = slugName.replace(/-/g, ' ');
       
-      // Get all funds for this manager
+      matchingManagers = Array.from(managersMap.values()).filter(manager => {
+        const normalizedManager = normalizeForMatching(manager);
+        const managerSlugNormalized = managerToSlug(normalizedManager);
+        
+        // Check if normalized slug matches
+        return managerSlugNormalized === slugName ||
+               normalizedManager === normalizedSlugName ||
+               normalizedManager.startsWith(normalizedSlugName) ||
+               normalizedSlugName.startsWith(normalizedManager);
+      });
+    }
+    
+    // Group all manager name variations that share the same normalized base
+    if (matchingManagers.length > 0) {
+      const baseNormalized = normalizeForMatching(matchingManagers[0]);
+      
+      // Find all managers that normalize to similar names
+      const allRelatedManagers = Array.from(managersMap.values()).filter(manager => {
+        const normalized = normalizeForMatching(manager);
+        return normalized === baseNormalized ||
+               normalized.startsWith(baseNormalized) ||
+               baseNormalized.startsWith(normalized);
+      });
+      
+      // Use the longest/most complete manager name for display
+      const bestDisplayName = allRelatedManagers.reduce((longest, current) => 
+        current.length > longest.length ? current : longest
+      , allRelatedManagers[0]);
+      
+      setDisplayManagerName(bestDisplayName);
+      
+      // Get all funds for all related manager variations
       const funds = allFunds.filter(fund =>
-        fund.managerName.toLowerCase() === matchingManager.toLowerCase()
+        allRelatedManagers.some(m => 
+          fund.managerName.toLowerCase() === m.toLowerCase()
+        )
       );
       setManagerFunds(funds);
+    } else {
+      setManagerFunds([]);
     }
   }, [allFunds, slugName]);
 

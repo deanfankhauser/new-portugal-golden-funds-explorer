@@ -3,6 +3,7 @@ import { Fund } from '@/data/types/funds';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import CompareRow from './CompareRow';
 import { formatManagementFee, formatPerformanceFee, formatSubscriptionFee, formatRedemptionFee } from '@/utils/feeFormatters';
+import { getReturnTargetDisplay } from '@/utils/returnTarget';
 
 interface ComparisonTableProps {
   funds: Fund[];
@@ -29,13 +30,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
   };
 
   const formatTargetReturn = (fund: Fund): string => {
-    if (fund.expectedReturnMin && fund.expectedReturnMax) {
-      return `${fund.expectedReturnMin}–${fund.expectedReturnMax}% p.a.`;
-    }
-    if (fund.expectedReturnMin) {
-      return `${fund.expectedReturnMin}% p.a.`;
-    }
-    return 'Not disclosed';
+    return getReturnTargetDisplay(fund) || 'Not disclosed';
   };
 
   const formatRedemption = (fund: Fund): string => {
