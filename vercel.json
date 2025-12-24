@@ -319,12 +319,22 @@
       "permanent": true
     },
     {
-      "source": "/:slug(golden-visa-funds-for-u-s-citizens|golden-visa-funds-for-uk-citizens|greater-than-1-5-percent-management-fee|greater-than-10-year-lock-up|greater-than-5-annual-yield|greater-than-5-percent-annual-yield|healthcare|high-risk|hybrid|industrial|infrastructure|large-cap-greater-than-100m|less-than-1-percent-management-fee|less-than-3-percent-annual-yield|less-than-5-year-lock-up|liquid|lock-up|long-term|low-risk|medium-risk|mid-cap|mid-cap-50-100m|no-fees|no-lock-up|open-ended|pfic-compliant|private-equity|qef-eligible|real-estate|regulated|renewable-energy|secondary-market|small-cap-less-than-50m|smes|solar|solana|special-situations)",
+      "source": "/tags/golden-visa-funds-for-u-s-citizens",
+      "destination": "/tags/golden-visa-funds-for-us-citizens",
+      "permanent": true
+    },
+    {
+      "source": "/tags/golden-visa-funds-for-u-k-citizens",
+      "destination": "/tags/golden-visa-funds-for-uk-citizens",
+      "permanent": true
+    },
+    {
+      "source": "/:slug(golden-visa-funds-for-uk-citizens|greater-than-1-5-percent-management-fee|greater-than-10-year-lock-up|greater-than-5-annual-yield|greater-than-5-percent-annual-yield|healthcare|high-risk|hybrid|industrial|infrastructure|large-cap-greater-than-100m|less-than-1-percent-management-fee|less-than-3-percent-annual-yield|less-than-5-year-lock-up|liquid|lock-up|long-term|low-risk|medium-risk|mid-cap|mid-cap-50-100m|no-fees|no-lock-up|open-ended|pfic-compliant|private-equity|qef-eligible|real-estate|regulated|renewable-energy|secondary-market|small-cap-less-than-50m|smes|solar|solana|special-situations)",
       "destination": "/tags/:slug",
       "permanent": true
     },
     {
-      "source": "/:slug(golden-visa-funds-for-u-s-citizens|golden-visa-funds-for-uk-citizens|greater-than-1-5-percent-management-fee|greater-than-10-year-lock-up|greater-than-5-annual-yield|greater-than-5-percent-annual-yield|healthcare|high-risk|hybrid|industrial|infrastructure|large-cap-greater-than-100m|less-than-1-percent-management-fee|less-than-3-percent-annual-yield|less-than-5-year-lock-up|liquid|lock-up|long-term|low-risk|medium-risk|mid-cap|mid-cap-50-100m|no-fees|no-lock-up|open-ended|pfic-compliant|private-equity|qef-eligible|real-estate|regulated|renewable-energy|secondary-market|small-cap-less-than-50m|smes|solar|solana|special-situations)/",
+      "source": "/:slug(golden-visa-funds-for-uk-citizens|greater-than-1-5-percent-management-fee|greater-than-10-year-lock-up|greater-than-5-annual-yield|greater-than-5-percent-annual-yield|healthcare|high-risk|hybrid|industrial|infrastructure|large-cap-greater-than-100m|less-than-1-percent-management-fee|less-than-3-percent-annual-yield|less-than-5-year-lock-up|liquid|lock-up|long-term|low-risk|medium-risk|mid-cap|mid-cap-50-100m|no-fees|no-lock-up|open-ended|pfic-compliant|private-equity|qef-eligible|real-estate|regulated|renewable-energy|secondary-market|small-cap-less-than-50m|smes|solar|solana|special-situations)/",
       "destination": "/tags/:slug",
       "permanent": true
     },
