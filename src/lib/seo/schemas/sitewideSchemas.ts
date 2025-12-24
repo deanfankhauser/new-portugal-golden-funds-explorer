@@ -1,4 +1,5 @@
 import { URL_CONFIG } from '@/utils/urlConfig';
+import { COMPANY_INFO } from '@/config/company';
 
 /**
  * Sitewide structured data schemas to be included on every page
@@ -39,31 +40,33 @@ export function getOrganizationSchema(): any {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     'name': 'Movingto',
-    'legalName': 'Moving To Global Pty Ltd',
+    'legalName': COMPANY_INFO.legalName,
     'url': URL_CONFIG.BASE_URL,
     'logo': {
       '@type': 'ImageObject',
-      'url': `${URL_CONFIG.BASE_URL}/lovable-uploads/c5481949-8ec2-43f1-a77f-8d6cce1eec0e.png`,
-      'width': 512,
-      'height': 512
+      'url': `${URL_CONFIG.BASE_URL}${COMPANY_INFO.logo.url}`,
+      'width': COMPANY_INFO.logo.width,
+      'height': COMPANY_INFO.logo.height
     },
-    'image': `${URL_CONFIG.BASE_URL}/lovable-uploads/c5481949-8ec2-43f1-a77f-8d6cce1eec0e.png`,
+    'image': `${URL_CONFIG.BASE_URL}${COMPANY_INFO.logo.url}`,
     'description': 'Independent platform for comparing Portugal Golden Visa investment funds. Compare fees, performance, minimums and risk across CMVM-linked funds.',
-    'foundingDate': '2024-01-01',
+    'foundingDate': COMPANY_INFO.foundingDate,
     'contactPoint': {
       '@type': 'ContactPoint',
       'contactType': 'Investor Relations',
-      'email': 'info@movingto.com',
+      'email': COMPANY_INFO.email,
       'areaServed': 'Worldwide',
       'availableLanguage': ['en', 'pt']
     },
     'address': {
       '@type': 'PostalAddress',
-      'addressCountry': 'AU'
+      'addressLocality': COMPANY_INFO.address.city,
+      'addressRegion': COMPANY_INFO.address.state,
+      'addressCountry': COMPANY_INFO.address.countryCode
     },
     'sameAs': [
-      'https://www.linkedin.com/company/movingto',
-      'https://twitter.com/movingtoio'
+      COMPANY_INFO.socialLinks.linkedin,
+      COMPANY_INFO.socialLinks.twitter
     ],
     'knowsAbout': [
       'Portugal Golden Visa',
