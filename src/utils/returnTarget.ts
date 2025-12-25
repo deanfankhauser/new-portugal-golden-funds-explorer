@@ -33,47 +33,48 @@ export const getReturnTargetNumbers = (fund: Fund): { min?: number; max?: number
 export const getReturnTargetDisplay = (fund: Fund): string | null => {
   const { min, max } = getReturnTargetNumbers(fund);
   
-  // If both min and max are 0 or undefined, return null (no data)
-  if ((min === 0 && max === 0) || (min == null && max == null)) {
-    // Check if there's a valid returnTarget string
-    if (fund.returnTarget && fund.returnTarget !== 'Unspecified' && fund.returnTarget !== '0' && fund.returnTarget !== '0%') {
+  // Treat 0 as "not disclosed" - 0% is not a meaningful target return
+  const effectiveMin = (min != null && min > 0) ? min : null;
+  const effectiveMax = (max != null && max > 0) ? max : null;
+  
+  // If both are null/0, check for valid returnTarget string fallback
+  if (effectiveMin == null && effectiveMax == null) {
+    if (fund.returnTarget && 
+        fund.returnTarget !== 'Unspecified' && 
+        fund.returnTarget !== '0' && 
+        fund.returnTarget !== '0%' &&
+        !fund.returnTarget.includes('0-0') &&
+        !fund.returnTarget.includes('0–0')) {
       return fund.returnTarget;
     }
     return null;
   }
   
-  if (min != null && max != null) {
-    // If max is 0 or invalid, treat as single value (but only if min is meaningful)
-    if (max <= 0 || max < min) {
-      if (min <= 0) return null; // Both are 0 or invalid
-      const formatted = Number(min.toFixed(2)).toString();
-      return `${formatted}% p.a.`;
-    }
-    
-    // If both are 0, return null
-    if (min === 0 && max === 0) {
-      return null;
-    }
-    
-    if (min === max) {
-      if (min <= 0) return null; // 0% is not meaningful
-      const formatted = Number(min.toFixed(2)).toString();
-      return `${formatted}% p.a.`;
-    }
-    // Format range with max 2 decimal places
-    const minFormatted = Number(min.toFixed(2)).toString();
-    const maxFormatted = Number(max.toFixed(2)).toString();
-    return `${minFormatted}–${maxFormatted}% p.a.`;
-  }
-  
-  if (min != null && min > 0) {
-    const formatted = Number(min.toFixed(2)).toString();
+  // If only max is valid, show as single value
+  if (effectiveMin == null && effectiveMax != null) {
+    const formatted = Number(effectiveMax.toFixed(2)).toString();
     return `${formatted}% p.a.`;
   }
   
-  if (fund.returnTarget && fund.returnTarget !== 'Unspecified' && fund.returnTarget !== '0' && fund.returnTarget !== '0%') {
-    return fund.returnTarget;
+  // If only min is valid, show as single value
+  if (effectiveMin != null && effectiveMax == null) {
+    const formatted = Number(effectiveMin.toFixed(2)).toString();
+    return `${formatted}% p.a.`;
   }
   
-  return null;
+  // Both are valid
+  if (effectiveMin === effectiveMax) {
+    const formatted = Number(effectiveMin!.toFixed(2)).toString();
+    return `${formatted}% p.a.`;
+  }
+  
+  // Format range
+  const minFormatted = Number(effectiveMin!.toFixed(2)).toString();
+  const maxFormatted = Number(effectiveMax!.toFixed(2)).toString();
+  return `${minFormatted}–${maxFormatted}% p.a.`;
+};
+
+export const hasValidReturn = (fund: Fund): boolean => {
+  const { min, max } = getReturnTargetNumbers(fund);
+  return (min != null && min > 0) || (max != null && max > 0);
 };
