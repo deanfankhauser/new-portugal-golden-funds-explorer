@@ -26,4 +26,10 @@ export const COMPANY_INFO = {
   }
 } as const;
 
+// SEO Configuration - single source of truth for yearly values
+export const SEO_CONFIG = {
+  currentYear: 2026,  // Easy to update yearly
+  maxTitleLength: 65  // Target length for title optimization (before fallback ladder)
+} as const;
+
 export type CompanyInfo = typeof COMPANY_INFO;
