@@ -16,7 +16,7 @@ import TagPageFAQ from '../components/tag/TagPageFAQ';
 import RelatedTags from '../components/tag/RelatedTags';
 import VerificationFilterChip from '../components/common/VerificationFilterChip';
 import { FundTag } from '../data/types/funds';
-import { slugToTag, tagToSlug, categoryToSlug } from '../lib/utils';
+import { slugToTag, tagToSlug, categoryToSlug, normalizeTagSlug } from '../lib/utils';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import FundListSkeleton from '../components/common/FundListSkeleton';
@@ -75,6 +75,15 @@ const TagPage: React.FC<TagPageProps> = ({ tagData: ssrData, initialFunds }) => 
         convertedTag.toLowerCase().includes(tag.toLowerCase())
       ) || null;
       // Fuzzy match attempted
+    }
+    
+    // Strategy 5: Normalized slug matching (handle u-s vs us, u-k vs uk, etc.)
+    if (!matchingTag) {
+      const normalizedInputSlug = normalizeTagSlug(tagSlug);
+      matchingTag = allTags.find(tag => {
+        const normalizedTagSlug = normalizeTagSlug(tagToSlug(tag));
+        return normalizedTagSlug === normalizedInputSlug;
+      }) || null;
     }
     
     displayTagName = matchingTag || slugToTag(tagSlug);
