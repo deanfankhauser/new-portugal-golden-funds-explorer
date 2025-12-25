@@ -1,12 +1,7 @@
-import React, { useEffect } from 'react';
-import { FAQSchemaService } from '../../services/faqSchemaService';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import React, { useState } from 'react';
 import { Fund } from '../../data/types/funds';
+import { formatManagementFee, formatPerformanceFee } from '../../utils/feeFormatters';
+import { ChevronDown } from 'lucide-react';
 
 interface FAQItem {
   question: string;
@@ -28,11 +23,11 @@ const FundComparisonFAQ: React.FC<FundComparisonFAQProps> = ({ fund1, fund2 }) =
     return [
       {
         question: `What are the key differences between ${f1.name} and ${f2.name}?`,
-        answer: `The main differences include investment focus (${f1.category} vs ${f2.category}), minimum investment amounts (€${f1.minimumInvestment.toLocaleString()} vs €${f2.minimumInvestment.toLocaleString()}), management fees (${f1.managementFee}% vs ${f2.managementFee}%), and fund managers (${f1.managerName} vs ${f2.managerName}). Each fund has different risk profiles and return targets suited to different investor preferences.`
+        answer: `The main differences include investment focus (${f1.category} vs ${f2.category}), minimum investment amounts (€${f1.minimumInvestment.toLocaleString()} vs €${f2.minimumInvestment.toLocaleString()}), management fees (${formatManagementFee(f1.managementFee)} vs ${formatManagementFee(f2.managementFee)}), and fund managers (${f1.managerName} vs ${f2.managerName}). Each fund has different risk profiles and return targets suited to different investor preferences.`
       },
       {
         question: `Which fund has lower fees: ${f1.name} or ${f2.name}?`,
-        answer: `${f1.managementFee < f2.managementFee ? f1.name : f2.name} has the lower management fee at ${Math.min(f1.managementFee, f2.managementFee)}% compared to ${Math.max(f1.managementFee, f2.managementFee)}%. However, consider the total cost including performance fees: ${f1.name} charges ${f1.performanceFee}% performance fee while ${f2.name} charges ${f2.performanceFee}%. The overall value depends on your investment goals and expected returns.`
+        answer: `${(f1.managementFee || 0) < (f2.managementFee || 0) ? f1.name : f2.name} has the lower management fee at ${formatManagementFee(Math.min(f1.managementFee || 0, f2.managementFee || 0))} compared to ${formatManagementFee(Math.max(f1.managementFee || 0, f2.managementFee || 0))}. However, consider the total cost including performance fees: ${f1.name} charges ${formatPerformanceFee(f1.performanceFee)} performance fee while ${f2.name} charges ${formatPerformanceFee(f2.performanceFee)}. The overall value depends on your investment goals and expected returns.`
       },
       {
         question: `What is the minimum investment required for each fund?`,
@@ -62,50 +57,45 @@ const FundComparisonFAQ: React.FC<FundComparisonFAQProps> = ({ fund1, fund2 }) =
   };
 
   const faqs = generateComparisonFAQs(fund1, fund2);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
-  useEffect(() => {
-    // Register FAQs with unified schema service
-    const cleanup = FAQSchemaService.registerFAQs({
-      schemaId: `comparison-faq-${fund1.id}-${fund2.id}`,
-      faqs: faqs,
-      pageContext: `Comparison: ${fund1.name} vs ${fund2.name}`
-    });
-
-    return cleanup;
-  }, [faqs, fund1.id, fund1.name, fund2.id, fund2.name]);
+  const toggleFAQ = (index: number) => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
 
   return (
-    <section className="bg-card rounded-lg p-6 shadow-sm border border-border mt-8" itemScope itemType="https://schema.org/FAQPage">
-      <h2 className="text-2xl font-bold mb-6 text-foreground">
-        Frequently Asked Questions: {fund1.name} vs {fund2.name}
+    <div className="mb-12">
+      <h2 className="text-[22px] font-semibold text-foreground mb-6">
+        Frequently Asked Questions
       </h2>
-      
-      <Accordion type="single" collapsible className="w-full space-y-4">
-        {faqs.map((faq: FAQItem, index: number) => (
-          <AccordionItem 
-            key={index} 
-            value={`item-${index}`}
-            className="bg-muted/50 rounded-lg border border-border"
-            itemScope 
-            itemType="https://schema.org/Question"
+      <div className="bg-card rounded-2xl border border-border overflow-hidden">
+        {faqs.map((faq, index) => (
+          <div
+            key={index}
+            className={`${index < faqs.length - 1 ? 'border-b border-border' : ''}`}
           >
-            <AccordionTrigger 
-              className="px-6 py-3 text-left hover:no-underline hover:bg-muted rounded-t-lg text-sm"
-              itemProp="name"
+            <button
+              onClick={() => toggleFAQ(index)}
+              className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-muted/50 transition-colors"
             >
-              <span className="font-medium text-foreground">{faq.question}</span>
-            </AccordionTrigger>
-            <AccordionContent 
-              className="px-6 pb-4 text-sm text-muted-foreground leading-relaxed"
-              itemScope 
-              itemType="https://schema.org/Answer"
-            >
-              <div itemProp="text">{faq.answer}</div>
-            </AccordionContent>
-          </AccordionItem>
+              <span className="text-[15px] font-medium text-foreground pr-4">
+                {faq.question}
+              </span>
+              <ChevronDown 
+                className={`w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform duration-200 ${
+                  expandedIndex === index ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
+            {expandedIndex === index && (
+              <div className="px-6 pb-5 text-sm text-muted-foreground leading-relaxed">
+                {faq.answer}
+              </div>
+            )}
+          </div>
         ))}
-      </Accordion>
-    </section>
+      </div>
+    </div>
   );
 };
 

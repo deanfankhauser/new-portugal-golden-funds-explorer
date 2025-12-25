@@ -75,8 +75,8 @@ Deno.serve(async (req) => {
       .select(`
         *,
         funds!inner(name),
-        manager_profiles!manager_user_id(manager_name, email),
-        investor_profiles!investor_user_id(first_name, last_name, email)
+        profiles!fund_brief_submissions_manager_user_id_fkey(manager_name, company_name, email),
+        profiles!fund_brief_submissions_investor_user_id_fkey(first_name, last_name, email)
       `)
       .limit(1)
 
@@ -97,26 +97,22 @@ Deno.serve(async (req) => {
       for (const submission of needsFixSubmissions) {
         const updates: any = {}
         
-        // Check if user is a manager
-        const { data: managerCheck } = await dev
-          .from('manager_profiles')
-          .select('user_id')
+        // Check profile type from unified profiles table
+        const { data: profile } = await dev
+          .from('profiles')
+          .select('user_id, company_name, manager_name, first_name, last_name')
           .eq('user_id', submission.user_id)
-          .single()
+          .maybeSingle()
         
-        if (managerCheck) {
-          updates.manager_user_id = submission.user_id
-        }
-        
-        // Check if user is an investor
-        const { data: investorCheck } = await dev
-          .from('investor_profiles')
-          .select('user_id')
-          .eq('user_id', submission.user_id)
-          .single()
-        
-        if (investorCheck) {
-          updates.investor_user_id = submission.user_id
+        if (profile) {
+          // Check if it's a manager profile (has company_name and manager_name)
+          if (profile.company_name && profile.manager_name) {
+            updates.manager_user_id = submission.user_id
+          }
+          // Check if it's an investor profile (has first_name and last_name)
+          if (profile.first_name && profile.last_name) {
+            updates.investor_user_id = submission.user_id
+          }
         }
         
         if (Object.keys(updates).length > 0) {

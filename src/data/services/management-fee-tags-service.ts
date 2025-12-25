@@ -8,17 +8,14 @@ export const generateManagementFeeTags = (fund: Fund): FundTag[] => {
   const managementFee = fund.managementFee;
   
   if (managementFee < 1) {
-    tags.push('< 1% management fee');
-  } else if (managementFee >= 1 && managementFee <= 1.5) {
-    tags.push('1-1.5% management fee');
-  } else if (managementFee > 1.5) {
-    tags.push('> 1.5% management fee');
+    tags.push('Low fees (<1% management fee)');
   }
+  // Note: Other management fee bands removed as per restructuring
   
   return tags;
 };
 
 // Function to get funds by management fee level
-export const getFundsByManagementFeeLevel = (funds: Fund[], feeLevel: '< 1% management fee' | '1-1.5% management fee' | '> 1.5% management fee'): Fund[] => {
+export const getFundsByManagementFeeLevel = (funds: Fund[], feeLevel: 'Low fees (<1% management fee)'): Fund[] => {
   return funds.filter(fund => fund.tags.includes(feeLevel));
 };

@@ -1,4 +1,3 @@
-
 import { StructuredDataSchema } from '../structuredDataService';
 import { FundManagerData } from '../../types/fundManagerTypes';
 import { URL_CONFIG } from '../../utils/urlConfig';
@@ -59,11 +58,11 @@ export class ManagerPageSchemaGenerator {
                 'name': 'Fund Size',
                 'value': `${fund.fundSize} Million EUR`
               },
-              {
+              ...(fund.returnTarget && fund.returnTarget !== '0' && fund.returnTarget !== '0%' && fund.returnTarget !== 'Unspecified' && !fund.returnTarget.includes('0-0') ? [{
                 '@type': 'PropertyValue',
                 'name': 'Target Return',
                 'value': fund.returnTarget
-              }
+              }] : [])
             ]
           }
         }))

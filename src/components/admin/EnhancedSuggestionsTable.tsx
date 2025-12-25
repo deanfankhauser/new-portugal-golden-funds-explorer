@@ -71,37 +71,21 @@ export const EnhancedSuggestionsTable: React.FC<EnhancedSuggestionsTableProps> =
     try {
       const profiles: Record<string, any> = {};
 
-      // Fetch manager profiles
-      const { data: managerProfiles, error: managerError } = await supabase
-        .from('manager_profiles')
-        .select('user_id, company_name, manager_name, email')
+      // Fetch all profiles from unified table
+      const { data: allProfiles, error: profileError } = await supabase
+        .from('profiles')
+        .select('user_id, company_name, manager_name, first_name, last_name, email')
         .in('user_id', userIds);
 
-      if (!managerError && managerProfiles) {
-        managerProfiles.forEach(profile => {
+      if (!profileError && allProfiles) {
+        allProfiles.forEach(profile => {
+          // Determine if it's a manager or investor profile
+          const isManager = !!(profile.company_name && profile.manager_name);
           profiles[profile.user_id] = {
             ...profile,
-            type: 'manager'
+            type: isManager ? 'manager' : 'investor'
           };
         });
-      }
-
-      // Fetch investor profiles for remaining user_ids
-      const remainingUserIds = userIds.filter(id => !profiles[id]);
-      if (remainingUserIds.length > 0) {
-        const { data: investorProfiles, error: investorError } = await supabase
-          .from('investor_profiles')
-          .select('user_id, first_name, last_name, email')
-          .in('user_id', remainingUserIds);
-
-        if (!investorError && investorProfiles) {
-          investorProfiles.forEach(profile => {
-            profiles[profile.user_id] = {
-              ...profile,
-              type: 'investor'
-            };
-          });
-        }
       }
 
       console.log('Fetched user profiles:', profiles);

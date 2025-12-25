@@ -5,13 +5,28 @@ import PageSEO from '../components/common/PageSEO';
 
 const Disclaimer = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-background">
       <PageSEO pageType="disclaimer" />
       
       <Header />
       
       <main className="container mx-auto px-4 py-8 flex-1">
-        <div className="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
+        {/* Link to Main Hub */}
+        <div className="mb-8 text-center">
+          <a 
+            href="https://www.movingto.com/portugal-golden-visa-funds" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
+          >
+            Browse All Portugal Golden Visa Funds
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+        
+        <div className="bg-card p-6 rounded-lg shadow-md max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold mb-6">Legal Disclaimer</h1>
           
           <p className="text-sm text-muted-foreground mb-6">
@@ -19,8 +34,8 @@ const Disclaimer = () => {
           </p>
 
           <p className="mb-6">
-            This website, including the domain funds.movingto.com (the "Site"), is owned and operated by Moving To Global Pte Ltd, 
-            a company incorporated in Singapore ("we," "our," "us").
+            This website, including the domain funds.movingto.com (the "Site"), is owned and operated by Moving To Global Pty Ltd, 
+            a company incorporated in Australia ("we," "our," "us").
           </p>
 
           <p className="mb-6">
@@ -76,7 +91,7 @@ const Disclaimer = () => {
 
           <h2 className="text-xl font-semibold mb-4">6. Limitation of Liability</h2>
           <p className="mb-4">
-            To the fullest extent permitted by law, Moving To Global Pte Ltd and its directors, officers, employees, and agents 
+            To the fullest extent permitted by law, Moving To Global Pty Ltd and its directors, officers, employees, and agents 
             shall not be liable for any direct, indirect, incidental, consequential, or special damages, including but not limited to:
           </p>
           <ul className="list-disc pl-6 mb-4 space-y-1">
@@ -103,8 +118,8 @@ const Disclaimer = () => {
 
           <h2 className="text-xl font-semibold mb-4">8. Regulatory Status</h2>
           <p className="mb-4">
-            Moving To Global Pte Ltd is not licensed as a financial institution, financial adviser, investment adviser, or broker-dealer 
-            under the laws of Singapore or any other jurisdiction.
+            Moving To Global Pty Ltd is not licensed as a financial institution, financial adviser, investment adviser, or broker-dealer 
+            under the laws of Australia or any other jurisdiction.
           </p>
           <p className="mb-4">
             Nothing on this Site should be construed as regulated financial activity or as creating any fiduciary duty on our part.
@@ -127,10 +142,10 @@ const Disclaimer = () => {
 
           <h2 className="text-xl font-semibold mb-4">11. Governing Law & Jurisdiction</h2>
           <p className="mb-4">
-            This disclaimer and any disputes arising in connection with it shall be governed by the laws of Singapore.
+            This disclaimer and any disputes arising in connection with it shall be governed by the laws of Victoria, Australia.
           </p>
           <p className="mb-6">
-            By using this Site, you submit to the exclusive jurisdiction of the courts of Singapore, without prejudice to any 
+            By using this Site, you submit to the exclusive jurisdiction of the courts of Victoria, Australia, without prejudice to any 
             mandatory laws of your country of residence.
           </p>
 
@@ -141,10 +156,9 @@ const Disclaimer = () => {
 
           <h2 className="text-xl font-semibold mb-4">13. Contact</h2>
           <div className="bg-muted p-4 rounded-lg">
-            <p className="font-medium">Moving To Global Pte Ltd</p>
-            <p>160 Robinson Road, #14-04</p>
-            <p>Singapore Business Federation Center</p>
-            <p>Singapore 068914</p>
+            <p className="font-medium">Moving To Global Pty Ltd</p>
+            <p>Melbourne, Victoria</p>
+            <p>Australia</p>
             <p className="mt-2">
               <strong>Email:</strong> <a href="mailto:info@movingto.com" className="text-primary hover:underline">info@movingto.com</a>
             </p>

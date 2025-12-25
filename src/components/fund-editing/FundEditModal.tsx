@@ -15,16 +15,17 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Save, Loader2, Plus, Trash2, X, Building2, TrendingUp, FileText, Settings } from 'lucide-react';
-import { Fund, GeographicAllocation, TeamMember, PdfDocument, RedemptionTerms, FAQItem } from '@/data/types/funds';
+import { Fund, GeographicAllocation, TeamMember, PdfDocument, RedemptionTerms, FAQItem, FundTeamMemberReference } from '@/data/types/funds';
 import { getAllTags } from '@/data/services/tags-service';
 import { useFundEditing } from '@/hooks/useFundEditing';
 import { toast } from 'sonner';
-import { uploadTeamMemberPhoto, deleteTeamMemberPhoto } from '../../utils/imageUpload';
 import { useToast } from '../../hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import HistoricalPerformanceEditor from './HistoricalPerformanceEditor';
+import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
+import { FundTeamPicker } from './FundTeamPicker';
 
 interface FundEditModalProps {
   fund: Fund;
@@ -37,9 +38,13 @@ export const FundEditModal: React.FC<FundEditModalProps> = ({
   open,
   onOpenChange,
 }) => {
-  const { submitFundEditSuggestion, loading } = useFundEditing();
+  const { submitFundEditSuggestion, canEditFund, directUpdateFund, loading, user } = useFundEditing();
   const { toast } = useToast();
+  const { funds: allFundsData } = useRealTimeFunds();
+  const allDatabaseFunds = allFundsData || [];
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [hasDirectEditAccess, setHasDirectEditAccess] = useState(false);
+  const [checkingPermission, setCheckingPermission] = useState(true);
   
 const buildFormData = (f: Fund) => {
   const formData: any = {
@@ -63,8 +68,13 @@ const buildFormData = (f: Fund) => {
     regulatedBy: f.regulatedBy,
     // Geographic allocation - always present as array
     geographicAllocation: f.geographicAllocation || [],
-    // Team members - always present as array
-    team: f.team?.map(member => ({ ...member, photoUrl: member.photoUrl || '' })) || [],
+    // Team members - convert to references, filter out invalid legacy entries
+    teamReferences: (f.team || [])
+      .filter((member: any) => member.member_id && member.member_id !== '')
+      .map((member: any) => ({
+        member_id: member.member_id,
+        fund_role: member.fund_role
+      } as FundTeamMemberReference)),
     // Documents - always present as array
     documents: f.documents || [],
     // Historical performance - always present as object
@@ -113,6 +123,28 @@ useEffect(() => {
     setFormData(buildFormData(fund));
   }
 }, [open, fund]);
+
+// Check if user has direct edit permission
+useEffect(() => {
+  const checkPermission = async () => {
+    if (user && open) {
+      setCheckingPermission(true);
+      try {
+        const canEdit = await canEditFund(fund.id);
+        setHasDirectEditAccess(canEdit);
+      } catch (error) {
+        console.error('Error checking edit permission:', error);
+        setHasDirectEditAccess(false);
+      } finally {
+        setCheckingPermission(false);
+      }
+    } else {
+      setHasDirectEditAccess(false);
+      setCheckingPermission(false);
+    }
+  };
+  checkPermission();
+}, [fund.id, user, open, canEditFund]);
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({
@@ -168,73 +200,11 @@ useEffect(() => {
     }));
   };
 
-  const handleProfilePictureUpload = async (event: React.ChangeEvent<HTMLInputElement>, memberIndex: number) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      toast({
-        title: "Invalid file type",
-        description: "Please select an image file.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast({
-        title: "File too large",
-        description: "Please select an image smaller than 5MB.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsUploadingPhoto(true);
-    try {
-      const teamMember = formData.team[memberIndex];
-      const photoUrl = await uploadTeamMemberPhoto(file, teamMember.name || `member-${memberIndex}`);
-      
-      // Update the team member with the new photo URL
-      handleArrayChange('team', memberIndex, 'photoUrl', photoUrl);
-      
-      toast({
-        title: "Photo uploaded",
-        description: "Profile picture has been uploaded successfully.",
-      });
-    } catch (error) {
-      console.error('Upload error:', error);
-      toast({
-        title: "Upload failed",
-        description: "Failed to upload photo. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsUploadingPhoto(false);
-    }
-  };
-
-  const handleRemoveProfilePicture = async (memberIndex: number) => {
-    const teamMember = formData.team[memberIndex];
-    if (teamMember.photoUrl) {
-      try {
-        await deleteTeamMemberPhoto(teamMember.photoUrl);
-        handleArrayChange('team', memberIndex, 'photoUrl', '');
-        toast({
-          title: "Photo removed",
-          description: "Profile picture has been removed.",
-        });
-      } catch (error) {
-        console.error('Delete error:', error);
-        toast({
-          title: "Failed to remove photo",
-          description: "Photo removal failed. Please try again.",
-          variant: "destructive",
-        });
-      }
-    }
+  const handleTeamReferencesChange = (references: FundTeamMemberReference[]) => {
+    setFormData(prev => ({
+      ...prev,
+      teamReferences: references
+    }));
   };
 
   const getCurrentValues = () => ({
@@ -256,7 +226,9 @@ useEffect(() => {
     established: fund.established,
     regulatedBy: fund.regulatedBy,
     geographicAllocation: fund.geographicAllocation,
-    team: fund.team,
+    teamReferences: (fund.team || []).map((m: any) => 
+      m.member_id ? { member_id: m.member_id, fund_role: m.fund_role } : { member_id: '', fund_role: m.position }
+    ),
     documents: fund.documents,
     redemptionTerms: fund.redemptionTerms,
     cmvmId: fund.cmvmId,
@@ -327,22 +299,34 @@ useEffect(() => {
         return;
       }
 
-      await submitFundEditSuggestion(
-        fund.id,
-        suggestedChanges,
-        getCurrentValues()
-      );
+      if (hasDirectEditAccess) {
+        // Direct update for assigned managers
+        await directUpdateFund(fund.id, suggestedChanges);
+        toast({
+          title: "Fund Updated!",
+          description: "Your changes have been saved. Please allow up to 10 minutes for updates to be reflected on the public fund profile.",
+        });
+      } else {
+        // Suggestion workflow for non-assigned users
+        await submitFundEditSuggestion(
+          fund.id,
+          suggestedChanges,
+          getCurrentValues()
+        );
+        toast({
+          title: "Suggestion submitted!",
+          description: "Thank you for your edit suggestion! We will review it and notify you by email once it's processed.",
+        });
+      }
       
-      toast({
-        title: "Suggestion submitted!",
-        description: "Thank you for your edit suggestion! We will review it and notify you by email once it's processed.",
-      });
       onOpenChange(false);
     } catch (error) {
-      console.error('Error submitting edit suggestion:', error);
+      console.error('Error submitting changes:', error);
       toast({
         title: "Submission failed",
-        description: "Failed to submit edit suggestion. Please try again.",
+        description: hasDirectEditAccess 
+          ? "Failed to update fund. Please try again."
+          : "Failed to submit edit suggestion. Please try again.",
         variant: "destructive",
       });
     }
@@ -354,9 +338,16 @@ useEffect(() => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle>Edit Fund Information</DialogTitle>
+          <DialogTitle>
+            {checkingPermission ? 'Edit Fund Information' : hasDirectEditAccess ? 'Edit Fund' : 'Suggest Fund Edit'}
+          </DialogTitle>
           <DialogDescription>
-            Suggest changes to {fund.name}. All changes will be reviewed before being applied.
+            {checkingPermission 
+              ? `Loading permissions for ${fund.name}...`
+              : hasDirectEditAccess 
+                ? `Edit ${fund.name}. Your changes will be published immediately.`
+                : `Suggest changes to ${fund.name}. All changes will be reviewed before being applied.`
+            }
           </DialogDescription>
         </DialogHeader>
         
@@ -477,6 +468,9 @@ useEffect(() => {
                       value={formData.managementFee}
                       onChange={(e) => handleInputChange('managementFee', e.target.value)}
                     />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Enter 0 only if this is genuinely a no-fee fund. Leave empty if unknown.
+                    </p>
                   </div>
                   
                   <div>
@@ -517,6 +511,9 @@ useEffect(() => {
                       value={formData.subscriptionFee}
                       onChange={(e) => handleInputChange('subscriptionFee', e.target.value)}
                     />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Enter 0 if there's no subscription fee. Leave empty if undisclosed.
+                    </p>
                   </div>
 
                   <div>
@@ -528,6 +525,9 @@ useEffect(() => {
                       value={formData.redemptionFee}
                       onChange={(e) => handleInputChange('redemptionFee', e.target.value)}
                     />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Enter 0 if there's no redemption fee. Leave empty if undisclosed.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -674,7 +674,7 @@ useEffect(() => {
                 <div className="space-y-3">
                   <Label className="text-sm font-medium">Available Tags</Label>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-64 overflow-y-auto p-3 border rounded-md">
-                    {getAllTags().map((tag) => {
+                    {getAllTags(allDatabaseFunds).map((tag) => {
                       const isSelected = formData.tags?.includes(tag) || false;
                       return (
                         <div key={tag} className="flex items-center space-x-2">
@@ -980,123 +980,17 @@ useEffect(() => {
 
               {/* Team Members */}
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">Team Members</h3>
-                   <Button
-                     type="button"
-                     variant="outline"
-                     size="sm"
-                     onClick={() => addArrayItem('team', { name: '', position: '', bio: '', linkedinUrl: '', photoUrl: '' })}
-                   >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Team Member
-                  </Button>
-                </div>
+                <h3 className="text-lg font-semibold">Fund Team</h3>
+                <p className="text-sm text-muted-foreground">
+                  Select team members from your company roster. Photos and bios are automatically synced from the company profile.
+                </p>
                 
-                {formData.team.map((member: TeamMember, index: number) => (
-                  <div key={index} className="p-4 border rounded-lg space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-medium">Team Member {index + 1}</h4>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => removeArrayItem('team', index)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Name</Label>
-                        <Input
-                          value={member.name}
-                          onChange={(e) => handleArrayChange('team', index, 'name', e.target.value)}
-                          placeholder="Full name"
-                        />
-                      </div>
-                      <div>
-                        <Label>Position</Label>
-                        <Input
-                          value={member.position}
-                          onChange={(e) => handleArrayChange('team', index, 'position', e.target.value)}
-                          placeholder="Job title"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <Label>LinkedIn URL</Label>
-                        <Input
-                          value={member.linkedinUrl || ''}
-                          onChange={(e) => handleArrayChange('team', index, 'linkedinUrl', e.target.value)}
-                          placeholder="https://linkedin.com/in/..."
-                        />
-                      </div>
-                       <div className="md:col-span-2">
-                         <Label>Profile Picture</Label>
-                         <div className="space-y-2">
-                           <input
-                             type="file"
-                             accept="image/*"
-                             onChange={(e) => handleProfilePictureUpload(e, index)}
-                             className="hidden"
-                             id={`photo-upload-${index}`}
-                           />
-                           <div className="flex items-center space-x-4">
-                             {member.photoUrl && (
-                               <img 
-                                 src={member.photoUrl} 
-                                 alt={member.name}
-                                 className="w-16 h-16 rounded-full object-cover border"
-                               />
-                             )}
-                             <div className="space-y-2">
-                               <Button
-                                 type="button"
-                                 variant="outline"
-                                 size="sm"
-                                 onClick={() => document.getElementById(`photo-upload-${index}`)?.click()}
-                                 disabled={isUploadingPhoto}
-                               >
-                                 {isUploadingPhoto ? 'Uploading...' : (member.photoUrl ? 'Change Photo' : 'Upload Photo')}
-                               </Button>
-                               {member.photoUrl && (
-                                 <Button
-                                   type="button"
-                                   variant="outline"
-                                   size="sm"
-                                   onClick={() => handleRemoveProfilePicture(index)}
-                                 >
-                                   Remove Photo
-                                 </Button>
-                               )}
-                             </div>
-                           </div>
-                         </div>
-                       </div>
-                       <div className="md:col-span-2">
-                         <div className="flex items-center justify-between">
-                           <Label>Bio</Label>
-                           <span className={`text-xs ${(member.bio || '').length > 120 ? 'text-destructive' : (member.bio || '').length > 100 ? 'text-warning' : 'text-muted-foreground'}`}>
-                             {(member.bio || '').length}/140
-                           </span>
-                         </div>
-                         <Textarea
-                           value={member.bio || ''}
-                           onChange={(e) => {
-                             const value = e.target.value;
-                             if (value.length <= 140) {
-                               handleArrayChange('team', index, 'bio', value);
-                             }
-                           }}
-                           rows={3}
-                           placeholder="Professional background and experience (max 140 characters)"
-                           maxLength={140}
-                         />
-                       </div>
-                    </div>
-                  </div>
-                ))}
+                <FundTeamPicker
+                  managerName={fund.managerName}
+                  selectedMembers={formData.teamReferences || []}
+                  onChange={handleTeamReferencesChange}
+                  hasLegacyData={(fund.team || []).some((m: any) => !m.member_id || m.member_id === '')}
+                />
               </div>
             </TabsContent>
 
@@ -1215,15 +1109,20 @@ useEffect(() => {
           
           <Button 
             onClick={handleSubmit} 
-            disabled={!hasChanges || loading}
+            disabled={!hasChanges || loading || checkingPermission}
             className="gap-2"
           >
             {loading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                {hasDirectEditAccess ? 'Publishing...' : 'Submitting...'}
+              </>
             ) : (
-              <Save className="h-4 w-4" />
+              <>
+                <Save className="h-4 w-4" />
+                {hasDirectEditAccess ? 'Publish Changes' : 'Submit Suggestion'}
+              </>
             )}
-            Submit Changes
           </Button>
         </div>
         

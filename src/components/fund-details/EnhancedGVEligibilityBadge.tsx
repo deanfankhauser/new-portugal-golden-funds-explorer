@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
 import { AlertTriangle, CheckCircle, HelpCircle } from 'lucide-react';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
@@ -20,6 +20,11 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
     tag.toLowerCase().includes('real estate') || 
     tag.toLowerCase().includes('property')
   );
+  
+  // Only show for verified funds
+  if (!fund.isVerified) {
+    return null;
+  }
   
   // All funds are now Golden Visa eligible
   const getEligibilityStatus = () => {

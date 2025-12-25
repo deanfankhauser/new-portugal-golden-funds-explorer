@@ -1,8 +1,6 @@
-
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import FundListItem from '../FundListItem';
-import { URL_CONFIG } from '../../utils/urlConfig';
 
 interface CategoryPageFundListProps {
   funds: Fund[];

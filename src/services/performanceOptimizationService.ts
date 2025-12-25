@@ -85,15 +85,7 @@ export class PerformanceOptimizationService {
       }
     });
 
-    // Add font optimization
-    if (!document.querySelector('link[rel="preload"][as="font"]')) {
-      const fontPreload = document.createElement('link');
-      fontPreload.rel = 'preload';
-      fontPreload.as = 'font';
-      fontPreload.type = 'font/woff2';
-      fontPreload.crossOrigin = 'anonymous';
-      document.head.appendChild(fontPreload);
-    }
+    // Font preloads are handled by the HTML template generator
   }
 
   // Validate and report performance metrics

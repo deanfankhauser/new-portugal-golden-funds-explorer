@@ -7,8 +7,13 @@ import ComparisonsHubBreadcrumbs from '../components/comparisons-hub/Comparisons
 import ComparisonsHubHeader from '../components/comparisons-hub/ComparisonsHubHeader';
 import ComparisonsList from '../components/comparisons-hub/ComparisonsList';
 import ComparisonFinder from '../components/comparisons-hub/ComparisonFinder';
+import { Fund } from '../data/types/funds';
 
-const ComparisonsHub = () => {
+interface ComparisonsHubProps {
+  initialFunds?: Fund[];
+}
+
+const ComparisonsHub: React.FC<ComparisonsHubProps> = ({ initialFunds }) => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <PageSEO pageType="comparisons-hub" />
@@ -19,7 +24,22 @@ const ComparisonsHub = () => {
         <ComparisonsHubBreadcrumbs />
         <ComparisonsHubHeader />
         <ComparisonFinder />
-        <ComparisonsList />
+        <ComparisonsList initialFunds={initialFunds} />
+
+        {/* Link to Main Hub */}
+        <div className="mt-8 text-center">
+          <a 
+            href="https://www.movingto.com/portugal-golden-visa-funds" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
+          >
+            Browse All Portugal Golden Visa Funds
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
       </main>
       
       <Footer />

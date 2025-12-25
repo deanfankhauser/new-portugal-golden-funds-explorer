@@ -1,0 +1,31 @@
+PLACEHOLDER FILE - REPLACE WITH ACTUAL OG IMAGE
+
+This file serves as a placeholder for the Open Graph image.
+
+Requirements:
+- Format: PNG or JPG
+- Dimensions: 1200x630 pixels (Facebook/LinkedIn recommended size)
+- File size: Under 1MB for optimal loading
+- Content: Should include Movingto Funds branding
+- Safe zone: Keep important content within center 1200x600 area (avoid edges)
+
+Recommended design elements:
+- Movingto Funds logo
+- Tagline: "Portugal Golden Visa Investment Fund Directory"
+- Brand colors: Bordeaux (#4B0F23) and Bronze (#A97155)
+- Clean, professional design
+
+To use:
+1. Create your OG image (1200x630px)
+2. Save it as: public/og-default.png
+3. Delete this placeholder file
+4. Rebuild SSG: npm run build:ssg
+
+The image will be used for:
+- Open Graph tags (Facebook, LinkedIn sharing)
+- Twitter Card images
+- Social media preview when links are shared
+
+Current references in codebase:
+- src/services/consolidatedSEOService.ts (DEFAULT_IMAGE constant)
+- src/ssg/htmlTemplateGenerator.ts (og:image and twitter:image meta tags)
