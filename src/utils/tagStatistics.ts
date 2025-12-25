@@ -18,14 +18,18 @@ export const calculateTagStatistics = (funds: Fund[]): TagStatistics => {
     };
   }
 
-  // Calculate average target yield
+  // Calculate average target yield (exclude 0 values - they mean "not disclosed")
   const validYields = funds
     .map(fund => {
       const { min, max } = getReturnTargetNumbers(fund);
-      if (min != null && max != null && max > 0) {
-        return (min + max) / 2;
+      const validMin = min != null && min > 0 ? min : null;
+      const validMax = max != null && max > 0 ? max : null;
+      
+      if (validMin != null && validMax != null) {
+        return (validMin + validMax) / 2;
       }
-      if (min != null) return min;
+      if (validMin != null) return validMin;
+      if (validMax != null) return validMax;
       return null;
     })
     .filter((y): y is number => y !== null);

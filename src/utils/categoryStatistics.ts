@@ -20,15 +20,18 @@ export const calculateCategoryStatistics = (funds: Fund[]): CategoryStatistics =
     };
   }
 
-  // Calculate average target return
+  // Calculate average target return (exclude 0 values - they mean "not disclosed")
   const returnsWithData = funds
     .map(fund => {
       const { min, max } = getReturnTargetNumbers(fund);
-      if (min != null && max != null) {
-        return (min + max) / 2; // Average of range
+      const validMin = min != null && min > 0 ? min : null;
+      const validMax = max != null && max > 0 ? max : null;
+      
+      if (validMin != null && validMax != null) {
+        return (validMin + validMax) / 2;
       }
-      if (min != null) return min;
-      if (max != null) return max;
+      if (validMin != null) return validMin;
+      if (validMax != null) return validMax;
       return null;
     })
     .filter((val): val is number => val !== null);
