@@ -8,6 +8,7 @@ import { EnhancedStructuredDataService } from './enhancedStructuredDataService';
 import { normalizeTagLabel, formatMinimumForTitle } from '../utils/tagLabelNormalizer';
 import { managerToSlug } from '../lib/utils';
 import { getTagSeoTitle } from '../utils/tagSeoMappings';
+import { SEO_CONFIG } from '../config/company';
 
 // Import new SEO helpers from centralized module
 import {
@@ -108,35 +109,42 @@ export class ConsolidatedSEOService {
       : truncated + '...';
   }
 
-  // Generate optimized fund title - dynamic year, fees & yield focused
+  /**
+   * Generate fund page title with smart fallback ladder.
+   * Pattern: {Fund Name}: Fees, Minimum, Lock-Up & Terms (2026)
+   * 
+   * Fallback ladder (never truncates fund name):
+   * 1. Full: "{Fund Name}: Fees, Minimum, Lock-Up & Terms (2026)"
+   * 2. Drop "& Terms": "{Fund Name}: Fees, Minimum & Lock-Up (2026)"
+   * 3. Drop "Minimum": "{Fund Name}: Fees & Lock-Up (2026)"
+   * 4. Minimal: "{Fund Name} (2026)"
+   */
   private static generateFundTitle(fund: any): string {
-    // Pattern: [Fund Name]: {Current Year} Fees, Yield & Golden Visa Fact Sheet
-    // Truncate to: [Fund Name]: {Current Year} Golden Visa Fact Sheet if over 60 chars
-    // Note: Year is updated client-side via useYearUpdate hook to avoid SSG rebuilds on New Year's Day
-    
-    const currentYear = new Date().getFullYear();
     const fundName = fund.name;
-    const maxLength = 60;
+    const year = SEO_CONFIG.currentYear;
+    const maxLength = SEO_CONFIG.maxTitleLength;
     
-    // Primary title: [Fund Name]: {Year} Fees, Yield & Golden Visa Fact Sheet
-    const fullTitle = `${fundName}: ${currentYear} Fees, Yield & Golden Visa Fact Sheet`;
-    
+    // Primary: "{Fund Name}: Fees, Minimum, Lock-Up & Terms (2026)"
+    const fullTitle = `${fundName}: Fees, Minimum, Lock-Up & Terms (${year})`;
     if (fullTitle.length <= maxLength) {
       return fullTitle;
     }
     
-    // Truncated fallback: [Fund Name]: {Year} Golden Visa Fact Sheet
-    const shortTitle = `${fundName}: ${currentYear} Golden Visa Fact Sheet`;
-    
-    if (shortTitle.length <= maxLength) {
-      return shortTitle;
+    // Fallback 1: Drop "& Terms" -> "{Fund Name}: Fees, Minimum & Lock-Up (2026)"
+    const noTerms = `${fundName}: Fees, Minimum & Lock-Up (${year})`;
+    if (noTerms.length <= maxLength) {
+      return noTerms;
     }
     
-    // Final fallback: Truncate fund name to fit
-    const suffixLength = `: ${currentYear} Golden Visa Fact Sheet`.length;
-    const maxNameLength = maxLength - suffixLength - 3; // -3 for ellipsis
-    const truncatedName = fundName.substring(0, maxNameLength).trim() + '...';
-    return `${truncatedName}: ${currentYear} Golden Visa Fact Sheet`;
+    // Fallback 2: Drop "Minimum" -> "{Fund Name}: Fees & Lock-Up (2026)"
+    const minimal = `${fundName}: Fees & Lock-Up (${year})`;
+    if (minimal.length <= maxLength) {
+      return minimal;
+    }
+    
+    // Fallback 3: Just fund name and year -> "{Fund Name} (2026)"
+    // NEVER truncate the fund name with ellipsis!
+    return `${fundName} (${year})`;
   }
 
   // Generate optimized fund description with conditional logic

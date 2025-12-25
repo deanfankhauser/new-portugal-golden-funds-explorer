@@ -1,10 +1,10 @@
 import { SEOData } from '../types';
-import { optimizeTitle, optimizeDescription } from '../utils';
-import { MAX_TITLE_LENGTH } from '../constants';
+import { optimizeDescription } from '../utils';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 import { InvestmentFundStructuredDataService } from '@/services/investmentFundStructuredDataService';
 import { getSitewideSchemas } from '../schemas';
+import { SEO_CONFIG } from '@/config/company';
 
 export function getFundSeo(fund: Fund): SEOData {
   const fundTitle = generateFundTitle(fund);
@@ -12,7 +12,7 @@ export function getFundSeo(fund: Fund): SEOData {
   const fundKeywords = generateFundKeywords(fund);
   
   return {
-    title: optimizeTitle(fundTitle),
+    title: fundTitle, // No truncation - use smart fallback ladder instead
     description: optimizeDescription(fundDescription),
     url: URL_CONFIG.buildFundUrl(fund.id),
     canonical: URL_CONFIG.buildFundUrl(fund.id),
@@ -22,8 +22,9 @@ export function getFundSeo(fund: Fund): SEOData {
 }
 
 export function getFundFallbackSeo(fundIdOrName: string): SEOData {
+  const year = SEO_CONFIG.currentYear;
   return {
-    title: optimizeTitle(`${fundIdOrName} – Portugal Golden Visa Fund | Movingto Funds`),
+    title: `${fundIdOrName}: Fees, Minimum, Lock-Up & Terms (${year})`,
     description: optimizeDescription('Explore details for this Portugal Golden Visa investment fund on Movingto.'),
     url: URL_CONFIG.buildFundUrl(fundIdOrName),
     canonical: URL_CONFIG.buildFundUrl(fundIdOrName),
@@ -31,22 +32,42 @@ export function getFundFallbackSeo(fundIdOrName: string): SEOData {
   };
 }
 
+/**
+ * Generate fund page title with smart fallback ladder.
+ * Pattern: {Fund Name}: Fees, Minimum, Lock-Up & Terms (2026)
+ * 
+ * Fallback ladder (never truncates fund name):
+ * 1. Full: "{Fund Name}: Fees, Minimum, Lock-Up & Terms (2026)"
+ * 2. Drop "& Terms": "{Fund Name}: Fees, Minimum & Lock-Up (2026)"
+ * 3. Drop "Minimum": "{Fund Name}: Fees & Lock-Up (2026)"
+ * 4. Minimal: "{Fund Name} (2026)"
+ */
 function generateFundTitle(fund: Fund): string {
   const fundName = fund.name;
-  const suffix = ' | Portugal Golden Visa Fund (CMVM)';
-  const maxLength = MAX_TITLE_LENGTH;
+  const year = SEO_CONFIG.currentYear;
+  const maxLength = SEO_CONFIG.maxTitleLength;
   
-  // Primary title: "{Fund Name} | Portugal Golden Visa Fund (CMVM)"
-  const fullTitle = `${fundName}${suffix}`;
-  
+  // Primary: "{Fund Name}: Fees, Minimum, Lock-Up & Terms (2026)"
+  const fullTitle = `${fundName}: Fees, Minimum, Lock-Up & Terms (${year})`;
   if (fullTitle.length <= maxLength) {
     return fullTitle;
   }
   
-  // Truncate fund name to fit within limit
-  const maxNameLength = maxLength - suffix.length - 3;
-  const truncatedName = fundName.substring(0, maxNameLength).trim() + '...';
-  return `${truncatedName}${suffix}`;
+  // Fallback 1: Drop "& Terms" -> "{Fund Name}: Fees, Minimum & Lock-Up (2026)"
+  const noTerms = `${fundName}: Fees, Minimum & Lock-Up (${year})`;
+  if (noTerms.length <= maxLength) {
+    return noTerms;
+  }
+  
+  // Fallback 2: Drop "Minimum" -> "{Fund Name}: Fees & Lock-Up (2026)"
+  const minimal = `${fundName}: Fees & Lock-Up (${year})`;
+  if (minimal.length <= maxLength) {
+    return minimal;
+  }
+  
+  // Fallback 3: Just fund name and year -> "{Fund Name} (2026)"
+  // NEVER truncate the fund name with ellipsis!
+  return `${fundName} (${year})`;
 }
 
 function generateFundDescription(fund: Fund): string {
