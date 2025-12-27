@@ -145,7 +145,7 @@ export const QuizAnalyticsTab: React.FC = () => {
       setUnderservedSegments(underserved);
 
       // Calculate funnel data
-      const questionLabels = ['Budget', 'Strategy', 'Income', 'US Tax Account', 'Timeline'];
+      const questionLabels = ['Budget', 'Strategy', 'Income', 'Risk Tolerance', 'Timeline'];
       const totalStarted = started;
       
       // Count users who reached each step (0 = started, 1-5 = questions)
@@ -239,7 +239,7 @@ export const QuizAnalyticsTab: React.FC = () => {
       budget: 'Budget',
       strategy: 'Strategy',
       income: 'Income',
-      usTaxAccount: 'US Tax Account',
+      riskTolerance: 'Risk Tolerance',
       timeline: 'Timeline',
     };
     return labels[key] || key;
@@ -261,9 +261,10 @@ export const QuizAnalyticsTab: React.FC = () => {
         yes: 'Yes',
         no: 'No',
       },
-      usTaxAccount: {
-        yes: 'Yes',
-        no: 'No',
+      riskTolerance: {
+        conservative: 'Conservative',
+        moderate: 'Moderate',
+        aggressive: 'Aggressive',
       },
       timeline: {
         '1-3years': '1–3 years',
