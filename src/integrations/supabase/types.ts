@@ -718,6 +718,7 @@ export type Database = {
           eligibility_basis: Json | null
           expected_return_max: number | null
           expected_return_min: number | null
+          facebook_url: string | null
           faqs: Json | null
           final_rank: number | null
           geographic_allocation: Json | null
@@ -726,6 +727,7 @@ export type Database = {
           hurdle_rate: number | null
           id: string
           inception_date: string | null
+          instagram_url: string | null
           is_quiz_eligible: boolean | null
           is_verified: boolean | null
           isin: string | null
@@ -752,7 +754,9 @@ export type Database = {
           subscription_fee: number | null
           tags: string[] | null
           team_members: Json | null
+          tiktok_url: string | null
           total_distributions: number | null
+          twitter_url: string | null
           typical_ticket: number | null
           updated_at: string | null
           us_compliant: boolean | null
@@ -760,6 +764,7 @@ export type Database = {
           verified_by: string | null
           version: number | null
           website: string | null
+          youtube_url: string | null
         }
         Insert: {
           algo_rank?: number | null
@@ -776,6 +781,7 @@ export type Database = {
           eligibility_basis?: Json | null
           expected_return_max?: number | null
           expected_return_min?: number | null
+          facebook_url?: string | null
           faqs?: Json | null
           final_rank?: number | null
           geographic_allocation?: Json | null
@@ -784,6 +790,7 @@ export type Database = {
           hurdle_rate?: number | null
           id: string
           inception_date?: string | null
+          instagram_url?: string | null
           is_quiz_eligible?: boolean | null
           is_verified?: boolean | null
           isin?: string | null
@@ -810,7 +817,9 @@ export type Database = {
           subscription_fee?: number | null
           tags?: string[] | null
           team_members?: Json | null
+          tiktok_url?: string | null
           total_distributions?: number | null
+          twitter_url?: string | null
           typical_ticket?: number | null
           updated_at?: string | null
           us_compliant?: boolean | null
@@ -818,6 +827,7 @@ export type Database = {
           verified_by?: string | null
           version?: number | null
           website?: string | null
+          youtube_url?: string | null
         }
         Update: {
           algo_rank?: number | null
@@ -834,6 +844,7 @@ export type Database = {
           eligibility_basis?: Json | null
           expected_return_max?: number | null
           expected_return_min?: number | null
+          facebook_url?: string | null
           faqs?: Json | null
           final_rank?: number | null
           geographic_allocation?: Json | null
@@ -842,6 +853,7 @@ export type Database = {
           hurdle_rate?: number | null
           id?: string
           inception_date?: string | null
+          instagram_url?: string | null
           is_quiz_eligible?: boolean | null
           is_verified?: boolean | null
           isin?: string | null
@@ -868,7 +880,9 @@ export type Database = {
           subscription_fee?: number | null
           tags?: string[] | null
           team_members?: Json | null
+          tiktok_url?: string | null
           total_distributions?: number | null
+          twitter_url?: string | null
           typical_ticket?: number | null
           updated_at?: string | null
           us_compliant?: boolean | null
@@ -876,6 +890,7 @@ export type Database = {
           verified_by?: string | null
           version?: number | null
           website?: string | null
+          youtube_url?: string | null
         }
         Relationships: []
       }
