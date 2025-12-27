@@ -40,6 +40,7 @@ import { formatPercentage } from './utils/formatters';
 import { FundEnquirySection } from './FundEnquirySection';
 import ContactSidebar from './ContactSidebar';
 import FundSocialMediaSection from './FundSocialMediaSection';
+import FundVideoSection from './FundVideoSection';
 
 interface TeamMemberSSR {
   id: string;
@@ -141,6 +142,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund, initialFu
                       twitterUrl={fund.twitterUrl}
                       linkedinUrl={fund.linkedinUrl}
                     />
+
+                    {/* Featured Video Section */}
+                    <FundVideoSection videoUrl={fund.youtubeVideoUrl} />
 
                     {/* Enquiry Form Section */}
                     <section id="contact-fund" className="scroll-mt-28 md:scroll-mt-24">

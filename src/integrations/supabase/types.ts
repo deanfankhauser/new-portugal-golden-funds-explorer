@@ -766,6 +766,7 @@ export type Database = {
           version: number | null
           website: string | null
           youtube_url: string | null
+          youtube_video_url: string | null
         }
         Insert: {
           algo_rank?: number | null
@@ -830,6 +831,7 @@ export type Database = {
           version?: number | null
           website?: string | null
           youtube_url?: string | null
+          youtube_video_url?: string | null
         }
         Update: {
           algo_rank?: number | null
@@ -894,6 +896,7 @@ export type Database = {
           version?: number | null
           website?: string | null
           youtube_url?: string | null
+          youtube_video_url?: string | null
         }
         Relationships: []
       }

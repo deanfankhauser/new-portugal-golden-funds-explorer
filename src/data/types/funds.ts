@@ -242,4 +242,5 @@ export interface Fund {
   facebookUrl?: string;
   twitterUrl?: string;
   linkedinUrl?: string;
+  youtubeVideoUrl?: string;
 }
