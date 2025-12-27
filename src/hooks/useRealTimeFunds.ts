@@ -173,7 +173,8 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
             updatedAt: fund.updated_at || fund.created_at || undefined,
             isVerified: fund.is_verified || false,
             verifiedAt: fund.verified_at || undefined,
-            verifiedBy: fund.verified_by || undefined
+            verifiedBy: fund.verified_by || undefined,
+            isQuizEligible: fund.is_quiz_eligible || false
           };
         });
 
@@ -321,7 +322,8 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
         updatedAt: fundData.updated_at || fundData.created_at || undefined,
         isVerified: fundData.is_verified || false,
         verifiedAt: fundData.verified_at || undefined,
-        verifiedBy: fundData.verified_by || undefined
+        verifiedBy: fundData.verified_by || undefined,
+        isQuizEligible: fundData.is_quiz_eligible || false
       };
       
       // Update fund in state
