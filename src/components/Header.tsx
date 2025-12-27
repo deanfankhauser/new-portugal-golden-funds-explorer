@@ -44,7 +44,7 @@ const Header = () => {
               variant="ghost"
               size="sm"
               onClick={() => setQuizOpen(true)}
-              className="text-background hover:bg-background/10 gap-1.5"
+              className="text-background hover:bg-background/10 hover:text-white gap-1.5"
             >
               <Sparkles className="h-4 w-4" />
               <span>Fund Matcher</span>
