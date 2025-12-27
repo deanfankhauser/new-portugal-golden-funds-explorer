@@ -74,6 +74,29 @@ const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund, initialId, ini
     }
   }, [fund?.id]); // Only depend on stable ID
 
+  // Handle hash-based scrolling to enquiry form
+  useEffect(() => {
+    if (!isSSR && location.hash === '#enquiry-form' && fund) {
+      // Small delay to ensure DOM is ready
+      const timeoutId = setTimeout(() => {
+        const enquirySection = document.getElementById('enquiry-form');
+        if (enquirySection) {
+          enquirySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          
+          // Focus the first input in the form after scroll
+          setTimeout(() => {
+            const firstInput = enquirySection.querySelector('input, textarea');
+            if (firstInput instanceof HTMLElement) {
+              firstInput.focus();
+            }
+          }, 500);
+        }
+      }, 100);
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isSSR, location.hash, fund]);
+
   // Show loading skeleton only in browser when actually loading
   // During SSR, skip loading state if we have ssrFund data
   if (!isSSR && (!fundId || isLoading || isFetching || (isInitialMount && !fund))) {

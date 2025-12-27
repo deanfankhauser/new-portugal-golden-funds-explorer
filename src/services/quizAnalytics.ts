@@ -11,11 +11,13 @@ const getSessionId = (): string => {
 };
 
 export const trackQuizEvent = async (
-  eventType: 'started' | 'completed' | 'shared' | 'abandoned',
+  eventType: 'started' | 'completed' | 'shared' | 'abandoned' | 'cta_clicked',
   data?: {
     answers?: QuizAnswers;
     resultsCount?: number;
     abandonedAtStep?: number;
+    fundId?: string;
+    fundName?: string;
   }
 ) => {
   try {
