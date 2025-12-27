@@ -234,4 +234,11 @@ export interface Fund {
   // Quiz system fields
   isQuizEligible?: boolean; // Controls whether fund appears in Fund Matcher Quiz
   usCompliant?: boolean; // Indicates if fund is compliant for US citizens/residents (PFIC/QEF)
+  
+  // Social media links
+  youtubeUrl?: string;
+  instagramUrl?: string;
+  tiktokUrl?: string;
+  facebookUrl?: string;
+  twitterUrl?: string;
 }
