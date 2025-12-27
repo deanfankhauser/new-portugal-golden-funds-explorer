@@ -90,6 +90,7 @@ const buildFormData = (f: Fund) => {
     facebookUrl: f.facebookUrl || '',
     twitterUrl: f.twitterUrl || '',
     linkedinUrl: f.linkedinUrl || '',
+    youtubeVideoUrl: f.youtubeVideoUrl || '',
   };
 
   // Only add optional fields if they exist in the fund data
@@ -254,6 +255,7 @@ useEffect(() => {
     facebookUrl: fund.facebookUrl,
     twitterUrl: fund.twitterUrl,
     linkedinUrl: fund.linkedinUrl,
+    youtubeVideoUrl: fund.youtubeVideoUrl,
   });
 
   const getSuggestedChanges = () => {
@@ -713,6 +715,19 @@ useEffect(() => {
                       value={formData.linkedinUrl || ''}
                       onChange={(e) => handleInputChange('linkedinUrl', e.target.value)}
                     />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label htmlFor="youtubeVideoUrl">Featured Video URL</Label>
+                    <Input
+                      id="youtubeVideoUrl"
+                      type="url"
+                      placeholder="https://youtube.com/watch?v=..."
+                      value={formData.youtubeVideoUrl || ''}
+                      onChange={(e) => handleInputChange('youtubeVideoUrl', e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Paste a YouTube video URL to embed on your fund page
+                    </p>
                   </div>
                 </div>
               </div>

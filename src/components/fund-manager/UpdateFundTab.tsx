@@ -122,6 +122,7 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
     facebookUrl: f.facebookUrl ?? '',
     twitterUrl: f.twitterUrl ?? '',
     linkedinUrl: f.linkedinUrl ?? '',
+    youtubeVideoUrl: f.youtubeVideoUrl ?? '',
   });
 
   const [formData, setFormData] = useState(buildFormData(fund));
@@ -849,6 +850,19 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
                     value={formData.linkedinUrl}
                     onChange={(e) => handleInputChange('linkedinUrl', e.target.value)}
                   />
+                </div>
+                <div className="md:col-span-2">
+                  <Label htmlFor="youtubeVideoUrl">Featured Video URL</Label>
+                  <Input
+                    id="youtubeVideoUrl"
+                    type="url"
+                    placeholder="https://youtube.com/watch?v=..."
+                    value={formData.youtubeVideoUrl}
+                    onChange={(e) => handleInputChange('youtubeVideoUrl', e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Paste a YouTube video URL to embed on your fund page
+                  </p>
                 </div>
               </div>
             </CardContent>
