@@ -8,7 +8,7 @@ export function getHomeSeo(funds?: Fund[]): SEOData {
   const fundCount = funds?.length || 40;
   
   return {
-    title: 'Portugal Golden Visa Funds Directory | Compare CMVM-Linked Funds',
+    title: 'Portugal Golden Visa Funds | Investment Fund Comparison',
     keywords: [
       'Portugal Golden Visa funds',
       'CMVM funds',
