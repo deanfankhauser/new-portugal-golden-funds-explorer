@@ -139,6 +139,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund, initialFu
                       tiktokUrl={fund.tiktokUrl}
                       facebookUrl={fund.facebookUrl}
                       twitterUrl={fund.twitterUrl}
+                      linkedinUrl={fund.linkedinUrl}
                     />
 
                     {/* Enquiry Form Section */}

@@ -89,6 +89,7 @@ const buildFormData = (f: Fund) => {
     tiktokUrl: f.tiktokUrl || '',
     facebookUrl: f.facebookUrl || '',
     twitterUrl: f.twitterUrl || '',
+    linkedinUrl: f.linkedinUrl || '',
   };
 
   // Only add optional fields if they exist in the fund data
@@ -252,6 +253,7 @@ useEffect(() => {
     tiktokUrl: fund.tiktokUrl,
     facebookUrl: fund.facebookUrl,
     twitterUrl: fund.twitterUrl,
+    linkedinUrl: fund.linkedinUrl,
   });
 
   const getSuggestedChanges = () => {
@@ -700,6 +702,16 @@ useEffect(() => {
                       placeholder="https://x.com/yourfund"
                       value={formData.twitterUrl || ''}
                       onChange={(e) => handleInputChange('twitterUrl', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="linkedinUrl">LinkedIn</Label>
+                    <Input
+                      id="linkedinUrl"
+                      type="url"
+                      placeholder="https://linkedin.com/company/yourfund"
+                      value={formData.linkedinUrl || ''}
+                      onChange={(e) => handleInputChange('linkedinUrl', e.target.value)}
                     />
                   </div>
                 </div>

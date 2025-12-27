@@ -241,4 +241,5 @@ export interface Fund {
   tiktokUrl?: string;
   facebookUrl?: string;
   twitterUrl?: string;
+  linkedinUrl?: string;
 }

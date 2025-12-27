@@ -733,6 +733,7 @@ export type Database = {
           isin: string | null
           last_data_review_date: string | null
           last_modified_by: string | null
+          linkedin_url: string | null
           location: string | null
           lock_up_period_months: number | null
           management_fee: number | null
@@ -796,6 +797,7 @@ export type Database = {
           isin?: string | null
           last_data_review_date?: string | null
           last_modified_by?: string | null
+          linkedin_url?: string | null
           location?: string | null
           lock_up_period_months?: number | null
           management_fee?: number | null
@@ -859,6 +861,7 @@ export type Database = {
           isin?: string | null
           last_data_review_date?: string | null
           last_modified_by?: string | null
+          linkedin_url?: string | null
           location?: string | null
           lock_up_period_months?: number | null
           management_fee?: number | null

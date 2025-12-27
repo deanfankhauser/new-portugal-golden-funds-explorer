@@ -121,6 +121,7 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
     tiktokUrl: f.tiktokUrl ?? '',
     facebookUrl: f.facebookUrl ?? '',
     twitterUrl: f.twitterUrl ?? '',
+    linkedinUrl: f.linkedinUrl ?? '',
   });
 
   const [formData, setFormData] = useState(buildFormData(fund));
@@ -837,6 +838,16 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
                     placeholder="https://x.com/yourfund"
                     value={formData.twitterUrl}
                     onChange={(e) => handleInputChange('twitterUrl', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="linkedinUrl">LinkedIn</Label>
+                  <Input
+                    id="linkedinUrl"
+                    type="url"
+                    placeholder="https://linkedin.com/company/yourfund"
+                    value={formData.linkedinUrl}
+                    onChange={(e) => handleInputChange('linkedinUrl', e.target.value)}
                   />
                 </div>
               </div>
