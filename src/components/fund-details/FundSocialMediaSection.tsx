@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Youtube, Instagram, Facebook, Twitter } from 'lucide-react';
+import { Youtube, Instagram, Facebook, Twitter, Linkedin } from 'lucide-react';
 
 interface FundSocialMediaSectionProps {
   youtubeUrl?: string;
@@ -9,6 +9,7 @@ interface FundSocialMediaSectionProps {
   tiktokUrl?: string;
   facebookUrl?: string;
   twitterUrl?: string;
+  linkedinUrl?: string;
 }
 
 // Custom TikTok icon since Lucide doesn't have one
@@ -29,6 +30,7 @@ const FundSocialMediaSection: React.FC<FundSocialMediaSectionProps> = ({
   tiktokUrl,
   facebookUrl,
   twitterUrl,
+  linkedinUrl,
 }) => {
   const socialLinks = [
     { url: youtubeUrl, label: 'YouTube', icon: Youtube, color: 'hover:text-red-600' },
@@ -36,6 +38,7 @@ const FundSocialMediaSection: React.FC<FundSocialMediaSectionProps> = ({
     { url: tiktokUrl, label: 'TikTok', icon: TikTokIcon, color: 'hover:text-foreground' },
     { url: facebookUrl, label: 'Facebook', icon: Facebook, color: 'hover:text-blue-600' },
     { url: twitterUrl, label: 'X (Twitter)', icon: Twitter, color: 'hover:text-foreground' },
+    { url: linkedinUrl, label: 'LinkedIn', icon: Linkedin, color: 'hover:text-blue-700' },
   ].filter(link => link.url);
 
   // Don't render if no social links are available
