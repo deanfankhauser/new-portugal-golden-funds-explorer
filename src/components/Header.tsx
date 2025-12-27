@@ -1,15 +1,19 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Sparkles } from "lucide-react";
 import AuthAwareButton from "./auth/AuthAwareButton";
 import GlobalSearch from "./GlobalSearch";
 import ComparisonIndicator from "./ComparisonIndicator";
 import SavedFundsIndicator from "./SavedFundsIndicator";
 import MobileNavigation from "./MobileNavigation";
 import DisclaimerBanner from "./common/DisclaimerBanner";
+import { FundMatcherQuiz } from "./quiz/FundMatcherQuiz";
 
 const Header = () => {
+  const [quizOpen, setQuizOpen] = useState(false);
+  
   return (
     <>
       <DisclaimerBanner />
@@ -36,6 +40,15 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-2 flex-shrink-0">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setQuizOpen(true)}
+              className="text-background hover:bg-background/10 gap-1.5"
+            >
+              <Sparkles className="h-4 w-4" />
+              <span>Fund Matcher</span>
+            </Button>
             <SavedFundsIndicator />
             <ComparisonIndicator />
             <AuthAwareButton />
@@ -54,6 +67,8 @@ const Header = () => {
         </div>
       </div>
     </header>
+    
+    <FundMatcherQuiz open={quizOpen} onOpenChange={setQuizOpen} />
     </>
   );
 };
