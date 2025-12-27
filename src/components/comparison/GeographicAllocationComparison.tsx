@@ -16,13 +16,13 @@ const GeographicAllocationComparison: React.FC<GeographicAllocationComparisonPro
 
   const AllocationBars = ({ allocations, color, label }: { allocations: any[]; color: string; label: string }) => (
     <div>
-      <div className="text-sm font-medium text-muted-foreground mb-4">
+      <div className="text-xs md:text-sm font-medium text-muted-foreground mb-3 md:mb-4 truncate">
         {label}
       </div>
-      <div className="space-y-3">
+      <div className="space-y-2.5 md:space-y-3">
         {allocations.map((allocation, index) => (
-          <div key={index} className="flex items-center gap-3">
-            <div className="w-28 text-[13px] text-muted-foreground">
+          <div key={index} className="flex items-center gap-2 md:gap-3">
+            <div className="w-16 md:w-28 text-[11px] md:text-[13px] text-muted-foreground truncate">
               {allocation.region}
             </div>
             <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
@@ -31,7 +31,7 @@ const GeographicAllocationComparison: React.FC<GeographicAllocationComparisonPro
                 style={{ width: `${allocation.percentage}%` }}
               />
             </div>
-            <div className="w-10 text-[13px] font-medium text-foreground text-right">
+            <div className="w-9 md:w-10 text-[11px] md:text-[13px] font-medium text-foreground text-right">
               {allocation.percentage}%
             </div>
           </div>
@@ -41,11 +41,11 @@ const GeographicAllocationComparison: React.FC<GeographicAllocationComparisonPro
   );
 
   return (
-    <div className="bg-card rounded-2xl border border-border p-7 mb-8">
-      <h3 className="text-base font-semibold text-foreground mb-6">
+    <div className="bg-card rounded-2xl border border-border p-5 md:p-7 mb-8">
+      <h3 className="text-base font-semibold text-foreground mb-5 md:mb-6">
         Geographic Allocation
       </h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
         {hasAllocation1 ? (
           <AllocationBars 
             allocations={fund1.geographicAllocation!} 

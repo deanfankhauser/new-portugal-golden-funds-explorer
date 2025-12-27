@@ -78,7 +78,7 @@ const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug, initialFun
         
         <Header />
         
-        <main className="container mx-auto px-4 py-8 flex-1 flex items-center justify-center">
+        <main className="container mx-auto px-3 md:px-4 py-6 md:py-8 flex-1 flex items-center justify-center">
           <div className="flex items-center gap-2 text-muted-foreground">
             <Loader2 className="w-6 h-6 animate-spin" />
             <span>Loading comparison...</span>
@@ -98,7 +98,7 @@ const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug, initialFun
         
         <Header />
         
-        <main className="container mx-auto px-4 py-8 flex-1">
+        <main className="container mx-auto px-3 md:px-4 py-6 md:py-8 flex-1">
           <Card className="bg-card p-6 rounded-lg shadow-sm">
             <CardContent className="text-center py-12">
               <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
@@ -124,9 +124,9 @@ const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug, initialFun
       
       <Header />
       
-      <main className="relative container mx-auto px-4 py-8 flex-1 max-w-5xl">
+      <main className="relative container mx-auto px-3 md:px-4 py-6 md:py-8 flex-1 max-w-5xl">
         {/* Breadcrumbs */}
-        <nav className="mb-6">
+        <nav className="mb-4 md:mb-6">
           <div className="flex items-center gap-2 text-sm">
             <a href="/" className="text-primary hover:text-primary/80 font-medium transition-colors">Funds</a>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -137,16 +137,18 @@ const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug, initialFun
         </nav>
 
         {/* Header with pill badge */}
-        <header className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-card rounded-full text-[13px] font-medium text-muted-foreground mb-5 border border-border">
-            <BarChart3 className="w-4 h-4 text-primary" />
+        <header className="text-center mb-8 md:mb-12">
+          <div className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 bg-card rounded-full text-[12px] md:text-[13px] font-medium text-muted-foreground mb-4 md:mb-5 border border-border">
+            <BarChart3 className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary" />
             Golden Visa Fund Comparison
           </div>
           
-          <h1 className="text-4xl font-bold text-foreground mb-3 tracking-tight">
-            {comparisonData.fund1.name} vs {comparisonData.fund2.name}
+          <h1 className="text-2xl md:text-4xl font-bold text-foreground mb-2 md:mb-3 tracking-tight px-2">
+            <span className="break-words">{comparisonData.fund1.name}</span>
+            <span className="text-muted-foreground"> vs </span>
+            <span className="break-words">{comparisonData.fund2.name}</span>
           </h1>
-          <p className="text-[17px] text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="text-[15px] md:text-[17px] text-muted-foreground max-w-2xl mx-auto leading-relaxed px-2">
             Compare {comparisonData.fund1.name} and {comparisonData.fund2.name} side-by-side: fees, terms, performance metrics, and Golden Visa eligibility.
           </p>
         </header>

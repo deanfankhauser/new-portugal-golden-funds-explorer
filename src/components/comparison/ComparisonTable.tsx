@@ -49,7 +49,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
 
     return (
       <div 
-        className="py-5 px-7 bg-muted cursor-pointer hover:bg-muted/80 transition-colors"
+        className="py-4 px-4 md:py-5 md:px-7 bg-muted cursor-pointer hover:bg-muted/80 transition-colors"
         onClick={() => setExpandedSections(prev => ({ ...prev, [sectionKey]: !prev[sectionKey] }))}
       >
         <div className="flex items-center justify-between">
@@ -77,13 +77,15 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
     <div className="bg-card rounded-2xl border border-border overflow-hidden mb-8">
       <SectionHeader title="Key Financials" sectionKey="keyFinancials" />
       {expandedSections.keyFinancials && (
-        <div className="px-7 py-2">
+        <div className="px-4 md:px-7 py-2">
           <CompareRow 
             label="Min. Investment" 
             valueA={formatCurrency(fund1.minimumInvestment)}
             valueB={formatCurrency(fund2.minimumInvestment)}
             winnerA={minInvestmentWinner === 'fund1'}
             winnerB={minInvestmentWinner === 'fund2'}
+            fundAName={fund1.name}
+            fundBName={fund2.name}
           />
           <CompareRow 
             label="Target Return" 
@@ -91,56 +93,72 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             valueB={formatTargetReturn(fund2)}
             winnerA={targetReturnWinner === 'fund1'}
             winnerB={targetReturnWinner === 'fund2'}
+            fundAName={fund1.name}
+            fundBName={fund2.name}
           />
           <CompareRow 
             label="Fund Size" 
             valueA={formatCurrency(fund1.fundSize)}
             valueB={formatCurrency(fund2.fundSize)}
+            fundAName={fund1.name}
+            fundBName={fund2.name}
           />
           <CompareRow 
             label="Established" 
             valueA={fund1.established ? fund1.established.toString() : 'N/A'}
             valueB={fund2.established ? fund2.established.toString() : 'N/A'}
+            fundAName={fund1.name}
+            fundBName={fund2.name}
           />
         </div>
       )}
 
       <SectionHeader title="Fees & Costs" sectionKey="feesTerms" />
       {expandedSections.feesTerms && (
-        <div className="px-7 py-2">
+        <div className="px-4 md:px-7 py-2">
           <CompareRow 
             label="Management Fee" 
             valueA={formatManagementFee(fund1.managementFee)}
             valueB={formatManagementFee(fund2.managementFee)}
             winnerA={mgmtFeeWinner === 'fund1'}
             winnerB={mgmtFeeWinner === 'fund2'}
+            fundAName={fund1.name}
+            fundBName={fund2.name}
           />
           <CompareRow 
             label="Performance Fee" 
             valueA={formatPerformanceFee(fund1.performanceFee)}
             valueB={formatPerformanceFee(fund2.performanceFee)}
+            fundAName={fund1.name}
+            fundBName={fund2.name}
           />
           <CompareRow 
             label="Subscription Fee" 
             valueA={formatSubscriptionFee(fund1.subscriptionFee)}
             valueB={formatSubscriptionFee(fund2.subscriptionFee)}
+            fundAName={fund1.name}
+            fundBName={fund2.name}
           />
           <CompareRow 
             label="Redemption Fee" 
             valueA={formatRedemptionFee(fund1.redemptionFee)}
             valueB={formatRedemptionFee(fund2.redemptionFee)}
+            fundAName={fund1.name}
+            fundBName={fund2.name}
           />
           <CompareRow 
             label="Hurdle Rate" 
             valueA={fund1.hurdleRate ? `${fund1.hurdleRate}%` : 'N/A'}
             valueB={fund2.hurdleRate ? `${fund2.hurdleRate}%` : 'N/A'}
+            fundAName={fund1.name}
+            fundBName={fund2.name}
           />
         </div>
       )}
 
       <SectionHeader title="Liquidity & Terms" sectionKey="riskProfile" />
       {expandedSections.riskProfile && (
-        <div className="px-7 py-2">
+        <div className="px-4 md:px-7 py-2">
           <CompareRow 
             label="Redemption" 
             valueA={formatRedemption(fund1)}
@@ -148,21 +166,29 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
             winnerA={redemptionWinner === 'fund1'}
             winnerB={redemptionWinner === 'fund2'}
             muted={!fund1.redemptionTerms && !fund2.redemptionTerms}
+            fundAName={fund1.name}
+            fundBName={fund2.name}
           />
           <CompareRow 
             label="Lock-up Period" 
             valueA={fund1.redemptionTerms?.minimumHoldingPeriod ? `${fund1.redemptionTerms.minimumHoldingPeriod} months` : 'None'}
             valueB={fund2.redemptionTerms?.minimumHoldingPeriod ? `${fund2.redemptionTerms.minimumHoldingPeriod} months` : 'None'}
+            fundAName={fund1.name}
+            fundBName={fund2.name}
           />
           <CompareRow 
             label="Risk Band" 
             valueA={fund1.riskBand || 'Not disclosed'}
             valueB={fund2.riskBand || 'Not disclosed'}
+            fundAName={fund1.name}
+            fundBName={fund2.name}
           />
           <CompareRow 
             label="Category" 
             valueA={fund1.category || 'Not disclosed'}
             valueB={fund2.category || 'Not disclosed'}
+            fundAName={fund1.name}
+            fundBName={fund2.name}
           />
         </div>
       )}
