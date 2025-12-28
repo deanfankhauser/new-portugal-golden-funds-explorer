@@ -1,14 +1,12 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Fund } from '@/data/types/funds';
-import { QuizFundCard } from './QuizFundCard';
+import FundListItem from '@/components/FundListItem';
 import { RotateCcw, Share2, Check } from 'lucide-react';
 import { QuizAnswers } from '@/hooks/useFundMatcherQuery';
 import { useToast } from '@/hooks/use-toast';
 import { trackQuizEvent } from '@/services/quizAnalytics';
-
 interface QuizResultsProps {
   funds: Fund[];
   answers: QuizAnswers;
@@ -60,24 +58,7 @@ const getQuestionLabel = (questionId: string): string => {
 
 export const QuizResults: React.FC<QuizResultsProps> = ({ funds, answers, onReset, onClose, onEditPreferences }) => {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [copied, setCopied] = React.useState(false);
-
-  const handleGetInTouch = (fund: Fund) => {
-    // Track the CTA click
-    trackQuizEvent('cta_clicked', {
-      answers,
-      resultsCount: funds.length,
-      fundId: fund.id,
-      fundName: fund.name,
-    });
-    
-    // Close the quiz modal first
-    onClose();
-    
-    // Navigate to the fund page with the enquiry form hash
-    navigate(`/${fund.id}#enquiry-form`);
-  };
 
   const handleShare = async () => {
     // Generate shareable URL with quiz answers
@@ -168,7 +149,7 @@ export const QuizResults: React.FC<QuizResultsProps> = ({ funds, answers, onRese
 
       <div className="grid gap-4">
         {funds.map((fund) => (
-          <QuizFundCard key={fund.id} fund={fund} onGetInTouch={handleGetInTouch} />
+          <FundListItem key={fund.id} fund={fund} />
         ))}
       </div>
 
