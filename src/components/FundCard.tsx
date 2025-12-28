@@ -6,7 +6,7 @@ import { isFundGVEligible } from '../data/services/gv-eligibility-service';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { GitCompare, User, Euro, CheckCircle2 } from 'lucide-react';
+import { GitCompare, Mail, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { managerToSlug } from '../lib/utils';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
@@ -176,20 +176,31 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
           </div>
 
 
-          <div className="flex justify-end mt-4">
-            <Button 
-              variant="outline" 
-              size="sm"
-              className={`${
-                isSelected 
-                  ? 'bg-primary text-primary-foreground' 
-                  : 'border-primary text-primary hover:bg-primary hover:text-primary-foreground'
-              }`}
-              onClick={handleCompareClick}
-            >
-              <GitCompare className="mr-1 h-3 w-3" />
-              {isSelected ? 'Added to Compare' : 'Compare'}
+          <div className="flex items-center justify-between mt-4 gap-2">
+            <Button asChild className="flex-1">
+              <Link to={`/${fund.id}#enquiry-form`} onClick={() => window.scrollTo(0, 0)}>
+                <Mail className="mr-1.5 h-4 w-4" />
+                Get in Touch
+              </Link>
             </Button>
+            
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="icon"
+                onClick={handleCompareClick}
+                className={isSelected ? 'bg-primary text-primary-foreground border-primary' : ''}
+                title={isSelected ? 'Remove from comparison' : 'Add to comparison'}
+              >
+                <GitCompare className="h-4 w-4" />
+              </Button>
+              
+              <Button variant="outline" size="icon" asChild title="View details">
+                <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
