@@ -6,6 +6,7 @@ import { getFundType } from '../utils/fundTypeUtils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Mail, CheckCircle2, GitCompare, ChevronRight } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { formatPercentage } from './fund-details/utils/formatters';
@@ -173,26 +174,41 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
                 Get in Touch
               </Button>
             </Link>
-            <SaveFundButton fundId={fund.id} showText={false} size="md" variant="outline" className="h-11 w-11" />
-            <Button 
-              variant="outline"
-              size="icon"
-              onClick={handleCompareClick}
-              title={isSelected ? 'Remove from comparison' : 'Add to comparison'}
-              className={`h-11 w-11 ${isSelected ? 'bg-primary text-primary-foreground' : ''}`}
-            >
-              <GitCompare className="h-4 w-4" />
-            </Button>
-            <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
-              <Button 
-                variant="outline"
-                size="icon"
-                className="h-11 w-11"
-                title="View details"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </Link>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <SaveFundButton fundId={fund.id} showText={false} size="md" variant="outline" className="h-11 w-11" />
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>Save fund</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="outline"
+                  size="icon"
+                  onClick={handleCompareClick}
+                  className={`h-11 w-11 ${isSelected ? 'bg-primary text-primary-foreground' : ''}`}
+                >
+                  <GitCompare className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{isSelected ? 'Remove from comparison' : 'Add to comparison'}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
+                  <Button 
+                    variant="outline"
+                    size="icon"
+                    className="h-11 w-11"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>View details</TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </CardContent>
