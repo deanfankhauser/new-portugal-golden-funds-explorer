@@ -64,8 +64,8 @@ const FundComparisonFAQ: React.FC<FundComparisonFAQProps> = ({ fund1, fund2 }) =
   };
 
   return (
-    <div className="mb-12">
-      <h2 className="text-[22px] font-semibold text-foreground mb-6">
+    <div className="mb-8 md:mb-12">
+      <h2 className="text-lg md:text-[22px] font-semibold text-foreground mb-4 md:mb-6">
         Frequently Asked Questions
       </h2>
       <div className="bg-card rounded-2xl border border-border overflow-hidden">
@@ -76,19 +76,19 @@ const FundComparisonFAQ: React.FC<FundComparisonFAQProps> = ({ fund1, fund2 }) =
           >
             <button
               onClick={() => toggleFAQ(index)}
-              className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-muted/50 transition-colors"
+              className="w-full px-4 md:px-6 py-4 md:py-5 flex items-start md:items-center justify-between text-left hover:bg-muted/50 transition-colors gap-3"
             >
-              <span className="text-[15px] font-medium text-foreground pr-4">
+              <span className="text-[14px] md:text-[15px] font-medium text-foreground break-words">
                 {faq.question}
               </span>
               <ChevronDown 
-                className={`w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform duration-200 ${
+                className={`w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform duration-200 mt-0.5 md:mt-0 ${
                   expandedIndex === index ? 'rotate-180' : ''
                 }`}
               />
             </button>
             {expandedIndex === index && (
-              <div className="px-6 pb-5 text-sm text-muted-foreground leading-relaxed">
+              <div className="px-4 md:px-6 pb-4 md:pb-5 text-[13px] md:text-sm text-muted-foreground leading-relaxed break-words">
                 {faq.answer}
               </div>
             )}

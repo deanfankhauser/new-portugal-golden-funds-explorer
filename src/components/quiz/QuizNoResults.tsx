@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle, RotateCcw } from 'lucide-react';
 import { QuizAnswers } from '@/hooks/useFundMatcherQuery';
-import { trackQuizEvent } from '@/services/quizAnalytics';
 
 interface QuizNoResultsProps {
   onReset: () => void;
@@ -12,16 +11,6 @@ interface QuizNoResultsProps {
 }
 
 export const QuizNoResults: React.FC<QuizNoResultsProps> = ({ onReset, onClose, answers }) => {
-  // Track zero results for analytics
-  React.useEffect(() => {
-    if (answers) {
-      trackQuizEvent('completed', {
-        answers,
-        resultsCount: 0,
-      });
-    }
-  }, [answers]);
-
   return (
     <div className="flex flex-col items-center justify-center space-y-6 py-12">
       <Card className="max-w-md">

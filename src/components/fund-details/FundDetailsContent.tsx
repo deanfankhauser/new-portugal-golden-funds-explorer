@@ -39,6 +39,8 @@ import TeamSection from './TeamSection';
 import { formatPercentage } from './utils/formatters';
 import { FundEnquirySection } from './FundEnquirySection';
 import ContactSidebar from './ContactSidebar';
+import FundSocialMediaSection from './FundSocialMediaSection';
+import FundVideoSection from './FundVideoSection';
 
 interface TeamMemberSSR {
   id: string;
@@ -130,6 +132,19 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund, initialFu
                       <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Team Information</h2>
                       <TeamSection team={fund.team} managerName={fund.managerName} initialTeamMembers={initialTeamMembers} />
                     </section>
+
+                    {/* Social Media Section */}
+                    <FundSocialMediaSection
+                      youtubeUrl={fund.youtubeUrl}
+                      instagramUrl={fund.instagramUrl}
+                      tiktokUrl={fund.tiktokUrl}
+                      facebookUrl={fund.facebookUrl}
+                      twitterUrl={fund.twitterUrl}
+                      linkedinUrl={fund.linkedinUrl}
+                    />
+
+                    {/* Featured Video Section */}
+                    <FundVideoSection videoUrl={fund.youtubeVideoUrl} />
 
                     {/* Enquiry Form Section */}
                     <section id="contact-fund" className="scroll-mt-28 md:scroll-mt-24">

@@ -83,6 +83,14 @@ const buildFormData = (f: Fund) => {
     faqs: f.faqs || [],
     // Tags - always present as array
     tags: f.tags || [],
+    // Social media links
+    youtubeUrl: f.youtubeUrl || '',
+    instagramUrl: f.instagramUrl || '',
+    tiktokUrl: f.tiktokUrl || '',
+    facebookUrl: f.facebookUrl || '',
+    twitterUrl: f.twitterUrl || '',
+    linkedinUrl: f.linkedinUrl || '',
+    youtubeVideoUrl: f.youtubeVideoUrl || '',
   };
 
   // Only add optional fields if they exist in the fund data
@@ -240,6 +248,14 @@ useEffect(() => {
     historicalPerformance: fund.historicalPerformance,
     faqs: fund.faqs,
     tags: fund.tags,
+    // Social media fields
+    youtubeUrl: fund.youtubeUrl,
+    instagramUrl: fund.instagramUrl,
+    tiktokUrl: fund.tiktokUrl,
+    facebookUrl: fund.facebookUrl,
+    twitterUrl: fund.twitterUrl,
+    linkedinUrl: fund.linkedinUrl,
+    youtubeVideoUrl: fund.youtubeVideoUrl,
   });
 
   const getSuggestedChanges = () => {
@@ -627,6 +643,91 @@ useEffect(() => {
                       value={formData.managerName}
                       onChange={(e) => handleInputChange('managerName', e.target.value)}
                     />
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Social Media Links */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Social Media Links</h3>
+                <p className="text-sm text-muted-foreground">
+                  Add links to your fund's social media profiles.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="youtubeUrl">YouTube</Label>
+                    <Input
+                      id="youtubeUrl"
+                      type="url"
+                      placeholder="https://youtube.com/@yourfund"
+                      value={formData.youtubeUrl || ''}
+                      onChange={(e) => handleInputChange('youtubeUrl', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="instagramUrl">Instagram</Label>
+                    <Input
+                      id="instagramUrl"
+                      type="url"
+                      placeholder="https://instagram.com/yourfund"
+                      value={formData.instagramUrl || ''}
+                      onChange={(e) => handleInputChange('instagramUrl', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="tiktokUrl">TikTok</Label>
+                    <Input
+                      id="tiktokUrl"
+                      type="url"
+                      placeholder="https://tiktok.com/@yourfund"
+                      value={formData.tiktokUrl || ''}
+                      onChange={(e) => handleInputChange('tiktokUrl', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="facebookUrl">Facebook</Label>
+                    <Input
+                      id="facebookUrl"
+                      type="url"
+                      placeholder="https://facebook.com/yourfund"
+                      value={formData.facebookUrl || ''}
+                      onChange={(e) => handleInputChange('facebookUrl', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="twitterUrl">X (Twitter)</Label>
+                    <Input
+                      id="twitterUrl"
+                      type="url"
+                      placeholder="https://x.com/yourfund"
+                      value={formData.twitterUrl || ''}
+                      onChange={(e) => handleInputChange('twitterUrl', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="linkedinUrl">LinkedIn</Label>
+                    <Input
+                      id="linkedinUrl"
+                      type="url"
+                      placeholder="https://linkedin.com/company/yourfund"
+                      value={formData.linkedinUrl || ''}
+                      onChange={(e) => handleInputChange('linkedinUrl', e.target.value)}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label htmlFor="youtubeVideoUrl">Featured Video URL</Label>
+                    <Input
+                      id="youtubeVideoUrl"
+                      type="url"
+                      placeholder="https://youtube.com/watch?v=..."
+                      value={formData.youtubeVideoUrl || ''}
+                      onChange={(e) => handleInputChange('youtubeVideoUrl', e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Paste a YouTube video URL to embed on your fund page
+                    </p>
                   </div>
                 </div>
               </div>

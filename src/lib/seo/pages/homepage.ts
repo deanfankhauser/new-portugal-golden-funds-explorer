@@ -8,7 +8,7 @@ export function getHomeSeo(funds?: Fund[]): SEOData {
   const fundCount = funds?.length || 40;
   
   return {
-    title: 'Portugal Golden Visa Funds Directory | Compare CMVM-Linked Funds',
+    title: 'Portugal Golden Visa Funds | Investment Fund Comparison',
     keywords: [
       'Portugal Golden Visa funds',
       'CMVM funds',
@@ -18,7 +18,7 @@ export function getHomeSeo(funds?: Fund[]): SEOData {
       'CMVM regulated funds',
       'investment immigration Portugal'
     ],
-    description: `Compare fees, performance, minimums and risk across ${fundCount}+ Portugal Golden Visa investment funds. Independent CMVM-linked fund analysis.`,
+    description: 'Browse vetted Portugal Golden Visa investment funds. Compare returns, minimums, and terms. Find the right fund for your €500k residence by investment application.',
     url: URL_CONFIG.buildUrl('/'),
     canonical: URL_CONFIG.buildUrl('/'),
     structuredData: getHomepageStructuredData(funds)

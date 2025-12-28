@@ -11,11 +11,13 @@ const getSessionId = (): string => {
 };
 
 export const trackQuizEvent = async (
-  eventType: 'started' | 'completed' | 'shared' | 'abandoned',
+  eventType: 'started' | 'completed' | 'shared' | 'abandoned' | 'cta_clicked',
   data?: {
     answers?: QuizAnswers;
     resultsCount?: number;
     abandonedAtStep?: number;
+    fundId?: string;
+    fundName?: string;
   }
 ) => {
   try {
@@ -27,7 +29,7 @@ export const trackQuizEvent = async (
       session_id: sessionId,
       user_id: user?.id || null,
       answers: data?.answers ? JSON.parse(JSON.stringify(data.answers)) : null,
-      results_count: data?.resultsCount || null,
+      results_count: data?.resultsCount !== undefined ? data.resultsCount : null,
       abandoned_at_step: data?.abandonedAtStep || null,
       referrer: document.referrer || null,
       user_agent: navigator.userAgent || null,

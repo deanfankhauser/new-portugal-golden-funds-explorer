@@ -49,16 +49,16 @@ const ComparisonQuickDecision: React.FC<ComparisonQuickDecisionProps> = ({ fund1
   };
 
   return (
-    <div className="bg-gradient-to-br from-primary to-primary-700 rounded-2xl p-7 mb-12 text-white">
-      <div className="flex items-start gap-4">
-        <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
-          <Lightbulb className="w-5 h-5 text-white" />
+    <div className="bg-gradient-to-br from-primary to-primary-700 rounded-2xl p-5 md:p-7 mb-8 md:mb-12 text-white">
+      <div className="flex flex-col md:flex-row md:items-start gap-3 md:gap-4">
+        <div className="w-9 h-9 md:w-10 md:h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+          <Lightbulb className="w-4 h-4 md:w-5 md:h-5 text-white" />
         </div>
         <div className="flex-1">
           <h3 className="text-base font-semibold mb-2 text-white">Quick Decision Guide</h3>
-          <p className="text-[14px] leading-relaxed text-white/95">
-            Choose <strong className="font-semibold text-white">{fund1.name}</strong> if you prioritize {buildRecommendation(fund1, fund2, true)}.
-            {' '}Choose <strong className="font-semibold text-white">{fund2.name}</strong> if you prefer {buildRecommendation(fund2, fund1, false)}.
+          <p className="text-[13px] md:text-[14px] leading-relaxed text-white/95">
+            Choose <strong className="font-semibold text-white break-words">{fund1.name}</strong> if you prioritize {buildRecommendation(fund1, fund2, true)}.
+            {' '}Choose <strong className="font-semibold text-white break-words">{fund2.name}</strong> if you prefer {buildRecommendation(fund2, fund1, false)}.
           </p>
         </div>
       </div>
