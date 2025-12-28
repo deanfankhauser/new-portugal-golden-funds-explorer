@@ -11,6 +11,7 @@ import HomepageContent from '../components/homepage/HomepageContent';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
 import StickyHelpBar from '../components/common/StickyHelpBar';
+import SubmitFundCTA from '../components/homepage/SubmitFundCTA';
 import type { Fund } from '../data/types/funds';
 
 // Lazy load non-critical components
@@ -83,6 +84,9 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
           error={error ? String(error) : undefined}
         />
       </div>
+
+      {/* Submit Fund CTA */}
+      <SubmitFundCTA />
 
       <section className="mt-12 sm:mt-16 lg:mt-20 mb-16 md:mb-0" aria-label="Additional resources">
         <Suspense fallback={<FundListSkeleton />}>

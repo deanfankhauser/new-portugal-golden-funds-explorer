@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import { Search, Eye, Check, X, Loader2, ExternalLink } from 'lucide-react';
+import { Search, Eye, Loader2 } from 'lucide-react';
+import { SubmissionDetailModal } from './SubmissionDetailModal';
 
 interface FundSubmission {
   id: string;
@@ -193,39 +193,14 @@ export function FundSubmissionsManagement() {
       </Card>
 
       {/* Detail Modal */}
-      <Dialog open={showDetailModal} onOpenChange={setShowDetailModal}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Submission Details</DialogTitle>
-          </DialogHeader>
-          {selectedSubmission && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div><Label className="text-muted-foreground">Company</Label><p className="font-medium">{selectedSubmission.company_name}</p></div>
-                <div><Label className="text-muted-foreground">Fund</Label><p className="font-medium">{selectedSubmission.fund_name}</p></div>
-                <div><Label className="text-muted-foreground">Contact</Label><p>{selectedSubmission.contact_name} ({selectedSubmission.contact_role})</p></div>
-                <div><Label className="text-muted-foreground">Category</Label><p>{selectedSubmission.category}</p></div>
-                <div><Label className="text-muted-foreground">Min Investment</Label><p>€{selectedSubmission.minimum_investment?.toLocaleString()}</p></div>
-                <div><Label className="text-muted-foreground">GV Eligible</Label><p>{selectedSubmission.gv_eligible ? 'Yes' : 'No'}</p></div>
-              </div>
-              <div><Label className="text-muted-foreground">Description</Label><p className="text-sm mt-1">{selectedSubmission.fund_description}</p></div>
-            </div>
-          )}
-          <DialogFooter>
-            {selectedSubmission?.status === 'pending' && (
-              <>
-                <Button variant="outline" onClick={() => { setShowRejectModal(true); setShowDetailModal(false); }}>
-                  <X className="h-4 w-4 mr-2" />Reject
-                </Button>
-                <Button onClick={handleApprove} disabled={processMutation.isPending}>
-                  {processMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Check className="h-4 w-4 mr-2" />}
-                  Approve
-                </Button>
-              </>
-            )}
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <SubmissionDetailModal
+        submission={selectedSubmission}
+        open={showDetailModal}
+        onOpenChange={setShowDetailModal}
+        onApprove={handleApprove}
+        onReject={() => { setShowRejectModal(true); setShowDetailModal(false); }}
+        isProcessing={processMutation.isPending}
+      />
 
       {/* Reject Modal */}
       <Dialog open={showRejectModal} onOpenChange={setShowRejectModal}>
