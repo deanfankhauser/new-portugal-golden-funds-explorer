@@ -41,6 +41,7 @@ import { FundEnquirySection } from './FundEnquirySection';
 import ContactSidebar from './ContactSidebar';
 import FundSocialMediaSection from './FundSocialMediaSection';
 import FundVideoSection from './FundVideoSection';
+import FundNewsSection from './FundNewsSection';
 
 interface TeamMemberSSR {
   id: string;
@@ -145,6 +146,9 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund, initialFu
 
                     {/* Featured Video Section */}
                     <FundVideoSection videoUrl={fund.youtubeVideoUrl} />
+
+                    {/* News RSS Feed Section */}
+                    <FundNewsSection rssFeedUrl={fund.newsRssFeedUrl} />
 
                     {/* Enquiry Form Section */}
                     <section id="contact-fund" className="scroll-mt-28 md:scroll-mt-24">

@@ -123,6 +123,8 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
     twitterUrl: f.twitterUrl ?? '',
     linkedinUrl: f.linkedinUrl ?? '',
     youtubeVideoUrl: f.youtubeVideoUrl ?? '',
+    // News RSS feed
+    newsRssFeedUrl: f.newsRssFeedUrl ?? '',
   });
 
   const [formData, setFormData] = useState(buildFormData(fund));
@@ -297,6 +299,7 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
     tiktokUrl: fund.tiktokUrl,
     facebookUrl: fund.facebookUrl,
     twitterUrl: fund.twitterUrl,
+    newsRssFeedUrl: fund.newsRssFeedUrl,
   });
 
   const getSuggestedChanges = () => {
@@ -862,6 +865,19 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
                   />
                   <p className="text-xs text-muted-foreground mt-1">
                     Paste a YouTube video URL to embed on your fund page
+                  </p>
+                </div>
+                <div className="md:col-span-2">
+                  <Label htmlFor="newsRssFeedUrl">News RSS Feed URL</Label>
+                  <Input
+                    id="newsRssFeedUrl"
+                    type="url"
+                    placeholder="https://yoursite.com/rss.xml"
+                    value={formData.newsRssFeedUrl}
+                    onChange={(e) => handleInputChange('newsRssFeedUrl', e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Add an RSS or Atom feed URL to display news articles on your fund page
                   </p>
                 </div>
               </div>

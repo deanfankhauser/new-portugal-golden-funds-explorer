@@ -742,6 +742,7 @@ export type Database = {
           minimum_investment: number | null
           name: string
           nav_frequency: string | null
+          news_rss_feed_url: string | null
           pdf_documents: Json | null
           performance_fee: number | null
           pfic_status: string | null
@@ -807,6 +808,7 @@ export type Database = {
           minimum_investment?: number | null
           name: string
           nav_frequency?: string | null
+          news_rss_feed_url?: string | null
           pdf_documents?: Json | null
           performance_fee?: number | null
           pfic_status?: string | null
@@ -872,6 +874,7 @@ export type Database = {
           minimum_investment?: number | null
           name?: string
           nav_frequency?: string | null
+          news_rss_feed_url?: string | null
           pdf_documents?: Json | null
           performance_fee?: number | null
           pfic_status?: string | null

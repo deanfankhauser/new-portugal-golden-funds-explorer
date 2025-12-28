@@ -91,6 +91,7 @@ const buildFormData = (f: Fund) => {
     twitterUrl: f.twitterUrl || '',
     linkedinUrl: f.linkedinUrl || '',
     youtubeVideoUrl: f.youtubeVideoUrl || '',
+    newsRssFeedUrl: f.newsRssFeedUrl || '',
   };
 
   // Only add optional fields if they exist in the fund data
@@ -256,6 +257,7 @@ useEffect(() => {
     twitterUrl: fund.twitterUrl,
     linkedinUrl: fund.linkedinUrl,
     youtubeVideoUrl: fund.youtubeVideoUrl,
+    newsRssFeedUrl: fund.newsRssFeedUrl,
   });
 
   const getSuggestedChanges = () => {
@@ -727,6 +729,19 @@ useEffect(() => {
                     />
                     <p className="text-xs text-muted-foreground mt-1">
                       Paste a YouTube video URL to embed on your fund page
+                    </p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label htmlFor="newsRssFeedUrl">News RSS Feed URL</Label>
+                    <Input
+                      id="newsRssFeedUrl"
+                      type="url"
+                      placeholder="https://yoursite.com/rss.xml"
+                      value={formData.newsRssFeedUrl || ''}
+                      onChange={(e) => handleInputChange('newsRssFeedUrl', e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Add an RSS or Atom feed URL to display news articles on your fund page
                     </p>
                   </div>
                 </div>
