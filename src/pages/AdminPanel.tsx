@@ -20,6 +20,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EditFundsManagement } from "@/components/admin/EditFundsManagement";
 import { EditCompanyProfilesManagement } from "@/components/admin/EditCompanyProfilesManagement";
 import { AdminCreateCompanyProfile } from "@/components/admin/AdminCreateCompanyProfile";
+import { FundSubmissionsManagement } from "@/components/admin/FundSubmissionsManagement";
 
 export default function AdminPanel() {
   const navigate = useNavigate();
