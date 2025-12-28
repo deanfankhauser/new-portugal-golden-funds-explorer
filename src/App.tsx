@@ -50,6 +50,7 @@ const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const SavedFunds = lazy(() => import('./pages/SavedFunds'));
 
 const FundManagerPanel = lazy(() => import('./pages/FundManagerPanel'));
+const SubmitFund = lazy(() => import('./pages/SubmitFund'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -333,6 +334,13 @@ function App() {
                       <Route path="/:id/alternatives" element={
                         <Suspense fallback={<PageLoader />}>
                           <FundAlternatives />
+                        </Suspense>
+                      } />
+
+                      {/* Submit Fund */}
+                      <Route path="/submit-fund" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <SubmitFund />
                         </Suspense>
                       } />
 
