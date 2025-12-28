@@ -14,7 +14,8 @@ import {
   LogOut,
   Edit,
   Building,
-  PieChart
+  PieChart,
+  FileCheck
 } from "lucide-react";
 import {
   Sidebar,
@@ -43,6 +44,7 @@ interface NavItem {
 
 const adminNavItems: NavItem[] = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
+  { title: "Fund Submissions", url: "/admin/fund-submissions", icon: FileCheck },
   { title: "Suggestions", url: "/admin/suggestions", icon: FileEdit },
   { title: "Funds", url: "/admin/funds", icon: Briefcase },
   { title: "Rankings", url: "/admin/rankings", icon: TrendingUp },

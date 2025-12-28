@@ -489,3 +489,238 @@ export function generateMonthlyPerformanceReminderEmailUnverified(data: {
   
   return { html, text };
 }
+
+/**
+ * Fund Submission Confirmation Email
+ * Sent to user after they submit a fund
+ */
+export function generateFundSubmissionConfirmationEmail(data: {
+  companyName: string;
+  fundName: string;
+  contactName: string;
+  recipientEmail: string;
+}): { html: string; text: string } {
+  const { companyName, fundName, contactName, recipientEmail } = data;
+  
+  const bodyContent = `
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+      Hi ${contactName},
+    </p>
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+      Thank you for submitting <strong>${fundName}</strong> from <strong>${companyName}</strong> to the Movingto Funds platform!
+    </p>
+    
+    ${generateContentCard(`
+      <h3 style="color: ${BRAND_COLORS.bordeaux}; font-size: 18px; margin: 0 0 15px 0;">
+        📋 What Happens Next?
+      </h3>
+      <ol style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.8; margin-bottom: 0; padding-left: 20px;">
+        <li><strong>Review</strong> - Our team will review your submission within 2-3 business days</li>
+        <li><strong>Approval</strong> - Once approved, your company and fund pages will go live immediately</li>
+        <li><strong>Enhancement</strong> - You'll be able to add more details via your dashboard</li>
+        <li><strong>Verification</strong> - Optionally, apply for verification to boost visibility</li>
+      </ol>
+    `, 'bordeaux')}
+    
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.6; margin-top: 25px; margin-bottom: 25px;">
+      We'll notify you as soon as your submission is reviewed. If we need additional information, we'll reach out via email.
+    </p>
+    
+    <p style="color: ${BRAND_COLORS.textMuted}; font-size: 14px; line-height: 1.6; margin-top: 30px; text-align: center;">
+      Questions? Reply to this email or contact our team.
+    </p>
+  `;
+  
+  const html = generateEmailWrapper('Fund Submission Received', bodyContent, recipientEmail);
+  
+  const text = generatePlainTextEmail(
+    'Fund Submission Received',
+    `Hi ${contactName},\n\nThank you for submitting ${fundName} from ${companyName} to the Movingto Funds platform!\n\nWhat happens next:\n1. Review - Our team will review within 2-3 business days\n2. Approval - Your pages will go live immediately\n3. Enhancement - Add more details via your dashboard\n4. Verification - Apply for verification to boost visibility\n\nWe'll notify you when your submission is reviewed.`
+  );
+  
+  return { html, text };
+}
+
+/**
+ * Fund Submission Admin Alert Email
+ * Sent to super admins when a new submission is received
+ */
+export function generateFundSubmissionAdminAlertEmail(data: {
+  companyName: string;
+  fundName: string;
+  contactName: string;
+  contactEmail: string;
+  submissionId: string;
+  recipientEmail: string;
+}): { html: string; text: string } {
+  const { companyName, fundName, contactName, contactEmail, submissionId, recipientEmail } = data;
+  const reviewUrl = `${COMPANY_INFO.website}/admin/fund-submissions?id=${submissionId}`;
+  
+  const bodyContent = `
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+      A new fund submission has been received and requires review.
+    </p>
+    
+    ${generateContentCard(`
+      <h3 style="color: ${BRAND_COLORS.bordeaux}; font-size: 18px; margin: 0 0 15px 0;">
+        📝 Submission Details
+      </h3>
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+          <td style="padding: 8px 0; color: ${BRAND_COLORS.textMuted}; font-size: 14px; width: 140px;">Company Name</td>
+          <td style="padding: 8px 0; color: ${BRAND_COLORS.textDark}; font-size: 15px; font-weight: 500;">${companyName}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: ${BRAND_COLORS.textMuted}; font-size: 14px;">Fund Name</td>
+          <td style="padding: 8px 0; color: ${BRAND_COLORS.textDark}; font-size: 15px; font-weight: 500;">${fundName}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: ${BRAND_COLORS.textMuted}; font-size: 14px;">Contact Person</td>
+          <td style="padding: 8px 0; color: ${BRAND_COLORS.textDark}; font-size: 15px;">${contactName}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: ${BRAND_COLORS.textMuted}; font-size: 14px;">Contact Email</td>
+          <td style="padding: 8px 0; color: ${BRAND_COLORS.bronze}; font-size: 15px;">${contactEmail}</td>
+        </tr>
+      </table>
+    `, 'bordeaux')}
+    
+    ${generateCTAButton('Review Submission', reviewUrl, 'bordeaux')}
+  `;
+  
+  const html = generateEmailWrapper('New Fund Submission', bodyContent, recipientEmail);
+  
+  const text = generatePlainTextEmail(
+    'New Fund Submission',
+    `A new fund submission requires review.\n\nCompany: ${companyName}\nFund: ${fundName}\nContact: ${contactName} (${contactEmail})`,
+    'Review Submission',
+    reviewUrl
+  );
+  
+  return { html, text };
+}
+
+/**
+ * Fund Submission Approval Email
+ * Sent to user when their submission is approved
+ */
+export function generateFundSubmissionApprovalEmail(data: {
+  companyName: string;
+  fundName: string;
+  contactName: string;
+  fundUrl: string;
+  companyUrl: string;
+  dashboardUrl: string;
+  recipientEmail: string;
+}): { html: string; text: string } {
+  const { companyName, fundName, contactName, fundUrl, companyUrl, dashboardUrl, recipientEmail } = data;
+  
+  const bodyContent = `
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+      Hi ${contactName},
+    </p>
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+      Great news! Your fund submission has been <span style="color: ${BRAND_COLORS.bronze}; font-weight: 600;">approved</span> and your pages are now live on Movingto Funds! 🎉
+    </p>
+    
+    ${generateContentCard(`
+      <h3 style="color: ${BRAND_COLORS.bordeaux}; font-size: 18px; margin: 0 0 15px 0;">
+        🚀 Your Pages Are Live
+      </h3>
+      <ul style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 2; margin-bottom: 0; padding-left: 20px;">
+        <li><a href="${fundUrl}" style="color: ${BRAND_COLORS.bronze}; font-weight: 500; text-decoration: none;">${fundName}</a> - Your fund page</li>
+        <li><a href="${companyUrl}" style="color: ${BRAND_COLORS.bronze}; font-weight: 500; text-decoration: none;">${companyName}</a> - Your company profile</li>
+      </ul>
+    `, 'bordeaux')}
+    
+    ${generateContentCard(`
+      <h3 style="color: ${BRAND_COLORS.bronze}; font-size: 18px; margin: 0 0 15px 0;">
+        ✨ Enhance Your Profile
+      </h3>
+      <p style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
+        Access your dashboard to add more details and attract more investors:
+      </p>
+      <ul style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.8; margin-bottom: 0; padding-left: 20px;">
+        <li>Add more team members</li>
+        <li>Upload fund documents (prospectus, fact sheets)</li>
+        <li>Add historical performance data</li>
+        <li>Include FAQs and highlights</li>
+        <li>Apply for verification to boost visibility</li>
+      </ul>
+    `, 'bronze')}
+    
+    ${generateCTAButton('Go to Dashboard', dashboardUrl, 'bordeaux')}
+    
+    <p style="color: ${BRAND_COLORS.textMuted}; font-size: 14px; line-height: 1.6; margin-top: 30px; text-align: center;">
+      Welcome to Movingto Funds! We're excited to have ${companyName} on our platform.
+    </p>
+  `;
+  
+  const html = generateEmailWrapper('Your Fund is Now Live! 🎉', bodyContent, recipientEmail);
+  
+  const text = generatePlainTextEmail(
+    'Your Fund is Now Live!',
+    `Hi ${contactName},\n\nGreat news! Your fund submission has been approved and your pages are now live!\n\nYour Pages:\n- Fund: ${fundUrl}\n- Company: ${companyUrl}\n\nEnhance your profile by adding team members, documents, performance data, FAQs, and more via your dashboard.`,
+    'Go to Dashboard',
+    dashboardUrl
+  );
+  
+  return { html, text };
+}
+
+/**
+ * Fund Submission Rejection Email
+ * Sent to user when their submission is rejected
+ */
+export function generateFundSubmissionRejectionEmail(data: {
+  companyName: string;
+  fundName: string;
+  contactName: string;
+  rejectionReason: string;
+  recipientEmail: string;
+}): { html: string; text: string } {
+  const { companyName, fundName, contactName, rejectionReason, recipientEmail } = data;
+  const resubmitUrl = `${COMPANY_INFO.website}/submit-fund`;
+  
+  const bodyContent = `
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+      Hi ${contactName},
+    </p>
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+      Thank you for your interest in listing <strong>${fundName}</strong> from <strong>${companyName}</strong> on Movingto Funds.
+    </p>
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+      Unfortunately, we were unable to approve your submission at this time.
+    </p>
+    
+    ${generateContentCard(`
+      <h3 style="color: ${BRAND_COLORS.bordeaux}; font-size: 18px; margin: 0 0 15px 0;">
+        📋 Reason for Rejection
+      </h3>
+      <p style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.6; margin-bottom: 0;">
+        ${rejectionReason}
+      </p>
+    `, 'bordeaux')}
+    
+    <p style="color: ${BRAND_COLORS.textDark}; font-size: 15px; line-height: 1.6; margin-top: 25px; margin-bottom: 25px;">
+      If you believe this was an error or would like to resubmit with updated information, you're welcome to submit a new application.
+    </p>
+    
+    ${generateCTAButton('Submit New Application', resubmitUrl, 'bronze')}
+    
+    <p style="color: ${BRAND_COLORS.textMuted}; font-size: 14px; line-height: 1.6; margin-top: 30px; text-align: center;">
+      Have questions? Reply to this email and our team will be happy to assist.
+    </p>
+  `;
+  
+  const html = generateEmailWrapper('Fund Submission Update', bodyContent, recipientEmail);
+  
+  const text = generatePlainTextEmail(
+    'Fund Submission Update',
+    `Hi ${contactName},\n\nThank you for your interest in listing ${fundName} from ${companyName} on Movingto Funds.\n\nUnfortunately, we were unable to approve your submission at this time.\n\nReason:\n${rejectionReason}\n\nIf you believe this was an error or would like to resubmit with updated information, you're welcome to submit a new application.`,
+    'Submit New Application',
+    resubmitUrl
+  );
+  
+  return { html, text };
+}

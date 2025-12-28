@@ -99,6 +99,7 @@ export default function AdminPanel() {
           <div className="p-6">
             <Routes>
               <Route index element={<FundAnalyticsDashboard />} />
+              <Route path="fund-submissions" element={<FundSubmissionsManagement />} />
               <Route path="suggestions" element={<EnhancedSuggestionsTable onDataChange={() => {}} />} />
               <Route path="funds" element={<FundManagement />} />
               <Route path="rankings" element={<FundRankingManager />} />
