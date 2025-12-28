@@ -6,7 +6,7 @@ import { getFundType } from '../utils/fundTypeUtils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { PieChart, Euro, CheckCircle2, GitCompare } from 'lucide-react';
+import { Mail, CheckCircle2, GitCompare, ChevronRight } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
@@ -167,6 +167,12 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           
           {/* Action Buttons */}
           <div className="flex items-center gap-3">
+            <Link to={`/${fund.id}#enquiry-form`} onClick={() => window.scrollTo(0, 0)}>
+              <Button className="font-medium h-11">
+                <Mail className="mr-1.5 h-4 w-4" />
+                Get in Touch
+              </Button>
+            </Link>
             <SaveFundButton fundId={fund.id} showText={false} size="md" variant="outline" className="h-11 w-11" />
             <Button 
               variant="outline"
@@ -179,11 +185,12 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             </Button>
             <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
               <Button 
-                variant="secondary"
-                size="default"
-                className="font-medium h-11 hover:bg-primary hover:text-primary-foreground transition-colors"
+                variant="outline"
+                size="icon"
+                className="h-11 w-11"
+                title="View details"
               >
-                View Details
+                <ChevronRight className="h-4 w-4" />
               </Button>
             </Link>
           </div>
