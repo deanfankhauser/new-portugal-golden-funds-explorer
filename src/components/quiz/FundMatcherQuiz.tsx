@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { QuizProgress } from './QuizProgress';
 import { QuizQuestion } from './QuizQuestion';
 import { QuizResults } from './QuizResults';
 import { QuizNoResults } from './QuizNoResults';
+import { QuizResultsSkeleton } from './QuizResultsSkeleton';
 import { useFundMatcherQuery, QuizAnswers } from '@/hooks/useFundMatcherQuery';
 import { trackQuizEvent } from '@/services/quizAnalytics';
 
@@ -194,10 +195,7 @@ export const FundMatcherQuiz: React.FC<FundMatcherQuizProps> = ({ open, onOpenCh
           {/* Content */}
           <div className="flex-1 p-6">
             {isSearching ? (
-              <div className="flex flex-col items-center justify-center h-full space-y-4">
-                <Loader2 className="h-12 w-12 animate-spin text-primary" />
-                <p className="text-lg font-medium">Finding your perfect matches...</p>
-              </div>
+              <QuizResultsSkeleton />
             ) : showResults ? (
               matchedFunds && matchedFunds.length > 0 ? (
                 <QuizResults 
