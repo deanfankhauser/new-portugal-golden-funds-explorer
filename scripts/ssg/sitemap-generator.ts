@@ -92,31 +92,70 @@ export async function generateSitemap(routes: StaticRoute[], distDir: string): P
     priority: '0.7'
   }));
 
-  // Force include all discovered category and tag detail pages
-  routes.filter(r => r.pageType === 'category' || r.pageType === 'tag').forEach(r => addIfMissing({
-    url: `https://funds.movingto.com${r.path}`,
-    lastmod: now,
-    changefreq: 'weekly',
-    priority: r.pageType === 'category' ? '0.8' : '0.7'
-  }));
+  // Build sets of categories/tags that have at least one fund (to filter out empty pages)
+  const categoriesWithFunds = new Set<string>();
+  const tagsWithFunds = new Set<string>();
+  
+  funds.forEach(fund => {
+    if (fund.category) categoriesWithFunds.add(categoryToSlug(fund.category));
+    fund.tags?.forEach(tag => tagsWithFunds.add(tagToSlug(tag)));
+  });
 
-  // Also force include using direct data (independent of route discovery)
+  // Force include discovered category/tag detail pages ONLY if they have funds
+  routes.filter(r => r.pageType === 'category' || r.pageType === 'tag').forEach(r => {
+    const slug = r.path.split('/').pop() || '';
+    const hasFunds = r.pageType === 'category' 
+      ? categoriesWithFunds.has(slug)
+      : tagsWithFunds.has(slug);
+    
+    if (hasFunds) {
+      addIfMissing({
+        url: `https://funds.movingto.com${r.path}`,
+        lastmod: now,
+        changefreq: 'weekly',
+        priority: r.pageType === 'category' ? '0.8' : '0.7'
+      });
+    }
+  });
+
+  // Also force include using direct data (independent of route discovery) - only if has funds
+  let excludedCategoryCount = 0;
+  let excludedTagCount = 0;
+  
   try {
     const categoriesList = await fetchAllCategoriesForBuild();
-    categoriesList.forEach(cat => addIfMissing({
-      url: `https://funds.movingto.com/categories/${categoryToSlug(cat as any)}`,
-      lastmod: now,
-      changefreq: 'weekly',
-      priority: '0.8'
-    }));
+    categoriesList.forEach(cat => {
+      const slug = categoryToSlug(cat as any);
+      if (categoriesWithFunds.has(slug)) {
+        addIfMissing({
+          url: `https://funds.movingto.com/categories/${slug}`,
+          lastmod: now,
+          changefreq: 'weekly',
+          priority: '0.8'
+        });
+      } else {
+        excludedCategoryCount++;
+      }
+    });
     
     const tagsList = await fetchAllTagsForBuild();
-    tagsList.forEach(tag => addIfMissing({
-      url: `https://funds.movingto.com/tags/${tagToSlug(tag as any)}`,
-      lastmod: now,
-      changefreq: 'weekly',
-      priority: '0.7'
-    }));
+    tagsList.forEach(tag => {
+      const slug = tagToSlug(tag as any);
+      if (tagsWithFunds.has(slug)) {
+        addIfMissing({
+          url: `https://funds.movingto.com/tags/${slug}`,
+          lastmod: now,
+          changefreq: 'weekly',
+          priority: '0.7'
+        });
+      } else {
+        excludedTagCount++;
+      }
+    });
+    
+    if (excludedCategoryCount > 0 || excludedTagCount > 0) {
+      console.log(`   Excluded ${excludedCategoryCount} zero-fund categories and ${excludedTagCount} zero-fund tags from sitemap`);
+    }
   } catch (e) {
     console.warn('⚠️  Sitemap: category/tag data include failed:', (e as any)?.message || e);
   }
