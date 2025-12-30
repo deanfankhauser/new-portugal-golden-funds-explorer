@@ -184,7 +184,7 @@ const FundMatcherResults: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageSEO pageType="fund-matcher-results" params={{ fundsCount: matchedFunds?.length || 0 }} />
+      <PageSEO pageType="fund-matcher-results" fundsCount={matchedFunds?.length || 0} />
       <Header />
       
       <main className="container mx-auto px-4 py-8 md:py-12">
