@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { fetchAllTagsForBuild, fetchAllCategoriesForBuild } from '../../src/lib/build-data-fetcher';
+import { fetchAllTagsForBuild, fetchAllCategoriesForBuild, fetchAllFundsForBuild } from '../../src/lib/build-data-fetcher';
 import { tagToSlug, categoryToSlug } from '../../src/lib/utils';
+import { generateComparisonsFromFunds } from '../../src/data/services/comparison-service';
 
 /**
  * Create chunked redirects to avoid Vercel regex complexity limits
@@ -102,12 +103,35 @@ export async function generateRedirectRules() {
     { source: '/mid-cap', destination: '/tags/mid-cap-50-100m', permanent: true },
     { source: '/large-cap', destination: '/tags/large-cap-100m-plus', permanent: true },
   ];
+
+  // Generate non-canonical comparison redirects (B-vs-A → A-vs-B)
+  console.log('🔀 Generating comparison redirects for non-canonical URLs...');
+  const funds = await fetchAllFundsForBuild();
+  const comparisons = generateComparisonsFromFunds(funds);
+  const comparisonRedirects: any[] = [];
+  
+  for (const comparison of comparisons) {
+    const { fund1, fund2, slug: canonicalSlug } = comparison;
+    // The non-canonical version is the reversed order
+    const nonCanonicalSlug = `${fund2.id}-vs-${fund1.id}`;
+    
+    if (nonCanonicalSlug !== canonicalSlug) {
+      comparisonRedirects.push({
+        source: `/compare/${nonCanonicalSlug}`,
+        destination: `/compare/${canonicalSlug}`,
+        permanent: true // 301 redirect
+      });
+    }
+  }
+  
+  console.log(`📦 Generated ${comparisonRedirects.length} comparison 301 redirects`);
   
   return {
     tagRedirects,
     categoryRedirects,
     legacyRedirects,
     tagToCategoryRedirects,
+    comparisonRedirects,
     stats: {
       tagCount: tagSlugs.length,
       uniqueTagCount: uniqueTagSlugs.length,
@@ -116,7 +140,8 @@ export async function generateRedirectRules() {
       tagChunks: tagChunkCount,
       categoryChunks: categoryChunkCount,
       legacyCount: legacyRedirects.length,
-      tagToCategoryCount: tagToCategoryRedirects.length
+      tagToCategoryCount: tagToCategoryRedirects.length,
+      comparisonRedirectCount: comparisonRedirects.length
     }
   };
 }
@@ -133,24 +158,30 @@ export async function updateVercelConfig() {
   }
   
   const config = JSON.parse(fs.readFileSync(vercelConfigPath, 'utf-8'));
-  const { tagRedirects, categoryRedirects, legacyRedirects, tagToCategoryRedirects, stats } = await generateRedirectRules();
+  const { tagRedirects, categoryRedirects, legacyRedirects, tagToCategoryRedirects, comparisonRedirects, stats } = await generateRedirectRules();
   
-  // Remove old individual tag/category redirects
+  // Remove old individual tag/category/comparison redirects
   const existingRedirects = config.redirects || [];
   const filteredRedirects = existingRedirects.filter((redirect: any) => {
     // Keep domain redirects and /funds redirects
     if (redirect.has || redirect.source === '/funds' || redirect.source === '/funds/') {
       return true;
     }
-    // Remove all other redirects (old tag/category rules)
+    // Keep privacy redirect
+    if (redirect.source === '/privacy-policy' || redirect.source === '/privacy-policy/') {
+      return true;
+    }
+    // Remove all other redirects (old tag/category/comparison rules)
     return false;
   });
   
   // IMPORTANT: Order matters! More specific rules must come first
-  // Tag→category redirects are explicit /tags/X → /categories/X (most specific)
+  // Comparison redirects are exact paths (most specific)
+  // Tag→category redirects are explicit /tags/X → /categories/X (very specific)
   config.redirects = [
     ...filteredRedirects,         // Domain redirects, /funds redirects (kept)
-    ...tagToCategoryRedirects,    // /tags/private-equity → /categories/private-equity (most specific)
+    ...comparisonRedirects,       // /compare/B-vs-A → /compare/A-vs-B (exact paths, most specific)
+    ...tagToCategoryRedirects,    // /tags/private-equity → /categories/private-equity (specific)
     ...legacyRedirects,           // /:num(\d+)-return (specific patterns)
     ...categoryRedirects,         // /:slug(private-equity|...) (medium specificity)
     ...tagRedirects               // /:slug(solar|wind|...) (least specific, fallback)
@@ -163,6 +194,7 @@ export async function updateVercelConfig() {
   console.log(`   - ${stats.categoryCount} category slugs (${stats.categoryChunks} chunks, ${categoryRedirects.length} rules)`);
   console.log(`   - ${stats.overlapCount} tag→category overlap redirects`);
   console.log(`   - ${stats.legacyCount} legacy patterns`);
+  console.log(`   - ${stats.comparisonRedirectCount} comparison 301 redirects`);
   console.log(`   - Total redirect rules: ${config.redirects.length}`);
 }
 

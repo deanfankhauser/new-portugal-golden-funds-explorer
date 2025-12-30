@@ -63,7 +63,7 @@ const seoData = ConsolidatedSEOService.getSEOData(
 
       ConsolidatedSEOService.applyMetaTags(seoData);
       
-      // Handle noindex for 404 pages and zero-fund tag/category pages
+      // Handle noindex for 404 pages, zero-fund tag/category pages, and low-value comparisons
       if (pageType === '404' || 
           ((pageType === 'tag' || pageType === 'category') && (!funds || funds.length === 0))) {
         let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
@@ -73,6 +73,15 @@ const seoData = ConsolidatedSEOService.getSEOData(
           document.head.appendChild(robots);
         }
         robots.setAttribute('content', 'noindex, follow');
+      } else if (pageType === 'fund-comparison' && seoData.robots?.includes('noindex')) {
+        // Handle noindex for low-value fund comparisons
+        let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+        if (!robots) {
+          robots = document.createElement('meta');
+          robots.setAttribute('name', 'robots');
+          document.head.appendChild(robots);
+        }
+        robots.setAttribute('content', seoData.robots);
       } else if (pageType === 'tag' || pageType === 'category') {
         // Ensure index,follow for pages with funds
         let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
