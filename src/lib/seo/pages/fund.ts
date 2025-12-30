@@ -5,8 +5,10 @@ import { Fund } from '@/data/types/funds';
 import { InvestmentFundStructuredDataService } from '@/services/investmentFundStructuredDataService';
 import { getSitewideSchemas } from '../schemas';
 import { SEO_CONFIG } from '@/config/company';
+import { checkFundIndexability } from '@/lib/indexability';
 
 export function getFundSeo(fund: Fund): SEOData {
+  const indexability = checkFundIndexability(fund);
   const fundTitle = generateFundTitle(fund);
   const fundDescription = generateFundDescription(fund);
   const fundKeywords = generateFundKeywords(fund);
@@ -16,6 +18,7 @@ export function getFundSeo(fund: Fund): SEOData {
     description: optimizeDescription(fundDescription),
     url: URL_CONFIG.buildFundUrl(fund.id),
     canonical: URL_CONFIG.buildFundUrl(fund.id),
+    robots: indexability.robots,
     keywords: fundKeywords,
     structuredData: getFundStructuredData(fund)
   };

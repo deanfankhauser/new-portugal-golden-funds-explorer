@@ -3,8 +3,10 @@ import { optimizeTitle, optimizeDescription } from '../utils';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 import { getSitewideSchemas } from '../schemas';
+import { checkTagIndexability } from '@/lib/indexability';
 
 export function getTagSeo(tagName: string, funds: Fund[] = []): SEOData {
+  const indexability = checkTagIndexability(tagName, funds);
   const fundCount = funds.length;
   
   // Clean tag label for display
@@ -25,7 +27,7 @@ export function getTagSeo(tagName: string, funds: Fund[] = []): SEOData {
     description: optimizeDescription(description),
     url: URL_CONFIG.buildTagUrl(tagName),
     canonical: URL_CONFIG.buildTagUrl(tagName),
-    robots: fundCount === 0 ? 'noindex, follow' : 'index, follow',
+    robots: indexability.robots,
     keywords: [
       cleanTagLabel,
       `${cleanTagLabel} funds`,

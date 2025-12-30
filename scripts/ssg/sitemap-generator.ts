@@ -6,8 +6,14 @@ import { fetchAllFundsForBuild, fetchAllCategoriesForBuild, fetchAllTagsForBuild
 import { generateComparisonsFromFunds } from '../../src/data/services/comparison-service';
 import { EnhancedSitemapService } from '../../src/services/enhancedSitemapService';
 import { categoryToSlug, tagToSlug } from '../../src/lib/utils';
-import { isLowValueComparison } from '../../src/utils/comparisonUtils';
 import { isGoneTeamMember } from '../../src/lib/gone-slugs';
+import {
+  checkFundIndexability,
+  checkCategoryIndexability,
+  checkTagIndexability,
+  checkComparisonIndexability,
+  checkTeamMemberIndexability
+} from '../../src/lib/indexability';
 
 export async function generateSitemap(routes: StaticRoute[], distDir: string): Promise<void> {
   // Fetch fund data for accurate lastmod dates
@@ -160,23 +166,31 @@ export async function generateSitemap(routes: StaticRoute[], distDir: string): P
     console.warn('⚠️  Sitemap: category/tag data include failed:', (e as any)?.message || e);
   }
 
-  // Add team member pages to sitemap (excluding gone slugs)
+  // Add team member pages to sitemap (excluding gone slugs and thin content)
   try {
     const teamMembers = await fetchAllTeamMembersForBuild();
     let teamMemberCount = 0;
+    let excludedThinContent = 0;
     teamMembers.forEach(member => {
       // Skip gone/removed team member slugs
-      if (!isGoneTeamMember(member.slug)) {
-        addIfMissing({
-          url: `https://funds.movingto.com/team/${member.slug}`,
-          lastmod: now,
-          changefreq: 'monthly',
-          priority: '0.5'
-        });
-        teamMemberCount++;
+      if (isGoneTeamMember(member.slug)) return;
+      
+      // Use indexability gate for thin content check
+      const indexability = checkTeamMemberIndexability(member);
+      if (!indexability.isIndexable) {
+        excludedThinContent++;
+        return;
       }
+      
+      addIfMissing({
+        url: `https://funds.movingto.com/team/${member.slug}`,
+        lastmod: now,
+        changefreq: 'monthly',
+        priority: '0.5'
+      });
+      teamMemberCount++;
     });
-    console.log(`   Team Members in sitemap: ${teamMemberCount} (excluded ${teamMembers.length - teamMemberCount} gone slugs)`);
+    console.log(`   Team Members in sitemap: ${teamMemberCount} (excluded ${teamMembers.length - teamMemberCount} gone/thin slugs)`);
   } catch (e) {
     console.warn('⚠️  Sitemap: team member data include failed:', (e as any)?.message || e);
   }
@@ -198,12 +212,15 @@ ${urlElements}
 
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap);
 
-  // Coverage logs - filter out low-value comparisons that are noindexed
+  // Coverage logs - filter comparisons using indexability gate
   const allComparisons = generateComparisonsFromFunds(funds);
-  const indexableComparisons = allComparisons.filter(c => !isLowValueComparison(c.fund1, c.fund2));
+  const indexableComparisons = allComparisons.filter(c => {
+    const indexability = checkComparisonIndexability(c.fund1, c.fund2, c.slug);
+    return indexability.isIndexable;
+  });
   const lowValueCount = allComparisons.length - indexableComparisons.length;
   
-  // Remove low-value comparison URLs from sitemap
+  // Add only indexable comparison URLs to sitemap
   indexableComparisons.forEach(comparison => {
     const url = `https://funds.movingto.com/compare/${comparison.slug}`;
     if (!byUrl.has(url)) {
@@ -216,9 +233,10 @@ ${urlElements}
     }
   });
   
-  // Remove low-value comparison URLs that may have been added
+  // Remove non-indexable comparison URLs that may have been added
   allComparisons.forEach(comparison => {
-    if (isLowValueComparison(comparison.fund1, comparison.fund2)) {
+    const indexability = checkComparisonIndexability(comparison.fund1, comparison.fund2, comparison.slug);
+    if (!indexability.isIndexable) {
       const url = `https://funds.movingto.com/compare/${comparison.slug}`;
       byUrl.delete(url);
     }

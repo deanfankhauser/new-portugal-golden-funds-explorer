@@ -4,7 +4,7 @@ import { MAX_TITLE_LENGTH } from '../constants';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 import { getSitewideSchemas } from '../schemas';
-import { isLowValueComparison } from '@/utils/comparisonUtils';
+import { checkComparisonIndexability } from '@/lib/indexability';
 
 export function getComparisonSeo(): SEOData {
   return {
@@ -24,6 +24,8 @@ export function getComparisonSeo(): SEOData {
 }
 
 export function getFundComparisonSeo(fund1: Fund, fund2: Fund, normalizedSlug: string): SEOData {
+  const indexability = checkComparisonIndexability(fund1, fund2, normalizedSlug);
+  
   // Format minimum investments for display
   const formatMin = (min: number | null | undefined) => {
     if (!min) return 'N/A';
@@ -35,9 +37,6 @@ export function getFundComparisonSeo(fund1: Fund, fund2: Fund, normalizedSlug: s
   const min2 = formatMin(fund2.minimumInvestment);
   const cat1 = fund1.category || 'Investment';
   const cat2 = fund2.category || 'Investment';
-  
-  // Check if this is a low-value comparison that should be noindexed
-  const shouldNoindex = isLowValueComparison(fund1, fund2);
   
   // Build title with safe truncation at word boundary
   let title = `Compare ${fund1.name} vs ${fund2.name} – Golden Visa Funds`;
@@ -60,7 +59,7 @@ export function getFundComparisonSeo(fund1: Fund, fund2: Fund, normalizedSlug: s
     description: optimizeDescription(description),
     url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
     canonical: URL_CONFIG.buildComparisonUrl(normalizedSlug),
-    robots: shouldNoindex ? 'noindex, follow' : 'index, follow',
+    robots: indexability.robots,
     keywords: [
       fund1.name,
       fund2.name,
