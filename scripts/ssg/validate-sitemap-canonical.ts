@@ -10,35 +10,91 @@ interface ValidationResult {
   canonicalUrl?: string;
   status: 'valid' | 'invalid' | 'missing';
   message?: string;
+  sitemapFile?: string;
 }
 
 /**
- * Validates that all URLs in sitemap.xml have self-referencing canonical tags
+ * Get all sitemap files to validate (from sitemap-index or individual files)
+ */
+async function getSitemapFiles(distDir: string): Promise<string[]> {
+  const sitemapFiles: string[] = [];
+  
+  // Check for sitemap-index.xml first
+  const indexPath = path.join(distDir, 'sitemap-index.xml');
+  if (fs.existsSync(indexPath)) {
+    const indexXml = fs.readFileSync(indexPath, 'utf-8');
+    const parsed = await parseXml(indexXml);
+    
+    const sitemaps = parsed.sitemapindex?.sitemap || [];
+    for (const sitemap of sitemaps) {
+      const loc = sitemap.loc?.[0];
+      if (loc) {
+        // Extract filename from URL
+        const filename = loc.split('/').pop();
+        if (filename && fs.existsSync(path.join(distDir, filename))) {
+          sitemapFiles.push(filename);
+        }
+      }
+    }
+    console.log(`📄 Found sitemap-index.xml with ${sitemapFiles.length} sitemaps`);
+    return sitemapFiles;
+  }
+  
+  // Fallback to single sitemap.xml
+  if (fs.existsSync(path.join(distDir, 'sitemap.xml'))) {
+    return ['sitemap.xml'];
+  }
+  
+  return [];
+}
+
+/**
+ * Extract all URLs from a sitemap file
+ */
+async function extractUrlsFromSitemap(distDir: string, sitemapFile: string): Promise<Array<{ url: string; sitemapFile: string }>> {
+  const sitemapPath = path.join(distDir, sitemapFile);
+  const sitemapXml = fs.readFileSync(sitemapPath, 'utf-8');
+  const parsed = await parseXml(sitemapXml);
+  
+  const urls = parsed.urlset?.url?.map((entry: any) => ({
+    url: entry.loc[0],
+    sitemapFile
+  })) || [];
+  
+  return urls;
+}
+
+/**
+ * Validates that all URLs in sitemaps have self-referencing canonical tags
  * Fails the build if non-canonical pages are found in sitemap
  */
 export async function validateSitemapCanonical(distDir: string): Promise<void> {
   console.log('\n🔍 Validating sitemap canonical tags...');
   console.log('─'.repeat(60));
 
-  const sitemapPath = path.join(distDir, 'sitemap.xml');
+  // Get all sitemap files to validate
+  const sitemapFiles = await getSitemapFiles(distDir);
   
-  if (!fs.existsSync(sitemapPath)) {
-    console.error('❌ sitemap.xml not found at:', sitemapPath);
-    throw new Error('Sitemap validation failed: sitemap.xml missing');
+  if (sitemapFiles.length === 0) {
+    console.error('❌ No sitemap files found');
+    throw new Error('Sitemap validation failed: no sitemap files found');
   }
 
-  // Parse sitemap XML
-  const sitemapXml = fs.readFileSync(sitemapPath, 'utf-8');
-  const parsed = await parseXml(sitemapXml);
+  // Extract all URLs from all sitemaps
+  const allUrls: Array<{ url: string; sitemapFile: string }> = [];
+  for (const file of sitemapFiles) {
+    const urls = await extractUrlsFromSitemap(distDir, file);
+    allUrls.push(...urls);
+    console.log(`   📄 ${file}: ${urls.length} URLs`);
+  }
   
-  const urls = parsed.urlset?.url?.map((entry: any) => entry.loc[0]) || [];
-  console.log(`📊 Found ${urls.length} URLs in sitemap`);
+  console.log(`📊 Total: ${allUrls.length} URLs across ${sitemapFiles.length} sitemaps`);
 
   const results: ValidationResult[] = [];
   let invalidCount = 0;
   let missingHtmlCount = 0;
 
-  for (const url of urls) {
+  for (const { url, sitemapFile } of allUrls) {
     // Convert URL to file path
     const urlPath = new URL(url).pathname;
     let htmlPath: string;
@@ -60,7 +116,8 @@ export async function validateSitemapCanonical(distDir: string): Promise<void> {
       results.push({
         url,
         status: 'missing',
-        message: `HTML file not found: ${htmlPath}`
+        message: `HTML file not found: ${htmlPath}`,
+        sitemapFile
       });
       missingHtmlCount++;
       continue;
@@ -74,7 +131,8 @@ export async function validateSitemapCanonical(distDir: string): Promise<void> {
       results.push({
         url,
         status: 'invalid',
-        message: 'No canonical tag found'
+        message: 'No canonical tag found',
+        sitemapFile
       });
       invalidCount++;
       continue;
@@ -91,14 +149,16 @@ export async function validateSitemapCanonical(distDir: string): Promise<void> {
         url,
         canonicalUrl,
         status: 'invalid',
-        message: `Non-self-referencing canonical (points to: ${canonicalUrl})`
+        message: `Non-self-referencing canonical (points to: ${canonicalUrl})`,
+        sitemapFile
       });
       invalidCount++;
     } else {
       results.push({
         url,
         canonicalUrl,
-        status: 'valid'
+        status: 'valid',
+        sitemapFile
       });
     }
   }
@@ -148,8 +208,9 @@ export async function validateSitemapCanonical(distDir: string): Promise<void> {
   const reportPath = path.join(reportDir, 'canonical-report.json');
   const report = {
     timestamp: new Date().toISOString(),
+    sitemapFiles,
     summary: {
-      total: urls.length,
+      total: allUrls.length,
       valid: validCount,
       invalid: invalidCount,
       missing: missingHtmlCount
@@ -157,11 +218,13 @@ export async function validateSitemapCanonical(distDir: string): Promise<void> {
     invalidEntries: invalidEntries.map(e => ({
       url: e.url,
       canonical: e.canonicalUrl,
-      message: e.message
+      message: e.message,
+      sitemapFile: e.sitemapFile
     })),
     missingEntries: missingEntries.map(e => ({
       url: e.url,
-      message: e.message
+      message: e.message,
+      sitemapFile: e.sitemapFile
     }))
   };
   

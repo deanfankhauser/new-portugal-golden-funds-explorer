@@ -1,7 +1,11 @@
 import fs from 'fs';
 import path from 'path';
+import { parseString } from 'xml2js';
+import { promisify } from 'util';
 import { fetchAllTagsForBuild, fetchAllCategoriesForBuild } from '../../src/lib/build-data-fetcher';
 import { tagToSlug, categoryToSlug } from '../../src/lib/utils';
+
+const parseXml = promisify(parseString);
 
 interface ValidationIssue {
   type: 'error' | 'warning';
@@ -9,25 +13,65 @@ interface ValidationIssue {
   url?: string;
 }
 
-export async function validateSitemapURLs(distDir: string): Promise<{ valid: boolean; issues: ValidationIssue[] }> {
+/**
+ * Get all URLs from sitemap-index and individual sitemaps
+ */
+async function getAllSitemapUrls(distDir: string): Promise<string[]> {
+  const allUrls: string[] = [];
+  
+  // Check for sitemap-index.xml first
+  const indexPath = path.join(distDir, 'sitemap-index.xml');
+  if (fs.existsSync(indexPath)) {
+    const indexXml = fs.readFileSync(indexPath, 'utf-8');
+    const parsed = await parseXml(indexXml);
+    
+    const sitemaps = parsed.sitemapindex?.sitemap || [];
+    for (const sitemap of sitemaps) {
+      const loc = sitemap.loc?.[0];
+      if (loc) {
+        const filename = loc.split('/').pop();
+        const sitemapPath = path.join(distDir, filename);
+        if (fs.existsSync(sitemapPath)) {
+          const sitemapXml = fs.readFileSync(sitemapPath, 'utf-8');
+          const sitemapParsed = await parseXml(sitemapXml);
+          const urls = sitemapParsed.urlset?.url?.map((entry: any) => entry.loc[0]) || [];
+          allUrls.push(...urls);
+        }
+      }
+    }
+    return allUrls;
+  }
+  
+  // Fallback to single sitemap.xml
   const sitemapPath = path.join(distDir, 'sitemap.xml');
+  if (fs.existsSync(sitemapPath)) {
+    const sitemapContent = fs.readFileSync(sitemapPath, 'utf-8');
+    const urlMatches = sitemapContent.matchAll(/<loc>(.*?)<\/loc>/g);
+    return Array.from(urlMatches).map(match => match[1]);
+  }
+  
+  return [];
+}
+
+export async function validateSitemapURLs(distDir: string): Promise<{ valid: boolean; issues: ValidationIssue[] }> {
   const issues: ValidationIssue[] = [];
   
-  if (!fs.existsSync(sitemapPath)) {
+  // Check that at least sitemap-index.xml or sitemap.xml exists
+  const indexPath = path.join(distDir, 'sitemap-index.xml');
+  const sitemapPath = path.join(distDir, 'sitemap.xml');
+  
+  if (!fs.existsSync(indexPath) && !fs.existsSync(sitemapPath)) {
     issues.push({
       type: 'error',
-      message: 'sitemap.xml not found in dist directory'
+      message: 'No sitemap files found in dist directory (neither sitemap-index.xml nor sitemap.xml)'
     });
     return { valid: false, issues };
   }
 
-  const sitemapContent = fs.readFileSync(sitemapPath, 'utf-8');
+  // Get all URLs from all sitemaps
+  const urls = await getAllSitemapUrls(distDir);
   
-  // Extract all URLs from sitemap
-  const urlMatches = sitemapContent.matchAll(/<loc>(.*?)<\/loc>/g);
-  const urls = Array.from(urlMatches).map(match => match[1]);
-  
-  console.log(`\n🔍 Validating ${urls.length} URLs in sitemap...\n`);
+  console.log(`\n🔍 Validating ${urls.length} URLs across all sitemaps...\n`);
   
   try {
     // Get all valid tag and category slugs from database
@@ -36,61 +80,61 @@ export async function validateSitemapURLs(distDir: string): Promise<{ valid: boo
     const categories = await fetchAllCategoriesForBuild();
     const categorySlugs = categories.map(cat => categoryToSlug(cat));
   
-  // Check for incorrect bare slug URLs
-  const baseUrl = 'https://funds.movingto.com';
-  
-  urls.forEach(url => {
-    const path = url.replace(baseUrl, '');
+    // Check for incorrect bare slug URLs
+    const baseUrl = 'https://funds.movingto.com';
     
-    // Check for duplicate /index
-    if (path === '/index') {
-      issues.push({
-        type: 'error',
-        message: 'Duplicate /index entry found (should only have homepage /)',
-        url
-      });
-    }
+    urls.forEach(url => {
+      const urlPath = url.replace(baseUrl, '');
+      
+      // Check for duplicate /index
+      if (urlPath === '/index') {
+        issues.push({
+          type: 'error',
+          message: 'Duplicate /index entry found (should only have homepage /)',
+          url
+        });
+      }
+      
+      // Check for bare tag slugs (should be /tags/{slug})
+      const bareSlug = urlPath.substring(1); // remove leading /
+      if (tagSlugs.includes(bareSlug) && !urlPath.startsWith('/tags/')) {
+        issues.push({
+          type: 'error',
+          message: `Tag URL missing /tags/ prefix: should be /tags/${bareSlug}`,
+          url
+        });
+      }
+      
+      // Check for bare category slugs (should be /categories/{slug})
+      if (categorySlugs.includes(bareSlug) && !urlPath.startsWith('/categories/')) {
+        issues.push({
+          type: 'error',
+          message: `Category URL missing /categories/ prefix: should be /categories/${bareSlug}`,
+          url
+        });
+      }
+    });
     
-    // Check for bare tag slugs (should be /tags/{slug})
-    const bareSlug = path.substring(1); // remove leading /
-    if (tagSlugs.includes(bareSlug) && !path.startsWith('/tags/')) {
-      issues.push({
-        type: 'error',
-        message: `Tag URL missing /tags/ prefix: should be /tags/${bareSlug}`,
-        url
-      });
-    }
+    // Check for missing essential URLs
+    const essentialPaths = [
+      '/',
+      '/categories',
+      '/tags',
+      '/managers',
+      '/about',
+      '/faqs'
+    ];
     
-    // Check for bare category slugs (should be /categories/{slug})
-    if (categorySlugs.includes(bareSlug) && !path.startsWith('/categories/')) {
-      issues.push({
-        type: 'error',
-        message: `Category URL missing /categories/ prefix: should be /categories/${bareSlug}`,
-        url
-      });
-    }
-  });
-  
-  // Check for missing essential URLs
-  const essentialPaths = [
-    '/',
-    '/categories',
-    '/tags',
-    '/managers',
-    '/about',
-    '/faqs'
-  ];
-  
-  essentialPaths.forEach(essentialPath => {
-    const fullUrl = `${baseUrl}${essentialPath === '/' ? '' : essentialPath}`;
-    if (!urls.includes(fullUrl)) {
-      issues.push({
-        type: 'warning',
-        message: `Essential URL missing: ${essentialPath}`,
-        url: fullUrl
-      });
-    }
-  });
+    essentialPaths.forEach(essentialPath => {
+      const fullUrl = `${baseUrl}${essentialPath === '/' ? '' : essentialPath}`;
+      if (!urls.includes(fullUrl)) {
+        issues.push({
+          type: 'warning',
+          message: `Essential URL missing: ${essentialPath}`,
+          url: fullUrl
+        });
+      }
+    });
   
   // Report results
     const errors = issues.filter(i => i.type === 'error');

@@ -177,13 +177,24 @@ export function compileSSGFiles() {
       throw validationError;
     }
 
-    // Step 8: Copy enhanced sitemap files from dist to public
+    // Step 8: Copy sitemap files from dist to public
     console.log('\n📍 STEP 8: Copying sitemaps to public...');
     console.log('─'.repeat(60));
     try {
       const publicDir = path.join(process.cwd(), 'public');
       const distDir = path.join(process.cwd(), 'dist');
-      const filesToCopy = ['sitemap.xml', 'sitemap-index.xml', 'sitemap-funds.xml', 'sitemap-enhanced.xml', 'robots.txt'];
+      
+      // List of all modular sitemap files to copy
+      const filesToCopy = [
+        'sitemap-index.xml',
+        'sitemap-funds.xml',
+        'sitemap-categories.xml',
+        'sitemap-tags.xml',
+        'sitemap-managers.xml',
+        'sitemap-comparisons.xml',
+        'sitemap-static.xml',
+        'robots.txt'
+      ];
       
       let copiedCount = 0;
       filesToCopy.forEach((file) => {
@@ -192,27 +203,10 @@ export function compileSSGFiles() {
           const dest = path.join(publicDir, file);
           fs.copyFileSync(src, dest);
           copiedCount++;
+          console.log(`   ✅ ${file}`);
         }
       });
-      console.log(`✅ Copied ${copiedCount} sitemap files to /public`);
-
-      // Fallback: if consolidated sitemap lacks categories/tags, use enhanced sitemap which includes them
-      try {
-        const publicSitemap = path.join(publicDir, 'sitemap.xml');
-        const enhancedPath = path.join(distDir, 'sitemap-enhanced.xml');
-        if (fs.existsSync(publicSitemap)) {
-          const content = fs.readFileSync(publicSitemap, 'utf8');
-          const hasCategories = content.includes('/categories/');
-          const hasTags = content.includes('/tags/');
-          if ((!hasCategories || !hasTags) && fs.existsSync(enhancedPath)) {
-            const enhanced = fs.readFileSync(enhancedPath, 'utf8');
-            fs.writeFileSync(publicSitemap, enhanced);
-            console.log('🗺️  SSG: Replaced /public/sitemap.xml with enhanced sitemap to include categories/tags');
-          }
-        }
-      } catch (fallbackErr) {
-        console.warn('⚠️  SSG: Failed fallback to enhanced sitemap:', fallbackErr.message);
-      }
+      console.log(`\n✅ Copied ${copiedCount} sitemap files to /public`);
     } catch (copyErr) {
       console.warn('⚠️  Could not copy sitemap files to /public:', copyErr.message);
     }
