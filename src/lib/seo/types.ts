@@ -31,6 +31,8 @@ export type PageType =
   | 'fund'
   | 'fund-details'
   | 'fund-alternatives'
+  | 'fund-matcher'
+  | 'fund-matcher-results'
   | 'category'
   | 'tag'
   | 'manager'
