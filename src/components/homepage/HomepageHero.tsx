@@ -1,25 +1,15 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { ShieldCheck } from 'lucide-react';
 import { Fund } from '../../data/types/funds';
 import { Button } from '../ui/button';
-import { FundMatcherQuiz } from '@/components/quiz';
 
 interface HomepageHeroProps {
   funds: Fund[];
 }
 
 const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
-  const [quizOpen, setQuizOpen] = useState(false);
-
-  // Auto-open quiz if URL contains shared quiz parameters
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has('quiz')) {
-      setQuizOpen(true);
-    }
-  }, []);
-
   const scrollToFunds = () => {
     const fundsSection = document.getElementById('funds-section');
     if (fundsSection) {
@@ -64,11 +54,11 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
           <div className="text-center mb-8 space-y-4">
             <div>
               <Button 
-                onClick={() => setQuizOpen(true)}
+                asChild
                 size="lg"
                 className="bg-[hsl(25,45%,25%)] hover:bg-[hsl(25,45%,20%)] text-white font-semibold px-8 py-6 text-lg"
               >
-                Find My Fund Match
+                <Link to="/fund-matcher">Find My Fund Match</Link>
               </Button>
             </div>
             <div>
@@ -82,9 +72,6 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
           </div>
         </div>
       </div>
-      
-      {/* Fund Matcher Quiz Modal */}
-      <FundMatcherQuiz open={quizOpen} onOpenChange={setQuizOpen} />
     </header>
   );
 };
