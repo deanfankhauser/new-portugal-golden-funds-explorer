@@ -84,6 +84,15 @@ export const track500Error = (path: string, errorMessage: string) => {
   });
 };
 
+export const trackGone410 = (slug: string, type: string) => {
+  sendErrorToBackend({
+    errorType: '410',
+    pagePath: `/team/${slug}`,
+    errorMessage: `410 Gone: ${type} "${slug}" permanently removed`,
+    referrer: document.referrer,
+  });
+};
+
 // Global error handler
 if (typeof window !== 'undefined') {
   window.addEventListener('error', (event) => {

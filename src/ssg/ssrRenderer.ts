@@ -273,6 +273,11 @@ export class SSRRenderer {
       seoData.robots = 'noindex, follow';
     }
 
+    // Handle 410 pages with noindex, nofollow
+    if (route.pageType === '410') {
+      seoData.robots = 'noindex, nofollow';
+    }
+
     // Validate SEO data completeness
     const hasStructuredData = Array.isArray(seoData.structuredData) 
       ? seoData.structuredData.length > 0 
@@ -343,6 +348,7 @@ export class SSRRenderer {
         case 'verification-program': return ['VerificationProgram'];
         case 'ira-401k-eligible': return ['IRAEligibleFunds'];
         case 'team-member': return ['TeamMemberProfile'];
+        case '410': return ['GonePage'];
         
         default: return ['Index'];
       }

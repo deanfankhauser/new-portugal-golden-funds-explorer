@@ -54,6 +54,7 @@ export const loadComponents = async (only?: string[]) => {
       IRAEligibleFunds: () => import('../pages/IRAEligibleFunds').then(m => m.default),
       TeamMemberProfile: () => import('../pages/TeamMemberProfile').then(m => m.default),
       NotFound: () => import('../pages/NotFound').then(m => m.default),
+      GonePage: () => import('../pages/GonePage').then(m => m.default),
     };
 
     const names = only && only.length ? only : Object.keys(loaders);
