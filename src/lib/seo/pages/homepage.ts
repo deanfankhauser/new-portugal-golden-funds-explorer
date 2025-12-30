@@ -8,7 +8,7 @@ export function getHomeSeo(funds?: Fund[]): SEOData {
   const fundCount = funds?.length || 40;
   
   return {
-    title: 'Compare 32+ Portugal Golden Visa Funds (2025) | Fees, Returns & Eligibility',
+    title: 'Compare 32+ Portugal Golden Visa Funds (2026) | Fees, Returns & Eligibility',
     keywords: [
       'Portugal Golden Visa funds',
       'CMVM funds',
