@@ -10,3 +10,4 @@ export { getFAQsSeo } from './faqs';
 export { getROICalculatorSeo } from './roi-calculator';
 export { getVerifiedFundsSeo } from './verified-funds';
 export { getNotFoundSeo } from './not-found';
+export { getTeamMemberSeo } from './team-member';

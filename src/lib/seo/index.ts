@@ -20,5 +20,6 @@ export {
   getFAQsSeo,
   getROICalculatorSeo,
   getVerifiedFundsSeo,
-  getNotFoundSeo
+  getNotFoundSeo,
+  getTeamMemberSeo
 } from './pages';
