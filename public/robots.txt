@@ -1,3 +1,5 @@
+# Robots.txt for https://funds.movingto.com
+# This is a fallback - build generates the actual robots.txt
 
 # Googlebot configuration
 User-agent: Googlebot
@@ -52,5 +54,5 @@ Disallow: /confirm-email
 Disallow: /reset-password
 Disallow: /saved-funds
 
-# Sitemap location
-Sitemap: https://funds.movingto.com/sitemap.xml
+# Sitemap index location (contains all sitemaps)
+Sitemap: https://funds.movingto.com/sitemap-index.xml

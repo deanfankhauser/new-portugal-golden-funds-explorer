@@ -4,16 +4,14 @@ import { getAllStaticRoutes } from '../../src/ssg/routeDiscovery';
 import { findBuiltAssets, validateAssetPaths } from './asset-discovery';
 import { processRoute } from './route-processor';
 import { validateGeneratedFile, verifyCriticalPages } from './validation';
-import { generateSitemap } from './sitemap-generator';
-import { generateFundsSitemap } from './sitemap-funds-generator';
 import { generate404Page } from './404-generator';
-import { generateComprehensiveSitemaps } from './comprehensive-sitemap-generator';
+import { generateSitemapIndex } from './sitemap-index-generator';
 import { validateSitemapURLs } from './validate-sitemap-urls';
 import { validateSitemapCanonical } from './validate-sitemap-canonical';
 import { runComprehensiveHTMLValidation } from './comprehensive-html-validation';
 
-// NOTE: EnhancedSitemapService removed from orchestrator to avoid Node.js module leakage
-// Sitemap generation is now fully handled by comprehensive-sitemap-generator
+// NOTE: Sitemap generation now uses modular sitemap-index-generator
+// which creates separate sitemaps per type with indexability filtering
 
 export async function generateStaticFiles() {
   const distDir = path.join(process.cwd(), 'dist');
@@ -108,28 +106,16 @@ export async function generateStaticFiles() {
   // Generate 404 page
   await generate404Page(distDir);
   
-  // Use the new comprehensive sitemap generator
+  // Generate modular sitemaps with sitemap index
+  console.log('\n🗺️  Generating modular sitemaps with indexability filtering...');
   try {
-    await generateComprehensiveSitemaps(distDir);
+    const sitemapResult = await generateSitemapIndex(distDir);
+    console.log(`✅ Sitemap generation completed:`);
+    console.log(`   📊 Total URLs: ${sitemapResult.totalURLs}`);
+    console.log(`   📁 Files: ${sitemapResult.sitemapFiles.map(f => f.filename).join(', ')}`);
   } catch (sitemapError) {
-    console.error('❌ Comprehensive sitemap generation failed:', sitemapError);
-    console.warn('⚠️  Falling back to legacy sitemap generators...');
-    
-    // Fallback to existing generators only
-    await generateSitemap(routes, distDir);
-    await generateFundsSitemap(distDir);
-    
-    // Generate basic robots.txt
-    const robotsTxt = `User-agent: *
-Allow: /
-
-Sitemap: https://funds.movingto.com/sitemap.xml
-
-Disallow: /admin
-Disallow: /auth
-Disallow: /api/`;
-    fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsTxt);
-    console.log('✅ Generated fallback robots.txt');
+    console.error('❌ Sitemap generation failed:', sitemapError);
+    throw sitemapError; // Fail build on sitemap errors - sitemaps are critical for SEO
   }
 
   // Validate sitemap URLs
