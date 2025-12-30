@@ -11,6 +11,10 @@ import { TeamMemberCredentials } from '@/components/team/TeamMemberCredentials';
 import FundListItem from '@/components/FundListItem';
 import { managerToSlug } from '@/lib/utils';
 import { Fund } from '@/data/types/funds';
+import { isGoneTeamMember } from '@/lib/gone-slugs';
+import GonePage from './GonePage';
+import NotFound from './NotFound';
+import { trackTeamPageView } from '@/utils/teamRouteTracking';
 
 interface TeamMemberProfileProps {
   teamMemberData?: {
@@ -41,6 +45,18 @@ const TeamMemberProfile: React.FC<TeamMemberProfileProps> = ({ teamMemberData: s
     window.scrollTo(0, 0);
   }, []);
 
+  // Track team page views for analytics
+  useEffect(() => {
+    if (effectiveSlug && !ssrData) {
+      trackTeamPageView(effectiveSlug, !!teamMemberData);
+    }
+  }, [effectiveSlug, teamMemberData, ssrData]);
+
+  // Check if this is a known removed slug - return 410 Gone
+  if (effectiveSlug && isGoneTeamMember(effectiveSlug)) {
+    return <GonePage slug={effectiveSlug} type="team-member" />;
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
@@ -53,19 +69,9 @@ const TeamMemberProfile: React.FC<TeamMemberProfileProps> = ({ teamMemberData: s
     );
   }
 
+  // Return proper 404 NotFound for non-existent team members
   if (error || !teamMemberData) {
-    return (
-      <div className="min-h-screen flex flex-col bg-background">
-        <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-foreground mb-4">Team Member Not Found</h1>
-            <p className="text-muted-foreground">The team member you're looking for doesn't exist.</p>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
+    return <NotFound />;
   }
 
   const { profiles: profile } = teamMemberData;

@@ -353,6 +353,16 @@ export class ConsolidatedSEOService {
         // Delegate to centralized SEO helper
         return getNotFoundSeo();
 
+      case '410':
+        return {
+          title: 'Content Permanently Removed | Movingto Funds',
+          description: 'This content has been permanently removed and is no longer available.',
+          robots: 'noindex, nofollow',
+          url: URL_CONFIG.buildUrl(params.path || '/'),
+          canonical: undefined,
+          structuredData: null
+        };
+
       case 'managers-hub':
         return {
           title: this.optimizeText('Browse 28+ Golden Visa Fund Managers – Compare Track Records | Movingto Funds', this.MAX_TITLE_LENGTH),

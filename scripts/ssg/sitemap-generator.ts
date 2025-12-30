@@ -2,11 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import { StaticRoute } from '../../src/ssg/routeDiscovery';
 import { DateManagementService } from '../../src/services/dateManagementService';
-import { fetchAllFundsForBuild, fetchAllCategoriesForBuild, fetchAllTagsForBuild } from '../../src/lib/build-data-fetcher';
+import { fetchAllFundsForBuild, fetchAllCategoriesForBuild, fetchAllTagsForBuild, fetchAllTeamMembersForBuild } from '../../src/lib/build-data-fetcher';
 import { generateComparisonsFromFunds } from '../../src/data/services/comparison-service';
 import { EnhancedSitemapService } from '../../src/services/enhancedSitemapService';
 import { categoryToSlug, tagToSlug } from '../../src/lib/utils';
 import { isLowValueComparison } from '../../src/utils/comparisonUtils';
+import { isGoneTeamMember } from '../../src/lib/gone-slugs';
 
 export async function generateSitemap(routes: StaticRoute[], distDir: string): Promise<void> {
   // Fetch fund data for accurate lastmod dates
@@ -118,6 +119,27 @@ export async function generateSitemap(routes: StaticRoute[], distDir: string): P
     }));
   } catch (e) {
     console.warn('⚠️  Sitemap: category/tag data include failed:', (e as any)?.message || e);
+  }
+
+  // Add team member pages to sitemap (excluding gone slugs)
+  try {
+    const teamMembers = await fetchAllTeamMembersForBuild();
+    let teamMemberCount = 0;
+    teamMembers.forEach(member => {
+      // Skip gone/removed team member slugs
+      if (!isGoneTeamMember(member.slug)) {
+        addIfMissing({
+          url: `https://funds.movingto.com/team/${member.slug}`,
+          lastmod: now,
+          changefreq: 'monthly',
+          priority: '0.5'
+        });
+        teamMemberCount++;
+      }
+    });
+    console.log(`   Team Members in sitemap: ${teamMemberCount} (excluded ${teamMembers.length - teamMemberCount} gone slugs)`);
+  } catch (e) {
+    console.warn('⚠️  Sitemap: team member data include failed:', (e as any)?.message || e);
   }
 
   const urlElements = Array.from(byUrl.entries()).map(([url, meta]) => `  <url>
