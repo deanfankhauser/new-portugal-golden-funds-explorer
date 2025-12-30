@@ -51,6 +51,8 @@ const SavedFunds = lazy(() => import('./pages/SavedFunds'));
 
 const FundManagerPanel = lazy(() => import('./pages/FundManagerPanel'));
 const SubmitFund = lazy(() => import('./pages/SubmitFund'));
+const FundMatcher = lazy(() => import('./pages/FundMatcher'));
+const FundMatcherResults = lazy(() => import('./pages/FundMatcherResults'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -250,6 +252,16 @@ function App() {
                       <Route path="/ira-401k-eligible-funds" element={
                         <Suspense fallback={<PageLoader />}>
                           <IRAEligibleFunds />
+                        </Suspense>
+                      } />
+                      <Route path="/fund-matcher" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <FundMatcher />
+                        </Suspense>
+                      } />
+                      <Route path="/fund-matcher/results" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <FundMatcherResults />
                         </Suspense>
                       } />
                         

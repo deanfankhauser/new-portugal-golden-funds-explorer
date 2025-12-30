@@ -617,6 +617,33 @@ export class ConsolidatedSEOService {
           structuredData: this.getIRAEligibleStructuredData(funds)
         };
 
+      case 'fund-matcher':
+        return {
+          title: this.optimizeText('Fund Matcher: Find Your Ideal Portugal Golden Visa Fund (2026)', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Answer 5 simple questions to find CMVM-regulated Golden Visa funds matching your budget, risk tolerance, nationality, and timeline. Free personalized recommendations in 2 minutes.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('fund-matcher'),
+          canonical: URL_CONFIG.buildUrl('fund-matcher'),
+          robots: 'index, follow',
+          keywords: [
+            'golden visa fund matcher',
+            'portugal investment fund finder',
+            'fund recommendation quiz',
+            'golden visa fund selector'
+          ],
+          structuredData: this.getHomepageStructuredData()
+        };
+
+      case 'fund-matcher-results':
+        return {
+          title: this.optimizeText(`${params.fundsCount || 0} Matching Funds | Fund Matcher Results`, this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Your personalized Portugal Golden Visa fund recommendations based on your investment criteria.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('fund-matcher/results'),
+          canonical: URL_CONFIG.buildUrl('fund-matcher'),
+          robots: 'noindex, follow',
+          keywords: [],
+          structuredData: null
+        };
+
       default:
         return this.getSEOData('homepage');
     }
