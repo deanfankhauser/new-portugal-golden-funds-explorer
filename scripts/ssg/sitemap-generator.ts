@@ -6,6 +6,7 @@ import { fetchAllFundsForBuild, fetchAllCategoriesForBuild, fetchAllTagsForBuild
 import { generateComparisonsFromFunds } from '../../src/data/services/comparison-service';
 import { EnhancedSitemapService } from '../../src/services/enhancedSitemapService';
 import { categoryToSlug, tagToSlug } from '../../src/lib/utils';
+import { isLowValueComparison } from '../../src/utils/comparisonUtils';
 
 export async function generateSitemap(routes: StaticRoute[], distDir: string): Promise<void> {
   // Fetch fund data for accurate lastmod dates
@@ -136,16 +137,40 @@ ${urlElements}
 
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap);
 
-  // Coverage logs
+  // Coverage logs - filter out low-value comparisons that are noindexed
   const allComparisons = generateComparisonsFromFunds(funds);
-  const comparisonSlugs = allComparisons.map(c => c.slug);
-  const comparisonRoutesInSitemap = canonicalRoutes.filter(r => r.pageType === 'fund-comparison').length;
+  const indexableComparisons = allComparisons.filter(c => !isLowValueComparison(c.fund1, c.fund2));
+  const lowValueCount = allComparisons.length - indexableComparisons.length;
+  
+  // Remove low-value comparison URLs from sitemap
+  indexableComparisons.forEach(comparison => {
+    const url = `https://funds.movingto.com/compare/${comparison.slug}`;
+    if (!byUrl.has(url)) {
+      const contentDates = DateManagementService.getContentDates('comparison');
+      byUrl.set(url, {
+        lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
+        changefreq: 'weekly',
+        priority: '0.85'
+      });
+    }
+  });
+  
+  // Remove low-value comparison URLs that may have been added
+  allComparisons.forEach(comparison => {
+    if (isLowValueComparison(comparison.fund1, comparison.fund2)) {
+      const url = `https://funds.movingto.com/compare/${comparison.slug}`;
+      byUrl.delete(url);
+    }
+  });
+  
+  const comparisonRoutesInSitemap = Array.from(byUrl.keys()).filter(url => url.includes('/compare/')).length;
   const alternativesRoutesInSitemap = canonicalRoutes.filter(r => r.pageType === 'fund-alternatives').length;
   const categoryRoutesInSitemap = canonicalRoutes.filter(r => r.pageType === 'category').length;
 
   console.log(`✅ Sitemap: Generated ${byUrl.size} URLs (${comparisonRoutesInSitemap} comparisons, ${alternativesRoutesInSitemap} alternatives, ${categoryRoutesInSitemap} categories)`);
   console.log(`   Excluded ${excludedCount} non-canonical routes from sitemap`);
-  if (comparisonRoutesInSitemap < comparisonSlugs.length) {
-    console.warn(`⚠️  Sitemap: Missing ${comparisonSlugs.length - comparisonRoutesInSitemap} comparison URLs`);
+  console.log(`   Excluded ${lowValueCount} low-value comparisons (noindexed) from sitemap`);
+  if (comparisonRoutesInSitemap < indexableComparisons.length) {
+    console.warn(`⚠️  Sitemap: Missing ${indexableComparisons.length - comparisonRoutesInSitemap} comparison URLs`);
   }
 }
