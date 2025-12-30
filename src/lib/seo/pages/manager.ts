@@ -13,11 +13,15 @@ export function getManagerSeo(managerName: string, managerProfile: any, funds: F
   // SEO Description: Dynamic with AUM and fund count
   const managerDescription = generateManagerDescription(managerName, managerProfile, gvFundCount);
   
+  // If manager has no funds, return noindex to prevent soft 404
+  const hasNoFunds = !funds || funds.length === 0;
+  
   return {
     title: optimizeTitle(managerTitle),
     description: optimizeDescription(managerDescription),
     url: URL_CONFIG.buildManagerUrl(managerName),
     canonical: URL_CONFIG.buildManagerUrl(managerName),
+    robots: hasNoFunds ? 'noindex, follow' : 'index, follow',
     keywords: [
       `${managerName}`,
       'Portugal fund manager',

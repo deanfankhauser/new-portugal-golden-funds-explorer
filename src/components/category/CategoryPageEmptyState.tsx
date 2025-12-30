@@ -22,9 +22,12 @@ const CategoryPageEmptyState: React.FC<CategoryPageEmptyStateProps> = ({
   return (
     <div className="space-y-8">
       <div className="bg-card rounded-xl border border-border p-12 text-center">
-        <h3 className="text-2xl font-semibold mb-3">No funds currently match this filter</h3>
+        <h1 className="text-2xl font-semibold mb-3">
+          {categoryName} Portugal Golden Visa Investment Funds
+        </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
-          No {categoryName} funds are currently available. Browse all funds or try another category.
+          This category is being updated with new fund listings. 
+          Browse all funds or explore related categories below.
         </p>
         <Button
           onClick={() => navigate('/')}
