@@ -25,8 +25,9 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
   const fund2 = funds[1];
 
   const formatCurrency = (value: number | null | undefined): string => {
-    if (!value) return 'Not disclosed';
-    return `€${value.toLocaleString()}`;
+    if (value === null || value === undefined) return 'Not disclosed';
+    if (value === 0) return 'Not disclosed';
+    return `€${value.toLocaleString('en-US')}`;
   };
 
   const formatTargetReturn = (fund: Fund): string => {
@@ -105,8 +106,8 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
           />
           <CompareRow 
             label="Established" 
-            valueA={fund1.established ? fund1.established.toString() : 'N/A'}
-            valueB={fund2.established ? fund2.established.toString() : 'N/A'}
+            valueA={fund1.established ? String(fund1.established) : 'Not disclosed'}
+            valueB={fund2.established ? String(fund2.established) : 'Not disclosed'}
             fundAName={fund1.name}
             fundBName={fund2.name}
           />
@@ -148,8 +149,8 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
           />
           <CompareRow 
             label="Hurdle Rate" 
-            valueA={fund1.hurdleRate ? `${fund1.hurdleRate}%` : 'N/A'}
-            valueB={fund2.hurdleRate ? `${fund2.hurdleRate}%` : 'N/A'}
+            valueA={fund1.hurdleRate ? `${fund1.hurdleRate}%` : 'Not disclosed'}
+            valueB={fund2.hurdleRate ? `${fund2.hurdleRate}%` : 'Not disclosed'}
             fundAName={fund1.name}
             fundBName={fund2.name}
           />
@@ -171,8 +172,8 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
           />
           <CompareRow 
             label="Lock-up Period" 
-            valueA={fund1.redemptionTerms?.minimumHoldingPeriod ? `${fund1.redemptionTerms.minimumHoldingPeriod} months` : 'None'}
-            valueB={fund2.redemptionTerms?.minimumHoldingPeriod ? `${fund2.redemptionTerms.minimumHoldingPeriod} months` : 'None'}
+            valueA={fund1.redemptionTerms?.minimumHoldingPeriod ? `${fund1.redemptionTerms.minimumHoldingPeriod} months` : 'Not disclosed'}
+            valueB={fund2.redemptionTerms?.minimumHoldingPeriod ? `${fund2.redemptionTerms.minimumHoldingPeriod} months` : 'Not disclosed'}
             fundAName={fund1.name}
             fundBName={fund2.name}
           />
