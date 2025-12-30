@@ -3,6 +3,7 @@ import { TrendingUp, Euro, Clock } from 'lucide-react';
 import { calculateCategoryStatistics } from '../../utils/categoryStatistics';
 import { getReturnTargetNumbers } from '../../utils/returnTarget';
 import { Fund } from '../../data/types/funds';
+import { pluralize } from '../../utils/textHelpers';
 
 interface CategorySnapshotHeroProps {
   categoryName: string;
@@ -33,7 +34,7 @@ const CategorySnapshotHero: React.FC<CategorySnapshotHeroProps> = ({ categoryNam
           Portugal {categoryName} Funds
         </h1>
         <p className="text-lg text-muted-foreground">
-          Aggregated stats for {stats.totalCount} active fund{stats.totalCount !== 1 ? 's' : ''}
+          Aggregated stats for {stats.totalCount} active {pluralize(stats.totalCount, 'fund')}
         </p>
       </div>
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import FAQSection from '../common/FAQSection';
 import { isTagGVEligible } from '../../data/services/gv-eligibility-service';
+import { pluralize } from '../../utils/textHelpers';
 
 interface FAQItem {
   question: string;
@@ -17,6 +18,16 @@ const TagPageFAQ: React.FC<TagPageFAQProps> = ({ tagName, tagSlug, fundsCount })
   // Generate tag-specific FAQs
   const generateTagFAQs = (tag: string, count: number): FAQItem[] => {
     const isEligible = isTagGVEligible(tag as any);
+    const fundWord = pluralize(count, 'fund');
+    
+    // Handle zero-count case with appropriate messaging
+    const getCountAnswer = (): string => {
+      if (count === 0) {
+        return `We are currently updating our ${tag.toLowerCase()} fund listings. Check back soon for the latest options, or explore related investment themes in the meantime.`;
+      }
+      return `Currently, there are ${count} ${tag.toLowerCase()} ${fundWord} available in our directory that are eligible for the Portugal Golden Visa program. Each fund has been verified to meet the program's requirements and investment criteria.`;
+    };
+    
     return [
       {
         question: `What are ${tag} Golden Visa investment funds?`,
@@ -26,7 +37,7 @@ const TagPageFAQ: React.FC<TagPageFAQProps> = ({ tagName, tagSlug, fundsCount })
       },
       {
         question: `How many ${tag} Golden Visa funds are available?`,
-        answer: `Currently, there are ${count} ${tag.toLowerCase()} funds available in our directory that are eligible for the Portugal Golden Visa program. Each fund has been verified to meet the program's requirements and investment criteria.`
+        answer: getCountAnswer()
       },
       {
         question: `What is the minimum investment for ${tag} Golden Visa funds?`,
