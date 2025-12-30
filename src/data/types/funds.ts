@@ -243,4 +243,7 @@ export interface Fund {
   twitterUrl?: string;
   linkedinUrl?: string;
   youtubeVideoUrl?: string;
+  
+  // News RSS feed
+  newsRssFeedUrl?: string;
 }

@@ -26,6 +26,7 @@ import {
   getROICalculatorSeo,
   getVerifiedFundsSeo,
   getNotFoundSeo,
+  getTeamMemberSeo,
   optimizeText
 } from '../lib/seo';
 
@@ -291,25 +292,16 @@ export class ConsolidatedSEOService {
         return getManagerSeo(params.managerName, params.managerProfile, params.funds || []);
 
       case 'team-member':
-        const memberName = params.name || 'Team Member';
-        const memberRole = params.role || 'Team Member';
-        const companyName = params.companyName || '';
-        return {
-          title: this.optimizeText(`${memberName}: Professional Profile & Managed Funds - ${companyName}`, this.MAX_TITLE_LENGTH),
-          description: this.optimizeText(`Professional profile of ${memberName}, ${memberRole} at ${companyName}. View their investment track record and currently active Golden Visa funds.`, this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl(`/team/${params.slug}`),
-          canonical: URL_CONFIG.buildUrl(`/team/${params.slug}`),
-          keywords: [
-            memberName,
-            memberRole,
-            companyName,
-            'fund team member',
-            'investment professional',
-            'Portugal fund management',
-            'Golden Visa fund professional'
-          ],
-          structuredData: this.getTeamMemberStructuredData(params)
-        };
+        // Delegate to centralized SEO helper with indexability check
+        return getTeamMemberSeo({
+          name: params.name || 'Team Member',
+          role: params.role || 'Team Member',
+          bio: params.bio,
+          slug: params.slug,
+          companyName: params.companyName || '',
+          photoUrl: params.photoUrl,
+          linkedinUrl: params.linkedinUrl
+        });
 
       case 'comparison':
         // Delegate to centralized SEO helper
@@ -324,47 +316,13 @@ export class ConsolidatedSEOService {
           const fund2 = funds.find(f => f.id === slugData.fund2Id);
           
           if (fund1 && fund2) {
-            return {
-              title: this.optimizeText(`${fund1.name} vs ${fund2.name} Review: Fees, Risk & Golden Visa Comparison`, this.MAX_TITLE_LENGTH),
-              description: this.optimizeText(`Detailed comparison of ${fund1.name} and ${fund2.name}. Analyze the differences in Management Fees, Risk Profiles, and Target Returns to find the right Golden Visa fund for you.`, this.MAX_DESCRIPTION_LENGTH),
-              url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
-              canonical: URL_CONFIG.buildComparisonUrl(normalizedSlug),
-              robots: 'index, follow',
-              keywords: [
-                `${fund1.name} vs ${fund2.name}`,
-                'fund comparison',
-                'investment comparison',
-                'fund review',
-                'fees comparison',
-                'risk comparison',
-                'Golden Visa fund comparison',
-                'investment fund analysis',
-                `${fund1.managerName}`,
-                `${fund2.managerName}`,
-                'fund performance comparison',
-                'compare funds',
-                'investment analysis'
-              ],
-              structuredData: this.getFundComparisonStructuredData(fund1, fund2)
-            };
+            // Delegate to centralized SEO helper (which handles low-value noindex logic)
+            return getFundComparisonSeo(fund1, fund2, normalizedSlug);
           }
         }
         
-        return {
-          title: this.optimizeText('Portugal Golden Visa Fund Comparison – Investment Analysis | Movingto Funds', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Compare Portugal Golden Visa funds side by side. Check performance, fees, risk, liquidity, minimum investment and more before choosing your fund.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
-          canonical: URL_CONFIG.buildComparisonUrl(normalizedSlug),
-          robots: 'index, follow',
-          keywords: [
-            'Golden Visa fund comparison',
-            'investment fund analysis',
-            'compare funds Portugal',
-            'fund comparison tool',
-            'investment analysis'
-          ],
-          structuredData: this.getGenericComparisonStructuredData()
-        };
+        // Fallback for invalid slugs
+        return getFundComparisonFallbackSeo(normalizedSlug);
 
       case 'roi-calculator':
         return {
@@ -386,6 +344,16 @@ export class ConsolidatedSEOService {
       case '404':
         // Delegate to centralized SEO helper
         return getNotFoundSeo();
+
+      case '410':
+        return {
+          title: 'Content Permanently Removed | Movingto Funds',
+          description: 'This content has been permanently removed and is no longer available.',
+          robots: 'noindex, nofollow',
+          url: URL_CONFIG.buildUrl(params.path || '/'),
+          canonical: undefined,
+          structuredData: null
+        };
 
       case 'managers-hub':
         return {

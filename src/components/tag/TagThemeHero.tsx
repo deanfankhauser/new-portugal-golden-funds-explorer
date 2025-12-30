@@ -2,6 +2,7 @@ import React from 'react';
 import { Fund } from '../../data/types/funds';
 import { calculateTagStatistics } from '../../utils/tagStatistics';
 import { TrendingUp, Clock, BadgeCheck } from 'lucide-react';
+import { pluralize } from '../../utils/textHelpers';
 
 interface TagThemeHeroProps {
   tagName: string;
@@ -18,7 +19,7 @@ const TagThemeHero: React.FC<TagThemeHeroProps> = ({ tagName, funds }) => {
           Portugal {tagName} Investment Funds
         </h1>
         <p className="text-lg text-muted-foreground">
-          Browse {stats.totalCount} fund{stats.totalCount !== 1 ? 's' : ''} specializing in {tagName} eligible for the Golden Visa.
+          Browse {stats.totalCount} {pluralize(stats.totalCount, 'fund')} specializing in {tagName} eligible for the Golden Visa.
         </p>
       </div>
 

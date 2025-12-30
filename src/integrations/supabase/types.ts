@@ -663,6 +663,132 @@ export type Database = {
           },
         ]
       }
+      fund_submissions: {
+        Row: {
+          additional_notes: string | null
+          category: string
+          cmvm_id: string | null
+          company_city: string
+          company_country: string
+          company_description: string
+          company_logo_url: string
+          company_name: string
+          company_website: string
+          contact_bio: string | null
+          contact_linkedin: string | null
+          contact_name: string
+          contact_photo_url: string | null
+          contact_role: string
+          created_at: string | null
+          created_fund_id: string | null
+          created_profile_id: string | null
+          created_team_member_id: string | null
+          currency: string | null
+          entity_type: string | null
+          fund_description: string
+          fund_location: string | null
+          fund_name: string
+          gv_eligible: boolean
+          id: string
+          isin: string | null
+          lock_up_period_months: number | null
+          management_fee: number | null
+          minimum_investment: number
+          performance_fee: number | null
+          regulated_by: string | null
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          target_return_max: number | null
+          target_return_min: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          additional_notes?: string | null
+          category: string
+          cmvm_id?: string | null
+          company_city: string
+          company_country: string
+          company_description: string
+          company_logo_url: string
+          company_name: string
+          company_website: string
+          contact_bio?: string | null
+          contact_linkedin?: string | null
+          contact_name: string
+          contact_photo_url?: string | null
+          contact_role: string
+          created_at?: string | null
+          created_fund_id?: string | null
+          created_profile_id?: string | null
+          created_team_member_id?: string | null
+          currency?: string | null
+          entity_type?: string | null
+          fund_description: string
+          fund_location?: string | null
+          fund_name: string
+          gv_eligible?: boolean
+          id?: string
+          isin?: string | null
+          lock_up_period_months?: number | null
+          management_fee?: number | null
+          minimum_investment: number
+          performance_fee?: number | null
+          regulated_by?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          target_return_max?: number | null
+          target_return_min?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          additional_notes?: string | null
+          category?: string
+          cmvm_id?: string | null
+          company_city?: string
+          company_country?: string
+          company_description?: string
+          company_logo_url?: string
+          company_name?: string
+          company_website?: string
+          contact_bio?: string | null
+          contact_linkedin?: string | null
+          contact_name?: string
+          contact_photo_url?: string | null
+          contact_role?: string
+          created_at?: string | null
+          created_fund_id?: string | null
+          created_profile_id?: string | null
+          created_team_member_id?: string | null
+          currency?: string | null
+          entity_type?: string | null
+          fund_description?: string
+          fund_location?: string | null
+          fund_name?: string
+          gv_eligible?: boolean
+          id?: string
+          isin?: string | null
+          lock_up_period_months?: number | null
+          management_fee?: number | null
+          minimum_investment?: number
+          performance_fee?: number | null
+          regulated_by?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          target_return_max?: number | null
+          target_return_min?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       fund_team_members: {
         Row: {
           assigned_at: string
@@ -742,6 +868,7 @@ export type Database = {
           minimum_investment: number | null
           name: string
           nav_frequency: string | null
+          news_rss_feed_url: string | null
           pdf_documents: Json | null
           performance_fee: number | null
           pfic_status: string | null
@@ -807,6 +934,7 @@ export type Database = {
           minimum_investment?: number | null
           name: string
           nav_frequency?: string | null
+          news_rss_feed_url?: string | null
           pdf_documents?: Json | null
           performance_fee?: number | null
           pfic_status?: string | null
@@ -872,6 +1000,7 @@ export type Database = {
           minimum_investment?: number | null
           name?: string
           nav_frequency?: string | null
+          news_rss_feed_url?: string | null
           pdf_documents?: Json | null
           performance_fee?: number | null
           pfic_status?: string | null

@@ -4,6 +4,7 @@ import { MAX_TITLE_LENGTH } from '../constants';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 import { getSitewideSchemas } from '../schemas';
+import { checkComparisonIndexability } from '@/lib/indexability';
 
 export function getComparisonSeo(): SEOData {
   return {
@@ -23,6 +24,8 @@ export function getComparisonSeo(): SEOData {
 }
 
 export function getFundComparisonSeo(fund1: Fund, fund2: Fund, normalizedSlug: string): SEOData {
+  const indexability = checkComparisonIndexability(fund1, fund2, normalizedSlug);
+  
   // Format minimum investments for display
   const formatMin = (min: number | null | undefined) => {
     if (!min) return 'N/A';
@@ -56,6 +59,7 @@ export function getFundComparisonSeo(fund1: Fund, fund2: Fund, normalizedSlug: s
     description: optimizeDescription(description),
     url: URL_CONFIG.buildComparisonUrl(normalizedSlug),
     canonical: URL_CONFIG.buildComparisonUrl(normalizedSlug),
+    robots: indexability.robots,
     keywords: [
       fund1.name,
       fund2.name,

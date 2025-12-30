@@ -3,8 +3,10 @@ import { optimizeTitle, optimizeDescription } from '../utils';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 import { getSitewideSchemas } from '../schemas';
+import { checkManagerIndexability } from '@/lib/indexability';
 
 export function getManagerSeo(managerName: string, managerProfile: any, funds: Fund[] = []): SEOData {
+  const indexability = checkManagerIndexability(managerName, funds);
   const gvFundCount = funds.filter((f: any) => f.tags?.includes('Golden Visa Eligible')).length || funds.length;
   
   // SEO Title: "[Manager Name]: Corporate Profile, Track Record & Active Funds"
@@ -18,6 +20,7 @@ export function getManagerSeo(managerName: string, managerProfile: any, funds: F
     description: optimizeDescription(managerDescription),
     url: URL_CONFIG.buildManagerUrl(managerName),
     canonical: URL_CONFIG.buildManagerUrl(managerName),
+    robots: indexability.robots,
     keywords: [
       `${managerName}`,
       'Portugal fund manager',

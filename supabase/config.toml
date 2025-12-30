@@ -115,3 +115,12 @@ verify_jwt = false
 
 [functions.create-admin-company-profile]
 verify_jwt = false
+
+[functions.fetch-rss-feed]
+verify_jwt = false
+
+[functions.notify-fund-submission]
+verify_jwt = false
+
+[functions.process-fund-submission]
+verify_jwt = false

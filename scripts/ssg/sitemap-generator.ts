@@ -2,10 +2,18 @@ import fs from 'fs';
 import path from 'path';
 import { StaticRoute } from '../../src/ssg/routeDiscovery';
 import { DateManagementService } from '../../src/services/dateManagementService';
-import { fetchAllFundsForBuild, fetchAllCategoriesForBuild, fetchAllTagsForBuild } from '../../src/lib/build-data-fetcher';
+import { fetchAllFundsForBuild, fetchAllCategoriesForBuild, fetchAllTagsForBuild, fetchAllTeamMembersForBuild } from '../../src/lib/build-data-fetcher';
 import { generateComparisonsFromFunds } from '../../src/data/services/comparison-service';
 import { EnhancedSitemapService } from '../../src/services/enhancedSitemapService';
 import { categoryToSlug, tagToSlug } from '../../src/lib/utils';
+import { isGoneTeamMember } from '../../src/lib/gone-slugs';
+import {
+  checkFundIndexability,
+  checkCategoryIndexability,
+  checkTagIndexability,
+  checkComparisonIndexability,
+  checkTeamMemberIndexability
+} from '../../src/lib/indexability';
 
 export async function generateSitemap(routes: StaticRoute[], distDir: string): Promise<void> {
   // Fetch fund data for accurate lastmod dates
@@ -90,33 +98,101 @@ export async function generateSitemap(routes: StaticRoute[], distDir: string): P
     priority: '0.7'
   }));
 
-  // Force include all discovered category and tag detail pages
-  routes.filter(r => r.pageType === 'category' || r.pageType === 'tag').forEach(r => addIfMissing({
-    url: `https://funds.movingto.com${r.path}`,
-    lastmod: now,
-    changefreq: 'weekly',
-    priority: r.pageType === 'category' ? '0.8' : '0.7'
-  }));
+  // Build sets of categories/tags that have at least one fund (to filter out empty pages)
+  const categoriesWithFunds = new Set<string>();
+  const tagsWithFunds = new Set<string>();
+  
+  funds.forEach(fund => {
+    if (fund.category) categoriesWithFunds.add(categoryToSlug(fund.category));
+    fund.tags?.forEach(tag => tagsWithFunds.add(tagToSlug(tag)));
+  });
 
-  // Also force include using direct data (independent of route discovery)
+  // Force include discovered category/tag detail pages ONLY if they have funds
+  routes.filter(r => r.pageType === 'category' || r.pageType === 'tag').forEach(r => {
+    const slug = r.path.split('/').pop() || '';
+    const hasFunds = r.pageType === 'category' 
+      ? categoriesWithFunds.has(slug)
+      : tagsWithFunds.has(slug);
+    
+    if (hasFunds) {
+      addIfMissing({
+        url: `https://funds.movingto.com${r.path}`,
+        lastmod: now,
+        changefreq: 'weekly',
+        priority: r.pageType === 'category' ? '0.8' : '0.7'
+      });
+    }
+  });
+
+  // Also force include using direct data (independent of route discovery) - only if has funds
+  let excludedCategoryCount = 0;
+  let excludedTagCount = 0;
+  
   try {
     const categoriesList = await fetchAllCategoriesForBuild();
-    categoriesList.forEach(cat => addIfMissing({
-      url: `https://funds.movingto.com/categories/${categoryToSlug(cat as any)}`,
-      lastmod: now,
-      changefreq: 'weekly',
-      priority: '0.8'
-    }));
+    categoriesList.forEach(cat => {
+      const slug = categoryToSlug(cat as any);
+      if (categoriesWithFunds.has(slug)) {
+        addIfMissing({
+          url: `https://funds.movingto.com/categories/${slug}`,
+          lastmod: now,
+          changefreq: 'weekly',
+          priority: '0.8'
+        });
+      } else {
+        excludedCategoryCount++;
+      }
+    });
     
     const tagsList = await fetchAllTagsForBuild();
-    tagsList.forEach(tag => addIfMissing({
-      url: `https://funds.movingto.com/tags/${tagToSlug(tag as any)}`,
-      lastmod: now,
-      changefreq: 'weekly',
-      priority: '0.7'
-    }));
+    tagsList.forEach(tag => {
+      const slug = tagToSlug(tag as any);
+      if (tagsWithFunds.has(slug)) {
+        addIfMissing({
+          url: `https://funds.movingto.com/tags/${slug}`,
+          lastmod: now,
+          changefreq: 'weekly',
+          priority: '0.7'
+        });
+      } else {
+        excludedTagCount++;
+      }
+    });
+    
+    if (excludedCategoryCount > 0 || excludedTagCount > 0) {
+      console.log(`   Excluded ${excludedCategoryCount} zero-fund categories and ${excludedTagCount} zero-fund tags from sitemap`);
+    }
   } catch (e) {
     console.warn('⚠️  Sitemap: category/tag data include failed:', (e as any)?.message || e);
+  }
+
+  // Add team member pages to sitemap (excluding gone slugs and thin content)
+  try {
+    const teamMembers = await fetchAllTeamMembersForBuild();
+    let teamMemberCount = 0;
+    let excludedThinContent = 0;
+    teamMembers.forEach(member => {
+      // Skip gone/removed team member slugs
+      if (isGoneTeamMember(member.slug)) return;
+      
+      // Use indexability gate for thin content check
+      const indexability = checkTeamMemberIndexability(member);
+      if (!indexability.isIndexable) {
+        excludedThinContent++;
+        return;
+      }
+      
+      addIfMissing({
+        url: `https://funds.movingto.com/team/${member.slug}`,
+        lastmod: now,
+        changefreq: 'monthly',
+        priority: '0.5'
+      });
+      teamMemberCount++;
+    });
+    console.log(`   Team Members in sitemap: ${teamMemberCount} (excluded ${teamMembers.length - teamMemberCount} gone/thin slugs)`);
+  } catch (e) {
+    console.warn('⚠️  Sitemap: team member data include failed:', (e as any)?.message || e);
   }
 
   const urlElements = Array.from(byUrl.entries()).map(([url, meta]) => `  <url>
@@ -136,16 +212,44 @@ ${urlElements}
 
   fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemap);
 
-  // Coverage logs
+  // Coverage logs - filter comparisons using indexability gate
   const allComparisons = generateComparisonsFromFunds(funds);
-  const comparisonSlugs = allComparisons.map(c => c.slug);
-  const comparisonRoutesInSitemap = canonicalRoutes.filter(r => r.pageType === 'fund-comparison').length;
+  const indexableComparisons = allComparisons.filter(c => {
+    const indexability = checkComparisonIndexability(c.fund1, c.fund2, c.slug);
+    return indexability.isIndexable;
+  });
+  const lowValueCount = allComparisons.length - indexableComparisons.length;
+  
+  // Add only indexable comparison URLs to sitemap
+  indexableComparisons.forEach(comparison => {
+    const url = `https://funds.movingto.com/compare/${comparison.slug}`;
+    if (!byUrl.has(url)) {
+      const contentDates = DateManagementService.getContentDates('comparison');
+      byUrl.set(url, {
+        lastmod: DateManagementService.formatSitemapDate(contentDates.dateModified),
+        changefreq: 'weekly',
+        priority: '0.85'
+      });
+    }
+  });
+  
+  // Remove non-indexable comparison URLs that may have been added
+  allComparisons.forEach(comparison => {
+    const indexability = checkComparisonIndexability(comparison.fund1, comparison.fund2, comparison.slug);
+    if (!indexability.isIndexable) {
+      const url = `https://funds.movingto.com/compare/${comparison.slug}`;
+      byUrl.delete(url);
+    }
+  });
+  
+  const comparisonRoutesInSitemap = Array.from(byUrl.keys()).filter(url => url.includes('/compare/')).length;
   const alternativesRoutesInSitemap = canonicalRoutes.filter(r => r.pageType === 'fund-alternatives').length;
   const categoryRoutesInSitemap = canonicalRoutes.filter(r => r.pageType === 'category').length;
 
   console.log(`✅ Sitemap: Generated ${byUrl.size} URLs (${comparisonRoutesInSitemap} comparisons, ${alternativesRoutesInSitemap} alternatives, ${categoryRoutesInSitemap} categories)`);
   console.log(`   Excluded ${excludedCount} non-canonical routes from sitemap`);
-  if (comparisonRoutesInSitemap < comparisonSlugs.length) {
-    console.warn(`⚠️  Sitemap: Missing ${comparisonSlugs.length - comparisonRoutesInSitemap} comparison URLs`);
+  console.log(`   Excluded ${lowValueCount} low-value comparisons (noindexed) from sitemap`);
+  if (comparisonRoutesInSitemap < indexableComparisons.length) {
+    console.warn(`⚠️  Sitemap: Missing ${indexableComparisons.length - comparisonRoutesInSitemap} comparison URLs`);
   }
 }

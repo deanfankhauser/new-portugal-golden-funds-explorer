@@ -20,6 +20,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EditFundsManagement } from "@/components/admin/EditFundsManagement";
 import { EditCompanyProfilesManagement } from "@/components/admin/EditCompanyProfilesManagement";
 import { AdminCreateCompanyProfile } from "@/components/admin/AdminCreateCompanyProfile";
+import { FundSubmissionsManagement } from "@/components/admin/FundSubmissionsManagement";
 
 export default function AdminPanel() {
   const navigate = useNavigate();
@@ -99,6 +100,7 @@ export default function AdminPanel() {
           <div className="p-6">
             <Routes>
               <Route index element={<FundAnalyticsDashboard />} />
+              <Route path="fund-submissions" element={<FundSubmissionsManagement />} />
               <Route path="suggestions" element={<EnhancedSuggestionsTable onDataChange={() => {}} />} />
               <Route path="funds" element={<FundManagement />} />
               <Route path="rankings" element={<FundRankingManager />} />

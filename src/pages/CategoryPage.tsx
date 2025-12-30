@@ -154,7 +154,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ categoryData: ssrData, init
               <CategoryPageFAQ 
                 categoryName={displayCategoryName} 
                 categorySlug={categorySlug || ''} 
-                fundsCount={funds.length}
+                fundsCount={allFunds.length}
                 funds={allFunds}
               />
               

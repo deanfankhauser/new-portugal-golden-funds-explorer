@@ -3,8 +3,10 @@ import { optimizeTitle, optimizeDescription } from '../utils';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 import { getSitewideSchemas } from '../schemas';
+import { checkCategoryIndexability } from '@/lib/indexability';
 
 export function getCategorySeo(categoryName: string, funds: Fund[] = []): SEOData {
+  const indexability = checkCategoryIndexability(categoryName, funds);
   const fundCount = funds.length;
   const categorySlug = categoryName.toLowerCase().replace(/\s+/g, '-');
   
@@ -23,7 +25,7 @@ export function getCategorySeo(categoryName: string, funds: Fund[] = []): SEODat
     description: optimizeDescription(description),
     url: URL_CONFIG.buildCategoryUrl(categoryName),
     canonical: URL_CONFIG.buildCategoryUrl(categoryName),
-    robots: fundCount === 0 ? 'noindex, follow' : 'index, follow',
+    robots: indexability.robots,
     keywords: [
       `${categoryName} funds`,
       `${categoryName} Golden Visa`,

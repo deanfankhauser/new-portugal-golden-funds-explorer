@@ -2,6 +2,7 @@ import React from 'react';
 import FAQSection from '../common/FAQSection';
 import { Fund } from '../../data/types/funds';
 import { calculateCategoryStatistics } from '../../utils/categoryStatistics';
+import { pluralize } from '../../utils/textHelpers';
 
 interface FAQItem {
   question: string;
@@ -17,6 +18,7 @@ interface CategoryPageFAQProps {
 
 const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categorySlug, fundsCount, funds }) => {
   const stats = calculateCategoryStatistics(funds);
+  const fundWord = pluralize(fundsCount, 'fund');
   
   // Generate risk assessment based on category
   const getRiskAssessment = (category: string): string => {
@@ -43,12 +45,24 @@ const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categor
 
   // Calculate average return with proper formatting
   const getAverageReturnAnswer = (): string => {
+    if (fundsCount === 0) {
+      return `We are currently updating our ${categoryName.toLowerCase()} fund listings. Check back soon for the latest options.`;
+    }
+    
     if (stats.avgTargetReturn === null) {
       return `Average return data is not currently available for all ${categoryName} funds. Individual fund target returns vary based on strategy, risk profile, and market conditions. Review each fund's disclosed performance targets and historical track record when evaluating options.`;
     }
     
     const formattedReturn = stats.avgTargetReturn.toFixed(1);
-    return `Based on disclosed data from ${fundsCount} active ${categoryName.toLowerCase()} funds, the average target return is approximately ${formattedReturn}% per annum. However, individual fund returns vary significantly based on strategy, risk profile, and market conditions. Always review each fund's specific performance targets, historical track record, and risk factors before investing.`;
+    return `Based on disclosed data from ${fundsCount} active ${categoryName.toLowerCase()} ${fundWord}, the average target return is approximately ${formattedReturn}% per annum. However, individual fund returns vary significantly based on strategy, risk profile, and market conditions. Always review each fund's specific performance targets, historical track record, and risk factors before investing.`;
+  };
+  
+  // Handle zero-count case for GV eligible question
+  const getGVEligibleAnswer = (): string => {
+    if (fundsCount === 0) {
+      return `We are currently updating our ${categoryName.toLowerCase()} fund directory. Check back soon for Golden Visa eligible options.`;
+    }
+    return `Currently, ${stats.gvEligibleCount} of the ${fundsCount} ${categoryName.toLowerCase()} ${fundWord} in our directory are explicitly tagged as Golden Visa Eligible. These funds have been verified to meet Portugal's Golden Visa investment criteria, including CMVM regulation, minimum investment thresholds, and qualification requirements. Review each fund's eligibility documentation and consult with legal advisors to confirm Golden Visa qualification for your specific circumstances.`;
   };
 
   const faqs: FAQItem[] = [
@@ -62,7 +76,7 @@ const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categor
     },
     {
       question: `How many ${categoryName} funds are Golden Visa eligible?`,
-      answer: `Currently, ${stats.gvEligibleCount} of the ${fundsCount} ${categoryName.toLowerCase()} funds in our directory are explicitly tagged as Golden Visa Eligible. These funds have been verified to meet Portugal's Golden Visa investment criteria, including CMVM regulation, minimum investment thresholds, and qualification requirements. Review each fund's eligibility documentation and consult with legal advisors to confirm Golden Visa qualification for your specific circumstances.`
+      answer: getGVEligibleAnswer()
     }
   ];
 
