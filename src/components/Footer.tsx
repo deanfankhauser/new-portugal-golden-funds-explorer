@@ -165,14 +165,14 @@ const Footer = () => {
           <div className="col-span-1">
             <h3 className="text-base font-semibold mb-4">Fund Managers</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Are you a fund manager? Submit your fund to our platform.
+              Are you a fund manager? Get your fund listed on our platform.
             </p>
-            <Link 
-              to="/submit-fund"
+            <a 
+              href="mailto:funds@movingto.com?subject=Fund%20Submission%20Inquiry"
               className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:bg-primary/90 transition-colors"
             >
-              Submit Your Fund
-            </Link>
+              Contact Us
+            </a>
           </div>
           
           <div className="col-span-1">
