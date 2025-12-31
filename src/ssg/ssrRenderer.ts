@@ -349,6 +349,7 @@ export class SSRRenderer {
         case 'ira-401k-eligible': return ['IRAEligibleFunds'];
         case 'team-member': return ['TeamMemberProfile'];
         case '410': return ['GonePage'];
+        case 'fund-matcher': return ['FundMatcher'];
         
         default: return ['Index'];
       }
@@ -496,6 +497,7 @@ export class SSRRenderer {
                     : React.createElement(getComponent('VerifiedFunds'))
                 }),
                 React.createElement(Route, { path: '/verification-program', element: React.createElement(getComponent('VerificationProgram')) }),
+                React.createElement(Route, { path: '/fund-matcher', element: React.createElement(getComponent('FundMatcher')) }),
                 
                 // Auth page
                 React.createElement(Route, { path: '/auth', element: React.createElement(getComponent('Auth')) }),
