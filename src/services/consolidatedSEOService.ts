@@ -536,7 +536,25 @@ export class ConsolidatedSEOService {
           structuredData: this.getPrivacyStructuredData()
         };
 
-      case 'fund-alternatives':
+      case 'terms':
+        return {
+          title: this.optimizeText('Terms of Service – Portugal Golden Visa Investment Fund Platform | Movingto Funds', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Read the terms of service for Movingto Funds, our Portugal Golden Visa investment fund directory and analysis platform. User conduct, acceptable use, and dispute resolution.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('terms'),
+          canonical: URL_CONFIG.buildUrl('terms'),
+          robots: 'noindex, follow', // Legal boilerplate page
+          keywords: [
+            'terms of service',
+            'terms and conditions',
+            'user agreement',
+            'acceptable use',
+            'legal terms',
+            'investor terms',
+            'platform terms'
+          ],
+          structuredData: this.getTermsStructuredData()
+        };
+
         const fundIdOrName = params.fundId || params.fundName;
         const altFund = funds?.find(f => f.id === fundIdOrName || f.name === fundIdOrName);
         
@@ -1902,6 +1920,37 @@ export class ConsolidatedSEOService {
               'position': 2,
               'name': 'Privacy Policy',
               'item': URL_CONFIG.buildUrl('privacy')
+            }
+          ]
+        }
+      ]
+    };
+  }
+
+  private static getTermsStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'WebPage',
+          'name': 'Terms of Service',
+          'description': 'Terms of service for our platform',
+          'url': URL_CONFIG.buildUrl('terms')
+        },
+        {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': URL_CONFIG.BASE_URL
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Terms of Service',
+              'item': URL_CONFIG.buildUrl('terms')
             }
           ]
         }

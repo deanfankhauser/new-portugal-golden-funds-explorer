@@ -31,6 +31,7 @@ const TeamMemberProfile = lazy(() => import('./pages/TeamMemberProfile'));
 const About = lazy(() => import('./pages/About'));
 const Disclaimer = lazy(() => import('./pages/Disclaimer'));
 const Privacy = lazy(() => import('./pages/Privacy'));
+const Terms = lazy(() => import('./pages/Terms'));
 const ComparisonPage = lazy(() => import('./pages/ComparisonPage'));
 const ComparisonsHub = lazy(() => import('./pages/ComparisonsHub'));
 const FAQs = lazy(() => import('./pages/FAQs'));
@@ -222,6 +223,11 @@ function App() {
                       <Route path="/privacy" element={
                         <Suspense fallback={<PageLoader />}>
                           <Privacy />
+                        </Suspense>
+                      } />
+                      <Route path="/terms" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <Terms />
                         </Suspense>
                       } />
                       <Route path="/compare" element={
