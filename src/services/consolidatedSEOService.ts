@@ -536,6 +536,25 @@ export class ConsolidatedSEOService {
           structuredData: this.getPrivacyStructuredData()
         };
 
+      case 'cookie-policy':
+        return {
+          title: this.optimizeText('Cookie Policy – How We Use Cookies | Movingto Funds', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Learn how Movingto Funds uses cookies and similar technologies. Manage your cookie preferences and understand how we track site usage.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('cookie-policy'),
+          canonical: URL_CONFIG.buildUrl('cookie-policy'),
+          robots: 'noindex, follow', // Legal boilerplate page
+          keywords: [
+            'cookie policy',
+            'cookies',
+            'tracking technologies',
+            'cookie preferences',
+            'privacy settings',
+            'website cookies',
+            'analytics cookies'
+          ],
+          structuredData: this.getCookiePolicyStructuredData()
+        };
+
       case 'terms':
         return {
           title: this.optimizeText('Terms of Service – Portugal Golden Visa Investment Fund Platform | Movingto Funds', this.MAX_TITLE_LENGTH),
@@ -1922,6 +1941,37 @@ export class ConsolidatedSEOService {
               'position': 2,
               'name': 'Privacy Policy',
               'item': URL_CONFIG.buildUrl('privacy')
+            }
+          ]
+        }
+      ]
+    };
+  }
+
+  private static getCookiePolicyStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'WebPage',
+          'name': 'Cookie Policy',
+          'description': 'Cookie policy explaining how we use cookies and tracking technologies',
+          'url': URL_CONFIG.buildUrl('cookie-policy')
+        },
+        {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': URL_CONFIG.BASE_URL
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Cookie Policy',
+              'item': URL_CONFIG.buildUrl('cookie-policy')
             }
           ]
         }
