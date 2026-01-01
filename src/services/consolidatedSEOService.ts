@@ -552,9 +552,11 @@ export class ConsolidatedSEOService {
             'investor terms',
             'platform terms'
           ],
-          structuredData: this.getTermsStructuredData()
+        structuredData: this.getTermsStructuredData()
         };
 
+      case 'fund-alternatives':
+      case 'fund_alternatives':
         const fundIdOrName = params.fundId || params.fundName;
         const altFund = funds?.find(f => f.id === fundIdOrName || f.name === fundIdOrName);
         
