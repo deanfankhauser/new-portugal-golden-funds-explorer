@@ -6,8 +6,10 @@ export const COMPANY_INFO = {
   legalName: 'Moving To Global Pty Ltd',
   tradingName: 'Movingto Funds',
   address: {
-    city: 'Melbourne',
-    state: 'Victoria',
+    city: 'Bondi',
+    suburb: 'Sydney',
+    state: 'NSW',
+    postcode: '2026',
     country: 'Australia',
     countryCode: 'AU'
   },

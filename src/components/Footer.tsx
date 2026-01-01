@@ -43,7 +43,7 @@ const Footer = () => {
             </p>
             <div className="space-y-1">
               <p className="text-sm text-muted-foreground">{COMPANY_INFO.legalName}</p>
-              <p className="text-sm text-muted-foreground">{COMPANY_INFO.address.city}, {COMPANY_INFO.address.state}</p>
+              <p className="text-sm text-muted-foreground">{COMPANY_INFO.address.city}, {COMPANY_INFO.address.suburb}, {COMPANY_INFO.address.state} {COMPANY_INFO.address.postcode}</p>
               <p className="text-sm text-muted-foreground">{COMPANY_INFO.address.country}</p>
             </div>
             <div className="flex items-center mt-4 space-x-3">
