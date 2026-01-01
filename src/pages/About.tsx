@@ -25,7 +25,7 @@ const About = () => {
           <div className="container mx-auto px-4 py-12 md:py-16">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                About funds.movingto.com
+                About Movingto Funds
               </h1>
               <p className="text-lg text-muted-foreground mb-8">
                 A clearer way to compare Portugal Golden Visa funds.
@@ -59,7 +59,7 @@ const About = () => {
                 Comparing key terms across funds takes hours.
               </p>
               <p>
-                We built funds.movingto.com to fix that. One place to see the numbers that matter — 
+                We built Movingto Funds to fix that. One place to see the numbers that matter — 
                 fees, minimums, lock-ups, strategies — in a structured format.
               </p>
               <p>
@@ -205,11 +205,11 @@ const About = () => {
                     </h2>
                     <div className="space-y-3 text-muted-foreground">
                       <p>
-                        funds.movingto.com is part of Movingto — a platform helping people navigate 
+                        Movingto Funds is part of Movingto — a platform helping people navigate 
                         global mobility, from visas to relocation.
                       </p>
                       <p>
-                        <strong className="text-foreground">Ownership:</strong> funds.movingto.com is owned and operated by{" "}
+                        <strong className="text-foreground">Ownership:</strong> Movingto Funds is owned and operated by{" "}
                         <a 
                           href="https://group.movingto.com" 
                           target="_blank" 
