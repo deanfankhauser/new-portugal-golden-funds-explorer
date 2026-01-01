@@ -555,6 +555,23 @@ export class ConsolidatedSEOService {
           structuredData: this.getCookiePolicyStructuredData()
         };
 
+      case 'contact':
+        return {
+          title: this.optimizeText('Contact Us – Get in Touch | Movingto Funds', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Have questions about Portugal Golden Visa funds? Contact Movingto Funds for enquiries, fund submissions, or partnership opportunities.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('contact'),
+          canonical: URL_CONFIG.buildUrl('contact'),
+          keywords: [
+            'contact us',
+            'get in touch',
+            'Portugal Golden Visa enquiry',
+            'fund enquiry',
+            'investment funds contact',
+            'Movingto Funds contact'
+          ],
+          structuredData: this.getContactStructuredData()
+        };
+
       case 'terms':
         return {
           title: this.optimizeText('Terms of Service – Portugal Golden Visa Investment Fund Platform | Movingto Funds', this.MAX_TITLE_LENGTH),
@@ -1972,6 +1989,50 @@ export class ConsolidatedSEOService {
               'position': 2,
               'name': 'Cookie Policy',
               'item': URL_CONFIG.buildUrl('cookie-policy')
+            }
+          ]
+        }
+      ]
+    };
+  }
+
+  private static getContactStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'ContactPage',
+          'name': 'Contact Us',
+          'description': 'Contact Movingto Funds for enquiries about Portugal Golden Visa investment funds',
+          'url': URL_CONFIG.buildUrl('contact'),
+          'mainEntity': {
+            '@type': 'Organization',
+            'name': 'Moving To Global Pty Ltd',
+            'email': 'info@movingto.com',
+            'url': 'https://funds.movingto.com',
+            'address': {
+              '@type': 'PostalAddress',
+              'addressLocality': 'Bondi',
+              'addressRegion': 'NSW',
+              'postalCode': '2026',
+              'addressCountry': 'AU'
+            }
+          }
+        },
+        {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': URL_CONFIG.BASE_URL
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Contact',
+              'item': URL_CONFIG.buildUrl('contact')
             }
           ]
         }
