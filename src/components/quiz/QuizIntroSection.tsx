@@ -25,7 +25,7 @@ const QuizIntroSection: React.FC = () => {
             <Clock className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h3 className="font-semibold text-foreground mb-1">2 Minutes to Complete</h3>
+            <h3 className="text-base font-medium text-foreground mb-1">2 Minutes to Complete</h3>
             <p className="text-sm text-muted-foreground">5 simple questions to understand your investment profile</p>
           </div>
         </div>
@@ -35,7 +35,7 @@ const QuizIntroSection: React.FC = () => {
             <Shield className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h3 className="font-semibold text-foreground mb-1">CMVM-Regulated Funds Only</h3>
+            <h3 className="text-base font-medium text-foreground mb-1">CMVM-Regulated Funds Only</h3>
             <p className="text-sm text-muted-foreground">All recommended funds are verified and regulated in Portugal</p>
           </div>
         </div>
@@ -45,7 +45,7 @@ const QuizIntroSection: React.FC = () => {
             <Globe className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h3 className="font-semibold text-foreground mb-1">Nationality-Aware</h3>
+            <h3 className="text-base font-medium text-foreground mb-1">Nationality-Aware</h3>
             <p className="text-sm text-muted-foreground">US PFIC compliance and other nationality-specific considerations</p>
           </div>
         </div>
@@ -55,7 +55,7 @@ const QuizIntroSection: React.FC = () => {
             <TrendingUp className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h3 className="font-semibold text-foreground mb-1">Risk-Matched Results</h3>
+            <h3 className="text-base font-medium text-foreground mb-1">Risk-Matched Results</h3>
             <p className="text-sm text-muted-foreground">Recommendations aligned with your risk tolerance</p>
           </div>
         </div>
