@@ -83,6 +83,9 @@ const Footer = () => {
                 <Link to="/about" className="text-muted-foreground hover:text-accent text-sm transition-colors">About</Link>
               </li>
               <li>
+                <Link to="/contact" className="text-muted-foreground hover:text-accent text-sm transition-colors">Contact</Link>
+              </li>
+              <li>
                 <Link to="/categories" className="text-muted-foreground hover:text-accent text-sm transition-colors">Categories</Link>
               </li>
               <li>
@@ -183,6 +186,12 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/privacy" className="text-muted-foreground hover:text-accent text-sm transition-colors">Privacy Policy</Link>
+              </li>
+              <li>
+                <Link to="/cookie-policy" className="text-muted-foreground hover:text-accent text-sm transition-colors">Cookie Policy</Link>
+              </li>
+              <li>
+                <Link to="/terms" className="text-muted-foreground hover:text-accent text-sm transition-colors">Terms of Service</Link>
               </li>
             </ul>
           </div>

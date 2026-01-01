@@ -45,6 +45,8 @@ export type PageType =
   | 'about'
   | 'disclaimer'
   | 'privacy'
+  | 'cookie-policy'
+  | 'contact'
   | 'managers-hub'
   | 'categories-hub'
   | 'tags-hub'

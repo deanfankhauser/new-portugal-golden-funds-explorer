@@ -15,7 +15,19 @@
       "destination": "/index.html"
     },
     {
+      "source": "/auth",
+      "destination": "/index.html"
+    },
+    {
       "source": "/auth/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/fund-matcher",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/fund-matcher/(.*)",
       "destination": "/index.html"
     },
     {

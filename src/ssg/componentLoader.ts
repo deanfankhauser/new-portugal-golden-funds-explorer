@@ -38,6 +38,8 @@ export const loadComponents = async (only?: string[]) => {
       About: () => import('../pages/About').then(m => m.default),
       Disclaimer: () => import('../pages/Disclaimer').then(m => m.default),
       Privacy: () => import('../pages/Privacy').then(m => m.default),
+      CookiePolicy: () => import('../pages/CookiePolicy').then(m => m.default),
+      Contact: () => import('../pages/Contact').then(m => m.default),
       ComparisonPage: () => import('../pages/ComparisonPage').then(m => m.default),
       ComparisonsHub: () => import('../pages/ComparisonsHub').then(m => m.default),
       FAQs: () => import('../pages/FAQs').then(m => m.default),

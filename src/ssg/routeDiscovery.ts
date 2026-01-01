@@ -39,6 +39,8 @@ export class RouteDiscovery {
     routes.push({ path: '/about', pageType: 'about' });
     routes.push({ path: '/disclaimer', pageType: 'disclaimer' });
     routes.push({ path: '/privacy', pageType: 'privacy' });
+    routes.push({ path: '/cookie-policy', pageType: 'cookie-policy' });
+    routes.push({ path: '/contact', pageType: 'contact' });
     routes.push({ path: '/faqs', pageType: 'faqs' });
     routes.push({ path: '/compare', pageType: 'comparison' });
     routes.push({ path: '/comparisons', pageType: 'comparisons-hub' });
