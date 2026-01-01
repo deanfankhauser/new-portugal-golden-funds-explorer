@@ -1,6 +1,6 @@
 
 export interface PageSEOProps {
-  pageType: 'homepage' | 'fund' | 'manager' | 'category' | 'tag' | '404' | '410' | 'disclaimer' | 'about' | 'faqs' | 'privacy' | 'comparison' | 'comparisons-hub' | 'fund-comparison' | 'roi-calculator' | 'managers-hub' | 'categories-hub' | 'tags-hub' | 'fund-alternatives' | 'alternatives-hub' | 'verification-program' | 'verified-funds' | 'saved-funds' | 'team-member' | 'ira-401k-eligible' | 'fund-matcher' | 'fund-matcher-results';
+  pageType: 'homepage' | 'fund' | 'manager' | 'category' | 'tag' | '404' | '410' | 'disclaimer' | 'about' | 'faqs' | 'privacy' | 'terms' | 'comparison' | 'comparisons-hub' | 'fund-comparison' | 'roi-calculator' | 'managers-hub' | 'categories-hub' | 'tags-hub' | 'fund-alternatives' | 'alternatives-hub' | 'verification-program' | 'verified-funds' | 'saved-funds' | 'team-member' | 'ira-401k-eligible' | 'fund-matcher' | 'fund-matcher-results';
   fundName?: string;
   managerName?: string;
   categoryName?: string;
