@@ -33,6 +33,10 @@
     {
       "source": "/dashboard/(.*)",
       "destination": "/index.html"
+    },
+    {
+      "source": "/submit-fund",
+      "destination": "/index.html"
     }
   ],
   "redirects": [
