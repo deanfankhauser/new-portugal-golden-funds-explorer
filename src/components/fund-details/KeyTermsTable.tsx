@@ -60,25 +60,36 @@ const KeyTermsTable: React.FC<KeyTermsTableProps> = ({ fund }) => {
     return <span className="text-[15px] font-semibold text-foreground">{term.value}</span>;
   };
 
+  // Fields that need stacked layout on mobile due to long values
+  const stackedFields = ['ISIN', 'Domicile', 'Custodian', 'Auditor'];
+
   return (
     <Card className="bg-card border border-border/40 rounded-2xl shadow-sm">
-      <CardContent className="p-10">
-        <h2 className="text-xl md:text-2xl font-semibold tracking-tight mb-8">Key Terms</h2>
+      <CardContent className="p-5 md:p-10">
+        <h2 className="text-xl md:text-2xl font-semibold tracking-tight mb-6 md:mb-8">Key Terms</h2>
         
         {/* Main Terms */}
-        <div className="flex flex-col gap-4">
-          {keyTerms.map((term, index) => (
-            <div key={index} className="flex items-center justify-between px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors">
-              <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium">
-                {getIcon(term.label)}
-                {term.label}
-              </span>
-              {renderValue(term)}
-            </div>
-          ))}
+        <div className="flex flex-col gap-3 md:gap-4">
+          {keyTerms.map((term, index) => {
+            const needsStacking = stackedFields.includes(term.label);
+            return (
+              <div 
+                key={index} 
+                className={`${needsStacking ? 'flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2' : 'flex items-center justify-between'} px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors`}
+              >
+                <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium shrink-0">
+                  {getIcon(term.label)}
+                  {term.label}
+                </span>
+                <div className={needsStacking ? 'break-all sm:text-right' : ''}>
+                  {renderValue(term)}
+                </div>
+              </div>
+            );
+          })}
         </div>
 
-        <p className="text-xs leading-relaxed text-muted-foreground mt-8 pt-8 border-t border-border/60">
+        <p className="text-xs leading-relaxed text-muted-foreground mt-6 md:mt-8 pt-6 md:pt-8 border-t border-border/60">
           Information as reported by fund manager. Terms may vary by investor class.
         </p>
       </CardContent>

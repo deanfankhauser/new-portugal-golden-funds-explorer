@@ -124,12 +124,12 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team, managerName, initialTea
   }
 
   return (
-    <div className="bg-card border border-border/40 rounded-2xl p-10 shadow-sm">
+    <div className="bg-card border border-border/40 rounded-2xl p-5 md:p-10 shadow-sm">
       {/* Section Header */}
       <h2 className="text-xl md:text-2xl font-semibold tracking-tight mb-2">
         Fund Team
       </h2>
-      <p className="text-sm text-muted-foreground mb-8">
+      <p className="text-sm text-muted-foreground mb-6 md:mb-8">
         {resolvedTeam.length} {resolvedTeam.length === 1 ? 'team member' : 'team members'}
       </p>
 
@@ -138,7 +138,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team, managerName, initialTea
         height="300px"
       >
         {/* Team Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           {resolvedTeam.map((member: any, index) => (
             <TeamMemberCard
               key={member.slug || member.name || index}

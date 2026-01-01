@@ -42,13 +42,13 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
   const shouldTruncate = bio && bio.length > 150;
 
   return (
-    <div className="group relative flex gap-4 items-start p-6 bg-card border border-border/40 rounded-xl transition-all duration-200 hover:border-primary/20 hover:shadow-lg">
+    <div className="group relative flex gap-3 sm:gap-4 items-start p-4 sm:p-6 bg-card border border-border/40 rounded-xl transition-all duration-200 hover:border-primary/20 hover:shadow-lg">
       {/* Left border accent on hover */}
-      <div className="absolute left-0 top-6 bottom-6 w-[3px] rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+      <div className="absolute left-0 top-4 sm:top-6 bottom-4 sm:bottom-6 w-[3px] rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
       
       {/* Avatar */}
       <div className="relative flex-shrink-0">
-        <Avatar className="h-[72px] w-[72px] border-2 border-border transition-all duration-200 group-hover:border-primary/30 group-hover:shadow-lg group-hover:shadow-primary/10">
+        <Avatar className="h-14 w-14 sm:h-[72px] sm:w-[72px] border-2 border-border transition-all duration-200 group-hover:border-primary/30 group-hover:shadow-lg group-hover:shadow-primary/10">
           {photoUrl ? (
             <AvatarImage 
               src={photoUrl} 
@@ -56,31 +56,31 @@ const TeamMemberCard: React.FC<TeamMemberCardProps> = ({
               className="object-cover"
             />
           ) : null}
-          <AvatarFallback className="bg-primary/10 text-primary text-xl font-semibold">
+          <AvatarFallback className="bg-primary/10 text-primary text-lg sm:text-xl font-semibold">
             {getInitials(name)}
           </AvatarFallback>
         </Avatar>
         {/* Online indicator - shows on hover */}
-        <div className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-primary rounded-full border-2 border-card opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+        <div className="absolute bottom-0.5 right-0.5 w-3 h-3 sm:w-3.5 sm:h-3.5 bg-primary rounded-full border-2 border-card opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
       </div>
 
       {/* Member Info */}
-      <div className="flex-1 min-w-0 space-y-2">
+      <div className="flex-1 min-w-0 space-y-1.5 sm:space-y-2">
         <div className="flex items-center gap-2 flex-wrap">
           {slug ? (
             <Link 
               to={`/team/${slug}`}
-              className="text-xl font-semibold text-foreground tracking-tight leading-tight hover:text-primary transition-colors"
+              className="text-base sm:text-xl font-semibold text-foreground tracking-tight leading-tight hover:text-primary transition-colors"
             >
               {name}
             </Link>
           ) : (
-            <h3 className="text-xl font-semibold text-foreground tracking-tight leading-tight">
+            <h3 className="text-base sm:text-xl font-semibold text-foreground tracking-tight leading-tight">
               {name}
             </h3>
           )}
           {fundRole && (
-            <Badge variant="secondary" className="text-xs">
+            <Badge variant="secondary" className="text-[11px] sm:text-xs">
               Fund-specific
             </Badge>
           )}
