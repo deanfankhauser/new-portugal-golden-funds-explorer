@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const POSTMARK_API_URL = "https://api.postmarkapp.com/email";
+const POSTMARK_SERVER_TOKEN = Deno.env.get("POSTMARK_SERVER_TOKEN");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,8 +16,32 @@ interface ContactEmailRequest {
   message: string;
 }
 
+const sendEmail = async (emailData: {
+  From: string;
+  To: string;
+  ReplyTo?: string;
+  Subject: string;
+  HtmlBody: string;
+}) => {
+  const response = await fetch(POSTMARK_API_URL, {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "X-Postmark-Server-Token": POSTMARK_SERVER_TOKEN!,
+    },
+    body: JSON.stringify(emailData),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Postmark API error: ${response.status} - ${errorText}`);
+  }
+
+  return response.json();
+};
+
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -34,26 +58,30 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Input exceeds maximum length");
     }
 
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       throw new Error("Invalid email format");
     }
 
+    // Sanitize message for HTML
+    const sanitizedMessage = message.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const sanitizedName = name.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const sanitizedSubject = subject.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
     // Send notification to admin
-    const adminEmailResponse = await resend.emails.send({
-      from: "Movingto Funds <noreply@movingto.com>",
-      to: ["info@movingto.com"],
-      replyTo: email,
-      subject: `[Contact Form] ${subject}`,
-      html: `
+    const adminEmailResponse = await sendEmail({
+      From: "noreply@movingto.com",
+      To: "info@movingto.com",
+      ReplyTo: email,
+      Subject: `[Contact Form] ${subject}`,
+      HtmlBody: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <h2 style="color: #333; border-bottom: 2px solid #0066cc; padding-bottom: 10px;">New Contact Form Submission</h2>
           
           <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
             <tr>
               <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666; width: 120px;"><strong>Name:</strong></td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #333;">${name}</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #333;">${sanitizedName}</td>
             </tr>
             <tr>
               <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;"><strong>Email:</strong></td>
@@ -61,13 +89,13 @@ const handler = async (req: Request): Promise<Response> => {
             </tr>
             <tr>
               <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;"><strong>Subject:</strong></td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #333;">${subject}</td>
+              <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #333;">${sanitizedSubject}</td>
             </tr>
           </table>
           
           <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #333; margin-top: 0;">Message:</h3>
-            <p style="color: #333; white-space: pre-wrap; line-height: 1.6;">${message.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+            <p style="color: #333; white-space: pre-wrap; line-height: 1.6;">${sanitizedMessage}</p>
           </div>
           
           <p style="color: #666; font-size: 12px; margin-top: 30px;">
@@ -80,15 +108,15 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Admin notification sent:", adminEmailResponse);
 
     // Send confirmation to user
-    const userEmailResponse = await resend.emails.send({
-      from: "Movingto Funds <noreply@movingto.com>",
-      to: [email],
-      subject: "We received your message - Movingto Funds",
-      html: `
+    const userEmailResponse = await sendEmail({
+      From: "noreply@movingto.com",
+      To: email,
+      Subject: "We received your message - Movingto Funds",
+      HtmlBody: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <img src="https://funds.movingto.com/lovable-uploads/9bdf45a5-6a2f-466e-8c2d-b8ba65863e8a.png" alt="Movingto Funds" style="height: 40px; margin-bottom: 20px;" />
           
-          <h2 style="color: #333;">Thank you for contacting us, ${name}!</h2>
+          <h2 style="color: #333;">Thank you for contacting us, ${sanitizedName}!</h2>
           
           <p style="color: #666; line-height: 1.6;">
             We have received your message and will get back to you as soon as possible. 
@@ -97,8 +125,8 @@ const handler = async (req: Request): Promise<Response> => {
           
           <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #333; margin-top: 0;">Your message:</h3>
-            <p style="color: #666;"><strong>Subject:</strong> ${subject}</p>
-            <p style="color: #666; white-space: pre-wrap;">${message.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+            <p style="color: #666;"><strong>Subject:</strong> ${sanitizedSubject}</p>
+            <p style="color: #666; white-space: pre-wrap;">${sanitizedMessage}</p>
           </div>
           
           <p style="color: #666; line-height: 1.6;">
