@@ -113,14 +113,14 @@ const About = () => {
                 What You Can Do on Movingto Funds
               </h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <Card className="border-border">
+              <Card className="border-border">
                   <CardContent className="pt-6">
-                    <FileText className="h-8 w-8 text-primary mb-4" />
-                    <h3 className="font-semibold text-foreground mb-2">Browse fund profiles</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
+                    <FileText className="h-6 w-6 text-primary mb-3" />
+                    <h3 className="font-medium text-foreground text-sm mb-1">Browse fund profiles</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
                       View structured data on fees, minimums, lock-ups, strategies, and risk levels.
                     </p>
-                    <Link to="/" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+                    <Link to="/" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
                       Explore Funds <ArrowRight className="h-3 w-3" />
                     </Link>
                   </CardContent>
@@ -128,12 +128,12 @@ const About = () => {
 
                 <Card className="border-border">
                   <CardContent className="pt-6">
-                    <GitCompare className="h-8 w-8 text-primary mb-4" />
-                    <h3 className="font-semibold text-foreground mb-2">Compare funds side-by-side</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
+                    <GitCompare className="h-6 w-6 text-primary mb-3" />
+                    <h3 className="font-medium text-foreground text-sm mb-1">Compare funds side-by-side</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
                       See differences at a glance across any funds you're considering.
                     </p>
-                    <Link to="/compare" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+                    <Link to="/compare" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
                       Compare Funds <ArrowRight className="h-3 w-3" />
                     </Link>
                   </CardContent>
@@ -141,12 +141,12 @@ const About = () => {
 
                 <Card className="border-border">
                   <CardContent className="pt-6">
-                    <Compass className="h-8 w-8 text-primary mb-4" />
-                    <h3 className="font-semibold text-foreground mb-2">Take the fund matcher quiz</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
+                    <Compass className="h-6 w-6 text-primary mb-3" />
+                    <h3 className="font-medium text-foreground text-sm mb-1">Take the fund matcher quiz</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
                       Answer questions to narrow down fund options based on your preferences.
                     </p>
-                    <Link to="/fund-matcher" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+                    <Link to="/fund-matcher" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
                       Start Quiz <ArrowRight className="h-3 w-3" />
                     </Link>
                   </CardContent>
@@ -154,12 +154,12 @@ const About = () => {
 
                 <Card className="border-border">
                   <CardContent className="pt-6">
-                    <Building2 className="h-8 w-8 text-primary mb-4" />
-                    <h3 className="font-semibold text-foreground mb-2">Explore fund managers</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
+                    <Building2 className="h-6 w-6 text-primary mb-3" />
+                    <h3 className="font-medium text-foreground text-sm mb-1">Explore fund managers</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
                       View manager portfolios and firm backgrounds.
                     </p>
-                    <Link to="/managers" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+                    <Link to="/managers" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
                       View Managers <ArrowRight className="h-3 w-3" />
                     </Link>
                   </CardContent>
@@ -167,12 +167,12 @@ const About = () => {
 
                 <Card className="border-border">
                   <CardContent className="pt-6">
-                    <CheckCircle className="h-8 w-8 text-primary mb-4" />
-                    <h3 className="font-semibold text-foreground mb-2">Browse verified funds</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
+                    <CheckCircle className="h-6 w-6 text-primary mb-3" />
+                    <h3 className="font-medium text-foreground text-sm mb-1">Browse verified funds</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
                       See funds that have completed our documented verification process.
                     </p>
-                    <Link to="/verified-funds" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+                    <Link to="/verified-funds" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
                       Verified Funds <ArrowRight className="h-3 w-3" />
                     </Link>
                   </CardContent>
@@ -180,12 +180,12 @@ const About = () => {
 
                 <Card className="border-border">
                   <CardContent className="pt-6">
-                    <HelpCircle className="h-8 w-8 text-primary mb-4" />
-                    <h3 className="font-semibold text-foreground mb-2">Read guides and FAQs</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
+                    <HelpCircle className="h-6 w-6 text-primary mb-3" />
+                    <h3 className="font-medium text-foreground text-sm mb-1">Read guides and FAQs</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
                       Understand fund structures and Golden Visa requirements in plain English.
                     </p>
-                    <Link to="/faqs" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+                    <Link to="/faqs" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
                       Browse FAQs <ArrowRight className="h-3 w-3" />
                     </Link>
                   </CardContent>
@@ -202,31 +202,31 @@ const About = () => {
               <h2 className="text-2xl font-semibold text-foreground mb-8">
                 Why Movingto Funds
               </h2>
-              <div className="space-y-8">
+              <div className="space-y-6">
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Structured fund terms</h3>
-                  <p className="text-muted-foreground">
+                  <h3 className="font-medium text-foreground text-base mb-1">Structured fund terms</h3>
+                  <p className="text-sm text-muted-foreground">
                     Every fund profile uses the same taxonomy: subscription fees, management fees, performance fees, minimum investment, lock-up period, expected hold period, liquidity terms, strategy type, and risk indicators. This makes comparison possible.
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Side-by-side comparisons</h3>
-                  <p className="text-muted-foreground">
+                  <h3 className="font-medium text-foreground text-base mb-1">Side-by-side comparisons</h3>
+                  <p className="text-sm text-muted-foreground">
                     Select any two funds and see terms side by side. No need to flip between PDFs or marketing decks.
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Consistent taxonomy and filters</h3>
-                  <p className="text-muted-foreground">
+                  <h3 className="font-medium text-foreground text-base mb-1">Consistent taxonomy and filters</h3>
+                  <p className="text-sm text-muted-foreground">
                     Filter funds by category, minimum investment range, fee structure, or verification status. The same labels apply across all funds.
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Verification as a process</h3>
-                  <p className="text-muted-foreground">
+                  <h3 className="font-medium text-foreground text-base mb-1">Verification as a process</h3>
+                  <p className="text-sm text-muted-foreground">
                     Verified funds have completed a documented-check process. This is not a certification, endorsement, or guarantee. It means we have reviewed available documents and confirmed stated terms.{" "}
                     <Link to="/verification-program" className="text-primary hover:underline">
                       Learn more about verification
@@ -235,15 +235,15 @@ const About = () => {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Market context</h3>
-                  <p className="text-muted-foreground">
+                  <h3 className="font-medium text-foreground text-base mb-1">Market context</h3>
+                  <p className="text-sm text-muted-foreground">
                     Guides and explainers help you understand what to look for in a Golden Visa fund without wading through legal jargon.
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Part of the Movingto ecosystem</h3>
-                  <p className="text-muted-foreground">
+                  <h3 className="font-medium text-foreground text-base mb-1">Part of the Movingto ecosystem</h3>
+                  <p className="text-sm text-muted-foreground">
                     Movingto has supported Golden Visa applicants since 2020 across Portugal, Spain, Greece, and other destinations. This platform extends that experience to fund research.
                   </p>
                 </div>
@@ -347,47 +347,47 @@ const About = () => {
               </h2>
               <Accordion type="single" collapsible className="space-y-2">
                 <AccordionItem value="item-1" className="bg-background border border-border rounded-lg px-4">
-                  <AccordionTrigger className="text-left text-foreground hover:no-underline">
+                  <AccordionTrigger className="text-left text-foreground text-sm hover:no-underline">
                     How do I compare funds?
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
+                  <AccordionContent className="text-sm text-muted-foreground">
                     Use the <Link to="/compare" className="text-primary hover:underline">comparison tool</Link> to select any two funds and view terms side by side.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-2" className="bg-background border border-border rounded-lg px-4">
-                  <AccordionTrigger className="text-left text-foreground hover:no-underline">
+                  <AccordionTrigger className="text-left text-foreground text-sm hover:no-underline">
                     What does "verified" mean?
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
+                  <AccordionContent className="text-sm text-muted-foreground">
                     Verified funds have completed our documented-check process. This confirms stated terms match available documents. It is not a certification or endorsement.{" "}
                     <Link to="/verification-program" className="text-primary hover:underline">Learn more</Link>.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-3" className="bg-background border border-border rounded-lg px-4">
-                  <AccordionTrigger className="text-left text-foreground hover:no-underline">
+                  <AccordionTrigger className="text-left text-foreground text-sm hover:no-underline">
                     How do I know which fund is right for me?
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
+                  <AccordionContent className="text-sm text-muted-foreground">
                     Start with the <Link to="/fund-matcher" className="text-primary hover:underline">fund matcher quiz</Link> to narrow options based on your preferences, then compare shortlisted funds.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-4" className="bg-background border border-border rounded-lg px-4">
-                  <AccordionTrigger className="text-left text-foreground hover:no-underline">
+                  <AccordionTrigger className="text-left text-foreground text-sm hover:no-underline">
                     How often is fund information updated?
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
+                  <AccordionContent className="text-sm text-muted-foreground">
                     We update fund profiles as information changes. If you spot something outdated, contact us at info@movingto.com.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-5" className="bg-background border border-border rounded-lg px-4">
-                  <AccordionTrigger className="text-left text-foreground hover:no-underline">
+                  <AccordionTrigger className="text-left text-foreground text-sm hover:no-underline">
                     Is Movingto Funds free to use?
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
+                  <AccordionContent className="text-sm text-muted-foreground">
                     Yes. Browsing fund profiles, using comparisons, and taking the fund matcher quiz are all free.
                   </AccordionContent>
                 </AccordionItem>
