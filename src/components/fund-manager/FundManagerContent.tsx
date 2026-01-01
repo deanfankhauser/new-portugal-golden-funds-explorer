@@ -193,7 +193,7 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Total Funds */}
                   <StandardCard padding="sm" className="text-center">
-                    <div className="text-3xl font-bold text-primary mb-1">
+                    <div className="text-xl font-semibold text-primary mb-1">
                       {managerFunds.length}
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">
@@ -203,7 +203,7 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
 
                   {/* Primary Strategy */}
                   <StandardCard padding="sm" className="text-center">
-                    <div className="text-lg font-bold text-primary mb-1 leading-tight">
+                    <div className="text-base font-semibold text-primary mb-1 leading-tight">
                       {primaryStrategy}
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">
@@ -213,7 +213,7 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
 
                   {/* Regulatory Status */}
                   <StandardCard padding="sm" className="text-center">
-                    <div className="text-lg font-bold text-primary mb-1 leading-tight">
+                    <div className="text-base font-semibold text-primary mb-1 leading-tight">
                       {regulatoryStatus}
                     </div>
                     <div className="text-xs text-muted-foreground uppercase tracking-wider">

@@ -6,7 +6,6 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Menu, Calculator, ClipboardCheck, Mail, ExternalLink, Users, FileText, Star, User, Settings, LogOut, Building, TrendingUp, Shield, LogIn, Sparkles } from 'lucide-react';
-import { FundMatcherQuiz } from "./quiz/FundMatcherQuiz";
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 
 const getSupabase = async () => (await import('@/integrations/supabase/client')).supabase;
@@ -14,7 +13,6 @@ const getSupabase = async () => (await import('@/integrations/supabase/client'))
 const MobileNavigation = () => {
   const [open, setOpen] = React.useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [quizOpen, setQuizOpen] = useState(false);
 
   // Auth state with error handling
   let authState;
@@ -208,17 +206,12 @@ const MobileNavigation = () => {
               Tools
             </h3>
             <div className="space-y-2">
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start gap-3 h-12"
-                onClick={() => {
-                  closeMenu();
-                  setQuizOpen(true);
-                }}
-              >
-                <Sparkles className="h-5 w-5" />
-                <span>Fund Matcher Quiz</span>
-              </Button>
+              <Link to="/fund-matcher" onClick={closeMenu}>
+                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
+                  <Sparkles className="h-5 w-5" />
+                  <span>Fund Matcher</span>
+                </Button>
+              </Link>
               <Link to="/roi-calculator" onClick={closeMenu}>
                 <Button variant="ghost" className="w-full justify-start gap-3 h-12">
                   <Calculator className="h-5 w-5" />
@@ -288,8 +281,6 @@ const MobileNavigation = () => {
           </div>
         </div>
       </SheetContent>
-      
-      <FundMatcherQuiz open={quizOpen} onOpenChange={setQuizOpen} />
     </Sheet>
   );
 };

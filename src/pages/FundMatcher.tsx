@@ -79,7 +79,7 @@ const FundMatcher: React.FC = () => {
                 <Card className="p-4 hover:border-primary/50 transition-colors">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                      <h3 className="text-base font-medium text-foreground group-hover:text-primary transition-colors">
                         {cat.name}
                       </h3>
                       <p className="text-sm text-muted-foreground">{cat.desc}</p>

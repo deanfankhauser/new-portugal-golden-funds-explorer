@@ -299,6 +299,7 @@ async function generateStaticSitemap(distDir: string): Promise<SitemapFile> {
     { path: '/roi-calculator', priority: 0.6, changefreq: 'monthly' as const },
     { path: '/alternatives', priority: 0.7, changefreq: 'weekly' as const },
     { path: '/verification-program', priority: 0.5, changefreq: 'monthly' as const },
+    { path: '/fund-matcher', priority: 0.9, changefreq: 'weekly' as const },
   ];
 
   staticPages.forEach(page => {

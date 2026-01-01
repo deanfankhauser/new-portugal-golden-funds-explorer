@@ -43,7 +43,7 @@ const Footer = () => {
             </p>
             <div className="space-y-1">
               <p className="text-sm text-muted-foreground">{COMPANY_INFO.legalName}</p>
-              <p className="text-sm text-muted-foreground">{COMPANY_INFO.address.city}, {COMPANY_INFO.address.state}</p>
+              <p className="text-sm text-muted-foreground">{COMPANY_INFO.address.city}, {COMPANY_INFO.address.suburb}, {COMPANY_INFO.address.state} {COMPANY_INFO.address.postcode}</p>
               <p className="text-sm text-muted-foreground">{COMPANY_INFO.address.country}</p>
             </div>
             <div className="flex items-center mt-4 space-x-3">
@@ -165,7 +165,7 @@ const Footer = () => {
           <div className="col-span-1">
             <h3 className="text-base font-semibold mb-4">Fund Managers</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Are you a fund manager? Submit your fund to our platform.
+              Are you a fund manager? Get your fund listed on our platform.
             </p>
             <Link 
               to="/submit-fund"
