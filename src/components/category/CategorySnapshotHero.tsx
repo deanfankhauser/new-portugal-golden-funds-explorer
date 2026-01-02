@@ -39,55 +39,49 @@ const CategorySnapshotHero: React.FC<CategorySnapshotHeroProps> = ({ categoryNam
       </div>
 
       {/* 3 Key Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Avg Target Return */}
-        <div className="bg-background rounded-lg border border-border p-6 hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="bg-card border border-border rounded-lg p-5">
+          <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-primary/10 rounded-lg">
               <TrendingUp className="h-5 w-5 text-primary" />
             </div>
-            <h3 className="font-semibold text-foreground">Avg. Target Return</h3>
+            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+              Avg. Target Return
+            </h3>
           </div>
-          <p className="text-2xl font-bold text-primary">
+          <p className="text-2xl font-bold text-foreground">
             {formatReturn(stats.avgTargetReturn)}
-          </p>
-          <p className="text-sm text-muted-foreground mt-1">
-            Based on {funds.filter(f => {
-              const { min, max } = getReturnTargetNumbers(f);
-              return min != null || max != null;
-            }).length} funds with disclosed returns
           </p>
         </div>
 
         {/* Avg Min Investment */}
-        <div className="bg-background rounded-lg border border-border p-6 hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-emerald-500/10 rounded-lg">
-              <Euro className="h-5 w-5 text-emerald-600" />
+        <div className="bg-card border border-border rounded-lg p-5">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Euro className="h-5 w-5 text-primary" />
             </div>
-            <h3 className="font-semibold text-foreground">Avg. Min Investment</h3>
+            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+              Avg. Min Investment
+            </h3>
           </div>
-          <p className="text-2xl font-bold text-emerald-600">
+          <p className="text-2xl font-bold text-foreground">
             {formatCurrency(stats.avgMinInvestment)}
-          </p>
-          <p className="text-sm text-muted-foreground mt-1">
-            {stats.gvEligibleCount} Golden Visa eligible
           </p>
         </div>
 
         {/* Typical Lock-up */}
-        <div className="bg-background rounded-lg border border-border p-6 hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-amber-500/10 rounded-lg">
-              <Clock className="h-5 w-5 text-amber-600" />
+        <div className="bg-card border border-border rounded-lg p-5">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Clock className="h-5 w-5 text-primary" />
             </div>
-            <h3 className="font-semibold text-foreground">Typical Lock-up</h3>
+            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+              Typical Lock-up
+            </h3>
           </div>
-          <p className="text-2xl font-bold text-amber-600">
+          <p className="text-2xl font-bold text-foreground">
             {stats.typicalLockup}
-          </p>
-          <p className="text-sm text-muted-foreground mt-1">
-            Most common period across funds
           </p>
         </div>
       </div>
