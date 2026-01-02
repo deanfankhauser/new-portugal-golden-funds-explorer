@@ -34,7 +34,7 @@ jobs:
         run: npm run generate:redirects
       
       - name: Generate sitemap
-        run: npm run generate:sitemap || node scripts/generate-production-sitemap.js
+        run: npx tsx scripts/ssg/sitemap-index-generator.ts
       
       - name: Check for changes
         id: check_changes

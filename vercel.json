@@ -49,6 +49,18 @@
     {
       "source": "/submit-fund",
       "destination": "/index.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/cookie-policy",
+      "destination": "/index.html"
     }
   ],
   "redirects": [
@@ -107,6 +119,166 @@
     {
       "source": "/tags/target-yield-5",
       "destination": "/tags/target-yield-5-percent-plus",
+      "permanent": true
+    },
+    {
+      "source": "/tags/5-dividend",
+      "destination": "/tags/dividend-paying",
+      "permanent": true
+    },
+    {
+      "source": "/tags/5-annual-yield",
+      "destination": "/tags/target-yield-5-percent-plus",
+      "permanent": true
+    },
+    {
+      "source": "/tags/3-annual-yield",
+      "destination": "/tags/target-yield-3-5-percent",
+      "permanent": true
+    },
+    {
+      "source": "/tags/1-1-5-management-fee",
+      "destination": "/tags/low-fees-less-than-1-percent-management-fee",
+      "permanent": true
+    },
+    {
+      "source": "/tags/1-1.5-management-fee",
+      "destination": "/tags/low-fees-less-than-1-percent-management-fee",
+      "permanent": true
+    },
+    {
+      "source": "/tags/1-management-fee",
+      "destination": "/tags/low-fees-less-than-1-percent-management-fee",
+      "permanent": true
+    },
+    {
+      "source": "/tags/5-year-lock-up",
+      "destination": "/tags/long-lock-up-5-10-years",
+      "permanent": true
+    },
+    {
+      "source": "/tags/dividends",
+      "destination": "/tags/dividend-paying",
+      "permanent": true
+    },
+    {
+      "source": "/tags/pfic-compliant",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/qef-eligible",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/bitcoin",
+      "destination": "/categories/crypto",
+      "permanent": true
+    },
+    {
+      "source": "/tags/solana",
+      "destination": "/categories/crypto",
+      "permanent": true
+    },
+    {
+      "source": "/tags/healthcare",
+      "destination": "/tags/hospitality-and-hotels",
+      "permanent": true
+    },
+    {
+      "source": "/categories/clean-energy-solar--battery-storage",
+      "destination": "/categories/clean-energy",
+      "permanent": true
+    },
+    {
+      "source": "/categories/private-equity--venture-capital",
+      "destination": "/categories/private-equity",
+      "permanent": true
+    },
+    {
+      "source": "/categories/private-debt--hybrid-instruments",
+      "destination": "/categories/debt",
+      "permanent": true
+    },
+    {
+      "source": "/manager/oxy-capital-sgoic-sa",
+      "destination": "/manager/oxy-capital",
+      "permanent": true
+    },
+    {
+      "source": "/manager/heed-capital-sgoic-sa",
+      "destination": "/manager/heed-capital",
+      "permanent": true
+    },
+    {
+      "source": "/manager/biz-capital-sgoic",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/manager/saratoga-capital-partners",
+      "destination": "/manager/saratoga-capital",
+      "permanent": true
+    },
+    {
+      "source": "/manager/Tejo%20Ventures%20%26%20Green%20One%20Capital",
+      "destination": "/manager/tejo-ventures",
+      "permanent": true
+    },
+    {
+      "source": "/fund-quiz",
+      "destination": "/fund-matcher",
+      "permanent": true
+    },
+    {
+      "source": "/team/sofia-lapa",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/team/diogo-saraiva-ponte",
+      "destination": "/team/diogo-saraiva-de-ponte",
+      "permanent": true
+    },
+    {
+      "source": "/team/antonio-pereira",
+      "destination": "/team/antnio-pereira",
+      "permanent": true
+    },
+    {
+      "source": "/team/francisco-giao",
+      "destination": "/team/francisco-gio",
+      "permanent": true
+    },
+    {
+      "source": "/team/goncalo-mendes",
+      "destination": "/team/gonalo-mendes",
+      "permanent": true
+    },
+    {
+      "source": "/team/ines-borges-de-carvalho",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/team/miguel-realista",
+      "destination": "/team/miguel-bicker-realista",
+      "permanent": true
+    },
+    {
+      "source": "/team/antonio-ferreira",
+      "destination": "/team/afonso-ferreira",
+      "permanent": true
+    },
+    {
+      "source": "/team/mariana-mello-e-castro",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/team/tomas-sa",
+      "destination": "/",
       "permanent": true
     },
     {
