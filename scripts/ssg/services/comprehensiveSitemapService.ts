@@ -229,8 +229,25 @@ ${sitemapElements}
       });
     });
 
-    // Team member profile pages
-    teamMembers.forEach(member => {
+    // Team member profile pages - filter by indexability
+    const { isGoneTeamMember } = await import('../../../src/lib/gone-slugs');
+    const { checkTeamMemberIndexability } = await import('../../../src/lib/indexability/checks');
+    
+    const indexableTeamMembers = teamMembers.filter(member => {
+      // Skip gone team members
+      if (isGoneTeamMember(member.slug)) return false;
+      
+      const result = checkTeamMemberIndexability({
+        name: member.name,
+        role: member.role,
+        bio: member.bio
+      });
+      return result.isIndexable;
+    });
+    
+    console.log(`📄 Team members: ${indexableTeamMembers.length} indexable (${teamMembers.length - indexableTeamMembers.length} excluded from sitemap)`);
+    
+    indexableTeamMembers.forEach(member => {
       urls.push({
         loc: `${this.PRODUCTION_BASE_URL}/team/${member.slug}`,
         lastmod: currentDate,
