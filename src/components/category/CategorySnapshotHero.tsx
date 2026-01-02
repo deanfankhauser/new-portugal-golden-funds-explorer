@@ -38,53 +38,6 @@ const CategorySnapshotHero: React.FC<CategorySnapshotHeroProps> = ({ categoryNam
         </p>
       </div>
 
-      {/* 3 Key Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Avg Target Return */}
-        <div className="bg-card border border-border rounded-lg p-5">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <TrendingUp className="h-5 w-5 text-primary" />
-            </div>
-            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-              Avg. Target Return
-            </h3>
-          </div>
-          <p className="text-2xl font-bold text-foreground">
-            {formatReturn(stats.avgTargetReturn)}
-          </p>
-        </div>
-
-        {/* Avg Min Investment */}
-        <div className="bg-card border border-border rounded-lg p-5">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Euro className="h-5 w-5 text-primary" />
-            </div>
-            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-              Avg. Min Investment
-            </h3>
-          </div>
-          <p className="text-2xl font-bold text-foreground">
-            {formatCurrency(stats.avgMinInvestment)}
-          </p>
-        </div>
-
-        {/* Typical Lock-up */}
-        <div className="bg-card border border-border rounded-lg p-5">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Clock className="h-5 w-5 text-primary" />
-            </div>
-            <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-              Typical Lock-up
-            </h3>
-          </div>
-          <p className="text-2xl font-bold text-foreground">
-            {stats.typicalLockup}
-          </p>
-        </div>
-      </div>
     </div>
   );
 };
