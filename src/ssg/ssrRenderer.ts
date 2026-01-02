@@ -339,6 +339,7 @@ export class SSRRenderer {
         // Static pages
         case 'faqs': return ['FAQs'];
         case 'privacy': return ['Privacy'];
+        case 'terms': return ['Terms'];
         case 'cookie-policy': return ['CookiePolicy'];
         case 'contact': return ['Contact'];
         case 'disclaimer': return ['Disclaimer'];
@@ -478,6 +479,7 @@ export class SSRRenderer {
                 React.createElement(Route, { path: '/about', element: React.createElement(getComponent('About')) }),
                 React.createElement(Route, { path: '/disclaimer', element: React.createElement(getComponent('Disclaimer')) }),
                 React.createElement(Route, { path: '/privacy', element: React.createElement(getComponent('Privacy')) }),
+                React.createElement(Route, { path: '/terms', element: React.createElement(getComponent('Terms')) }),
                 React.createElement(Route, { path: '/cookie-policy', element: React.createElement(getComponent('CookiePolicy')) }),
                 React.createElement(Route, { path: '/contact', element: React.createElement(getComponent('Contact')) }),
                 React.createElement(Route, { 
