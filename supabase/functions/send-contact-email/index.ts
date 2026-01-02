@@ -107,47 +107,51 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Admin notification sent:", adminEmailResponse);
 
-    // Send confirmation to user
-    const userEmailResponse = await sendEmail({
-      From: "noreply@movingto.com",
-      To: email,
-      Subject: "We received your message - Movingto Funds",
-      HtmlBody: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <img src="https://funds.movingto.com/lovable-uploads/9bdf45a5-6a2f-466e-8c2d-b8ba65863e8a.png" alt="Movingto Funds" style="height: 40px; margin-bottom: 20px;" />
-          
-          <h2 style="color: #333;">Thank you for contacting us, ${sanitizedName}!</h2>
-          
-          <p style="color: #666; line-height: 1.6;">
-            We have received your message and will get back to you as soon as possible. 
-            Our team typically responds within 1-2 business days.
-          </p>
-          
-          <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #333; margin-top: 0;">Your message:</h3>
-            <p style="color: #666;"><strong>Subject:</strong> ${sanitizedSubject}</p>
-            <p style="color: #666; white-space: pre-wrap;">${sanitizedMessage}</p>
+    // Send confirmation to user (non-critical - don't fail if this errors)
+    try {
+      const userEmailResponse = await sendEmail({
+        From: "noreply@movingto.com",
+        To: email,
+        Subject: "We received your message - Movingto Funds",
+        HtmlBody: `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <img src="https://funds.movingto.com/lovable-uploads/9bdf45a5-6a2f-466e-8c2d-b8ba65863e8a.png" alt="Movingto Funds" style="height: 40px; margin-bottom: 20px;" />
+            
+            <h2 style="color: #333;">Thank you for contacting us, ${sanitizedName}!</h2>
+            
+            <p style="color: #666; line-height: 1.6;">
+              We have received your message and will get back to you as soon as possible. 
+              Our team typically responds within 1-2 business days.
+            </p>
+            
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="color: #333; margin-top: 0;">Your message:</h3>
+              <p style="color: #666;"><strong>Subject:</strong> ${sanitizedSubject}</p>
+              <p style="color: #666; white-space: pre-wrap;">${sanitizedMessage}</p>
+            </div>
+            
+            <p style="color: #666; line-height: 1.6;">
+              In the meantime, feel free to explore our platform to discover and compare 
+              Portugal Golden Visa investment funds.
+            </p>
+            
+            <a href="https://funds.movingto.com" style="display: inline-block; background: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 10px;">
+              Browse Funds
+            </a>
+            
+            <p style="color: #999; font-size: 12px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+              Moving To Global Pty Ltd<br>
+              Bondi, Sydney, NSW 2026, Australia<br>
+              <a href="https://funds.movingto.com" style="color: #0066cc;">funds.movingto.com</a>
+            </p>
           </div>
-          
-          <p style="color: #666; line-height: 1.6;">
-            In the meantime, feel free to explore our platform to discover and compare 
-            Portugal Golden Visa investment funds.
-          </p>
-          
-          <a href="https://funds.movingto.com" style="display: inline-block; background: #0066cc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 10px;">
-            Browse Funds
-          </a>
-          
-          <p style="color: #999; font-size: 12px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
-            Moving To Global Pty Ltd<br>
-            Bondi, Sydney, NSW 2026, Australia<br>
-            <a href="https://funds.movingto.com" style="color: #0066cc;">funds.movingto.com</a>
-          </p>
-        </div>
-      `,
-    });
-
-    console.log("User confirmation sent:", userEmailResponse);
+        `,
+      });
+      console.log("User confirmation sent:", userEmailResponse);
+    } catch (userEmailError: any) {
+      // Log but don't fail - admin already received the message
+      console.warn("Could not send user confirmation email (recipient may be inactive):", userEmailError.message);
+    }
 
     return new Response(
       JSON.stringify({ success: true }),
