@@ -156,6 +156,7 @@ import SEOProvider from './components/providers/SEOProvider';
 
 import SEOEnhancer from './components/common/SEOEnhancer';
 import ExitIntentModal from './components/ExitIntentModal';
+import CookieConsent from './components/common/CookieConsent';
 
 function App() {
   // SEO optimization handled by consolidated service
@@ -401,7 +402,7 @@ function App() {
                   <SEODebugger />
                   <SEOEnhancer enableMonitoring={typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false} />
                   <ExitIntentModal />
-                  
+                  <CookieConsent />
                 </SEOProvider>
               </Router>
             </TooltipProvider>
