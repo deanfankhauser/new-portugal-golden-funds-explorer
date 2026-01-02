@@ -8,7 +8,17 @@
 export const GONE_TEAM_MEMBER_SLUGS = new Set<string>([
   'pedro-rebelo',
   'octanova-team',
-  // Add other removed slugs as needed
+  // GSC 404s - team members that no longer exist or have different slugs
+  'sofia-lapa',
+  'diogo-saraiva-ponte', // actual slug is 'diogo-saraiva-de-ponte'
+  'antonio-pereira', // actual slug is 'antnio-pereira' (no accent)
+  'francisco-giao', // actual slug is 'francisco-gio'
+  'goncalo-mendes', // actual slug is 'gonalo-mendes'
+  'ines-borges-de-carvalho', // doesn't exist
+  'miguel-realista', // actual slug is 'miguel-bicker-realista'
+  'antonio-ferreira', // actual slug is 'afonso-ferreira' or doesn't exist
+  'mariana-mello-e-castro', // doesn't exist
+  'tomas-sa', // doesn't exist
 ]);
 
 /**
