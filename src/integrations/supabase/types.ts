@@ -139,6 +139,60 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_submissions: {
+        Row: {
+          admin_email_sent: boolean | null
+          admin_email_sent_at: string | null
+          created_at: string | null
+          email: string
+          error_message: string | null
+          id: string
+          message: string
+          name: string
+          postmark_message_id: string | null
+          referrer: string | null
+          subject: string
+          updated_at: string | null
+          user_agent: string | null
+          user_email_sent: boolean | null
+          user_email_sent_at: string | null
+        }
+        Insert: {
+          admin_email_sent?: boolean | null
+          admin_email_sent_at?: string | null
+          created_at?: string | null
+          email: string
+          error_message?: string | null
+          id?: string
+          message: string
+          name: string
+          postmark_message_id?: string | null
+          referrer?: string | null
+          subject: string
+          updated_at?: string | null
+          user_agent?: string | null
+          user_email_sent?: boolean | null
+          user_email_sent_at?: string | null
+        }
+        Update: {
+          admin_email_sent?: boolean | null
+          admin_email_sent_at?: string | null
+          created_at?: string | null
+          email?: string
+          error_message?: string | null
+          id?: string
+          message?: string
+          name?: string
+          postmark_message_id?: string | null
+          referrer?: string | null
+          subject?: string
+          updated_at?: string | null
+          user_agent?: string | null
+          user_email_sent?: boolean | null
+          user_email_sent_at?: string | null
+        }
+        Relationships: []
+      }
       email_captures: {
         Row: {
           confirmation_token: string | null

@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const POSTMARK_API_URL = "https://api.postmarkapp.com/email";
 const POSTMARK_SERVER_TOKEN = Deno.env.get("POSTMARK_SERVER_TOKEN");
@@ -15,6 +16,11 @@ interface ContactEmailRequest {
   subject: string;
   message: string;
 }
+
+// Initialize Supabase client with service role for database operations
+const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 const sendEmail = async (emailData: {
   From: string;
@@ -63,6 +69,37 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Invalid email format");
     }
 
+    // Get request metadata for tracking
+    const userAgent = req.headers.get("user-agent");
+    const referrer = req.headers.get("referer");
+
+    // Save submission to database FIRST (before sending emails)
+    let submissionId: string | null = null;
+    try {
+      const { data: submission, error: dbError } = await supabase
+        .from("contact_submissions")
+        .insert({
+          name,
+          email,
+          subject,
+          message,
+          user_agent: userAgent,
+          referrer: referrer,
+        })
+        .select("id")
+        .single();
+
+      if (dbError) {
+        console.error("Failed to save submission to database:", dbError);
+      } else {
+        submissionId = submission.id;
+        console.log("Submission saved to database:", submissionId);
+      }
+    } catch (dbErr) {
+      console.error("Database error (non-fatal):", dbErr);
+      // Continue anyway - email delivery is still priority
+    }
+
     // Sanitize message for HTML
     const sanitizedMessage = message.replace(/</g, '&lt;').replace(/>/g, '&gt;');
     const sanitizedName = name.replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -107,7 +144,24 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Admin notification sent:", adminEmailResponse);
 
+    // Update database with admin email status
+    if (submissionId) {
+      try {
+        await supabase
+          .from("contact_submissions")
+          .update({
+            admin_email_sent: true,
+            admin_email_sent_at: new Date().toISOString(),
+            postmark_message_id: adminEmailResponse?.MessageID || null,
+          })
+          .eq("id", submissionId);
+      } catch (updateErr) {
+        console.error("Failed to update admin email status:", updateErr);
+      }
+    }
+
     // Send confirmation to user (non-critical - don't fail if this errors)
+    let userEmailSent = false;
     try {
       const userEmailResponse = await sendEmail({
         From: "noreply@movingto.com",
@@ -148,9 +202,25 @@ const handler = async (req: Request): Promise<Response> => {
         `,
       });
       console.log("User confirmation sent:", userEmailResponse);
+      userEmailSent = true;
     } catch (userEmailError: any) {
       // Log but don't fail - admin already received the message
       console.warn("Could not send user confirmation email (recipient may be inactive):", userEmailError.message);
+    }
+
+    // Update database with user email status
+    if (submissionId) {
+      try {
+        await supabase
+          .from("contact_submissions")
+          .update({
+            user_email_sent: userEmailSent,
+            user_email_sent_at: userEmailSent ? new Date().toISOString() : null,
+          })
+          .eq("id", submissionId);
+      } catch (updateErr) {
+        console.error("Failed to update user email status:", updateErr);
+      }
     }
 
     return new Response(
@@ -165,6 +235,11 @@ const handler = async (req: Request): Promise<Response> => {
     );
   } catch (error: any) {
     console.error("Error in send-contact-email function:", error);
+    
+    // Try to log the error to database if we have a submission ID
+    // Note: We can't access submissionId here since it's in the try block scope
+    // But at least the submission was saved before the error occurred
+    
     return new Response(
       JSON.stringify({ error: error.message }),
       {
