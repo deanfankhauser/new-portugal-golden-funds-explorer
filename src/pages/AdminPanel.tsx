@@ -21,6 +21,7 @@ import { EditFundsManagement } from "@/components/admin/EditFundsManagement";
 import { EditCompanyProfilesManagement } from "@/components/admin/EditCompanyProfilesManagement";
 import { AdminCreateCompanyProfile } from "@/components/admin/AdminCreateCompanyProfile";
 import { FundSubmissionsManagement } from "@/components/admin/FundSubmissionsManagement";
+import { ContactSubmissionsManagement } from "@/components/admin/ContactSubmissionsManagement";
 
 export default function AdminPanel() {
   const navigate = useNavigate();
@@ -107,6 +108,7 @@ export default function AdminPanel() {
               <Route path="company-managers" element={<ManagerProfileAssignment />} />
               <Route path="users" element={<UsersManagement />} />
               <Route path="emails" element={<EmailCapturesManagement />} />
+              <Route path="contact-submissions" element={<ContactSubmissionsManagement />} />
               <Route path="leads" element={<AllLeadsManagement />} />
               <Route path="performance" element={<PerformanceMonitoring />} />
               <Route path="quiz-analytics" element={<QuizAnalyticsTab />} />
