@@ -15,7 +15,8 @@ import {
   Edit,
   Building,
   PieChart,
-  FileCheck
+  FileCheck,
+  MessageSquare
 } from "lucide-react";
 import {
   Sidebar,
@@ -51,6 +52,7 @@ const adminNavItems: NavItem[] = [
   { title: "Company Managers", url: "/admin/company-managers", icon: Building2 },
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Email Captures", url: "/admin/emails", icon: Mail },
+  { title: "Contact Messages", url: "/admin/contact-submissions", icon: MessageSquare },
   { title: "Leads", url: "/admin/leads", icon: Target },
   { title: "Performance", url: "/admin/performance", icon: Activity },
   { title: "Quiz Analytics", url: "/admin/quiz-analytics", icon: PieChart },
