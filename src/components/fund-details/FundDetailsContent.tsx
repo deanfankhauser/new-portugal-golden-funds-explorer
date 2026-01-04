@@ -21,6 +21,9 @@ import { Card } from '@/components/ui/card';
 import { Calculator, TrendingUp, MessageSquare, Mail } from 'lucide-react';
 import { tagToSlug } from '@/lib/utils';
 import { FundEnquiryModal } from './FundEnquiryModal';
+import ContradictionWarningBanner from './ContradictionWarningBanner';
+import { useFundContradictions } from '@/hooks/useFundContradictions';
+import { useFundEditing } from '@/hooks/useFundEditing';
 
 import FundBreadcrumbs from './FundBreadcrumbs';
 
@@ -69,6 +72,19 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund, initialFu
   const { data: companyProfile } = useCompanyProfile(fund.managerName);
   const companySocialMedia = getCompanySocialMedia(companyProfile);
   
+  // Check if user has edit access to show contradiction warnings
+  const { user, canEditFund } = useFundEditing();
+  const [hasEditAccess, setHasEditAccess] = React.useState(false);
+  
+  React.useEffect(() => {
+    if (user) {
+      canEditFund(fund.id).then(setHasEditAccess);
+    }
+  }, [user, fund.id, canEditFund]);
+  
+  // Contradiction detection for admin/manager users
+  const contradictionResult = useFundContradictions(fund);
+  
   // Filter out "Golden Visa Eligible" tag for non-GV-intended funds (display will show compliance-safe label)
   const displayTags = fund.tags.filter(tag => 
     tag !== 'Golden Visa Eligible' || (isGVEligible && fund.isVerified)
@@ -79,6 +95,11 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund, initialFu
       <StickyNavigation fund={fund} />
       
       <div className="space-y-6 md:space-y-8">
+        {/* Contradiction Warning Banner - Only visible to admins/managers */}
+        {hasEditAccess && contradictionResult.hasContradictions && (
+          <ContradictionWarningBanner result={contradictionResult} />
+        )}
+        
         {/* Breadcrumbs */}
         <FundBreadcrumbs fund={fund} />
         

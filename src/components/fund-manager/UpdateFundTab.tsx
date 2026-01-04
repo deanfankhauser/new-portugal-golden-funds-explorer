@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -25,6 +25,8 @@ import { useFundTeamMembers } from '@/hooks/useTeamMemberData';
 import { ManagerNameCombobox } from '@/components/fund-editing/ManagerNameCombobox';
 import { AutocompleteInput } from '@/components/fund-editing/AutocompleteInput';
 import { useFundCategories, useCustodianNames, useAuditorNames } from '@/hooks/useFundFieldAutocomplete';
+import { useFundContradictionsWithFormData } from '@/hooks/useFundContradictions';
+import ContradictionAlert from '@/components/fund-editing/ContradictionAlert';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -489,8 +491,23 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
 
   const hasChanges = Object.keys(getSuggestedChanges()).length > 0;
 
+  // Contradiction detection with form data
+  const contradictionResult = useFundContradictionsWithFormData(fund, {
+    description: formData.description,
+    detailedDescription: formData.detailedDescription,
+    redemptionTerms: formData.redemptionTerms,
+    managementFee: formData.managementFee,
+    performanceFee: formData.performanceFee,
+    tags: formData.tags,
+  });
+
   return (
     <div className="space-y-6">
+      {/* Contradiction Alert - show above other alerts */}
+      {contradictionResult.hasContradictions && (
+        <ContradictionAlert result={contradictionResult} />
+      )}
+
       <Alert variant={canDirectEdit ? "info" : "default"}>
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
