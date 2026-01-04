@@ -162,8 +162,8 @@ export interface Fund {
   description: string;
   tags: FundTag[];
   category: FundCategory;
-  minimumInvestment: number; // in EUR
-  fundSize: number; // in EUR millions
+  minimumInvestment: number; // in EUR (base units)
+  fundSize: number | null; // in EUR (base units) - null means not disclosed
   managementFee: number; // percentage
   performanceFee: number; // percentage
   subscriptionFee?: number; // percentage

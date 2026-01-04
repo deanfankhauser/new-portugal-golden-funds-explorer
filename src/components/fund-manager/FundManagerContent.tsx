@@ -15,6 +15,7 @@ import { Profile } from '@/types/profile';
 import { Badge } from '@/components/ui/badge';
 import StandardCard from '../common/StandardCard';
 import { Button } from '@/components/ui/button';
+import { formatAUM } from '@/utils/currencyFormatters';
 
 interface FundManagerContentProps {
   managerFunds: Fund[];
@@ -30,21 +31,6 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
   managerProfile
 }) => {
   const [isHeroExpanded, setIsHeroExpanded] = useState(false);
-  
-  const formatAUM = (aum: number): string => {
-    // Convert to millions first
-    const millions = aum / 1000000;
-    
-    // If >= 1000 million (1 billion), show in billions
-    if (millions >= 1000) {
-      const billions = millions / 1000;
-      // Remove .0 from whole numbers
-      return `€${billions % 1 === 0 ? billions.toFixed(0) : billions.toFixed(1)}B`;
-    }
-    
-    // Show in millions, remove .0 from whole numbers
-    return `€${millions % 1 === 0 ? millions.toFixed(0) : millions.toFixed(1)}M`;
-  };
 
   const calculateYearsTrackRecord = (foundedYear?: number): string => {
     if (!foundedYear) return 'N/A';

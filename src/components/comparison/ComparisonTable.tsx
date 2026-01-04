@@ -4,6 +4,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import CompareRow from './CompareRow';
 import { formatManagementFee, formatPerformanceFee, formatSubscriptionFee, formatRedemptionFee } from '@/utils/feeFormatters';
 import { getReturnTargetDisplay } from '@/utils/returnTarget';
+import { formatCurrencyForComparison, formatFundSize } from '@/utils/currencyFormatters';
 
 interface ComparisonTableProps {
   funds: Fund[];
@@ -23,12 +24,6 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
 
   const fund1 = funds[0];
   const fund2 = funds[1];
-
-  const formatCurrency = (value: number | null | undefined): string => {
-    if (value === null || value === undefined) return 'Not disclosed';
-    if (value === 0) return 'Not disclosed';
-    return `€${value.toLocaleString('en-US')}`;
-  };
 
   const formatTargetReturn = (fund: Fund): string => {
     return getReturnTargetDisplay(fund) || 'Not disclosed';
@@ -81,8 +76,8 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
         <div className="px-4 md:px-7 py-2">
           <CompareRow 
             label="Min. Investment" 
-            valueA={formatCurrency(fund1.minimumInvestment)}
-            valueB={formatCurrency(fund2.minimumInvestment)}
+            valueA={formatCurrencyForComparison(fund1.minimumInvestment)}
+            valueB={formatCurrencyForComparison(fund2.minimumInvestment)}
             winnerA={minInvestmentWinner === 'fund1'}
             winnerB={minInvestmentWinner === 'fund2'}
             fundAName={fund1.name}
@@ -99,8 +94,8 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
           />
           <CompareRow 
             label="Fund Size" 
-            valueA={formatCurrency(fund1.fundSize)}
-            valueB={formatCurrency(fund2.fundSize)}
+            valueA={formatFundSize(fund1.fundSize)}
+            valueB={formatFundSize(fund2.fundSize)}
             fundAName={fund1.name}
             fundBName={fund2.name}
           />

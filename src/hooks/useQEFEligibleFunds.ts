@@ -11,7 +11,7 @@ const transformFund = (fund: any): Fund => {
     detailedDescription: fund.detailed_description || '',
     managerName: fund.manager_name || '',
     minimumInvestment: Number(fund.minimum_investment) || 0,
-    fundSize: Number(fund.aum) / 1000000 || 0,
+    fundSize: fund.aum ? Number(fund.aum) : null, // Store in base EUR, null if not available
     managementFee: fund.management_fee != null ? Number(fund.management_fee) : null,
     performanceFee: fund.performance_fee != null ? Number(fund.performance_fee) : null,
     term: Math.round((fund.lock_up_period_months || 0) / 12) || 5,

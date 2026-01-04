@@ -16,6 +16,7 @@ import { DATA_AS_OF_LABEL } from '../utils/constants';
 import { SaveFundButton } from './common/SaveFundButton';
 import { CompanyLogo } from './shared/CompanyLogo';
 import { formatManagementFee, formatPerformanceFee } from '../utils/feeFormatters';
+import { formatMinimumInvestment } from '../utils/currencyFormatters';
 import { calculateRiskBand, getRiskBandLabel, getRiskBandBgColor } from '../utils/riskCalculation';
 
 interface FundListItemProps {
@@ -132,7 +133,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
               Min. Investment
             </span>
             <span className="text-lg font-semibold text-foreground">
-              €{fund.minimumInvestment?.toLocaleString() || '—'}
+              {formatMinimumInvestment(fund.minimumInvestment)}
             </span>
           </div>
           

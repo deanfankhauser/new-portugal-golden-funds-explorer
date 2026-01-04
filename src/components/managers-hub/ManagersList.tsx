@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { getFundsCountByManager, getTotalFundSizeByManager } from '../../data/services/managers-service';
 import { managerToSlug } from '../../lib/utils';
 import { Fund } from '../../data/types/funds';
+import { formatFundSize } from '../../utils/currencyFormatters';
 
 interface ManagersListProps {
   managers: { name: string; logo?: string }[];
@@ -47,7 +48,7 @@ const ManagersList: React.FC<ManagersListProps> = ({ managers, funds }) => {
                     </div>
                     <div className="flex justify-between text-xs sm:text-sm">
                       <span className="text-muted-foreground">Total fund size:</span>
-                      <span className="font-medium">€{totalFundSize} million</span>
+                      <span className="font-medium">{formatFundSize(totalFundSize)}</span>
                     </div>
                   </div>
                 </CardContent>
