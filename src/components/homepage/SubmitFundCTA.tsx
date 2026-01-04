@@ -39,12 +39,12 @@ export default function SubmitFundCTA() {
 
               {/* Right: CTA */}
               <div className="flex-shrink-0">
-                <Link to="/submit-fund">
-                  <Button size="lg" className="group text-base px-8">
+                <Button asChild size="lg" className="group text-base px-8">
+                  <a href="mailto:info@movingto.com?subject=Fund%20Submission%20-%20Movingto">
                     Submit Your Fund
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Button>
-                </Link>
+                  </a>
+                </Button>
                 <p className="text-xs text-muted-foreground text-center mt-3">
                   Free submission · Review within 48 hours
                 </p>
