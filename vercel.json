@@ -55,6 +55,14 @@
       "destination": "/index.html"
     },
     {
+      "source": "/saved-funds",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/email-confirmation",
+      "destination": "/index.html"
+    },
+    {
       "source": "/contact",
       "destination": "/index.html"
     },
