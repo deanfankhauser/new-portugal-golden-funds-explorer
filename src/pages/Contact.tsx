@@ -135,12 +135,12 @@ const Contact = () => {
                 <p className="text-sm text-gray-600 mb-4">
                   Want to list your fund on our platform? Submit your fund details for review.
                 </p>
-                <Link 
-                  to="/submit-fund"
+                <a
+                  href="mailto:info@movingto.com?subject=Fund%20Submission%20-%20Movingto"
                   className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:bg-primary/90 transition-colors"
                 >
                   Submit Your Fund
-                </Link>
+                </a>
               </div>
             </div>
 

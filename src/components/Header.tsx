@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Menu, ChevronDown, Calculator, Target, DollarSign } from "lucide-react";
+import { Sparkles, Menu, ChevronDown, Calculator, DollarSign } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -54,9 +54,12 @@ const Header = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/submit-fund" className="w-full cursor-pointer">
+                    <a
+                      href="mailto:info@movingto.com?subject=Fund%20Submission%20-%20Movingto"
+                      className="w-full cursor-pointer"
+                    >
                       Submit Fund
-                    </Link>
+                    </a>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
