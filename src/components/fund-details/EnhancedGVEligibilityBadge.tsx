@@ -5,6 +5,7 @@ import { Fund } from '../../data/types/funds';
 import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
 import { AlertTriangle, CheckCircle, HelpCircle } from 'lucide-react';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
+import { GV_LABELS } from '../../utils/gvComplianceLabels';
 
 interface EnhancedGVEligibilityBadgeProps {
   fund: Fund;
@@ -15,7 +16,7 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
   fund, 
   showDetails = true 
 }) => {
-  const isGVEligible = isFundGVEligible(fund);
+  const isGVIntended = isFundGVEligible(fund);
   const hasRealEstate = fund.tags.some(tag => 
     tag.toLowerCase().includes('real estate') || 
     tag.toLowerCase().includes('property')
@@ -26,18 +27,18 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
     return null;
   }
   
-  // All funds are now Golden Visa eligible
-  const getEligibilityStatus = () => {
+  // All funds are now Golden Visa intended per manager
+  const getIntendedStatus = () => {
     return 'yes';
   };
   
-  const status = getEligibilityStatus();
+  const status = getIntendedStatus();
   
   const getStatusConfig = () => {
     return {
       variant: 'default' as const,
       icon: CheckCircle,
-      label: 'Golden Visa Eligible',
+      label: GV_LABELS.BADGE,
       color: 'text-green-600',
       bgColor: 'bg-green-50',
       borderColor: 'border-green-200'
@@ -48,7 +49,7 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
   const Icon = config.icon;
   
   const getExplanation = () => {
-    return "Appears GV-eligible based on manager docs; verify with counsel.";
+    return "Manager states this fund is intended for Golden Visa route; verify with Portuguese legal counsel.";
   };
 
   return (
@@ -69,7 +70,7 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription className="text-sm">
               <strong className={config.color}>
-                Golden Visa Eligible:
+                {GV_LABELS.BADGE}:
               </strong>
               <br />
               {getExplanation()}
@@ -81,7 +82,7 @@ const EnhancedGVEligibilityBadge: React.FC<EnhancedGVEligibilityBadgeProps> = ({
             <AlertDescription className="text-sm">
               <strong className="text-amber-700">Important:</strong> 
               <br />
-              GV still requires €500,000 total. Confirm with manager + lawyer before investing.
+              {GV_LABELS.TOOLTIP}
             </AlertDescription>
           </Alert>
         </>

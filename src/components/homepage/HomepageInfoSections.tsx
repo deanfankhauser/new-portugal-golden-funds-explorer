@@ -30,7 +30,7 @@ const HomepageInfoSections = () => {
           
           {/* Body Text */}
           <p className="text-base md:text-lg text-[hsl(40,15%,35%)] mb-8 leading-relaxed max-w-3xl mx-auto">
-            The only independent directory of CMVM-regulated investment funds eligible for the Portugal Golden Visa. 
+            The only independent directory of CMVM-regulated investment funds marketed for the Portugal Golden Visa route. 
             We analyze the market to help you compare strategies, scrutinize management fees, and verify track records. 
             Use our data to shortlist the best funds before you invest.
           </p>

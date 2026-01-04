@@ -30,9 +30,9 @@ export const getGVEligibleFunds = (funds: Fund[]): Fund[] => {
   return funds.filter(isFundGVEligible);
 };
 
-// Get GV eligibility status message
+// Get GV eligibility status message (compliance-safe language)
 export const getGVEligibilityMessage = (isEligible: boolean): string => {
-  return isEligible ? 'Golden Visa Eligible' : 'Not Golden Visa Eligible';
+  return isEligible ? 'GV-intended (manager-stated)' : 'Not marketed for Golden Visa';
 };
 
 // Get GV eligibility warning for categories/tags

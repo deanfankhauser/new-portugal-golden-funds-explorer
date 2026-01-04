@@ -117,9 +117,9 @@ export default function ReviewSubmitStep({ formData, onEditStep }: ReviewSubmitS
             <DataRow label="Min Investment" value={formatCurrency(formData.minimum_investment, formData.currency)} />
             <DataRow label="Currency" value={formData.currency} />
             <DataRow 
-              label="GV Eligible" 
+              label="GV-intended" 
               value={formData.gv_eligible ? (
-                <Badge variant="default" className="bg-green-600">Yes</Badge>
+                <Badge variant="default" className="bg-green-600">Yes (manager-stated)</Badge>
               ) : (
                 <Badge variant="secondary">No</Badge>
               )} 

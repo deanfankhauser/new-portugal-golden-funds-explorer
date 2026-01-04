@@ -6,7 +6,8 @@ import { getFundType } from '../utils/fundTypeUtils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { GVBadge } from "@/components/ui/GVBadge";
 import { Mail, CheckCircle2, GitCompare, ChevronRight } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { formatPercentage } from './fund-details/utils/formatters';
@@ -100,9 +101,9 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
             </Link>
           )}
           {fund.isVerified && isGVEligible && (
-            <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/20 px-3 py-1 text-[13px] font-medium">
-              GV Eligible
-            </Badge>
+            <TooltipProvider>
+              <GVBadge variant="card" />
+            </TooltipProvider>
           )}
           <Badge 
             variant="outline"

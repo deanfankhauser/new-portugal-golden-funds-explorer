@@ -117,10 +117,10 @@ export default function FundDetailsStep({ formData, updateFormData }: FundDetail
         <div className="space-y-2 flex items-center justify-between p-4 border rounded-lg">
           <div>
             <Label htmlFor="gv_eligible" className="font-medium">
-              Golden Visa Eligible <span className="text-destructive">*</span>
+              GV-intended (manager-stated) <span className="text-destructive">*</span>
             </Label>
             <p className="text-sm text-muted-foreground">
-              Is this fund eligible for Portugal's Golden Visa program?
+              Is this fund marketed for Portugal's Golden Visa program?
             </p>
           </div>
           <Switch

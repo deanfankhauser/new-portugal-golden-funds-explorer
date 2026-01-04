@@ -16,7 +16,7 @@ const EmptyComparison = () => {
       <div className="bg-card rounded-xl border border-border p-12 text-center">
         <h2 className="text-2xl font-bold mb-4 text-foreground">No Funds Selected for Comparison</h2>
         <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-          You haven't selected any funds to compare yet. Browse our collection of Portugal Golden Visa eligible funds
+          You haven't selected any funds to compare yet. Browse our collection of funds marketed for the Portugal Golden Visa route
           and click the "Compare" button to add them to your comparison list.
         </p>
         <Button

@@ -39,9 +39,9 @@ export const normalizeTagLabel = (rawTag: string): string => {
   if (tagLower === 'monthly nav') return 'Monthly NAV';
   
   // Eligibility/compliance tags
-  if (tagLower === 'gv eligible') return 'GV Eligible';
+  if (tagLower === 'gv eligible') return 'GV-intended (manager-stated)';
+  if (tagLower === 'golden visa eligible') return 'GV-intended (manager-stated)';
   if (tagLower === 'verified') return 'Verified';
-  if (tagLower === 'pfic-compliant') return 'PFIC-Compliant';
   if (tagLower === 'ucits') return 'UCITS';
   
   // Sector tags
