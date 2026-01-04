@@ -52,34 +52,68 @@ export class EnhancedSitemapService extends SitemapService {
     return [];
   }
 
-  // Generate robots.txt content
+  // Generate robots.txt content - aligned with sitemap-index-generator.ts
   static generateRobotsTxt(): string {
-    return `User-agent: *
-Allow: /
+    const currentDate = new Date().toISOString().split('T')[0];
+    return `# Robots.txt for ${URL_CONFIG.BASE_URL}
+# Generated on ${currentDate}
 
-# Enhanced crawling directives
+# Googlebot configuration
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 1
-
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 2
-
-# Sitemap location
-Sitemap: ${URL_CONFIG.BASE_URL}/sitemap-index.xml
-
-# Disallow admin and auth pages
 Disallow: /admin
 Disallow: /auth
+Disallow: /manager-auth
+Disallow: /investor-auth
 Disallow: /api/
+Disallow: /account-settings
+Disallow: /my-funds
+Disallow: /manage-fund/
+Disallow: /manage-profile/
+Disallow: /confirm
+Disallow: /confirm-email
+Disallow: /reset-password
+Disallow: /saved-funds
+Crawl-delay: 1
 
-# Allow important pages
-Allow: /categories
-Allow: /tags
-Allow: /managers
-Allow: /comparisons
-Allow: /alternatives`;
+# Bingbot configuration
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /auth
+Disallow: /manager-auth
+Disallow: /investor-auth
+Disallow: /api/
+Disallow: /account-settings
+Disallow: /my-funds
+Disallow: /manage-fund/
+Disallow: /manage-profile/
+Disallow: /confirm
+Disallow: /confirm-email
+Disallow: /reset-password
+Disallow: /saved-funds
+Crawl-delay: 2
+
+# All other bots
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /auth
+Disallow: /manager-auth
+Disallow: /investor-auth
+Disallow: /api/
+Disallow: /account-settings
+Disallow: /my-funds
+Disallow: /manage-fund/
+Disallow: /manage-profile/
+Disallow: /confirm
+Disallow: /confirm-email
+Disallow: /reset-password
+Disallow: /saved-funds
+
+# Sitemap index location (contains all sitemaps)
+Sitemap: ${URL_CONFIG.BASE_URL}/sitemap-index.xml
+`;
   }
 
   /**
