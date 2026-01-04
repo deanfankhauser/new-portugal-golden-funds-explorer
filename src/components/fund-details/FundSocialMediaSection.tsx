@@ -3,13 +3,25 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Youtube, Instagram, Facebook, Twitter, Linkedin } from 'lucide-react';
 
+interface CompanySocialMedia {
+  linkedin_url?: string;
+  twitter_url?: string;
+  facebook_url?: string;
+  instagram_url?: string;
+  youtube_url?: string;
+  tiktok_url?: string;
+}
+
 interface FundSocialMediaSectionProps {
+  // Fund-level social media (legacy, acts as override if set)
   youtubeUrl?: string;
   instagramUrl?: string;
   tiktokUrl?: string;
   facebookUrl?: string;
   twitterUrl?: string;
   linkedinUrl?: string;
+  // Company-level social media (primary source, inherited from profile)
+  companySocialMedia?: CompanySocialMedia;
 }
 
 // Custom TikTok icon since Lucide doesn't have one
@@ -31,14 +43,23 @@ const FundSocialMediaSection: React.FC<FundSocialMediaSectionProps> = ({
   facebookUrl,
   twitterUrl,
   linkedinUrl,
+  companySocialMedia,
 }) => {
+  // Priority: Fund-level > Company-level (fund overrides company if set)
+  const resolvedYoutube = youtubeUrl || companySocialMedia?.youtube_url;
+  const resolvedInstagram = instagramUrl || companySocialMedia?.instagram_url;
+  const resolvedTiktok = tiktokUrl || companySocialMedia?.tiktok_url;
+  const resolvedFacebook = facebookUrl || companySocialMedia?.facebook_url;
+  const resolvedTwitter = twitterUrl || companySocialMedia?.twitter_url;
+  const resolvedLinkedin = linkedinUrl || companySocialMedia?.linkedin_url;
+
   const socialLinks = [
-    { url: youtubeUrl, label: 'YouTube', icon: Youtube, color: 'hover:text-red-600' },
-    { url: instagramUrl, label: 'Instagram', icon: Instagram, color: 'hover:text-pink-600' },
-    { url: tiktokUrl, label: 'TikTok', icon: TikTokIcon, color: 'hover:text-foreground' },
-    { url: facebookUrl, label: 'Facebook', icon: Facebook, color: 'hover:text-blue-600' },
-    { url: twitterUrl, label: 'X (Twitter)', icon: Twitter, color: 'hover:text-foreground' },
-    { url: linkedinUrl, label: 'LinkedIn', icon: Linkedin, color: 'hover:text-blue-700' },
+    { url: resolvedYoutube, label: 'YouTube', icon: Youtube, color: 'hover:text-red-600' },
+    { url: resolvedInstagram, label: 'Instagram', icon: Instagram, color: 'hover:text-pink-600' },
+    { url: resolvedTiktok, label: 'TikTok', icon: TikTokIcon, color: 'hover:text-foreground' },
+    { url: resolvedFacebook, label: 'Facebook', icon: Facebook, color: 'hover:text-blue-600' },
+    { url: resolvedTwitter, label: 'X (Twitter)', icon: Twitter, color: 'hover:text-foreground' },
+    { url: resolvedLinkedin, label: 'LinkedIn', icon: Linkedin, color: 'hover:text-blue-700' },
   ].filter(link => link.url);
 
   // Don't render if no social links are available
