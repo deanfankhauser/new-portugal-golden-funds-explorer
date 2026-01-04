@@ -12,7 +12,7 @@ import { managerToSlug } from '../lib/utils';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
 import { CompanyLogo } from './shared/CompanyLogo';
 import { formatManagementFee, formatPerformanceFee } from '../utils/feeFormatters';
-import { formatFundSize } from '../utils/fundSizeFormatters';
+import { formatMinimumInvestment } from '../utils/currencyFormatters';
 import { calculateRiskBand, getRiskBandLabel, getRiskBandColor, getRiskBandBgColor } from '../utils/riskCalculation';
 
 interface FundCardProps {
@@ -129,7 +129,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
                 Min. Investment
               </span>
               <span className="text-sm font-semibold text-foreground">
-                €{fund.minimumInvestment?.toLocaleString() || '—'}
+                {formatMinimumInvestment(fund.minimumInvestment)}
               </span>
             </div>
             

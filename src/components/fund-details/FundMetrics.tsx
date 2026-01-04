@@ -6,6 +6,7 @@ import FeeDisclaimer from './FeeDisclaimer';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
 import { getReturnTargetDisplay } from '../../utils/returnTarget';
 import { formatManagementFee, formatPerformanceFee, formatSubscriptionFee, formatRedemptionFee } from '../../utils/feeFormatters';
+import { formatFundSize as formatFundSizeUtil } from '../../utils/currencyFormatters';
 
 interface FundMetricsProps {
   fund: Fund;
@@ -34,7 +35,7 @@ const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatF
     }] : []),
     {
       label: "Fund Size",
-      value: formatFundSize ? formatFundSize() : (fund.fundSize ? `${fund.fundSize} Million EUR` : null),
+      value: formatFundSize ? formatFundSize() : formatFundSizeUtil(fund.fundSize),
     },
     {
       label: "Management Fee",

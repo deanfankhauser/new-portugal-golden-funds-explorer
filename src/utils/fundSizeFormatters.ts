@@ -1,15 +1,14 @@
 /**
  * Centralized fund size formatting utilities
+ * 
+ * IMPORTANT: Fund size is now stored in BASE EUR (not millions)
+ * This file re-exports from centralized currencyFormatters for backward compatibility
  */
 
-export const formatFundSize = (fundSize: number | null | undefined): string => {
-  if (fundSize === null || fundSize === undefined || fundSize === 0) {
-    return 'Not disclosed';
-  }
-  
-  // fundSize is stored in millions, convert to full value
-  const fullValue = fundSize * 1000000;
-  
-  // Format with thousands separators and single € symbol
-  return `€${fullValue.toLocaleString()}`;
-};
+import { formatFundSize as formatFundSizeBase, formatCurrencyValue } from './currencyFormatters';
+
+// Re-export the centralized formatter
+export const formatFundSize = formatFundSizeBase;
+
+// Legacy export for any code still using formatCurrencyValue
+export { formatCurrencyValue };

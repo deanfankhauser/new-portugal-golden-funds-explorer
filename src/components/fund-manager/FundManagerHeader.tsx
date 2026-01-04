@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from 'react-router-dom';
+import { formatFundSize } from '../../utils/currencyFormatters';
 
 interface FundManagerData {
   name: string;
@@ -39,7 +40,7 @@ const FundManagerHeader: React.FC<FundManagerHeaderProps> = ({ managerData }) =>
           )}
           <p className="text-lg text-gray-600">
             {managerData.name} manages {managerData.fundsCount} fund{managerData.fundsCount > 1 ? 's' : ''} with a combined 
-            size of {managerData.totalFundSize} million EUR. Compare their funds in our{' '}
+            size of {formatFundSize(managerData.totalFundSize)}. Compare their funds in our{' '}
             <Link to="/" className="text-primary hover:text-primary/80 underline">
               fund database
             </Link> or explore other{' '}

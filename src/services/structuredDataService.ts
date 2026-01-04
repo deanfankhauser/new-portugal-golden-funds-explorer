@@ -3,6 +3,7 @@ import { URL_CONFIG } from '../utils/urlConfig';
 import { DateManagementService } from './dateManagementService';
 import { EnhancedSEODateService } from './enhancedSEODateService';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
+import { formatFundSize } from '../utils/currencyFormatters';
 
 export interface StructuredDataSchema {
   '@context': string;
@@ -59,7 +60,7 @@ export class StructuredDataService {
         {
           '@type': 'PropertyValue',
           'name': 'Fund Size',
-          'value': `${fund.fundSize} Million EUR`
+          'value': formatFundSize(fund.fundSize)
         },
         {
           '@type': 'PropertyValue',
