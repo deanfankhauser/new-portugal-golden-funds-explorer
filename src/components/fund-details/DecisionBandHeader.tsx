@@ -15,7 +15,7 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
   // Helper function to generate keyword-rich subheader
   const generateSubheader = () => {
     const fundType = fund.isVerified && fund.tags?.includes('Golden Visa Eligible')
-      ? 'Portugal Golden Visa investment fund'
+      ? 'investment fund marketed for the Portugal Golden Visa route'
       : 'CMVM-regulated investment fund';
     
     const parts: string[] = [

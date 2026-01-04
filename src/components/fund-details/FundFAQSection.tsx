@@ -34,11 +34,11 @@ const generateSystemFAQs = (fund: Fund): FAQItem[] => {
     answer: `Management Fee: ${mgmtFee}. Performance Fee: ${perfFee}. Subscription Fee: ${subFee}.`
   });
   
-  // FAQ 3: Golden Visa Eligibility (only if GV eligible AND verified)
+  // FAQ 3: Golden Visa (only if GV tagged AND verified)
   if (fund.tags?.includes('Golden Visa Eligible') && fund.isVerified) {
     systemFAQs.push({
-      question: `Is ${fund.name} eligible for the 2025 Golden Visa?`,
-      answer: `Yes, ${fund.name} meets the €500,000 fund route requirement for the Portugal Golden Visa program.`
+      question: `Is ${fund.name} marketed for the 2025 Golden Visa route?`,
+      answer: `Yes, the fund manager states that ${fund.name} is intended to meet the €500,000 fund route requirement for the Portugal Golden Visa program. Eligibility must be confirmed with Portuguese legal counsel.`
     });
   }
   
@@ -86,11 +86,11 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
     },
     {
       question: fund.tags?.includes('Golden Visa Eligible') && fund.isVerified
-        ? `How does the Golden Visa qualification work?`
+        ? `Is this fund intended for Golden Visa applicants?`
         : `What are the regulatory requirements?`,
       answer: fund.tags?.includes('Golden Visa Eligible') && fund.isVerified
-        ? `${fund.name} is approved by Portuguese authorities as a Golden Visa qualifying investment. By investing the minimum amount, you become eligible to apply for Portuguese residency through the Golden Visa program. The fund maintains full compliance with CMVM regulations${fund.cmvmId ? ` and is registered under CMVM #${fund.cmvmId}` : ''}. Our team works closely with investors to ensure all documentation meets Golden Visa requirements.`
-        : `${fund.name} operates under strict regulatory oversight${fund.regulatedBy ? ` by ${fund.regulatedBy}` : ''}${fund.cmvmId ? ` and is registered with CMVM #${fund.cmvmId}` : ''}. The fund maintains full compliance with all applicable securities regulations and reporting requirements.`
+        ? `The fund manager states that ${fund.name} is intended for the Portugal Golden Visa program. By investing the minimum amount, you may be eligible to apply for Portuguese residency through the Golden Visa program—subject to verification by Portuguese legal counsel. The fund maintains compliance with CMVM regulations${fund.cmvmId ? ` and is registered under CMVM #${fund.cmvmId}` : ''}.`
+        : `${fund.name} operates under regulatory oversight${fund.regulatedBy ? ` by ${fund.regulatedBy}` : ''}${fund.cmvmId ? ` and is registered with CMVM #${fund.cmvmId}` : ''}. The fund maintains full compliance with all applicable securities regulations and reporting requirements.`
     },
     {
       question: `What are the expected returns?`,

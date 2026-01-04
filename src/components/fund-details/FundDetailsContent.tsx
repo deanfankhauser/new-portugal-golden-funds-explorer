@@ -69,7 +69,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund, initialFu
   const { data: companyProfile } = useCompanyProfile(fund.managerName);
   const companySocialMedia = getCompanySocialMedia(companyProfile);
   
-  // Filter out "Golden Visa Eligible" tag for non-GV funds
+  // Filter out "Golden Visa Eligible" tag for non-GV-intended funds (display will show compliance-safe label)
   const displayTags = fund.tags.filter(tag => 
     tag !== 'Golden Visa Eligible' || (isGVEligible && fund.isVerified)
   );
