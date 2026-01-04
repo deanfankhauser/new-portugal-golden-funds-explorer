@@ -1,6 +1,8 @@
 import { SEOData } from '../types';
 import { optimizeTitle, optimizeDescription } from '../utils';
 import { URL_CONFIG } from '@/utils/urlConfig';
+import { getSitewideSchemas } from '../schemas/sitewideSchemas';
+import { BREADCRUMB_CONFIGS } from '../schemas/breadcrumbSchema';
 
 export function getROICalculatorSeo(): SEOData {
   return {
@@ -20,18 +22,22 @@ export function getROICalculatorSeo(): SEOData {
   };
 }
 
-function getCalculatorStructuredData(): any {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'WebApplication',
-    'name': 'Portugal Golden Visa Fund ROI Calculator',
-    'url': URL_CONFIG.buildUrl('roi-calculator'),
-    'applicationCategory': 'FinanceApplication',
-    'operatingSystem': 'Web Browser',
-    'offers': {
-      '@type': 'Offer',
-      'price': '0',
-      'priceCurrency': 'EUR'
+function getCalculatorStructuredData(): any[] {
+  return [
+    ...getSitewideSchemas(),
+    BREADCRUMB_CONFIGS.roiCalculator(),
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      'name': 'Portugal Golden Visa Fund ROI Calculator',
+      'url': URL_CONFIG.buildUrl('roi-calculator'),
+      'applicationCategory': 'FinanceApplication',
+      'operatingSystem': 'Web Browser',
+      'offers': {
+        '@type': 'Offer',
+        'price': '0',
+        'priceCurrency': 'EUR'
+      }
     }
-  };
+  ];
 }

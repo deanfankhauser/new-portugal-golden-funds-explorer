@@ -6,6 +6,7 @@ import { EnhancedSEOValidationService } from '../../services/enhancedSEOValidati
 import { PerformanceOptimizationService } from '../../services/performanceOptimizationService';
 import { SEOErrorBoundary } from './SEOErrorBoundary';
 import { useYearUpdate } from '../../hooks/useYearUpdate';
+import { shouldNoindexForQueryParams } from '../../utils/queryParamRobotsHandler';
 
 interface PageSEOComponentProps extends PageSEOProps {
   children?: React.ReactNode;
@@ -63,33 +64,45 @@ const seoData = ConsolidatedSEOService.getSEOData(
 
       ConsolidatedSEOService.applyMetaTags(seoData);
       
+      // Handle noindex for filter/search URLs with query parameters
+      if (shouldNoindexForQueryParams()) {
+        let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+        if (!robots) {
+          robots = document.createElement('meta');
+          robots.setAttribute('name', 'robots');
+          document.head.appendChild(robots);
+        }
+        robots.setAttribute('content', 'noindex, follow');
+      }
       // Handle noindex for 404/410 pages, zero-fund tag/category/manager pages, and low-value comparisons
-      const isZeroFundPage = (pageType === 'tag' || pageType === 'category' || pageType === 'manager') && 
-                              (!funds || funds.length === 0);
-      
-      if (pageType === '404' || pageType === '410' || isZeroFundPage) {
-        let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
-        if (!robots) {
-          robots = document.createElement('meta');
-          robots.setAttribute('name', 'robots');
-          document.head.appendChild(robots);
-        }
-        const robotsContent = pageType === '410' ? 'noindex, nofollow' : 'noindex, follow';
-        robots.setAttribute('content', robotsContent);
-      } else if (pageType === 'fund-comparison' && seoData.robots?.includes('noindex')) {
-        // Handle noindex for low-value fund comparisons
-        let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
-        if (!robots) {
-          robots = document.createElement('meta');
-          robots.setAttribute('name', 'robots');
-          document.head.appendChild(robots);
-        }
-        robots.setAttribute('content', seoData.robots);
-      } else if (pageType === 'tag' || pageType === 'category' || pageType === 'manager') {
-        // Ensure index,follow for pages with funds
-        let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
-        if (robots) {
-          robots.setAttribute('content', 'index, follow');
+      else {
+        const isZeroFundPage = (pageType === 'tag' || pageType === 'category' || pageType === 'manager') && 
+                                (!funds || funds.length === 0);
+        
+        if (pageType === '404' || pageType === '410' || isZeroFundPage) {
+          let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+          if (!robots) {
+            robots = document.createElement('meta');
+            robots.setAttribute('name', 'robots');
+            document.head.appendChild(robots);
+          }
+          const robotsContent = pageType === '410' ? 'noindex, nofollow' : 'noindex, follow';
+          robots.setAttribute('content', robotsContent);
+        } else if (pageType === 'fund-comparison' && seoData.robots?.includes('noindex')) {
+          // Handle noindex for low-value fund comparisons
+          let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+          if (!robots) {
+            robots = document.createElement('meta');
+            robots.setAttribute('name', 'robots');
+            document.head.appendChild(robots);
+          }
+          robots.setAttribute('content', seoData.robots);
+        } else if (pageType === 'tag' || pageType === 'category' || pageType === 'manager') {
+          // Ensure index,follow for pages with funds
+          let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+          if (robots) {
+            robots.setAttribute('content', 'index, follow');
+          }
         }
       }
       
