@@ -1,0 +1,8 @@
+# Development robots.txt - Production version is generated at build time
+# This file ensures robots.txt is available in preview/development environments
+
+User-agent: *
+Allow: /
+
+# Sitemap location (production)
+Sitemap: https://funds.movingto.com/sitemap-index.xml
