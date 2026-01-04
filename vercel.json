@@ -51,6 +51,10 @@
       "destination": "/index.html"
     },
     {
+      "source": "/submit-fund/(.*)",
+      "destination": "/index.html"
+    },
+    {
       "source": "/contact",
       "destination": "/index.html"
     },
