@@ -1,7 +1,7 @@
 import React from 'react';
 import { useCompanyTeamMembers } from '@/hooks/useCompanyTeamMembers';
 import { Skeleton } from "@/components/ui/skeleton";
-import TeamMemberCard from '../common/TeamMemberCard';
+import TeamMemberGrid from '../common/TeamMemberGrid';
 
 interface TeamMember {
   name: string;
@@ -20,13 +20,19 @@ interface ManagerTeamSectionProps {
 }
 
 const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, teamMembers }) => {
-  // Fetch team members from the new team_members table
   const { members, loading } = useCompanyTeamMembers(managerName);
   
-  // Use fetched members (which include slug) or fallback to prop data
-  const displayMembers = members.length > 0 ? members : teamMembers;
+  // Map fetched members to include linkedinUrl for TeamMemberGrid
+  const displayMembers = members.length > 0 
+    ? members.map(m => ({
+        ...m,
+        linkedinUrl: m.linkedinUrl,
+      }))
+    : teamMembers.map(m => ({
+        ...m,
+        linkedinUrl: m.linkedin,
+      }));
 
-  // Don't render anything if there are no team members after loading
   if (!loading && displayMembers.length === 0) {
     return null;
   }
@@ -61,20 +67,11 @@ const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, te
         Team
       </h2>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {displayMembers.map((member, index) => (
-          <TeamMemberCard
-            key={member.member_id || member.slug || member.name || index}
-            name={member.name}
-            role={member.role}
-            bio={member.bio}
-            photoUrl={member.photoUrl}
-            linkedinUrl={member.linkedin || member.linkedinUrl}
-            email={member.email}
-            slug={member.slug}
-          />
-        ))}
-      </div>
+      <TeamMemberGrid 
+        members={displayMembers as any[]}
+        initialCount={8}
+        batchSize={20}
+      />
     </div>
   );
 };
