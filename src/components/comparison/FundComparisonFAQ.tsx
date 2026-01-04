@@ -1,12 +1,8 @@
-import React, { useEffect } from 'react';
-import { FAQSchemaService } from '../../services/faqSchemaService';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import React, { useState } from 'react';
 import { Fund } from '../../data/types/funds';
+import { formatManagementFee, formatPerformanceFee } from '../../utils/feeFormatters';
+import { ChevronDown } from 'lucide-react';
+import { withArticle, formatCurrencyValue } from '../../utils/textHelpers';
 
 interface FAQItem {
   question: string;
@@ -19,6 +15,12 @@ interface FundComparisonFAQProps {
 }
 
 const FundComparisonFAQ: React.FC<FundComparisonFAQProps> = ({ fund1, fund2 }) => {
+  // Format minimum investment safely
+  const formatMinInvestment = (amount: number | null | undefined): string => {
+    if (!amount) return 'contact fund manager';
+    return `€${amount.toLocaleString()}`;
+  };
+  
   // Generate comparison-specific FAQs
   const generateComparisonFAQs = (f1: Fund, f2: Fund): FAQItem[] => {
     const fund1Category = f1.category.toLowerCase();
@@ -28,15 +30,15 @@ const FundComparisonFAQ: React.FC<FundComparisonFAQProps> = ({ fund1, fund2 }) =
     return [
       {
         question: `What are the key differences between ${f1.name} and ${f2.name}?`,
-        answer: `The main differences include investment focus (${f1.category} vs ${f2.category}), minimum investment amounts (€${f1.minimumInvestment.toLocaleString()} vs €${f2.minimumInvestment.toLocaleString()}), management fees (${f1.managementFee}% vs ${f2.managementFee}%), and fund managers (${f1.managerName} vs ${f2.managerName}). Each fund has different risk profiles and return targets suited to different investor preferences.`
+        answer: `The main differences include investment focus (${f1.category} vs ${f2.category}), minimum investment amounts (${formatMinInvestment(f1.minimumInvestment)} vs ${formatMinInvestment(f2.minimumInvestment)}), management fees (${formatManagementFee(f1.managementFee)} vs ${formatManagementFee(f2.managementFee)}), and fund managers (${f1.managerName} vs ${f2.managerName}). Each fund has different risk profiles and return targets suited to different investor preferences.`
       },
       {
         question: `Which fund has lower fees: ${f1.name} or ${f2.name}?`,
-        answer: `${f1.managementFee < f2.managementFee ? f1.name : f2.name} has the lower management fee at ${Math.min(f1.managementFee, f2.managementFee)}% compared to ${Math.max(f1.managementFee, f2.managementFee)}%. However, consider the total cost including performance fees: ${f1.name} charges ${f1.performanceFee}% performance fee while ${f2.name} charges ${f2.performanceFee}%. The overall value depends on your investment goals and expected returns.`
+        answer: `${(f1.managementFee || 0) < (f2.managementFee || 0) ? f1.name : f2.name} has the lower management fee at ${formatManagementFee(Math.min(f1.managementFee || 0, f2.managementFee || 0))} compared to ${formatManagementFee(Math.max(f1.managementFee || 0, f2.managementFee || 0))}. However, consider the total cost including performance fees: ${f1.name} charges ${formatPerformanceFee(f1.performanceFee)} performance fee while ${f2.name} charges ${formatPerformanceFee(f2.performanceFee)}. The overall value depends on your investment goals and expected returns.`
       },
       {
         question: `What is the minimum investment required for each fund?`,
-        answer: `${f1.name} requires a minimum investment of €${f1.minimumInvestment.toLocaleString()}, while ${f2.name} requires €${f2.minimumInvestment.toLocaleString()}. Both funds meet the Portugal Golden Visa minimum requirement of €500,000. Choose based on your available capital and diversification strategy.`
+        answer: `${f1.name} requires a minimum investment of ${formatMinInvestment(f1.minimumInvestment)}, while ${f2.name} requires ${formatMinInvestment(f2.minimumInvestment)}. Both funds meet the Portugal Golden Visa minimum requirement of €500,000. Choose based on your available capital and diversification strategy.`
       },
       {
         question: `Are both funds eligible for Portugal Golden Visa?`,
@@ -45,7 +47,7 @@ const FundComparisonFAQ: React.FC<FundComparisonFAQProps> = ({ fund1, fund2 }) =
       {
         question: bothSameCategory 
           ? `Since both funds are in ${f1.category}, how do I choose between them?`
-          : `Should I choose a ${fund1Category} fund or a ${fund2Category} fund?`,
+          : `Should I choose ${withArticle(fund1Category)} fund or ${withArticle(fund2Category)} fund?`,
         answer: bothSameCategory 
           ? `Both funds focus on ${fund1Category}, so compare their track records, management teams, fee structures, and specific investment strategies. Consider ${f1.name}'s approach managed by ${f1.managerName} versus ${f2.name}'s strategy under ${f2.managerName}. Review their historical performance, redemption terms, and alignment with your investment timeline.`
           : `The choice between ${fund1Category} (${f1.name}) and ${fund2Category} (${f2.name}) depends on your risk tolerance and investment goals. ${fund1Category.charAt(0).toUpperCase() + fund1Category.slice(1)} investments typically offer different risk-return profiles compared to ${fund2Category}. Consider your portfolio diversification needs and long-term investment strategy.`
@@ -62,50 +64,45 @@ const FundComparisonFAQ: React.FC<FundComparisonFAQProps> = ({ fund1, fund2 }) =
   };
 
   const faqs = generateComparisonFAQs(fund1, fund2);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
-  useEffect(() => {
-    // Register FAQs with unified schema service
-    const cleanup = FAQSchemaService.registerFAQs({
-      schemaId: `comparison-faq-${fund1.id}-${fund2.id}`,
-      faqs: faqs,
-      pageContext: `Comparison: ${fund1.name} vs ${fund2.name}`
-    });
-
-    return cleanup;
-  }, [faqs, fund1.id, fund1.name, fund2.id, fund2.name]);
+  const toggleFAQ = (index: number) => {
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
 
   return (
-    <section className="bg-card rounded-lg p-6 shadow-sm border border-border mt-8" itemScope itemType="https://schema.org/FAQPage">
-      <h2 className="text-2xl font-bold mb-6 text-foreground">
-        Frequently Asked Questions: {fund1.name} vs {fund2.name}
+    <div className="mb-8 md:mb-12">
+      <h2 className="text-lg md:text-[22px] font-semibold text-foreground mb-4 md:mb-6">
+        Frequently Asked Questions
       </h2>
-      
-      <Accordion type="single" collapsible className="w-full space-y-4">
-        {faqs.map((faq: FAQItem, index: number) => (
-          <AccordionItem 
-            key={index} 
-            value={`item-${index}`}
-            className="bg-muted/50 rounded-lg border border-border"
-            itemScope 
-            itemType="https://schema.org/Question"
+      <div className="bg-card rounded-2xl border border-border overflow-hidden">
+        {faqs.map((faq, index) => (
+          <div
+            key={index}
+            className={`${index < faqs.length - 1 ? 'border-b border-border' : ''}`}
           >
-            <AccordionTrigger 
-              className="px-6 py-3 text-left hover:no-underline hover:bg-muted rounded-t-lg text-sm"
-              itemProp="name"
+            <button
+              onClick={() => toggleFAQ(index)}
+              className="w-full px-4 md:px-6 py-4 md:py-5 flex items-start md:items-center justify-between text-left hover:bg-muted/50 transition-colors gap-3"
             >
-              <span className="font-medium text-foreground">{faq.question}</span>
-            </AccordionTrigger>
-            <AccordionContent 
-              className="px-6 pb-4 text-sm text-muted-foreground leading-relaxed"
-              itemScope 
-              itemType="https://schema.org/Answer"
-            >
-              <div itemProp="text">{faq.answer}</div>
-            </AccordionContent>
-          </AccordionItem>
+              <span className="text-[14px] md:text-[15px] font-medium text-foreground break-words">
+                {faq.question}
+              </span>
+              <ChevronDown 
+                className={`w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform duration-200 mt-0.5 md:mt-0 ${
+                  expandedIndex === index ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
+            {expandedIndex === index && (
+              <div className="px-4 md:px-6 pb-4 md:pb-5 text-[13px] md:text-sm text-muted-foreground leading-relaxed break-words">
+                {faq.answer}
+              </div>
+            )}
+          </div>
         ))}
-      </Accordion>
-    </section>
+      </div>
+    </div>
   );
 };
 

@@ -1,142 +1,437 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import PageSEO from '../components/common/PageSEO';
-import { buildContactUrl } from '../utils/urlHelpers';
+import { Link } from "react-router-dom";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import PageSEO from "@/components/common/PageSEO";
+import { 
+  FileText, 
+  GitCompare, 
+  Building2, 
+  HelpCircle,
+  CheckCircle,
+  Compass,
+  Users,
+  Globe,
+  ArrowRight
+} from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const About = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen bg-background flex flex-col">
       <PageSEO pageType="about" />
-      
       <Header />
       
-      <main className="container mx-auto px-4 py-8 flex-1">
-        <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl mb-4">
-              About Movingto - Portugal Golden Visa Investment Fund Platform
-            </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Your trusted partner for Portugal Golden Visa investment decisions
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-12 mb-16">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Our Portugal Golden Visa Investment Fund Mission</h2>
-              <p className="text-gray-700 mb-4">
-                Movingto is dedicated to providing comprehensive, transparent, and reliable information about Portugal Golden Visa investment funds. 
-                We empower investors with the knowledge and tools they need to make informed decisions about their residency and investment goals.
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="bg-gradient-to-b from-muted/50 to-background border-b border-border">
+          <div className="container mx-auto px-4 py-12 md:py-16">
+            <div className="max-w-3xl mx-auto text-center">
+              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                About Movingto Funds
+              </h1>
+              <p className="text-lg text-muted-foreground mb-8">
+                A clearer way to compare Portugal Golden Visa funds.
               </p>
-              <p className="text-gray-700">
-                Our platform simplifies the complex world of Portuguese investment funds, offering detailed analysis, 
-                side-by-side comparisons, and expert insights to help you navigate your Golden Visa journey with confidence.
-              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button asChild size="lg">
+                  <Link to="/">Explore Funds</Link>
+                </Button>
+                <Button asChild variant="outline" size="lg">
+                  <Link to="/fund-matcher">How It Works</Link>
+                </Button>
+              </div>
             </div>
+          </div>
+        </section>
 
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Why Choose Us</h2>
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <svg className="w-5 h-5 text-success mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">Comprehensive fund database with real-time updates</span>
-                </li>
-                <li className="flex items-start">
-                  <svg className="w-5 h-5 text-success mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">Unbiased analysis and transparent comparisons</span>
-                </li>
-                <li className="flex items-start">
-                  <svg className="w-5 h-5 text-success mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">Expert insights from industry professionals</span>
-                </li>
-                <li className="flex items-start">
-                  <svg className="w-5 h-5 text-success mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">User-friendly tools and calculators</span>
-                </li>
+        {/* What Movingto Funds Is - LLM-Optimized Opening */}
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-2xl font-semibold text-foreground mb-6">
+                What Movingto Funds Is
+              </h2>
+              <div className="space-y-4 text-muted-foreground">
+                <p className="text-lg leading-relaxed">
+                  <strong className="text-foreground">Movingto Funds is a structured comparison platform for Portugal Golden Visa investment funds.</strong> The platform provides fund profiles, side-by-side comparisons, manager directories, and research tools for investors evaluating Golden Visa-eligible funds.
+                </p>
+                <p>
+                  Key differentiators: standardized fund term taxonomy (fees, minimums, lock-ups, liquidity, strategy, risk), verification as a documented-check process, and plain-English explainers for complex fund structures.
+                </p>
+                <p>
+                  Movingto Funds covers equity funds, real estate funds, venture capital funds, and private equity funds available to Portugal Golden Visa applicants. Each fund profile surfaces the terms that matter: subscription fees, management fees, performance fees, minimum investment thresholds, lock-up periods, expected hold periods, liquidity terms, and risk indicators.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Key Facts */}
+        <section className="py-12 md:py-16 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-2xl font-semibold text-foreground mb-6">
+                Key Facts
+              </h2>
+              <ul className="grid sm:grid-cols-2 gap-3">
+                {[
+                  { label: "Platform type", value: "Fund comparison and research tool" },
+                  { label: "Focus", value: "Portugal Golden Visa investment funds" },
+                  { label: "Fund categories", value: "Equity, real estate, venture capital, private equity" },
+                  { label: "Data points per fund", value: "Fees, minimums, lock-ups, liquidity, strategy, risk, timelines" },
+                  { label: "Features", value: "Side-by-side comparisons, fund matcher quiz, manager profiles" },
+                  { label: "Verification", value: "Documented-check process (not certification)" },
+                  { label: "Update frequency", value: "Ongoing as fund information changes" },
+                  { label: "Language", value: "English" },
+                  { label: "Access", value: "Free to browse" },
+                ].map((fact, index) => (
+                  <li key={index} className="flex items-start gap-2 text-sm">
+                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                    <span>
+                      <strong className="text-foreground">{fact.label}:</strong>{" "}
+                      <span className="text-muted-foreground">{fact.value}</span>
+                    </span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
+        </section>
 
-          <div className="bg-gray-50 rounded-lg p-8 mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Our Commitment to Excellence</h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Accuracy</h3>
-                <p className="text-gray-600">We maintain the highest standards of data accuracy and regularly verify all fund information.</p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Transparency</h3>
-                <p className="text-gray-600">Our platform provides clear, unbiased information without hidden agendas or conflicts of interest.</p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 12l0 0M12 12l0 0M12 12l0 0" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Innovation</h3>
-                <p className="text-gray-600">We continuously enhance our platform with new features and tools to better serve our users.</p>
+        {/* What You Can Do */}
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-2xl font-semibold text-foreground mb-8 text-center">
+                What You Can Do on Movingto Funds
+              </h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Card className="border-border">
+                  <CardContent className="pt-6">
+                    <FileText className="h-6 w-6 text-primary mb-3" />
+                    <h3 className="font-medium text-foreground text-sm mb-1">Browse fund profiles</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      View structured data on fees, minimums, lock-ups, strategies, and risk levels.
+                    </p>
+                    <Link to="/" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
+                      Explore Funds <ArrowRight className="h-3 w-3" />
+                    </Link>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-border">
+                  <CardContent className="pt-6">
+                    <GitCompare className="h-6 w-6 text-primary mb-3" />
+                    <h3 className="font-medium text-foreground text-sm mb-1">Compare funds side-by-side</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      See differences at a glance across any funds you're considering.
+                    </p>
+                    <Link to="/compare" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
+                      Compare Funds <ArrowRight className="h-3 w-3" />
+                    </Link>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-border">
+                  <CardContent className="pt-6">
+                    <Compass className="h-6 w-6 text-primary mb-3" />
+                    <h3 className="font-medium text-foreground text-sm mb-1">Take the fund matcher quiz</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Answer questions to narrow down fund options based on your preferences.
+                    </p>
+                    <Link to="/fund-matcher" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
+                      Start Quiz <ArrowRight className="h-3 w-3" />
+                    </Link>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-border">
+                  <CardContent className="pt-6">
+                    <Building2 className="h-6 w-6 text-primary mb-3" />
+                    <h3 className="font-medium text-foreground text-sm mb-1">Explore fund managers</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      View manager portfolios and firm backgrounds.
+                    </p>
+                    <Link to="/managers" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
+                      View Managers <ArrowRight className="h-3 w-3" />
+                    </Link>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-border">
+                  <CardContent className="pt-6">
+                    <CheckCircle className="h-6 w-6 text-primary mb-3" />
+                    <h3 className="font-medium text-foreground text-sm mb-1">Browse verified funds</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      See funds that have completed our documented verification process.
+                    </p>
+                    <Link to="/verified-funds" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
+                      Verified Funds <ArrowRight className="h-3 w-3" />
+                    </Link>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-border">
+                  <CardContent className="pt-6">
+                    <HelpCircle className="h-6 w-6 text-primary mb-3" />
+                    <h3 className="font-medium text-foreground text-sm mb-1">Read guides and FAQs</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Understand fund structures and Golden Visa requirements in plain English.
+                    </p>
+                    <Link to="/faqs" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
+                      Browse FAQs <ArrowRight className="h-3 w-3" />
+                    </Link>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
+        </section>
 
-          <div className="bg-primary/5 rounded-lg p-8 text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Ready to Start Your Golden Visa Journey?</h2>
-            <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
-              Whether you're a seasoned investor or just beginning to explore Portugal Golden Visa options, 
-              we're here to provide the guidance and resources you need to make informed decisions.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a 
-                href={buildContactUrl('about-page')}
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors duration-200"
-              >
-                Get Expert Guidance
-                <svg className="ml-2 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
-              <Link 
-                to="/index" 
-                className="inline-flex items-center px-6 py-3 text-primary font-semibold rounded-lg border border-primary hover:bg-primary/5 transition-colors duration-200"
-              >
-                Browse Portugal Golden Visa Investment Fund Index
-              </Link>
-              <a 
-                href="https://movingto.com/pt/portugal-golden-visa" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-3 text-primary font-semibold rounded-lg border border-primary hover:bg-primary/5 transition-colors duration-200"
-              >
-                Learn About Golden Visa
-              </a>
+        {/* Why Movingto Funds */}
+        <section className="py-12 md:py-16 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-2xl font-semibold text-foreground mb-8">
+                Why Movingto Funds
+              </h2>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-medium text-foreground text-base mb-1">Structured fund terms</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Every fund profile uses the same taxonomy: subscription fees, management fees, performance fees, minimum investment, lock-up period, expected hold period, liquidity terms, strategy type, and risk indicators. This makes comparison possible.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-medium text-foreground text-base mb-1">Side-by-side comparisons</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Select any two funds and see terms side by side. No need to flip between PDFs or marketing decks.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-medium text-foreground text-base mb-1">Consistent taxonomy and filters</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Filter funds by category, minimum investment range, fee structure, or verification status. The same labels apply across all funds.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-medium text-foreground text-base mb-1">Verification as a process</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Verified funds have completed a documented-check process. This is not a certification, endorsement, or guarantee. It means we have reviewed available documents and confirmed stated terms.{" "}
+                    <Link to="/verification-program" className="text-primary hover:underline">
+                      Learn more about verification
+                    </Link>.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-medium text-foreground text-base mb-1">Market context</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Guides and explainers help you understand what to look for in a Golden Visa fund without wading through legal jargon.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-medium text-foreground text-base mb-1">Part of the Movingto ecosystem</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Movingto has supported Golden Visa applicants since 2020 across Portugal, Spain, Greece, and other destinations. This platform extends that experience to fund research.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
+        </section>
+
+        {/* How Fund Information Is Built */}
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-2xl font-semibold text-foreground mb-6">
+                How Fund Information Is Built and Updated
+              </h2>
+              <div className="space-y-4 text-muted-foreground">
+                <p>
+                  Fund data comes from official fund documents where available, public regulatory filings (including CMVM where applicable), fund manager websites, and direct clarifications from fund managers.
+                </p>
+                <p>
+                  We standardize terms into a consistent format so you can compare across funds. If information changes or a fund updates its terms, we update the profile.
+                </p>
+                <p>
+                  Verification is a documented-check process. It confirms that stated terms match available documents. It is not a legal determination, endorsement, or guarantee of fund quality or performance.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Who It's For */}
+        <section className="py-12 md:py-16 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-2xl font-semibold text-foreground mb-6">
+                Who Movingto Funds Is For
+              </h2>
+              <div className="grid sm:grid-cols-3 gap-4 p-4 bg-background rounded-lg border border-border">
+                <div>
+                  <Users className="h-5 w-5 text-primary mb-2" />
+                  <h4 className="font-medium text-foreground text-sm">Applicants exploring options</h4>
+                  <p className="text-xs text-muted-foreground mt-1">First-time Golden Visa research → Faster shortlisting</p>
+                </div>
+                <div>
+                  <Users className="h-5 w-5 text-primary mb-2" />
+                  <h4 className="font-medium text-foreground text-sm">Families comparing trade-offs</h4>
+                  <p className="text-xs text-muted-foreground mt-1">Evaluating fund types and structures → Better questions for managers</p>
+                </div>
+                <div>
+                  <Users className="h-5 w-5 text-primary mb-2" />
+                  <h4 className="font-medium text-foreground text-sm">Advisors and lawyers</h4>
+                  <p className="text-xs text-muted-foreground mt-1">Quick structured overview for clients → Time saved, fewer surprises</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* About Movingto Group */}
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <div className="flex items-start gap-4">
+                <Globe className="h-8 w-8 text-primary shrink-0 mt-1" />
+                <div>
+                  <h2 className="text-2xl font-semibold text-foreground mb-4">
+                    About Movingto Group
+                  </h2>
+                  <div className="space-y-3 text-muted-foreground">
+                    <p>
+                      Movingto Funds is part of Movingto — a platform helping people navigate global mobility, from visas to relocation.
+                    </p>
+                    <p>
+                      <strong className="text-foreground">Movingto Funds is owned and operated by Movingto Group (</strong>
+                      <a 
+                        href="https://group.movingto.com" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        group.movingto.com
+                      </a>
+                      <strong className="text-foreground">).</strong>
+                    </p>
+                    <p>
+                      Movingto has supported Golden Visa applicants since 2020 across multiple destinations including Portugal, Spain, and Greece.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Frequently Asked */}
+        <section className="py-12 md:py-16 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-2xl font-semibold text-foreground mb-6">
+                Frequently Asked
+              </h2>
+              <Accordion type="single" collapsible className="space-y-2">
+                <AccordionItem value="item-1" className="bg-background border border-border rounded-lg px-4">
+                  <AccordionTrigger className="text-left text-foreground text-sm hover:no-underline">
+                    How do I compare funds?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-muted-foreground">
+                    Use the <Link to="/compare" className="text-primary hover:underline">comparison tool</Link> to select any two funds and view terms side by side.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-2" className="bg-background border border-border rounded-lg px-4">
+                  <AccordionTrigger className="text-left text-foreground text-sm hover:no-underline">
+                    What does "verified" mean?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-muted-foreground">
+                    Verified funds have completed our documented-check process. This confirms stated terms match available documents. It is not a certification or endorsement.{" "}
+                    <Link to="/verification-program" className="text-primary hover:underline">Learn more</Link>.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-3" className="bg-background border border-border rounded-lg px-4">
+                  <AccordionTrigger className="text-left text-foreground text-sm hover:no-underline">
+                    How do I know which fund is right for me?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-muted-foreground">
+                    Start with the <Link to="/fund-matcher" className="text-primary hover:underline">fund matcher quiz</Link> to narrow options based on your preferences, then compare shortlisted funds.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-4" className="bg-background border border-border rounded-lg px-4">
+                  <AccordionTrigger className="text-left text-foreground text-sm hover:no-underline">
+                    How often is fund information updated?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-muted-foreground">
+                    We update fund profiles as information changes. If you spot something outdated, contact us at info@movingto.com.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-5" className="bg-background border border-border rounded-lg px-4">
+                  <AccordionTrigger className="text-left text-foreground text-sm hover:no-underline">
+                    Is Movingto Funds free to use?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-muted-foreground">
+                    Yes. Browsing fund profiles, using comparisons, and taking the fund matcher quiz are all free.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          </div>
+        </section>
+
+        {/* Explore CTA Block */}
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-2xl mx-auto text-center">
+              <h2 className="text-2xl font-semibold text-foreground mb-4">
+                Explore
+              </h2>
+              <p className="text-muted-foreground mb-8">
+                Start comparing Portugal Golden Visa funds.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button asChild size="lg">
+                  <Link to="/">Browse Funds</Link>
+                </Button>
+                <Button asChild variant="outline" size="lg">
+                  <Link to="/compare">Compare Funds</Link>
+                </Button>
+                <Button asChild variant="ghost" size="lg">
+                  <Link to="/fund-matcher">Take the Fund Quiz</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer Disclosure Line */}
+        <div className="container mx-auto px-4 pb-8">
+          <p className="text-center text-xs text-muted-foreground">
+            Commercial relationships and important information: see our{" "}
+            <Link to="/disclaimer" className="underline hover:text-foreground">
+              Disclosure
+            </Link>.
+          </p>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

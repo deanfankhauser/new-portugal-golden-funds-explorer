@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Button } from '../ui/button';
 import { Phone, BarChart3 } from 'lucide-react';
 import { useComparison } from '../../contexts/ComparisonContext';
-import { calculateRiskScore, getRiskLabel, getRiskColor } from '../../utils/riskCalculation';
+import { calculateRiskBand, getRiskBandLabel, getRiskBandColor } from '../../utils/riskCalculation';
 import { buildBookingUrl, openExternalLink } from '../../utils/urlHelpers';
 import analytics from '../../utils/analytics';
 import FundSnapshotCard from './FundSnapshotCard';
-import { FundEditButton } from '../fund-editing/FundEditButton';
+
 import { managerToSlug } from '../../lib/utils';
 
 interface FundHeroSnapshotProps {
@@ -19,10 +19,10 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
   const { isInComparison, addToComparison } = useComparison();
   const isCompared = isInComparison(fund.id);
 
-  // Calculate risk score and get risk styling
-  const riskScore = calculateRiskScore(fund);
-  const riskLabel = getRiskLabel(riskScore);
-  const riskColor = getRiskColor(riskScore);
+  // Calculate risk band and get risk styling
+  const riskBand = calculateRiskBand(fund);
+  const riskLabel = getRiskBandLabel(riskBand);
+  const riskColor = getRiskBandColor(riskBand);
 
   const handleCompareClick = () => {
     addToComparison(fund);
@@ -45,16 +45,7 @@ const FundHeroSnapshot: React.FC<FundHeroSnapshotProps> = ({ fund }) => {
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/10"></div>
       
       <div className="relative container mx-auto px-4 py-12">
-        {/* Edit button */}
-        <div className="flex justify-end mb-6">
-          <div className="bg-white/20 backdrop-blur-sm rounded-lg p-1 border border-white/30">
-            <FundEditButton 
-              fund={fund} 
-              variant="ghost"
-              className="text-white hover:bg-white/20 hover:text-white border-white/40"
-            />
-          </div>
-        </div>
+        {/* Edit button removed on profile pages */}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* Left Side - Fund Identity & Actions */}

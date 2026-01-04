@@ -1,237 +1,97 @@
 import React, { useState } from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { Building, MapPin, Shield, FileCheck, Calendar, Hash, FileText, Briefcase, Clock } from 'lucide-react';
 import { formatCurrency } from './utils/formatters';
+import { getFundType } from '../../utils/fundTypeUtils';
 
 interface KeyTermsTableProps {
   fund: Fund;
 }
 
-// Mobile component for collapsible key terms
-const MobileKeyTermsTable: React.FC<{
-  keyTerms: Array<{ label: string; value: string; type: string }>;
-  renderValue: (term: any) => React.ReactNode;
-}> = ({ keyTerms, renderValue }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const previewCount = 4;
-  const showToggle = keyTerms.length > previewCount;
-
-  return (
-    <div className="md:hidden">
-      <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
-        {/* Always visible terms */}
-        <div className="space-y-3">
-          {keyTerms.slice(0, previewCount).map((term, index) => (
-            <div key={index} className="bg-muted/30 rounded-lg p-3">
-              <div className="text-xs text-muted-foreground font-medium mb-1">
-                {term.label}
-              </div>
-              <div>
-                {renderValue(term)}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Collapsible additional terms */}
-        {showToggle && (
-          <>
-            <CollapsibleContent className="space-y-3 mt-3">
-              {keyTerms.slice(previewCount).map((term, index) => (
-                <div key={index + previewCount} className="bg-muted/30 rounded-lg p-3">
-                  <div className="text-xs text-muted-foreground font-medium mb-1">
-                    {term.label}
-                  </div>
-                  <div>
-                    {renderValue(term)}
-                  </div>
-                </div>
-              ))}
-            </CollapsibleContent>
-
-            <CollapsibleTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="w-full mt-3 text-primary hover:text-primary/80"
-              >
-                {isExpanded ? (
-                  <>
-                    <ChevronUp className="h-4 w-4 mr-1" />
-                    Show Less
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="h-4 w-4 mr-1" />
-                    Show {keyTerms.length - previewCount} More Terms
-                  </>
-                )}
-              </Button>
-            </CollapsibleTrigger>
-          </>
-        )}
-      </Collapsible>
-    </div>
-  );
-};
-
 const KeyTermsTable: React.FC<KeyTermsTableProps> = ({ fund }) => {
-  
+  const getIcon = (label: string) => {
+    const iconMap: Record<string, React.ReactNode> = {
+      'Minimum Investment': <Building className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Fund Structure': <FileText className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Fund Term': <Clock className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Domicile': <MapPin className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Custodian': <Shield className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Auditor': <FileCheck className="h-[18px] w-[18px] text-muted-foreground" />,
+      'ISIN': <Hash className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Reporting': <FileText className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Documentation Cadence': <Calendar className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Fund Status': <Shield className="h-[18px] w-[18px] text-muted-foreground" />,
+      'Inception Date': <Calendar className="h-[18px] w-[18px] text-muted-foreground" />,
+    };
+    return iconMap[label] || <FileText className="h-[18px] w-[18px] text-muted-foreground" />;
+  };
+
+  const fundType = getFundType(fund);
+  const getFundTermValue = () => {
+    if (fundType === 'Open-Ended') return 'Perpetual';
+    if (fund.term) return `${fund.term} years`;
+    return 'N/A';
+  };
+
   const keyTerms = [
-    {
-      label: "Minimum Investment",
-      value: fund.minimumInvestment ? formatCurrency(fund.minimumInvestment) : "Contact Manager",
-      type: "currency"
-    },
-    {
-      label: "Fund Structure",
-      value: fund.category || "Investment Fund",
-      type: "text"
-    },
-    {
-      label: "Domicile",
-      value: "Portugal",
-      type: "text"
-    },
-    {
-      label: "Custodian",
-      value: fund.custodian || "Banco BPI",
-      type: "text"
-    },
-    {
-      label: "Auditor",
-      value: fund.auditor || "PwC Portugal",
-      type: "text"
-    },
-    {
-      label: "ISIN",
-      value: fund.cmvmId || "N/A",
-      type: "text"
-    },
-    {
-      label: "Reporting",
-      value: "Monthly NAV, Quarterly Reports",
-      type: "text"
-    },
-    {
-      label: "Documentation Cadence",
-      value: "Monthly",
-      type: "text"
-    },
-    {
-      label: "Fund Status",
-      value: fund.fundStatus || "Active",
-      type: "status"
-    },
-    {
-      label: "Inception Date",
-      value: fund.established ? `${fund.established}` : "N/A",
-      type: "date"
-    }
+    { label: "Minimum Investment", value: fund.minimumInvestment ? formatCurrency(fund.minimumInvestment) : "N/A", type: "currency" },
+    { label: "Fund Structure", value: fund.category || "N/A", type: "text" },
+    { label: "Fund Term", value: getFundTermValue(), type: "text" },
+    { label: "Domicile", value: fund.location || "N/A", type: "text" },
+    { label: "Custodian", value: fund.custodian || "N/A", type: "text" },
+    { label: "Auditor", value: fund.auditor || "N/A", type: "text" },
+    { label: "ISIN", value: fund.isin || "N/A", type: "text" },
+    { label: "Typical Ticket", value: fund.typicalTicket ? formatCurrency(fund.typicalTicket) : "N/A", type: "currency" },
+    { label: "Risk Band", value: fund.riskBand || "N/A", type: "text" },
+    { label: "Fund Status", value: fund.fundStatus || "N/A", type: "status" },
+    { label: "Inception Date", value: fund.established ? `${fund.established}` : "N/A", type: "date" },
   ];
 
   const renderValue = (term: typeof keyTerms[0]) => {
-    switch (term.type) {
-      case 'status':
-        return (
-          <Badge 
-            variant={term.value === 'Active' ? 'default' : 'outline'}
-            className={term.value === 'Active' ? 'bg-success text-success-foreground' : ''}
-          >
-            {term.value}
-          </Badge>
-        );
-      case 'currency':
-        return <span className="font-semibold text-foreground">{term.value}</span>;
-      default:
-        return <span className="text-foreground">{term.value}</span>;
+    if (term.type === 'status') {
+      return (
+        <Badge variant={term.value === 'Active' ? 'default' : 'outline'} className="text-xs">
+          {term.value}
+        </Badge>
+      );
     }
+    return <span className="text-[15px] font-semibold text-foreground">{term.value}</span>;
   };
 
+  // Fields that need stacked layout on mobile due to long values
+  const stackedFields = ['ISIN', 'Domicile', 'Custodian', 'Auditor'];
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Key Terms</CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Essential fund details and structural information
-        </p>
-      </CardHeader>
-      <CardContent>
+    <Card className="bg-card border border-border/40 rounded-2xl shadow-sm">
+      <CardContent className="p-5 md:p-10">
+        <h2 className="text-xl md:text-2xl font-semibold tracking-tight mb-6 md:mb-8">Key Terms</h2>
         
-        {/* Desktop: Two-column table */}
-        <div className="hidden md:block">
-          <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-            {keyTerms.map((term, index) => (
-              <div key={index} className="flex justify-between items-center py-2 border-b border-border/50 last:border-b-0">
-                <span className="text-sm text-muted-foreground font-medium">
-                  {term.label}:
+        {/* Main Terms */}
+        <div className="flex flex-col gap-3 md:gap-4">
+          {keyTerms.map((term, index) => {
+            const needsStacking = stackedFields.includes(term.label);
+            return (
+              <div 
+                key={index} 
+                className={`${needsStacking ? 'flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2' : 'flex items-center justify-between'} px-4 py-3 bg-muted/20 border border-border/40 rounded-lg hover:bg-muted/30 hover:border-border/60 transition-colors`}
+              >
+                <span className="flex items-center gap-2.5 text-sm text-foreground/70 font-medium shrink-0">
+                  {getIcon(term.label)}
+                  {term.label}
                 </span>
-                <div className="text-right">
+                <div className={needsStacking ? 'break-all sm:text-right' : ''}>
                   {renderValue(term)}
                 </div>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
-        {/* Mobile: Collapsible layout */}
-        <MobileKeyTermsTable keyTerms={keyTerms} renderValue={renderValue} />
-
-        {/* Additional Information */}
-        <div className="mt-6 pt-6 border-t border-border">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            {/* Regulatory Information */}
-            <div>
-              <h4 className="font-semibold text-sm text-foreground mb-3">Regulatory Information</h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">CMVM Registered:</span>
-                  <span className="text-foreground">Yes</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">MiFID Classification:</span>
-                  <span className="text-foreground">Professional</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">AIFMD Compliant:</span>
-                  <span className="text-foreground">Yes</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Service Providers */}
-            <div>
-              <h4 className="font-semibold text-sm text-foreground mb-3">Service Providers</h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Administrator:</span>
-                  <span className="text-foreground">Fund Admin Portugal</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Legal Counsel:</span>
-                  <span className="text-foreground">Morais Leitão</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Tax Advisor:</span>
-                  <span className="text-foreground">Deloitte Portugal</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Disclaimer */}
-        <div className="mt-6 pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground">
-            Information as reported by fund manager. Terms subject to change and may vary by investor class. 
-            Please refer to offering documents for complete terms and conditions.
-          </p>
-        </div>
+        <p className="text-xs leading-relaxed text-muted-foreground mt-6 md:mt-8 pt-6 md:pt-8 border-t border-border/60">
+          Information as reported by fund manager. Terms may vary by investor class.
+        </p>
       </CardContent>
     </Card>
   );

@@ -1,13 +1,7 @@
-
-import React, { useEffect } from 'react';
-import { FAQSchemaService } from '../../services/faqSchemaService';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import React from 'react';
+import FAQSection from '../common/FAQSection';
 import { isTagGVEligible } from '../../data/services/gv-eligibility-service';
+import { pluralize } from '../../utils/textHelpers';
 
 interface FAQItem {
   question: string;
@@ -24,6 +18,16 @@ const TagPageFAQ: React.FC<TagPageFAQProps> = ({ tagName, tagSlug, fundsCount })
   // Generate tag-specific FAQs
   const generateTagFAQs = (tag: string, count: number): FAQItem[] => {
     const isEligible = isTagGVEligible(tag as any);
+    const fundWord = pluralize(count, 'fund');
+    
+    // Handle zero-count case with appropriate messaging
+    const getCountAnswer = (): string => {
+      if (count === 0) {
+        return `We are currently updating our ${tag.toLowerCase()} fund listings. Check back soon for the latest options, or explore related investment themes in the meantime.`;
+      }
+      return `Currently, there are ${count} ${tag.toLowerCase()} ${fundWord} available in our directory that are eligible for the Portugal Golden Visa program. Each fund has been verified to meet the program's requirements and investment criteria.`;
+    };
+    
     return [
       {
         question: `What are ${tag} Golden Visa investment funds?`,
@@ -33,11 +37,11 @@ const TagPageFAQ: React.FC<TagPageFAQProps> = ({ tagName, tagSlug, fundsCount })
       },
       {
         question: `How many ${tag} Golden Visa funds are available?`,
-        answer: `Currently, there are ${count} ${tag.toLowerCase()} funds available in our directory that are eligible for the Portugal Golden Visa program. Each fund has been verified to meet the program's requirements and investment criteria.`
+        answer: getCountAnswer()
       },
       {
         question: `What is the minimum investment for ${tag} Golden Visa funds?`,
-        answer: `Portugal Golden Visa fund route requires €500,000 total investment (post-October 2023 regulatory changes), with no real estate exposure permitted. Individual ${tag.toLowerCase()} fund subscription minimums may be lower, but total qualifying investment must reach €500,000. Sources: Nomad Gate analysis & IMI Daily regulatory updates.`
+        answer: `Portugal Golden Visa fund route requires €500,000 total investment (post-October 2023 regulatory changes), with no real estate exposure permitted. Individual ${tag.toLowerCase()} fund subscription minimums may be lower, but total qualifying investment must reach €500,000. Source: IMI Daily regulatory updates.`
       },
       {
         question: `Are ${tag} Golden Visa funds safe investments?`,
@@ -56,49 +60,12 @@ const TagPageFAQ: React.FC<TagPageFAQProps> = ({ tagName, tagSlug, fundsCount })
 
   const faqs = generateTagFAQs(tagName, fundsCount);
 
-  useEffect(() => {
-    // Register FAQs with unified schema service
-    const cleanup = FAQSchemaService.registerFAQs({
-      schemaId: `tag-faq-${tagSlug}`,
-      faqs: faqs,
-      pageContext: `${tagName} Portugal Golden Visa Funds`
-    });
-
-    return cleanup;
-  }, [faqs, tagSlug, tagName]);
-
   return (
-    <section className="bg-white rounded-lg p-6 shadow-sm border mt-8" itemScope itemType="https://schema.org/FAQPage">
-      <h2 className="text-2xl font-bold mb-6 text-gray-900">
-        Frequently Asked Questions about {tagName} Portugal Golden Visa Investment Funds
-      </h2>
-      
-      <Accordion type="single" collapsible className="w-full space-y-4">
-        {faqs.map((faq: FAQItem, index: number) => (
-          <AccordionItem 
-            key={index} 
-            value={`item-${index}`}
-            className="bg-gray-50 rounded-lg border border-gray-200"
-            itemScope 
-            itemType="https://schema.org/Question"
-          >
-            <AccordionTrigger 
-              className="px-6 py-4 text-left hover:no-underline hover:bg-gray-100 rounded-t-lg"
-              itemProp="name"
-            >
-              <span className="font-medium text-gray-900">{faq.question}</span>
-            </AccordionTrigger>
-            <AccordionContent 
-              className="px-6 pb-4 text-gray-700 leading-relaxed"
-              itemScope 
-              itemType="https://schema.org/Answer"
-            >
-              <div itemProp="text">{faq.answer}</div>
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-    </section>
+    <FAQSection 
+      faqs={faqs}
+      title={`Frequently Asked Questions about ${tagName} Portugal Golden Visa Investment Funds`}
+      schemaId="tag-faq"
+    />
   );
 };
 

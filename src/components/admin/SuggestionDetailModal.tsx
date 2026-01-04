@@ -74,6 +74,13 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
         const sc = suggestion.suggested_changes || {};
         const updatePayload: Record<string, any> = {};
 
+        // Fetch existing fund data to get current historical_performance
+        const { data: existingFund } = await supabase
+          .from('funds')
+          .select('historical_performance')
+          .eq('id', suggestion.fund_id)
+          .single();
+
         if (typeof sc.description === 'string') updatePayload.description = sc.description;
         if (typeof sc.shortDescription === 'string') updatePayload.description = sc.shortDescription;
         if (typeof sc.short_description === 'string') updatePayload.description = sc.short_description;
@@ -105,7 +112,22 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
           }
         }
         if (typeof sc.websiteUrl === 'string') updatePayload.website = sc.websiteUrl;
-        if (typeof sc.fundSize === 'number') updatePayload.aum = sc.fundSize * 1000000; // Convert millions to actual amount
+        
+        // Handle fund size update and sync with historical performance
+        if (typeof sc.fundSize === 'number') {
+          updatePayload.aum = sc.fundSize * 1000000; // Convert millions to actual amount
+          
+          // Also update historical_performance[currentYear].aum
+          const currentYear = new Date().getFullYear().toString();
+          const historicalPerf = existingFund?.historical_performance || {};
+          
+          if (!historicalPerf[currentYear]) {
+            historicalPerf[currentYear] = {};
+          }
+          historicalPerf[currentYear].aum = sc.fundSize; // Store in millions
+          updatePayload.historical_performance = historicalPerf;
+        }
+        
         if (typeof sc.established === 'number') updatePayload.inception_date = `${sc.established}-01-01`;
         if (typeof sc.regulatedBy === 'string') updatePayload.regulated_by = sc.regulatedBy;
         if (typeof sc.location === 'string') updatePayload.location = sc.location;
@@ -181,33 +203,27 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
       try {
         console.log('Fetching user profile for email notification...');
         
-        // Try to find user in manager_profiles first
+        // Fetch from unified profiles table
         let userProfile = null;
         let displayName = '';
         
-        const { data: managerProfile } = await supabase
-          .from('manager_profiles')
-          .select('email, manager_name')
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('email, manager_name, company_name, first_name, last_name')
           .eq('user_id', suggestion.user_id)
           .single();
         
-        if (managerProfile?.email) {
-          userProfile = managerProfile;
-          displayName = managerProfile.manager_name;
-          console.log('Manager profile found:', managerProfile);
-        } else {
-          // If not found in managers, try investor_profiles
-          const { data: investorProfile } = await supabase
-            .from('investor_profiles')
-            .select('email, first_name, last_name')
-            .eq('user_id', suggestion.user_id)
-            .single();
+        if (profile?.email) {
+          userProfile = { email: profile.email };
           
-          if (investorProfile?.email) {
-            userProfile = { email: investorProfile.email };
-            displayName = `${investorProfile.first_name} ${investorProfile.last_name}`.trim();
-            console.log('Investor profile found:', investorProfile);
+          // Determine display name based on profile type
+          if (profile.manager_name) {
+            displayName = profile.manager_name;
+          } else if (profile.first_name || profile.last_name) {
+            displayName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
           }
+          
+          console.log('User profile found:', profile);
         }
 
         if (userProfile?.email) {
@@ -304,33 +320,27 @@ export const SuggestionDetailModal: React.FC<SuggestionDetailModalProps> = ({
       try {
         console.log('Fetching user profile for email notification...');
         
-        // Try to find user in manager_profiles first
+        // Fetch from unified profiles table
         let userProfile = null;
         let displayName = '';
         
-        const { data: managerProfile } = await supabase
-          .from('manager_profiles')
-          .select('email, manager_name')
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('email, manager_name, company_name, first_name, last_name')
           .eq('user_id', suggestion.user_id)
           .single();
         
-        if (managerProfile?.email) {
-          userProfile = managerProfile;
-          displayName = managerProfile.manager_name;
-          console.log('Manager profile found:', managerProfile);
-        } else {
-          // If not found in managers, try investor_profiles
-          const { data: investorProfile } = await supabase
-            .from('investor_profiles')
-            .select('email, first_name, last_name')
-            .eq('user_id', suggestion.user_id)
-            .single();
+        if (profile?.email) {
+          userProfile = { email: profile.email };
           
-          if (investorProfile?.email) {
-            userProfile = { email: investorProfile.email };
-            displayName = `${investorProfile.first_name} ${investorProfile.last_name}`.trim();
-            console.log('Investor profile found:', investorProfile);
+          // Determine display name based on profile type
+          if (profile.manager_name) {
+            displayName = profile.manager_name;
+          } else if (profile.first_name || profile.last_name) {
+            displayName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim();
           }
+          
+          console.log('User profile found:', profile);
         }
 
         if (userProfile?.email) {

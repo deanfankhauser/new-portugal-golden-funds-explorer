@@ -79,21 +79,21 @@ Deno.serve(async (req) => {
 
     await executeSQL(`
       ALTER TABLE public.fund_brief_submissions
-      DROP CONSTRAINT IF EXISTS fund_brief_submissions_manager_user_fkey;
+      DROP CONSTRAINT IF EXISTS fund_brief_submissions_manager_user_id_fkey;
       
       ALTER TABLE public.fund_brief_submissions
-      ADD CONSTRAINT fund_brief_submissions_manager_user_fkey
-      FOREIGN KEY (manager_user_id) REFERENCES public.manager_profiles(user_id)
+      ADD CONSTRAINT fund_brief_submissions_manager_user_id_fkey
+      FOREIGN KEY (manager_user_id) REFERENCES public.profiles(user_id)
       ON UPDATE CASCADE ON DELETE SET NULL;
     `, 'Create manager_user_id foreign key')
 
     await executeSQL(`
       ALTER TABLE public.fund_brief_submissions
-      DROP CONSTRAINT IF EXISTS fund_brief_submissions_investor_user_fkey;
+      DROP CONSTRAINT IF EXISTS fund_brief_submissions_investor_user_id_fkey;
       
       ALTER TABLE public.fund_brief_submissions
-      ADD CONSTRAINT fund_brief_submissions_investor_user_fkey
-      FOREIGN KEY (investor_user_id) REFERENCES public.investor_profiles(user_id)
+      ADD CONSTRAINT fund_brief_submissions_investor_user_id_fkey
+      FOREIGN KEY (investor_user_id) REFERENCES public.profiles(user_id)
       ON UPDATE CASCADE ON DELETE SET NULL;
     `, 'Create investor_user_id foreign key')
 

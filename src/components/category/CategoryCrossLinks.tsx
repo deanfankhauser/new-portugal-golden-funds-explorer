@@ -17,12 +17,12 @@ const CategoryCrossLinks: React.FC<CategoryCrossLinksProps> = ({ categoryName })
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Link to="/index">
+          <Link to="/">
             <Button variant="outline" className="w-full h-auto flex-col items-center gap-2 p-4 hover:border-primary hover:text-primary">
               <TrendingUp className="h-5 w-5" />
               <div className="text-center">
-                <div className="font-medium">Fund Index</div>
-                <div className="text-xs text-muted-foreground">See all funds ranked</div>
+                <div className="font-medium">Browse Funds</div>
+                <div className="text-xs text-muted-foreground">View all funds</div>
               </div>
             </Button>
           </Link>

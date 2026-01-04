@@ -1,4 +1,4 @@
-import { Fund } from '../data/funds';
+import { Fund } from '../data/types/funds';
 
 export const getReturnTargetNumbers = (fund: Fund): { min?: number; max?: number } => {
   // Prioritize direct database fields
@@ -30,19 +30,51 @@ export const getReturnTargetNumbers = (fund: Fund): { min?: number; max?: number
   return {};
 };
 
-export const getReturnTargetDisplay = (fund: Fund): string => {
+export const getReturnTargetDisplay = (fund: Fund): string | null => {
   const { min, max } = getReturnTargetNumbers(fund);
   
-  if (min != null && max != null) {
-    if (min === max) {
-      return `${min}% annually`;
+  // Treat 0 as "not disclosed" - 0% is not a meaningful target return
+  const effectiveMin = (min != null && min > 0) ? min : null;
+  const effectiveMax = (max != null && max > 0) ? max : null;
+  
+  // If both are null/0, check for valid returnTarget string fallback
+  if (effectiveMin == null && effectiveMax == null) {
+    if (fund.returnTarget && 
+        fund.returnTarget !== 'Unspecified' && 
+        fund.returnTarget !== '0' && 
+        fund.returnTarget !== '0%' &&
+        !fund.returnTarget.includes('0-0') &&
+        !fund.returnTarget.includes('0–0')) {
+      return fund.returnTarget;
     }
-    return `${min}-${max}% annually`;
+    return null;
   }
   
-  if (fund.returnTarget) {
-    return fund.returnTarget;
+  // If only max is valid, show as single value
+  if (effectiveMin == null && effectiveMax != null) {
+    const formatted = Number(effectiveMax.toFixed(2)).toString();
+    return `${formatted}% p.a.`;
   }
   
-  return 'Contact for details';
+  // If only min is valid, show as single value
+  if (effectiveMin != null && effectiveMax == null) {
+    const formatted = Number(effectiveMin.toFixed(2)).toString();
+    return `${formatted}% p.a.`;
+  }
+  
+  // Both are valid
+  if (effectiveMin === effectiveMax) {
+    const formatted = Number(effectiveMin!.toFixed(2)).toString();
+    return `${formatted}% p.a.`;
+  }
+  
+  // Format range
+  const minFormatted = Number(effectiveMin!.toFixed(2)).toString();
+  const maxFormatted = Number(effectiveMax!.toFixed(2)).toString();
+  return `${minFormatted}–${maxFormatted}% p.a.`;
+};
+
+export const hasValidReturn = (fund: Fund): boolean => {
+  const { min, max } = getReturnTargetNumbers(fund);
+  return (min != null && min > 0) || (max != null && max > 0);
 };

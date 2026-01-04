@@ -5,9 +5,10 @@ import { buildContactUrl } from "../utils/urlHelpers";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Menu, Calculator, ClipboardCheck, Mail, ExternalLink, Users, FileText, Heart, User, Settings, LogOut, Building, TrendingUp, Shield, LogIn } from 'lucide-react';
+import { Menu, Calculator, ClipboardCheck, Mail, ExternalLink, Users, FileText, Star, User, Settings, LogOut, Building, TrendingUp, Shield, LogIn, Sparkles } from 'lucide-react';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
-import { supabase } from '@/integrations/supabase/client';
+
+const getSupabase = async () => (await import('@/integrations/supabase/client')).supabase;
 
 const MobileNavigation = () => {
   const [open, setOpen] = React.useState(false);
@@ -27,12 +28,13 @@ const MobileNavigation = () => {
   // Check admin status
   useEffect(() => {
     const checkAdminStatus = async () => {
-      if (!user?.id) {
+      if (!user?.id || typeof window === 'undefined') {
         setIsAdmin(false);
         return;
       }
 
       try {
+        const supabase = await getSupabase();
         const { data, error } = await supabase
           .from('admin_users')
           .select('role')
@@ -121,7 +123,7 @@ const MobileNavigation = () => {
                 Account
               </h3>
               <div className="space-y-2">
-                <Link to="/investor-auth" onClick={closeMenu}>
+                <Link to="/auth" onClick={closeMenu}>
                   <Button variant="ghost" className="w-full justify-start gap-3 h-12">
                     <LogIn className="h-5 w-5" />
                     <span>Login / Sign Up</span>
@@ -159,8 +161,8 @@ const MobileNavigation = () => {
               <div className="space-y-2">
                 <Link to="/saved-funds" onClick={closeMenu}>
                   <Button variant="ghost" className="w-full justify-start gap-3 h-12">
-                    <Heart className="h-5 w-5" />
-                    <span>Saved Funds</span>
+                    <Star className="h-5 w-5" />
+                    <span>Watchlist</span>
                   </Button>
                 </Link>
                 <Link to="/account-settings" onClick={closeMenu}>
@@ -204,6 +206,12 @@ const MobileNavigation = () => {
               Tools
             </h3>
             <div className="space-y-2">
+              <Link to="/fund-matcher" onClick={closeMenu}>
+                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
+                  <Sparkles className="h-5 w-5" />
+                  <span>Fund Matcher</span>
+                </Button>
+              </Link>
               <Link to="/roi-calculator" onClick={closeMenu}>
                 <Button variant="ghost" className="w-full justify-start gap-3 h-12">
                   <Calculator className="h-5 w-5" />
@@ -237,6 +245,12 @@ const MobileNavigation = () => {
                 <Button variant="ghost" className="w-full justify-start gap-3 h-12">
                   <ExternalLink className="h-5 w-5" />
                   <span>Tags</span>
+                </Button>
+              </Link>
+              <Link to="/verified-funds" onClick={closeMenu}>
+                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
+                  <ClipboardCheck className="h-5 w-5 text-success" />
+                  <span>Verified Funds</span>
                 </Button>
               </Link>
             </div>

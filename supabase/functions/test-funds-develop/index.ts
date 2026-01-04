@@ -26,7 +26,7 @@ Deno.serve(async (req) => {
       query_text: `
         SELECT table_name FROM information_schema.tables 
         WHERE table_schema = 'public' 
-        AND table_name IN ('funds', 'fund_brief_submissions', 'manager_profiles', 'investor_profiles')
+        AND table_name IN ('funds', 'fund_brief_submissions', 'profiles')
         ORDER BY table_name
       ` 
     }).single()
@@ -59,8 +59,8 @@ Deno.serve(async (req) => {
       .select(`
         *,
         funds!inner(name),
-        manager_profiles!manager_user_id(manager_name, email),
-        investor_profiles!investor_user_id(first_name, last_name, email)
+        profiles!fund_brief_submissions_manager_user_id_fkey(manager_name, company_name, email),
+        profiles!fund_brief_submissions_investor_user_id_fkey(first_name, last_name, email)
       `)
       .limit(1)
 
@@ -69,8 +69,7 @@ Deno.serve(async (req) => {
     // Test 4: Check data in tables
     const { data: fundsData } = await dev.from('funds').select('id, name').limit(3)
     const { data: submissionsData } = await dev.from('fund_brief_submissions').select('*').limit(3)
-    const { data: managersData } = await dev.from('manager_profiles').select('user_id, manager_name').limit(3)
-    const { data: investorsData } = await dev.from('investor_profiles').select('user_id, first_name, last_name').limit(3)
+    const { data: profilesData } = await dev.from('profiles').select('user_id, manager_name, company_name, first_name, last_name').limit(3)
 
     return new Response(JSON.stringify({
       status: 'success',
@@ -81,8 +80,7 @@ Deno.serve(async (req) => {
         sampleData: {
           funds: fundsData,
           submissions: submissionsData,
-          managers: managersData,
-          investors: investorsData
+          profiles: profilesData
         }
       }
     }), {
