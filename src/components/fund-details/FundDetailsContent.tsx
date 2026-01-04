@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Fund } from '../../data/types/funds';
 import DecisionBandHeader from './DecisionBandHeader';
@@ -42,6 +42,7 @@ import ContactSidebar from './ContactSidebar';
 import FundSocialMediaSection from './FundSocialMediaSection';
 import FundVideoSection from './FundVideoSection';
 import FundNewsSection from './FundNewsSection';
+import { useCompanyProfile, getCompanySocialMedia } from '@/hooks/useCompanyProfile';
 
 interface TeamMemberSSR {
   id: string;
@@ -63,6 +64,10 @@ interface FundDetailsContentProps {
 
 const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund, initialFunds, initialTeamMembers }) => {
   const isGVEligible = isFundGVEligible(fund);
+  
+  // Fetch company profile to get social media
+  const { data: companyProfile } = useCompanyProfile(fund.managerName);
+  const companySocialMedia = getCompanySocialMedia(companyProfile);
   
   // Filter out "Golden Visa Eligible" tag for non-GV funds
   const displayTags = fund.tags.filter(tag => 
@@ -134,7 +139,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund, initialFu
                       <TeamSection team={fund.team} managerName={fund.managerName} initialTeamMembers={initialTeamMembers} />
                     </section>
 
-                    {/* Social Media Section */}
+                    {/* Social Media Section - inherits from company profile with fund override */}
                     <FundSocialMediaSection
                       youtubeUrl={fund.youtubeUrl}
                       instagramUrl={fund.instagramUrl}
@@ -142,6 +147,7 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund, initialFu
                       facebookUrl={fund.facebookUrl}
                       twitterUrl={fund.twitterUrl}
                       linkedinUrl={fund.linkedinUrl}
+                      companySocialMedia={companySocialMedia}
                     />
 
                     {/* Featured Video Section */}
