@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Menu } from "lucide-react";
+import { Sparkles, Menu, ChevronDown, Calculator, Target, DollarSign } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -70,17 +70,39 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-2 flex-shrink-0">
-            <Button
-              variant="ghost"
-              size="sm"
-              asChild
-              className="text-background hover:bg-background/10 hover:text-white gap-1.5"
-            >
-              <Link to="/fund-matcher">
-                <Sparkles className="h-4 w-4" />
-                <span>Fund Matcher</span>
-              </Link>
-            </Button>
+            {/* Tools Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-background hover:bg-background/10 hover:text-white gap-1.5"
+                >
+                  <span>Tools</span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
+                  <Link to="/fund-matcher" className="w-full cursor-pointer flex items-center gap-2">
+                    <Sparkles className="h-4 w-4" />
+                    Fund Matcher
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/roi-calculator" className="w-full cursor-pointer flex items-center gap-2">
+                    <Calculator className="h-4 w-4" />
+                    ROI Calculator
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/cost-calculator" className="w-full cursor-pointer flex items-center gap-2">
+                    <DollarSign className="h-4 w-4" />
+                    Cost Calculator
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <SavedFundsIndicator />
             <ComparisonIndicator />
             <AuthAwareButton />
