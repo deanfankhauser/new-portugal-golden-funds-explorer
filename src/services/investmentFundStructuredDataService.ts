@@ -177,6 +177,12 @@ export class InvestmentFundStructuredDataService {
     if (fund.datePublished) {
       schema.datePublished = fund.datePublished;
     }
+    
+    // Add lastReviewed for freshness signals (uses lastDataReviewDate or dateModified)
+    const lastReviewedDate = fund.lastDataReviewDate || fund.dateModified;
+    if (lastReviewedDate) {
+      schema.lastReviewed = lastReviewedDate;
+    }
 
     // Add potentialAction for investment process
     schema.potentialAction = {

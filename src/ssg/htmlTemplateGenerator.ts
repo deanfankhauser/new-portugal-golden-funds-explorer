@@ -55,7 +55,24 @@ export function generateMetaTagsHTML(seoData: SEOData): string {
   const title = seoData.title || 'Portugal Golden Visa Investment Funds | Eligible Investments 2025';
   const description = seoData.description || 'Compare and discover the best Golden Visa-eligible investment funds in Portugal. Expert analysis, comprehensive data, and personalized recommendations.';
   const url = seoData.url || 'https://funds.movingto.com';
-  const canonicalUrl = seoData.canonical || url; // Prefer explicit canonical if provided
+  
+  // Strip query params from canonical URL for clean indexing
+  const canonicalUrl = (() => {
+    try {
+      const rawCanonical = seoData.canonical || url;
+      const urlObj = new URL(rawCanonical);
+      urlObj.search = ''; // Remove query params
+      urlObj.hash = ''; // Remove fragment
+      // Remove trailing slashes (except homepage)
+      if (urlObj.pathname.endsWith('/') && urlObj.pathname !== '/') {
+        urlObj.pathname = urlObj.pathname.slice(0, -1);
+      }
+      return urlObj.toString();
+    } catch {
+      return seoData.canonical || url;
+    }
+  })();
+  
   const keywords = seoData.keywords?.join(', ') || 'Portugal Golden Visa, investment funds, Portuguese residency, Golden Visa funds 2025, fund comparison, investment migration';
   const robots = seoData.robots || 'index, follow, max-image-preview:large';
   
