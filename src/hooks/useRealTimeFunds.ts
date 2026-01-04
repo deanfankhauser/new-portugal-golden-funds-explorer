@@ -87,7 +87,7 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
             detailedDescription: fund.detailed_description || '',
             managerName: fund.manager_name || '',
             minimumInvestment: Number(fund.minimum_investment) || 0,
-            fundSize: Number(fund.aum) / 1000000 || 0,
+            fundSize: fund.aum ? Number(fund.aum) : null, // Store in base EUR, null if not available
             managementFee: Number(fund.management_fee) || 0,
             performanceFee: Number(fund.performance_fee) || 0,
             term: Math.round((fund.lock_up_period_months || 0) / 12) || 5,
@@ -236,7 +236,7 @@ export const useRealTimeFunds = (options: UseRealTimeFundsOptions = {}) => {
         detailedDescription: fundData.detailed_description || '',
         managerName: fundData.manager_name || '',
         minimumInvestment: Number(fundData.minimum_investment) || 0,
-        fundSize: Number(fundData.aum) / 1000000 || 0,
+        fundSize: fundData.aum ? Number(fundData.aum) : null, // Store in base EUR, null if not available
         managementFee: Number(fundData.management_fee) || 0,
         performanceFee: Number(fundData.performance_fee) || 0,
         term: Math.round((fundData.lock_up_period_months || 0) / 12) || 5,

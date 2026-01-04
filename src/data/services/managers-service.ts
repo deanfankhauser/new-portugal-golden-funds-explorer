@@ -78,9 +78,18 @@ export const getFundsCountByManager = (funds: Fund[], managerName: string): numb
   ).length;
 };
 
-// Function to get total fund size managed by a manager
-export const getTotalFundSizeByManager = (funds: Fund[], managerName: string): number => {
-  return funds
-    .filter(fund => fund.managerName.toLowerCase() === managerName.toLowerCase())
-    .reduce((sum, fund) => sum + fund.fundSize, 0);
+// Function to get total fund size managed by a manager (returns base EUR, null if no data)
+export const getTotalFundSizeByManager = (funds: Fund[], managerName: string): number | null => {
+  const managerFunds = funds.filter(fund => 
+    fund.managerName.toLowerCase() === managerName.toLowerCase()
+  );
+  
+  // Filter funds that have valid fund size data
+  const fundsWithSize = managerFunds.filter(fund => fund.fundSize && fund.fundSize > 0);
+  
+  if (fundsWithSize.length === 0) {
+    return null; // No fund size data available
+  }
+  
+  return fundsWithSize.reduce((sum, fund) => sum + (fund.fundSize || 0), 0);
 };

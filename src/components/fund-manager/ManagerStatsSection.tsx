@@ -2,6 +2,7 @@ import React from 'react';
 import { Shield, TrendingUp, Building2, Calendar } from 'lucide-react';
 import StandardCard from '../common/StandardCard';
 import { Profile } from '@/types/profile';
+import { formatAUM } from '@/utils/currencyFormatters';
 
 interface ManagerStatsSectionProps {
   managerProfile: Profile;
@@ -12,20 +13,6 @@ const ManagerStatsSection: React.FC<ManagerStatsSectionProps> = ({
   managerProfile, 
   fundsCount 
 }) => {
-  const formatAUM = (aum: number): string => {
-    // Convert to millions first
-    const millions = aum / 1000000;
-    
-    // If >= 1000 million (1 billion), show in billions
-    if (millions >= 1000) {
-      const billions = millions / 1000;
-      // Remove .0 from whole numbers
-      return `€${billions % 1 === 0 ? billions.toFixed(0) : billions.toFixed(1)}B`;
-    }
-    
-    // Show in millions, remove .0 from whole numbers
-    return `€${millions % 1 === 0 ? millions.toFixed(0) : millions.toFixed(1)}M`;
-  };
 
   const hasStats = managerProfile.assets_under_management || 
                    managerProfile.founded_year || 
@@ -40,12 +27,11 @@ const ManagerStatsSection: React.FC<ManagerStatsSectionProps> = ({
         <h2 className="text-2xl font-semibold text-foreground mb-8">Company Overview</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* AUM Card */}
           {managerProfile.assets_under_management && managerProfile.assets_under_management > 0 && (
             <StandardCard padding="sm" className="text-center">
               <TrendingUp className="h-8 w-8 text-primary mx-auto mb-3" />
               <div className="text-3xl font-bold text-foreground">
-                €{formatAUM(managerProfile.assets_under_management)}
+                {formatAUM(managerProfile.assets_under_management)}
               </div>
               <div className="text-sm text-muted-foreground mt-2">
                 Assets Under Management

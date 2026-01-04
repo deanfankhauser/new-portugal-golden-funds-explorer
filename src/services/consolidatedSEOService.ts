@@ -769,8 +769,16 @@ export class ConsolidatedSEOService {
       document.head.appendChild(canonical);
     }
     
-    // Always remove trailing slashes from canonical URLs (except for homepage)
+    // Parse URL to clean it up
     const urlObj = new URL(url);
+    
+    // Strip ALL query parameters from canonical URLs
+    urlObj.search = '';
+    
+    // Strip hash/fragment
+    urlObj.hash = '';
+    
+    // Remove trailing slashes from canonical URLs (except for homepage)
     if (urlObj.pathname.endsWith('/') && urlObj.pathname !== '/') {
       urlObj.pathname = urlObj.pathname.slice(0, -1);
     }

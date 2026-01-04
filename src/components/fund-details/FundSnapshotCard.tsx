@@ -13,6 +13,8 @@ import PerformancePreview from './PerformancePreview';
 import KeyFactsChips from './KeyFactsChips';
 import AuthGate from '../auth/AuthGate';
 import { formatManagementFee, formatPerformanceFee } from '../../utils/feeFormatters';
+import { GVBadge } from '../ui/GVBadge';
+import { GV_LABELS } from '../../utils/gvComplianceLabels';
 
 interface FundSnapshotCardProps {
   fund: Fund;
@@ -164,34 +166,39 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
 
   const usEligible = getUSEligibility();
 
-  // Get fund size from AUM in historicalPerformance
+  // Get fund size from AUM in historicalPerformance or fundSize
   const getFundSize = (): string => {
-    if (!fund.historicalPerformance) return 'N/A';
-    
-    const years = Object.keys(fund.historicalPerformance).sort((a, b) => parseInt(b) - parseInt(a));
-    if (years.length > 0) {
-      const latestYear = years[0];
-      const aum = fund.historicalPerformance[latestYear]?.aum;
-      if (aum !== undefined && aum !== null) {
-        // If AUM is already in millions (< 1000), use it directly
-        // If AUM is in actual euros (>= 1000), convert to millions
-        if (aum >= 1000) {
-          const aumInMillions = aum / 1000000;
-          return `€${aumInMillions.toFixed(0)}M`;
+    // First try historicalPerformance AUM
+    if (fund.historicalPerformance) {
+      const years = Object.keys(fund.historicalPerformance).sort((a, b) => parseInt(b) - parseInt(a));
+      if (years.length > 0) {
+        const latestYear = years[0];
+        const aum = fund.historicalPerformance[latestYear]?.aum;
+        if (aum !== undefined && aum !== null && aum > 0) {
+          // AUM in historicalPerformance is in base EUR
+          if (aum >= 1_000_000_000) {
+            return `€${(aum / 1_000_000_000).toFixed(1)}B`;
+          }
+          if (aum >= 1_000_000) {
+            return `€${(aum / 1_000_000).toFixed(0)}M`;
+          }
+          return `€${aum.toLocaleString()}`;
         }
-        return `€${aum.toFixed(0)}M`;
       }
     }
     
-    // Fallback to fund.fundSize if available
-    if (fund.fundSize) {
-      if (fund.fundSize >= 1000) {
-        return `€${(fund.fundSize / 1000000).toFixed(0)}M`;
+    // Fallback to fund.fundSize (now in base EUR, nullable)
+    if (fund.fundSize && fund.fundSize > 0) {
+      if (fund.fundSize >= 1_000_000_000) {
+        return `€${(fund.fundSize / 1_000_000_000).toFixed(1)}B`;
       }
-      return `€${fund.fundSize.toFixed(0)}M`;
+      if (fund.fundSize >= 1_000_000) {
+        return `€${(fund.fundSize / 1_000_000).toFixed(0)}M`;
+      }
+      return `€${fund.fundSize.toLocaleString()}`;
     }
     
-    return 'N/A';
+    return 'Not disclosed';
   };
 
   return (
@@ -355,17 +362,7 @@ const FundSnapshotCard: React.FC<FundSnapshotCardProps> = ({ fund }) => {
                 </Tooltip>
               )}
               {fund.tags?.includes('Golden Visa Eligible') && fund.isVerified && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-2 px-4 py-2.5 bg-warning/10 border border-warning/20 rounded-lg text-[13px] font-semibold text-warning">
-                      <Award className="h-4 w-4" />
-                      GV Eligible
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="text-xs">Qualifies for Portugal Golden Visa</p>
-                  </TooltipContent>
-                </Tooltip>
+                <GVBadge variant="snapshot" />
               )}
               {fund.tags?.includes('UCITS') && (
                 <Tooltip>

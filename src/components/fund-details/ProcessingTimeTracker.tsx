@@ -37,13 +37,13 @@ const ProcessingTimeTracker: React.FC<ProcessingTimeTrackerProps> = ({ fund }) =
       }
     ];
 
-    // Add fund-specific steps (only for verified GV eligible funds)
+    // Add fund-specific steps (only for verified GV-intended funds)
     if (isFundGVEligible(fund) && fund.isVerified) {
       baseSteps.push({
         id: 'golden-visa-review',
         title: 'Golden Visa Review',
         duration: '5-7 days',
-        description: 'Immigration compliance and eligibility verification',
+        description: 'Immigration compliance review (eligibility confirmation by legal counsel)',
         completed: false
       });
     }

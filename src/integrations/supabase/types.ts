@@ -1305,10 +1305,12 @@ export type Database = {
           registration_number: string | null
           risk_tolerance: string | null
           team_members: Json | null
+          tiktok_url: string | null
           twitter_url: string | null
           updated_at: string
           user_id: string
           website: string | null
+          youtube_url: string | null
         }
         Insert: {
           address?: string | null
@@ -1342,10 +1344,12 @@ export type Database = {
           registration_number?: string | null
           risk_tolerance?: string | null
           team_members?: Json | null
+          tiktok_url?: string | null
           twitter_url?: string | null
           updated_at?: string
           user_id: string
           website?: string | null
+          youtube_url?: string | null
         }
         Update: {
           address?: string | null
@@ -1379,10 +1383,12 @@ export type Database = {
           registration_number?: string | null
           risk_tolerance?: string | null
           team_members?: Json | null
+          tiktok_url?: string | null
           twitter_url?: string | null
           updated_at?: string
           user_id?: string
           website?: string | null
+          youtube_url?: string | null
         }
         Relationships: []
       }
@@ -1650,10 +1656,12 @@ export type Database = {
           manager_name: string | null
           registration_number: string | null
           team_members: Json | null
+          tiktok_url: string | null
           twitter_url: string | null
           updated_at: string | null
           user_id: string | null
           website: string | null
+          youtube_url: string | null
         }
         Insert: {
           assets_under_management?: number | null
@@ -1676,10 +1684,12 @@ export type Database = {
           manager_name?: string | null
           registration_number?: string | null
           team_members?: Json | null
+          tiktok_url?: string | null
           twitter_url?: string | null
           updated_at?: string | null
           user_id?: string | null
           website?: string | null
+          youtube_url?: string | null
         }
         Update: {
           assets_under_management?: number | null
@@ -1702,10 +1712,12 @@ export type Database = {
           manager_name?: string | null
           registration_number?: string | null
           team_members?: Json | null
+          tiktok_url?: string | null
           twitter_url?: string | null
           updated_at?: string | null
           user_id?: string | null
           website?: string | null
+          youtube_url?: string | null
         }
         Relationships: []
       }

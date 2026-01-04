@@ -2,6 +2,8 @@ import { SEOData } from '../types';
 import { optimizeTitle, optimizeDescription, slugify } from '../utils';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
+import { getSitewideSchemas } from '../schemas/sitewideSchemas';
+import { BREADCRUMB_CONFIGS } from '../schemas/breadcrumbSchema';
 
 export function getFundAlternativesSeo(fund: Fund): SEOData {
   const fundName = fund.name || 'Investment Fund';
@@ -24,17 +26,21 @@ export function getFundAlternativesSeo(fund: Fund): SEOData {
   };
 }
 
-function getFundAlternativesStructuredData(fund: Fund): any {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'WebPage',
-    'name': `Alternatives to ${fund.name}`,
-    'description': `Similar Portugal Golden Visa funds to ${fund.name}`,
-    'url': URL_CONFIG.buildFundAlternativesUrl(fund.id),
-    'mainEntity': {
-      '@type': 'FinancialProduct',
-      'name': fund.name,
-      'category': fund.category
+function getFundAlternativesStructuredData(fund: Fund): any[] {
+  return [
+    ...getSitewideSchemas(),
+    BREADCRUMB_CONFIGS.fundAlternatives(fund.name, fund.id),
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': `Alternatives to ${fund.name}`,
+      'description': `Similar Portugal Golden Visa funds to ${fund.name}`,
+      'url': URL_CONFIG.buildFundAlternativesUrl(fund.id),
+      'mainEntity': {
+        '@type': 'FinancialProduct',
+        'name': fund.name,
+        'category': fund.category
+      }
     }
-  };
+  ];
 }

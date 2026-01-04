@@ -57,12 +57,12 @@ const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categor
     return `Based on disclosed data from ${fundsCount} active ${categoryName.toLowerCase()} ${fundWord}, the average target return is approximately ${formattedReturn}% per annum. However, individual fund returns vary significantly based on strategy, risk profile, and market conditions. Always review each fund's specific performance targets, historical track record, and risk factors before investing.`;
   };
   
-  // Handle zero-count case for GV eligible question
-  const getGVEligibleAnswer = (): string => {
+  // Handle zero-count case for GV-intended question
+  const getGVIntendedAnswer = (): string => {
     if (fundsCount === 0) {
-      return `We are currently updating our ${categoryName.toLowerCase()} fund directory. Check back soon for Golden Visa eligible options.`;
+      return `We are currently updating our ${categoryName.toLowerCase()} fund directory. Check back soon for funds marketed for the Golden Visa route.`;
     }
-    return `Currently, ${stats.gvEligibleCount} of the ${fundsCount} ${categoryName.toLowerCase()} ${fundWord} in our directory are explicitly tagged as Golden Visa Eligible. These funds have been verified to meet Portugal's Golden Visa investment criteria, including CMVM regulation, minimum investment thresholds, and qualification requirements. Review each fund's eligibility documentation and consult with legal advisors to confirm Golden Visa qualification for your specific circumstances.`;
+    return `Currently, ${stats.gvEligibleCount} of the ${fundsCount} ${categoryName.toLowerCase()} ${fundWord} in our directory are marketed as GV-intended (per manager statements). These funds have documentation indicating intent to meet Portugal's Golden Visa investment criteria. Eligibility must be confirmed with Portuguese legal counsel.`;
   };
 
   const faqs: FAQItem[] = [
@@ -75,8 +75,8 @@ const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categor
       answer: getAverageReturnAnswer()
     },
     {
-      question: `How many ${categoryName} funds are Golden Visa eligible?`,
-      answer: getGVEligibleAnswer()
+      question: `How many ${categoryName} funds are marketed for Golden Visa?`,
+      answer: getGVIntendedAnswer()
     }
   ];
 

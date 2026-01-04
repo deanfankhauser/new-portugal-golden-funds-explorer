@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import StandardCard from '../common/StandardCard';
 import { Profile } from '@/types/profile';
 import { CompanyLogo } from '../shared/CompanyLogo';
+import { formatAUM } from '@/utils/currencyFormatters';
 
 interface ManagerSummaryCardProps {
   managerName: string;
@@ -20,14 +21,6 @@ const ManagerSummaryCard: React.FC<ManagerSummaryCardProps> = ({
   fundCount,
   onScheduleClick
 }) => {
-  const formatAUM = (aum: number): string => {
-    const millions = aum / 1000000;
-    if (millions >= 1000) {
-      const billions = millions / 1000;
-      return `€${billions % 1 === 0 ? billions.toFixed(0) : billions.toFixed(1)}B`;
-    }
-    return `€${millions % 1 === 0 ? millions.toFixed(0) : millions.toFixed(1)}M`;
-  };
 
   return (
     <StandardCard className="overflow-hidden w-80">

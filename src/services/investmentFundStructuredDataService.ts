@@ -177,6 +177,12 @@ export class InvestmentFundStructuredDataService {
     if (fund.datePublished) {
       schema.datePublished = fund.datePublished;
     }
+    
+    // Add lastReviewed for freshness signals (uses lastDataReviewDate or dateModified)
+    const lastReviewedDate = fund.lastDataReviewDate || fund.dateModified;
+    if (lastReviewedDate) {
+      schema.lastReviewed = lastReviewedDate;
+    }
 
     // Add potentialAction for investment process
     schema.potentialAction = {
@@ -227,12 +233,12 @@ export class InvestmentFundStructuredDataService {
       "value": isUSInvestorFriendly ? "Yes" : "No"
     });
 
-    // Golden Visa eligibility
-    const isGoldenVisaEligible = fund.tags?.includes('Golden Visa Eligible');
+    // Golden Visa intended (manager-stated)
+    const isGoldenVisaIntended = fund.tags?.includes('Golden Visa Eligible');
     additionalProperties.push({
       "@type": "PropertyValue",
-      "name": "Golden Visa Eligible",
-      "value": isGoldenVisaEligible ? "Yes" : "No"
+      "name": "GV-intended (manager-stated)",
+      "value": isGoldenVisaIntended ? "Yes" : "No"
     });
 
     // Fund status

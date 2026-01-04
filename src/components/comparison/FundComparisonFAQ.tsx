@@ -41,8 +41,8 @@ const FundComparisonFAQ: React.FC<FundComparisonFAQProps> = ({ fund1, fund2 }) =
         answer: `${f1.name} requires a minimum investment of ${formatMinInvestment(f1.minimumInvestment)}, while ${f2.name} requires ${formatMinInvestment(f2.minimumInvestment)}. Both funds meet the Portugal Golden Visa minimum requirement of €500,000. Choose based on your available capital and diversification strategy.`
       },
       {
-        question: `Are both funds eligible for Portugal Golden Visa?`,
-        answer: `Yes, both ${f1.name} and ${f2.name} are eligible for the Portugal Golden Visa program as they meet the minimum €500,000 investment requirement and are properly regulated investment funds. Investing in either fund can help you qualify for Portuguese residency through the Golden Visa route.`
+        question: `Are both funds marketed for Portugal Golden Visa?`,
+        answer: `Both ${f1.name} and ${f2.name} are marketed by their managers as intended for the Portugal Golden Visa program, meeting the minimum €500,000 investment requirement and being properly regulated investment funds. Eligibility must be confirmed with Portuguese legal counsel before investing.`
       },
       {
         question: bothSameCategory 

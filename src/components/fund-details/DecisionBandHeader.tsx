@@ -12,10 +12,11 @@ interface DecisionBandHeaderProps {
 const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
   const isOpenForSubscriptions = fund.fundStatus === 'Open';
 
-  // Helper function to generate keyword-rich subheader
+  // Helper function to generate keyword-rich subheader using ONLY structured data fields
+  // This ensures the auto-generated text cannot contradict structured data
   const generateSubheader = () => {
     const fundType = fund.isVerified && fund.tags?.includes('Golden Visa Eligible')
-      ? 'Portugal Golden Visa investment fund'
+      ? 'investment fund marketed for the Portugal Golden Visa route'
       : 'CMVM-regulated investment fund';
     
     const parts: string[] = [
@@ -34,28 +35,28 @@ const DecisionBandHeader: React.FC<DecisionBandHeaderProps> = ({ fund }) => {
       }
     }
 
-    // Add liquidity as key differentiator
-    const hasHighLiquidity = fund.tags?.some(tag => 
-      tag.includes('Daily NAV') || tag.includes('No Lock-Up') || tag.toLowerCase().includes('daily')
-    );
+    // IMPORTANT: Use ONLY redemptionTerms structured data for liquidity claims
+    // Never use tags to generate liquidity statements - this prevents contradictions
+    const redemptionFrequency = fund.redemptionTerms?.frequency?.toLowerCase();
+    const holdingPeriod = fund.redemptionTerms?.minimumHoldingPeriod;
     
-    const hasShortLockup = fund.tags?.some(tag => tag.includes('Short lock-up'));
-    const hasLongLockup = fund.tags?.some(tag => tag.includes('Long lock-up'));
-    
-    if (hasHighLiquidity) {
+    if (redemptionFrequency === 'daily' || redemptionFrequency === 'continuous trading') {
       parts.push('with daily liquidity for investors');
-    } else if (hasShortLockup) {
-      parts.push('with flexible redemption terms');
-    } else if (hasLongLockup) {
-      const holdingPeriod = fund.redemptionTerms?.minimumHoldingPeriod;
-      if (holdingPeriod) {
-        parts.push(`with ${holdingPeriod}-month minimum holding period`);
+    } else if (redemptionFrequency === 'weekly') {
+      parts.push('with weekly redemption opportunities');
+    } else if (redemptionFrequency === 'monthly') {
+      parts.push('with monthly redemption opportunities');
+    } else if (redemptionFrequency === 'quarterly') {
+      parts.push('with quarterly redemption opportunities');
+    } else if (holdingPeriod && holdingPeriod > 0) {
+      parts.push(`with ${holdingPeriod}-month minimum holding period`);
+    } else if (fund.redemptionTerms?.frequency) {
+      const freq = fund.redemptionTerms.frequency.toLowerCase();
+      if (freq !== 'not available' && freq !== 'end of term') {
+        parts.push(`with ${freq} redemption opportunities`);
       } else {
         parts.push('with long-term investment horizon');
       }
-    } else if (fund.redemptionTerms?.frequency) {
-      const freq = fund.redemptionTerms.frequency.toLowerCase();
-      parts.push(`with ${freq} redemption opportunities`);
     }
 
     return parts.join(' ') + '.';

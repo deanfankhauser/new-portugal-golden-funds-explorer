@@ -47,6 +47,8 @@ const profileSchema = z.object({
   twitter_url: z.string().trim().url('Must be a valid URL').optional().or(z.literal('')),
   facebook_url: z.string().trim().url('Must be a valid URL').optional().or(z.literal('')),
   instagram_url: z.string().trim().url('Must be a valid URL').optional().or(z.literal('')),
+  youtube_url: z.string().trim().url('Must be a valid URL').optional().or(z.literal('')),
+  tiktok_url: z.string().trim().url('Must be a valid URL').optional().or(z.literal('')),
   city: z.string().trim().max(100).optional(),
   country: z.string().trim().max(100).optional(),
   founded_year: z.number().int().min(1800).max(new Date().getFullYear()).optional().nullable(),
@@ -70,6 +72,8 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
   const [twitterUrl, setTwitterUrl] = useState(profile.twitter_url || '');
   const [facebookUrl, setFacebookUrl] = useState(profile.facebook_url || '');
   const [instagramUrl, setInstagramUrl] = useState(profile.instagram_url || '');
+  const [youtubeUrl, setYoutubeUrl] = useState((profile as any).youtube_url || '');
+  const [tiktokUrl, setTiktokUrl] = useState((profile as any).tiktok_url || '');
   const [city, setCity] = useState(profile.city || '');
   const [country, setCountry] = useState(profile.country || '');
   const [foundedYear, setFoundedYear] = useState(profile.founded_year?.toString() || '');
@@ -94,6 +98,8 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
     if (twitterUrl !== (profile.twitter_url || '')) return true;
     if (facebookUrl !== (profile.facebook_url || '')) return true;
     if (instagramUrl !== (profile.instagram_url || '')) return true;
+    if (youtubeUrl !== ((profile as any).youtube_url || '')) return true;
+    if (tiktokUrl !== ((profile as any).tiktok_url || '')) return true;
     if (city !== (profile.city || '')) return true;
     if (country !== (profile.country || '')) return true;
     if (foundedYear !== (profile.founded_year?.toString() || '')) return true;
@@ -118,7 +124,7 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [companyName, managerName, description, website, linkedinUrl, twitterUrl, 
-      facebookUrl, instagramUrl, city, country, foundedYear, aum, about, 
+      facebookUrl, instagramUrl, youtubeUrl, tiktokUrl, city, country, foundedYear, aum, about, 
       logoUrl, registrationNumber, licenseNumber]);
 
   // Fetch team members from the new team_members table
@@ -387,6 +393,8 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
         twitter_url: twitterUrl || undefined,
         facebook_url: facebookUrl || undefined,
         instagram_url: instagramUrl || undefined,
+        youtube_url: youtubeUrl || undefined,
+        tiktok_url: tiktokUrl || undefined,
         city: city || undefined,
         country: country || undefined,
         founded_year: foundedYear ? parseInt(foundedYear) : null,
@@ -421,6 +429,8 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
         twitter_url: twitterUrl.trim() || null,
         facebook_url: facebookUrl.trim() || null,
         instagram_url: instagramUrl.trim() || null,
+        youtube_url: youtubeUrl.trim() || null,
+        tiktok_url: tiktokUrl.trim() || null,
         city: city.trim() || null,
         country: country.trim() || null,
         founded_year: foundedYear ? parseInt(foundedYear) : null,
@@ -690,6 +700,33 @@ const ProfileEditTab: React.FC<ProfileEditTabProps> = ({ profile, onProfileUpdat
               />
             </div>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="youtube_url">YouTube URL</Label>
+              <Input
+                id="youtube_url"
+                type="url"
+                value={youtubeUrl}
+                onChange={(e) => setYoutubeUrl(e.target.value)}
+                placeholder="https://youtube.com/@yourcompany"
+              />
+            </div>
+            <div>
+              <Label htmlFor="tiktok_url">TikTok URL</Label>
+              <Input
+                id="tiktok_url"
+                type="url"
+                value={tiktokUrl}
+                onChange={(e) => setTiktokUrl(e.target.value)}
+                placeholder="https://tiktok.com/@yourcompany"
+              />
+            </div>
+          </div>
+          
+          <p className="text-sm text-muted-foreground">
+            Social media links added here will be displayed on all your fund pages.
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

@@ -1,6 +1,8 @@
 import { SEOData } from '../types';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
+import { getSitewideSchemas } from '../schemas/sitewideSchemas';
+import { BREADCRUMB_CONFIGS } from '../schemas/breadcrumbSchema';
 
 export function getVerifiedFundsSeo(funds?: Fund[]): SEOData {
   return {
@@ -20,10 +22,12 @@ export function getVerifiedFundsSeo(funds?: Fund[]): SEOData {
   };
 }
 
-function getVerifiedFundsStructuredData(funds?: Fund[]): any {
+function getVerifiedFundsStructuredData(funds?: Fund[]): any[] {
   const verifiedFunds = funds?.filter(f => f.isVerified) || [];
   
   return [
+    ...getSitewideSchemas(),
+    BREADCRUMB_CONFIGS.verifiedFunds(),
     {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',

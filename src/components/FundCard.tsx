@@ -6,13 +6,15 @@ import { isFundGVEligible } from '../data/services/gv-eligibility-service';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { GVBadge } from "@/components/ui/GVBadge";
 import { GitCompare, Mail, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
 import { managerToSlug } from '../lib/utils';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
 import { CompanyLogo } from './shared/CompanyLogo';
 import { formatManagementFee, formatPerformanceFee } from '../utils/feeFormatters';
-import { formatFundSize } from '../utils/fundSizeFormatters';
+import { formatMinimumInvestment } from '../utils/currencyFormatters';
 import { calculateRiskBand, getRiskBandLabel, getRiskBandColor, getRiskBandBgColor } from '../utils/riskCalculation';
 
 interface FundCardProps {
@@ -97,9 +99,9 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
                     </Badge>
                   </Link>
                   {isGVEligible && (
-                    <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/20 px-3 py-1 text-[13px] font-medium">
-                      GV Eligible
-                    </Badge>
+                    <TooltipProvider>
+                      <GVBadge variant="card" />
+                    </TooltipProvider>
                   )}
                 </div>
               ) : (
@@ -129,7 +131,7 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
                 Min. Investment
               </span>
               <span className="text-sm font-semibold text-foreground">
-                €{fund.minimumInvestment?.toLocaleString() || '—'}
+                {formatMinimumInvestment(fund.minimumInvestment)}
               </span>
             </div>
             

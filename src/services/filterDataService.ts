@@ -33,7 +33,7 @@ export const getMeaningfulFilters = (funds: Fund[]): FilterOption[] => {
     .map(([tag, count]) => ({
       tag,
       count,
-      label: tag
+      label: tag === 'Golden Visa Eligible' ? 'GV-intended (manager-stated)' : tag
     }))
     .sort((a, b) => b.count - a.count);
 };
