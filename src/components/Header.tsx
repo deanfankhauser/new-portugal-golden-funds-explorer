@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Menu, ChevronDown, Calculator, DollarSign } from "lucide-react";
+import { Sparkles, Menu, ChevronDown, Calculator, DollarSign, ShieldCheck } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -73,6 +73,35 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-2 flex-shrink-0">
+            {/* Primary Nav Links */}
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="text-background hover:bg-background/10 hover:text-white"
+            >
+              <Link to="/">Funds</Link>
+            </Button>
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="text-background hover:bg-background/10 hover:text-white"
+            >
+              <Link to="/managers">Managers</Link>
+            </Button>
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="text-background hover:bg-background/10 hover:text-white gap-1.5"
+            >
+              <Link to="/verification-program">
+                <ShieldCheck className="h-4 w-4" />
+                Verification
+              </Link>
+            </Button>
+            
             {/* Tools Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

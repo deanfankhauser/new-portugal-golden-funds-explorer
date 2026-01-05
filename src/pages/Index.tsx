@@ -1,27 +1,27 @@
 
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useRef } from 'react';
 import { useFundFiltering } from '../hooks/useFundFiltering';
 import PageSEO from '../components/common/PageSEO';
 import HomepageLayout from '../components/homepage/HomepageLayout';
-import HomepageHero from '../components/homepage/HomepageHero';
-import InvestorPathways from '../components/homepage/InvestorPathways';
-import VerifiedTopPicks from '../components/homepage/VerifiedTopPicks';
-import TrustIndicators from '../components/homepage/TrustIndicators';
+import SearchFirstHero from '../components/homepage-v2/SearchFirstHero';
+import PopularCategoriesTiles from '../components/homepage-v2/PopularCategoriesTiles';
+import VerifiedFundsCarousel from '../components/homepage-v2/VerifiedFundsCarousel';
+import ManagersCarousel from '../components/homepage-v2/ManagersCarousel';
+import CompareShortlistCallout from '../components/homepage-v2/CompareShortlistCallout';
+import HowVerificationWorks from '../components/homepage-v2/HowVerificationWorks';
 import HomepageContent from '../components/homepage/HomepageContent';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
 import StickyHelpBar from '../components/common/StickyHelpBar';
-import SubmitFundCTA from '../components/homepage/SubmitFundCTA';
 import type { Fund } from '../data/types/funds';
-
-// Lazy load non-critical components
-const HomepageInfoSections = lazy(() => import('../components/homepage/HomepageInfoSections'));
 
 interface IndexPageProps {
   initialFunds?: Fund[];
 }
 
 const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
+  const fundsSectionRef = useRef<HTMLDivElement>(null);
+  
   const {
     selectedTags,
     setSelectedTags,
@@ -37,6 +37,10 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
     loading,
     error
   } = useFundFiltering({ initialFunds });
+
+  const scrollToFunds = () => {
+    fundsSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   // Show loading skeleton only during initial load when no data exists and no initial data was provided
   if (loading && !initialFunds && (!allFunds || allFunds.length === 0)) {
@@ -54,20 +58,26 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
     <HomepageLayout>
       <PageSEO pageType="homepage" />
       
-      {/* 1. Hero Section */}
-      <HomepageHero funds={allFunds || []} />
+      {/* 1. Search-First Hero */}
+      <SearchFirstHero onBrowseResults={scrollToFunds} />
 
-      {/* 2. Investor Pathways */}
-      <InvestorPathways />
+      {/* 2. Popular Categories */}
+      <PopularCategoriesTiles />
 
-      {/* 3. Verified Top Picks */}
-      <VerifiedTopPicks funds={allFunds || []} />
+      {/* 3. Verified Funds Carousel */}
+      <VerifiedFundsCarousel funds={allFunds || []} />
 
-      {/* 4. Trust Indicators */}
-      <TrustIndicators />
+      {/* 4. Fund Managers Carousel */}
+      <ManagersCarousel funds={allFunds || []} />
 
-      {/* 5. Full Directory */}
-      <div id="funds-section">
+      {/* 5. Compare + Shortlist Callouts */}
+      <CompareShortlistCallout />
+
+      {/* 6. How Verification Works */}
+      <HowVerificationWorks />
+
+      {/* 7. Full Directory */}
+      <div id="funds-section" ref={fundsSectionRef}>
         <HomepageContent
           filteredFunds={filteredFunds}
           selectedTags={selectedTags}
@@ -84,15 +94,6 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
           error={error ? String(error) : undefined}
         />
       </div>
-
-      {/* Submit Fund CTA */}
-      <SubmitFundCTA />
-
-      <section className="mt-12 sm:mt-16 lg:mt-20 mb-16 md:mb-0" aria-label="Additional resources">
-        <Suspense fallback={<FundListSkeleton />}>
-          <HomepageInfoSections />
-        </Suspense>
-      </section>
 
       <FloatingActionButton />
       <StickyHelpBar />
