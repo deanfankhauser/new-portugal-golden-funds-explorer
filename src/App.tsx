@@ -57,6 +57,7 @@ const SubmitFundMailto = lazy(() => import('./pages/SubmitFundMailto'));
 const FundMatcher = lazy(() => import('./pages/FundMatcher'));
 const FundMatcherResults = lazy(() => import('./pages/FundMatcherResults'));
 const BestFundsPage = lazy(() => import('./pages/BestFundsPage'));
+const USCitizensFundsPage = lazy(() => import('./pages/USCitizensFundsPage'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 const FundsPage = lazy(() => import('./pages/FundsPage'));
@@ -293,6 +294,11 @@ function App() {
                       <Route path="/best-portugal-golden-visa-funds" element={
                         <Suspense fallback={<PageLoader />}>
                           <BestFundsPage />
+                        </Suspense>
+                      } />
+                      <Route path="/funds/us-citizens" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <USCitizensFundsPage />
                         </Suspense>
                       } />
                         

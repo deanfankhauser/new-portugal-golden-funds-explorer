@@ -53,6 +53,7 @@ export class RouteDiscovery {
     routes.push({ path: '/fund-matcher', pageType: 'fund-matcher' });
     routes.push({ path: '/funds', pageType: 'funds' });
     routes.push({ path: '/best-portugal-golden-visa-funds', pageType: 'best-funds' });
+    routes.push({ path: '/funds/us-citizens', pageType: 'us-citizens-funds' });
     
     routes.push({ path: '/managers', pageType: 'managers-hub' });
     routes.push({ path: '/categories', pageType: 'categories-hub' });

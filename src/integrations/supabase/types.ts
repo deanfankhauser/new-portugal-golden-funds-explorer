@@ -884,6 +884,8 @@ export type Database = {
       }
       funds: {
         Row: {
+          accepts_us_persons_source_url: string | null
+          accepts_us_persons_status: string | null
           algo_rank: number | null
           auditor: string | null
           aum: number | null
@@ -900,6 +902,8 @@ export type Database = {
           expected_return_min: number | null
           facebook_url: string | null
           faqs: Json | null
+          fatca_source_url: string | null
+          fatca_stated: boolean | null
           final_rank: number | null
           geographic_allocation: Json | null
           gv_eligible: boolean | null
@@ -950,6 +954,8 @@ export type Database = {
           youtube_video_url: string | null
         }
         Insert: {
+          accepts_us_persons_source_url?: string | null
+          accepts_us_persons_status?: string | null
           algo_rank?: number | null
           auditor?: string | null
           aum?: number | null
@@ -966,6 +972,8 @@ export type Database = {
           expected_return_min?: number | null
           facebook_url?: string | null
           faqs?: Json | null
+          fatca_source_url?: string | null
+          fatca_stated?: boolean | null
           final_rank?: number | null
           geographic_allocation?: Json | null
           gv_eligible?: boolean | null
@@ -1016,6 +1024,8 @@ export type Database = {
           youtube_video_url?: string | null
         }
         Update: {
+          accepts_us_persons_source_url?: string | null
+          accepts_us_persons_status?: string | null
           algo_rank?: number | null
           auditor?: string | null
           aum?: number | null
@@ -1032,6 +1042,8 @@ export type Database = {
           expected_return_min?: number | null
           facebook_url?: string | null
           faqs?: Json | null
+          fatca_source_url?: string | null
+          fatca_stated?: boolean | null
           final_rank?: number | null
           geographic_allocation?: Json | null
           gv_eligible?: boolean | null
