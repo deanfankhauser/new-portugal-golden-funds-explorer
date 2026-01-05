@@ -401,7 +401,7 @@ const QuickFilterBar: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button 
               size="lg" 
-              onClick={() => navigate(`/categories${searchParams.toString() ? `?${searchParams.toString()}` : ''}`)}
+              onClick={() => navigate(`/funds${searchParams.toString() ? `?${searchParams.toString()}` : ''}`)}
               className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 rounded-full shadow-sm"
             >
               Browse results
