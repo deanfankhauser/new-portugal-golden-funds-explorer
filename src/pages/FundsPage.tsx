@@ -86,10 +86,14 @@ const filterFunds = (funds: Fund[], params: URLSearchParams): Fund[] => {
   });
 };
 
-const FundsPage: React.FC = () => {
+interface FundsPageProps {
+  initialFunds?: Fund[];
+}
+
+const FundsPage: React.FC<FundsPageProps> = ({ initialFunds }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [sortBy, setSortBy] = useState('verified');
-  const { funds, loading, error } = useRealTimeFunds();
+  const { funds, loading, error } = useRealTimeFunds({ initialData: initialFunds });
 
   // Get active filters
   const activeFilters: { key: string; value: string; label: string }[] = [];
@@ -143,7 +147,7 @@ const FundsPage: React.FC = () => {
 
   return (
     <>
-      <PageSEO pageType="homepage" />
+      <PageSEO pageType="funds" />
       <Header />
       
       <main className="min-h-screen bg-background">

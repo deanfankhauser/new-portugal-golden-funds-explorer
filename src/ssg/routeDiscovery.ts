@@ -51,6 +51,7 @@ export class RouteDiscovery {
     routes.push({ path: '/verification-program', pageType: 'verification-program' });
     routes.push({ path: '/ira-401k-eligible-funds', pageType: 'ira-401k-eligible' });
     routes.push({ path: '/fund-matcher', pageType: 'fund-matcher' });
+    routes.push({ path: '/funds', pageType: 'funds' });
     
     routes.push({ path: '/managers', pageType: 'managers-hub' });
     routes.push({ path: '/categories', pageType: 'categories-hub' });
