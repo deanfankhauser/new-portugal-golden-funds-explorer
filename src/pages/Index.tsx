@@ -9,6 +9,7 @@ import VerifiedFundsCarousel from '../components/homepage-v2/VerifiedFundsCarous
 import ManagersCarousel from '../components/homepage-v2/ManagersCarousel';
 import CompareShortlistCallout from '../components/homepage-v2/CompareShortlistCallout';
 import HowVerificationWorks from '../components/homepage-v2/HowVerificationWorks';
+import BrowseDirectory from '../components/homepage-v2/BrowseDirectory';
 import HomepageContent from '../components/homepage/HomepageContent';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
@@ -76,6 +77,8 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
       {/* 6. How Verification Works */}
       <HowVerificationWorks />
 
+      {/* 7. Browse Directory */}
+      <BrowseDirectory />
 
       <FloatingActionButton />
       <StickyHelpBar />
