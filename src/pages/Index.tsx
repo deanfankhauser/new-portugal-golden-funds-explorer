@@ -7,6 +7,7 @@ import SearchFirstHero from '../components/homepage-v2/SearchFirstHero';
 import PopularCategoriesTiles from '../components/homepage-v2/PopularCategoriesTiles';
 import VerifiedFundsCarousel from '../components/homepage-v2/VerifiedFundsCarousel';
 import ManagersCarousel from '../components/homepage-v2/ManagersCarousel';
+import TeamMembersCarousel from '../components/homepage-v2/TeamMembersCarousel';
 import CompareShortlistCallout from '../components/homepage-v2/CompareShortlistCallout';
 import HowVerificationWorks from '../components/homepage-v2/HowVerificationWorks';
 import BrowseDirectory from '../components/homepage-v2/BrowseDirectory';
@@ -70,6 +71,9 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
 
       {/* 4. Fund Managers Carousel */}
       <ManagersCarousel funds={allFunds || []} />
+
+      {/* 4a. Team Members Carousel */}
+      <TeamMembersCarousel />
 
       {/* 5. Compare + Shortlist Callouts */}
       <CompareShortlistCallout />
