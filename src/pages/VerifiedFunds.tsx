@@ -5,7 +5,6 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import FundListItem from '../components/FundListItem';
-import VerificationStats from '../components/common/VerificationStats';
 import VerificationExplainerModal from '../components/common/VerificationExplainerModal';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '../components/ui/breadcrumb';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
@@ -70,21 +69,6 @@ const VerifiedFunds: React.FC<VerifiedFundsProps> = ({ initialFunds }) => {
             Every verified fund meets our strict standards for transparency and legitimacy.
           </p>
 
-          {/* Link Section */}
-          <div className="mb-8">
-            <a 
-              href="https://www.movingto.com/portugal-golden-visa-funds" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-accent hover:text-accent/80 font-medium transition-colors"
-            >
-              Browse All Portugal Golden Visa Funds
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </a>
-          </div>
-
           <div className="flex items-center justify-center gap-2 text-muted-foreground">
             <CheckCircle2 className="w-5 h-5 text-success" />
             <span className="font-medium">
@@ -92,11 +76,6 @@ const VerifiedFunds: React.FC<VerifiedFundsProps> = ({ initialFunds }) => {
             </span>
           </div>
         </div>
-
-        {/* Verification Stats Widget */}
-        <section className="mb-12">
-          <VerificationStats funds={allFunds || []} variant="detailed" />
-        </section>
 
 
         {/* Verified Funds List */}
