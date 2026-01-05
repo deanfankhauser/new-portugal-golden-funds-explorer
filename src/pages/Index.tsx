@@ -15,6 +15,7 @@ import HomepageContent from '../components/homepage/HomepageContent';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
 import StickyHelpBar from '../components/common/StickyHelpBar';
+import RecentlyViewedFunds from '../components/RecentlyViewedFunds';
 import type { Fund } from '../data/types/funds';
 
 interface IndexPageProps {
@@ -62,6 +63,9 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
       
       {/* 1. Search-First Hero */}
       <SearchFirstHero onBrowseResults={scrollToFunds} />
+
+      {/* Recently Viewed Funds */}
+      <RecentlyViewedFunds />
 
       {/* 2. Popular Categories */}
       <PopularCategoriesTiles />
