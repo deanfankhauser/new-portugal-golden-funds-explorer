@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, Shield, Award, TrendingUp } from 'lucide-react';
+import { CheckCircle2, Shield } from 'lucide-react';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -98,98 +98,6 @@ const VerifiedFunds: React.FC<VerifiedFundsProps> = ({ initialFunds }) => {
           <VerificationStats funds={allFunds || []} variant="detailed" />
         </section>
 
-        {/* What Verification Means Section */}
-        <section className="mb-12">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold">What Does Verification Mean?</h2>
-            <Link to="/verification-program">
-              <Button variant="outline" size="sm">
-                Learn More About Verification
-              </Button>
-            </Link>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card className="border-2 border-success/20 hover:border-success/40 transition-colors">
-              <CardHeader>
-                <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center mb-4">
-                  <Shield className="w-6 h-6 text-success" />
-                </div>
-                <CardTitle>Regulatory Compliance</CardTitle>
-                <CardDescription>
-                  Verified funds have confirmed regulatory registration with CMVM (Portuguese Securities Market Commission) 
-                  and comply with all applicable investment fund regulations.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-2 border-success/20 hover:border-success/40 transition-colors">
-              <CardHeader>
-                <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center mb-4">
-                  <Award className="w-6 h-6 text-success" />
-                </div>
-                <CardTitle>Authenticity Confirmed</CardTitle>
-                <CardDescription>
-                  Fund managers and investment details have been cross-referenced with official sources 
-                  to ensure accuracy and legitimacy of all information presented.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-2 border-success/20 hover:border-success/40 transition-colors">
-              <CardHeader>
-                <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center mb-4">
-                  <TrendingUp className="w-6 h-6 text-success" />
-                </div>
-                <CardTitle>Quality Standards</CardTitle>
-                <CardDescription>
-                  Verified funds meet our quality benchmarks for transparency, documentation completeness, 
-                  and adherence to industry best practices.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-        </section>
-
-        {/* Why It Matters Section */}
-        <section className="mb-12">
-          <Card className="bg-muted/50">
-            <CardHeader>
-              <CardTitle className="text-2xl">Why Verification Matters</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-3">
-                <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-semibold mb-1">Investor Protection</h3>
-                  <p className="text-muted-foreground">
-                    Verification helps protect investors from fraudulent schemes and ensures funds operate within legal frameworks.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex gap-3">
-                <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-semibold mb-1">Due Diligence Confidence</h3>
-                  <p className="text-muted-foreground">
-                    Save time on research by focusing on funds that have already passed rigorous verification checks.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex gap-3">
-                <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-semibold mb-1">Transparency & Trust</h3>
-                  <p className="text-muted-foreground">
-                    Verified funds demonstrate commitment to transparency and regulatory compliance, building investor trust.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
 
         {/* Verified Funds List */}
         <section>
