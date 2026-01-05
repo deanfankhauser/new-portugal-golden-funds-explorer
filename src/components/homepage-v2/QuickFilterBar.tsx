@@ -15,11 +15,7 @@ import {
 import { useGlobalSearch } from '@/hooks/useGlobalSearch';
 import { cn } from '@/lib/utils';
 
-interface QuickFilterBarProps {
-  onBrowseResults: () => void;
-}
-
-const QuickFilterBar: React.FC<QuickFilterBarProps> = ({ onBrowseResults }) => {
+const QuickFilterBar: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState('');
@@ -405,7 +401,7 @@ const QuickFilterBar: React.FC<QuickFilterBarProps> = ({ onBrowseResults }) => {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button 
               size="lg" 
-              onClick={onBrowseResults}
+              onClick={() => navigate(`/categories${searchParams.toString() ? `?${searchParams.toString()}` : ''}`)}
               className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 rounded-full shadow-sm"
             >
               Browse results
