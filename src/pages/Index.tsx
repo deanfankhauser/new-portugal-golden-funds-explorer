@@ -76,24 +76,6 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
       {/* 6. How Verification Works */}
       <HowVerificationWorks />
 
-      {/* 7. Full Directory */}
-      <div id="funds-section" ref={fundsSectionRef}>
-        <HomepageContent
-          filteredFunds={filteredFunds}
-          selectedTags={selectedTags}
-          setSelectedTags={setSelectedTags}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          selectedManager={selectedManager}
-          setSelectedManager={setSelectedManager}
-          showOnlyVerified={showOnlyVerified}
-          setShowOnlyVerified={setShowOnlyVerified}
-          searchQuery={searchQuery}
-          allFunds={allFunds}
-          loading={loading}
-          error={error ? String(error) : undefined}
-        />
-      </div>
 
       <FloatingActionButton />
       <StickyHelpBar />
