@@ -58,6 +58,7 @@ const FundMatcher = lazy(() => import('./pages/FundMatcher'));
 const FundMatcherResults = lazy(() => import('./pages/FundMatcherResults'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
+const FundsPage = lazy(() => import('./pages/FundsPage'));
 
 // Import hook to fetch funds from database
 import { useRealTimeFunds } from './hooks/useRealTimeFunds';
@@ -191,6 +192,11 @@ function App() {
                       <Route path="/categories" element={
                         <Suspense fallback={<PageLoader />}>
                           <CategoriesHub />
+                        </Suspense>
+                      } />
+                      <Route path="/funds" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <FundsPage />
                         </Suspense>
                       } />
                       <Route path="/categories/:category" element={
