@@ -53,7 +53,7 @@ const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 const SavedFunds = lazy(() => import('./pages/SavedFunds'));
 
 const FundManagerPanel = lazy(() => import('./pages/FundManagerPanel'));
-const SubmitFund = lazy(() => import('./pages/SubmitFund'));
+const SubmitFundMailto = lazy(() => import('./pages/SubmitFundMailto'));
 const FundMatcher = lazy(() => import('./pages/FundMatcher'));
 const FundMatcherResults = lazy(() => import('./pages/FundMatcherResults'));
 
@@ -368,10 +368,10 @@ function App() {
                         </Suspense>
                       } />
 
-                      {/* Submit Fund */}
+                      {/* Submit Fund (email) */}
                       <Route path="/submit-fund" element={
                         <Suspense fallback={<PageLoader />}>
-                          <SubmitFund />
+                          <SubmitFundMailto />
                         </Suspense>
                       } />
 
