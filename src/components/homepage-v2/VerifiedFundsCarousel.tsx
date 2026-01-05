@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Fund } from '@/data/types/funds';
 import { SaveFundButton } from '@/components/common/SaveFundButton';
 import { URL_CONFIG } from '@/utils/urlConfig';
+import { useQuery } from '@tanstack/react-query';
+import { getAllApprovedManagers } from '@/data/services/managers-service';
+import { ManagerLogo } from '@/components/shared/ManagerLogo';
 import {
   Carousel,
   CarouselContent,
@@ -37,6 +40,21 @@ const getLiquidityYears = (term: number | null | undefined): string => {
 };
 
 const VerifiedFundsCarousel: React.FC<VerifiedFundsCarouselProps> = ({ funds }) => {
+  // Fetch manager profiles to get logos
+  const { data: managerProfiles } = useQuery({
+    queryKey: ['approved-managers-carousel'],
+    queryFn: getAllApprovedManagers,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Create a lookup map from profiles by company name
+  const profileLookup = new Map(
+    (managerProfiles || []).map(p => [
+      p.company_name?.toLowerCase().trim(),
+      p
+    ])
+  );
+
   const verifiedFunds = funds
     .filter((f) => f.isVerified)
     .sort((a, b) => (a.finalRank || 999) - (b.finalRank || 999))
@@ -89,10 +107,18 @@ const VerifiedFundsCarousel: React.FC<VerifiedFundsCarouselProps> = ({ funds }) 
                     {fund.name}
                   </h3>
 
-                  {/* Manager Name */}
-                  <p className="text-sm text-muted-foreground mb-4">
-                    {fund.managerName || '—'}
-                  </p>
+                  {/* Manager with Logo */}
+                  <div className="flex items-center gap-2 mb-4">
+                    <ManagerLogo
+                      logoUrl={profileLookup.get(fund.managerName?.toLowerCase().trim() || '')?.logo_url}
+                      managerName={fund.managerName || 'Unknown'}
+                      size="sm"
+                      showInitialsFallback={false}
+                    />
+                    <p className="text-sm text-muted-foreground line-clamp-1">
+                      {fund.managerName || '—'}
+                    </p>
+                  </div>
 
                   {/* Metrics */}
                   <div className="grid grid-cols-2 gap-3 text-sm mb-5 flex-grow">
