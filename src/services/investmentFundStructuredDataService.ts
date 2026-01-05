@@ -1,5 +1,11 @@
 import { Fund } from '../data/types/funds';
 import { URL_CONFIG } from '../utils/urlConfig';
+import { MOVINGTO_ORGANIZATION_ID } from '../lib/seo/schemas/sitewideSchemas';
+
+// Unique @id generator for fund entities
+const generateFundId = (fundId: string) => `${URL_CONFIG.BASE_URL}/${fundId}#fund`;
+const generateManagerId = (managerName: string | undefined) => 
+  managerName ? `${URL_CONFIG.buildManagerUrl(managerName)}#organization` : undefined;
 
 export class InvestmentFundStructuredDataService {
   static generateInvestmentFundSchema(fund: Fund): any {
@@ -35,10 +41,13 @@ export class InvestmentFundStructuredDataService {
       ? `${fund.name} is a CMVM-regulated Portugal Golden Visa investment fund managed by ${fund.managerName}, investing primarily in ${fund.category.toLowerCase()}${getLiquidityText()}.`
       : fund.description || `${fund.name} is a professionally managed investment fund in Portugal.`;
 
-    // Build enhanced schema with additional properties
+    // Build enhanced schema with @id linking for SEO authority consolidation
+    const managerId = generateManagerId(fund.managerName);
+    
     const schema: any = {
       "@context": "https://schema.org",
       "@type": "InvestmentFund",
+      "@id": generateFundId(fund.id),
       "name": fund.name,
       "url": URL_CONFIG.buildFundUrl(fund.id),
       "fundLegalName": fund.name,
@@ -54,10 +63,33 @@ export class InvestmentFundStructuredDataService {
       "isAccessibleForFree": false,
       "provider": {
         "@type": "Organization",
+        ...(managerId && { "@id": managerId }),
         "name": fund.managerName,
         "url": URL_CONFIG.buildManagerUrl(fund.managerName),
-        "sameAs": fund.websiteUrl || URL_CONFIG.buildManagerUrl(fund.managerName)
-      }
+        "sameAs": fund.websiteUrl || URL_CONFIG.buildManagerUrl(fund.managerName),
+        "parentOrganization": {
+          "@type": "Organization",
+          "@id": MOVINGTO_ORGANIZATION_ID,
+          "name": "Movingto"
+        }
+      },
+      // ISIN identifier for financial data standards
+      ...(fund.isin && {
+        "identifier": {
+          "@type": "PropertyValue",
+          "propertyID": "ISIN",
+          "value": fund.isin
+        }
+      }),
+      // Interest rate / expected return as QuantitativeValue
+      ...(fund.expectedReturnMin && fund.expectedReturnMax && {
+        "interestRate": {
+          "@type": "QuantitativeValue",
+          "minValue": fund.expectedReturnMin,
+          "maxValue": fund.expectedReturnMax,
+          "unitText": "percent per annum"
+        }
+      })
     };
 
     // Add location/domicile if available

@@ -21,8 +21,14 @@ export default {
 		extend: {
 			fontFamily: {
 				'cheltenham': ['Cheltenham', 'serif'],
+				'mono-financial': ['JetBrains Mono', 'Fira Code', 'SF Mono', 'ui-monospace', 'monospace'],
 			},
 			colors: {
+				// Institutional design tokens
+				slate: {
+					900: 'hsl(222, 47%, 11%)',
+				},
+				'gold-verified': 'hsl(43, 74%, 49%)',
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

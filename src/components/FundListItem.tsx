@@ -19,6 +19,9 @@ import { CompanyLogo } from './shared/CompanyLogo';
 import { formatManagementFee, formatPerformanceFee } from '../utils/feeFormatters';
 import { formatMinimumInvestment } from '../utils/currencyFormatters';
 import { calculateRiskBand, getRiskBandLabel, getRiskBandBgColor } from '../utils/riskCalculation';
+import DataVerifiedBadge from './common/DataVerifiedBadge';
+import VerificationTooltip from './common/VerificationTooltip';
+import TechnicalSummaryBar from './fund-details/TechnicalSummaryBar';
 
 interface FundListItemProps {
   fund: Fund;
@@ -93,12 +96,7 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           </Link>
         <div className="flex items-center gap-2 flex-wrap">
           {fund.isVerified && (
-            <Link to="/verification-program" onClick={(e) => e.stopPropagation()} className="hover:opacity-80 transition-opacity">
-              <Badge variant="outline" className="bg-success/10 text-success border-success/20 px-3 py-1 text-[13px] font-medium">
-                <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
-                Verified
-              </Badge>
-            </Link>
+            <VerificationTooltip isVerified={true} />
           )}
           {fund.isVerified && isGVEligible && (
             <TooltipProvider>
@@ -111,6 +109,10 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
           >
             {fund.fundStatus}
           </Badge>
+          <DataVerifiedBadge 
+            lastVerifiedDate={fund.lastDataReviewDate || fund.dateModified} 
+            variant="inline" 
+          />
         </div>
         </div>
       </div>
@@ -122,10 +124,14 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
         </span>
 
         {/* Description */}
-        <p className="text-[14px] leading-relaxed text-muted-foreground mb-6 line-clamp-2 max-w-[85%]">
+        <p className="text-[14px] leading-relaxed text-muted-foreground mb-4 line-clamp-2 max-w-[85%]">
           {fund.description}
         </p>
         
+        {/* Technical Summary Bar - Compact version for list view */}
+        <div className="mb-4">
+          <TechnicalSummaryBar fund={fund} variant="compact" />
+        </div>
         {/* Key Metrics Row - 3 Equal Columns */}
         <div className="grid grid-cols-3 divide-x divide-border/40 border border-border/40 rounded-lg bg-muted/10 mb-6">
           {/* Column 1: Minimum Investment */}
