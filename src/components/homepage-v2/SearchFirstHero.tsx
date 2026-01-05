@@ -16,10 +16,6 @@ const SearchFirstHero: React.FC = () => {
           Filter by strategy, fees, risk, and eligibility — then request an introduction to the fund manager. No advice. Just structured facts.
         </p>
         
-        {/* Disclosure Link */}
-        <p className="text-xs text-muted-foreground/70 mb-8">
-          See our <Link to="/disclosure" className="underline hover:text-muted-foreground">Disclosure</Link>
-        </p>
 
         {/* Search Card (includes filters and CTAs) */}
         <QuickFilterBar />
