@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Filter, X, ChevronRight } from 'lucide-react';
 import Header from '@/components/Header';
@@ -6,6 +6,8 @@ import Footer from '@/components/Footer';
 import PageSEO from '@/components/common/PageSEO';
 import FundCard from '@/components/FundCard';
 import FundListSkeleton from '@/components/common/FundListSkeleton';
+import FundFiltersBar from '@/components/funds/FundFiltersBar';
+import FundsSortBar from '@/components/funds/FundsSortBar';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useRealTimeFunds } from '@/hooks/useRealTimeFunds';
@@ -86,6 +88,7 @@ const filterFunds = (funds: Fund[], params: URLSearchParams): Fund[] => {
 
 const FundsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [sortBy, setSortBy] = useState('verified');
   const { funds, loading, error } = useRealTimeFunds();
 
   // Get active filters
@@ -114,12 +117,27 @@ const FundsPage: React.FC = () => {
   // Filter funds based on URL params
   const filteredFunds = funds ? filterFunds(funds, searchParams) : [];
 
-  // Sort: verified first, then by rank
-  const sortedFunds = [...filteredFunds].sort((a, b) => {
-    if (a.isVerified && !b.isVerified) return -1;
-    if (!a.isVerified && b.isVerified) return 1;
-    return (a.finalRank ?? 999) - (b.finalRank ?? 999);
-  });
+  // Sort funds
+  const sortedFunds = useMemo(() => {
+    const sorted = [...filteredFunds];
+    switch (sortBy) {
+      case 'min-investment-asc':
+        return sorted.sort((a, b) => (a.minimumInvestment ?? 0) - (b.minimumInvestment ?? 0));
+      case 'target-return-desc':
+        return sorted.sort((a, b) => (b.expectedReturnMax ?? 0) - (a.expectedReturnMax ?? 0));
+      case 'newly-added':
+        return sorted.sort((a, b) => 
+          new Date(b.datePublished ?? b.updatedAt ?? 0).getTime() - new Date(a.datePublished ?? a.updatedAt ?? 0).getTime()
+        );
+      case 'verified':
+      default:
+        return sorted.sort((a, b) => {
+          if (a.isVerified && !b.isVerified) return -1;
+          if (!a.isVerified && b.isVerified) return 1;
+          return (a.finalRank ?? 999) - (b.finalRank ?? 999);
+        });
+    }
+  }, [filteredFunds, sortBy]);
 
   const hasFilters = activeFilters.length > 0;
 
@@ -145,30 +163,28 @@ const FundsPage: React.FC = () => {
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-foreground mb-2">
-              {hasFilters ? 'Filtered Funds' : 'All Funds'}
+            <h1 className="text-3xl font-bold text-foreground">
+              {loading ? 'Funds' : `${sortedFunds.length} Fund${sortedFunds.length !== 1 ? 's' : ''}`}
             </h1>
-            <p className="text-muted-foreground">
-              {loading ? (
-                'Loading funds...'
-              ) : (
-                <>
-                  Showing <span className="font-semibold text-foreground">{sortedFunds.length}</span> fund{sortedFunds.length !== 1 ? 's' : ''}
-                  {hasFilters && ' matching your criteria'}
-                </>
-              )}
+            <p className="text-muted-foreground mt-1">
+              {hasFilters ? 'matching your investment criteria' : 'Browse all available investment funds'}
             </p>
+          </div>
+
+          {/* Filter Bar */}
+          <div className="mb-4">
+            <FundFiltersBar />
           </div>
 
           {/* Active Filters */}
           {hasFilters && (
-            <div className="mb-6 flex flex-wrap items-center gap-2">
-              <Filter className="h-4 w-4 text-muted-foreground" />
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <span className="text-sm text-muted-foreground">{activeFilters.length} filter{activeFilters.length !== 1 ? 's' : ''} applied:</span>
               {activeFilters.map(({ key, label }) => (
                 <Badge
                   key={key}
                   variant="secondary"
-                  className="pl-3 pr-2 py-1.5 flex items-center gap-1.5 bg-primary/10 text-primary border-primary/20"
+                  className="pl-3 pr-2 py-1.5 flex items-center gap-1.5 bg-primary/10 text-primary border border-primary/20 hover:bg-primary/15 transition-colors"
                 >
                   {label}
                   <button
@@ -184,10 +200,21 @@ const FundsPage: React.FC = () => {
                 variant="ghost"
                 size="sm"
                 onClick={clearAllFilters}
-                className="text-muted-foreground hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground h-7 px-2"
               >
                 Clear all
               </Button>
+            </div>
+          )}
+
+          {/* Sort Bar */}
+          {!loading && sortedFunds.length > 0 && (
+            <div className="mb-6">
+              <FundsSortBar 
+                count={sortedFunds.length} 
+                sortBy={sortBy} 
+                onSortChange={setSortBy} 
+              />
             </div>
           )}
 
