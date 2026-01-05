@@ -2,11 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import QuickFilterBar from './QuickFilterBar';
 
-interface SearchFirstHeroProps {
-  onBrowseResults: () => void;
-}
-
-const SearchFirstHero: React.FC<SearchFirstHeroProps> = ({ onBrowseResults }) => {
+const SearchFirstHero: React.FC = () => {
   return (
     <header className="py-10 sm:py-14 lg:py-16 bg-background">
       <div className="container mx-auto px-4 max-w-4xl text-center">
@@ -26,7 +22,7 @@ const SearchFirstHero: React.FC<SearchFirstHeroProps> = ({ onBrowseResults }) =>
         </p>
 
         {/* Search Card (includes filters and CTAs) */}
-        <QuickFilterBar onBrowseResults={onBrowseResults} />
+        <QuickFilterBar />
       </div>
     </header>
   );

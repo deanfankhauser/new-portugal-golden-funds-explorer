@@ -1,5 +1,5 @@
 
-import React, { lazy, Suspense, useRef } from 'react';
+import React from 'react';
 import { useFundFiltering } from '../hooks/useFundFiltering';
 import PageSEO from '../components/common/PageSEO';
 import HomepageLayout from '../components/homepage/HomepageLayout';
@@ -11,7 +11,6 @@ import TeamMembersCarousel from '../components/homepage-v2/TeamMembersCarousel';
 import CompareShortlistCallout from '../components/homepage-v2/CompareShortlistCallout';
 import HowVerificationWorks from '../components/homepage-v2/HowVerificationWorks';
 import BrowseDirectory from '../components/homepage-v2/BrowseDirectory';
-import HomepageContent from '../components/homepage/HomepageContent';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
 import StickyHelpBar from '../components/common/StickyHelpBar';
@@ -23,27 +22,10 @@ interface IndexPageProps {
 }
 
 const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
-  const fundsSectionRef = useRef<HTMLDivElement>(null);
-  
   const {
-    selectedTags,
-    setSelectedTags,
-    selectedCategory,
-    setSelectedCategory,
-    selectedManager,
-    setSelectedManager,
-    showOnlyVerified,
-    setShowOnlyVerified,
-    searchQuery,
-    filteredFunds,
     allFunds,
     loading,
-    error
   } = useFundFiltering({ initialFunds });
-
-  const scrollToFunds = () => {
-    fundsSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   // Show loading skeleton only during initial load when no data exists and no initial data was provided
   if (loading && !initialFunds && (!allFunds || allFunds.length === 0)) {
@@ -62,7 +44,7 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
       <PageSEO pageType="homepage" />
       
       {/* 1. Search-First Hero */}
-      <SearchFirstHero onBrowseResults={scrollToFunds} />
+      <SearchFirstHero />
 
       {/* Recently Viewed Funds */}
       <RecentlyViewedFunds />
