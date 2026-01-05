@@ -1,16 +1,27 @@
-
 import React from 'react';
-import { Users } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
-const ManagersHubHeader = () => {
+interface ManagersHubHeaderProps {
+  managerCount?: number;
+}
+
+const ManagersHubHeader: React.FC<ManagersHubHeaderProps> = ({ managerCount }) => {
   return (
-    <div className="bg-card p-6 rounded-lg shadow-sm mb-8">
-      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-center" itemProp="name">
-        Portugal Golden Visa Fund Managers
-      </h1>
+    <div className="mb-8">
+      <div className="flex items-center gap-3 mb-3">
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground" itemProp="name">
+          Fund Managers
+        </h1>
+        {managerCount !== undefined && managerCount > 0 && (
+          <Badge variant="secondary" className="text-sm tabular-nums">
+            {managerCount}
+          </Badge>
+        )}
+      </div>
       
-      <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-center" itemProp="description">
-        Explore all fund managers offering Golden Visa eligible investment funds in Portugal
+      <p className="text-muted-foreground max-w-2xl" itemProp="description">
+        Explore fund managers offering Portugal Golden Visa eligible investment funds. 
+        Compare strategies, track records, and connect directly.
       </p>
     </div>
   );
