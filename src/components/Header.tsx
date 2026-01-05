@@ -120,9 +120,6 @@ const Header = () => {
             <div className="flex items-center gap-2 ml-2">
               <SavedFundsIndicator />
               <ComparisonIndicator />
-              <Button asChild variant="secondary" size="sm" className="font-semibold">
-                <Link to="/contact">Request an intro</Link>
-              </Button>
               <AuthAwareButton />
             </div>
           </div>
