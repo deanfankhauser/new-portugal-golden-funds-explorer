@@ -14,30 +14,55 @@ interface TeamMember {
   member_id?: string;
 }
 
+interface SSRTeamMember {
+  id: string;
+  slug: string;
+  name: string;
+  role: string;
+  bio?: string;
+  photo_url?: string;
+  linkedin_url?: string;
+  company_name?: string;
+}
+
 interface ManagerTeamSectionProps {
   managerName: string;
   teamMembers: TeamMember[];
+  initialTeamMembers?: SSRTeamMember[];
 }
 
-const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, teamMembers }) => {
+const ManagerTeamSection: React.FC<ManagerTeamSectionProps> = ({ managerName, teamMembers, initialTeamMembers }) => {
   const { members, loading } = useCompanyTeamMembers(managerName);
   
-  // Map fetched members to include linkedinUrl for TeamMemberGrid
-  const displayMembers = members.length > 0 
-    ? members.map(m => ({
-        ...m,
-        linkedinUrl: m.linkedinUrl,
+  // Priority: SSR-provided team members > hook-fetched members > prop team members
+  // This ensures static HTML contains links to team member pages for SEO
+  const displayMembers = initialTeamMembers && initialTeamMembers.length > 0
+    ? initialTeamMembers.map(m => ({
+        member_id: m.id,
+        slug: m.slug,
+        name: m.name,
+        role: m.role,
+        bio: m.bio,
+        photoUrl: m.photo_url,
+        linkedinUrl: m.linkedin_url,
       }))
-    : teamMembers.map(m => ({
-        ...m,
-        linkedinUrl: m.linkedin,
-      }));
+    : members.length > 0 
+      ? members.map(m => ({
+          ...m,
+          linkedinUrl: m.linkedinUrl,
+        }))
+      : teamMembers.map(m => ({
+          ...m,
+          linkedinUrl: m.linkedin,
+        }));
 
-  if (!loading && displayMembers.length === 0) {
+  // Don't show loading if we have SSR data
+  if (!initialTeamMembers && !loading && displayMembers.length === 0) {
     return null;
   }
 
-  if (loading) {
+  // Only show loading skeleton if no SSR data and still loading
+  if (!initialTeamMembers && loading) {
     return (
       <div>
         <h2 className="text-3xl font-semibold text-foreground mb-12">
