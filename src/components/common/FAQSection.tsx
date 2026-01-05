@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { HelpCircle } from 'lucide-react';
 
 interface FAQ {
   question: string;
@@ -75,23 +74,18 @@ const FAQSection: React.FC<FAQSectionProps> = ({
             itemScope 
             itemType="https://schema.org/Question"
           >
-            <div className="flex items-start gap-3 mb-3">
-              <div className="w-6 h-6 bg-primary/10 rounded-md flex items-center justify-center flex-shrink-0 mt-1">
-                <HelpCircle className="h-3.5 w-3.5 text-primary" />
-              </div>
-              <h3 
-                className="text-xl font-semibold text-foreground leading-relaxed"
-                itemProp="name"
-              >
-                {faq.question}
-              </h3>
-            </div>
+            <h3 
+              className="text-xl font-semibold text-foreground leading-relaxed mb-3"
+              itemProp="name"
+            >
+              {faq.question}
+            </h3>
             <div 
               itemScope 
               itemType="https://schema.org/Answer"
             >
               <p 
-                className="text-base text-muted-foreground leading-relaxed pl-9"
+                className="text-base text-muted-foreground leading-relaxed"
                 itemProp="text"
               >
                 {faq.answer}
@@ -122,23 +116,18 @@ const FAQSection: React.FC<FAQSectionProps> = ({
                 itemScope 
                 itemType="https://schema.org/Question"
               >
-                <div className="flex items-start gap-3 mb-3">
-                  <div className="w-6 h-6 bg-primary/10 rounded-md flex items-center justify-center flex-shrink-0 mt-1">
-                    <HelpCircle className="h-3.5 w-3.5 text-primary" />
-                  </div>
-                  <h3 
-                    className="text-xl font-semibold text-foreground leading-relaxed"
-                    itemProp="name"
-                  >
-                    {faq.question}
-                  </h3>
-                </div>
+                <h3 
+                  className="text-xl font-semibold text-foreground leading-relaxed mb-3"
+                  itemProp="name"
+                >
+                  {faq.question}
+                </h3>
                 <div 
                   itemScope 
                   itemType="https://schema.org/Answer"
                 >
                   <p 
-                    className="text-base text-muted-foreground leading-relaxed pl-9"
+                    className="text-base text-muted-foreground leading-relaxed"
                     itemProp="text"
                   >
                     {faq.answer}
