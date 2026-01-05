@@ -162,7 +162,7 @@ const MobileNavigation = () => {
                 <Link to="/saved-funds" onClick={closeMenu}>
                   <Button variant="ghost" className="w-full justify-start gap-3 h-12">
                     <Star className="h-5 w-5" />
-                    <span>Watchlist</span>
+                    <span>Shortlist</span>
                   </Button>
                 </Link>
                 <Link to="/account-settings" onClick={closeMenu}>
@@ -258,26 +258,57 @@ const MobileNavigation = () => {
 
           <Separator />
 
+          {/* Compare & Shortlist Section */}
+          <div>
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+              Compare & Save
+            </h3>
+            <div className="space-y-2">
+              <Link to="/compare" onClick={closeMenu}>
+                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
+                  <FileText className="h-5 w-5" />
+                  <span>Compare Funds</span>
+                </Button>
+              </Link>
+              <Link to="/saved-funds" onClick={closeMenu}>
+                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
+                  <Star className="h-5 w-5" />
+                  <span>Shortlist</span>
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          <Separator />
+
           {/* Contact Section */}
           <div>
             <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
               Support
             </h3>
-            <Button 
-              asChild
-              variant="ghost" 
-              className="w-full justify-start gap-3 h-12"
-            >
-              <a 
-                href={buildContactUrl('mobile-nav')}
-                target="_blank" 
-                rel="noopener noreferrer"
-                onClick={closeMenu}
+            <div className="space-y-2">
+              <Link to="/contact" onClick={closeMenu}>
+                <Button variant="default" className="w-full justify-start gap-3 h-12">
+                  <Mail className="h-5 w-5" />
+                  <span>Request an Intro</span>
+                </Button>
+              </Link>
+              <Button 
+                asChild
+                variant="ghost" 
+                className="w-full justify-start gap-3 h-12"
               >
-                <Mail className="h-5 w-5" />
-                <span>Get in Touch</span>
-              </a>
-            </Button>
+                <a 
+                  href={buildContactUrl('mobile-nav')}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  onClick={closeMenu}
+                >
+                  <Mail className="h-5 w-5" />
+                  <span>Get in Touch</span>
+                </a>
+              </Button>
+            </div>
           </div>
         </div>
       </SheetContent>
