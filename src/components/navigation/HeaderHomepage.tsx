@@ -9,7 +9,7 @@ const HeaderHomepage: React.FC = () => {
   return (
     <>
       <DisclaimerBanner />
-      <header className="bg-background border-b border-border/50 py-3 w-full">
+      <header className="bg-white border-b border-border/50 py-3 w-full">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center gap-4">
             {/* Left - Logo */}
