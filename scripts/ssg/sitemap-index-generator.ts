@@ -290,21 +290,16 @@ async function generateStaticSitemap(distDir: string): Promise<SitemapFile> {
     priority: 1.0
   });
 
-  // Static pages - all indexable content pages
+  // Static pages - only indexable content pages (exclude noindex pages like disclaimer, privacy, terms, cookie-policy)
   const staticPages = [
     { path: '/about', priority: 0.6, changefreq: 'monthly' as const },
-    { path: '/disclaimer', priority: 0.3, changefreq: 'monthly' as const },
-    { path: '/privacy', priority: 0.3, changefreq: 'monthly' as const },
     { path: '/faqs', priority: 0.7, changefreq: 'monthly' as const },
     { path: '/roi-calculator', priority: 0.6, changefreq: 'monthly' as const },
     { path: '/alternatives', priority: 0.7, changefreq: 'weekly' as const },
     { path: '/verification-program', priority: 0.5, changefreq: 'monthly' as const },
     { path: '/fund-matcher', priority: 0.9, changefreq: 'weekly' as const },
-    // Additional indexable pages
     { path: '/verified-funds', priority: 0.8, changefreq: 'weekly' as const },
     { path: '/contact', priority: 0.4, changefreq: 'monthly' as const },
-    { path: '/terms', priority: 0.2, changefreq: 'yearly' as const },
-    { path: '/cookie-policy', priority: 0.2, changefreq: 'yearly' as const },
   ];
 
   staticPages.forEach(page => {
