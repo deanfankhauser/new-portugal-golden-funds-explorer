@@ -22,6 +22,15 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ funds }) => {
     riskProfile: true,
   });
 
+  // Guard against undefined funds
+  if (!funds || funds.length < 2) {
+    return (
+      <div className="bg-card rounded-2xl border border-border p-8 text-center">
+        <p className="text-muted-foreground">Please select at least 2 funds to compare.</p>
+      </div>
+    );
+  }
+
   const fund1 = funds[0];
   const fund2 = funds[1];
 
