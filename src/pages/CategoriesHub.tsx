@@ -67,7 +67,7 @@ const CategoriesHub: React.FC<CategoriesHubProps> = ({ initialFunds }) => {
         </div>
       </main>
       
-      <Footer showBrowseSitemap={true} />
+      <Footer />
     </div>
   );
 };
