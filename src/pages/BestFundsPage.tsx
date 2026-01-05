@@ -15,9 +15,14 @@ import CommonMistakes from '@/components/best-funds/CommonMistakes';
 import CompareModule from '@/components/best-funds/CompareModule';
 import BestFundsFAQ from '@/components/best-funds/BestFundsFAQ';
 import { PageLoader } from '@/components/common/LoadingSkeleton';
+import type { Fund } from '@/data/types/funds';
 
-const BestFundsPage: React.FC = () => {
-  const { funds, loading } = useRealTimeFunds();
+interface BestFundsPageProps {
+  initialFunds?: Fund[];
+}
+
+const BestFundsPage: React.FC<BestFundsPageProps> = ({ initialFunds }) => {
+  const { funds, loading } = useRealTimeFunds({ initialData: initialFunds });
   
   const currentYear = new Date().getFullYear();
   const lastUpdated = new Date().toLocaleDateString('en-US', { 

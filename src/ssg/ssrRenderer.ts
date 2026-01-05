@@ -355,6 +355,7 @@ export class SSRRenderer {
         case '410': return ['GonePage'];
         case 'fund-matcher': return ['FundMatcher'];
         case 'funds': return ['FundsPage'];
+        case 'best-funds': return ['BestFundsPage'];
         
         default: return ['Index'];
       }
@@ -511,6 +512,12 @@ export class SSRRenderer {
                   element: isSSG 
                     ? React.createElement(getComponent('FundsPage'), { initialFunds: allFunds })
                     : React.createElement(getComponent('FundsPage'))
+                }),
+                React.createElement(Route, { 
+                  path: '/best-portugal-golden-visa-funds', 
+                  element: isSSG 
+                    ? React.createElement(getComponent('BestFundsPage'), { initialFunds: allFunds })
+                    : React.createElement(getComponent('BestFundsPage'))
                 }),
                 
                 // Auth page
