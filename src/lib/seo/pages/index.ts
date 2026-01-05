@@ -13,3 +13,4 @@ export { getVerifiedFundsSeo } from './verified-funds';
 export { getNotFoundSeo } from './not-found';
 export { getTeamMemberSeo } from './team-member';
 export { getFundMatcherSeo, getFundMatcherResultsSeo } from './fund-matcher';
+export { getBestFundsSeo } from './best-funds';

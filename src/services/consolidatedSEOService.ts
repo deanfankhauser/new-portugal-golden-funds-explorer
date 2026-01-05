@@ -28,6 +28,7 @@ import {
   getVerifiedFundsSeo,
   getNotFoundSeo,
   getTeamMemberSeo,
+  getBestFundsSeo,
   optimizeText
 } from '../lib/seo';
 
@@ -356,7 +357,9 @@ export class ConsolidatedSEOService {
           structuredData: null
         };
 
-      case 'managers-hub':
+      case 'best-funds':
+        // Delegate to centralized SEO helper
+        return getBestFundsSeo(funds);
         return {
           title: this.optimizeText('Portugal Golden Visa Fund Managers (2026) | Movingto Funds', this.MAX_TITLE_LENGTH),
           description: this.optimizeText('Browse fund manager profiles, their eligible funds, and key terms. Compare fees and governance disclosures to build a shortlist.', this.MAX_DESCRIPTION_LENGTH),

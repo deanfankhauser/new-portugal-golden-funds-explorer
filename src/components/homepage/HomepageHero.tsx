@@ -52,13 +52,21 @@ const HomepageHero: React.FC<HomepageHeroProps> = ({ funds }) => {
 
           {/* CTA Buttons */}
           <div className="text-center mb-8 space-y-4">
-            <div>
+            <div className="flex flex-col sm:flex-row justify-center gap-3">
               <Button 
                 asChild
                 size="lg"
                 className="bg-[hsl(25,45%,25%)] hover:bg-[hsl(25,45%,20%)] text-white font-semibold px-8 py-6 text-lg"
               >
                 <Link to="/fund-matcher">Find My Fund Match</Link>
+              </Button>
+              <Button 
+                asChild
+                size="lg"
+                variant="outline"
+                className="font-semibold px-8 py-6 text-lg"
+              >
+                <Link to="/best-portugal-golden-visa-funds">Best Funds 2026</Link>
               </Button>
             </div>
             <div>
