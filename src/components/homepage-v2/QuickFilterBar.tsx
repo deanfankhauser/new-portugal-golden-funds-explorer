@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Search, X } from 'lucide-react';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { Search, X, Check } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -134,168 +135,291 @@ const QuickFilterBar: React.FC<QuickFilterBarProps> = ({ onBrowseResults }) => {
   const hasResults = results.length > 0;
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-4">
-      {/* Search Input */}
-      <div className="relative">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input
-            ref={inputRef}
-            type="text"
-            placeholder="Search funds or managers…"
-            value={searchValue}
-            onChange={(e) => {
-              setSearchValue(e.target.value);
-              setIsOpen(e.target.value.length > 0);
-              setSelectedIndex(-1);
-            }}
-            onFocus={() => searchValue.length > 0 && setIsOpen(true)}
-            className="pl-12 pr-10 h-14 text-lg rounded-xl border-border bg-background shadow-sm focus-visible:ring-2 focus-visible:ring-primary"
-            aria-label="Search funds or managers"
-            aria-expanded={isOpen}
-            aria-haspopup="listbox"
-          />
-          {searchValue && (
-            <button
-              onClick={() => {
-                setSearchValue('');
-                setIsOpen(false);
-                inputRef.current?.focus();
+    <div className="w-full max-w-3xl mx-auto">
+      {/* Search Card Container */}
+      <div className="bg-card rounded-2xl shadow-lg border border-border/50 overflow-hidden">
+        {/* Search Section */}
+        <div className="p-5 sm:p-6">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
+            <Input
+              ref={inputRef}
+              type="text"
+              placeholder="Search funds or managers…"
+              value={searchValue}
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+                setIsOpen(e.target.value.length > 0);
+                setSelectedIndex(-1);
               }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              aria-label="Clear search"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          )}
-        </div>
+              onFocus={() => searchValue.length > 0 && setIsOpen(true)}
+              className="pl-12 pr-10 h-14 text-base sm:text-lg rounded-xl border-border/60 bg-background shadow-sm focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/40 transition-all"
+              aria-label="Search funds or managers"
+              aria-expanded={isOpen}
+              aria-haspopup="listbox"
+            />
+            {searchValue && (
+              <button
+                onClick={() => {
+                  setSearchValue('');
+                  setIsOpen(false);
+                  inputRef.current?.focus();
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Clear search"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            )}
 
-        {/* Search Results Dropdown */}
-        {isOpen && searchValue && (
-          <div
-            ref={dropdownRef}
-            className="absolute top-full left-0 right-0 mt-2 bg-background border border-border rounded-xl shadow-lg z-50 max-h-80 overflow-y-auto"
-            role="listbox"
-          >
-            {isSearching ? (
-              <div className="p-4 text-center text-muted-foreground">Searching...</div>
-            ) : hasResults ? (
-              <div className="py-2">
-                {groupedResults.funds.length > 0 && (
-                  <div>
-                    <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase">Funds</div>
-                    {groupedResults.funds.map((fund, index) => (
-                      <button
-                        key={fund.id}
-                        onClick={() => handleResultClick(fund.url)}
-                        className={cn(
-                          "w-full px-4 py-3 text-left hover:bg-muted transition-colors",
-                          selectedIndex === index && "bg-muted"
-                        )}
-                        role="option"
-                        aria-selected={selectedIndex === index}
-                      >
-                        <div className="font-medium">{fund.name}</div>
-                        <div className="text-sm text-muted-foreground">{fund.subtitle}</div>
-                      </button>
-                    ))}
+            {/* Search Results Dropdown */}
+            {isOpen && searchValue && (
+              <div
+                ref={dropdownRef}
+                className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-xl z-50 max-h-80 overflow-y-auto"
+                role="listbox"
+              >
+                {isSearching ? (
+                  <div className="p-4 text-center text-muted-foreground">Searching...</div>
+                ) : hasResults ? (
+                  <div className="py-2">
+                    {groupedResults.funds.length > 0 && (
+                      <div>
+                        <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Funds</div>
+                        {groupedResults.funds.map((fund, index) => (
+                          <button
+                            key={fund.id}
+                            onClick={() => handleResultClick(fund.url)}
+                            className={cn(
+                              "w-full px-4 py-3 text-left hover:bg-muted/60 transition-colors",
+                              selectedIndex === index && "bg-muted/60"
+                            )}
+                            role="option"
+                            aria-selected={selectedIndex === index}
+                          >
+                            <div className="font-medium text-foreground">{fund.name}</div>
+                            <div className="text-sm text-muted-foreground">{fund.subtitle}</div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    {groupedResults.managers.length > 0 && (
+                      <div>
+                        <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide">Managers</div>
+                        {groupedResults.managers.map((manager, index) => (
+                          <button
+                            key={manager.id}
+                            onClick={() => handleResultClick(manager.url)}
+                            className={cn(
+                              "w-full px-4 py-3 text-left hover:bg-muted/60 transition-colors",
+                              selectedIndex === groupedResults.funds.length + index && "bg-muted/60"
+                            )}
+                            role="option"
+                            aria-selected={selectedIndex === groupedResults.funds.length + index}
+                          >
+                            <div className="font-medium text-foreground">{manager.name}</div>
+                            <div className="text-sm text-muted-foreground">{manager.subtitle}</div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
-                {groupedResults.managers.length > 0 && (
-                  <div>
-                    <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase">Managers</div>
-                    {groupedResults.managers.map((manager, index) => (
-                      <button
-                        key={manager.id}
-                        onClick={() => handleResultClick(manager.url)}
-                        className={cn(
-                          "w-full px-4 py-3 text-left hover:bg-muted transition-colors",
-                          selectedIndex === groupedResults.funds.length + index && "bg-muted"
-                        )}
-                        role="option"
-                        aria-selected={selectedIndex === groupedResults.funds.length + index}
-                      >
-                        <div className="font-medium">{manager.name}</div>
-                        <div className="text-sm text-muted-foreground">{manager.subtitle}</div>
-                      </button>
-                    ))}
-                  </div>
+                ) : (
+                  <div className="p-4 text-center text-muted-foreground">No results found</div>
                 )}
               </div>
-            ) : (
-              <div className="p-4 text-center text-muted-foreground">No results found</div>
             )}
           </div>
-        )}
-      </div>
-
-      {/* Quick Filters */}
-      <div className="flex flex-wrap items-center justify-center gap-3">
-        {/* Verified Toggle */}
-        <div className="flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-lg">
-          <Switch
-            id="verified-filter"
-            checked={verifiedOnly}
-            onCheckedChange={handleVerifiedToggle}
-            className="data-[state=checked]:bg-primary"
-          />
-          <Label htmlFor="verified-filter" className="text-sm font-medium cursor-pointer">
-            Verified only
-          </Label>
         </div>
 
-        {/* Min Investment */}
-        <Select value={minInvestment || 'all'} onValueChange={handleMinInvestmentChange}>
-          <SelectTrigger className="w-[160px] bg-muted/50 border-0">
-            <SelectValue placeholder="Min investment" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Any investment</SelectItem>
-            <SelectItem value="100-250">€100K – €250K</SelectItem>
-            <SelectItem value="250-500">€250K – €500K</SelectItem>
-            <SelectItem value="500+">€500K+</SelectItem>
-          </SelectContent>
-        </Select>
+        {/* Divider */}
+        <div className="border-t border-border/40" />
 
-        {/* Risk Level */}
-        <Select value={riskLevel || 'all'} onValueChange={handleRiskChange}>
-          <SelectTrigger className="w-[130px] bg-muted/50 border-0">
-            <SelectValue placeholder="Risk level" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Any risk</SelectItem>
-            <SelectItem value="low">Low risk</SelectItem>
-            <SelectItem value="medium">Medium risk</SelectItem>
-            <SelectItem value="high">High risk</SelectItem>
-          </SelectContent>
-        </Select>
+        {/* Filters Section */}
+        <div className="px-5 sm:px-6 py-4">
+          {/* Desktop: Horizontal filter row with dividers */}
+          <div className="hidden md:flex items-center justify-center gap-0">
+            {/* Verified Checkbox */}
+            <div className="flex items-center gap-2 px-4">
+              <Checkbox
+                id="verified-filter"
+                checked={verifiedOnly}
+                onCheckedChange={(checked) => handleVerifiedToggle(checked === true)}
+                className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+              />
+              <Label 
+                htmlFor="verified-filter" 
+                className="text-sm font-medium text-foreground cursor-pointer whitespace-nowrap"
+              >
+                Verified only
+              </Label>
+            </div>
 
-        {/* Liquidity */}
-        <Select value={liquidity || 'all'} onValueChange={handleLiquidityChange}>
-          <SelectTrigger className="w-[130px] bg-muted/50 border-0">
-            <SelectValue placeholder="Liquidity" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Any term</SelectItem>
-            <SelectItem value="3-6">3–6 years</SelectItem>
-            <SelectItem value="6-8">6–8 years</SelectItem>
-            <SelectItem value="8-10">8–10 years</SelectItem>
-          </SelectContent>
-        </Select>
+            <div className="h-5 w-px bg-border/60" />
 
-        {/* Strategy */}
-        <Select value={strategy || 'all'} onValueChange={handleStrategyChange}>
-          <SelectTrigger className="w-[150px] bg-muted/50 border-0">
-            <SelectValue placeholder="Strategy" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Any strategy</SelectItem>
-            <SelectItem value="Private Equity">Private Equity</SelectItem>
-            <SelectItem value="Venture Capital">Venture Capital</SelectItem>
-            <SelectItem value="Balanced">Balanced</SelectItem>
-            <SelectItem value="Real Estate">Real Estate</SelectItem>
-          </SelectContent>
-        </Select>
+            {/* Min Investment */}
+            <div className="px-2">
+              <Select value={minInvestment || 'all'} onValueChange={handleMinInvestmentChange}>
+                <SelectTrigger className="border-0 bg-transparent shadow-none h-9 px-3 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors focus:ring-0 focus:ring-offset-0">
+                  <SelectValue placeholder="Any investment" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Any investment</SelectItem>
+                  <SelectItem value="100-250">€100K – €250K</SelectItem>
+                  <SelectItem value="250-500">€250K – €500K</SelectItem>
+                  <SelectItem value="500+">€500K+</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="h-5 w-px bg-border/60" />
+
+            {/* Risk Level */}
+            <div className="px-2">
+              <Select value={riskLevel || 'all'} onValueChange={handleRiskChange}>
+                <SelectTrigger className="border-0 bg-transparent shadow-none h-9 px-3 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors focus:ring-0 focus:ring-offset-0">
+                  <SelectValue placeholder="Any risk" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Any risk</SelectItem>
+                  <SelectItem value="low">Low risk</SelectItem>
+                  <SelectItem value="medium">Medium risk</SelectItem>
+                  <SelectItem value="high">High risk</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="h-5 w-px bg-border/60" />
+
+            {/* Liquidity/Term */}
+            <div className="px-2">
+              <Select value={liquidity || 'all'} onValueChange={handleLiquidityChange}>
+                <SelectTrigger className="border-0 bg-transparent shadow-none h-9 px-3 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors focus:ring-0 focus:ring-offset-0">
+                  <SelectValue placeholder="Any term" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Any term</SelectItem>
+                  <SelectItem value="3-6">3–6 years</SelectItem>
+                  <SelectItem value="6-8">6–8 years</SelectItem>
+                  <SelectItem value="8-10">8–10 years</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="h-5 w-px bg-border/60" />
+
+            {/* Strategy */}
+            <div className="px-2">
+              <Select value={strategy || 'all'} onValueChange={handleStrategyChange}>
+                <SelectTrigger className="border-0 bg-transparent shadow-none h-9 px-3 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors focus:ring-0 focus:ring-offset-0">
+                  <SelectValue placeholder="Any strategy" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Any strategy</SelectItem>
+                  <SelectItem value="Private Equity">Private Equity</SelectItem>
+                  <SelectItem value="Venture Capital">Venture Capital</SelectItem>
+                  <SelectItem value="Balanced">Balanced</SelectItem>
+                  <SelectItem value="Real Estate">Real Estate</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Mobile: 2-column grid */}
+          <div className="md:hidden space-y-3">
+            {/* Verified Checkbox - Full width */}
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="verified-filter-mobile"
+                checked={verifiedOnly}
+                onCheckedChange={(checked) => handleVerifiedToggle(checked === true)}
+                className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+              />
+              <Label 
+                htmlFor="verified-filter-mobile" 
+                className="text-sm font-medium text-foreground cursor-pointer"
+              >
+                Verified only
+              </Label>
+            </div>
+
+            {/* Filter Grid */}
+            <div className="grid grid-cols-2 gap-2">
+              <Select value={minInvestment || 'all'} onValueChange={handleMinInvestmentChange}>
+                <SelectTrigger className="bg-muted/30 border-border/40 h-10 text-sm">
+                  <SelectValue placeholder="Investment" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Any investment</SelectItem>
+                  <SelectItem value="100-250">€100K – €250K</SelectItem>
+                  <SelectItem value="250-500">€250K – €500K</SelectItem>
+                  <SelectItem value="500+">€500K+</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={riskLevel || 'all'} onValueChange={handleRiskChange}>
+                <SelectTrigger className="bg-muted/30 border-border/40 h-10 text-sm">
+                  <SelectValue placeholder="Risk" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Any risk</SelectItem>
+                  <SelectItem value="low">Low risk</SelectItem>
+                  <SelectItem value="medium">Medium risk</SelectItem>
+                  <SelectItem value="high">High risk</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={liquidity || 'all'} onValueChange={handleLiquidityChange}>
+                <SelectTrigger className="bg-muted/30 border-border/40 h-10 text-sm">
+                  <SelectValue placeholder="Term" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Any term</SelectItem>
+                  <SelectItem value="3-6">3–6 years</SelectItem>
+                  <SelectItem value="6-8">6–8 years</SelectItem>
+                  <SelectItem value="8-10">8–10 years</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={strategy || 'all'} onValueChange={handleStrategyChange}>
+                <SelectTrigger className="bg-muted/30 border-border/40 h-10 text-sm">
+                  <SelectValue placeholder="Strategy" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Any strategy</SelectItem>
+                  <SelectItem value="Private Equity">Private Equity</SelectItem>
+                  <SelectItem value="Venture Capital">Venture Capital</SelectItem>
+                  <SelectItem value="Balanced">Balanced</SelectItem>
+                  <SelectItem value="Real Estate">Real Estate</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="border-t border-border/40" />
+
+        {/* CTA Section */}
+        <div className="px-5 sm:px-6 py-4 bg-muted/20">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button 
+              size="lg" 
+              onClick={onBrowseResults}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 rounded-full shadow-sm"
+            >
+              Browse results
+            </Button>
+            <Button 
+              asChild
+              variant="outline" 
+              size="lg"
+              className="font-semibold px-8 rounded-full border-border/60 hover:bg-muted/50"
+            >
+              <Link to="/compare">Compare funds</Link>
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
