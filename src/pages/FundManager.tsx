@@ -15,12 +15,24 @@ import { FloatingActionButton } from '../components/common/FloatingActionButton'
 
 const isSSG = typeof window === 'undefined';
 
+interface SSRTeamMember {
+  id: string;
+  slug: string;
+  name: string;
+  role: string;
+  bio?: string;
+  photo_url?: string;
+  linkedin_url?: string;
+  company_name?: string;
+}
+
 interface FundManagerProps {
   managerData?: {
     name: string;
     profile?: Profile;
     funds: Fund[];
     isVerified: boolean;
+    teamMembers?: SSRTeamMember[];
   };
   initialFunds?: Fund[];
 }
@@ -184,6 +196,7 @@ const FundManager: React.FC<FundManagerProps> = ({ managerData, initialFunds }) 
             managerName={managerData.name} 
             isManagerVerified={managerData.isVerified}
             managerProfile={managerData.profile}
+            initialTeamMembers={managerData.teamMembers}
           />
         </main>
         <Footer />

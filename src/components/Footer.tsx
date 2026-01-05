@@ -2,10 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { Facebook, Linkedin, ExternalLink } from "lucide-react";
-import RecentlyViewedFunds from "./RecentlyViewedFunds";
 import { COMPANY_INFO } from '@/config/company';
 
-const Footer = () => {
+const Footer: React.FC = () => {
   const [currentYear, setCurrentYear] = useState(2025);
 
   useEffect(() => {
@@ -24,10 +23,7 @@ const Footer = () => {
   return (
     <footer className="bg-secondary py-10 mt-12 border-t border-border">
       <div className="container mx-auto px-4">
-        {/* Recently Viewed Funds Section */}
-        <RecentlyViewedFunds />
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1 lg:col-span-1">
             <Link to="/" className="inline-block mb-4">
               <img 

@@ -1,21 +1,21 @@
 
-import React, { lazy, Suspense } from 'react';
+import React from 'react';
 import { useFundFiltering } from '../hooks/useFundFiltering';
 import PageSEO from '../components/common/PageSEO';
 import HomepageLayout from '../components/homepage/HomepageLayout';
-import HomepageHero from '../components/homepage/HomepageHero';
-import InvestorPathways from '../components/homepage/InvestorPathways';
-import VerifiedTopPicks from '../components/homepage/VerifiedTopPicks';
-import TrustIndicators from '../components/homepage/TrustIndicators';
-import HomepageContent from '../components/homepage/HomepageContent';
+import SearchFirstHero from '../components/homepage-v2/SearchFirstHero';
+import PopularCategoriesTiles from '../components/homepage-v2/PopularCategoriesTiles';
+import VerifiedFundsCarousel from '../components/homepage-v2/VerifiedFundsCarousel';
+import ManagersCarousel from '../components/homepage-v2/ManagersCarousel';
+import TeamMembersCarousel from '../components/homepage-v2/TeamMembersCarousel';
+import CompareShortlistCallout from '../components/homepage-v2/CompareShortlistCallout';
+import HowVerificationWorks from '../components/homepage-v2/HowVerificationWorks';
+import BrowseDirectory from '../components/homepage-v2/BrowseDirectory';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
 import StickyHelpBar from '../components/common/StickyHelpBar';
-import SubmitFundCTA from '../components/homepage/SubmitFundCTA';
+import RecentlyViewedFunds from '../components/RecentlyViewedFunds';
 import type { Fund } from '../data/types/funds';
-
-// Lazy load non-critical components
-const HomepageInfoSections = lazy(() => import('../components/homepage/HomepageInfoSections'));
 
 interface IndexPageProps {
   initialFunds?: Fund[];
@@ -23,19 +23,8 @@ interface IndexPageProps {
 
 const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
   const {
-    selectedTags,
-    setSelectedTags,
-    selectedCategory,
-    setSelectedCategory,
-    selectedManager,
-    setSelectedManager,
-    showOnlyVerified,
-    setShowOnlyVerified,
-    searchQuery,
-    filteredFunds,
     allFunds,
     loading,
-    error
   } = useFundFiltering({ initialFunds });
 
   // Show loading skeleton only during initial load when no data exists and no initial data was provided
@@ -54,45 +43,32 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
     <HomepageLayout>
       <PageSEO pageType="homepage" />
       
-      {/* 1. Hero Section */}
-      <HomepageHero funds={allFunds || []} />
+      {/* 1. Search-First Hero */}
+      <SearchFirstHero />
 
-      {/* 2. Investor Pathways */}
-      <InvestorPathways />
+      {/* Recently Viewed Funds */}
+      <RecentlyViewedFunds />
 
-      {/* 3. Verified Top Picks */}
-      <VerifiedTopPicks funds={allFunds || []} />
+      {/* 2. Popular Categories */}
+      <PopularCategoriesTiles />
 
-      {/* 4. Trust Indicators */}
-      <TrustIndicators />
+      {/* 3. Verified Funds Carousel */}
+      <VerifiedFundsCarousel funds={allFunds || []} />
 
-      {/* 5. Full Directory */}
-      <div id="funds-section">
-        <HomepageContent
-          filteredFunds={filteredFunds}
-          selectedTags={selectedTags}
-          setSelectedTags={setSelectedTags}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          selectedManager={selectedManager}
-          setSelectedManager={setSelectedManager}
-          showOnlyVerified={showOnlyVerified}
-          setShowOnlyVerified={setShowOnlyVerified}
-          searchQuery={searchQuery}
-          allFunds={allFunds}
-          loading={loading}
-          error={error ? String(error) : undefined}
-        />
-      </div>
+      {/* 4. Fund Managers Carousel */}
+      <ManagersCarousel funds={allFunds || []} />
 
-      {/* Submit Fund CTA */}
-      <SubmitFundCTA />
+      {/* 4a. Team Members Carousel */}
+      <TeamMembersCarousel />
 
-      <section className="mt-12 sm:mt-16 lg:mt-20 mb-16 md:mb-0" aria-label="Additional resources">
-        <Suspense fallback={<FundListSkeleton />}>
-          <HomepageInfoSections />
-        </Suspense>
-      </section>
+      {/* 5. Compare + Shortlist Callouts */}
+      <CompareShortlistCallout />
+
+      {/* 6. How Verification Works */}
+      <HowVerificationWorks />
+
+      {/* 7. Browse Directory */}
+      <BrowseDirectory />
 
       <FloatingActionButton />
       <StickyHelpBar />

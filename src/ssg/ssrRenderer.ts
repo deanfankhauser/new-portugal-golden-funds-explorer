@@ -52,7 +52,7 @@ export class SSRRenderer {
     
     // Extract fund ID and find fund data for SSR injection
     let fundDataForSSR: Fund | null = null;
-    let managerDataForSSR: { name: string; profile?: any; funds: Fund[]; isVerified: boolean } | null = null;
+    let managerDataForSSR: { name: string; profile?: any; funds: Fund[]; isVerified: boolean; teamMembers?: any[] } | null = null;
     
     // Handle fund detail pages
     if (route.path.match(/^\/[^\/]+$/)) {
@@ -81,11 +81,12 @@ export class SSRRenderer {
         name: route.params.managerName,
         profile: route.params.managerProfile,
         funds: route.params.funds || [],
-        isVerified: !!route.params.managerProfile
+        isVerified: !!route.params.managerProfile,
+        teamMembers: route.params.teamMembers || []
       };
       
       if (shouldLog) {
-        console.log(`🔥 SSR: Manager data prepared for SSR:`, managerDataForSSR ? `✅ ${managerDataForSSR.name} (${managerDataForSSR.funds.length} funds)` : '❌ Not found');
+        console.log(`🔥 SSR: Manager data prepared for SSR:`, managerDataForSSR ? `✅ ${managerDataForSSR.name} (${managerDataForSSR.funds.length} funds, ${managerDataForSSR.teamMembers?.length || 0} team members)` : '❌ Not found');
       }
     }
 

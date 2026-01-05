@@ -280,16 +280,16 @@ export class ConsolidatedSEOService {
         return getFundSeo(fund);
 
       case 'category':
-        // Delegate to centralized SEO helper
-        return getCategorySeo(params.categoryName, params.funds || []);
+        // Delegate to centralized SEO helper - use funds argument, not params.funds
+        return getCategorySeo(params.categoryName, funds || []);
 
       case 'tag':
-        // Delegate to centralized SEO helper
-        return getTagSeo(params.tagName, params.funds || []);
+        // Delegate to centralized SEO helper - use funds argument, not params.funds
+        return getTagSeo(params.tagName, funds || []);
 
       case 'manager':
-        // Delegate to centralized SEO helper
-        return getManagerSeo(params.managerName, params.managerProfile, params.funds || []);
+        // Delegate to centralized SEO helper - use funds argument, not params.funds
+        return getManagerSeo(params.managerName, params.managerProfile, funds || []);
 
       case 'team-member':
         // Delegate to centralized SEO helper with indexability check

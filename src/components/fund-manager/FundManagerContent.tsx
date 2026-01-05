@@ -17,18 +17,31 @@ import StandardCard from '../common/StandardCard';
 import { Button } from '@/components/ui/button';
 import { formatAUM } from '@/utils/currencyFormatters';
 
+interface SSRTeamMember {
+  id: string;
+  slug: string;
+  name: string;
+  role: string;
+  bio?: string;
+  photo_url?: string;
+  linkedin_url?: string;
+  company_name?: string;
+}
+
 interface FundManagerContentProps {
   managerFunds: Fund[];
   managerName: string;
   isManagerVerified?: boolean;
   managerProfile?: Profile | null;
+  initialTeamMembers?: SSRTeamMember[];
 }
 
 const FundManagerContent: React.FC<FundManagerContentProps> = ({ 
   managerFunds, 
   managerName, 
   isManagerVerified = false,
-  managerProfile
+  managerProfile,
+  initialTeamMembers
 }) => {
   const [isHeroExpanded, setIsHeroExpanded] = useState(false);
 
@@ -267,6 +280,7 @@ const FundManagerContent: React.FC<FundManagerContentProps> = ({
               <ManagerTeamSection 
                 managerName={managerName}
                 teamMembers={managerProfile?.team_members || []}
+                initialTeamMembers={initialTeamMembers}
               />
               
               {/* Manager FAQs Section */}

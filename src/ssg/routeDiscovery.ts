@@ -83,13 +83,23 @@ export class RouteDiscovery {
         f.managerName.toLowerCase() === manager.name.toLowerCase()
       );
       
+      // Find team members for this manager (for internal linking in SSG HTML)
+      const managerTeamMembers = teamMembers?.filter(tm => {
+        const companyName = tm.company_name?.toLowerCase() || '';
+        const managerLower = manager.name.toLowerCase();
+        return companyName === managerLower ||
+               companyName.includes(managerLower) ||
+               managerLower.includes(companyName);
+      }) || [];
+      
       routes.push({
         path: `/manager/${slug}`,
         pageType: 'manager',
         params: { 
           managerName: manager.name,
           managerProfile,
-          funds: managerFunds
+          funds: managerFunds,
+          teamMembers: managerTeamMembers
         }
       });
     });
