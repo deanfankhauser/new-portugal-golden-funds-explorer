@@ -104,7 +104,7 @@ const ManagersHub: React.FC<ManagersHubProps> = ({ initialFunds }) => {
       
       <main className="container mx-auto px-4 py-8 flex-1">
         <ManagersHubBreadcrumbs />
-        <ManagersHubHeader managerCount={enrichedManagers.length} />
+        <ManagersHubHeader />
         <ManagersSearch 
           value={searchQuery}
           onChange={setSearchQuery}
