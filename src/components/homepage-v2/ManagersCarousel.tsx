@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Building2, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Fund } from '@/data/types/funds';
 import { managerToSlug } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { getAllApprovedManagers } from '@/data/services/managers-service';
 import {
   Carousel,
   CarouselContent,
@@ -21,9 +23,25 @@ interface ManagerData {
   slug: string;
   fundCount: number;
   location?: string;
+  logoUrl?: string;
 }
 
 const ManagersCarousel: React.FC<ManagersCarouselProps> = ({ funds }) => {
+  // Fetch manager profiles to get logos
+  const { data: managerProfiles } = useQuery({
+    queryKey: ['approved-managers-carousel'],
+    queryFn: getAllApprovedManagers,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Create a lookup map from profiles by company name
+  const profileLookup = new Map(
+    (managerProfiles || []).map(p => [
+      p.company_name?.toLowerCase().trim(),
+      p
+    ])
+  );
+
   // Derive manager data from funds
   const managerMap = new Map<string, ManagerData>();
   
@@ -34,11 +52,15 @@ const ManagersCarousel: React.FC<ManagersCarouselProps> = ({ funds }) => {
     if (existing) {
       existing.fundCount += 1;
     } else {
+      // Look up the profile to get the logo
+      const profile = profileLookup.get(fund.managerName.toLowerCase().trim());
+      
       managerMap.set(fund.managerName, {
         name: fund.managerName,
         slug: managerToSlug(fund.managerName),
         fundCount: 1,
         location: fund.location || undefined,
+        logoUrl: profile?.logo_url || undefined,
       });
     }
   });
@@ -84,8 +106,19 @@ const ManagersCarousel: React.FC<ManagersCarouselProps> = ({ funds }) => {
             {managers.map((manager) => (
               <CarouselItem key={manager.name} className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
                 <div className="bg-card rounded-xl border border-border p-5 h-full flex flex-col hover:border-primary/30 hover:shadow-md transition-all duration-200">
-                  {/* Logo placeholder */}
-                  <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center mb-4">
+                  {/* Logo */}
+                  {manager.logoUrl ? (
+                    <img 
+                      src={manager.logoUrl} 
+                      alt={`${manager.name} logo`}
+                      className="w-12 h-12 rounded-lg object-contain bg-muted mb-4"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                      }}
+                    />
+                  ) : null}
+                  <div className={`w-12 h-12 rounded-lg bg-muted flex items-center justify-center mb-4 ${manager.logoUrl ? 'hidden' : ''}`}>
                     <Building2 className="h-6 w-6 text-muted-foreground" />
                   </div>
 
