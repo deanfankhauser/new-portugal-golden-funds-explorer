@@ -4,12 +4,7 @@ import QuickFilterBar from './QuickFilterBar';
 
 const SearchFirstHero: React.FC = () => {
   return (
-    <header className="py-10 sm:py-14 lg:py-16 relative overflow-hidden bg-gradient-to-b from-primary-50/50 via-background to-background">
-      {/* Subtle decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary-100/30 rounded-full blur-3xl" />
-        <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-accent-100/20 rounded-full blur-3xl" />
-      </div>
+    <header className="py-10 sm:py-14 lg:py-16 bg-background">
       <div className="container mx-auto px-4 max-w-4xl text-center">
         {/* Main Headline */}
         <h1 className="text-3xl sm:text-4xl md:text-[2.75rem] font-bold mb-3 text-foreground leading-tight">

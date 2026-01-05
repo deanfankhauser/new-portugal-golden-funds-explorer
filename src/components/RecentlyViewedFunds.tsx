@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { TrendingUp, ArrowRight, Sparkles } from 'lucide-react';
+import { Clock, TrendingUp, ArrowRight, Sparkles } from 'lucide-react';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
 import { CompanyLogo } from './shared/CompanyLogo';
@@ -102,9 +102,12 @@ const RecentlyViewedFunds = () => {
   return (
     <div className="border-t border-border pt-8 pb-6">
       {/* Section Header */}
-      <h3 className="text-xl font-semibold text-foreground tracking-tight mb-6">
-        Recently Viewed Funds
-      </h3>
+      <div className="flex items-center gap-3 mb-6">
+        <Clock className="w-5 h-5 text-muted-foreground" />
+        <h3 className="text-xl font-semibold text-foreground tracking-tight">
+          Recently Viewed Funds
+        </h3>
+      </div>
 
       {/* Funds Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
