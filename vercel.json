@@ -524,7 +524,12 @@
     },
     {
       "source": "/tags/golden-visa-funds-for-u-s-citizens",
-      "destination": "/tags/golden-visa-funds-for-us-citizens",
+      "destination": "/funds/us-citizens",
+      "permanent": true
+    },
+    {
+      "source": "/tags/golden-visa-funds-for-us-citizens",
+      "destination": "/funds/us-citizens",
       "permanent": true
     },
     {

@@ -356,6 +356,7 @@ export class SSRRenderer {
         case 'fund-matcher': return ['FundMatcher'];
         case 'funds': return ['FundsPage'];
         case 'best-funds': return ['BestFundsPage'];
+        case 'us-citizens-funds': return ['USCitizensFundsPage'];
         
         default: return ['Index'];
       }
@@ -518,6 +519,12 @@ export class SSRRenderer {
                   element: isSSG 
                     ? React.createElement(getComponent('BestFundsPage'), { initialFunds: allFunds })
                     : React.createElement(getComponent('BestFundsPage'))
+                }),
+                React.createElement(Route, { 
+                  path: '/funds/us-citizens', 
+                  element: isSSG 
+                    ? React.createElement(getComponent('USCitizensFundsPage'), { initialFunds: allFunds })
+                    : React.createElement(getComponent('USCitizensFundsPage'))
                 }),
                 
                 // Auth page
