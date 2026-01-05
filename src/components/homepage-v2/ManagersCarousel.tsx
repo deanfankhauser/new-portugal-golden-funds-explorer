@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Building2, MapPin } from 'lucide-react';
+import { ArrowRight, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Fund } from '@/data/types/funds';
 import { managerToSlug } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { getAllApprovedManagers } from '@/data/services/managers-service';
+import { ManagerLogo } from '@/components/shared/ManagerLogo';
 import {
   Carousel,
   CarouselContent,
@@ -107,20 +108,13 @@ const ManagersCarousel: React.FC<ManagersCarouselProps> = ({ funds }) => {
               <CarouselItem key={manager.name} className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
                 <div className="bg-card rounded-xl border border-border p-5 h-full flex flex-col hover:border-primary/30 hover:shadow-md transition-all duration-200">
                   {/* Logo */}
-                  {manager.logoUrl ? (
-                    <img 
-                      src={manager.logoUrl} 
-                      alt={`${manager.name} logo`}
-                      className="w-12 h-12 rounded-lg object-contain bg-muted mb-4"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                      }}
-                    />
-                  ) : null}
-                  <div className={`w-12 h-12 rounded-lg bg-muted flex items-center justify-center mb-4 ${manager.logoUrl ? 'hidden' : ''}`}>
-                    <Building2 className="h-6 w-6 text-muted-foreground" />
-                  </div>
+                  <ManagerLogo
+                    logoUrl={manager.logoUrl}
+                    managerName={manager.name}
+                    size="md"
+                    className="mb-4"
+                    showInitialsFallback={false}
+                  />
 
                   {/* Manager Name */}
                   <h3 className="font-semibold text-foreground text-base mb-1 line-clamp-2">
