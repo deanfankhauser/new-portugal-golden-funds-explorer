@@ -66,7 +66,13 @@ function getTeamMemberStructuredData(member: TeamMemberSEOParams): any {
     '@type': 'Person',
     'name': member.name,
     'jobTitle': member.role,
-    'url': memberUrl
+    'url': memberUrl,
+    'knowsAbout': [
+      'Portugal Golden Visa Legislation',
+      'Investment Fund Management',
+      'CMVM Regulation',
+      'Portuguese Residency by Investment'
+    ]
   };
 
   if (member.photoUrl) {
@@ -81,6 +87,17 @@ function getTeamMemberStructuredData(member: TeamMemberSEOParams): any {
     personSchema.worksFor = {
       '@type': 'Organization',
       'name': member.companyName
+    };
+    
+    // Add hasCredential for fund managers
+    personSchema.hasCredential = {
+      '@type': 'EducationalOccupationalCredential',
+      'credentialCategory': 'Professional License',
+      'name': 'Fund Management Certification',
+      'recognizedBy': {
+        '@type': 'Organization',
+        'name': 'CMVM - Comissão do Mercado de Valores Mobiliários'
+      }
     };
   }
 
