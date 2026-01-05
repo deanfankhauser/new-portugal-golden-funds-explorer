@@ -137,7 +137,7 @@ const QuickFilterBar: React.FC<QuickFilterBarProps> = ({ onBrowseResults }) => {
   return (
     <div className="w-full max-w-3xl mx-auto">
       {/* Search Card Container */}
-      <div className="bg-card rounded-2xl shadow-lg border border-border/50 overflow-hidden">
+      <div className="bg-card rounded-2xl shadow-lg border border-border/50">
         {/* Search Section */}
         <div className="p-5 sm:p-6">
           <div className="relative">
