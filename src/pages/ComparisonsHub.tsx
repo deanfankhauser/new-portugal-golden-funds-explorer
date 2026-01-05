@@ -42,7 +42,7 @@ const ComparisonsHub: React.FC<ComparisonsHubProps> = ({ initialFunds }) => {
         </div>
       </main>
       
-      <Footer />
+      <Footer showBrowseSitemap={true} />
     </div>
   );
 };

@@ -68,7 +68,7 @@ const ManagersHub: React.FC<ManagersHubProps> = ({ initialFunds }) => {
         </div>
       </main>
       
-      <Footer />
+      <Footer showBrowseSitemap={true} />
     </div>
   );
 };
