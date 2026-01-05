@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, TrendingDown, Shield, Clock, MapPin, Layers, Building, Rocket } from 'lucide-react';
+import { ArrowRight, ShieldCheck, TrendingDown, Shield, Clock, Leaf, Layers, Building, Rocket } from 'lucide-react';
 
 const categories = [
   {
@@ -12,7 +12,7 @@ const categories = [
   {
     title: 'Lower fees',
     description: 'Funds with below-average management fees',
-    href: '/tags/low-fees-1-management-fee',
+    href: '/tags/low-fees',
     icon: TrendingDown,
   },
   {
@@ -22,21 +22,21 @@ const categories = [
     icon: Shield,
   },
   {
-    title: 'Shorter liquidity',
-    description: 'Lock-ups under 6 years',
-    href: '/tags/short-term',
+    title: 'Short lock-up',
+    description: 'Lock-ups under 5 years',
+    href: '/tags/short-lock-up-less-than-5-years',
     icon: Clock,
   },
   {
-    title: 'Higher Portugal exposure',
-    description: 'Focus on Portuguese assets',
-    href: '/categories/real-estate',
-    icon: MapPin,
+    title: 'ESG & Sustainability',
+    description: 'Environmentally focused funds',
+    href: '/tags/esg',
+    icon: Leaf,
   },
   {
-    title: 'Multi-asset',
-    description: 'Diversified across asset classes',
-    href: '/categories/multi-asset',
+    title: 'Debt',
+    description: 'Fixed income strategies',
+    href: '/categories/debt',
     icon: Layers,
   },
   {
