@@ -33,10 +33,19 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
   setSelectedFund
 }) => {
   const { funds } = useRealTimeFunds();
-  const [investmentAmount, setInvestmentAmount] = useState<number>(350000);
+  const [investmentAmount, setInvestmentAmount] = useState<number | null>(null);
   const [holdingPeriod, setHoldingPeriod] = useState<number>(5);
   const [expectedReturn, setExpectedReturn] = useState<number>(0);
   const [showNetReturns, setShowNetReturns] = useState<boolean>(true);
+
+  // Check if fund has incomplete data
+  const hasIncompleteReturnData = selectedFund && expectedReturn === 0;
+  const hasIncompleteFeeData = selectedFund && 
+    (selectedFund.managementFee === 0 || selectedFund.managementFee === null || selectedFund.managementFee === undefined) && 
+    (selectedFund.performanceFee === 0 || selectedFund.performanceFee === null || selectedFund.performanceFee === undefined);
+  const hasMissingHurdleRate = selectedFund && 
+    selectedFund.performanceFee && selectedFund.performanceFee > 0 && 
+    (!selectedFund.hurdleRate || selectedFund.hurdleRate === 0);
 
   // Enhanced function to extract return rate using utility
   const extractReturnRate = (fund: Fund): number => {
@@ -66,12 +75,15 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
   useEffect(() => {
     if (selectedFund) {
       setExpectedReturn(extractReturnRate(selectedFund));
-      setInvestmentAmount(selectedFund.minimumInvestment);
+      setInvestmentAmount(selectedFund.minimumInvestment || null);
+    } else {
+      setInvestmentAmount(null);
+      setExpectedReturn(0);
     }
   }, [selectedFund]);
 
   const calculateROI = () => {
-    if (investmentAmount <= 0 || holdingPeriod <= 0 || expectedReturn < 0) {
+    if (!investmentAmount || investmentAmount <= 0 || holdingPeriod <= 0 || expectedReturn < 0) {
       return;
     }
 
@@ -84,6 +96,8 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
 
     onResultsCalculated(results);
   };
+
+  const canCalculate = investmentAmount && investmentAmount > 0 && holdingPeriod > 0 && expectedReturn > 0;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -130,6 +144,27 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
 
         {selectedFund && (
           <>
+            {/* Data Quality Warnings */}
+            {(hasIncompleteReturnData || hasIncompleteFeeData || hasMissingHurdleRate) && (
+              <div className="bg-warning/10 border border-warning/30 rounded-lg p-4 flex items-start space-x-3">
+                <AlertTriangle className="text-warning w-5 h-5 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-warning-foreground space-y-1">
+                  <h4 className="font-medium">Incomplete Fund Data</h4>
+                  <ul className="list-disc list-inside space-y-0.5 text-muted-foreground">
+                    {hasIncompleteReturnData && (
+                      <li>No expected return target available - please enter a manual estimate</li>
+                    )}
+                    {hasIncompleteFeeData && (
+                      <li>Fee data may be incomplete (0% shown) - actual fees may differ</li>
+                    )}
+                    {hasMissingHurdleRate && (
+                      <li>Hurdle rate not specified - performance fees calculated on all gains</li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            )}
+
             {/* Gross vs Net Toggle */}
             <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border border-border">
               <div className="space-y-0.5">
@@ -154,14 +189,19 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
                 <Input
                   id="investment-amount"
                   type="number"
-                  value={investmentAmount}
-                  onChange={(e) => setInvestmentAmount(Number(e.target.value))}
-                  min={selectedFund.minimumInvestment}
+                  value={investmentAmount ?? ''}
+                  onChange={(e) => setInvestmentAmount(e.target.value ? Number(e.target.value) : null)}
+                  min={selectedFund.minimumInvestment || 0}
                   step="1000"
+                  placeholder="Enter investment amount"
                 />
-                <p className="text-xs text-muted-foreground">
-                  Minimum: {formatCurrency(selectedFund.minimumInvestment)}
-                </p>
+                {selectedFund.minimumInvestment ? (
+                  <p className="text-xs text-muted-foreground">
+                    Minimum: {formatCurrency(selectedFund.minimumInvestment)}
+                  </p>
+                ) : (
+                  <p className="text-xs text-warning">Minimum investment data not available</p>
+                )}
               </div>
               
               <div className="space-y-2">
@@ -201,9 +241,10 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
               onClick={calculateROI}
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
               size="lg"
+              disabled={!canCalculate}
             >
               <Calculator className="w-4 h-4 mr-2" />
-              Calculate {showNetReturns ? 'Net' : 'Gross'} ROI
+              {!canCalculate ? 'Enter valid data to calculate' : `Calculate ${showNetReturns ? 'Net' : 'Gross'} ROI`}
             </Button>
 
             {/* Fund Details & Fees */}
@@ -215,17 +256,21 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
                   <p className="text-muted-foreground">Category</p>
-                  <p className="font-medium text-foreground">{selectedFund.category}</p>
+                  <p className="font-medium text-foreground">{selectedFund.category || 'N/A'}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Management Fee</p>
-                  <p className="font-medium text-foreground">{selectedFund.managementFee}% p.a.</p>
+                  <p className="font-medium text-foreground">
+                    {selectedFund.managementFee != null ? `${selectedFund.managementFee}% p.a.` : 'N/A'}
+                  </p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Performance Fee</p>
-                  <p className="font-medium text-foreground">{selectedFund.performanceFee}%</p>
+                  <p className="font-medium text-foreground">
+                    {selectedFund.performanceFee != null ? `${selectedFund.performanceFee}%` : 'N/A'}
+                  </p>
                 </div>
-                {selectedFund.hurdleRate && (
+                {selectedFund.hurdleRate != null && selectedFund.hurdleRate > 0 && (
                   <div>
                     <p className="text-muted-foreground">Hurdle Rate</p>
                     <p className="font-medium text-foreground">{selectedFund.hurdleRate}%</p>
@@ -233,13 +278,18 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
                 )}
                 <div>
                   <p className="text-muted-foreground">Fund Status</p>
-                  <p className="font-medium text-foreground">{selectedFund.fundStatus}</p>
+                  <p className="font-medium text-foreground">{selectedFund.fundStatus || 'N/A'}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Manager</p>
-                  <p className="font-medium text-foreground">{selectedFund.managerName}</p>
+                  <p className="font-medium text-foreground">{selectedFund.managerName || 'N/A'}</p>
                 </div>
               </div>
+              {selectedFund.updatedAt && (
+                <p className="text-xs text-muted-foreground mt-2">
+                  Fund data last updated: {new Date(selectedFund.updatedAt).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
+                </p>
+              )}
             </div>
           </>
         )}
