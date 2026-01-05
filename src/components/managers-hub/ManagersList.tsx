@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import ManagerCard, { EnrichedManager } from './ManagerCard';
 
 interface ManagersListProps {
@@ -21,18 +20,6 @@ const ManagersList: React.FC<ManagersListProps> = ({ managers }) => {
         {managers.map((manager) => (
           <ManagerCard key={manager.name} manager={manager} />
         ))}
-      </div>
-      
-      <div className="mt-10 pt-6 border-t border-border text-center">
-        <p className="text-muted-foreground mb-4">
-          Looking for specific investment opportunities?
-        </p>
-        <Link 
-          to="/" 
-          className="text-primary hover:underline font-medium"
-        >
-          Browse All Funds →
-        </Link>
       </div>
     </section>
   );
