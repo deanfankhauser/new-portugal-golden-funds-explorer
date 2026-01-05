@@ -3,14 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { Facebook, Linkedin, ExternalLink } from "lucide-react";
 import RecentlyViewedFunds from "./RecentlyViewedFunds";
-import FooterBrowseSitemap from "./footer/FooterBrowseSitemap";
 import { COMPANY_INFO } from '@/config/company';
 
-interface FooterProps {
-  showBrowseSitemap?: boolean;
-}
-
-const Footer: React.FC<FooterProps> = ({ showBrowseSitemap = false }) => {
+const Footer: React.FC = () => {
   const [currentYear, setCurrentYear] = useState(2025);
 
   useEffect(() => {
@@ -29,9 +24,6 @@ const Footer: React.FC<FooterProps> = ({ showBrowseSitemap = false }) => {
   return (
     <footer className="bg-secondary py-10 mt-12 border-t border-border">
       <div className="container mx-auto px-4">
-        {/* Browse Sitemap Section - Only on high-authority pages */}
-        {showBrowseSitemap && <FooterBrowseSitemap className="mb-8" />}
-        
         {/* Recently Viewed Funds Section */}
         <RecentlyViewedFunds />
         

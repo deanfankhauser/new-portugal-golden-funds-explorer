@@ -77,7 +77,7 @@ const HomepageLayout: React.FC<HomepageLayoutProps> = ({ children }) => {
           />
         </section>
       </main>
-      <Footer showBrowseSitemap={true} />
+      <Footer />
     </div>
   );
 };

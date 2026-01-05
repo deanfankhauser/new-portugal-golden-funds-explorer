@@ -67,7 +67,7 @@ const TagsHub: React.FC<TagsHubProps> = ({ initialFunds }) => {
         </div>
       </main>
       
-      <Footer showBrowseSitemap={true} />
+      <Footer />
     </div>
   );
 };
