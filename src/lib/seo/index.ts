@@ -22,5 +22,6 @@ export {
   getVerifiedFundsSeo,
   getNotFoundSeo,
   getTeamMemberSeo,
-  getBestFundsSeo
+  getBestFundsSeo,
+  getUSCitizensFundsSeo
 } from './pages';
