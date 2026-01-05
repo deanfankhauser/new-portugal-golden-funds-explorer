@@ -102,8 +102,7 @@ const RecentlyViewedFunds = () => {
   return (
     <div className="border-t border-border pt-8 pb-6">
       {/* Section Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <Clock className="w-5 h-5 text-muted-foreground" />
+      <div className="mb-6">
         <h3 className="text-xl font-semibold text-foreground tracking-tight">
           Recently Viewed Funds
         </h3>
