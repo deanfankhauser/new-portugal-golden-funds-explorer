@@ -30,7 +30,10 @@ const fetchFeaturedTeamMembers = async (): Promise<TeamMemberWithCompany[]> => {
       role,
       photo_url,
       slug,
-      profiles!inner(company_name)
+      profile_id,
+      profiles (
+        company_name
+      )
     `)
     .not('photo_url', 'is', null)
     .limit(20);
