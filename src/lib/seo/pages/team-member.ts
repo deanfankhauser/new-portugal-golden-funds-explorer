@@ -19,15 +19,12 @@ export function getTeamMemberSeo(member: TeamMemberSEOParams): SEOData {
   
   const memberName = member.name || 'Team Member';
   const memberRole = member.role || 'Team Member';
-  const companyName = member.companyName || '';
   
-  const title = companyName
-    ? `${memberName}: Professional Profile & Managed Funds – ${companyName}`
-    : `${memberName}: Professional Profile & Managed Funds | Movingto`;
+  // Title per new format: "{Name} | {Role} | Movingto Funds"
+  const title = `${memberName} | ${memberRole} | Movingto Funds`;
   
-  const description = member.bio 
-    ? `${memberName}, ${memberRole}${companyName ? ` at ${companyName}` : ''}. ${member.bio.substring(0, 100)}...`
-    : `Professional profile of ${memberName}, ${memberRole}${companyName ? ` at ${companyName}` : ''}. View their investment track record and currently active Golden Visa funds.`;
+  // Description per new format
+  const description = `${memberName} is ${memberRole} at Movingto Funds, focused on fund data, disclosures, and platform operations for Portugal Golden Visa investors.`;
 
   return {
     title: optimizeTitle(title),
@@ -38,7 +35,6 @@ export function getTeamMemberSeo(member: TeamMemberSEOParams): SEOData {
     keywords: [
       memberName,
       memberRole,
-      companyName,
       'fund team member',
       'investment professional',
       'Portugal fund management',

@@ -8,8 +8,8 @@ import { checkComparisonIndexability } from '@/lib/indexability';
 
 export function getComparisonSeo(): SEOData {
   return {
-    title: 'Compare Portugal Golden Visa Funds Side by Side | Movingto',
-    description: optimizeDescription('Compare Portugal Golden Visa investment funds side by side. Analyze fees, minimums, returns, lock-up periods, and manager track records to find your ideal fund.'),
+    title: 'Portugal Golden Visa Fund Comparisons (2026) | Movingto Funds',
+    description: optimizeDescription('Browse side-by-side comparisons across fees, strategy, liquidity terms, and timelines—built for fast filtering and shortlists.'),
     url: URL_CONFIG.buildUrl('/compare'),
     canonical: URL_CONFIG.buildUrl('/compare'),
     keywords: [
@@ -26,33 +26,21 @@ export function getComparisonSeo(): SEOData {
 export function getFundComparisonSeo(fund1: Fund, fund2: Fund, normalizedSlug: string): SEOData {
   const indexability = checkComparisonIndexability(fund1, fund2, normalizedSlug);
   
-  // Format minimum investments for display
-  const formatMin = (min: number | null | undefined) => {
-    if (!min) return 'N/A';
-    if (min >= 1000000) return `€${(min / 1000000).toFixed(1)}M`;
-    return `€${(min / 1000).toFixed(0)}k`;
-  };
-  
-  const min1 = formatMin(fund1.minimumInvestment);
-  const min2 = formatMin(fund2.minimumInvestment);
   const cat1 = fund1.category || 'Investment';
   const cat2 = fund2.category || 'Investment';
   
-  // Build title with safe truncation at word boundary
-  let title = `Compare ${fund1.name} vs ${fund2.name} – Golden Visa Funds`;
+  // Build title per new format: "{Fund A} vs {Fund B} (2026) | Fees & Terms | Movingto Funds"
+  let title = `${fund1.name} vs ${fund2.name} (2026) | Fees & Terms | Movingto Funds`;
   if (title.length > MAX_TITLE_LENGTH) {
-    // Try shorter format
-    title = `${fund1.name} vs ${fund2.name} | Fund Comparison`;
+    // Fallback: shorter format
+    title = `${fund1.name} vs ${fund2.name} (2026) | Movingto Funds`;
     if (title.length > MAX_TITLE_LENGTH) {
-      // Truncate at word boundary
-      const maxLen = MAX_TITLE_LENGTH - 3;
-      const lastSpace = title.substring(0, maxLen).lastIndexOf(' ');
-      title = title.substring(0, lastSpace > maxLen * 0.6 ? lastSpace : maxLen);
+      title = `${fund1.name} vs ${fund2.name} (2026)`;
     }
   }
   
-  // Enhanced description with differentiating factors
-  const description = `${fund1.name} vs ${fund2.name}: ${min1} min vs ${min2} min. Compare ${cat1} and ${cat2} strategies, fees, returns, and liquidity for Portugal Golden Visa.`;
+  // Enhanced description per recommendations
+  const description = `Compare ${fund1.name} and ${fund2.name} for the €500k route: strategy, fees, liquidity terms, timeline, and key risks to review.`;
   
   return {
     title: optimizeTitle(title),

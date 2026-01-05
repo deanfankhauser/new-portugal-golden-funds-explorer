@@ -7,18 +7,12 @@ import { checkCategoryIndexability } from '@/lib/indexability';
 
 export function getCategorySeo(categoryName: string, funds: Fund[] = []): SEOData {
   const indexability = checkCategoryIndexability(categoryName, funds);
-  const fundCount = funds.length;
-  const categorySlug = categoryName.toLowerCase().replace(/\s+/g, '-');
   
-  // Dynamic title with fund count
-  const title = fundCount > 0
-    ? `${categoryName} Funds (${fundCount}) – Portugal Golden Visa | Movingto`
-    : `${categoryName} Portugal Golden Visa Funds | Movingto`;
+  // Title per new format: "{Category} Portugal Golden Visa Funds (2026) | Movingto Funds"
+  const title = `${categoryName} Portugal Golden Visa Funds (2026) | Movingto Funds`;
   
-  // Enhanced description using full 155 character limit
-  const description = fundCount > 0
-    ? `Explore ${fundCount}+ ${categoryName} funds for Portugal Golden Visa residency. Compare management fees, minimum investments, risk profiles, and exit strategies.`
-    : `Discover ${categoryName} investment funds for Portugal Golden Visa. Get detailed analysis of fees, returns, liquidity terms, and fund manager track records.`;
+  // Description per new format
+  const description = `Explore ${categoryName} funds for the €500k route. Compare strategy, fees, liquidity terms, and timelines—built for shortlisting and due diligence.`;
   
   return {
     title: optimizeTitle(title),

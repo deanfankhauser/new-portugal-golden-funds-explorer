@@ -7,13 +7,12 @@ import { checkManagerIndexability } from '@/lib/indexability';
 
 export function getManagerSeo(managerName: string, managerProfile: any, funds: Fund[] = []): SEOData {
   const indexability = checkManagerIndexability(managerName, funds);
-  const gvFundCount = funds.filter((f: any) => f.tags?.includes('Golden Visa Eligible')).length || funds.length;
   
-  // SEO Title: "[Manager Name]: Corporate Profile, Track Record & Active Funds"
-  const managerTitle = `${managerName}: Corporate Profile, Track Record & Active Funds`;
+  // SEO Title per new format: "{Manager Name} | Portugal Golden Visa Funds (2026) | Movingto Funds"
+  const managerTitle = `${managerName} | Portugal Golden Visa Funds (2026) | Movingto Funds`;
   
-  // SEO Description: Dynamic with AUM and fund count
-  const managerDescription = generateManagerDescription(managerName, managerProfile, gvFundCount);
+  // SEO Description per new format
+  const managerDescription = `See ${managerName}'s fund lineup for the €500k route: strategy, fees, maturity, liquidity terms, and documents to review.`;
   
   return {
     title: optimizeTitle(managerTitle),

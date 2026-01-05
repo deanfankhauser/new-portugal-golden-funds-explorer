@@ -5,8 +5,8 @@ import { getSitewideSchemas } from '../schemas';
 
 export function getFundMatcherSeo(): SEOData {
   return {
-    title: optimizeTitle('Fund Matcher: Find Your Ideal Portugal Golden Visa Fund (2026)'),
-    description: optimizeDescription('Answer 5 simple questions to find CMVM-regulated Golden Visa funds matching your budget, risk tolerance, nationality, and timeline. Free personalized recommendations in 2 minutes.'),
+    title: optimizeTitle('Portugal Golden Visa Fund Finder (2026) | Movingto Funds'),
+    description: optimizeDescription('Filter funds by strategy, fees, timeline, and risk posture to build a shortlist. No recommendations—always verify in official docs.'),
     url: URL_CONFIG.buildUrl('fund-matcher'),
     canonical: URL_CONFIG.buildUrl('fund-matcher'),
     robots: 'index, follow',
