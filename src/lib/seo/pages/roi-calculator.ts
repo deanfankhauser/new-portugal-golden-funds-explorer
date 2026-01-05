@@ -6,17 +6,17 @@ import { BREADCRUMB_CONFIGS } from '../schemas/breadcrumbSchema';
 
 export function getROICalculatorSeo(): SEOData {
   return {
-    title: optimizeTitle('Portugal Golden Visa Fund ROI Calculator – Estimate Returns | Movingto Funds'),
-    description: optimizeDescription('Estimate potential returns from Portugal Golden Visa funds. Adjust investment amount, target yield and holding period to see projected outcomes.'),
+    title: optimizeTitle('Portugal Golden Visa ROI Calculator – Estimate Fund Returns | Movingto Funds'),
+    description: optimizeDescription('Calculate potential ROI on Portugal Golden Visa investment funds. Estimate returns, fees, and projected outcomes for Golden Visa fund investments.'),
     url: URL_CONFIG.buildUrl('roi-calculator'),
     canonical: URL_CONFIG.buildUrl('roi-calculator'),
     keywords: [
-      'ROI calculator',
-      'investment returns calculator',
+      'Portugal Golden Visa ROI calculator',
+      'Golden Visa fund returns',
+      'Portugal Golden Visa investment calculator',
       'Golden Visa ROI',
-      'fund returns calculation',
-      'investment calculator Portugal',
-      'Golden Visa returns'
+      'Portugal fund returns calculator',
+      'Golden Visa investment returns'
     ],
     structuredData: getCalculatorStructuredData()
   };
@@ -29,7 +29,7 @@ function getCalculatorStructuredData(): any[] {
     {
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
-      'name': 'Portugal Golden Visa Fund ROI Calculator',
+      'name': 'Portugal Golden Visa ROI Calculator',
       'url': URL_CONFIG.buildUrl('roi-calculator'),
       'applicationCategory': 'FinanceApplication',
       'operatingSystem': 'Web Browser',
