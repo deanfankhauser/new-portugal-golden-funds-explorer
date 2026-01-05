@@ -27,8 +27,8 @@ export function getFundSeo(fund: Fund): SEOData {
 export function getFundFallbackSeo(fundIdOrName: string): SEOData {
   const year = SEO_CONFIG.currentYear;
   return {
-    title: `${fundIdOrName}: Fees, Minimum, Lock-Up & Terms (${year})`,
-    description: optimizeDescription('Explore details for this Portugal Golden Visa investment fund on Movingto.'),
+    title: `${fundIdOrName} | Fees, Terms & Lock-Up (${year})`,
+    description: optimizeDescription(`Review ${fundIdOrName} for the Portugal Golden Visa €500k route: strategy, fees, minimums, lock-up/liquidity terms, key dates, and documents to verify.`),
     url: URL_CONFIG.buildFundUrl(fundIdOrName),
     canonical: URL_CONFIG.buildFundUrl(fundIdOrName),
     structuredData: []
@@ -50,62 +50,28 @@ function generateFundTitle(fund: Fund): string {
   const year = SEO_CONFIG.currentYear;
   const maxLength = SEO_CONFIG.maxTitleLength;
   
-  // Primary: "{Fund Name}: Fees, Minimum, Lock-Up & Terms (2026)"
-  const fullTitle = `${fundName}: Fees, Minimum, Lock-Up & Terms (${year})`;
+  // Primary: "{Fund Name} | Fees, Terms & Lock-Up (2026)"
+  const fullTitle = `${fundName} | Fees, Terms & Lock-Up (${year})`;
   if (fullTitle.length <= maxLength) {
     return fullTitle;
   }
   
-  // Fallback 1: Drop "& Terms" -> "{Fund Name}: Fees, Minimum & Lock-Up (2026)"
-  const noTerms = `${fundName}: Fees, Minimum & Lock-Up (${year})`;
-  if (noTerms.length <= maxLength) {
-    return noTerms;
+  // Fallback 1: Drop "& Lock-Up" -> "{Fund Name} | Fees & Terms (2026)"
+  const noLockUp = `${fundName} | Fees & Terms (${year})`;
+  if (noLockUp.length <= maxLength) {
+    return noLockUp;
   }
   
-  // Fallback 2: Drop "Minimum" -> "{Fund Name}: Fees & Lock-Up (2026)"
-  const minimal = `${fundName}: Fees & Lock-Up (${year})`;
-  if (minimal.length <= maxLength) {
-    return minimal;
-  }
-  
-  // Fallback 3: Just fund name and year -> "{Fund Name} (2026)"
+  // Fallback 2: Just fund name and year -> "{Fund Name} (2026)"
   // NEVER truncate the fund name with ellipsis!
   return `${fundName} (${year})`;
 }
 
 function generateFundDescription(fund: Fund): string {
   const fundName = fund.name;
-  const category = fund.category || 'investment';
   
-  // Minimum investment formatting
-  const minInvestmentStr = fund.minimumInvestment 
-    ? `€${(fund.minimumInvestment / 1000).toFixed(0)}k minimum`
-    : null;
-  
-  // Manager name
-  const managerName = fund.managerName || null;
-  
-  // Build description: "{Fund Name} — {min} minimum. {Category} strategy by {Manager}. Compare fees, returns, lock-up for Golden Visa."
-  const parts: string[] = [];
-  
-  // Start with fund name and minimum
-  if (minInvestmentStr) {
-    parts.push(`${fundName} — ${minInvestmentStr}`);
-  } else {
-    parts.push(fundName);
-  }
-  
-  // Add category strategy and manager
-  if (managerName) {
-    parts.push(`${category} strategy by ${managerName}`);
-  } else {
-    parts.push(`${category} strategy`);
-  }
-  
-  // Add call to action
-  parts.push('Compare fees, returns, lock-up for Golden Visa');
-  
-  return parts.join('. ') + '.';
+  // New description template per recommendations
+  return `Review ${fundName} for the Portugal Golden Visa €500k route: strategy, fees, minimums, lock-up/liquidity terms, key dates, and documents to verify.`;
 }
 
 function generateFundKeywords(fund: Fund): string[] {

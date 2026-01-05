@@ -5,8 +5,8 @@ import { getSitewideSchemas } from '../schemas';
 
 export function getFAQsSeo(): SEOData {
   return {
-    title: optimizeTitle('Portugal Golden Visa Investment Funds – FAQs & Common Questions | Movingto Funds'),
-    description: optimizeDescription('Answers to common questions about Portugal Golden Visa investment funds. Learn how eligibility, risk, performance, fees and minimums work.'),
+    title: optimizeTitle('Portugal Golden Visa Funds FAQ (2026) | Movingto Funds'),
+    description: optimizeDescription('Answers on fund eligibility, timelines, common fees, and process steps for the Portugal Golden Visa €500k fund route in 2026.'),
     url: URL_CONFIG.buildUrl('faqs'),
     canonical: URL_CONFIG.buildUrl('faqs'),
     keywords: [
@@ -17,7 +17,7 @@ export function getFAQsSeo(): SEOData {
       'Portugal Golden Visa FAQ',
       'Portugal visa questions',
       'how long Golden Visa process',
-      'Golden Visa minimum investment 2025',
+      'Golden Visa minimum investment 2026',
       'can family get Golden Visa',
       'Golden Visa tax implications'
     ],
