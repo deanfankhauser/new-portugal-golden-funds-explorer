@@ -120,7 +120,12 @@ export const transformFund = ({ fund, ranking = 999 }: TransformFundParams): Fun
     riskBand: fund.risk_band as RiskBand || undefined,
     // Quiz system fields
     isQuizEligible: fund.is_quiz_eligible || false,
-    usCompliant: fund.us_compliant || false
+    usCompliant: fund.us_compliant || false,
+    // US eligibility fields
+    acceptsUsPersonsStatus: fund.accepts_us_persons_status as 'confirmed_yes' | 'confirmed_no' | 'unknown' || undefined,
+    acceptsUsPersonsSourceUrl: fund.accepts_us_persons_source_url || undefined,
+    fatcaStated: fund.fatca_stated || false,
+    fatcaSourceUrl: fund.fatca_source_url || undefined
   };
 };
 
