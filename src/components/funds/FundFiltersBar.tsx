@@ -8,9 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useFundCategories } from '@/hooks/useFundCategories';
 
 const FundFiltersBar: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { categories } = useFundCategories();
 
   const updateFilter = (key: string, value: string | null) => {
     const newParams = new URLSearchParams(searchParams);
@@ -81,17 +83,18 @@ const FundFiltersBar: React.FC = () => {
           </SelectContent>
         </Select>
 
-        {/* Strategy/Category */}
+        {/* Strategy/Category - Dynamic from database */}
         <Select value={category} onValueChange={(v) => updateFilter('category', v)}>
-          <SelectTrigger className="w-[160px] h-9 text-sm bg-background">
+          <SelectTrigger className="w-[180px] h-9 text-sm bg-background">
             <SelectValue placeholder="Strategy" />
           </SelectTrigger>
           <SelectContent className="bg-popover border border-border">
             <SelectItem value="all">Any strategy</SelectItem>
-            <SelectItem value="Real Estate">Real Estate</SelectItem>
-            <SelectItem value="Private Equity">Private Equity</SelectItem>
-            <SelectItem value="Venture Capital">Venture Capital</SelectItem>
-            <SelectItem value="Fixed Income">Fixed Income</SelectItem>
+            {categories.map(({ category: cat, count }) => (
+              <SelectItem key={cat} value={cat}>
+                {cat} ({count})
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
