@@ -21,5 +21,6 @@ export {
   getROICalculatorSeo,
   getVerifiedFundsSeo,
   getNotFoundSeo,
-  getTeamMemberSeo
+  getTeamMemberSeo,
+  getBestFundsSeo
 } from './pages';
