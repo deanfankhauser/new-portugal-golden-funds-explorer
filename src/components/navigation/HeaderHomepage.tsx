@@ -16,7 +16,7 @@ const HeaderHomepage: React.FC = () => {
             <div className="flex items-center flex-shrink-0">
               <Link to="/" className="flex items-center">
                 <img
-                  src="/lovable-uploads/ab17d046-1cb9-44fd-aa6d-c4d338e11090.png"
+                  src="/lovable-uploads/movingto-logo-black.png"
                   alt="Movingto Logo"
                   className="h-6"
                   width="116"
