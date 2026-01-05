@@ -21,7 +21,8 @@ const Footer: React.FC = () => {
   }, []);
 
   return (
-    <footer className="bg-secondary py-10 mt-12 border-t border-border">
+    <>
+      <footer className="bg-secondary py-10 border-t border-border">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1 lg:col-span-1">
@@ -200,6 +201,7 @@ const Footer: React.FC = () => {
 
       </div>
     </footer>
+    </>
   );
 };
 

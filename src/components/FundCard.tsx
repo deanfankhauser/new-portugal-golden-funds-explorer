@@ -16,6 +16,8 @@ import { CompanyLogo } from './shared/CompanyLogo';
 import { formatManagementFee, formatPerformanceFee } from '../utils/feeFormatters';
 import { formatMinimumInvestment } from '../utils/currencyFormatters';
 import { calculateRiskBand, getRiskBandLabel, getRiskBandColor, getRiskBandBgColor } from '../utils/riskCalculation';
+import DataVerifiedBadge from './common/DataVerifiedBadge';
+import VerificationTooltip from './common/VerificationTooltip';
 
 interface FundCardProps {
   fund: Fund;
@@ -92,21 +94,24 @@ const FundCard: React.FC<FundCardProps> = ({ fund }) => {
               </CardTitle>
               {fund.isVerified ? (
                 <div className="mt-2 flex items-center gap-2 flex-wrap">
-                  <Link to="/verification-program" onClick={(e) => e.stopPropagation()} className="inline-block hover:opacity-80 transition-opacity">
-                    <Badge variant="outline" className="bg-success/10 text-success border-success/20 px-3 py-1 text-[13px] font-medium">
-                      <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
-                      Verified
-                    </Badge>
-                  </Link>
+                  <VerificationTooltip isVerified={true} showLabel={false} />
                   {isGVEligible && (
                     <TooltipProvider>
                       <GVBadge variant="card" />
                     </TooltipProvider>
                   )}
+                  <DataVerifiedBadge 
+                    lastVerifiedDate={fund.lastDataReviewDate || fund.dateModified} 
+                    variant="inline" 
+                  />
                 </div>
               ) : (
-                <div className="mt-2">
+                <div className="mt-2 flex items-center gap-2">
                   <Badge variant="outline" className="text-xs">UNVERIFIED</Badge>
+                  <DataVerifiedBadge 
+                    lastVerifiedDate={fund.dateModified} 
+                    variant="inline" 
+                  />
                 </div>
               )}
             </div>

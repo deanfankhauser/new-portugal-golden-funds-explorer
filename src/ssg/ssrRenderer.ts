@@ -354,6 +354,7 @@ export class SSRRenderer {
         case 'team-member': return ['TeamMemberProfile'];
         case '410': return ['GonePage'];
         case 'fund-matcher': return ['FundMatcher'];
+        case 'funds': return ['FundsPage'];
         
         default: return ['Index'];
       }
@@ -505,6 +506,12 @@ export class SSRRenderer {
                 }),
                 React.createElement(Route, { path: '/verification-program', element: React.createElement(getComponent('VerificationProgram')) }),
                 React.createElement(Route, { path: '/fund-matcher', element: React.createElement(getComponent('FundMatcher')) }),
+                React.createElement(Route, { 
+                  path: '/funds', 
+                  element: isSSG 
+                    ? React.createElement(getComponent('FundsPage'), { initialFunds: allFunds })
+                    : React.createElement(getComponent('FundsPage'))
+                }),
                 
                 // Auth page
                 React.createElement(Route, { path: '/auth', element: React.createElement(getComponent('Auth')) }),

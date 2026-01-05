@@ -1,7 +1,4 @@
-
-import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import React from 'react';
 
 interface ROICalculatorResultsProps {
   results: {
@@ -31,102 +28,79 @@ const ROICalculatorResults: React.FC<ROICalculatorResultsProps> = ({ results }) 
     return `${percentage.toFixed(2)}%`;
   };
 
-  const feeImpact = results.totalFeesPaid / results.grossTotalReturn * 100;
+  const feeImpact = results.grossTotalReturn > 0 
+    ? (results.totalFeesPaid / results.grossTotalReturn * 100) 
+    : 0;
 
   return (
-    <div className="space-y-6">
-      <Tabs defaultValue="net" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="net" className="flex items-center gap-2">
-            <TrendingDown className="w-4 h-4" />
-            Net Returns (After Fees)
-          </TabsTrigger>
-          <TabsTrigger value="gross" className="flex items-center gap-2">
-            <TrendingUp className="w-4 h-4" />
-            Gross Returns (Before Fees)
-          </TabsTrigger>
-        </TabsList>
+    <div className="space-y-8">
+      {/* Primary Results */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="space-y-1">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">Projected value</p>
+          <p className="text-3xl font-semibold text-foreground tracking-tight">
+            {formatCurrency(results.netTotalValue)}
+          </p>
+          <p className="text-sm text-muted-foreground">after fees</p>
+        </div>
+        
+        <div className="space-y-1">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">Total return</p>
+          <p className="text-3xl font-semibold text-foreground tracking-tight">
+            {formatCurrency(results.netTotalReturn)}
+          </p>
+          <p className="text-sm text-muted-foreground">net gain</p>
+        </div>
+        
+        <div className="space-y-1">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">Annualized return</p>
+          <p className="text-3xl font-semibold text-foreground tracking-tight">
+            {formatPercentage(results.netAnnualizedReturn)}
+          </p>
+          <p className="text-sm text-muted-foreground">per year</p>
+        </div>
+      </div>
 
-        <TabsContent value="net" className="space-y-4 pt-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-success/10 rounded-lg border border-success/30">
-              <h4 className="font-medium text-muted-foreground mb-1">Net Total Value</h4>
-              <p className="text-2xl font-bold text-success">
-                {formatCurrency(results.netTotalValue)}
-              </p>
-            </div>
-            
-            <div className="text-center p-4 bg-primary/10 rounded-lg border border-primary/30">
-              <h4 className="font-medium text-muted-foreground mb-1">Net Total Return</h4>
-              <p className="text-2xl font-bold text-primary">
-                {formatCurrency(results.netTotalReturn)}
-              </p>
-            </div>
-            
-            <div className="text-center p-4 bg-accent/10 rounded-lg border border-accent/30">
-              <h4 className="font-medium text-muted-foreground mb-1">Net Annualized Return</h4>
-              <p className="text-2xl font-bold text-accent">
-                {formatPercentage(results.netAnnualizedReturn)}
-              </p>
-            </div>
+      {/* Fee Breakdown */}
+      <div className="border-t border-border pt-6">
+        <p className="text-sm font-medium text-foreground mb-4">Fee impact</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-1">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Total fees</p>
+            <p className="text-xl font-semibold text-foreground">{formatCurrency(results.totalFeesPaid)}</p>
           </div>
+          <div className="space-y-1">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Management fees</p>
+            <p className="text-xl font-medium text-foreground">{formatCurrency(results.managementFeesPaid)}</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Performance fees</p>
+            <p className="text-xl font-medium text-foreground">{formatCurrency(results.performanceFeesPaid)}</p>
+          </div>
+        </div>
+        <p className="text-sm text-muted-foreground mt-4">
+          Fees reduce returns by {formatPercentage(feeImpact)} over the investment period
+        </p>
+      </div>
 
-          {/* Fee Breakdown */}
-          <div className="p-4 bg-destructive/5 rounded-lg border border-destructive/20">
-            <h4 className="font-semibold text-foreground mb-3">Fee Impact Analysis</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-              <div>
-                <p className="text-muted-foreground">Total Fees Paid</p>
-                <p className="font-bold text-destructive">{formatCurrency(results.totalFeesPaid)}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">Management Fees</p>
-                <p className="font-medium text-foreground">{formatCurrency(results.managementFeesPaid)}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">Performance Fees</p>
-                <p className="font-medium text-foreground">{formatCurrency(results.performanceFeesPaid)}</p>
-              </div>
-            </div>
-            <p className="mt-3 text-xs text-muted-foreground">
-              Fees reduce your returns by {formatPercentage(feeImpact)} ({formatCurrency(results.totalFeesPaid)} paid over the investment period)
-            </p>
+      {/* Gross Comparison */}
+      <div className="border-t border-border pt-6">
+        <p className="text-sm font-medium text-foreground mb-4">Before fees comparison</p>
+        <div className="grid grid-cols-3 gap-6">
+          <div>
+            <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Gross value</p>
+            <p className="text-base font-medium text-muted-foreground">{formatCurrency(results.grossTotalValue)}</p>
           </div>
-        </TabsContent>
-
-        <TabsContent value="gross" className="space-y-4 pt-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-success/10 rounded-lg border border-success/30">
-              <h4 className="font-medium text-muted-foreground mb-1">Gross Total Value</h4>
-              <p className="text-2xl font-bold text-success">
-                {formatCurrency(results.grossTotalValue)}
-              </p>
-            </div>
-            
-            <div className="text-center p-4 bg-primary/10 rounded-lg border border-primary/30">
-              <h4 className="font-medium text-muted-foreground mb-1">Gross Total Return</h4>
-              <p className="text-2xl font-bold text-primary">
-                {formatCurrency(results.grossTotalReturn)}
-              </p>
-            </div>
-            
-            <div className="text-center p-4 bg-accent/10 rounded-lg border border-accent/30">
-              <h4 className="font-medium text-muted-foreground mb-1">Gross Annualized Return</h4>
-              <p className="text-2xl font-bold text-accent">
-                {formatPercentage(results.grossAnnualizedReturn)}
-              </p>
-            </div>
+          <div>
+            <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Gross return</p>
+            <p className="text-base font-medium text-muted-foreground">{formatCurrency(results.grossTotalReturn)}</p>
           </div>
-
-          <div className="p-4 bg-warning/5 rounded-lg border border-warning/20">
-            <p className="text-sm text-muted-foreground">
-              <strong>Note:</strong> Gross returns do not account for management fees ({formatCurrency(results.managementFeesPaid)}) 
-              or performance fees ({formatCurrency(results.performanceFeesPaid)}). 
-              Actual returns will be lower. See "Net Returns" tab for realistic projections.
-            </p>
+          <div>
+            <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Gross annual</p>
+            <p className="text-base font-medium text-muted-foreground">{formatPercentage(results.grossAnnualizedReturn)}</p>
           </div>
-        </TabsContent>
-      </Tabs>
+        </div>
+      </div>
     </div>
   );
 };

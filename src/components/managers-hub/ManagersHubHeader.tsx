@@ -1,16 +1,15 @@
-
 import React from 'react';
-import { Users } from 'lucide-react';
 
-const ManagersHubHeader = () => {
+const ManagersHubHeader: React.FC = () => {
   return (
-    <div className="bg-card p-6 rounded-lg shadow-sm mb-8">
-      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-center" itemProp="name">
-        Portugal Golden Visa Fund Managers
+    <div className="mb-8">
+      <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-3" itemProp="name">
+        Fund Managers
       </h1>
       
-      <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-center" itemProp="description">
-        Explore all fund managers offering Golden Visa eligible investment funds in Portugal
+      <p className="text-muted-foreground max-w-2xl" itemProp="description">
+        Explore fund managers offering Portugal Golden Visa eligible investment funds. 
+        Compare strategies, track records, and connect directly.
       </p>
     </div>
   );

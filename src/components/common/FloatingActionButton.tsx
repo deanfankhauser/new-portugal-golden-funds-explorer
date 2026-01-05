@@ -40,13 +40,13 @@ export const FloatingActionButton: React.FC = () => {
             : 'opacity-0 translate-y-4 pointer-events-none'
         )}
       >
-        {/* Watchlist Button */}
+        {/* Watchlist Button - min 48px for touch targets */}
         <button
           onClick={handleSavedClick}
-          className="relative flex items-center justify-center h-12 w-12 rounded-full bg-card border-2 border-border shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95"
+          className="relative flex items-center justify-center h-14 w-14 rounded-full bg-card border-2 border-border shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95"
           aria-label="View watchlist"
         >
-          <Star className="h-5 w-5 text-primary" />
+          <Star className="h-6 w-6 text-primary" />
           {savedCount > 0 && (
             <span className="absolute -top-1 -right-1 flex items-center justify-center h-5 min-w-[20px] px-1 text-[11px] font-bold text-white bg-primary rounded-full">
               {savedCount}
@@ -54,13 +54,13 @@ export const FloatingActionButton: React.FC = () => {
           )}
         </button>
 
-        {/* Compare Button */}
+        {/* Compare Button - min 48px for touch targets */}
         <button
           onClick={handleCompareClick}
-          className="relative flex items-center justify-center h-12 w-12 rounded-full bg-card border-2 border-border shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95"
+          className="relative flex items-center justify-center h-14 w-14 rounded-full bg-card border-2 border-border shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95"
           aria-label="View comparison"
         >
-          <GitCompare className="h-5 w-5 text-primary" />
+          <GitCompare className="h-6 w-6 text-primary" />
           {compareCount > 0 && (
             <span className="absolute -top-1 -right-1 flex items-center justify-center h-5 min-w-[20px] px-1 text-[11px] font-bold text-white bg-primary rounded-full">
               {compareCount}
@@ -69,11 +69,11 @@ export const FloatingActionButton: React.FC = () => {
         </button>
       </div>
 
-      {/* Main FAB Button */}
+      {/* Main FAB Button - 56px meets WCAG touch target */}
       <button
         onClick={toggleExpanded}
         className={cn(
-          'flex items-center justify-center h-14 w-14 rounded-full bg-primary text-white shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95',
+          'flex items-center justify-center h-16 w-16 rounded-full bg-primary text-white shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95',
           isExpanded && 'bg-muted-foreground'
         )}
         aria-label={isExpanded ? 'Close menu' : 'Open quick actions'}

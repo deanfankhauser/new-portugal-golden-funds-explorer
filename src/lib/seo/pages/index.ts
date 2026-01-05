@@ -1,6 +1,7 @@
 // Re-export all page SEO helpers
 export { getHomeSeo } from './homepage';
 export { getFundSeo, getFundFallbackSeo } from './fund';
+export { getFundsSeo } from './funds';
 export { getFundAlternativesSeo } from './fund-alternatives';
 export { getComparisonSeo, getFundComparisonSeo, getFundComparisonFallbackSeo } from './comparison';
 export { getCategorySeo } from './category';

@@ -33,6 +33,7 @@ export type PageType =
   | 'fund-alternatives'
   | 'fund-matcher'
   | 'fund-matcher-results'
+  | 'funds'
   | 'category'
   | 'tag'
   | 'manager'

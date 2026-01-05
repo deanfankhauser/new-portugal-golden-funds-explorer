@@ -6,6 +6,9 @@ import { COMPANY_INFO } from '@/config/company';
  * Provides consistent WebSite and Organization schema across the site
  */
 
+// Unique @id for organization linking across all schemas - consolidates SEO authority
+export const MOVINGTO_ORGANIZATION_ID = 'https://funds.movingto.com/#organization';
+
 export function getSitewideSchemas(): any[] {
   return [
     getWebSiteSchema(),
@@ -39,6 +42,7 @@ export function getOrganizationSchema(): any {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': MOVINGTO_ORGANIZATION_ID,
     'name': 'Movingto',
     'legalName': COMPANY_INFO.legalName,
     'url': URL_CONFIG.BASE_URL,
