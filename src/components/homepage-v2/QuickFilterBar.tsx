@@ -161,7 +161,7 @@ const QuickFilterBar: React.FC = () => {
                   setIsOpen(false);
                   inputRef.current?.focus();
                 }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 aria-label="Clear search"
               >
                 <X className="h-5 w-5" />
@@ -323,26 +323,23 @@ const QuickFilterBar: React.FC = () => {
 
           {/* Mobile: 2-column grid */}
           <div className="md:hidden space-y-3">
-            {/* Verified Checkbox - Full width */}
-            <div className="flex items-center gap-2">
+            {/* Verified Checkbox - Full width with proper tap target */}
+            <label className="flex items-center gap-3 min-h-[44px] cursor-pointer">
               <Checkbox
                 id="verified-filter-mobile"
                 checked={verifiedOnly}
                 onCheckedChange={(checked) => handleVerifiedToggle(checked === true)}
-                className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                className="h-5 w-5 border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
               />
-              <Label 
-                htmlFor="verified-filter-mobile" 
-                className="text-sm font-medium text-foreground cursor-pointer"
-              >
+              <span className="text-sm font-medium text-foreground">
                 Verified only
-              </Label>
-            </div>
+              </span>
+            </label>
 
             {/* Filter Grid */}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               <Select value={minInvestment || 'all'} onValueChange={handleMinInvestmentChange}>
-                <SelectTrigger className="bg-muted/30 border-border/40 h-10 text-sm">
+                <SelectTrigger className="bg-muted/30 border-border/40 h-12 text-sm">
                   <SelectValue placeholder="Investment" />
                 </SelectTrigger>
                 <SelectContent>
@@ -354,7 +351,7 @@ const QuickFilterBar: React.FC = () => {
               </Select>
 
               <Select value={riskLevel || 'all'} onValueChange={handleRiskChange}>
-                <SelectTrigger className="bg-muted/30 border-border/40 h-10 text-sm">
+                <SelectTrigger className="bg-muted/30 border-border/40 h-12 text-sm">
                   <SelectValue placeholder="Risk" />
                 </SelectTrigger>
                 <SelectContent>
@@ -366,7 +363,7 @@ const QuickFilterBar: React.FC = () => {
               </Select>
 
               <Select value={liquidity || 'all'} onValueChange={handleLiquidityChange}>
-                <SelectTrigger className="bg-muted/30 border-border/40 h-10 text-sm">
+                <SelectTrigger className="bg-muted/30 border-border/40 h-12 text-sm">
                   <SelectValue placeholder="Term" />
                 </SelectTrigger>
                 <SelectContent>
@@ -378,7 +375,7 @@ const QuickFilterBar: React.FC = () => {
               </Select>
 
               <Select value={strategy || 'all'} onValueChange={handleStrategyChange}>
-                <SelectTrigger className="bg-muted/30 border-border/40 h-10 text-sm">
+                <SelectTrigger className="bg-muted/30 border-border/40 h-12 text-sm">
                   <SelectValue placeholder="Strategy" />
                 </SelectTrigger>
                 <SelectContent>
