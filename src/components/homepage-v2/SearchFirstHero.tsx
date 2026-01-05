@@ -12,7 +12,7 @@ const SearchFirstHero: React.FC = () => {
         </h1>
         
         {/* Subtext */}
-        <p className="text-base sm:text-lg text-muted-foreground mb-2 max-w-2xl mx-auto">
+        <p className="text-base sm:text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
           Filter by strategy, fees, risk, and eligibility — then request an introduction to the fund manager. No advice. Just structured facts.
         </p>
         
