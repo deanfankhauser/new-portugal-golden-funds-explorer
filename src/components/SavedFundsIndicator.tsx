@@ -19,7 +19,7 @@ const SavedFundsIndicator = () => {
   return (
     <HeaderIconButton
       onClick={handleSavedClick}
-      ariaLabel={`Watchlist (${count})`}
+      ariaLabel={`Shortlist (${count})`}
       badgeCount={count}
     >
       <Star className="h-5 w-5" />
