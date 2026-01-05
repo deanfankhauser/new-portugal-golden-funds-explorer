@@ -22,7 +22,7 @@ const NavLinks: React.FC<NavLinksProps> = ({ className = '', onLinkClick }) => {
         asChild
         className="text-foreground hover:bg-muted hover:text-foreground"
       >
-        <Link to="/#funds-section" onClick={onLinkClick}>
+        <Link to="/funds" onClick={onLinkClick}>
           Funds
         </Link>
       </Button>

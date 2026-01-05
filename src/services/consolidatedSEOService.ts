@@ -15,6 +15,7 @@ import {
   getHomeSeo,
   getFundSeo,
   getFundFallbackSeo,
+  getFundsSeo,
   getFundAlternativesSeo,
   getComparisonSeo,
   getFundComparisonSeo,
@@ -699,6 +700,9 @@ export class ConsolidatedSEOService {
           keywords: [],
           structuredData: null
         };
+
+      case 'funds':
+        return getFundsSeo();
 
       default:
         return this.getSEOData('homepage');

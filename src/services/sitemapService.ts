@@ -99,6 +99,12 @@ export class SitemapService {
         lastmod: currentDate,
         changefreq: 'monthly',
         priority: 0.6
+      },
+      {
+        url: URL_CONFIG.buildUrl('/funds'),
+        lastmod: currentDate,
+        changefreq: 'daily',
+        priority: 0.9
       }
     ];
   }
