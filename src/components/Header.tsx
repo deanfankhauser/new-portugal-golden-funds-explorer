@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Menu, ChevronDown, Calculator, DollarSign, ShieldCheck } from "lucide-react";
+import { Sparkles, Menu, ChevronDown, Calculator, DollarSign } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -66,78 +66,71 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Global Search - Desktop */}
-          <div className="hidden md:flex flex-1 max-w-md">
-            <GlobalSearch />
-          </div>
-
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-2 flex-shrink-0">
-            {/* Primary Nav Links */}
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className="text-background hover:bg-background/10 hover:text-white"
-            >
-              <Link to="/">Funds</Link>
-            </Button>
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className="text-background hover:bg-background/10 hover:text-white"
-            >
-              <Link to="/managers">Managers</Link>
-            </Button>
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className="text-background hover:bg-background/10 hover:text-white gap-1.5"
-            >
-              <Link to="/verification-program">
-                <ShieldCheck className="h-4 w-4" />
-                Verification
-              </Link>
-            </Button>
+          <div className="hidden md:flex items-center gap-1 flex-1 justify-end">
+            {/* Global Search */}
+            <div className="w-64 mr-2">
+              <GlobalSearch />
+            </div>
             
-            {/* Tools Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-background hover:bg-background/10 hover:text-white gap-1.5"
-                >
-                  <span>Tools</span>
-                  <ChevronDown className="h-4 w-4" />
+            {/* Primary Nav Links */}
+            <nav className="flex items-center" aria-label="Primary">
+              <Link to="/#funds-section">
+                <Button variant="ghost" className="text-background hover:bg-background/10 hover:text-background">
+                  Funds
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem asChild>
-                  <Link to="/fund-matcher" className="w-full cursor-pointer flex items-center gap-2">
-                    <Sparkles className="h-4 w-4" />
-                    Fund Matcher
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/roi-calculator" className="w-full cursor-pointer flex items-center gap-2">
-                    <Calculator className="h-4 w-4" />
-                    ROI Calculator
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/cost-calculator" className="w-full cursor-pointer flex items-center gap-2">
-                    <DollarSign className="h-4 w-4" />
-                    Cost Calculator
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <SavedFundsIndicator />
-            <ComparisonIndicator />
-            <AuthAwareButton />
+              </Link>
+              <Link to="/managers">
+                <Button variant="ghost" className="text-background hover:bg-background/10 hover:text-background">
+                  Managers
+                </Button>
+              </Link>
+              <Link to="/verification-program">
+                <Button variant="ghost" className="text-background hover:bg-background/10 hover:text-background">
+                  Verification
+                </Button>
+              </Link>
+
+              {/* Tools Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="text-background hover:bg-background/10 hover:text-background gap-1">
+                    Tools
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link to="/fund-matcher" className="flex items-center gap-2 cursor-pointer">
+                      <Sparkles className="h-4 w-4" />
+                      Fund Matcher
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/roi-calculator" className="flex items-center gap-2 cursor-pointer">
+                      <Calculator className="h-4 w-4" />
+                      ROI Calculator
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/cost-calculator" className="flex items-center gap-2 cursor-pointer">
+                      <DollarSign className="h-4 w-4" />
+                      Cost Calculator
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </nav>
+
+            {/* Right side actions */}
+            <div className="flex items-center gap-2 ml-2">
+              <SavedFundsIndicator />
+              <ComparisonIndicator />
+              <Button asChild variant="secondary" size="sm" className="font-semibold">
+                <Link to="/contact">Request an intro</Link>
+              </Button>
+              <AuthAwareButton />
+            </div>
           </div>
 
           {/* Mobile Navigation and Comparison */}

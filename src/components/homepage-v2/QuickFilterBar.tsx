@@ -1,16 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Search, X, Check, ChevronDown } from 'lucide-react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Search, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { useGlobalSearch } from '@/hooks/useGlobalSearch';
-import { GlobalSearchDropdown } from '@/components/GlobalSearchDropdown';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useGlobalSearch } from '@/hooks/useGlobalSearch';
 import { cn } from '@/lib/utils';
 
 interface QuickFilterBarProps {
@@ -19,215 +20,282 @@ interface QuickFilterBarProps {
 
 const QuickFilterBar: React.FC<QuickFilterBarProps> = ({ onBrowseResults }) => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const searchRef = useRef<HTMLDivElement>(null);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Get current filter values from URL
+  const verifiedOnly = searchParams.get('verified') === 'true';
+  const minInvestment = searchParams.get('minInvestment') || '';
+  const riskLevel = searchParams.get('risk') || '';
+  const liquidity = searchParams.get('liquidity') || '';
+  const strategy = searchParams.get('category') || '';
+
   const { results, isSearching } = useGlobalSearch(searchValue);
 
-  // Filter states
-  const [verifiedOnly, setVerifiedOnly] = useState(false);
-  const [minInvestment, setMinInvestment] = useState<string | null>(null);
-  const [riskLevel, setRiskLevel] = useState<string | null>(null);
-  const [liquidity, setLiquidity] = useState<string | null>(null);
-  const [strategy, setStrategy] = useState<string | null>(null);
+  // Group results by type
+  const groupedResults = useMemo(() => {
+    const funds = results.filter(r => r.type === 'fund');
+    const managers = results.filter(r => r.type === 'manager');
+    const categories = results.filter(r => r.type === 'category');
+    return { funds, managers, categories };
+  }, [results]);
 
-  // Click outside to close
+  // Update URL params when filters change
+  const updateFilter = (key: string, value: string | boolean) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (value === '' || value === false) {
+      newParams.delete(key);
+    } else if (typeof value === 'boolean') {
+      newParams.set(key, value.toString());
+    } else {
+      newParams.set(key, value);
+    }
+    setSearchParams(newParams, { replace: true });
+  };
+
+  const handleVerifiedToggle = (checked: boolean) => {
+    updateFilter('verified', checked);
+  };
+
+  const handleMinInvestmentChange = (value: string) => {
+    updateFilter('minInvestment', value === 'all' ? '' : value);
+  };
+
+  const handleRiskChange = (value: string) => {
+    updateFilter('risk', value === 'all' ? '' : value);
+  };
+
+  const handleLiquidityChange = (value: string) => {
+    updateFilter('liquidity', value === 'all' ? '' : value);
+  };
+
+  const handleStrategyChange = (value: string) => {
+    updateFilter('category', value === 'all' ? '' : value);
+  };
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isOpen) return;
+
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          setSelectedIndex(prev => Math.min(prev + 1, results.length - 1));
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setSelectedIndex(prev => Math.max(prev - 1, 0));
+          break;
+        case 'Enter':
+          e.preventDefault();
+          if (selectedIndex >= 0 && selectedIndex < results.length) {
+            const result = results[selectedIndex];
+            navigate(result.url);
+          }
+          setIsOpen(false);
+          break;
+        case 'Escape':
+          setIsOpen(false);
+          break;
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, results, selectedIndex, navigate]);
+
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        !inputRef.current?.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    setSelectedIndex(0);
-  }, [results]);
-
-  const handleInputChange = (value: string) => {
-    setSearchValue(value);
-    setIsOpen(value.trim().length > 0);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!isOpen || results.length === 0) return;
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        setSelectedIndex((prev) => (prev + 1) % results.length);
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        setSelectedIndex((prev) => (prev - 1 + results.length) % results.length);
-        break;
-      case 'Enter':
-        e.preventDefault();
-        if (results[selectedIndex]) {
-          navigate(results[selectedIndex].url);
-          handleResultClick();
-        }
-        break;
-      case 'Escape':
-        setIsOpen(false);
-        inputRef.current?.blur();
-        break;
-    }
-  };
-
-  const handleResultClick = () => {
+  const handleResultClick = (url: string) => {
+    navigate(url);
     setIsOpen(false);
     setSearchValue('');
-    inputRef.current?.blur();
   };
 
-  const clearSearch = () => {
-    setSearchValue('');
-    setIsOpen(false);
-    inputRef.current?.focus();
-  };
-
-  const FilterChip: React.FC<{
-    label: string;
-    value: string | null;
-    options: { label: string; value: string }[];
-    onChange: (value: string | null) => void;
-  }> = ({ label, value, options, onChange }) => (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className={cn(
-            "gap-1 h-9 px-3 text-sm font-medium border-border bg-card hover:bg-muted",
-            value && "bg-primary/10 border-primary/30 text-primary"
-          )}
-        >
-          <span>{value || label}</span>
-          <ChevronDown className="h-3.5 w-3.5" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-48 bg-popover">
-        <DropdownMenuItem
-          onClick={() => onChange(null)}
-          className="cursor-pointer"
-        >
-          <span className="text-muted-foreground">Any {label.toLowerCase()}</span>
-        </DropdownMenuItem>
-        {options.map((option) => (
-          <DropdownMenuItem
-            key={option.value}
-            onClick={() => onChange(option.value)}
-            className="cursor-pointer flex items-center justify-between"
-          >
-            <span>{option.label}</span>
-            {value === option.label && <Check className="h-4 w-4 text-primary" />}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
+  const hasResults = results.length > 0;
 
   return (
-    <div className="space-y-4">
+    <div className="w-full max-w-3xl mx-auto space-y-4">
       {/* Search Input */}
-      <div ref={searchRef} className="relative max-w-2xl mx-auto">
+      <div className="relative">
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             ref={inputRef}
             type="text"
-            placeholder="Search funds or managers..."
+            placeholder="Search funds or managers…"
             value={searchValue}
-            onChange={(e) => handleInputChange(e.target.value)}
-            onKeyDown={handleKeyDown}
-            onFocus={() => searchValue.trim() && setIsOpen(true)}
-            className="pl-12 pr-12 h-14 text-lg bg-card border-border rounded-xl shadow-sm focus:ring-2 focus:ring-primary/20"
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+              setIsOpen(e.target.value.length > 0);
+              setSelectedIndex(-1);
+            }}
+            onFocus={() => searchValue.length > 0 && setIsOpen(true)}
+            className="pl-12 pr-10 h-14 text-lg rounded-xl border-border bg-background shadow-sm focus-visible:ring-2 focus-visible:ring-primary"
+            aria-label="Search funds or managers"
+            aria-expanded={isOpen}
+            aria-haspopup="listbox"
           />
           {searchValue && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={clearSearch}
-              className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground"
+            <button
+              onClick={() => {
+                setSearchValue('');
+                setIsOpen(false);
+                inputRef.current?.focus();
+              }}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              aria-label="Clear search"
             >
               <X className="h-5 w-5" />
-            </Button>
+            </button>
           )}
         </div>
-        {isOpen && (
-          <GlobalSearchDropdown
-            results={results}
-            isSearching={isSearching}
-            onResultClick={handleResultClick}
-            selectedIndex={selectedIndex}
-          />
+
+        {/* Search Results Dropdown */}
+        {isOpen && searchValue && (
+          <div
+            ref={dropdownRef}
+            className="absolute top-full left-0 right-0 mt-2 bg-background border border-border rounded-xl shadow-lg z-50 max-h-80 overflow-y-auto"
+            role="listbox"
+          >
+            {isSearching ? (
+              <div className="p-4 text-center text-muted-foreground">Searching...</div>
+            ) : hasResults ? (
+              <div className="py-2">
+                {groupedResults.funds.length > 0 && (
+                  <div>
+                    <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase">Funds</div>
+                    {groupedResults.funds.map((fund, index) => (
+                      <button
+                        key={fund.id}
+                        onClick={() => handleResultClick(fund.url)}
+                        className={cn(
+                          "w-full px-4 py-3 text-left hover:bg-muted transition-colors",
+                          selectedIndex === index && "bg-muted"
+                        )}
+                        role="option"
+                        aria-selected={selectedIndex === index}
+                      >
+                        <div className="font-medium">{fund.name}</div>
+                        <div className="text-sm text-muted-foreground">{fund.subtitle}</div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {groupedResults.managers.length > 0 && (
+                  <div>
+                    <div className="px-4 py-2 text-xs font-semibold text-muted-foreground uppercase">Managers</div>
+                    {groupedResults.managers.map((manager, index) => (
+                      <button
+                        key={manager.id}
+                        onClick={() => handleResultClick(manager.url)}
+                        className={cn(
+                          "w-full px-4 py-3 text-left hover:bg-muted transition-colors",
+                          selectedIndex === groupedResults.funds.length + index && "bg-muted"
+                        )}
+                        role="option"
+                        aria-selected={selectedIndex === groupedResults.funds.length + index}
+                      >
+                        <div className="font-medium">{manager.name}</div>
+                        <div className="text-sm text-muted-foreground">{manager.subtitle}</div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="p-4 text-center text-muted-foreground">No results found</div>
+            )}
+          </div>
         )}
       </div>
 
       {/* Quick Filters */}
-      <div className="flex flex-wrap justify-center gap-2">
+      <div className="flex flex-wrap items-center justify-center gap-3">
         {/* Verified Toggle */}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setVerifiedOnly(!verifiedOnly)}
-          className={cn(
-            "gap-1.5 h-9 px-3 text-sm font-medium border-border bg-card hover:bg-muted",
-            verifiedOnly && "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
-          )}
-        >
-          {verifiedOnly && <Check className="h-3.5 w-3.5" />}
-          <span>Verified</span>
-        </Button>
+        <div className="flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-lg">
+          <Switch
+            id="verified-filter"
+            checked={verifiedOnly}
+            onCheckedChange={handleVerifiedToggle}
+            className="data-[state=checked]:bg-primary"
+          />
+          <Label htmlFor="verified-filter" className="text-sm font-medium cursor-pointer">
+            Verified only
+          </Label>
+        </div>
 
-        <FilterChip
-          label="Investment"
-          value={minInvestment}
-          options={[
-            { label: '€100K–€250K', value: '100k-250k' },
-            { label: '€250K–€500K', value: '250k-500k' },
-            { label: '€500K+', value: '500k+' },
-          ]}
-          onChange={setMinInvestment}
-        />
+        {/* Min Investment */}
+        <Select value={minInvestment || 'all'} onValueChange={handleMinInvestmentChange}>
+          <SelectTrigger className="w-[160px] bg-muted/50 border-0">
+            <SelectValue placeholder="Min investment" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Any investment</SelectItem>
+            <SelectItem value="100-250">€100K – €250K</SelectItem>
+            <SelectItem value="250-500">€250K – €500K</SelectItem>
+            <SelectItem value="500+">€500K+</SelectItem>
+          </SelectContent>
+        </Select>
 
-        <FilterChip
-          label="Risk"
-          value={riskLevel}
-          options={[
-            { label: 'Low', value: 'low' },
-            { label: 'Medium', value: 'medium' },
-            { label: 'High', value: 'high' },
-          ]}
-          onChange={setRiskLevel}
-        />
+        {/* Risk Level */}
+        <Select value={riskLevel || 'all'} onValueChange={handleRiskChange}>
+          <SelectTrigger className="w-[130px] bg-muted/50 border-0">
+            <SelectValue placeholder="Risk level" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Any risk</SelectItem>
+            <SelectItem value="low">Low risk</SelectItem>
+            <SelectItem value="medium">Medium risk</SelectItem>
+            <SelectItem value="high">High risk</SelectItem>
+          </SelectContent>
+        </Select>
 
-        <FilterChip
-          label="Liquidity"
-          value={liquidity}
-          options={[
-            { label: '3–6 years', value: '3-6' },
-            { label: '6–8 years', value: '6-8' },
-            { label: '8–10 years', value: '8-10' },
-          ]}
-          onChange={setLiquidity}
-        />
+        {/* Liquidity */}
+        <Select value={liquidity || 'all'} onValueChange={handleLiquidityChange}>
+          <SelectTrigger className="w-[130px] bg-muted/50 border-0">
+            <SelectValue placeholder="Liquidity" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Any term</SelectItem>
+            <SelectItem value="3-6">3–6 years</SelectItem>
+            <SelectItem value="6-8">6–8 years</SelectItem>
+            <SelectItem value="8-10">8–10 years</SelectItem>
+          </SelectContent>
+        </Select>
 
-        <FilterChip
-          label="Strategy"
-          value={strategy}
-          options={[
-            { label: 'Private Equity', value: 'private-equity' },
-            { label: 'Venture Capital', value: 'venture-capital' },
-            { label: 'Balanced', value: 'balanced' },
-            { label: 'Other', value: 'other' },
-          ]}
-          onChange={setStrategy}
-        />
+        {/* Strategy */}
+        <Select value={strategy || 'all'} onValueChange={handleStrategyChange}>
+          <SelectTrigger className="w-[150px] bg-muted/50 border-0">
+            <SelectValue placeholder="Strategy" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Any strategy</SelectItem>
+            <SelectItem value="Private Equity">Private Equity</SelectItem>
+            <SelectItem value="Venture Capital">Venture Capital</SelectItem>
+            <SelectItem value="Balanced">Balanced</SelectItem>
+            <SelectItem value="Real Estate">Real Estate</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );
