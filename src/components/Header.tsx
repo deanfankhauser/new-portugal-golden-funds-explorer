@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import AuthAwareButton from "./auth/AuthAwareButton";
-import GlobalSearch from "./GlobalSearch";
 import ComparisonIndicator from "./ComparisonIndicator";
 import SavedFundsIndicator from "./SavedFundsIndicator";
 import MobileNavigation from "./MobileNavigation";
@@ -68,11 +67,6 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-1 flex-1 justify-end">
-            {/* Global Search */}
-            <div className="w-64 mr-2">
-              <GlobalSearch />
-            </div>
-            
             {/* Primary Nav Links */}
             <nav className="flex items-center" aria-label="Primary">
               <Link to="/#funds-section">
@@ -138,11 +132,6 @@ const Header = () => {
             <ComparisonIndicator />
             <MobileNavigation />
           </div>
-        </div>
-        
-        {/* Global Search - Mobile (full width below header) */}
-        <div className="md:hidden mt-3">
-          <GlobalSearch />
         </div>
       </div>
     </header>
