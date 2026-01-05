@@ -16,7 +16,7 @@ const HeaderDefault: React.FC = () => {
   return (
     <>
       <DisclaimerBanner />
-      <header className="bg-background border-b border-border/50 w-full">
+      <header className="bg-white border-b border-border/50 w-full">
         {/* Main Header Row */}
         <div className="py-3">
           <div className="container mx-auto px-4">
@@ -44,7 +44,7 @@ const HeaderDefault: React.FC = () => {
               <div className="flex items-center justify-center flex-1 md:flex-none">
                 <Link to="/" className="flex items-center">
                   <img
-                    src="/lovable-uploads/ab17d046-1cb9-44fd-aa6d-c4d338e11090.png"
+                    src="/lovable-uploads/movingto-logo-black.png"
                     alt="Movingto Logo"
                     className="h-6"
                     width="116"
