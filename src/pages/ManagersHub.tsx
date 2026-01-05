@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -6,6 +6,7 @@ import PageSEO from '../components/common/PageSEO';
 import ManagersList from '../components/managers-hub/ManagersList';
 import ManagersHubHeader from '../components/managers-hub/ManagersHubHeader';
 import ManagersHubBreadcrumbs from '../components/managers-hub/ManagersHubBreadcrumbs';
+import ManagersSearch from '../components/managers-hub/ManagersSearch';
 import { getAllFundManagers, getAllApprovedManagers } from '../data/services/managers-service';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import FundListSkeleton from '../components/common/FundListSkeleton';
@@ -17,6 +18,8 @@ interface ManagersHubProps {
 }
 
 const ManagersHub: React.FC<ManagersHubProps> = ({ initialFunds }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  
   const { funds: allFundsData, loading: isLoading } = useRealTimeFunds({
     initialData: initialFunds
   });
@@ -68,6 +71,18 @@ const ManagersHub: React.FC<ManagersHubProps> = ({ initialFunds }) => {
     });
   }, [basicManagers, profileLookup, allDatabaseFunds]);
 
+  // Filter managers by search query
+  const filteredManagers = useMemo(() => {
+    if (!searchQuery.trim()) return enrichedManagers;
+    
+    const query = searchQuery.toLowerCase().trim();
+    return enrichedManagers.filter(manager => 
+      manager.name.toLowerCase().includes(query) ||
+      manager.city?.toLowerCase().includes(query) ||
+      manager.country?.toLowerCase().includes(query)
+    );
+  }, [enrichedManagers, searchQuery]);
+
   // Only show loading when no initial data was provided
   if (isLoading && !initialFunds) {
     return (
@@ -90,7 +105,13 @@ const ManagersHub: React.FC<ManagersHubProps> = ({ initialFunds }) => {
       <main className="container mx-auto px-4 py-8 flex-1">
         <ManagersHubBreadcrumbs />
         <ManagersHubHeader managerCount={enrichedManagers.length} />
-        <ManagersList managers={enrichedManagers} />
+        <ManagersSearch 
+          value={searchQuery}
+          onChange={setSearchQuery}
+          resultCount={filteredManagers.length}
+          totalCount={enrichedManagers.length}
+        />
+        <ManagersList managers={filteredManagers} />
         
         {/* Link to Main Hub */}
         <div className="mt-8 text-center">
