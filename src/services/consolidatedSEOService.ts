@@ -18,6 +18,7 @@ import {
   getFundsSeo,
   getFundAlternativesSeo,
   getComparisonSeo,
+  getComparisonsHubSeo,
   getFundComparisonSeo,
   getFundComparisonFallbackSeo,
   getCategorySeo,
@@ -462,25 +463,8 @@ export class ConsolidatedSEOService {
         };
 
       case 'comparisons-hub':
-        return {
-          title: this.optimizeText('Portugal Golden Visa Fund Comparisons (2026) | Movingto Funds', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Browse side-by-side comparisons across fees, strategy, liquidity terms, and timelines—built for fast filtering and shortlists.', this.MAX_DESCRIPTION_LENGTH),
-          url: URL_CONFIG.buildUrl('comparisons'),
-          canonical: URL_CONFIG.buildUrl('comparisons'),
-          keywords: [
-            'fund comparison hub',
-            'compare Golden Visa funds',
-            'side by side fund analysis',
-            'investment comparison tool',
-            'fund vs fund comparison',
-            'compare investment funds Portugal',
-            'Golden Visa fund comparisons',
-            'investment fund comparison tool',
-            'which Golden Visa fund is better',
-            'compare fund performance'
-          ],
-          structuredData: this.getComparisonsHubStructuredData(funds)
-        };
+        // Delegate to centralized SEO helper (SEO discovery page)
+        return getComparisonsHubSeo();
 
       case 'about':
         return {
