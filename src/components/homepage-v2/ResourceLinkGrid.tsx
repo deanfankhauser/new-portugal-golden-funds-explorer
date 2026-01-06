@@ -30,25 +30,6 @@ const LINK_COLUMNS: LinkColumn[] = [
       { href: '/categories/clean-energy', label: 'Clean Energy' },
       { href: '/categories/debt-funds', label: 'Debt Funds' },
     ]
-  },
-  {
-    title: 'Tools',
-    links: [
-      { href: '/fund-matcher', label: 'Fund Matcher' },
-      { href: '/roi-calculator', label: 'ROI Calculator' },
-      { href: '/compare', label: 'Compare Tool' },
-      { href: '/verification-program', label: 'Verification Program' },
-      { href: '/fees', label: 'Fees Guide' },
-    ]
-  },
-  {
-    title: 'Legal',
-    links: [
-      { href: '/about', label: 'About' },
-      { href: '/faqs', label: 'FAQs' },
-      { href: '/terms', label: 'Terms' },
-      { href: '/cookie-policy', label: 'Cookie Policy' },
-    ]
   }
 ];
 
@@ -63,7 +44,7 @@ const ResourceLinkGrid: React.FC = () => {
           </h2>
 
           {/* Link Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 gap-12 max-w-md">
             {LINK_COLUMNS.map((column) => (
               <div key={column.title}>
                 <h3 className="text-xs font-medium text-muted-foreground mb-4 uppercase tracking-wider">
