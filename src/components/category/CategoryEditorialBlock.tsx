@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../integrations/supabase/client';
 import { categoryToSlug } from '../../lib/utils';
-import { BookOpen } from 'lucide-react';
+
 
 interface CategoryEditorialBlockProps {
   categoryName: string;
@@ -56,19 +56,12 @@ const CategoryEditorialBlock: React.FC<CategoryEditorialBlockProps> = ({ categor
 
   return (
     <div className="bg-muted/30 rounded-xl border border-border p-8 mb-8">
-      <div className="flex items-start gap-4">
-        <div className="p-3 bg-primary/10 rounded-lg shrink-0">
-          <BookOpen className="h-6 w-6 text-primary" />
-        </div>
-        <div className="flex-1">
-          <h2 className="text-xl font-semibold mb-3 text-foreground">
-            About {categoryName} Funds
-          </h2>
-          <p className="text-muted-foreground leading-relaxed">
-            {editorialContent}
-          </p>
-        </div>
-      </div>
+      <h2 className="text-xl font-semibold mb-3 text-foreground">
+        About {categoryName} Funds
+      </h2>
+      <p className="text-muted-foreground leading-relaxed">
+        {editorialContent}
+      </p>
     </div>
   );
 };
