@@ -28,6 +28,7 @@ const CategoriesHub = lazy(() => import('./pages/CategoriesHub'));
 const ManagersHub = lazy(() => import('./pages/ManagersHub'));
 const FundManager = lazy(() => import('./pages/FundManager'));
 const TeamMemberProfile = lazy(() => import('./pages/TeamMemberProfile'));
+const TeamDirectory = lazy(() => import('./pages/TeamDirectory'));
 const About = lazy(() => import('./pages/About'));
 const Disclaimer = lazy(() => import('./pages/Disclaimer'));
 const Privacy = lazy(() => import('./pages/Privacy'));
@@ -217,6 +218,11 @@ function App() {
                       <Route path="/manager/:name" element={
                         <Suspense fallback={<PageLoader />}>
                           <FundManager />
+                        </Suspense>
+                      } />
+                      <Route path="/team" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <TeamDirectory />
                         </Suspense>
                       } />
                       <Route path="/team/:slug" element={
