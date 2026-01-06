@@ -59,7 +59,7 @@ const ActionCard: React.FC<ActionCardProps> = ({ icon, title, description, href,
         {icon}
       </div>
       
-      <h3 className="font-semibold text-foreground mb-1 flex items-center gap-2">
+      <h3 className="text-base font-semibold text-foreground mb-1 flex items-center gap-2">
         {title}
         <ArrowRight className="h-4 w-4 text-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
       </h3>
