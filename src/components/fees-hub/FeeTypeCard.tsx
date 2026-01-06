@@ -26,7 +26,7 @@ export const FeeTypeCard: React.FC<FeeTypeCardProps> = ({
   fundsCount 
 }) => {
   const Icon = iconMap[slug] || DollarSign;
-  const href = slug === 'total-cost' ? '#estimator' : `/tags/${slug}`;
+  const href = slug === 'total-cost' ? '#estimator' : `/fees/${slug}`;
   const isAnchor = slug === 'total-cost';
   
   const content = (
