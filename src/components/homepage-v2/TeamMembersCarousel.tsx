@@ -20,6 +20,7 @@ interface TeamMember {
   photo_url: string | null;
   profile_id: string;
   company_name?: string;
+  location?: string;
 }
 
 const TeamMembersCarousel: React.FC = () => {
@@ -44,6 +45,7 @@ const TeamMembersCarousel: React.FC = () => {
         photo_url: member.photo_url,
         profile_id: member.profile_id,
         company_name: member.company_name || undefined,
+        location: member.location || undefined,
       })) as TeamMember[];
     },
     staleTime: 5 * 60 * 1000,
@@ -85,25 +87,34 @@ const TeamMembersCarousel: React.FC = () => {
         >
           <CarouselContent className="-ml-4">
             {teamMembers.map((member) => (
-              <CarouselItem key={member.id} className="pl-4 basis-1/2 sm:basis-1/3 lg:basis-1/5 xl:basis-1/6">
+              <CarouselItem key={member.id} className="pl-4 basis-[85%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                 <Link
                   to={`/team/${member.slug}`}
-                  className="flex flex-col items-center text-center group"
+                  className="block bg-card rounded-xl border border-border p-5 h-full shadow-sm hover:shadow-lg hover:border-primary/40 transition-all duration-200 group"
                 >
-                  <TeamMemberAvatar
-                    photoUrl={member.photo_url}
-                    name={member.name}
-                    size="lg"
-                    className="mb-3 ring-2 ring-transparent group-hover:ring-primary/30 transition-all duration-200"
-                  />
-                  <h3 className="font-medium text-foreground text-sm line-clamp-1 group-hover:text-primary transition-colors">
+                  {/* Circular Photo */}
+                  <div className="flex justify-start mb-4">
+                    <TeamMemberAvatar
+                      photoUrl={member.photo_url}
+                      name={member.name}
+                      size="lg"
+                      className="ring-2 ring-border group-hover:ring-primary/30 transition-all duration-200"
+                    />
+                  </div>
+                  
+                  {/* Name */}
+                  <h3 className="font-semibold text-foreground text-base line-clamp-1 group-hover:text-primary transition-colors">
                     {member.name}
                   </h3>
-                  <p className="text-xs text-muted-foreground line-clamp-1">
+                  
+                  {/* Role */}
+                  <p className="text-sm text-muted-foreground line-clamp-1 mt-0.5">
                     {member.role}
                   </p>
+                  
+                  {/* Location - using company_name as location indicator */}
                   {member.company_name && (
-                    <p className="text-xs text-muted-foreground/70 line-clamp-1 mt-0.5">
+                    <p className="text-sm text-primary mt-3 line-clamp-1">
                       {member.company_name}
                     </p>
                   )}
