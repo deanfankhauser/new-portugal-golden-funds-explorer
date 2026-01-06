@@ -6,6 +6,7 @@ export interface SnapshotItem {
   label: string;
   value: string;
   icon?: LucideIcon;
+  logoUrl?: string;
 }
 
 interface TeamMemberSnapshotProps {
@@ -25,9 +26,15 @@ export const TeamMemberSnapshot: React.FC<TeamMemberSnapshotProps> = ({ items })
           <Card key={index} className="bg-muted/30">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
-                {item.icon && (
+                {item.logoUrl ? (
+                  <img 
+                    src={item.logoUrl} 
+                    alt="" 
+                    className="h-5 w-5 object-contain rounded shrink-0 mt-0.5"
+                  />
+                ) : item.icon ? (
                   <item.icon className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-                )}
+                ) : null}
                 <div className="min-w-0">
                   <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                     {item.label}

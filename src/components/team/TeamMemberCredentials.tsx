@@ -9,6 +9,7 @@ interface TeamMemberCredentialsProps {
   role: string;
   companyName: string;
   companySlug?: string;
+  companyLogoUrl?: string;
   linkedinUrl?: string;
   bio?: string;
   education?: string;
@@ -19,6 +20,7 @@ export const TeamMemberCredentials: React.FC<TeamMemberCredentialsProps> = ({
   role,
   companyName,
   companySlug,
+  companyLogoUrl,
   linkedinUrl,
   bio,
   education,
@@ -88,7 +90,15 @@ export const TeamMemberCredentials: React.FC<TeamMemberCredentialsProps> = ({
               to={`/manager/${companySlug}`}
               className="flex items-center gap-2 text-primary hover:underline"
             >
-              <Building2 className="h-4 w-4" />
+              {companyLogoUrl ? (
+                <img 
+                  src={companyLogoUrl} 
+                  alt="" 
+                  className="h-5 w-5 object-contain rounded"
+                />
+              ) : (
+                <Building2 className="h-4 w-4" />
+              )}
               <span className="text-sm font-medium">{companyName}</span>
             </Link>
           </div>

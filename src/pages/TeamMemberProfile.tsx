@@ -50,6 +50,7 @@ const TeamMemberProfile: React.FC<TeamMemberProfileProps> = ({ teamMemberData: s
   // Extract data for hooks (must be before any early returns)
   const profile = teamMemberData?.profiles;
   const companyName = profile?.company_name || profile?.manager_name;
+  const companyLogoUrl = (profile as any)?.logo_url;
   const companySlug = companyName ? managerToSlug(companyName) : undefined;
   const primaryFund = teamMemberData?.funds?.[0];
   const fundName = primaryFund?.name || companyName || 'Fund';
@@ -66,7 +67,7 @@ const TeamMemberProfile: React.FC<TeamMemberProfileProps> = ({ teamMemberData: s
     }
     
     if (companyName) {
-      items.push({ label: 'Company', value: companyName, icon: Building2 });
+      items.push({ label: 'Company', value: companyName, icon: Building2, logoUrl: companyLogoUrl });
     }
     
     // Use team member's location if available, fallback to fund location
@@ -200,6 +201,7 @@ const TeamMemberProfile: React.FC<TeamMemberProfileProps> = ({ teamMemberData: s
                 role={teamMemberData.role}
                 companyName={companyName || 'Fund Manager'}
                 companySlug={companySlug}
+                companyLogoUrl={companyLogoUrl}
                 linkedinUrl={teamMemberData.linkedin_url || undefined}
                 bio={teamMemberData.bio || undefined}
                 education={(teamMemberData as any).education || undefined}
