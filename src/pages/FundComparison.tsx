@@ -172,7 +172,8 @@ const FundComparison: React.FC<FundComparisonProps> = ({ initialSlug, initialFun
 
         <RelatedComparisons 
           currentFund1={comparisonData.fund1} 
-          currentFund2={comparisonData.fund2} 
+          currentFund2={comparisonData.fund2}
+          initialFunds={allFunds}
         />
       </main>
       
