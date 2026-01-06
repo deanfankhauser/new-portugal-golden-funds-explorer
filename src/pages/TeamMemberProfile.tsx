@@ -46,6 +46,39 @@ const TeamMemberProfile: React.FC<TeamMemberProfileProps> = ({ teamMemberData: s
   // Use SSR data if available, otherwise use fetched data
   const teamMemberData = ssrData || fetchedData;
 
+  // Extract data for hooks (must be before any early returns)
+  const profile = teamMemberData?.profiles;
+  const companyName = profile?.company_name || profile?.manager_name;
+  const companySlug = companyName ? managerToSlug(companyName) : undefined;
+  const primaryFund = teamMemberData?.funds?.[0];
+  const fundName = primaryFund?.name || companyName || 'Fund';
+  const fundSlug = primaryFund?.id || '';
+
+  // Build snapshot items from available data (must be before early returns)
+  const snapshotItems: SnapshotItem[] = useMemo(() => {
+    if (!teamMemberData) return [];
+    
+    const items: SnapshotItem[] = [];
+    
+    if (teamMemberData.role) {
+      items.push({ label: 'Role', value: teamMemberData.role, icon: Briefcase });
+    }
+    
+    if (companyName) {
+      items.push({ label: 'Company', value: companyName, icon: Building2 });
+    }
+    
+    if (primaryFund?.category) {
+      items.push({ label: 'Fund Type', value: primaryFund.category });
+    }
+    
+    if (primaryFund?.location) {
+      items.push({ label: 'Location', value: primaryFund.location, icon: MapPin });
+    }
+    
+    return items;
+  }, [teamMemberData, companyName, primaryFund]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -78,38 +111,6 @@ const TeamMemberProfile: React.FC<TeamMemberProfileProps> = ({ teamMemberData: s
   if (error || !teamMemberData) {
     return <NotFound />;
   }
-
-  const { profiles: profile } = teamMemberData;
-  const companyName = profile?.company_name || profile?.manager_name;
-  const companySlug = companyName ? managerToSlug(companyName) : undefined;
-  
-  // Get the primary fund for affiliation
-  const primaryFund = teamMemberData.funds?.[0];
-  const fundName = primaryFund?.name || companyName || 'Fund';
-  const fundSlug = primaryFund?.id || '';
-
-  // Build snapshot items from available data
-  const snapshotItems: SnapshotItem[] = useMemo(() => {
-    const items: SnapshotItem[] = [];
-    
-    if (teamMemberData.role) {
-      items.push({ label: 'Role', value: teamMemberData.role, icon: Briefcase });
-    }
-    
-    if (companyName) {
-      items.push({ label: 'Company', value: companyName, icon: Building2 });
-    }
-    
-    if (primaryFund?.category) {
-      items.push({ label: 'Fund Type', value: primaryFund.category });
-    }
-    
-    if (primaryFund?.location) {
-      items.push({ label: 'Location', value: primaryFund.location, icon: MapPin });
-    }
-    
-    return items;
-  }, [teamMemberData, companyName, primaryFund]);
 
   // Contact info - use fund manager company info if available
   const contactEmail = undefined;
