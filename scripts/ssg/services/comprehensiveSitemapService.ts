@@ -146,8 +146,11 @@ ${sitemapElements}
       { path: '/about', priority: 0.6, changefreq: 'monthly' as const },
       { path: '/disclaimer', priority: 0.3, changefreq: 'monthly' as const },
       { path: '/privacy', priority: 0.3, changefreq: 'monthly' as const },
+      { path: '/terms', priority: 0.3, changefreq: 'monthly' as const },
+      { path: '/cookie-policy', priority: 0.3, changefreq: 'monthly' as const },
       { path: '/faqs', priority: 0.7, changefreq: 'monthly' as const },
-      { path: '/roi-calculator', priority: 0.6, changefreq: 'monthly' as const }
+      { path: '/roi-calculator', priority: 0.6, changefreq: 'monthly' as const },
+      { path: '/ira-401k-eligible-funds', priority: 0.8, changefreq: 'weekly' as const }
     ];
 
     staticPages.forEach(page => {
