@@ -162,6 +162,7 @@ import SEOProvider from './components/providers/SEOProvider';
 import SEOEnhancer from './components/common/SEOEnhancer';
 import ExitIntentModal from './components/ExitIntentModal';
 import CookieConsent from './components/common/CookieConsent';
+import StickyHelpBar from './components/common/StickyHelpBar';
 
 function App() {
   // SEO optimization handled by consolidated service
@@ -433,6 +434,7 @@ function App() {
                   <SEOEnhancer enableMonitoring={typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false} />
                   <ExitIntentModal />
                   <CookieConsent />
+                  <StickyHelpBar />
                 </SEOProvider>
               </Router>
             </TooltipProvider>

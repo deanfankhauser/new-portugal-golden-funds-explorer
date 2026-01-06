@@ -95,7 +95,7 @@ const StickyHelpBar: React.FC<StickyHelpBarProps> = ({ fundName }) => {
                 </div>
               </div>
 
-              {/* Right: Buttons + Close */}
+              {/* Right: Buttons */}
               <div className="flex items-center gap-2 shrink-0">
                 <Button
                   size="sm"
@@ -112,13 +112,6 @@ const StickyHelpBar: React.FC<StickyHelpBarProps> = ({ fundName }) => {
                 >
                   Request a fund introduction
                 </Button>
-                <button
-                  onClick={handleDismiss}
-                  className="ml-2 p-1.5 rounded-full text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10 transition-colors"
-                  aria-label="Dismiss banner"
-                >
-                  <X className="h-4 w-4" />
-                </button>
               </div>
             </div>
           </div>
