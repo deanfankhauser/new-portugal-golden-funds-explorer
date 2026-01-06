@@ -56,6 +56,7 @@ export const loadComponents = async (only?: string[]) => {
       VerificationProgram: () => import('../pages/VerificationProgram').then(m => m.default),
       IRAEligibleFunds: () => import('../pages/IRAEligibleFunds').then(m => m.default),
       TeamMemberProfile: () => import('../pages/TeamMemberProfile').then(m => m.default),
+      TeamDirectory: () => import('../pages/TeamDirectory').then(m => m.default),
       NotFound: () => import('../pages/NotFound').then(m => m.default),
       GonePage: () => import('../pages/GonePage').then(m => m.default),
       FundMatcher: () => import('../pages/FundMatcher').then(m => m.default),

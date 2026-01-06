@@ -330,6 +330,9 @@ export class SSRRenderer {
         case 'managers-hub':
         case 'managers_hub': return ['ManagersHub'];
         
+        case 'team-directory':
+        case 'team_directory': return ['TeamDirectory'];
+        
         // Individual pages
         case 'tag': return ['TagPage'];
         case 'category': return ['CategoryPage'];

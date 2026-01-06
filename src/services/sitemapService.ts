@@ -52,6 +52,12 @@ export class SitemapService {
         priority: 0.8
       },
       {
+        url: URL_CONFIG.buildUrl('/team'),
+        lastmod: currentDate,
+        changefreq: 'weekly',
+        priority: 0.7
+      },
+      {
         url: URL_CONFIG.buildUrl('/comparisons'),
         lastmod: currentDate,
         changefreq: 'weekly',
