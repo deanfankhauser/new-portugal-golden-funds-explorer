@@ -6,12 +6,17 @@ import NavLinks from './NavLinks';
 import UserMenu from './UserMenu';
 import MobileNavigation from '../MobileNavigation';
 import DisclaimerBanner from '../common/DisclaimerBanner';
+import { buildContactUrl, openExternalLink } from '@/utils/urlHelpers';
 
 const HeaderDefault: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
+  
+  const handleGetInTouch = () => {
+    openExternalLink(buildContactUrl('nav_get_in_touch'));
+  };
 
   return (
     <>
@@ -53,8 +58,16 @@ const HeaderDefault: React.FC = () => {
                 </Link>
               </div>
 
-              {/* Right - User Menu (Desktop) */}
-              <div className="hidden md:flex items-center flex-shrink-0">
+              {/* Right - Get in Touch + User Menu (Desktop) */}
+              <div className="hidden md:flex items-center gap-3 flex-shrink-0">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleGetInTouch}
+                  className="text-sm font-medium"
+                >
+                  Get in touch
+                </Button>
                 <UserMenu variant="light" />
               </div>
 
