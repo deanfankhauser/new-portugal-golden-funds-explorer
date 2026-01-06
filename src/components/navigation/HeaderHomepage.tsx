@@ -4,8 +4,14 @@ import NavLinks from './NavLinks';
 import UserMenu from './UserMenu';
 import MobileNavigation from '../MobileNavigation';
 import DisclaimerBanner from '../common/DisclaimerBanner';
+import { Button } from '@/components/ui/button';
+import { buildContactUrl, openExternalLink } from '@/utils/urlHelpers';
 
 const HeaderHomepage: React.FC = () => {
+  const handleGetInTouch = () => {
+    openExternalLink(buildContactUrl('nav_get_in_touch'));
+  };
+
   return (
     <>
       <DisclaimerBanner />
@@ -30,8 +36,15 @@ const HeaderHomepage: React.FC = () => {
               <NavLinks />
             </div>
 
-            {/* Right - User Menu (Desktop) */}
-            <div className="hidden md:flex items-center flex-shrink-0">
+            {/* Right - Get in touch + User Menu (Desktop) */}
+            <div className="hidden md:flex items-center gap-2 flex-shrink-0">
+              <Button
+                variant="default"
+                size="sm"
+                onClick={handleGetInTouch}
+              >
+                Get in touch
+              </Button>
               <UserMenu variant="light" />
             </div>
 
