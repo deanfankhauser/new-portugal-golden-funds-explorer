@@ -397,6 +397,23 @@ export class ConsolidatedSEOService {
           structuredData: this.getManagersHubStructuredData()
         };
 
+      case 'team-directory':
+        return {
+          title: this.optimizeText('Fund Professionals Directory | Portugal Golden Visa Funds', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Browse our directory of fund professionals managing Portugal Golden Visa investment funds. Find experts by company or role.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('team'),
+          canonical: URL_CONFIG.buildUrl('team'),
+          keywords: [
+            'fund professionals directory',
+            'Golden Visa fund managers',
+            'investment professionals Portugal',
+            'fund management team',
+            'Portuguese fund experts',
+            'investment fund professionals'
+          ],
+          structuredData: this.getTeamDirectoryStructuredData()
+        };
+
       case 'categories-hub':
         return {
           title: this.optimizeText('Portugal Golden Visa Fund Categories | Debt, Equity, VC & More | Movingto Funds', this.MAX_TITLE_LENGTH),
@@ -1635,6 +1652,37 @@ export class ConsolidatedSEOService {
               'position': 2,
               'name': 'Fund Managers',
               'item': URL_CONFIG.buildUrl('managers')
+            }
+          ]
+        }
+      ]
+    };
+  }
+
+  private static getTeamDirectoryStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'CollectionPage',
+          'name': 'Fund Professionals Directory',
+          'description': 'Directory of fund professionals managing Portugal Golden Visa investment funds',
+          'url': URL_CONFIG.buildUrl('team')
+        },
+        {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': URL_CONFIG.BASE_URL
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Team Directory',
+              'item': URL_CONFIG.buildUrl('team')
             }
           ]
         }

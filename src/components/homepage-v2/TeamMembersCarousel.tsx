@@ -69,10 +69,10 @@ const TeamMembersCarousel: React.FC = () => {
             </p>
           </div>
           <Link
-            to="/managers"
+            to="/team"
             className="hidden sm:inline-flex items-center gap-1.5 text-primary font-medium hover:underline"
           >
-            View all managers
+            View all
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -129,10 +129,10 @@ const TeamMembersCarousel: React.FC = () => {
         {/* Mobile view all link */}
         <div className="mt-6 text-center sm:hidden">
           <Link
-            to="/managers"
+            to="/team"
             className="inline-flex items-center gap-1.5 text-primary font-medium hover:underline"
           >
-            View all managers
+            View all
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
