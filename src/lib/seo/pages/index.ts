@@ -15,3 +15,4 @@ export { getTeamMemberSeo } from './team-member';
 export { getFundMatcherSeo, getFundMatcherResultsSeo } from './fund-matcher';
 export { getBestFundsSeo } from './best-funds';
 export { getUSCitizensFundsSeo } from './us-citizens-funds';
+export { getFeesHubSeo } from './fees-hub';

@@ -30,6 +30,7 @@ import {
   getTeamMemberSeo,
   getBestFundsSeo,
   getUSCitizensFundsSeo,
+  getFeesHubSeo,
   optimizeText
 } from '../lib/seo';
 
@@ -365,6 +366,10 @@ export class ConsolidatedSEOService {
       case 'us-citizens-funds':
         // Delegate to centralized SEO helper
         return getUSCitizensFundsSeo(funds);
+
+      case 'fees-hub':
+        // Delegate to centralized SEO helper
+        return getFeesHubSeo();
 
       case 'managers-hub':
         return {

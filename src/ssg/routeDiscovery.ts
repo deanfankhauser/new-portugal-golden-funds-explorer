@@ -54,6 +54,7 @@ export class RouteDiscovery {
     routes.push({ path: '/funds', pageType: 'funds' });
     routes.push({ path: '/best-portugal-golden-visa-funds', pageType: 'best-funds' });
     routes.push({ path: '/funds/us-citizens', pageType: 'us-citizens-funds' });
+    routes.push({ path: '/fees', pageType: 'fees-hub' });
     
     routes.push({ path: '/managers', pageType: 'managers-hub' });
     routes.push({ path: '/categories', pageType: 'categories-hub' });
