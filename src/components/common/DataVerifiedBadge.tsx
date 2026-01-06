@@ -28,8 +28,8 @@ const DataVerifiedBadge: React.FC<DataVerifiedBadgeProps> = ({
   }
 
   return (
-    <span className={`inline-flex items-center gap-1.5 text-xs text-muted-foreground ${className}`}>
-      <span className="w-1.5 h-1.5 rounded-full bg-gold-verified" />
+    <span className={`inline-flex items-center gap-1.5 text-xs text-muted-foreground whitespace-nowrap ${className}`}>
+      <span className="w-1.5 h-1.5 rounded-full bg-gold-verified flex-shrink-0" />
       <span>
         Verified{' '}
         <span className="font-mono text-foreground">{displayDate}</span>
