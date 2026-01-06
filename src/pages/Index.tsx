@@ -6,6 +6,7 @@ import SearchFirstHero from '../components/homepage-v2/SearchFirstHero';
 import BestShortlistPreview from '../components/homepage-v2/BestShortlistPreview';
 import VerifiedFundsCarousel from '../components/homepage-v2/VerifiedFundsCarousel';
 import ManagersCarousel from '../components/homepage-v2/ManagersCarousel';
+import TeamMembersCarousel from '../components/homepage-v2/TeamMembersCarousel';
 import PrimaryActionsStrip from '../components/homepage-v2/PrimaryActionsStrip';
 import HowVerificationWorks from '../components/homepage-v2/HowVerificationWorks';
 import HomepageFAQAccordion from '../components/homepage-v2/HomepageFAQAccordion';
@@ -49,6 +50,9 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
 
       {/* 3. Fund Managers Carousel */}
       <ManagersCarousel funds={allFunds || []} />
+
+      {/* 4. Team Members Carousel */}
+      <TeamMembersCarousel />
 
       {/* 4. Best Funds Teaser */}
       <BestShortlistPreview funds={allFunds || []} />
