@@ -10,14 +10,14 @@ export const USDefinitionBlock: React.FC = () => {
       
       <Card className="border-primary/20 bg-primary/5">
         <CardContent className="pt-6">
-          <ul className="space-y-3 text-muted-foreground">
-            <li>
+          <ul className="space-y-3 text-muted-foreground list-disc list-inside marker:text-primary">
+            <li className="pl-1">
               <strong className="text-foreground">Confirmed by documentation:</strong> Status is based on fund/manager documents or written confirmation we have collected.
             </li>
-            <li>
+            <li className="pl-1">
               <strong className="text-foreground">Subject to change:</strong> Eligibility policies can change. Always verify directly with the fund before subscribing.
             </li>
-            <li>
+            <li className="pl-1">
               <strong className="text-foreground">Not advice:</strong> This is not investment, legal, or tax advice. Consult qualified professionals.
             </li>
           </ul>
