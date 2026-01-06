@@ -57,12 +57,8 @@ export class SitemapService {
         changefreq: 'weekly',
         priority: 0.7
       },
-      {
-        url: URL_CONFIG.buildUrl('/compare'),
-        lastmod: currentDate,
-        changefreq: 'weekly',
-        priority: 0.6
-      },
+      // Note: /compare is noindex (tool page), excluded from sitemap
+      // Note: /funds is noindex (tool page), excluded from sitemap
       {
         url: URL_CONFIG.buildUrl('/alternatives'),
         lastmod: currentDate,
@@ -100,11 +96,25 @@ export class SitemapService {
         changefreq: 'monthly',
         priority: 0.6
       },
+      // Legal pages
       {
-        url: URL_CONFIG.buildUrl('/funds'),
+        url: URL_CONFIG.buildUrl('/terms'),
         lastmod: currentDate,
-        changefreq: 'daily',
-        priority: 0.9
+        changefreq: 'monthly',
+        priority: 0.3
+      },
+      {
+        url: URL_CONFIG.buildUrl('/cookie-policy'),
+        lastmod: currentDate,
+        changefreq: 'monthly',
+        priority: 0.3
+      },
+      // High-value SEO pages
+      {
+        url: URL_CONFIG.buildUrl('/ira-401k-eligible-funds'),
+        lastmod: currentDate,
+        changefreq: 'weekly',
+        priority: 0.8
       }
     ];
   }

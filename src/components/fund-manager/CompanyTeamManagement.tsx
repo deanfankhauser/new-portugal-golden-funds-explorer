@@ -22,6 +22,11 @@ interface TeamMemberFormData {
   photoUrl?: string;
   linkedinUrl?: string;
   email?: string;
+  location?: string;
+  languages?: string;
+  teamSince?: string;
+  education?: string;
+  certifications?: string;
 }
 
 export default function CompanyTeamManagement() {
@@ -36,6 +41,11 @@ export default function CompanyTeamManagement() {
     photoUrl: '',
     linkedinUrl: '',
     email: '',
+    location: '',
+    languages: '',
+    teamSince: '',
+    education: '',
+    certifications: '',
   });
   const [saving, setSaving] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
@@ -76,6 +86,11 @@ export default function CompanyTeamManagement() {
         photoUrl: member.photoUrl || '',
         linkedinUrl: member.linkedinUrl || '',
         email: member.email || '',
+        location: member.location || '',
+        languages: member.languages?.join(', ') || '',
+        teamSince: member.teamSince || '',
+        education: member.education || '',
+        certifications: member.certifications?.join('\n') || '',
       });
     } else {
       setEditingMemberId(null);
@@ -86,6 +101,11 @@ export default function CompanyTeamManagement() {
         photoUrl: '',
         linkedinUrl: '',
         email: '',
+        location: '',
+        languages: '',
+        teamSince: '',
+        education: '',
+        certifications: '',
       });
     }
     setIsDialogOpen(true);
@@ -130,6 +150,14 @@ export default function CompanyTeamManagement() {
     setSaving(true);
     try {
       const slug = generateSlug(formData.name);
+      
+      // Parse languages and certifications from comma/newline separated strings
+      const languagesArray = formData.languages
+        ? formData.languages.split(',').map(l => l.trim()).filter(Boolean)
+        : null;
+      const certificationsArray = formData.certifications
+        ? formData.certifications.split('\n').map(c => c.trim()).filter(Boolean)
+        : null;
 
       if (editingMemberId) {
         // Update existing member
@@ -142,6 +170,11 @@ export default function CompanyTeamManagement() {
             photo_url: formData.photoUrl || null,
             linkedin_url: formData.linkedinUrl?.trim() || null,
             email: formData.email?.trim() || null,
+            location: formData.location?.trim() || null,
+            languages: languagesArray,
+            team_since: formData.teamSince || null,
+            education: formData.education?.trim() || null,
+            certifications: certificationsArray,
             slug,
           })
           .eq('id', editingMemberId);
@@ -160,6 +193,11 @@ export default function CompanyTeamManagement() {
             photo_url: formData.photoUrl || null,
             linkedin_url: formData.linkedinUrl?.trim() || null,
             email: formData.email?.trim() || null,
+            location: formData.location?.trim() || null,
+            languages: languagesArray,
+            team_since: formData.teamSince || null,
+            education: formData.education?.trim() || null,
+            certifications: certificationsArray,
             slug,
           });
 
@@ -415,6 +453,61 @@ export default function CompanyTeamManagement() {
                   placeholder="email@example.com"
                 />
               </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="location">Location</Label>
+                <Input
+                  id="location"
+                  value={formData.location}
+                  onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+                  placeholder="City, Country"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="languages">Languages</Label>
+                <Input
+                  id="languages"
+                  value={formData.languages}
+                  onChange={(e) => setFormData(prev => ({ ...prev, languages: e.target.value }))}
+                  placeholder="English, Portuguese, Spanish"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="teamSince">Team Since</Label>
+                <Input
+                  id="teamSince"
+                  type="date"
+                  value={formData.teamSince}
+                  onChange={(e) => setFormData(prev => ({ ...prev, teamSince: e.target.value }))}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="education">Education</Label>
+                <Input
+                  id="education"
+                  value={formData.education}
+                  onChange={(e) => setFormData(prev => ({ ...prev, education: e.target.value }))}
+                  placeholder="MBA, Harvard Business School"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="certifications">Certifications</Label>
+              <Textarea
+                id="certifications"
+                value={formData.certifications}
+                onChange={(e) => setFormData(prev => ({ ...prev, certifications: e.target.value }))}
+                placeholder="One certification per line..."
+                rows={3}
+              />
             </div>
           </div>
 

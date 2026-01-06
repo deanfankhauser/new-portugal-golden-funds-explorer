@@ -9,6 +9,11 @@ export interface TeamMember {
   photo_url?: string | null;
   linkedin_url?: string | null;
   email?: string | null;
+  location?: string | null;
+  languages?: string[] | null;
+  team_since?: string | null;
+  education?: string | null;
+  certifications?: string[] | null;
   created_at: string;
   updated_at: string;
 }
@@ -37,6 +42,11 @@ export interface CompanyTeamMember {
   photoUrl?: string;
   email?: string;
   linkedinUrl?: string;
+  location?: string;
+  languages?: string[];
+  teamSince?: string;
+  education?: string;
+  certifications?: string[];
 }
 
 export interface FundTeamMemberReference {

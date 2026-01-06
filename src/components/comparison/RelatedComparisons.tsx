@@ -9,15 +9,17 @@ interface RelatedComparisonsProps {
   currentFund1: Fund;
   currentFund2: Fund;
   maxComparisons?: number;
+  initialFunds?: Fund[];
 }
 
 const RelatedComparisons: React.FC<RelatedComparisonsProps> = ({ 
   currentFund1, 
   currentFund2, 
-  maxComparisons = 6 
+  maxComparisons = 6,
+  initialFunds
 }) => {
-  // Fetch all funds from database
-  const { funds: allFunds } = useRealTimeFunds();
+  // Fetch all funds from database, use initialFunds for SSR
+  const { funds: allFunds } = useRealTimeFunds({ initialData: initialFunds });
   
   // Generate all comparisons from database funds
   const allComparisons = allFunds ? generateComparisonsFromFunds(allFunds) : [];
