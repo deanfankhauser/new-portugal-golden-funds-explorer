@@ -98,17 +98,16 @@ const StickyHelpBar: React.FC<StickyHelpBarProps> = ({ fundName }) => {
               {/* Right: Buttons + Close */}
               <div className="flex items-center gap-2 shrink-0">
                 <Button
-                  variant="secondary"
                   size="sm"
-                  className="bg-background text-primary hover:bg-secondary font-medium whitespace-nowrap"
+                  className="bg-background text-primary hover:bg-background/90 font-medium whitespace-nowrap"
                   onClick={handlePrimaryClick}
                 >
                   Book free legal call (15 min)
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
-                  className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground font-medium whitespace-nowrap"
+                  className="border border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 font-medium whitespace-nowrap"
                   onClick={handleSecondaryClick}
                 >
                   Request a fund introduction
@@ -151,17 +150,16 @@ const StickyHelpBar: React.FC<StickyHelpBarProps> = ({ fundName }) => {
               {/* Buttons */}
               <div className="flex gap-2">
                 <Button
-                  variant="secondary"
                   size="sm"
-                  className="flex-1 bg-background text-primary hover:bg-secondary font-medium text-xs h-10"
+                  className="flex-1 bg-background text-primary hover:bg-background/90 font-medium text-xs h-10"
                   onClick={handlePrimaryClick}
                 >
                   Book free call
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
-                  className="flex-1 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground font-medium text-xs h-10"
+                  className="flex-1 border border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 font-medium text-xs h-10"
                   onClick={handleSecondaryClick}
                 >
                   Fund intro
