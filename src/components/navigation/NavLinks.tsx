@@ -8,7 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { buildContactUrl, openExternalLink } from '@/utils/urlHelpers';
 
 interface NavLinksProps {
   className?: string;
@@ -16,11 +15,6 @@ interface NavLinksProps {
 }
 
 const NavLinks: React.FC<NavLinksProps> = ({ className = '', onLinkClick }) => {
-  const handleGetInTouch = () => {
-    onLinkClick?.();
-    openExternalLink(buildContactUrl('nav_get_in_touch'));
-  };
-
   return (
     <nav className={`flex items-center gap-1 ${className}`}>
       {/* Funds Dropdown */}
@@ -97,15 +91,6 @@ const NavLinks: React.FC<NavLinksProps> = ({ className = '', onLinkClick }) => {
         <Link to="/about" onClick={onLinkClick}>
           About
         </Link>
-      </Button>
-
-      <Button
-        variant="default"
-        size="sm"
-        className="ml-2"
-        onClick={handleGetInTouch}
-      >
-        Get in touch
       </Button>
     </nav>
   );
