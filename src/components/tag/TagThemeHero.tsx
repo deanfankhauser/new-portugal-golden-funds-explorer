@@ -14,10 +14,10 @@ const TagThemeHero: React.FC<TagThemeHeroProps> = ({ tagName, funds }) => {
     <div className="mb-8">
       <div className="mb-6">
         <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
-          Portugal {tagName} Investment Funds
+          {tagName} Golden Visa Investment Funds
         </h1>
         <p className="text-lg text-muted-foreground">
-          Browse {totalCount} {pluralize(totalCount, 'fund')} specializing in {tagName} marketed for the Golden Visa route.
+          Compare {totalCount} {tagName} investment {pluralize(totalCount, 'fund')} for Golden Visa applications.
         </p>
       </div>
     </div>
