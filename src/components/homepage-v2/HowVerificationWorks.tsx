@@ -43,14 +43,10 @@ const HowVerificationWorks: React.FC = () => {
               const IconComponent = step.icon;
               return (
                 <div key={index} className="text-center relative">
-                  {/* Step circle with number */}
+                  {/* Step circle */}
                   <div className="relative z-10 mx-auto mb-4">
                     <div className="w-14 h-14 rounded-full bg-card border-2 border-primary/20 flex items-center justify-center mx-auto shadow-sm">
                       <IconComponent className="h-6 w-6 text-primary" />
-                    </div>
-                    {/* Step number badge */}
-                    <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs font-semibold flex items-center justify-center shadow-sm">
-                      {index + 1}
                     </div>
                   </div>
                   
@@ -62,18 +58,15 @@ const HowVerificationWorks: React.FC = () => {
           </div>
         </div>
 
-        {/* Link + Disclosure */}
+        {/* Link */}
         <div className="text-center mt-10">
           <Link
             to="/verification-program"
-            className="inline-flex items-center gap-1.5 text-primary font-medium hover:underline mb-4"
+            className="inline-flex items-center gap-1.5 text-primary font-medium hover:underline"
           >
             Learn more about our verification process
             <ArrowRight className="h-4 w-4" />
           </Link>
-          <p className="text-xs text-muted-foreground/70">
-            Verification is informational and not investment advice.
-          </p>
         </div>
       </div>
     </section>
