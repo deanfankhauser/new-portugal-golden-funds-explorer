@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, Sparkles, Calculator, DollarSign } from 'lucide-react';
+import { ChevronDown, Sparkles, Calculator, DollarSign, ShieldCheck, Trophy, Flag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { buildContactUrl, openExternalLink } from '@/utils/urlHelpers';
 
 interface NavLinksProps {
   className?: string;
@@ -15,27 +16,45 @@ interface NavLinksProps {
 }
 
 const NavLinks: React.FC<NavLinksProps> = ({ className = '', onLinkClick }) => {
+  const handleGetInTouch = () => {
+    onLinkClick?.();
+    openExternalLink(buildContactUrl('nav_get_in_touch'));
+  };
+
   return (
     <nav className={`flex items-center gap-1 ${className}`}>
-      <Button
-        variant="ghost"
-        asChild
-        className="text-foreground hover:bg-muted hover:text-foreground"
-      >
-        <Link to="/funds" onClick={onLinkClick}>
-          Funds
-        </Link>
-      </Button>
-
-      <Button
-        variant="ghost"
-        asChild
-        className="text-foreground hover:bg-muted hover:text-foreground"
-      >
-        <Link to="/managers" onClick={onLinkClick}>
-          Managers
-        </Link>
-      </Button>
+      {/* Funds Dropdown */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            className="text-foreground hover:bg-muted hover:text-foreground gap-1"
+          >
+            Funds
+            <ChevronDown className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-48 bg-background border border-border shadow-lg z-50">
+          <DropdownMenuItem asChild>
+            <Link to="/verified-funds" className="flex items-center gap-2 cursor-pointer" onClick={onLinkClick}>
+              <ShieldCheck className="h-4 w-4" />
+              Verified Funds
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/best-portugal-golden-visa-funds" className="flex items-center gap-2 cursor-pointer" onClick={onLinkClick}>
+              <Trophy className="h-4 w-4" />
+              Best Funds
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/funds/us-citizens" className="flex items-center gap-2 cursor-pointer" onClick={onLinkClick}>
+              <Flag className="h-4 w-4" />
+              For US Citizens
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {/* Tools Dropdown */}
       <DropdownMenu>
@@ -75,29 +94,18 @@ const NavLinks: React.FC<NavLinksProps> = ({ className = '', onLinkClick }) => {
         asChild
         className="text-foreground hover:bg-muted hover:text-foreground"
       >
-        <Link to="/best-portugal-golden-visa-funds" onClick={onLinkClick}>
-          Best Funds
-        </Link>
-      </Button>
-
-      <Button
-        variant="ghost"
-        asChild
-        className="text-foreground hover:bg-muted hover:text-foreground"
-      >
-        <Link to="/verified-funds" onClick={onLinkClick}>
-          Verified
-        </Link>
-      </Button>
-
-      <Button
-        variant="ghost"
-        asChild
-        className="text-foreground hover:bg-muted hover:text-foreground"
-      >
         <Link to="/about" onClick={onLinkClick}>
           About
         </Link>
+      </Button>
+
+      <Button
+        variant="default"
+        size="sm"
+        className="ml-2"
+        onClick={handleGetInTouch}
+      >
+        Get in touch
       </Button>
     </nav>
   );
