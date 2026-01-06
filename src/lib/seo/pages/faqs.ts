@@ -5,21 +5,23 @@ import { getSitewideSchemas } from '../schemas';
 
 export function getFAQsSeo(): SEOData {
   return {
-    title: optimizeTitle('Portugal Golden Visa Funds FAQ (2026) | Movingto Funds'),
-    description: optimizeDescription('Answers on fund eligibility, timelines, common fees, and process steps for the Portugal Golden Visa €500k fund route in 2026.'),
+    title: optimizeTitle('Portugal Golden Visa Funds FAQ (2026): Fees, Lock-Up, Eligibility, Timeline | Movingto Funds'),
+    description: optimizeDescription('Complete guide to Portugal\'s €500k Golden Visa fund route. Answers on fund eligibility, fees, lock-up periods, process timeline, family inclusion, and citizenship path.'),
     url: URL_CONFIG.buildUrl('faqs'),
     canonical: URL_CONFIG.buildUrl('faqs'),
     keywords: [
-      'FAQs',
-      'frequently asked questions',
-      'Golden Visa questions',
-      'investment fund FAQs',
-      'Portugal Golden Visa FAQ',
-      'Portugal visa questions',
-      'how long Golden Visa process',
-      'Golden Visa minimum investment 2026',
-      'can family get Golden Visa',
-      'Golden Visa tax implications'
+      'Portugal golden visa fund FAQ',
+      'golden visa fund fees',
+      'golden visa lock-up period',
+      'Portugal golden visa timeline 2026',
+      'golden visa fund eligibility',
+      'US citizen Portugal golden visa',
+      'Portugal golden visa minimum investment',
+      'golden visa family members',
+      'Portugal golden visa citizenship',
+      'golden visa fund comparison',
+      '€500k fund route Portugal',
+      'Portugal PE VC funds golden visa'
     ],
     structuredData: getFAQStructuredData()
   };
@@ -38,76 +40,108 @@ function getFAQStructuredData(): any {
     ]
   };
 
-  // Complete FAQPage schema synced with FAQsContent.tsx (all 8 FAQs)
+  // Top 12 highest-intent FAQs for schema (trimmed from full page content)
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    'name': 'Portugal Golden Visa Investment Funds FAQ',
-    'description': 'Frequently asked questions about Portugal Golden Visa investment funds',
+    'name': 'Portugal Golden Visa Funds FAQ (2026)',
+    'description': 'Complete guide to Portugal\'s €500k Golden Visa fund route covering eligibility, fees, lock-ups, process timeline, and citizenship.',
     'url': faqsUrl,
     'mainEntity': [
       {
         '@type': 'Question',
-        'name': 'What is a Golden Visa investment fund?',
+        'name': 'What is a qualifying Portugal Golden Visa fund?',
         'acceptedAnswer': {
           '@type': 'Answer',
-          'text': 'A Golden Visa investment fund is a regulated investment vehicle that allows foreign investors to obtain Portuguese residency by making a qualifying investment. For Portugal\'s Golden Visa program, eligible funds must focus on private equity/venture capital with €500,000 minimum investment and cannot be linked to real estate (rule changed October 2023).'
+          'text': 'A qualifying Golden Visa fund is a Portuguese-regulated investment or venture capital fund that meets the €500,000 fund route rules—structured so the investment supports the Portuguese economy rather than direct property ownership. The fund must be regulated and supervised in Portugal with proper documentation for your ARI application file.'
         }
       },
       {
         '@type': 'Question',
-        'name': 'What are the minimum investment amounts?',
+        'name': 'Is real estate still allowed for Portugal Golden Visa?',
         'acceptedAnswer': {
           '@type': 'Answer',
-          'text': 'Portugal Golden Visa fund route requires €500,000 total investment (post-October 2023 changes), with no real estate exposure permitted. Individual fund subscription minimums may be lower, but total qualifying investment must reach €500,000.'
+          'text': 'Direct real estate purchase is no longer an eligible Golden Visa route. Portugal removed property-based paths in 2023. Some funds invest in operating companies (including hospitality operators)—this is different from buying a property deed directly.'
         }
       },
       {
         '@type': 'Question',
-        'name': 'How long does the Golden Visa process take?',
+        'name': 'What is the minimum investment for the fund route?',
         'acceptedAnswer': {
           '@type': 'Answer',
-          'text': 'The processing time varies by country and fund. Typically, it takes 3-12 months from application submission to approval. This includes due diligence, document verification, and government processing. Some countries offer expedited processing for additional fees.'
+          'text': 'The qualifying amount is €500,000 for the Portugal Golden Visa fund option. A fund may list a lower subscription minimum, but you still need to reach the €500,000 program threshold with your qualifying investment.'
         }
       },
       {
         '@type': 'Question',
-        'name': 'What are the tax implications of Golden Visa investments?',
+        'name': 'What fees do Golden Visa funds typically charge?',
         'acceptedAnswer': {
           '@type': 'Answer',
-          'text': 'Tax implications depend on your country of residence, the fund\'s jurisdiction, and the type of investment. Generally, you may be subject to capital gains tax, income tax on distributions, and potentially wealth taxes. We recommend consulting with a tax advisor familiar with international tax law.'
+          'text': 'Golden Visa funds typically charge: subscription/entry fees (0-3%), management fees (1-2.5% annually), performance fees (15-20% of profits), administration and custody fees, and redemption/exit fees. Total fees can exceed 15-20% of your initial investment over the full period.'
         }
       },
       {
         '@type': 'Question',
-        'name': 'Can family members be included in the Golden Visa application?',
+        'name': 'What is a lock-up period and how long is typical?',
         'acceptedAnswer': {
           '@type': 'Answer',
-          'text': 'Most Golden Visa programs allow inclusion of family members, typically including spouse, dependent children, and sometimes parents or grandparents. Each family member may require additional investment or fees. Check specific program requirements for eligibility criteria.'
+          'text': 'A lock-up period is when you cannot redeem your investment from the fund. For Golden Visa funds, lock-ups are typically 6-10 years. Lock-up and exit mechanics matter more than marketing target returns.'
         }
       },
       {
         '@type': 'Question',
-        'name': 'What are the ongoing obligations after obtaining a Golden Visa?',
+        'name': 'What is the real timeline for Portugal Golden Visa via funds?',
         'acceptedAnswer': {
           '@type': 'Answer',
-          'text': 'Ongoing obligations typically include maintaining the investment for a minimum period (usually 5 years), meeting minimum residency requirements, and complying with tax obligations. Some programs require periodic renewals and proof of continued investment.'
+          'text': 'There isn\'t a single clean timeline. Processing backlogs have materially impacted timelines, with ongoing reforms and digitization efforts. Steps include: fund subscription (2-4 weeks), ARI preparation (2-6 weeks), application submission, biometrics, approval and card issuance (historically 3-12 months, currently longer).'
         }
       },
       {
         '@type': 'Question',
-        'name': 'How do I compare different Golden Visa funds?',
+        'name': 'Can I include my spouse and children?',
         'acceptedAnswer': {
           '@type': 'Answer',
-          'text': 'When comparing funds, consider factors such as minimum investment amount, expected returns, risk level, management fees, fund track record, liquidity terms, and the specific Golden Visa program requirements. Our comparison tools help you evaluate these factors side by side.'
+          'text': 'Yes—Portugal Golden Visa is commonly used for families. Your spouse and dependent children can be included in your application. The €500,000 investment covers the entire family—no additional investment required per person, though additional government fees apply.'
         }
       },
       {
         '@type': 'Question',
-        'name': 'What happens if I want to exit my investment early?',
+        'name': 'How long do I need to hold the investment?',
         'acceptedAnswer': {
           '@type': 'Answer',
-          'text': 'Early exit terms vary by fund. Some funds offer liquidity windows at specific intervals, while others may have lock-up periods. Early withdrawal may result in penalties or reduced returns. Review the fund\'s redemption terms carefully before investing.'
+          'text': 'You generally need to maintain the qualifying investment through the Golden Visa residency period (5-year path is common), but the fund\'s own term can be longer—often 6-10 years. Plan for the longer of: residency requirement OR fund lock-up.'
+        }
+      },
+      {
+        '@type': 'Question',
+        'name': 'What happens if I want to exit early?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': 'Most Golden Visa funds are not built for exit whenever you want. Many funds have hard lock-ups with no early exit option. Exiting before obtaining permanent residency or citizenship can invalidate your Golden Visa. Early exit can create both financial and immigration risks.'
+        }
+      },
+      {
+        '@type': 'Question',
+        'name': 'Is the citizenship timeline still 5 years?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': 'The historical baseline has been eligibility for citizenship after 5 years of legal residency, but Portugal has had active political and legal debate about nationality rules. In late 2025, the Constitutional Court found parts of proposed nationality law amendments unconstitutional. Applicants should rely on their immigration lawyer for the latest position.'
+        }
+      },
+      {
+        '@type': 'Question',
+        'name': 'Can US citizens invest in Portugal Golden Visa funds?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': 'Yes, US citizens can invest, but some funds refuse US persons due to regulatory complexity. FATCA and PFIC rules create reporting requirements and complex tax treatment that some fund managers choose to avoid.'
+        }
+      },
+      {
+        '@type': 'Question',
+        'name': 'How do I compare Golden Visa funds properly?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': 'Compare in this order: 1) Eligibility fit under post-2023 rules, 2) Total fees (management + performance + entry/exit + admin), 3) Liquidity reality (lock-up, redemption windows, secondary transfer rules), 4) Manager incentives and conflicts, 5) Evidence pack quality for your ARI process.'
         }
       }
     ]

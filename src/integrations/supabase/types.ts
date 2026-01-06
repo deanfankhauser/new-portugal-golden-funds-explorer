@@ -1914,6 +1914,18 @@ export type Database = {
           website: string
         }[]
       }
+      get_public_team_members: {
+        Args: { limit_input?: number }
+        Returns: {
+          company_name: string
+          id: string
+          name: string
+          photo_url: string
+          profile_id: string
+          role: string
+          slug: string
+        }[]
+      }
       get_super_admin_emails: {
         Args: never
         Returns: {

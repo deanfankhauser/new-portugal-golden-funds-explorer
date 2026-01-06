@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.get_public_team_members(integer) TO anon, authenticated;

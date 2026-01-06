@@ -31,10 +31,10 @@ const CategorySnapshotHero: React.FC<CategorySnapshotHeroProps> = ({ categoryNam
       {/* Title Section */}
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3">
-          Portugal {categoryName} Funds
+          {categoryName} Golden Visa Investment Funds
         </h1>
         <p className="text-lg text-muted-foreground">
-          Aggregated stats for {stats.totalCount} active {pluralize(stats.totalCount, 'fund')}
+          Compare {stats.totalCount} {categoryName} investment {pluralize(stats.totalCount, 'fund')} for Golden Visa applications.
         </p>
       </div>
 

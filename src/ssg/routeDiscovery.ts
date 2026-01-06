@@ -54,6 +54,17 @@ export class RouteDiscovery {
     routes.push({ path: '/funds', pageType: 'funds' });
     routes.push({ path: '/best-portugal-golden-visa-funds', pageType: 'best-funds' });
     routes.push({ path: '/funds/us-citizens', pageType: 'us-citizens-funds' });
+    routes.push({ path: '/fees', pageType: 'fees-hub' });
+    
+    // Fee-type landing pages (standalone, not dependent on tags)
+    const feeTypeSlugs = ['management-fee', 'performance-fee', 'subscription-fee', 'redemption-fee', 'exit-fee'];
+    feeTypeSlugs.forEach(feeType => {
+      routes.push({
+        path: `/fees/${feeType}`,
+        pageType: 'fee-type',
+        params: { feeTypeSlug: feeType }
+      });
+    });
     
     routes.push({ path: '/managers', pageType: 'managers-hub' });
     routes.push({ path: '/categories', pageType: 'categories-hub' });

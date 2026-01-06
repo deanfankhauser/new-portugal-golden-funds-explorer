@@ -63,8 +63,8 @@ const VerifiedFundsCarousel: React.FC<VerifiedFundsCarouselProps> = ({ funds }) 
   if (verifiedFunds.length === 0) return null;
 
   return (
-    <section className="py-12 sm:py-16">
-      <div className="container mx-auto px-4">
+    <section className="py-12 sm:py-16 border-t border-border/50">
+      <div className="container mx-auto px-4 sm:px-8 lg:px-12">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -95,7 +95,7 @@ const VerifiedFundsCarousel: React.FC<VerifiedFundsCarouselProps> = ({ funds }) 
           <CarouselContent className="-ml-4">
             {verifiedFunds.map((fund) => (
               <CarouselItem key={fund.id} className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                <div className="bg-card rounded-xl border border-border p-5 h-full flex flex-col hover:border-primary/30 hover:shadow-md transition-all duration-200">
+                <div className="bg-card rounded-xl border border-border p-5 h-full flex flex-col shadow-sm hover:shadow-lg hover:border-primary/40 transition-all duration-200">
                   {/* Verified Badge */}
                   <div className="flex items-center gap-1.5 text-primary mb-3">
                     <ShieldCheck className="h-4 w-4" />

@@ -30,6 +30,8 @@ import {
   getTeamMemberSeo,
   getBestFundsSeo,
   getUSCitizensFundsSeo,
+  getFeesHubSeo,
+  getFeeTypeSeo,
   optimizeText
 } from '../lib/seo';
 
@@ -365,6 +367,15 @@ export class ConsolidatedSEOService {
       case 'us-citizens-funds':
         // Delegate to centralized SEO helper
         return getUSCitizensFundsSeo(funds);
+
+      case 'fees-hub':
+        // Delegate to centralized SEO helper
+        return getFeesHubSeo();
+
+      case 'fee-type':
+        // Delegate to centralized SEO helper for fee-type landing pages
+        // Accept both feeTypeSlug (from SSR params) and tagName (from PageSEO props)
+        return getFeeTypeSeo(params.feeTypeSlug || params.tagName || '');
 
       case 'managers-hub':
         return {

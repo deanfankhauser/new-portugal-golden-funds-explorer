@@ -64,7 +64,7 @@ const BestFundsFAQ: React.FC = () => {
             value={`faq-${index}`}
             className="border border-border/60 rounded-lg px-6 bg-card data-[state=open]:bg-muted/20"
           >
-            <AccordionTrigger className="text-left font-medium hover:no-underline py-4">
+            <AccordionTrigger className="text-left text-base font-medium hover:no-underline py-4">
               {faq.question}
             </AccordionTrigger>
             <AccordionContent className="text-muted-foreground pb-4 leading-relaxed">

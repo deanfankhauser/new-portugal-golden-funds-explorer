@@ -302,6 +302,13 @@ async function generateStaticSitemap(distDir: string): Promise<SitemapFile> {
     { path: '/contact', priority: 0.4, changefreq: 'monthly' as const },
     { path: '/best-portugal-golden-visa-funds', priority: 0.95, changefreq: 'weekly' as const },
     { path: '/funds/us-citizens', priority: 0.9, changefreq: 'weekly' as const },
+    { path: '/fees', priority: 0.9, changefreq: 'weekly' as const },
+    // Fee-type landing pages
+    { path: '/fees/management-fee', priority: 0.85, changefreq: 'weekly' as const },
+    { path: '/fees/performance-fee', priority: 0.85, changefreq: 'weekly' as const },
+    { path: '/fees/subscription-fee', priority: 0.85, changefreq: 'weekly' as const },
+    { path: '/fees/redemption-fee', priority: 0.85, changefreq: 'weekly' as const },
+    { path: '/fees/exit-fee', priority: 0.85, changefreq: 'weekly' as const },
   ];
 
   staticPages.forEach(page => {

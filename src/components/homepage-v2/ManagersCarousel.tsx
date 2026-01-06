@@ -74,8 +74,8 @@ const ManagersCarousel: React.FC<ManagersCarouselProps> = ({ funds }) => {
   if (managers.length === 0) return null;
 
   return (
-    <section className="py-12 sm:py-16 bg-muted/30">
-      <div className="container mx-auto px-4">
+    <section className="py-12 sm:py-16 bg-muted/20">
+      <div className="container mx-auto px-4 sm:px-8 lg:px-12">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -106,7 +106,7 @@ const ManagersCarousel: React.FC<ManagersCarouselProps> = ({ funds }) => {
           <CarouselContent className="-ml-4">
             {managers.map((manager) => (
               <CarouselItem key={manager.name} className="pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                <div className="bg-card rounded-xl border border-border p-5 h-full flex flex-col hover:border-primary/30 hover:shadow-md transition-all duration-200">
+                <div className="bg-card rounded-xl border border-border p-5 h-full flex flex-col shadow-sm hover:shadow-lg hover:border-primary/40 transition-all duration-200">
                   {/* Logo */}
                   <ManagerLogo
                     logoUrl={manager.logoUrl}
