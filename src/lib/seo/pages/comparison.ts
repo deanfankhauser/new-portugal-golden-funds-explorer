@@ -6,20 +6,19 @@ import { Fund } from '@/data/types/funds';
 import { getSitewideSchemas } from '../schemas';
 import { checkComparisonIndexability } from '@/lib/indexability';
 
+/**
+ * SEO data for the /compare tool page
+ * This is a noindex utility page - users build their own comparisons here
+ * The SEO hub is /comparisons (see comparisons-hub.ts)
+ */
 export function getComparisonSeo(): SEOData {
   return {
-    title: 'Portugal Golden Visa Fund Comparisons (2026) | Movingto Funds',
-    description: optimizeDescription('Browse side-by-side comparisons across fees, strategy, liquidity terms, and timelines—built for fast filtering and shortlists.'),
+    title: 'Build Your Fund Comparison | Movingto Funds',
+    description: optimizeDescription('Select funds to compare side-by-side. Analyze fees, minimums, lock-up periods, and terms to build your shortlist.'),
     url: URL_CONFIG.buildUrl('/compare'),
     canonical: URL_CONFIG.buildUrl('/compare'),
-    keywords: [
-      'compare Golden Visa funds',
-      'Portugal fund comparison',
-      'Golden Visa investment comparison',
-      'side by side fund analysis',
-      'compare investment funds Portugal'
-    ],
-    structuredData: getComparisonStructuredData()
+    robots: 'noindex, follow',
+    structuredData: null // No structured data for noindex pages
   };
 }
 

@@ -4,6 +4,7 @@ export { getFundSeo, getFundFallbackSeo } from './fund';
 export { getFundsSeo } from './funds';
 export { getFundAlternativesSeo } from './fund-alternatives';
 export { getComparisonSeo, getFundComparisonSeo, getFundComparisonFallbackSeo } from './comparison';
+export { getComparisonsHubSeo } from './comparisons-hub';
 export { getCategorySeo } from './category';
 export { getTagSeo } from './tag';
 export { getManagerSeo } from './manager';

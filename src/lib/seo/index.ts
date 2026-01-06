@@ -12,6 +12,7 @@ export {
   getFundFallbackSeo,
   getFundAlternativesSeo,
   getComparisonSeo,
+  getComparisonsHubSeo,
   getFundComparisonSeo,
   getFundComparisonFallbackSeo,
   getCategorySeo,
