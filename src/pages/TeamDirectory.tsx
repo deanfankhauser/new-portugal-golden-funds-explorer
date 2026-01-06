@@ -27,17 +27,20 @@ interface TeamMember {
   company_name?: string;
 }
 
+const ITEMS_PER_PAGE = 24;
+
 const TeamDirectory: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [companyFilter, setCompanyFilter] = useState<string>('all');
   const [roleFilter, setRoleFilter] = useState<string>('all');
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
   // Fetch all team members
   const { data: teamMembers, isLoading } = useQuery({
     queryKey: ['team-directory-members'],
     queryFn: async () => {
       const { data, error } = await supabase.rpc('get_public_team_members', {
-        limit_input: 200,
+        limit_input: 500,
       });
 
       if (error) {
@@ -92,10 +95,22 @@ const TeamDirectory: React.FC = () => {
     });
   }, [teamMembers, searchQuery, companyFilter, roleFilter]);
 
+  // Paginated members
+  const visibleMembers = useMemo(() => {
+    return filteredMembers.slice(0, visibleCount);
+  }, [filteredMembers, visibleCount]);
+
+  const hasMoreToShow = visibleCount < filteredMembers.length;
+
+  const loadMore = () => {
+    setVisibleCount(prev => prev + ITEMS_PER_PAGE);
+  };
+
   const clearFilters = () => {
     setSearchQuery('');
     setCompanyFilter('all');
     setRoleFilter('all');
+    setVisibleCount(ITEMS_PER_PAGE);
   };
 
   const hasActiveFilters = searchQuery || companyFilter !== 'all' || roleFilter !== 'all';
@@ -179,7 +194,7 @@ const TeamDirectory: React.FC = () => {
 
             {/* Results Count */}
             <div className="mt-3 text-sm text-muted-foreground">
-              Showing {filteredMembers.length} of {teamMembers?.length || 0} professionals
+              Showing {Math.min(visibleCount, filteredMembers.length)} of {filteredMembers.length} professionals{filteredMembers.length !== (teamMembers?.length || 0) && ` (${teamMembers?.length || 0} total)`}
             </div>
           </div>
         </div>
@@ -213,42 +228,58 @@ const TeamDirectory: React.FC = () => {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {filteredMembers.map((member) => (
-                <Link
-                  key={member.id}
-                  to={`/team/${member.slug}`}
-                  className="block bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-lg hover:border-primary/40 transition-all duration-200 group"
-                >
-                  {/* Photo */}
-                  <div className="flex justify-start mb-4">
-                    <TeamMemberAvatar
-                      photoUrl={member.photo_url}
-                      name={member.name}
-                      size="lg"
-                      className="ring-2 ring-border group-hover:ring-primary/30 transition-all duration-200"
-                    />
-                  </div>
-                  
-                  {/* Name */}
-                  <h3 className="font-semibold text-foreground text-base line-clamp-1 group-hover:text-primary transition-colors">
-                    {member.name}
-                  </h3>
-                  
-                  {/* Role */}
-                  <p className="text-sm text-muted-foreground line-clamp-1 mt-0.5">
-                    {member.role}
-                  </p>
-                  
-                  {/* Company */}
-                  {member.company_name && (
-                    <p className="text-sm text-primary mt-3 line-clamp-1">
-                      {member.company_name}
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                {visibleMembers.map((member) => (
+                  <Link
+                    key={member.id}
+                    to={`/team/${member.slug}`}
+                    className="block bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-lg hover:border-primary/40 transition-all duration-200 group"
+                  >
+                    {/* Photo */}
+                    <div className="flex justify-start mb-4">
+                      <TeamMemberAvatar
+                        photoUrl={member.photo_url}
+                        name={member.name}
+                        size="lg"
+                        className="ring-2 ring-border group-hover:ring-primary/30 transition-all duration-200"
+                      />
+                    </div>
+                    
+                    {/* Name */}
+                    <h3 className="font-semibold text-foreground text-base line-clamp-1 group-hover:text-primary transition-colors">
+                      {member.name}
+                    </h3>
+                    
+                    {/* Role */}
+                    <p className="text-sm text-muted-foreground line-clamp-1 mt-0.5">
+                      {member.role}
                     </p>
-                  )}
-                </Link>
-              ))}
-            </div>
+                    
+                    {/* Company */}
+                    {member.company_name && (
+                      <p className="text-sm text-primary mt-3 line-clamp-1">
+                        {member.company_name}
+                      </p>
+                    )}
+                  </Link>
+                ))}
+              </div>
+              
+              {/* Load More Button */}
+              {hasMoreToShow && (
+                <div className="flex justify-center mt-8">
+                  <Button 
+                    variant="outline" 
+                    size="lg"
+                    onClick={loadMore}
+                    className="min-w-[200px]"
+                  >
+                    Load more ({filteredMembers.length - visibleCount} remaining)
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>
