@@ -64,7 +64,7 @@ const VerifiedFundsCarousel: React.FC<VerifiedFundsCarouselProps> = ({ funds }) 
 
   return (
     <section className="py-12 sm:py-16 border-t border-border/50">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 sm:px-8 lg:px-12">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
