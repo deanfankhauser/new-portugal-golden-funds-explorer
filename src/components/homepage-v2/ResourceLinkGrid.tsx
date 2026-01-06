@@ -54,11 +54,11 @@ const LINK_COLUMNS: LinkColumn[] = [
 
 const ResourceLinkGrid: React.FC = () => {
   return (
-    <section className="py-12 sm:py-16 bg-muted/30">
+    <section className="py-10 sm:py-12 bg-muted/40">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto">
           {/* Header */}
-          <h2 className="text-xl font-semibold text-foreground mb-8 text-center">
+          <h2 className="text-lg font-semibold text-foreground mb-8 text-center">
             Explore More
           </h2>
 
@@ -66,7 +66,7 @@ const ResourceLinkGrid: React.FC = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {LINK_COLUMNS.map((column) => (
               <div key={column.title}>
-                <h3 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wide">
+                <h3 className="text-xs font-medium text-muted-foreground mb-4 uppercase tracking-wider">
                   {column.title}
                 </h3>
                 <ul className="space-y-2.5">
@@ -74,7 +74,7 @@ const ResourceLinkGrid: React.FC = () => {
                     <li key={link.href}>
                       <Link 
                         to={link.href}
-                        className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                        className="text-sm text-foreground/80 hover:text-primary hover:underline transition-colors"
                       >
                         {link.label}
                       </Link>

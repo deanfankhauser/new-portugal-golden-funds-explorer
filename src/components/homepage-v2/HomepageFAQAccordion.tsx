@@ -52,23 +52,29 @@ const HomepageFAQAccordion: React.FC = () => {
             </p>
           </div>
 
-          {/* FAQ Accordion */}
-          <Accordion type="single" collapsible className="w-full">
-            {HOMEPAGE_FAQS.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="text-left text-foreground hover:text-primary">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          {/* FAQ Accordion in Card */}
+          <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+            <Accordion type="single" collapsible className="w-full">
+              {HOMEPAGE_FAQS.map((faq, index) => (
+                <AccordionItem 
+                  key={index} 
+                  value={`item-${index}`}
+                  className="border-border"
+                >
+                  <AccordionTrigger className="text-left text-foreground hover:text-primary text-base font-medium py-4">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground leading-relaxed pb-4">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
 
           {/* CTA to full FAQ page */}
           <div className="text-center mt-8">
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className="shadow-sm">
               <Link to="/faqs">
                 View All FAQs
                 <ArrowRight className="h-4 w-4 ml-2" />

@@ -1,6 +1,6 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { Clock } from 'lucide-react';
+import { Clock, CheckCircle2 } from 'lucide-react';
 
 interface DataFreshnessBadgeProps {
   date?: string;
@@ -20,10 +20,10 @@ const DataFreshnessBadge: React.FC<DataFreshnessBadgeProps> = ({
 
   if (variant === 'page-level') {
     return (
-      <div className={`inline-flex items-center gap-2 bg-muted/50 border border-border rounded-lg px-4 py-2 ${className}`}>
-        <Clock className="h-4 w-4 text-muted-foreground" />
+      <div className={`inline-flex items-center gap-2 bg-card border border-border/60 rounded-lg px-4 py-2 shadow-sm ${className}`}>
+        <CheckCircle2 className="h-4 w-4 text-primary" />
         <span className="text-sm text-muted-foreground">
-          Data last verified:{' '}
+          Data verified:{' '}
           <span className="font-medium text-foreground">{displayDate}</span>
         </span>
       </div>
