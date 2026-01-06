@@ -287,7 +287,7 @@ async function generateStaticSitemap(distDir: string): Promise<SitemapFile> {
     priority: 1.0
   });
 
-  // Static pages - only indexable content pages (exclude noindex pages like disclaimer, privacy, terms, cookie-policy)
+  // Static pages - indexable content pages
   const staticPages = [
     { path: '/about', priority: 0.6, changefreq: 'monthly' as const },
     { path: '/faqs', priority: 0.7, changefreq: 'monthly' as const },
@@ -300,12 +300,18 @@ async function generateStaticSitemap(distDir: string): Promise<SitemapFile> {
     { path: '/best-portugal-golden-visa-funds', priority: 0.95, changefreq: 'weekly' as const },
     { path: '/funds/us-citizens', priority: 0.9, changefreq: 'weekly' as const },
     { path: '/fees', priority: 0.9, changefreq: 'weekly' as const },
+    { path: '/ira-401k-eligible-funds', priority: 0.8, changefreq: 'weekly' as const },
     // Fee-type landing pages
     { path: '/fees/management-fee', priority: 0.85, changefreq: 'weekly' as const },
     { path: '/fees/performance-fee', priority: 0.85, changefreq: 'weekly' as const },
     { path: '/fees/subscription-fee', priority: 0.85, changefreq: 'weekly' as const },
     { path: '/fees/redemption-fee', priority: 0.85, changefreq: 'weekly' as const },
     { path: '/fees/exit-fee', priority: 0.85, changefreq: 'weekly' as const },
+    // Legal pages
+    { path: '/terms', priority: 0.3, changefreq: 'monthly' as const },
+    { path: '/cookie-policy', priority: 0.3, changefreq: 'monthly' as const },
+    { path: '/disclaimer', priority: 0.3, changefreq: 'monthly' as const },
+    { path: '/privacy', priority: 0.3, changefreq: 'monthly' as const },
   ];
 
   staticPages.forEach(page => {
