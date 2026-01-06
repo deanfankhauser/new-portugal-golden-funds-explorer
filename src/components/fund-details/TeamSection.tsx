@@ -111,8 +111,11 @@ const TeamSection: React.FC<TeamSectionProps> = ({ team, managerName, initialTea
       <h2 className="text-xl md:text-2xl font-semibold tracking-tight mb-2">
         Fund Team
       </h2>
-      <p className="text-sm text-muted-foreground mb-6 md:mb-8">
+      <p className="text-sm text-muted-foreground mb-1">
         {resolvedTeam.length} {resolvedTeam.length === 1 ? 'team member' : 'team members'}
+      </p>
+      <p className="text-xs text-muted-foreground mb-6 md:mb-8">
+        Team members are employed by the fund manager, not Movingto. Profiles listed for directory comparison.
       </p>
 
       <AuthGate 
