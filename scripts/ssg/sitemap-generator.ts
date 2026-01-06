@@ -90,7 +90,8 @@ export async function generateSitemap(routes: StaticRoute[], distDir: string): P
 
   // Ensure core hub/static pages are present even if upstream generation misses them
   const now = DateManagementService.getCurrentISODate();
-  const corePaths = ['/', '/about', '/disclaimer', '/privacy', '/faqs', '/roi-calculator', '/saved-funds', '/categories', '/tags', '/managers', '/comparisons', '/compare', '/alternatives'];
+  // Note: /compare is excluded (noindex tool page) - only /comparisons hub is indexed
+  const corePaths = ['/', '/about', '/disclaimer', '/privacy', '/faqs', '/roi-calculator', '/saved-funds', '/categories', '/tags', '/managers', '/comparisons', '/alternatives'];
   corePaths.forEach(p => addIfMissing({
     url: `https://funds.movingto.com${p === '/' ? '' : p}`,
     lastmod: now,

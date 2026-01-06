@@ -235,20 +235,17 @@ async function generateComparisonsSitemap(distDir: string, funds: Fund[]): Promi
   const currentDate = new Date().toISOString().split('T')[0];
   const urls: SitemapURL[] = [];
 
-  // Add hub pages
+  // Add comparisons hub page (SEO page)
   urls.push({
     loc: `${PRODUCTION_BASE_URL}/comparisons`,
     lastmod: currentDate,
     changefreq: 'weekly',
-    priority: 0.7
+    priority: 0.8
   });
 
-  urls.push({
-    loc: `${PRODUCTION_BASE_URL}/compare`,
-    lastmod: currentDate,
-    changefreq: 'weekly',
-    priority: 0.6
-  });
+  // NOTE: /compare is intentionally excluded from sitemap
+  // It's a noindex tool page - users build custom comparisons there
+  // The SEO hub is /comparisons
 
   // Generate all possible comparisons
   const allComparisons = generateComparisonsFromFunds(funds);

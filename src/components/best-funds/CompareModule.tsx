@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { GitCompare, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 const CompareModule: React.FC = () => {
   return (
@@ -14,19 +14,14 @@ const CompareModule: React.FC = () => {
       <Card className="border border-border/60 bg-gradient-to-br from-card to-muted/20">
         <CardContent className="p-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-primary/10 rounded-xl">
-                <GitCompare className="h-8 w-8 text-primary" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">
-                  Not sure which fund fits best?
-                </h3>
-                <p className="text-muted-foreground max-w-md">
-                  Use our comparison tool to evaluate funds side-by-side on fees, liquidity, 
-                  minimums, and governance signals.
-                </p>
-              </div>
+            <div>
+              <h3 className="text-xl font-semibold text-foreground mb-2">
+                Not sure which fund fits best?
+              </h3>
+              <p className="text-muted-foreground max-w-md">
+                Use our comparison tool to evaluate funds side-by-side on fees, liquidity, 
+                minimums, and governance signals.
+              </p>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-3">

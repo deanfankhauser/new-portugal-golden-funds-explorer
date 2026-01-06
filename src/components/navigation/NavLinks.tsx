@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, Sparkles, Calculator, DollarSign, Trophy } from 'lucide-react';
+import { ChevronDown, Sparkles, Calculator, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -76,7 +76,6 @@ const NavLinks: React.FC<NavLinksProps> = ({ className = '', onLinkClick }) => {
         className="text-foreground hover:bg-muted hover:text-foreground"
       >
         <Link to="/best-portugal-golden-visa-funds" onClick={onLinkClick}>
-          <Trophy className="h-4 w-4 mr-1.5" />
           Best Funds
         </Link>
       </Button>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { AlertTriangle } from 'lucide-react';
 
 const mistakes = [
   {
@@ -36,20 +35,13 @@ const CommonMistakes: React.FC = () => {
         <CardContent className="p-6">
           <div className="space-y-5">
             {mistakes.map((mistake, index) => (
-              <div key={index} className="flex gap-4">
-                <div className="flex-shrink-0 mt-0.5">
-                  <div className="p-1.5 bg-amber-500/10 rounded-full">
-                    <AlertTriangle className="h-4 w-4 text-amber-600" />
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-base font-medium text-foreground mb-1">
-                    {mistake.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {mistake.description}
-                  </p>
-                </div>
+              <div key={index}>
+                <h3 className="text-base font-medium text-foreground mb-1">
+                  {mistake.title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {mistake.description}
+                </p>
               </div>
             ))}
           </div>
