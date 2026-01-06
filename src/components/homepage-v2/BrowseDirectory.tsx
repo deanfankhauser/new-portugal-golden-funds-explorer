@@ -40,6 +40,7 @@ const CATEGORY_LINKS = [
 const TOOL_LINKS = [
   { href: '/fund-matcher', label: 'Fund Matcher quiz' },
   { href: '/roi-calculator', label: 'ROI Calculator' },
+  { href: '/fees', label: 'Fund fees guide' },
   { href: '/faqs', label: 'FAQs' },
   { href: '/verification-program', label: 'Verification program' },
   { href: '/about', label: 'About Movingto Funds' },

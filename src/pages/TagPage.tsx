@@ -15,12 +15,14 @@ import TagPageEmptyState from '../components/tag/TagPageEmptyState';
 import TagPageFAQ from '../components/tag/TagPageFAQ';
 import RelatedTags from '../components/tag/RelatedTags';
 import VerificationFilterChip from '../components/common/VerificationFilterChip';
+import FeeTypeTagTemplate from '../components/fee-type-tag/FeeTypeTagTemplate';
 import { FundTag } from '../data/types/funds';
 import { slugToTag, tagToSlug, categoryToSlug, normalizeTagSlug } from '../lib/utils';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 import { Fund } from '../data/types/funds';
+import { isFeeTypeSlug, FeeTypeSlug } from '../data/fee-type-content';
 
 interface TagPageProps {
   tagData?: {
@@ -135,7 +137,18 @@ const TagPage: React.FC<TagPageProps> = ({ tagData: ssrData, initialFunds }) => 
     return <NotFound />;
   }
 
-  // Rendering tag page with SEO
+  // Check if this is a fee-type tag - render specialized template
+  if (tagSlug && isFeeTypeSlug(tagSlug)) {
+    return (
+      <FeeTypeTagTemplate 
+        tagSlug={tagSlug as FeeTypeSlug}
+        funds={funds}
+        allFunds={allDatabaseFunds}
+      />
+    );
+  }
+
+  // Rendering standard tag page with SEO
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
