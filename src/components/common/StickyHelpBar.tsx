@@ -107,7 +107,7 @@ const StickyHelpBar: React.FC<StickyHelpBarProps> = ({ fundName }) => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="border border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 font-medium whitespace-nowrap"
+                  className="border border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground font-medium whitespace-nowrap"
                   onClick={handleSecondaryClick}
                 >
                   Request a fund introduction
@@ -159,7 +159,7 @@ const StickyHelpBar: React.FC<StickyHelpBarProps> = ({ fundName }) => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="flex-1 border border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 font-medium text-xs h-10"
+                  className="flex-1 border border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground font-medium text-xs h-10"
                   onClick={handleSecondaryClick}
                 >
                   Fund intro
