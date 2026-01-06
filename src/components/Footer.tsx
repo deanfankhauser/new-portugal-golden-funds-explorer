@@ -77,16 +77,7 @@ const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-muted-foreground hover:text-accent text-sm transition-colors">About</Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-muted-foreground hover:text-accent text-sm transition-colors">Contact</Link>
-              </li>
-              <li>
                 <Link to="/categories" className="text-muted-foreground hover:text-accent text-sm transition-colors">Categories</Link>
-              </li>
-              <li>
-                <Link to="/tags" className="text-muted-foreground hover:text-accent text-sm transition-colors">Tags</Link>
               </li>
               <li>
                 <Link to="/managers" className="text-muted-foreground hover:text-accent text-sm transition-colors">Fund Managers</Link>
@@ -97,22 +88,24 @@ const Footer: React.FC = () => {
               <li>
                 <Link to="/alternatives" className="text-muted-foreground hover:text-accent text-sm transition-colors">Fund Alternatives</Link>
               </li>
+            </ul>
+            
+            <h3 className="text-base font-semibold mb-4 mt-6">Themes</h3>
+            <ul className="space-y-2">
               <li>
-                <Link to="/roi-calculator" className="text-muted-foreground hover:text-accent text-sm transition-colors">ROI Calculator</Link>
+                <Link to="/tags/real-estate" className="text-muted-foreground hover:text-accent text-sm transition-colors">Real Estate</Link>
               </li>
               <li>
-                <a 
-                  href="https://www.movingto.com/tools/golden-visa-cost-calculator" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-muted-foreground hover:text-primary text-sm transition-colors inline-flex items-center"
-                >
-                  <span>Golden Visa Cost Calculator</span>
-                  <ExternalLink size={14} className="ml-1" />
-                </a>
+                <Link to="/tags/energy" className="text-muted-foreground hover:text-accent text-sm transition-colors">Energy</Link>
               </li>
               <li>
-                <Link to="/faqs" className="text-muted-foreground hover:text-accent text-sm transition-colors">FAQs</Link>
+                <Link to="/tags/hospitality" className="text-muted-foreground hover:text-accent text-sm transition-colors">Hospitality</Link>
+              </li>
+              <li>
+                <Link to="/tags/sustainability" className="text-muted-foreground hover:text-accent text-sm transition-colors">Sustainability</Link>
+              </li>
+              <li>
+                <Link to="/tags" className="text-muted-foreground hover:text-accent text-sm transition-colors">All Themes →</Link>
               </li>
             </ul>
           </div>
@@ -176,7 +169,20 @@ const Footer: React.FC = () => {
           </div>
           
           <div className="col-span-1">
-            <h3 className="text-base font-semibold mb-4">Legal</h3>
+            <h3 className="text-base font-semibold mb-4">Company</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/about" className="text-muted-foreground hover:text-accent text-sm transition-colors">About</Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-muted-foreground hover:text-accent text-sm transition-colors">Contact</Link>
+              </li>
+              <li>
+                <Link to="/faqs" className="text-muted-foreground hover:text-accent text-sm transition-colors">FAQs</Link>
+              </li>
+            </ul>
+            
+            <h3 className="text-base font-semibold mb-4 mt-6">Legal</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/disclaimer" className="text-muted-foreground hover:text-accent text-sm transition-colors">Disclaimer</Link>
