@@ -1590,41 +1590,56 @@ export type Database = {
       team_members: {
         Row: {
           bio: string | null
+          certifications: string[] | null
           created_at: string
+          education: string | null
           email: string | null
           id: string
+          languages: string[] | null
           linkedin_url: string | null
+          location: string | null
           name: string
           photo_url: string | null
           profile_id: string
           role: string
           slug: string
+          team_since: string | null
           updated_at: string
         }
         Insert: {
           bio?: string | null
+          certifications?: string[] | null
           created_at?: string
+          education?: string | null
           email?: string | null
           id?: string
+          languages?: string[] | null
           linkedin_url?: string | null
+          location?: string | null
           name: string
           photo_url?: string | null
           profile_id: string
           role: string
           slug: string
+          team_since?: string | null
           updated_at?: string
         }
         Update: {
           bio?: string | null
+          certifications?: string[] | null
           created_at?: string
+          education?: string | null
           email?: string | null
           id?: string
+          languages?: string[] | null
           linkedin_url?: string | null
+          location?: string | null
           name?: string
           photo_url?: string | null
           profile_id?: string
           role?: string
           slug?: string
+          team_since?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -1937,13 +1952,18 @@ export type Database = {
         Args: { company_name_input: string }
         Returns: {
           bio: string
+          certifications: string[]
+          education: string
           email: string
           id: string
+          languages: string[]
           linkedin_url: string
+          location: string
           name: string
           photo_url: string
           role: string
           slug: string
+          team_since: string
         }[]
       }
       get_user_admin_role: {
