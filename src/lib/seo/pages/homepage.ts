@@ -8,7 +8,7 @@ import { BREADCRUMB_CONFIGS } from '../schemas/breadcrumbSchema';
 
 export function getHomeSeo(funds?: Fund[]): SEOData {
   return {
-    title: 'Portugal Golden Visa Funds (2026) | Movingto Funds',
+    title: 'Portugal Golden Visa Funds Directory (2026) | Movingto',
     keywords: [
       'Portugal Golden Visa funds',
       'CMVM funds',
