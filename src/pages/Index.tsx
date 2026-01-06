@@ -44,14 +44,14 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
       {/* 1. Search-First Hero */}
       <SearchFirstHero />
 
-      {/* 2. Best Funds Teaser */}
-      <BestShortlistPreview funds={allFunds || []} />
-
-      {/* 3. Verified Funds Carousel */}
+      {/* 2. Verified Funds Carousel */}
       <VerifiedFundsCarousel funds={allFunds || []} />
 
-      {/* 4. Fund Managers Carousel */}
+      {/* 3. Fund Managers Carousel */}
       <ManagersCarousel funds={allFunds || []} />
+
+      {/* 4. Best Funds Teaser */}
+      <BestShortlistPreview funds={allFunds || []} />
 
       {/* 5. Primary Actions (Compare / Shortlist / Matcher) */}
       <PrimaryActionsStrip />
