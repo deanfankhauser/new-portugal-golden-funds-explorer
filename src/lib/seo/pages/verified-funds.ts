@@ -6,7 +6,7 @@ import { BREADCRUMB_CONFIGS } from '../schemas/breadcrumbSchema';
 
 export function getVerifiedFundsSeo(funds?: Fund[]): SEOData {
   return {
-    title: 'CMVM-Linked Portugal Golden Visa Funds | Movingto',
+    title: 'CMVM-Registered Portugal Golden Visa Funds (2026) | Movingto Funds',
     keywords: [
       'CMVM funds',
       'verified Golden Visa funds',
@@ -15,7 +15,7 @@ export function getVerifiedFundsSeo(funds?: Fund[]): SEOData {
       'verified investment funds',
       'Portugal Golden Visa funds'
     ],
-    description: 'Explore Portugal Golden Visa funds linked to CMVM-authorised managers. See strategies, minimum investments, fees, and risk flags in one place.',
+    description: 'Browse CMVM-registered funds used for the €500k route. See fees, terms, governance signals, and verification notes where available.',
     url: URL_CONFIG.buildUrl('/verified-funds'),
     canonical: URL_CONFIG.buildUrl('/verified-funds'),
     structuredData: getVerifiedFundsStructuredData(funds)

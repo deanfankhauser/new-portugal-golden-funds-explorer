@@ -8,9 +8,9 @@ const BASE_URL = 'https://funds.movingto.com';
  * Generate 404 page SEO data with proper structured data
  */
 export function getNotFoundSeo(): SEOData {
-  const title = optimizeText('Page Not Found | Portugal Golden Visa Funds | Movingto', MAX_TITLE_LENGTH);
+  const title = optimizeText('Page Not Found | Movingto Funds', MAX_TITLE_LENGTH);
   const description = optimizeText(
-    'The page you are looking for could not be found. Browse our Portugal Golden Visa investment fund directory to compare funds by performance, fees, and risk.',
+    "This page doesn't exist or has moved. Try browsing the funds directory or comparisons hub.",
     MAX_DESCRIPTION_LENGTH
   );
 

@@ -6,8 +6,8 @@ export function getFundsSeo(): SEOData {
   const currentYear = SEO_CONFIG.currentYear;
   
   return {
-    title: `Portugal Golden Visa Funds Directory | Compare & Filter (${currentYear})`,
-    description: `Browse and compare ${currentYear} Portugal Golden Visa investment funds. Filter by minimum investment, risk level, liquidity, and verification status. Find the right fund for your residency goals.`,
+    title: `Portugal Golden Visa Funds Directory (${currentYear}) | Movingto Funds`,
+    description: `Browse Portugal Golden Visa investment funds for the €500k route. Filter by strategy, fees, liquidity terms, minimums, and manager to build a shortlist.`,
     url: URL_CONFIG.buildUrl('/funds'),
     canonical: URL_CONFIG.buildUrl('/funds'),
     robots: 'index, follow',

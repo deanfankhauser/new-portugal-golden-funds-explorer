@@ -57,4 +57,6 @@ export type PageType =
   | 'saved-funds'
   | 'auth'
   | 'ira-401k-eligible'
+  | 'best-funds'
+  | 'us-citizens-funds'
   | '404';

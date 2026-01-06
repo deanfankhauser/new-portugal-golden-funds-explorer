@@ -6,8 +6,8 @@ import { BREADCRUMB_CONFIGS } from '../schemas/breadcrumbSchema';
 
 export function getROICalculatorSeo(): SEOData {
   return {
-    title: optimizeTitle('Portugal Golden Visa ROI Calculator – Estimate Fund Returns | Movingto Funds'),
-    description: optimizeDescription('Calculate potential ROI on Portugal Golden Visa investment funds. Estimate returns, fees, and projected outcomes for Golden Visa fund investments.'),
+    title: optimizeTitle('Portugal Golden Visa ROI Calculator (2026) | Movingto Funds'),
+    description: optimizeDescription('Estimate outcomes on a €500k subscription. Adjust fees and assumptions. Educational estimates only—verify details in the fund documents.'),
     url: URL_CONFIG.buildUrl('roi-calculator'),
     canonical: URL_CONFIG.buildUrl('roi-calculator'),
     keywords: [

@@ -7,20 +7,15 @@ import { checkTagIndexability } from '@/lib/indexability';
 
 export function getTagSeo(tagName: string, funds: Fund[] = []): SEOData {
   const indexability = checkTagIndexability(tagName, funds);
-  const fundCount = funds.length;
   
   // Clean tag label for display
   const cleanTagLabel = tagName.replace(/-/g, ' ');
   
-  // Dynamic title with fund count
-  const title = fundCount > 0
-    ? `${cleanTagLabel} Funds (${fundCount}) – Portugal Golden Visa | Movingto`
-    : `${cleanTagLabel} Portugal Golden Visa Funds | Movingto`;
+  // Title per new format: "{Tag} Portugal Golden Visa Funds (2026) | Movingto Funds"
+  const title = `${cleanTagLabel} Portugal Golden Visa Funds (2026) | Movingto Funds`;
   
-  // Enhanced description using full 155 character limit with unique content per tag
-  const description = fundCount > 0
-    ? `Browse ${fundCount}+ ${cleanTagLabel} funds for Portugal Golden Visa. Filter by fees, minimum investment, target returns, and fund manager reputation.`
-    : `Explore ${cleanTagLabel} themed Golden Visa investment opportunities in Portugal. Compare fund strategies, risk profiles, and investment terms.`;
+  // Description per new format
+  const description = `View ${cleanTagLabel}-focused funds and compare fees, strategy, maturity, and liquidity terms. Built for shortlisting, not advice.`;
   
   return {
     title: optimizeTitle(title),

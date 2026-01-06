@@ -5,7 +5,7 @@ import { buildContactUrl } from "../utils/urlHelpers";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Menu, Calculator, ClipboardCheck, Mail, ExternalLink, Users, FileText, Star, User, Settings, LogOut, Building, TrendingUp, Shield, LogIn, Sparkles } from 'lucide-react';
+import { Menu, Calculator, ClipboardCheck, Mail, ExternalLink, Users, FileText, Star, User, Settings, LogOut, Building, TrendingUp, Shield, LogIn, Sparkles, Trophy } from 'lucide-react';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 
 const getSupabase = async () => (await import('@/integrations/supabase/client')).supabase;
@@ -251,6 +251,12 @@ const MobileNavigation = () => {
                 <Button variant="ghost" className="w-full justify-start gap-3 h-12">
                   <ClipboardCheck className="h-5 w-5 text-success" />
                   <span>Verified Funds</span>
+                </Button>
+              </Link>
+              <Link to="/best-portugal-golden-visa-funds" onClick={closeMenu}>
+                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
+                  <Trophy className="h-5 w-5 text-amber-500" />
+                  <span>Best Funds 2026</span>
                 </Button>
               </Link>
             </div>

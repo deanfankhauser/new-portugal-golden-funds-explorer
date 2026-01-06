@@ -300,6 +300,8 @@ async function generateStaticSitemap(distDir: string): Promise<SitemapFile> {
     { path: '/fund-matcher', priority: 0.9, changefreq: 'weekly' as const },
     { path: '/verified-funds', priority: 0.8, changefreq: 'weekly' as const },
     { path: '/contact', priority: 0.4, changefreq: 'monthly' as const },
+    { path: '/best-portugal-golden-visa-funds', priority: 0.95, changefreq: 'weekly' as const },
+    { path: '/funds/us-citizens', priority: 0.9, changefreq: 'weekly' as const },
   ];
 
   staticPages.forEach(page => {
