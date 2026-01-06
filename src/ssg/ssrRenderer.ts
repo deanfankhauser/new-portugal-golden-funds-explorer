@@ -357,6 +357,8 @@ export class SSRRenderer {
         case 'funds': return ['FundsPage'];
         case 'best-funds': return ['BestFundsPage'];
         case 'us-citizens-funds': return ['USCitizensFundsPage'];
+        case 'fees-hub': return ['FeesHub'];
+        case 'fee-type': return ['FeeTypePage'];
         
         default: return ['Index'];
       }
@@ -525,6 +527,21 @@ export class SSRRenderer {
                   element: isSSG 
                     ? React.createElement(getComponent('USCitizensFundsPage'), { initialFunds: allFunds })
                     : React.createElement(getComponent('USCitizensFundsPage'))
+                }),
+                React.createElement(Route, { 
+                  path: '/fees', 
+                  element: isSSG 
+                    ? React.createElement(getComponent('FeesHub'), { initialFunds: allFunds })
+                    : React.createElement(getComponent('FeesHub'))
+                }),
+                React.createElement(Route, { 
+                  path: '/fees/:feeType', 
+                  element: isSSG 
+                    ? React.createElement(getComponent('FeeTypePage'), { 
+                        initialFunds: allFunds, 
+                        feeTypeSlug: route.params?.feeTypeSlug 
+                      })
+                    : React.createElement(getComponent('FeeTypePage'))
                 }),
                 
                 // Auth page

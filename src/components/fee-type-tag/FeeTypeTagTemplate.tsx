@@ -79,7 +79,7 @@ const FeeTypeTagTemplate: React.FC<FeeTypeTagTemplateProps> = ({ tagSlug, funds,
   return (
     <>
       <PageSEO 
-        pageType="tag" 
+        pageType="fee-type" 
         tagName={tagSlug}
         funds={relevantFunds}
       />

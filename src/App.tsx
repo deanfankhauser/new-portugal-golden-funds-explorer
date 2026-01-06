@@ -59,6 +59,7 @@ const FundMatcherResults = lazy(() => import('./pages/FundMatcherResults'));
 const BestFundsPage = lazy(() => import('./pages/BestFundsPage'));
 const USCitizensFundsPage = lazy(() => import('./pages/USCitizensFundsPage'));
 const FeesHub = lazy(() => import('./pages/FeesHub'));
+const FeeTypePage = lazy(() => import('./pages/FeeTypePage'));
 
 const NotFound = lazy(() => import('./pages/NotFound'));
 const FundsPage = lazy(() => import('./pages/FundsPage'));
@@ -305,6 +306,11 @@ function App() {
                       <Route path="/fees" element={
                         <Suspense fallback={<PageLoader />}>
                           <FeesHub />
+                        </Suspense>
+                      } />
+                      <Route path="/fees/:feeType" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <FeeTypePage />
                         </Suspense>
                       } />
                         

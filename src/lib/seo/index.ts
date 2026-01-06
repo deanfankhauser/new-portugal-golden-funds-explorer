@@ -24,5 +24,6 @@ export {
   getTeamMemberSeo,
   getBestFundsSeo,
   getUSCitizensFundsSeo,
-  getFeesHubSeo
+  getFeesHubSeo,
+  getFeeTypeSeo
 } from './pages';
