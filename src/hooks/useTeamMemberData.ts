@@ -92,7 +92,12 @@ export function useFundTeamMembers(fundId: string | undefined) {
             bio,
             photo_url,
             linkedin_url,
-            email
+            email,
+            location,
+            languages,
+            team_since,
+            education,
+            certifications
           )
         `)
         .eq('fund_id', fundId);
