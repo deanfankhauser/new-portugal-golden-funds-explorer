@@ -13,7 +13,6 @@ import HomepageFAQAccordion from '../components/homepage-v2/HomepageFAQAccordion
 import ResourceLinkGrid from '../components/homepage-v2/ResourceLinkGrid';
 import FundListSkeleton from '../components/common/FundListSkeleton';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
-import StickyHelpBar from '../components/common/StickyHelpBar';
 import type { Fund } from '../data/types/funds';
 
 interface IndexPageProps {
@@ -70,7 +69,6 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
       <ResourceLinkGrid />
 
       <FloatingActionButton />
-      <StickyHelpBar />
     </HomepageLayout>
   );
 };
