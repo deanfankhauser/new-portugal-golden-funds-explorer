@@ -38,18 +38,6 @@ const CategoriesList: React.FC<CategoriesListProps> = ({ categories }) => {
           </li>
         ))}
       </ul>
-
-      <div className="mt-8 pt-6 border-t border-border">
-        <p className="text-muted-foreground mb-4">
-          Each category represents a different investment approach in the Portuguese market. Click on a category to see all funds in that investment area.
-        </p>
-        <Link 
-          to="/" 
-          className="text-primary hover:underline flex items-center font-medium"
-        >
-          View all funds
-        </Link>
-      </div>
     </section>
   );
 };
