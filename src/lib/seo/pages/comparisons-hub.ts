@@ -12,8 +12,8 @@ export function getComparisonsHubSeo(): SEOData {
   const year = SEO_CONFIG.currentYear;
   
   return {
-    title: `Browse Portugal Golden Visa Fund Comparisons (${year}) | Movingto Funds`,
-    description: optimizeDescription('Explore 100+ side-by-side comparisons of Portugal Golden Visa investment funds. Filter by strategy, fees, and terms to build your shortlist.'),
+    title: `Compare Portugal Golden Visa Funds (${year}) | Movingto Funds`,
+    description: optimizeDescription('Compare Portugal Golden Visa investment funds with 100+ side-by-side comparisons. Filter by strategy, fees, and terms to build your shortlist.'),
     url: URL_CONFIG.buildUrl('/comparisons'),
     canonical: URL_CONFIG.buildUrl('/comparisons'),
     robots: 'index, follow',
