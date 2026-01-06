@@ -112,7 +112,7 @@ const TeamDirectory: React.FC = () => {
           <div className="container mx-auto px-4 py-12 sm:py-16">
             <div className="max-w-3xl">
               <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
-                Fund Professionals Directory
+                Portugal Golden Visa Fund Professionals Directory
               </h1>
               <p className="text-lg text-muted-foreground">
                 Meet the investment professionals behind Portugal's Golden Visa funds. 

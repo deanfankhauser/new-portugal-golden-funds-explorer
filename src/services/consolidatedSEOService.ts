@@ -399,17 +399,17 @@ export class ConsolidatedSEOService {
 
       case 'team-directory':
         return {
-          title: this.optimizeText('Fund Professionals Directory | Portugal Golden Visa Funds', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Browse our directory of fund professionals managing Portugal Golden Visa investment funds. Find experts by company or role.', this.MAX_DESCRIPTION_LENGTH),
+          title: this.optimizeText('Portugal Golden Visa Fund Professionals (2026) | Movingto Funds', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Explore investment professionals managing Portugal Golden Visa funds. Search by company, role, or name to find fund experts and team members.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('team'),
           canonical: URL_CONFIG.buildUrl('team'),
           keywords: [
-            'fund professionals directory',
-            'Golden Visa fund managers',
+            'Portugal Golden Visa fund professionals',
+            'fund team directory 2026',
+            'Golden Visa investment experts',
             'investment professionals Portugal',
             'fund management team',
-            'Portuguese fund experts',
-            'investment fund professionals'
+            'Portuguese fund experts'
           ],
           structuredData: this.getTeamDirectoryStructuredData()
         };
@@ -1665,8 +1665,8 @@ export class ConsolidatedSEOService {
       '@graph': [
         {
           '@type': 'CollectionPage',
-          'name': 'Fund Professionals Directory',
-          'description': 'Directory of fund professionals managing Portugal Golden Visa investment funds',
+          'name': 'Portugal Golden Visa Fund Professionals Directory',
+          'description': 'Explore investment professionals managing Portugal Golden Visa funds. Search by company, role, or name to find fund experts and team members.',
           'url': URL_CONFIG.buildUrl('team')
         },
         {
@@ -1681,7 +1681,7 @@ export class ConsolidatedSEOService {
             {
               '@type': 'ListItem',
               'position': 2,
-              'name': 'Team Directory',
+              'name': 'Fund Professionals Directory',
               'item': URL_CONFIG.buildUrl('team')
             }
           ]
