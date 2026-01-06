@@ -43,7 +43,7 @@ const CommonMistakes: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-1">
+                  <h3 className="text-base font-medium text-foreground mb-1">
                     {mistake.title}
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
