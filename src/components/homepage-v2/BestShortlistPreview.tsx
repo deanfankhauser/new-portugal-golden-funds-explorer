@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Trophy } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getSortedBestFunds, ScoredFund } from '@/utils/fundScoring';
@@ -24,14 +24,9 @@ const BestShortlistPreview: React.FC<BestShortlistPreviewProps> = ({ funds }) =>
         <div className="max-w-5xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Trophy className="h-4 w-4 text-primary" />
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
-                2026 Fund Shortlist
-              </h2>
-            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
+              2026 Fund Shortlist
+            </h2>
             <p className="text-muted-foreground mb-3">
               Ranked by disclosed fees, liquidity terms, and governance signals
             </p>
