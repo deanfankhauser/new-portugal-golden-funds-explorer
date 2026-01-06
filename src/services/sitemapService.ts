@@ -57,12 +57,8 @@ export class SitemapService {
         changefreq: 'weekly',
         priority: 0.7
       },
-      {
-        url: URL_CONFIG.buildUrl('/compare'),
-        lastmod: currentDate,
-        changefreq: 'weekly',
-        priority: 0.6
-      },
+      // Note: /compare is noindex (tool page), excluded from sitemap
+      // Note: /funds is noindex (tool page), excluded from sitemap
       {
         url: URL_CONFIG.buildUrl('/alternatives'),
         lastmod: currentDate,
@@ -99,12 +95,6 @@ export class SitemapService {
         lastmod: currentDate,
         changefreq: 'monthly',
         priority: 0.6
-      },
-      {
-        url: URL_CONFIG.buildUrl('/funds'),
-        lastmod: currentDate,
-        changefreq: 'daily',
-        priority: 0.9
       }
     ];
   }
