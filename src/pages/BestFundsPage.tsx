@@ -69,7 +69,7 @@ const BestFundsPage: React.FC<BestFundsPageProps> = ({ initialFunds }) => {
             </h1>
             
             <p className="text-lg text-muted-foreground max-w-3xl mb-6">
-              A shortlist of Portugal Golden Visa investment funds for the €500k route—ranked by 
+              A shortlist of the best Portugal Golden Visa funds for the €500k route—ranked by 
               disclosed factors like fees, liquidity terms, strategy, and governance signals.
             </p>
             
@@ -108,7 +108,7 @@ const BestFundsPage: React.FC<BestFundsPageProps> = ({ initialFunds }) => {
           {/* Best Overall Shortlist */}
           <section className="mb-12">
             <h2 className="text-2xl font-semibold text-foreground mb-2">
-              Best Overall Shortlist (Balanced Criteria)
+              Best Portugal Golden Visa Funds Overall (Balanced Criteria)
             </h2>
             <p className="text-muted-foreground mb-6">
               Top-scoring funds across all factors. Each fund has sufficient data to justify inclusion.
