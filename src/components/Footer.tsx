@@ -71,6 +71,9 @@ const Footer: React.FC = () => {
                 <Link to="/managers" className="text-muted-foreground hover:text-primary text-sm transition-colors">Fund Managers</Link>
               </li>
               <li>
+                <Link to="/team" className="text-muted-foreground hover:text-primary text-sm transition-colors">Team Directory</Link>
+              </li>
+              <li>
                 <Link to="/categories" className="text-muted-foreground hover:text-primary text-sm transition-colors">Categories</Link>
               </li>
               <li>
