@@ -39,6 +39,11 @@ export function useCompanyTeamMembers(companyName: string) {
             photoUrl: member.photo_url || undefined,
             linkedinUrl: member.linkedin_url || undefined,
             email: member.email || undefined,
+            location: member.location || undefined,
+            languages: member.languages || undefined,
+            teamSince: member.team_since || undefined,
+            education: member.education || undefined,
+            certifications: member.certifications || undefined,
           }));
           setMembers(mappedMembers);
         } else {
@@ -80,6 +85,11 @@ export function useCompanyTeamMembers(companyName: string) {
               photoUrl: member.photo_url || undefined,
               linkedinUrl: member.linkedin_url || undefined,
               email: member.email || undefined,
+              location: member.location || undefined,
+              languages: member.languages || undefined,
+              teamSince: member.team_since || undefined,
+              education: member.education || undefined,
+              certifications: member.certifications || undefined,
             }));
             setMembers(mappedMembers);
           } else {

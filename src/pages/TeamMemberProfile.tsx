@@ -19,7 +19,8 @@ import { isGoneTeamMember } from '@/lib/gone-slugs';
 import GonePage from './GonePage';
 import NotFound from './NotFound';
 import { trackTeamPageView } from '@/utils/teamRouteTracking';
-import { Briefcase, Building2, MapPin } from 'lucide-react';
+import { Briefcase, Building2, MapPin, Globe, Calendar } from 'lucide-react';
+import { format } from 'date-fns';
 
 interface TeamMemberProfileProps {
   teamMemberData?: {
@@ -68,12 +69,30 @@ const TeamMemberProfile: React.FC<TeamMemberProfileProps> = ({ teamMemberData: s
       items.push({ label: 'Company', value: companyName, icon: Building2 });
     }
     
-    if (primaryFund?.category) {
-      items.push({ label: 'Fund Type', value: primaryFund.category });
+    // Use team member's location if available, fallback to fund location
+    const location = (teamMemberData as any).location || primaryFund?.location;
+    if (location) {
+      items.push({ label: 'Location', value: location, icon: MapPin });
     }
     
-    if (primaryFund?.location) {
-      items.push({ label: 'Location', value: primaryFund.location, icon: MapPin });
+    // Languages from team member data
+    const languages = (teamMemberData as any).languages;
+    if (languages?.length) {
+      items.push({ label: 'Languages', value: languages.join(', '), icon: Globe });
+    }
+    
+    // Team since date
+    const teamSince = (teamMemberData as any).team_since;
+    if (teamSince) {
+      try {
+        items.push({ label: 'Team Since', value: format(new Date(teamSince), 'MMM yyyy'), icon: Calendar });
+      } catch {
+        items.push({ label: 'Team Since', value: teamSince, icon: Calendar });
+      }
+    }
+    
+    if (primaryFund?.category) {
+      items.push({ label: 'Fund Type', value: primaryFund.category });
     }
     
     return items;
@@ -183,6 +202,8 @@ const TeamMemberProfile: React.FC<TeamMemberProfileProps> = ({ teamMemberData: s
                 companySlug={companySlug}
                 linkedinUrl={teamMemberData.linkedin_url || undefined}
                 bio={teamMemberData.bio || undefined}
+                education={(teamMemberData as any).education || undefined}
+                certifications={(teamMemberData as any).certifications || undefined}
               />
             </div>
           </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Building2, Linkedin } from 'lucide-react';
+import { Building2, Linkedin, Award } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { extractEducation } from '@/utils/bioParser';
 
@@ -11,6 +11,8 @@ interface TeamMemberCredentialsProps {
   companySlug?: string;
   linkedinUrl?: string;
   bio?: string;
+  education?: string;
+  certifications?: string[];
 }
 
 export const TeamMemberCredentials: React.FC<TeamMemberCredentialsProps> = ({
@@ -18,9 +20,13 @@ export const TeamMemberCredentials: React.FC<TeamMemberCredentialsProps> = ({
   companyName,
   companySlug,
   linkedinUrl,
-  bio
+  bio,
+  education,
+  certifications
 }) => {
-  const education = bio ? extractEducation(bio) : null;
+  // Use explicit education field if available, otherwise try to extract from bio
+  const parsedEducation = bio ? extractEducation(bio) : null;
+  const displayEducation = education || (parsedEducation ? `${parsedEducation.degree || ''} ${parsedEducation.institution ? `at ${parsedEducation.institution}` : ''}`.trim() : null);
 
   return (
     <Card className="sticky top-24">
@@ -50,20 +56,28 @@ export const TeamMemberCredentials: React.FC<TeamMemberCredentialsProps> = ({
         )}
 
         {/* Education */}
-        {education && (
+        {displayEducation && (
           <div>
             <p className="text-sm text-muted-foreground mb-1">Education</p>
             <div className="flex items-start gap-2">
               <span className="text-lg">🎓</span>
-              <div className="flex-1">
-                {education.degree && (
-                  <p className="font-medium text-foreground">{education.degree}</p>
-                )}
-                {education.institution && (
-                  <p className="text-sm text-muted-foreground">{education.institution}</p>
-                )}
-              </div>
+              <p className="font-medium text-foreground">{displayEducation}</p>
             </div>
+          </div>
+        )}
+
+        {/* Certifications */}
+        {certifications && certifications.length > 0 && (
+          <div>
+            <p className="text-sm text-muted-foreground mb-1">Certifications</p>
+            <ul className="space-y-1">
+              {certifications.map((cert, index) => (
+                <li key={index} className="flex items-start gap-2">
+                  <Award className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                  <span className="text-sm font-medium text-foreground">{cert}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 
