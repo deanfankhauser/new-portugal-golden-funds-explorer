@@ -1,6 +1,6 @@
 
 export interface PageSEOProps {
-  pageType: 'homepage' | 'fund' | 'funds' | 'manager' | 'category' | 'tag' | '404' | '410' | 'disclaimer' | 'about' | 'faqs' | 'privacy' | 'cookie-policy' | 'contact' | 'terms' | 'comparison' | 'comparisons-hub' | 'fund-comparison' | 'roi-calculator' | 'managers-hub' | 'categories-hub' | 'tags-hub' | 'fund-alternatives' | 'alternatives-hub' | 'verification-program' | 'verified-funds' | 'saved-funds' | 'team-member' | 'ira-401k-eligible' | 'fund-matcher' | 'fund-matcher-results' | 'best-funds' | 'us-citizens-funds' | 'fees-hub' | 'fee-type';
+  pageType: 'homepage' | 'fund' | 'funds' | 'manager' | 'category' | 'tag' | '404' | '410' | 'disclaimer' | 'about' | 'faqs' | 'privacy' | 'cookie-policy' | 'contact' | 'terms' | 'comparison' | 'comparisons-hub' | 'fund-comparison' | 'roi-calculator' | 'managers-hub' | 'categories-hub' | 'tags-hub' | 'fund-alternatives' | 'alternatives-hub' | 'verification-program' | 'verified-funds' | 'saved-funds' | 'team-member' | 'ira-401k-eligible' | 'fund-matcher' | 'fund-matcher-results' | 'best-funds' | 'us-citizens-funds' | 'fees-hub' | 'fee-type' | 'account' | 'dashboard';
   fundName?: string;
   managerName?: string;
   categoryName?: string;

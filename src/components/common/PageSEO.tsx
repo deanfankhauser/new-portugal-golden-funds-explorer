@@ -78,7 +78,9 @@ const seoData = ConsolidatedSEOService.getSEOData(
       else {
         const isZeroFundPage = (pageType === 'tag' || pageType === 'category' || pageType === 'manager') && 
                                 (!funds || funds.length === 0);
-        const isUserAuthenticatedPage = pageType === 'saved-funds';
+        const isUserAuthenticatedPage = pageType === 'saved-funds' || 
+                                        pageType === 'account' || 
+                                        pageType === 'dashboard';
         
         if (pageType === '404' || pageType === '410' || isZeroFundPage || isUserAuthenticatedPage) {
           let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
