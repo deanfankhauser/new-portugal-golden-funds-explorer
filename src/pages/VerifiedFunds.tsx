@@ -1,5 +1,4 @@
 import React from 'react';
-import { CheckCircle2, Shield } from 'lucide-react';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -55,26 +54,14 @@ const VerifiedFunds: React.FC<VerifiedFundsProps> = ({ initialFunds }) => {
 
         {/* Hero Section */}
         <div className="mb-12 text-center">
-          <div className="inline-flex items-center gap-3 bg-success/10 text-success px-6 py-3 rounded-full mb-6">
-            <Shield className="w-6 h-6" />
-            <span className="font-bold text-lg">Verified Investment Funds</span>
-          </div>
-          
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
             Verified Portugal Golden Visa Investment Funds
           </h1>
           
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Discover investment funds that have been verified for regulatory compliance and authenticity. 
             Every verified fund meets our strict standards for transparency and legitimacy.
           </p>
-
-          <div className="flex items-center justify-center gap-2 text-muted-foreground">
-            <CheckCircle2 className="w-5 h-5 text-success" />
-            <span className="font-medium">
-              {verifiedFunds.length} Verified {verifiedFunds.length === 1 ? 'Fund' : 'Funds'}
-            </span>
-          </div>
         </div>
 
 
