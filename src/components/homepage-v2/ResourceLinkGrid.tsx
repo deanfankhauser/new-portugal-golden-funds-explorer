@@ -28,7 +28,28 @@ const LINK_COLUMNS: LinkColumn[] = [
       { href: '/categories/private-equity', label: 'Private Equity' },
       { href: '/categories/venture-capital', label: 'Venture Capital' },
       { href: '/categories/clean-energy', label: 'Clean Energy' },
-      { href: '/categories/debt-funds', label: 'Debt Funds' },
+      { href: '/categories/debt-funds', label: 'Fixed Income / Debt' },
+      { href: '/categories/real-estate', label: 'Real Estate' },
+    ]
+  },
+  {
+    title: 'Themes',
+    links: [
+      { href: '/tags/energy', label: 'Energy' },
+      { href: '/tags/esg', label: 'ESG & Impact' },
+      { href: '/tags/tourism', label: 'Tourism & Hospitality' },
+      { href: '/tags/technology', label: 'Technology' },
+      { href: '/tags/healthcare', label: 'Healthcare' },
+    ]
+  },
+  {
+    title: 'Popular Funds',
+    links: [
+      { href: '/funds/exs-capital-climate-impact-fund', label: 'EXS Climate Impact' },
+      { href: '/funds/portugal-ventures-v-fund', label: 'Portugal Ventures V' },
+      { href: '/funds/lince-capital-real-estate-fund', label: 'Lince Real Estate' },
+      { href: '/funds/golden-visa-fund', label: 'Golden Visa Fund' },
+      { href: '/funds/invest-350k-fund', label: 'Invest 350K Fund' },
     ]
   }
 ];
@@ -44,7 +65,7 @@ const ResourceLinkGrid: React.FC = () => {
           </h2>
 
           {/* Link Grid */}
-          <div className="grid grid-cols-2 gap-12 max-w-md">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {LINK_COLUMNS.map((column) => (
               <div key={column.title}>
                 <h3 className="text-xs font-medium text-muted-foreground mb-4 uppercase tracking-wider">
