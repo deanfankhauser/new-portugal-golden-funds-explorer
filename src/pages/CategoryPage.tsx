@@ -1,5 +1,4 @@
-
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import NotFound from './NotFound';
 import { getFundsByCategory } from '../data/services/categories-service';
@@ -18,7 +17,6 @@ import CategoryPageFAQ from '../components/category/CategoryPageFAQ';
 import CategoryPageEmptyState from '../components/category/CategoryPageEmptyState';
 import RelatedCategories from '../components/category/RelatedCategories';
 import CategoryCrossLinks from '../components/category/CategoryCrossLinks';
-import VerificationFilterChip from '../components/common/VerificationFilterChip';
 import { FloatingActionButton } from '../components/common/FloatingActionButton';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import FundListSkeleton from '../components/common/FundListSkeleton';
@@ -35,7 +33,6 @@ interface CategoryPageProps {
 
 const CategoryPage: React.FC<CategoryPageProps> = ({ categoryData: ssrData, initialFunds }) => {
   const { category: categorySlug } = useParams<{ category: string }>();
-  const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   
   // Use SSR data if available, otherwise fetch from hook
   const { funds: allFundsData, loading: isLoading } = useRealTimeFunds({
@@ -73,17 +70,11 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ categoryData: ssrData, init
   const displayCategoryName = matchingCategory || category;
 
   // ✅ ALL HOOKS MUST BE CALLED BEFORE EARLY RETURNS (React Rules of Hooks)
-  const allFunds = useMemo(() => {
+  const funds = useMemo(() => {
     return matchingCategory 
       ? getFundsByCategory(allDatabaseFunds, matchingCategory as FundCategory) 
       : [];
   }, [allDatabaseFunds, matchingCategory]);
-  
-  // Filter funds by verification status
-  const funds = useMemo(() => {
-    if (!showOnlyVerified) return allFunds;
-    return allFunds.filter(fund => fund.isVerified);
-  }, [allFunds, showOnlyVerified]);
 
   // Scroll to top when category changes
   useEffect(() => {
@@ -119,30 +110,12 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ categoryData: ssrData, init
         <div className="container mx-auto px-4 max-w-7xl">
           <CategoryBreadcrumbs categoryName={displayCategoryName} />
           
-          <CategorySnapshotHero categoryName={displayCategoryName} funds={allFunds} />
+          <CategorySnapshotHero categoryName={displayCategoryName} funds={funds} />
           
           <CategoryEditorialBlock categoryName={displayCategoryName} />
           
-          
-          {/* Verification Filter */}
-          <div className="mb-6">
-            <VerificationFilterChip 
-              showOnlyVerified={showOnlyVerified}
-              setShowOnlyVerified={setShowOnlyVerified}
-            />
-          </div>
-          
-          {funds.length === 0 && !showOnlyVerified ? (
+          {funds.length === 0 ? (
             <CategoryPageEmptyState categoryName={displayCategoryName} allCategories={allCategories} />
-          ) : funds.length === 0 && showOnlyVerified && allFunds.length > 0 ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground text-lg">
-                No verified funds found in the "{displayCategoryName}" category.
-              </p>
-              <p className="text-muted-foreground mt-2">
-                Try disabling the verification filter to see all {allFunds.length} funds.
-              </p>
-            </div>
           ) : (
             <div className="space-y-8">
               <CategoryPageFundSummary count={funds.length} categoryName={displayCategoryName} />
@@ -154,8 +127,8 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ categoryData: ssrData, init
               <CategoryPageFAQ 
                 categoryName={displayCategoryName} 
                 categorySlug={categorySlug || ''} 
-                fundsCount={allFunds.length}
-                funds={allFunds}
+                fundsCount={funds.length}
+                funds={funds}
               />
               
               <RelatedCategories allCategories={allCategories} currentCategory={displayCategoryName} />

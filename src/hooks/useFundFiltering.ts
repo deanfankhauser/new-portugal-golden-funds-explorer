@@ -13,7 +13,6 @@ export const useFundFiltering = (options: UseFundFilteringOptions = {}) => {
   const [selectedTags, setSelectedTags] = useState<FundTag[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<FundCategory | null>(null);
   const [selectedManager, setSelectedManager] = useState<string | null>(null);
-  const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   const { funds, loading: isLoading, error: fundsError } = useRealTimeFunds({
     initialData: options.initialFunds
   });
@@ -78,8 +77,8 @@ export const useFundFiltering = (options: UseFundFilteringOptions = {}) => {
       );
     }
     
-    // Apply verified filter (from showOnlyVerified state or URL param)
-    if (showOnlyVerified || verifiedParam) {
+    // Apply verified filter from URL param only
+    if (verifiedParam) {
       result = result.filter(fund => fund.isVerified === true);
     }
     
@@ -94,7 +93,7 @@ export const useFundFiltering = (options: UseFundFilteringOptions = {}) => {
     });
     
     return sorted;
-  }, [selectedTags, selectedCategory, selectedManager, searchQuery, showOnlyVerified, funds, categoryParam, riskParam, tagParam, verifiedParam]);
+  }, [selectedTags, selectedCategory, selectedManager, searchQuery, funds, categoryParam, riskParam, tagParam, verifiedParam]);
 
   return {
     selectedTags,
@@ -103,8 +102,6 @@ export const useFundFiltering = (options: UseFundFilteringOptions = {}) => {
     setSelectedCategory,
     selectedManager,
     setSelectedManager,
-    showOnlyVerified,
-    setShowOnlyVerified,
     searchQuery,
     filteredFunds,
     allFunds: funds || [],
