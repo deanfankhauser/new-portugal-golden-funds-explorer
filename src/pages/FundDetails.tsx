@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import { PageSEO } from '../components/common/PageSEO';
 import FundDetailsContent from '../components/fund-details/FundDetailsContent';
 import FloatingCTA from '../components/fund-details/FloatingCTA';
+import StickyHelpBar from '../components/common/StickyHelpBar';
 import { FundDetailsLoader } from '../components/common/LoadingSkeleton';
 import { useRecentlyViewed } from '../contexts/RecentlyViewedContext';
 import { useFund } from '../hooks/useFundsQuery';
@@ -146,6 +147,7 @@ const FundDetails: React.FC<FundDetailsProps> = ({ fund: ssrFund, initialId, ini
       </main>
       
       <FloatingCTA fund={fund} />
+      <StickyHelpBar fundName={fund.name} />
       
       <Footer />
     </div>
