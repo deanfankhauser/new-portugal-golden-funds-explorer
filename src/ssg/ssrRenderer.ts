@@ -245,6 +245,7 @@ export class SSRRenderer {
         managerName: route.params?.managerName,
         categoryName: route.params?.categoryName,
         tagName: route.params?.tagName,
+        feeTypeSlug: route.params?.feeTypeSlug,
         comparisonSlug: route.params?.slug,
         // Team member params for team-member page type
         name: route.params?.name,
