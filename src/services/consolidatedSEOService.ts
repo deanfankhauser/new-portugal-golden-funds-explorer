@@ -381,20 +381,18 @@ export class ConsolidatedSEOService {
       case 'managers-hub':
         return {
           title: this.optimizeText('Portugal Golden Visa Fund Managers (2026) | Movingto Funds', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Browse fund manager profiles, their eligible funds, and key terms. Compare fees and governance disclosures to build a shortlist.', this.MAX_DESCRIPTION_LENGTH),
+          description: this.optimizeText('Explore Portugal Golden Visa fund managers. Compare strategies, track records, and connect directly with investment professionals offering eligible funds.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('managers'),
           canonical: URL_CONFIG.buildUrl('managers'),
           keywords: [
-            'fund managers Portugal',
-            'Golden Visa fund managers',
-            'investment professionals Portugal',
-            'fund management companies',
+            'Portugal Golden Visa fund managers',
+            'Golden Visa investment managers',
+            'fund management companies Portugal',
             'Portuguese fund managers directory',
             'investment fund professionals',
-            'best Golden Visa fund managers',
-            'top rated fund managers Portugal',
+            'Golden Visa fund managers',
             'verified fund management companies',
-            'experienced Golden Visa managers'
+            'Portugal investment managers'
           ],
           structuredData: this.getManagersHubStructuredData()
         };
