@@ -27,20 +27,9 @@ const TeamMembersCarousel: React.FC = () => {
   const { data: teamMembers, isLoading } = useQuery({
     queryKey: ['homepage-team-members'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('team_members')
-        .select(`
-          id,
-          name,
-          role,
-          slug,
-          photo_url,
-          profile_id,
-          profiles!inner (
-            company_name
-          )
-        `)
-        .limit(20);
+      const { data, error } = await supabase.rpc('get_public_team_members', {
+        limit_input: 20,
+      });
 
       if (error) {
         console.error('Error fetching team members:', error);
@@ -54,7 +43,7 @@ const TeamMembersCarousel: React.FC = () => {
         slug: member.slug,
         photo_url: member.photo_url,
         profile_id: member.profile_id,
-        company_name: member.profiles?.company_name || undefined,
+        company_name: member.company_name || undefined,
       })) as TeamMember[];
     },
     staleTime: 5 * 60 * 1000,
