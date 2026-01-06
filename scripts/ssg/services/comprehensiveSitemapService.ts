@@ -164,8 +164,8 @@ ${sitemapElements}
       { path: '/categories', priority: 0.8 },
       { path: '/tags', priority: 0.8 },
       { path: '/managers', priority: 0.8 },
-      { path: '/comparisons', priority: 0.7 },
-      { path: '/compare', priority: 0.6 },
+      { path: '/comparisons', priority: 0.8 },  // SEO hub page (higher priority)
+      // Note: /compare is excluded (noindex tool page)
       { path: '/alternatives', priority: 0.7 }
     ];
 
