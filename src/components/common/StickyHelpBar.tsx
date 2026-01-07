@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { MessageCircle, X } from 'lucide-react';
 import { analytics } from '../../utils/analytics';
 import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
-import FundIntroductionModal from '../modals/FundIntroductionModal';
 
 const DISMISS_STORAGE_KEY = 'cta_banner_dismissed';
 const DISMISS_DURATION_MS = 14 * 24 * 60 * 60 * 1000; // 14 days
@@ -15,7 +14,6 @@ interface StickyHelpBarProps {
 
 const StickyHelpBar: React.FC<StickyHelpBarProps> = ({ fundName }) => {
   const [isDismissed, setIsDismissed] = useState(true); // Start hidden to prevent flash
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Check localStorage and track impression on mount
   useEffect(() => {
@@ -59,21 +57,11 @@ const StickyHelpBar: React.FC<StickyHelpBarProps> = ({ fundName }) => {
     openExternalLink(contactUrl);
   };
 
-  const handleSecondaryClick = () => {
-    analytics.trackEvent('cta_banner_secondary_click', {
-      location: fundName ? 'fund_detail' : 'homepage',
-      fund_name: fundName || undefined
-    });
-    setIsModalOpen(true);
-  };
-
   if (isDismissed) {
     return null;
   }
 
-  const subheadText = fundName
-    ? 'Get help with eligibility, documents, timelines — or request a warm intro to this fund.'
-    : 'Get help with eligibility, documents, timelines — or request a warm introduction to a fund.';
+  const subheadText = 'Get help with eligibility, documents, and timelines.';
 
   return (
     <>
@@ -95,22 +83,14 @@ const StickyHelpBar: React.FC<StickyHelpBarProps> = ({ fundName }) => {
                 </div>
               </div>
 
-              {/* Right: Buttons */}
-              <div className="flex items-center gap-2 shrink-0">
+              {/* Right: Button */}
+              <div className="shrink-0">
                 <Button
                   size="sm"
                   className="bg-background text-primary hover:bg-background/90 font-medium whitespace-nowrap"
                   onClick={handlePrimaryClick}
                 >
                   Book free legal call (15 min)
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="border border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground font-medium whitespace-nowrap"
-                  onClick={handleSecondaryClick}
-                >
-                  Request a fund introduction
                 </Button>
               </div>
             </div>
@@ -140,35 +120,19 @@ const StickyHelpBar: React.FC<StickyHelpBarProps> = ({ fundName }) => {
                 </p>
               </div>
 
-              {/* Buttons */}
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  className="flex-1 bg-background text-primary hover:bg-background/90 font-medium text-xs h-10"
-                  onClick={handlePrimaryClick}
-                >
-                  Book free call
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="flex-1 border border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground font-medium text-xs h-10"
-                  onClick={handleSecondaryClick}
-                >
-                  Fund intro
-                </Button>
-              </div>
+              {/* Button */}
+              <Button
+                size="sm"
+                className="w-full bg-background text-primary hover:bg-background/90 font-medium text-xs h-10"
+                onClick={handlePrimaryClick}
+              >
+                Book free legal call (15 min)
+              </Button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Fund Introduction Modal */}
-      <FundIntroductionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        fundName={fundName}
-      />
     </>
   );
 };
