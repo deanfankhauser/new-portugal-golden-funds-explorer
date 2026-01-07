@@ -22,14 +22,17 @@ const Footer: React.FC = () => {
   }, []);
 
   return (
-    <footer className="bg-secondary py-12 border-t border-border pb-28 md:pb-24">
-      <div className="container mx-auto px-4">
-        {/* Community Banner */}
-        <div className="mb-10">
+    <>
+      {/* Community Banner Section - Above Footer */}
+      <section className="bg-background py-12 md:py-16">
+        <div className="container mx-auto px-4">
           <CommunityBanner />
         </div>
+      </section>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
+      <footer className="bg-secondary py-12 border-t border-border pb-28 md:pb-24">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="inline-block mb-4">
@@ -183,6 +186,7 @@ const Footer: React.FC = () => {
         </div>
       </div>
     </footer>
+    </>
   );
 };
 
