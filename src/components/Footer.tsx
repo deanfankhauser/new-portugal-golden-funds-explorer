@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
   }, []);
 
   return (
-    <footer className="bg-secondary py-12 border-t border-border">
+    <footer className="bg-secondary py-12 border-t border-border pb-28 md:pb-24">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand Column */}
