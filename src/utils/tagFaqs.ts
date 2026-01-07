@@ -9,7 +9,36 @@ export interface TagFAQ {
 
 // Custom FAQs for specific tags (add more as needed)
 const CUSTOM_TAG_FAQS: Record<string, TagFAQ[]> = {
-  // Example: Add custom FAQs for specific high-traffic tags here
+  'bonds': [
+    {
+      question: 'What are Bonds Golden Visa funds (Portugal Golden Visa investment funds)?',
+      answer: 'Bonds Golden Visa funds are Portugal Golden Visa investment funds (often called Golden Visa funds) that primarily invest in bonds or bond-like fixed income instruments. These can include government bonds, corporate bonds, or credit-linked structures depending on the fund mandate. If the fund qualifies for the Portugal Golden Visa fund route, an investor subscribes to the fund units (not individual bonds) and uses the investment evidence for their Golden Visa application, subject to legal confirmation of eligibility.'
+    },
+    {
+      question: 'How many Bonds Golden Visa funds are marketed for Golden Visa?',
+      answer: 'The number can change as funds are added, updated, or reclassified. On this page, we list the funds currently tagged Bonds that are presented as Golden Visa funds based on manager disclosures and available documentation. Golden Visa eligibility must still be confirmed by Portuguese legal counsel before investing in any specific Portugal Golden Visa investment fund.'
+    },
+    {
+      question: 'What is the minimum investment for Bonds Golden Visa funds?',
+      answer: 'For the Portugal Golden Visa fund route, the commonly referenced minimum is €500,000 invested into qualifying Portugal Golden Visa investment funds (Golden Visa funds), subject to current rules and legal interpretation. Some bonds-focused funds may set higher minimum subscription amounts depending on strategy and demand.'
+    },
+    {
+      question: 'Are Bonds Golden Visa funds safe investments?',
+      answer: 'Bonds-focused Golden Visa funds are often perceived as lower volatility than equity strategies, but they are not risk-free. Key risks include interest rate risk (bond prices can fall when rates rise), credit/default risk, concentration risk, liquidity risk, and how the fund values less-liquid instruments. The "safety" of a bonds-focused Portugal Golden Visa investment fund depends on credit quality, duration, diversification, and fees—not the "bonds" label.'
+    },
+    {
+      question: 'How long do I need to hold my investment in Bonds Golden Visa funds?',
+      answer: "For the Portugal Golden Visa, you generally need to maintain the qualifying investment throughout the required residence period until you reach a stage where you can exit under the program rules. However, fund liquidity and redemption terms are separate from visa rules. Many Portugal Golden Visa investment funds have lock-ups, limited redemption windows, or fund terms. Always check the fund's lock-up, redemption frequency, and notice periods—and confirm the Golden Visa holding requirement with Portuguese legal counsel."
+    },
+    {
+      question: 'Can I include family members in my Portugal Golden Visa application if I invest in Golden Visa funds?',
+      answer: 'In many cases, yes—Portugal Golden Visa applications often allow family members to be included, but eligibility depends on relationship and dependency rules and can change over time. This is a legal question: confirm your family eligibility and documentation requirements with Portuguese legal counsel as part of your Golden Visa process.'
+    },
+    {
+      question: 'Is this investment advice?',
+      answer: 'No. Movingto Funds provides information and introductions for Golden Visa funds and Portugal Golden Visa investment funds. We do not provide investment advice or recommend any specific fund. Always obtain independent financial advice and Portuguese legal advice before investing.'
+    }
+  ]
 };
 
 function generateDefaultTagFAQs(tagName: string, funds: Fund[]): TagFAQ[] {
