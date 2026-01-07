@@ -77,7 +77,7 @@ const Footer: React.FC = () => {
                 <Link to="/categories" className="text-muted-foreground hover:text-primary text-sm transition-colors">Categories</Link>
               </li>
               <li>
-                <Link to="/tags" className="text-muted-foreground hover:text-primary text-sm transition-colors">Themes</Link>
+                <Link to="/tags" className="text-muted-foreground hover:text-primary text-sm transition-colors">Tags</Link>
               </li>
               <li>
                 <Link to="/comparisons" className="text-muted-foreground hover:text-primary text-sm transition-colors">Comparisons</Link>
