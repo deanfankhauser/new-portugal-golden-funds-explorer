@@ -38,6 +38,36 @@ const CUSTOM_TAG_FAQS: Record<string, TagFAQ[]> = {
       question: 'Is this investment advice?',
       answer: 'No. Movingto Funds provides information and introductions for Golden Visa funds and Portugal Golden Visa investment funds. We do not provide investment advice or recommend any specific fund. Always obtain independent financial advice and Portuguese legal advice before investing.'
     }
+  ],
+  'capital-growth': [
+    {
+      question: 'What are Capital Growth Golden Visa funds (Portugal Golden Visa investment funds)?',
+      answer: 'Capital Growth Golden Visa funds are Portugal Golden Visa investment funds (often called Golden Visa funds) that primarily target capital appreciation rather than steady income. In practice, this usually means equity-heavy strategies such as private equity, venture capital, growth equity, or thematic funds aiming to increase the value of underlying holdings over time. If the fund qualifies for the Portugal Golden Visa fund route, investors subscribe to the fund units and use the investment evidence for their Golden Visa application, subject to legal confirmation of eligibility.'
+    },
+    {
+      question: 'How many Capital Growth funds are marketed for Golden Visa?',
+      answer: 'The number can change as new Golden Visa funds are added, reclassified, or updated. This tag page shows the funds currently labeled Capital Growth and presented as Portugal Golden Visa investment funds based on manager disclosures and available documentation. Golden Visa eligibility must still be confirmed by Portuguese legal counsel before investing in any specific fund.'
+    },
+    {
+      question: 'What is the minimum investment for Capital Growth Golden Visa funds?',
+      answer: 'For the Portugal Golden Visa fund route, the commonly referenced minimum is €500,000 invested into qualifying Portugal Golden Visa investment funds (Golden Visa funds), subject to current rules and legal interpretation. Some capital growth strategies (especially VC/growth equity) may set higher minimum subscriptions depending on the fund.'
+    },
+    {
+      question: 'Are Capital Growth Golden Visa funds safe investments?',
+      answer: '"Capital growth" usually means higher risk and higher variability of outcomes compared to income-focused strategies. Capital Growth Golden Visa funds can be illiquid, valuations may move slowly (or be updated infrequently), and returns depend on exits (selling portfolio companies/assets). Key risks include market risk, concentration risk, manager execution risk, long time horizons, and limited liquidity. These can be excellent Portugal Golden Visa investment funds for investors comfortable with risk and time—just don\'t confuse "regulated" with "guaranteed."'
+    },
+    {
+      question: 'How long do I need to hold my investment in Capital Growth Golden Visa funds?',
+      answer: "There are two separate timelines: Golden Visa rules require you to generally maintain the qualifying investment throughout the required residence period until you can exit under the program rules. Fund terms often include multi-year lock-ups and long fund terms (often with extensions). Always check the fund's lock-up, redemption mechanics, and term—and confirm the Golden Visa holding requirement with Portuguese legal counsel."
+    },
+    {
+      question: 'Can I include family members in my Portugal Golden Visa application if I invest in Golden Visa funds?',
+      answer: 'In many cases, yes—Portugal Golden Visa applications often allow family members to be included, but eligibility depends on relationship and dependency rules and can change over time. This is a legal question: confirm who you can include and what documents you need with Portuguese legal counsel.'
+    },
+    {
+      question: 'Is this investment advice?',
+      answer: 'No. Movingto Funds provides information and introductions for Golden Visa funds and Portugal Golden Visa investment funds. We do not provide investment advice or recommend any specific fund. Always obtain independent financial advice and Portuguese legal advice before investing.'
+    }
   ]
 };
 
