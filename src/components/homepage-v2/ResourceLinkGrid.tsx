@@ -47,7 +47,7 @@ const LINK_COLUMNS: LinkColumn[] = [
     links: [
       { href: '/funds/exs-capital-climate-impact-fund', label: 'EXS Climate Impact' },
       { href: '/funds/portugal-ventures-v-fund', label: 'Portugal Ventures V' },
-      { href: '/funds/lince-capital-real-estate-fund', label: 'Lince Real Estate' },
+      { href: '/funds/lince-yield-fund', label: 'Lince Yield Fund' },
       { href: '/funds/golden-visa-fund', label: 'Golden Visa Fund' },
       { href: '/funds/invest-350k-fund', label: 'Invest 350K Fund' },
     ]

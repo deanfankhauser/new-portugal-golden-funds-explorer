@@ -46,15 +46,12 @@ export const normalizeTagLabel = (rawTag: string): string => {
   
   // Sector tags
   if (tagLower === 'digital assets') return 'Digital Asset';
-  if (tagLower === 'real estate') return 'Real Estate';
   if (tagLower === 'venture capital') return 'Venture Capital';
   if (tagLower === 'private equity') return 'Private Equity';
   if (tagLower === 'esg') return 'ESG';
   if (tagLower === 'healthcare & life sciences') return 'Healthcare & Life Sciences';
   if (tagLower === 'logistics & warehouses') return 'Logistics & Warehouses';
   if (tagLower === 'hospitality & hotels') return 'Hospitality & Hotels';
-  if (tagLower === 'residential real estate') return 'Residential Real Estate';
-  if (tagLower === 'commercial real estate') return 'Commercial Real Estate';
   if (tagLower === 'clean energy') return 'Clean Energy';
   
   // Investor nationality tags
