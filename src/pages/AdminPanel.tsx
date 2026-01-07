@@ -106,7 +106,7 @@ export default function AdminPanel() {
               <Route path="funds" element={<FundManagement />} />
               <Route path="rankings" element={<FundRankingManager />} />
               <Route path="company-managers" element={<ManagerProfileAssignment />} />
-              <Route path="users" element={<UsersManagement />} />
+              <Route path="users" element={<UsersManagement currentUserRole={adminRole || undefined} />} />
               <Route path="emails" element={<EmailCapturesManagement />} />
               <Route path="contact-submissions" element={<ContactSubmissionsManagement />} />
               <Route path="leads" element={<AllLeadsManagement />} />
