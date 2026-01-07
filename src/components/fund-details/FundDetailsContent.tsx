@@ -27,8 +27,6 @@ import { useFundEditing } from '@/hooks/useFundEditing';
 
 import FundBreadcrumbs from './FundBreadcrumbs';
 import TechnicalSummaryBar from './TechnicalSummaryBar';
-import DataVerifiedBadge from '../common/DataVerifiedBadge';
-import VerificationTooltip from '../common/VerificationTooltip';
 
 
 // Import tab components directly
@@ -112,13 +110,6 @@ const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund, initialFu
         {/* Technical Summary Bar - Institutional Data Standard */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <TechnicalSummaryBar fund={fund} variant="full" />
-          <div className="flex items-center gap-3">
-            <VerificationTooltip isVerified={fund.isVerified} />
-            <DataVerifiedBadge 
-              lastVerifiedDate={fund.lastDataReviewDate || fund.dateModified} 
-              variant="inline" 
-            />
-          </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 md:gap-8">
           {/* Left Column - Main Content */}
