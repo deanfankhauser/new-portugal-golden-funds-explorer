@@ -11,8 +11,7 @@ const TagsHubHeader = () => {
       </h1>
       
       <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto text-center px-2 sm:px-0" itemProp="description">
-        Browse all investment types, risk levels, and focus areas. 
-        Check our <Link to="/" className="text-primary hover:underline">complete fund list</Link> for detailed rankings.
+        Browse all investment types, risk levels, and focus areas.
       </p>
     </div>
   );
