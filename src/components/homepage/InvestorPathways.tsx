@@ -18,7 +18,7 @@ const InvestorPathways: React.FC = () => {
       title: 'Conservative Strategy',
       subtitle: 'Focus on capital preservation',
       filterAction: () => {
-        navigate('/?category=Real+Estate&tag=Low-risk');
+        navigate('/?category=Debt&tag=Low-risk');
         setTimeout(() => {
           const fundsSection = document.getElementById('funds-section');
           if (fundsSection) {

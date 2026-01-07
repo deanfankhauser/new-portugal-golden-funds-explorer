@@ -218,7 +218,6 @@ export class ConsolidatedSEOService {
     }
     
     // Add sector keywords
-    if (fund.tags?.includes('Real Estate')) keywords.push('real estate fund Portugal');
     if (fund.tags?.includes('Venture Capital')) keywords.push('venture capital Portugal');
     if (fund.tags?.includes('Private Equity')) keywords.push('private equity Portugal');
     if (fund.tags?.includes('Sustainability')) keywords.push('ESG fund', 'sustainable investment');
@@ -2166,22 +2165,7 @@ export class ConsolidatedSEOService {
         },
         {
           question: 'Are crypto funds more volatile than traditional Golden Visa options?',
-          answer: 'Yes, cryptocurrency funds typically exhibit higher volatility than traditional debt, real estate, or infrastructure funds. Monthly returns can swing significantly based on crypto market conditions. These funds are suitable for investors with higher risk tolerance and longer investment horizons.'
-        }
-      ];
-    } else if (categoryLower === 'real estate') {
-      faqs = [
-        {
-          question: 'Can I invest in real estate funds for Portugal Golden Visa?',
-          answer: 'As of October 2023, Portugal changed Golden Visa rules to exclude direct real estate investments. However, real estate-focused funds that invest in commercial property, development projects, or REITs may still qualify if they meet CMVM requirements and the €500,000 minimum. Verify eligibility with Movingto\'s legal team.'
-        },
-        {
-          question: 'What returns can I expect from real estate Golden Visa funds?',
-          answer: 'Real estate fund returns typically range from 4-8% annually, combining rental income and capital appreciation. Returns depend on property type (residential, commercial, logistics), location, development stage, and market conditions. Review historical performance and current portfolio composition.'
-        },
-        {
-          question: 'How long is the typical lock-up period for real estate funds?',
-          answer: 'Real estate Golden Visa funds typically have lock-up periods of 5-7 years to match property development and sales cycles. Some open-ended funds offer quarterly redemptions subject to liquidity gates. Closed-ended funds return capital only at fund maturity or exit events.'
+          answer: 'Yes, cryptocurrency funds typically exhibit higher volatility than traditional debt or infrastructure funds. Monthly returns can swing significantly based on crypto market conditions. These funds are suitable for investors with higher risk tolerance and longer investment horizons.'
         }
       ];
     } else if (categoryLower === 'debt') {

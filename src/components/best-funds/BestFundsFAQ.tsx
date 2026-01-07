@@ -1,13 +1,7 @@
 import React from 'react';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Link } from 'react-router-dom';
+import UniversalFAQ, { FAQItem } from '@/components/ui/UniversalFAQ';
 
-const faqs = [
+const faqs: FAQItem[] = [
   {
     question: 'What is the €500k fund route for Portugal Golden Visa?',
     answer: 'The €500k fund route allows investors to qualify for a Portugal Golden Visa by investing €500,000 or more in a qualifying investment fund regulated by CMVM (Portuguese Securities Market Commission). This is one of the most popular paths to Portuguese residency for non-EU investors.'
@@ -53,39 +47,16 @@ const faqs = [
 const BestFundsFAQ: React.FC = () => {
   return (
     <section className="mb-12">
-      <h2 className="text-2xl font-semibold text-foreground mb-6">
-        Frequently Asked Questions
-      </h2>
-      
-      <Accordion type="single" collapsible className="w-full space-y-3">
-        {faqs.map((faq, index) => (
-          <AccordionItem 
-            key={index} 
-            value={`faq-${index}`}
-            className="border border-border/60 rounded-lg px-6 bg-card data-[state=open]:bg-muted/20"
-          >
-            <AccordionTrigger className="text-left text-base font-medium hover:no-underline py-4">
-              {faq.question}
-            </AccordionTrigger>
-            <AccordionContent className="text-muted-foreground pb-4 leading-relaxed">
-              {faq.answer}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-      
-      <div className="mt-6 text-center">
-        <p className="text-sm text-muted-foreground">
-          Have more questions?{' '}
-          <Link to="/faqs" className="text-primary hover:underline">
-            View our complete FAQ section
-          </Link>
-          {' '}or{' '}
-          <Link to="/contact" className="text-primary hover:underline">
-            get in touch
-          </Link>.
-        </p>
-      </div>
+      <UniversalFAQ 
+        faqs={faqs}
+        title="Frequently Asked Questions"
+        schemaId="best-funds-faq"
+        variant="compact"
+        skipStructuredData={true}
+        showViewAllLink={true}
+        viewAllHref="/faqs"
+        viewAllLabel="Have more questions? View our complete FAQ section or get in touch."
+      />
     </section>
   );
 };

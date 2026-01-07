@@ -314,8 +314,8 @@ const QuickFilterBar: React.FC = () => {
                   <SelectItem value="all">Any strategy</SelectItem>
                   <SelectItem value="Private Equity">Private Equity</SelectItem>
                   <SelectItem value="Venture Capital">Venture Capital</SelectItem>
-                  <SelectItem value="Balanced">Balanced</SelectItem>
-                  <SelectItem value="Real Estate">Real Estate</SelectItem>
+                  <SelectItem value="Debt">Debt</SelectItem>
+                  <SelectItem value="Infrastructure">Infrastructure</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -382,8 +382,8 @@ const QuickFilterBar: React.FC = () => {
                   <SelectItem value="all">Any strategy</SelectItem>
                   <SelectItem value="Private Equity">Private Equity</SelectItem>
                   <SelectItem value="Venture Capital">Venture Capital</SelectItem>
-                  <SelectItem value="Balanced">Balanced</SelectItem>
-                  <SelectItem value="Real Estate">Real Estate</SelectItem>
+                  <SelectItem value="Debt">Debt</SelectItem>
+                  <SelectItem value="Infrastructure">Infrastructure</SelectItem>
                 </SelectContent>
               </Select>
             </div>

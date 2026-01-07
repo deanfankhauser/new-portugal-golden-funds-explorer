@@ -30,9 +30,9 @@ const categories = [
   { value: 'all', label: 'All Categories' },
   { value: 'Private Equity', label: 'Private Equity' },
   { value: 'Venture Capital', label: 'Venture Capital' },
-  { value: 'Real Estate', label: 'Real Estate' },
   { value: 'Debt', label: 'Debt' },
   { value: 'Infrastructure', label: 'Infrastructure' },
+  { value: 'Clean Energy', label: 'Clean Energy' },
   { value: 'Crypto', label: 'Crypto' },
 ];
 

@@ -1,11 +1,10 @@
 import { Fund, FundCategory, FundTag } from '../types/funds';
 
 // Golden Visa eligibility rules as of October 2023
-const GV_INELIGIBLE_CATEGORIES: FundCategory[] = ['Real Estate'];
+// Real Estate category removed from FundCategory type entirely
+const GV_INELIGIBLE_CATEGORIES: FundCategory[] = [];
 
-const GV_INELIGIBLE_TAGS: FundTag[] = [
-  // Real Estate removed - it's a category, not a tag
-];
+const GV_INELIGIBLE_TAGS: FundTag[] = [];
 
 // Check if a fund is Golden Visa eligible
 export const isFundGVEligible = (fund: Fund): boolean => {

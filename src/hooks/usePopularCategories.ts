@@ -113,7 +113,6 @@ export const TILE_CONFIG: Record<string, { description: string; iconName: string
   'private-equity': { description: 'PE-focused funds', iconName: 'Building' },
   'venture-capital': { description: 'VC-focused funds', iconName: 'Rocket' },
   'debt': { description: 'Fixed income strategies', iconName: 'Layers' },
-  'real-estate': { description: 'Property investment funds', iconName: 'Home' },
   'clean-energy': { description: 'Renewable energy investments', iconName: 'Zap' },
   'infrastructure': { description: 'Infrastructure investments', iconName: 'Building2' },
   'crypto': { description: 'Cryptocurrency funds', iconName: 'Bitcoin' },

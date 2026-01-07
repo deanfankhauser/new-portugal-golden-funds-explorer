@@ -28,8 +28,8 @@ const LINK_COLUMNS: LinkColumn[] = [
       { href: '/categories/private-equity', label: 'Private Equity' },
       { href: '/categories/venture-capital', label: 'Venture Capital' },
       { href: '/categories/clean-energy', label: 'Clean Energy' },
-      { href: '/categories/debt-funds', label: 'Fixed Income / Debt' },
-      { href: '/categories/real-estate', label: 'Real Estate' },
+      { href: '/categories/debt', label: 'Fixed Income / Debt' },
+      { href: '/categories/infrastructure', label: 'Infrastructure' },
     ]
   },
   {
@@ -47,7 +47,7 @@ const LINK_COLUMNS: LinkColumn[] = [
     links: [
       { href: '/funds/exs-capital-climate-impact-fund', label: 'EXS Climate Impact' },
       { href: '/funds/portugal-ventures-v-fund', label: 'Portugal Ventures V' },
-      { href: '/funds/lince-capital-real-estate-fund', label: 'Lince Real Estate' },
+      { href: '/funds/lince-yield-fund', label: 'Lince Yield Fund' },
       { href: '/funds/golden-visa-fund', label: 'Golden Visa Fund' },
       { href: '/funds/invest-350k-fund', label: 'Invest 350K Fund' },
     ]

@@ -19,10 +19,10 @@ interface RouteTest {
 const CATEGORY_SLUGS = [
   'private-equity',
   'venture-capital', 
-  'real-estate',
   'mixed',
   'debt',
-  'crypto'
+  'crypto',
+  'infrastructure'
 ];
 
 const routeTests: RouteTest[] = [
@@ -46,8 +46,8 @@ const routeTests: RouteTest[] = [
     shouldExist: true
   },
   { 
-    path: 'categories/real-estate/index.html', 
-    expectedH1Contains: 'Real Estate',
+    path: 'categories/infrastructure/index.html', 
+    expectedH1Contains: 'Infrastructure',
     notExpectedContent: ['Compare Golden Visa Investment Funds'],
     shouldExist: true
   },
@@ -95,7 +95,7 @@ const routeTests: RouteTest[] = [
     isOverlapSlug: true
   },
   { 
-    path: 'tags/real-estate/index.html', 
+    path: 'tags/infrastructure/index.html', 
     expectedH1Contains: '',
     shouldExist: false,
     isOverlapSlug: true
@@ -206,7 +206,7 @@ export function testRouteContent(): boolean {
   // Additional structural checks for category pages
   console.log('\n🔍 Checking category page structure...');
   
-  const categoryDirs = ['mixed', 'venture-capital', 'private-equity', 'real-estate'];
+  const categoryDirs = ['mixed', 'venture-capital', 'private-equity'];
   categoryDirs.forEach(category => {
     const categoryPath = path.join(distDir, 'categories', category, 'index.html');
     if (fs.existsSync(categoryPath)) {

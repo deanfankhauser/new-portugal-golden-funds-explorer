@@ -4,6 +4,7 @@ import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 import { getSitewideSchemas } from '../schemas';
 import { checkCategoryIndexability } from '@/lib/indexability';
+import { getCategoryFAQs } from '@/utils/categoryFaqs';
 
 export function getCategorySeo(categoryName: string, funds: Fund[] = []): SEOData {
   const indexability = checkCategoryIndexability(categoryName, funds);
@@ -90,10 +91,28 @@ function getCategoryStructuredData(categoryName: string, funds: Fund[] = []): an
     'url': categoryUrl
   };
 
+  // FAQPage schema for SEO
+  const faqs = getCategoryFAQs(categoryName, funds);
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'name': `${categoryName} Golden Visa Funds FAQs`,
+    'description': `Frequently asked questions about ${categoryName} investment funds for Portugal Golden Visa`,
+    'mainEntity': faqs.map(faq => ({
+      '@type': 'Question',
+      'name': faq.question,
+      'acceptedAnswer': {
+        '@type': 'Answer',
+        'text': faq.answer
+      }
+    }))
+  };
+
   return [
     ...getSitewideSchemas(),
     breadcrumbSchema,
     collectionSchema,
-    itemListSchema
+    itemListSchema,
+    faqSchema
   ];
 }

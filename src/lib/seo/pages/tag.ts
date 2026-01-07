@@ -4,6 +4,7 @@ import { URL_CONFIG } from '@/utils/urlConfig';
 import { Fund } from '@/data/types/funds';
 import { getSitewideSchemas } from '../schemas';
 import { checkTagIndexability } from '@/lib/indexability';
+import { getTagFAQs } from '@/utils/tagFaqs';
 
 export function getTagSeo(tagName: string, funds: Fund[] = []): SEOData {
   const indexability = checkTagIndexability(tagName, funds);
@@ -93,10 +94,27 @@ function getTagStructuredData(tagName: string, cleanTagLabel: string, funds: Fun
     'url': tagUrl
   };
 
+  // FAQPage schema for SEO
+  const faqs = getTagFAQs(tagName, funds);
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'name': `${cleanTagLabel} Golden Visa Funds FAQs`,
+    'mainEntity': faqs.map(faq => ({
+      '@type': 'Question',
+      'name': faq.question,
+      'acceptedAnswer': {
+        '@type': 'Answer',
+        'text': faq.answer
+      }
+    }))
+  };
+
   return [
     ...getSitewideSchemas(),
     breadcrumbSchema,
     collectionSchema,
-    itemListSchema
+    itemListSchema,
+    faqSchema
   ];
 }

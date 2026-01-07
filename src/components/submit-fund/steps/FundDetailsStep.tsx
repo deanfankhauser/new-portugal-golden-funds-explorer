@@ -14,11 +14,11 @@ interface FundDetailsStepProps {
 const CATEGORIES = [
   'Venture Capital',
   'Private Equity',
-  'Real Estate',
   'Infrastructure',
+  'Debt',
+  'Clean Energy',
   'Credit',
-  'Hedge Fund',
-  'Fund of Funds',
+  'Crypto',
   'Other',
 ];
 

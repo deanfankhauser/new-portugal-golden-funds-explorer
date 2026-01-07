@@ -150,7 +150,7 @@ export class RouteDiscovery {
 
     // Category pages - include all known categories even if empty
     const allKnownCategories = [
-      'Venture Capital', 'Private Equity', 'Real Estate', 'Infrastructure',
+      'Venture Capital', 'Private Equity', 'Infrastructure',
       'Debt', 'Credit', 'Fund-of-Funds', 'Bitcoin', 'Crypto', 'Clean Energy', 'Mixed', 'Other'
     ];
     const categorySet = new Set([...categories, ...allKnownCategories]);

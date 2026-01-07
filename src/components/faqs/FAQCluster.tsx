@@ -25,6 +25,10 @@ interface FAQClusterProps {
   faqs: FAQItem[];
 }
 
+/**
+ * FAQCluster is used specifically for the FAQ hub page with section headers.
+ * For general FAQ sections, use UniversalFAQ instead.
+ */
 const FAQCluster: React.FC<FAQClusterProps> = ({ id, title, faqs }) => {
   return (
     <section id={id} className="scroll-mt-24 mb-12">
@@ -36,7 +40,7 @@ const FAQCluster: React.FC<FAQClusterProps> = ({ id, title, faqs }) => {
           <AccordionItem
             key={index}
             value={`${id}-${index}`}
-            className="bg-card border border-border rounded-lg px-6"
+            className="border border-border/60 rounded-lg px-6 bg-card data-[state=open]:bg-muted/20"
             itemScope
             itemProp="mainEntity"
             itemType="https://schema.org/Question"

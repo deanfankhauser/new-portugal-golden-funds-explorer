@@ -147,7 +147,7 @@ const TagPage: React.FC<TagPageProps> = ({ tagData: ssrData, initialFunds }) => 
           <TagPageEmptyState tagName={displayTagName} allFunds={allDatabaseFunds} />
         )}
         
-        <TagPageFAQ tagName={displayTagName} tagSlug={tagSlug || ''} fundsCount={funds.length} />
+        <TagPageFAQ tagName={displayTagName} tagSlug={tagSlug || ''} fundsCount={funds.length} funds={funds} />
         <RelatedTags allTags={allTags} currentTag={displayTagName} />
       </main>
       
