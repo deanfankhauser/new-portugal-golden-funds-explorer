@@ -1,14 +1,9 @@
 import React from 'react';
 import { Fund } from '../../data/types/funds';
 import { getFundType } from '../../utils/fundTypeUtils';
-import FAQSection from '../common/FAQSection';
+import UniversalFAQ, { FAQItem } from '@/components/ui/UniversalFAQ';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
-
-interface FAQItem {
-  question: string;
-  answer: string;
-}
 
 interface FundManagerFAQsProps {
   fund: Fund;
@@ -63,10 +58,11 @@ const FundManagerFAQs: React.FC<FundManagerFAQsProps> = ({ fund }) => {
         </Link>
       </div>
       
-      <FAQSection 
+      <UniversalFAQ 
         faqs={faqs} 
-        title=""
         schemaId="fund-manager-faq"
+        variant="compact"
+        skipStructuredData={true}
       />
       
       <p className="text-sm text-muted-foreground text-center px-4 sm:px-6 lg:px-8">

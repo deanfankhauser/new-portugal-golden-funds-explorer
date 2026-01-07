@@ -1,12 +1,7 @@
 import React from 'react';
-import FAQSection from '../common/FAQSection';
+import UniversalFAQ, { FAQItem } from '@/components/ui/UniversalFAQ';
 import { Fund } from '../../data/types/funds';
 import { formatManagementFee, formatPerformanceFee, formatSubscriptionFee } from '../../utils/feeFormatters';
-
-interface FAQItem {
-  question: string;
-  answer: string;
-}
 
 interface FundFAQSectionProps {
   fund: Fund;
@@ -61,7 +56,6 @@ const filterDuplicateSystemFAQs = (
   systemFAQs: FAQItem[]
 ): FAQItem[] => {
   return systemFAQs.filter(systemFaq => {
-    // If manual FAQs already cover fees, skip the fee system FAQ
     if (systemFaq.question.toLowerCase().includes('fees') && hasFeeRelatedQuestion(manualFAQs)) {
       return false;
     }
@@ -111,11 +105,12 @@ const FundFAQSection: React.FC<FundFAQSectionProps> = ({ fund }) => {
   const effectiveManualFAQs = manualFAQs.length > 0 ? manualFAQs : defaultFAQs;
 
   return (
-    <FAQSection 
+    <UniversalFAQ 
       faqs={effectiveManualFAQs}
       systemFaqs={filteredSystemFAQs}
       title="Frequently Asked Questions"
       schemaId="fund-faq"
+      skipStructuredData={true}
     />
   );
 };

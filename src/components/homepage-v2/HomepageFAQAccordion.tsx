@@ -1,18 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Button } from '@/components/ui/button';
-
-interface FAQItem {
-  question: string;
-  answer: string;
-}
+import UniversalFAQ, { FAQItem } from '@/components/ui/UniversalFAQ';
 
 const HOMEPAGE_FAQS: FAQItem[] = [
   {
@@ -51,67 +38,17 @@ const HOMEPAGE_FAQS: FAQItem[] = [
 
 const HomepageFAQAccordion: React.FC = () => {
   return (
-    <section className="py-12 sm:py-16">
-      <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-muted-foreground">
-              Quick answers about the Portugal Golden Visa fund route
-            </p>
-          </div>
-
-          {/* FAQ Accordion in Card */}
-          <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
-            <Accordion type="single" collapsible className="w-full">
-              {HOMEPAGE_FAQS.map((faq, index) => (
-                <AccordionItem 
-                  key={index} 
-                  value={`item-${index}`}
-                  className="border-border"
-                >
-                  <AccordionTrigger className="text-left text-foreground hover:text-primary text-base font-medium py-4">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground leading-relaxed pb-4">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
-
-          {/* CTA to full FAQ page */}
-          <div className="text-center mt-8">
-            <Button asChild variant="outline" className="shadow-sm">
-              <Link to="/faqs">
-                View All FAQs
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* FAQ Schema */}
-      <script type="application/ld+json">
-        {JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'FAQPage',
-          mainEntity: HOMEPAGE_FAQS.map(faq => ({
-            '@type': 'Question',
-            name: faq.question,
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: faq.answer
-            }
-          }))
-        })}
-      </script>
-    </section>
+    <UniversalFAQ 
+      faqs={HOMEPAGE_FAQS}
+      title="Frequently Asked Questions"
+      subtitle="Quick answers about the Portugal Golden Visa fund route"
+      schemaId="homepage-faq"
+      variant="card-wrapped"
+      skipStructuredData={true}
+      showViewAllLink={true}
+      viewAllHref="/faqs"
+      viewAllLabel="View All FAQs"
+    />
   );
 };
 
