@@ -195,6 +195,54 @@ const VENTURE_CAPITAL_CATEGORY_FAQS: CategoryFAQ[] = [
   }
 ];
 
+// Clean Energy category has custom, hand-crafted FAQs
+const CLEAN_ENERGY_CATEGORY_FAQS: CategoryFAQ[] = [
+  {
+    question: "What are Clean Energy Portugal Golden Visa investment funds (Golden Visa funds)?",
+    answer: "Clean Energy Portugal Golden Visa investment funds (often called Golden Visa funds) are Portuguese investment funds that focus on clean energy and energy-transition themes—such as renewables, grid infrastructure, storage, efficiency, or related businesses. Investors subscribe to fund units (typically for the Portugal Golden Visa fund route) and use the investment evidence in their Golden Visa application file, subject to legal confirmation of eligibility."
+  },
+  {
+    question: "Are Clean Energy Golden Visa funds eligible for the Portugal Golden Visa?",
+    answer: "Some Clean Energy Golden Visa funds qualify as Portugal Golden Visa investment funds, but eligibility depends on how the fund is structured and documented. A \"clean energy\" theme does not guarantee eligibility. Always confirm that a specific fund qualifies as a Portugal Golden Visa investment fund with Portuguese legal counsel before investing."
+  },
+  {
+    question: "Are Clean Energy Golden Visa funds safe?",
+    answer: "Clean Energy Golden Visa funds can range from relatively defensive infrastructure-style strategies to higher-risk private equity or venture-style strategies. Key risks include project execution risk, regulatory/policy change, power price exposure, counterparty risk, technology risk, leverage, and illiquidity. The risk profile of Portugal Golden Visa investment funds in clean energy depends heavily on whether the fund invests in operating assets, development projects, or early-stage companies."
+  },
+  {
+    question: "What returns can Clean Energy Portugal Golden Visa investment funds target?",
+    answer: "There is no single \"average return\" for Clean Energy Portugal Golden Visa investment funds (Golden Visa funds). Targets vary widely based on strategy (operating infrastructure vs development vs venture), leverage, fee structure, and market conditions. Review each fund's documents for net-of-fees targets, cash yield vs capital growth expectations, and how/when distributions may occur."
+  },
+  {
+    question: "What's the minimum investment for the Portugal Golden Visa fund route using Golden Visa funds?",
+    answer: "For the Portugal Golden Visa fund route, the commonly referenced minimum is €500,000 invested into qualifying Portugal Golden Visa investment funds (Golden Visa funds), subject to current rules and legal interpretation. Some clean energy funds may set higher minimum subscription amounts."
+  },
+  {
+    question: "What are typical lock-up and redemption terms for Clean Energy Golden Visa funds?",
+    answer: "Many Clean Energy Golden Visa funds are illiquid and have multi-year lock-ups, especially when investing in infrastructure or private assets. Liquidity terms vary, so always check lock-up length, fund term and extensions, redemption windows (if any), notice periods, and whether liquidity is \"best efforts.\""
+  },
+  {
+    question: "What fees should I pay attention to in Clean Energy Portugal Golden Visa investment funds?",
+    answer: "When comparing Clean Energy Portugal Golden Visa investment funds (Golden Visa funds), focus on: Subscription / entry fees (if any); Annual management fees; Performance fees / carry (hurdles, catch-up terms); Fund expenses (admin, custodian/depositary, audit, legal); Project/SPV costs (where applicable). Fees matter because infrastructure-style funds can have steady returns, but layered costs can reduce net results."
+  },
+  {
+    question: "What does \"CMVM regulated\" mean for Clean Energy Portugal Golden Visa investment funds?",
+    answer: "\"CMVM regulated\" typically means the fund/manager operates within Portugal's regulated investment framework. For Portugal Golden Visa investment funds, this supports governance and disclosure expectations. But CMVM regulation does not automatically guarantee a fund is eligible as a Golden Visa fund—eligibility still needs legal confirmation."
+  },
+  {
+    question: "What should I check before choosing Clean Energy Golden Visa funds?",
+    answer: "To compare Clean Energy Golden Visa funds and Portugal Golden Visa investment funds, prioritize: strategy type (operating assets vs development vs venture); revenue model (contracted vs merchant/power price exposure); use of leverage and refinancing assumptions; diversification (projects, geographies, counterparties); manager track record in energy/infrastructure; reporting and valuation approach; clarity of Golden Visa documentation."
+  },
+  {
+    question: "How do I request an introduction to Clean Energy Golden Visa funds?",
+    answer: "Click Request introduction on any fund page or use the category page CTA. Share your timeline, citizenship, and preferences (risk tolerance, liquidity needs, thematic focus). We'll connect you with the fund manager and—if you want—our Portugal Golden Visa legal team to confirm eligibility and next steps."
+  },
+  {
+    question: "Is this investment advice?",
+    answer: "No. Movingto Funds provides information and introductions for Golden Visa funds and Portugal Golden Visa investment funds. We do not provide investment advice or recommend any specific fund. Always obtain independent financial advice and Portuguese legal advice before investing."
+  }
+];
+
 function generateDefaultCategoryFAQs(categoryName: string, funds: Fund[]): CategoryFAQ[] {
   const stats = calculateCategoryStatistics(funds);
   const fundsCount = funds.length;
@@ -267,6 +315,10 @@ export function getCategoryFAQs(categoryName: string, funds: Fund[] = []): Categ
   
   if (normalizedCategory === 'venture capital') {
     return VENTURE_CAPITAL_CATEGORY_FAQS;
+  }
+  
+  if (normalizedCategory === 'clean energy') {
+    return CLEAN_ENERGY_CATEGORY_FAQS;
   }
   
   // Default: generate FAQs based on category statistics
