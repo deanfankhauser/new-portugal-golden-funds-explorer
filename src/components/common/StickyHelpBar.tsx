@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { MessageCircle, X } from 'lucide-react';
 import { analytics } from '../../utils/analytics';
 import { buildContactUrl, openExternalLink } from '../../utils/urlHelpers';
+import { useCookieConsentStatus } from '@/hooks/useCookieConsent';
 
 const DISMISS_STORAGE_KEY = 'cta_banner_dismissed';
 const DISMISS_DURATION_MS = 14 * 24 * 60 * 60 * 1000; // 14 days
@@ -13,10 +14,17 @@ interface StickyHelpBarProps {
 }
 
 const StickyHelpBar: React.FC<StickyHelpBarProps> = ({ fundName }) => {
+  const hasCookieConsent = useCookieConsentStatus();
   const [isDismissed, setIsDismissed] = useState(true); // Start hidden to prevent flash
 
   // Check localStorage and track impression on mount
   useEffect(() => {
+    // Don't show until cookie consent is handled
+    if (!hasCookieConsent) {
+      setIsDismissed(true);
+      return;
+    }
+
     const dismissedAt = localStorage.getItem(DISMISS_STORAGE_KEY);
     const now = Date.now();
     
@@ -36,7 +44,7 @@ const StickyHelpBar: React.FC<StickyHelpBarProps> = ({ fundName }) => {
       });
       sessionStorage.setItem(IMPRESSION_SESSION_KEY, 'true');
     }
-  }, [fundName]);
+  }, [fundName, hasCookieConsent]);
 
   const handleDismiss = () => {
     localStorage.setItem(DISMISS_STORAGE_KEY, Date.now().toString());
