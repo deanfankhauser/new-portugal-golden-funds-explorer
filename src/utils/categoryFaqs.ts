@@ -259,8 +259,8 @@ function generateDefaultCategoryFAQs(categoryName: string, funds: Fund[]): Categ
       return `${category} funds generally offer lower risk compared to equity strategies. They focus on fixed-income instruments with predictable returns. Suitable for conservative investors seeking stable income streams.`;
     }
     
-    if (lowerCategory.includes('real estate') || lowerCategory.includes('infrastructure')) {
-      return `${category} funds typically offer moderate risk with tangible asset backing. They provide income through rent/fees plus potential capital appreciation. Suitable for investors seeking balanced risk-return profiles.`;
+    if (lowerCategory.includes('infrastructure')) {
+      return `${category} funds typically offer moderate risk with tangible asset backing. They provide income through fees plus potential capital appreciation. Suitable for investors seeking balanced risk-return profiles.`;
     }
     
     if (lowerCategory.includes('private equity')) {

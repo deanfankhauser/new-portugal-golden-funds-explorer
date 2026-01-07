@@ -20,7 +20,7 @@ const FundBreadcrumbs: React.FC<FundBreadcrumbsProps> = ({ fund }) => {
   // Get primary category from fund tags
   const getPrimaryCategory = (fund: Fund) => {
     const categoryTags = fund.tags.filter(tag => 
-      ['Real Estate', 'Tech', 'Healthcare & life sciences', 'Energy', 'Infrastructure', 'Tourism'].includes(tag)
+      ['Tech', 'Healthcare & life sciences', 'Energy', 'Infrastructure', 'Tourism'].includes(tag)
     );
     return categoryTags[0] || null;
   };

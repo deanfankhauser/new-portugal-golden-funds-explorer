@@ -78,7 +78,7 @@ const QuizIntroSection: React.FC = () => {
           <p className="text-muted-foreground">
             <strong className="text-foreground">Conservative Investors:</strong> If capital preservation is your 
             priority, we'll recommend funds with lower volatility, established track records, and focus on 
-            stable asset classes like real estate and infrastructure.
+            stable asset classes like debt and infrastructure.
           </p>
         </div>
 

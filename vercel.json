@@ -409,7 +409,12 @@
     },
     {
       "source": "/tags/real-estate",
-      "destination": "/categories/real-estate",
+      "destination": "/categories",
+      "permanent": true
+    },
+    {
+      "source": "/categories/real-estate",
+      "destination": "/categories",
       "permanent": true
     },
     {

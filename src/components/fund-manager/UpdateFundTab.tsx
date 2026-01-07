@@ -732,7 +732,6 @@ const UpdateFundTab: React.FC<UpdateFundTabProps> = ({ fund, canDirectEdit }) =>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Real Estate">Real Estate</SelectItem>
                     <SelectItem value="Private Equity">Private Equity</SelectItem>
                     <SelectItem value="Venture Capital">Venture Capital</SelectItem>
                     <SelectItem value="Debt">Debt</SelectItem>
