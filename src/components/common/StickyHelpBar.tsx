@@ -106,41 +106,6 @@ const StickyHelpBar: React.FC<StickyHelpBarProps> = ({ fundName }) => {
         </div>
       </div>
 
-      {/* Mobile Layout */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden">
-        <div className="bg-primary border-t border-primary-foreground/20 shadow-lg">
-          <div className="px-4 py-3 relative">
-            {/* Close button */}
-            <button
-              onClick={handleDismiss}
-              className="absolute top-2 right-2 p-1.5 rounded-full text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10 transition-colors"
-              aria-label="Dismiss banner"
-            >
-              <X className="h-4 w-4" />
-            </button>
-
-            {/* Content */}
-            <div className="pr-8">
-              <div className="flex items-start gap-2 mb-3">
-                <MessageCircle className="h-4 w-4 text-primary-foreground shrink-0 mt-0.5" />
-                <p className="text-sm font-semibold text-primary-foreground leading-tight">
-                  Speak with our Portugal Golden Visa legal team (free)
-                </p>
-              </div>
-
-              {/* Button */}
-              <Button
-                size="sm"
-                className="w-full bg-background text-primary hover:bg-background/90 font-medium text-xs h-10"
-                onClick={handlePrimaryClick}
-              >
-                Book free legal call (15 min)
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </>
   );
 };
