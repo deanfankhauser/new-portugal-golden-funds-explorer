@@ -99,6 +99,54 @@ const PRIVATE_EQUITY_CATEGORY_FAQS: CategoryFAQ[] = [
   }
 ];
 
+// Debt category has custom, hand-crafted FAQs
+const DEBT_CATEGORY_FAQS: CategoryFAQ[] = [
+  {
+    question: "What are Debt Portugal Golden Visa investment funds (Golden Visa funds)?",
+    answer: "Debt Portugal Golden Visa investment funds (often called Golden Visa funds) are Portuguese investment funds that primarily invest in debt instruments—such as loans, private credit, or credit-linked structures. Investors subscribe to fund units (typically for the Portugal Golden Visa fund route) and use the investment evidence for the Golden Visa application file, subject to legal confirmation of eligibility."
+  },
+  {
+    question: "Are Debt Golden Visa funds eligible for the Portugal Golden Visa?",
+    answer: "Some Debt Golden Visa funds are eligible as Portugal Golden Visa investment funds, but eligibility depends on the fund's structure and documentation. \"Debt strategy\" alone does not guarantee eligibility. Always confirm that a specific fund qualifies as a Portugal Golden Visa investment fund with Portuguese legal counsel before investing."
+  },
+  {
+    question: "Are Debt Golden Visa funds safer than other Portugal Golden Visa investment funds?",
+    answer: "Debt Golden Visa funds are often perceived as lower volatility than equity strategies, but they are not risk-free. Key risks include borrower default, collateral quality, concentration, refinancing risk, illiquidity, and how loans are valued. The \"safety\" of Portugal Golden Visa investment funds in the debt category depends heavily on underwriting standards, diversification, and the manager's track record."
+  },
+  {
+    question: "What returns can Debt Portugal Golden Visa investment funds target?",
+    answer: "There is no single \"average return\" for Debt Portugal Golden Visa investment funds (Golden Visa funds) because it depends on the credit strategy, loan quality, fees, and market conditions. Some funds target steady yield-like returns; others take more risk for higher targets. Always review each fund's documents for net-of-fees targets, how distributions work, and what assumptions the manager is making."
+  },
+  {
+    question: "What's the minimum investment for the Portugal Golden Visa fund route using Golden Visa funds?",
+    answer: "For the Portugal Golden Visa fund route, the commonly referenced minimum is €500,000 invested into qualifying Portugal Golden Visa investment funds (Golden Visa funds), subject to current rules and legal interpretation. Individual debt funds may set higher minimum subscription amounts."
+  },
+  {
+    question: "What are typical lock-up and redemption terms for Debt Golden Visa funds?",
+    answer: "Many Debt Golden Visa funds still have lock-ups and controlled redemptions because the underlying loans are not instantly liquid. Always check: lock-up length, redemption frequency, notice periods, gates, and whether liquidity is \"best efforts.\" Liquidity terms vary widely across Portugal Golden Visa investment funds in the debt category."
+  },
+  {
+    question: "What fees should I pay attention to in Debt Portugal Golden Visa investment funds?",
+    answer: "When comparing Debt Portugal Golden Visa investment funds (Golden Visa funds), look closely at: Subscription / entry fees (if any); Annual management fees; Performance fees (if any — less common but possible); Fund expenses (administration, custody/depositary, audit, legal); Servicing fees / origination fees (where applicable). Fees matter because debt returns can be steady but not huge—so costs can materially reduce net outcomes."
+  },
+  {
+    question: "What does \"CMVM regulated\" mean for Debt Portugal Golden Visa investment funds?",
+    answer: "\"CMVM regulated\" typically means the fund/manager operates under Portugal's regulated investment framework. For Portugal Golden Visa investment funds, this is an important governance signal (oversight, disclosures, regulated service providers). But CMVM regulation does not automatically guarantee a fund qualifies as a Golden Visa fund—eligibility still needs legal confirmation."
+  },
+  {
+    question: "What should I check before choosing Debt Golden Visa funds?",
+    answer: "To compare Debt Golden Visa funds and Portugal Golden Visa investment funds, focus on: credit strategy (senior secured vs mezzanine vs distressed); collateral and loan-to-value (LTV) discipline; diversification (number of borrowers/loans); default management and recovery process; how loans are valued and reported; liquidity terms and fund maturity; clarity of Golden Visa documentation."
+  },
+  {
+    question: "How do I request an introduction to Debt Golden Visa funds?",
+    answer: "Click Request introduction on any fund page or use the category page CTA. Share your timeline, citizenship, and preferences (risk tolerance, desired liquidity, yield vs growth). We'll connect you with the fund manager and—if you want—our Portugal Golden Visa legal team to confirm eligibility and next steps."
+  },
+  {
+    question: "Is this investment advice?",
+    answer: "No. Movingto Funds provides information and introductions for Golden Visa funds and Portugal Golden Visa investment funds. We do not provide investment advice or recommend any specific fund. Always obtain independent financial advice and Portuguese legal advice before investing."
+  }
+];
+
 function generateDefaultCategoryFAQs(categoryName: string, funds: Fund[]): CategoryFAQ[] {
   const stats = calculateCategoryStatistics(funds);
   const fundsCount = funds.length;
@@ -163,6 +211,10 @@ export function getCategoryFAQs(categoryName: string, funds: Fund[] = []): Categ
   
   if (normalizedCategory === 'private equity') {
     return PRIVATE_EQUITY_CATEGORY_FAQS;
+  }
+  
+  if (normalizedCategory === 'debt') {
+    return DEBT_CATEGORY_FAQS;
   }
   
   // Default: generate FAQs based on category statistics
