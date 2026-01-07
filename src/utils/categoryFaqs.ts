@@ -51,6 +51,54 @@ const CRYPTO_CATEGORY_FAQS: CategoryFAQ[] = [
   }
 ];
 
+// Private Equity category has custom, hand-crafted FAQs
+const PRIVATE_EQUITY_CATEGORY_FAQS: CategoryFAQ[] = [
+  {
+    question: "What are Private Equity Portugal Golden Visa investment funds (Golden Visa funds)?",
+    answer: "Private Equity Portugal Golden Visa investment funds (often called Golden Visa funds) are Portuguese investment funds that invest in private companies (or private assets) and can be used for the Portugal Golden Visa fund route when they meet the program requirements. Instead of buying property, you subscribe to fund units (typically €500,000+) and use the subscription evidence in your Golden Visa application file."
+  },
+  {
+    question: "Are Private Equity Golden Visa funds eligible for the Portugal Golden Visa?",
+    answer: "Some Private Equity Golden Visa funds are eligible, but eligibility depends on how the fund is structured and documented. A fund being \"private equity\" is not enough on its own. Always confirm that the specific fund qualifies as a Portugal Golden Visa investment fund with Portuguese legal counsel before investing."
+  },
+  {
+    question: "Are Private Equity Golden Visa funds safe?",
+    answer: "Private Equity Golden Visa funds are typically higher risk and less liquid than public-market investments. Returns depend on manager skill, portfolio quality, fees, and exit conditions. Key risks include valuation uncertainty, limited liquidity, long lock-ups, concentration risk, and delayed exits. If you need flexibility or short time horizons, private equity Portugal Golden Visa investment funds may not fit."
+  },
+  {
+    question: "What's the minimum investment for Private Equity Portugal Golden Visa investment funds?",
+    answer: "For the Portugal Golden Visa fund route, the commonly referenced minimum is €500,000 invested into qualifying Portugal Golden Visa investment funds (Golden Visa funds), subject to current rules and legal interpretation. Individual funds may set higher minimum subscription amounts."
+  },
+  {
+    question: "How long is the lock-up for Private Equity Golden Visa funds?",
+    answer: "Many Private Equity Portugal Golden Visa investment funds have multi-year lock-ups and limited redemption windows. Some are effectively \"locked\" until realizations occur (company sales or fund maturity). Always check lock-up length, redemption frequency, notice periods, and whether there are gates or \"best efforts\" liquidity."
+  },
+  {
+    question: "What fees should I pay attention to in Private Equity Golden Visa funds?",
+    answer: "When comparing Private Equity Golden Visa funds, focus on: Subscription / entry fees (if any); Annual management fees; Performance fees / carried interest (hurdles, catch-up mechanics); Underlying fund and portfolio expenses; Exit or redemption fees (if any). Fees can meaningfully change net outcomes, especially in private equity Portugal Golden Visa investment funds."
+  },
+  {
+    question: "What does \"CMVM regulated\" mean for Private Equity Portugal Golden Visa investment funds?",
+    answer: "\"CMVM regulated\" generally means the fund/manager operates within Portugal's regulated investment framework. For Portugal Golden Visa investment funds, this is a trust and governance signal (oversight, required disclosures, regulated service providers). However, CMVM regulation does not automatically guarantee the fund qualifies as an eligible Golden Visa fund—eligibility still needs legal confirmation."
+  },
+  {
+    question: "Do Private Equity Golden Visa funds invest in real estate?",
+    answer: "Some Private Equity Golden Visa funds may have indirect exposure through operating businesses or structures, but \"real estate exposure\" is often a sensitive point for Golden Visa eligibility and for how investors evaluate strategy. Check the fund's permitted investments and ask for clear confirmation on the fund's exposure and compliance position if this matters to you."
+  },
+  {
+    question: "How do I compare Private Equity Portugal Golden Visa investment funds?",
+    answer: "To compare Private Equity Portugal Golden Visa investment funds (Golden Visa funds), prioritize: Strategy (buyout, growth, venture, sector focus); Diversification (number of portfolio companies); Track record (realized vs unrealized); Liquidity terms (lock-up, redemption mechanics); Fees (especially performance fees); Governance (administrator, custodian/depositary, audit); Clarity of Golden Visa documentation."
+  },
+  {
+    question: "How do I request an introduction to Private Equity Golden Visa funds?",
+    answer: "Click Request introduction on any fund page or use the category page CTA. Share your timeline, citizenship, and preferences (risk, liquidity, target strategy). We'll connect you with the fund manager and—if you want—our Portugal Golden Visa legal team to confirm eligibility and next steps."
+  },
+  {
+    question: "Is this investment advice?",
+    answer: "No. Movingto Funds provides information and introductions for Golden Visa funds and Portugal Golden Visa investment funds. We do not provide investment advice or recommend any specific fund. Always obtain independent financial advice and Portuguese legal advice before investing."
+  }
+];
+
 function generateDefaultCategoryFAQs(categoryName: string, funds: Fund[]): CategoryFAQ[] {
   const stats = calculateCategoryStatistics(funds);
   const fundsCount = funds.length;
@@ -111,6 +159,10 @@ export function getCategoryFAQs(categoryName: string, funds: Fund[] = []): Categ
   // Return custom FAQs for specific categories
   if (normalizedCategory === 'crypto' || normalizedCategory === 'cryptocurrency') {
     return CRYPTO_CATEGORY_FAQS;
+  }
+  
+  if (normalizedCategory === 'private equity') {
+    return PRIVATE_EQUITY_CATEGORY_FAQS;
   }
   
   // Default: generate FAQs based on category statistics
