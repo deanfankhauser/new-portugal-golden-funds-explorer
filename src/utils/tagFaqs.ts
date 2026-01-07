@@ -68,6 +68,32 @@ const CUSTOM_TAG_FAQS: Record<string, TagFAQ[]> = {
       question: 'Is this investment advice?',
       answer: 'No. Movingto Funds provides information and introductions for Golden Visa funds and Portugal Golden Visa investment funds. We do not provide investment advice or recommend any specific fund. Always obtain independent financial advice and Portuguese legal advice before investing.'
     }
+  ],
+  'ai-driven': [
+    {
+      question: 'What are AI-Driven Golden Visa investment funds?',
+      answer: 'AI-Driven Golden Visa funds are Portugal Golden Visa investment funds (often called Golden Visa funds) that have an AI theme or invest in AI-related companies and infrastructure. "AI-driven" usually refers to the fund\'s investment focus (AI software, data, automation, semiconductors, compute infrastructure) rather than a guarantee that AI is used to run the fund. If the fund qualifies for the Portugal Golden Visa fund route, investors subscribe to fund units and use the investment evidence for their Golden Visa application, subject to legal confirmation of eligibility.'
+    },
+    {
+      question: 'How many AI-Driven funds are marketed for Golden Visa?',
+      answer: 'The number changes as funds are added, updated, or reclassified. This tag page lists the funds currently tagged AI-Driven and presented as Portugal Golden Visa investment funds based on manager disclosures and available documentation. Golden Visa eligibility must still be confirmed by Portuguese legal counsel before investing in any specific fund.'
+    },
+    {
+      question: 'What is the minimum investment for AI-Driven Golden Visa funds?',
+      answer: 'For the Portugal Golden Visa fund route, the commonly referenced minimum is €500,000 invested into qualifying Portugal Golden Visa investment funds (Golden Visa funds), subject to current rules and legal interpretation. Some AI-themed funds (often venture or growth strategies) may set higher minimum subscription amounts depending on the fund.'
+    },
+    {
+      question: 'Are AI-Driven Golden Visa funds safe investments?',
+      answer: '"AI-driven" does not mean "safe." AI-themed Golden Visa funds are often venture capital, growth equity, or thematic private equity strategies, which can be higher risk and less liquid than income-focused strategies. Key risks include valuation uncertainty, concentration risk, long time horizons, technology-cycle risk, and limited liquidity. Regulation and fund structure help with governance, but they do not guarantee returns or protect against loss in Portugal Golden Visa investment funds.'
+    },
+    {
+      question: 'How long do I need to hold my investment in AI-Driven Golden Visa funds?',
+      answer: "There are two timelines: Golden Visa rules require you to generally maintain the qualifying investment throughout the required residence period until you can exit under the program rules. Fund terms for many AI-driven Portugal Golden Visa investment funds include multi-year lock-ups and long fund terms (often with extensions), and liquidity may depend on exits rather than redemptions. Always check the fund's lock-up, redemption mechanics, and term—and confirm holding requirements with Portuguese legal counsel."
+    },
+    {
+      question: 'Can I include family members in my AI-Driven Golden Visa application?',
+      answer: 'In many cases, yes—Portugal Golden Visa applications often allow family members to be included, but eligibility depends on relationship and dependency rules and can change over time. This is a legal question: confirm who you can include and what documents you\'ll need with Portuguese legal counsel as part of your Golden Visa process.'
+    }
   ]
 };
 
