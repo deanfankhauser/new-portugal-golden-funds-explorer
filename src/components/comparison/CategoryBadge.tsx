@@ -11,7 +11,6 @@ const categoryVariants: Record<string, string> = {
   'Bitcoin': 'bg-orange-100 text-orange-700 border-orange-200',
   'Private Equity': 'bg-blue-100 text-blue-700 border-blue-200',
   'Venture Capital': 'bg-indigo-100 text-indigo-700 border-indigo-200',
-  'Real Estate': 'bg-amber-100 text-amber-700 border-amber-200',
   'Infrastructure': 'bg-slate-100 text-slate-700 border-slate-200',
   'Debt': 'bg-slate-100 text-slate-700 border-slate-200',
   'Credit': 'bg-slate-100 text-slate-700 border-slate-200',

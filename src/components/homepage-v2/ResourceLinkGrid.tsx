@@ -28,8 +28,8 @@ const LINK_COLUMNS: LinkColumn[] = [
       { href: '/categories/private-equity', label: 'Private Equity' },
       { href: '/categories/venture-capital', label: 'Venture Capital' },
       { href: '/categories/clean-energy', label: 'Clean Energy' },
-      { href: '/categories/debt-funds', label: 'Fixed Income / Debt' },
-      { href: '/categories/real-estate', label: 'Real Estate' },
+      { href: '/categories/debt', label: 'Fixed Income / Debt' },
+      { href: '/categories/infrastructure', label: 'Infrastructure' },
     ]
   },
   {

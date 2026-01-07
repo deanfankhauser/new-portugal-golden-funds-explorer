@@ -65,10 +65,10 @@ const FundMatcher: React.FC = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
               { name: 'Private Equity', slug: 'private-equity', desc: 'Higher growth potential' },
-              { name: 'Real Estate', slug: 'real-estate', desc: 'Stable, tangible assets' },
               { name: 'Venture Capital', slug: 'venture-capital', desc: 'Emerging companies' },
               { name: 'Debt Funds', slug: 'debt', desc: 'Fixed income focus' },
               { name: 'Infrastructure', slug: 'infrastructure', desc: 'Long-term stability' },
+              { name: 'Clean Energy', slug: 'clean-energy', desc: 'Renewable investments' },
               { name: 'All Funds', slug: '', desc: 'Complete directory' },
             ].map((cat) => (
               <Link 

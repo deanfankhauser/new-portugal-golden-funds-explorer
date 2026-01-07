@@ -31,8 +31,8 @@ const NotFound = () => {
     
     // Check for category slugs
     const categories = [
-      'Private Equity', 'Venture Capital', 'Real Estate', 
-      'Private Debt', 'Hedge Funds', 'Infrastructure', 'Natural Resources'
+      'Private Equity', 'Venture Capital', 
+      'Debt', 'Infrastructure', 'Clean Energy', 'Crypto'
     ];
     const categorySlugs = categories.map(cat => categoryToSlug(cat));
     

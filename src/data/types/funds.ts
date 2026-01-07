@@ -60,8 +60,6 @@ export type FundTag =
   | 'Healthcare & life sciences'
   | 'Logistics & warehouses'
   | 'Hospitality & hotels'
-  | 'Residential real estate'
-  | 'Commercial real estate'
   // Tax / Legal
   | 'Tax Free'
   | 'PFIC-Compliant'
@@ -81,7 +79,6 @@ export type FundTag =
 export type FundCategory =
   | 'Venture Capital'
   | 'Private Equity'
-  | 'Real Estate'
   | 'Infrastructure'
   | 'Debt'
   | 'Credit'

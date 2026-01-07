@@ -106,7 +106,6 @@ function generateFundKeywords(fund: Fund): string[] {
   
   // Check tags as string array to avoid type issues
   const fundTags = fund.tags || [];
-  if (fundTags.some(t => t.toLowerCase().includes('real estate'))) keywords.push('real estate fund Portugal');
   if (fundTags.some(t => t.toLowerCase().includes('venture capital'))) keywords.push('venture capital Portugal');
   if (fundTags.some(t => t.toLowerCase().includes('private equity'))) keywords.push('private equity Portugal');
   if (fund.tags?.includes('Sustainability')) keywords.push('ESG fund', 'sustainable investment');
