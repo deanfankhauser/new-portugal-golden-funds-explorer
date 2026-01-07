@@ -147,6 +147,54 @@ const DEBT_CATEGORY_FAQS: CategoryFAQ[] = [
   }
 ];
 
+// Venture Capital category has custom, hand-crafted FAQs
+const VENTURE_CAPITAL_CATEGORY_FAQS: CategoryFAQ[] = [
+  {
+    question: "What are Venture Capital Portugal Golden Visa investment funds (Golden Visa funds)?",
+    answer: "Venture Capital Portugal Golden Visa investment funds (often called Golden Visa funds) are Portuguese investment funds that invest in early-stage and growth companies. Investors subscribe to fund units (typically for the Portugal Golden Visa fund route) and use the investment evidence for their Golden Visa application, subject to legal confirmation of eligibility."
+  },
+  {
+    question: "Are Venture Capital Golden Visa funds eligible for the Portugal Golden Visa?",
+    answer: "Some Venture Capital Golden Visa funds qualify as Portugal Golden Visa investment funds, but eligibility depends on the fund's structure and documentation. \"VC strategy\" alone does not guarantee eligibility. Always confirm that a specific fund qualifies as a Portugal Golden Visa investment fund with Portuguese legal counsel before investing."
+  },
+  {
+    question: "Are Venture Capital Golden Visa funds safe?",
+    answer: "Venture Capital Golden Visa funds are generally higher risk than many other Portugal Golden Visa investment funds because early-stage investing has a high failure rate and outcomes are driven by a small number of winners. Expect illiquidity, uncertain valuations, and long time horizons. If you need capital certainty or short-term liquidity, VC-focused Portugal Golden Visa investment funds may not be suitable."
+  },
+  {
+    question: "What returns can Venture Capital Portugal Golden Visa investment funds target?",
+    answer: "There is no reliable \"average return\" for Venture Capital Portugal Golden Visa investment funds (Golden Visa funds). VC performance varies massively by manager, vintage year, and portfolio concentration, and returns are often back-ended (realized late). Review each fund's documents for strategy, fee structure, expected time horizon, and how/when distributions might occur."
+  },
+  {
+    question: "What's the minimum investment for the Portugal Golden Visa fund route using Golden Visa funds?",
+    answer: "For the Portugal Golden Visa fund route, the commonly referenced minimum is €500,000 invested into qualifying Portugal Golden Visa investment funds (Golden Visa funds), subject to current rules and legal interpretation. Some venture capital funds may set higher minimum subscriptions."
+  },
+  {
+    question: "What are typical lock-up and redemption terms for Venture Capital Golden Visa funds?",
+    answer: "Many Venture Capital Golden Visa funds are long-duration and may not offer meaningful redemptions before the fund matures. Liquidity often depends on exits (acquisitions/secondary sales) rather than regular redemption windows. Always check fund term length, extensions, distribution policy, and whether any early liquidity mechanisms exist."
+  },
+  {
+    question: "What fees should I pay attention to in Venture Capital Golden Visa funds?",
+    answer: "When comparing Venture Capital Golden Visa funds and Portugal Golden Visa investment funds, focus on: Subscription / entry fees (if any); Annual management fees; Performance fees / carry (hurdles, catch-up terms); Fund expenses (admin, custodian/depositary, audit, legal); Underlying costs (SPVs, deal fees, platform fees where relevant). Fees can materially affect outcomes in VC because returns are uneven and often take years to materialize."
+  },
+  {
+    question: "What does \"CMVM regulated\" mean for Venture Capital Portugal Golden Visa investment funds?",
+    answer: "\"CMVM regulated\" typically means the fund/manager operates within Portugal's regulated investment framework. For Portugal Golden Visa investment funds, this is a governance and disclosure signal. But CMVM regulation does not automatically guarantee a fund is eligible as a Golden Visa fund—eligibility still needs legal confirmation."
+  },
+  {
+    question: "How do I compare Venture Capital Portugal Golden Visa investment funds?",
+    answer: "To compare Venture Capital Portugal Golden Visa investment funds (Golden Visa funds), prioritize: manager track record (realized exits vs unrealized marks); portfolio construction (number of companies, follow-on reserves); stage focus (seed, early, growth) and sector concentration; time horizon (fund term + extensions); fee and carry mechanics; reporting quality and valuation policy; clarity of Golden Visa documentation."
+  },
+  {
+    question: "How do I request an introduction to Venture Capital Golden Visa funds?",
+    answer: "Click Request introduction on any fund page or use the category page CTA. Share your timeline, citizenship, and preferences (risk tolerance, liquidity needs, strategy). We'll connect you with the fund manager and—if you want—our Portugal Golden Visa legal team to confirm eligibility and next steps."
+  },
+  {
+    question: "Is this investment advice?",
+    answer: "No. Movingto Funds provides information and introductions for Golden Visa funds and Portugal Golden Visa investment funds. We do not provide investment advice or recommend any specific fund. Always obtain independent financial advice and Portuguese legal advice before investing."
+  }
+];
+
 function generateDefaultCategoryFAQs(categoryName: string, funds: Fund[]): CategoryFAQ[] {
   const stats = calculateCategoryStatistics(funds);
   const fundsCount = funds.length;
@@ -215,6 +263,10 @@ export function getCategoryFAQs(categoryName: string, funds: Fund[] = []): Categ
   
   if (normalizedCategory === 'debt') {
     return DEBT_CATEGORY_FAQS;
+  }
+  
+  if (normalizedCategory === 'venture capital') {
+    return VENTURE_CAPITAL_CATEGORY_FAQS;
   }
   
   // Default: generate FAQs based on category statistics
