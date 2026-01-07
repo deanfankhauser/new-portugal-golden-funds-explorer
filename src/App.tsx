@@ -28,6 +28,7 @@ const CategoriesHub = lazy(() => import('./pages/CategoriesHub'));
 const ManagersHub = lazy(() => import('./pages/ManagersHub'));
 const FundManager = lazy(() => import('./pages/FundManager'));
 const TeamMemberProfile = lazy(() => import('./pages/TeamMemberProfile'));
+const TeamDirectory = lazy(() => import('./pages/TeamDirectory'));
 const About = lazy(() => import('./pages/About'));
 const Disclaimer = lazy(() => import('./pages/Disclaimer'));
 const Privacy = lazy(() => import('./pages/Privacy'));
@@ -162,6 +163,7 @@ import SEOProvider from './components/providers/SEOProvider';
 import SEOEnhancer from './components/common/SEOEnhancer';
 import ExitIntentModal from './components/ExitIntentModal';
 import CookieConsent from './components/common/CookieConsent';
+import StickyHelpBar from './components/common/StickyHelpBar';
 
 function App() {
   // SEO optimization handled by consolidated service
@@ -216,6 +218,11 @@ function App() {
                       <Route path="/manager/:name" element={
                         <Suspense fallback={<PageLoader />}>
                           <FundManager />
+                        </Suspense>
+                      } />
+                      <Route path="/team" element={
+                        <Suspense fallback={<PageLoader />}>
+                          <TeamDirectory />
                         </Suspense>
                       } />
                       <Route path="/team/:slug" element={
@@ -433,6 +440,7 @@ function App() {
                   <SEOEnhancer enableMonitoring={typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false} />
                   <ExitIntentModal />
                   <CookieConsent />
+                  <StickyHelpBar />
                 </SEOProvider>
               </Router>
             </TooltipProvider>

@@ -15,15 +15,11 @@ import {
 interface StreamlinedFilterProps {
   selectedTags: FundTag[];
   setSelectedTags: (tags: FundTag[]) => void;
-  showOnlyVerified: boolean;
-  setShowOnlyVerified: (value: boolean) => void;
 }
 
 const StreamlinedFilter: React.FC<StreamlinedFilterProps> = ({
   selectedTags,
-  setSelectedTags,
-  showOnlyVerified,
-  setShowOnlyVerified
+  setSelectedTags
 }) => {
   const [isOpen, setIsOpen] = useState(() => {
     // Default to closed on mobile (< 1024px), open on desktop

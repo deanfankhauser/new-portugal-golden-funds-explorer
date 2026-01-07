@@ -1,5 +1,4 @@
 import React from 'react';
-import { Info, AlertTriangle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 export const USDefinitionBlock: React.FC = () => {
@@ -11,24 +10,15 @@ export const USDefinitionBlock: React.FC = () => {
       
       <Card className="border-primary/20 bg-primary/5">
         <CardContent className="pt-6">
-          <ul className="space-y-3 text-muted-foreground">
-            <li className="flex items-start gap-3">
-              <Info className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-              <span>
-                <strong className="text-foreground">Confirmed by documentation:</strong> Status is based on fund/manager documents or written confirmation we have collected.
-              </span>
+          <ul className="space-y-3 text-muted-foreground list-disc list-inside marker:text-primary">
+            <li className="pl-1">
+              <strong className="text-foreground">Confirmed by documentation:</strong> Status is based on fund/manager documents or written confirmation we have collected.
             </li>
-            <li className="flex items-start gap-3">
-              <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-              <span>
-                <strong className="text-foreground">Subject to change:</strong> Eligibility policies can change. Always verify directly with the fund before subscribing.
-              </span>
+            <li className="pl-1">
+              <strong className="text-foreground">Subject to change:</strong> Eligibility policies can change. Always verify directly with the fund before subscribing.
             </li>
-            <li className="flex items-start gap-3">
-              <Info className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-              <span>
-                <strong className="text-foreground">Not advice:</strong> This is not investment, legal, or tax advice. Consult qualified professionals.
-              </span>
+            <li className="pl-1">
+              <strong className="text-foreground">Not advice:</strong> This is not investment, legal, or tax advice. Consult qualified professionals.
             </li>
           </ul>
           

@@ -6,8 +6,9 @@ import { Fund } from '@/data/types/funds';
 import { SaveFundButton } from '@/components/common/SaveFundButton';
 import { URL_CONFIG } from '@/utils/urlConfig';
 import { useQuery } from '@tanstack/react-query';
-import { getAllApprovedManagers } from '@/data/services/managers-service';
+import { getAllApprovedManagers, PublicManagerData } from '@/data/services/managers-service';
 import { ManagerLogo } from '@/components/shared/ManagerLogo';
+import { managerNamesMatch } from '@/utils/managerNameMatching';
 import {
   Carousel,
   CarouselContent,
@@ -47,13 +48,13 @@ const VerifiedFundsCarousel: React.FC<VerifiedFundsCarouselProps> = ({ funds }) 
     staleTime: 5 * 60 * 1000,
   });
 
-  // Create a lookup map from profiles by company name
-  const profileLookup = new Map(
-    (managerProfiles || []).map(p => [
-      p.company_name?.toLowerCase().trim(),
-      p
-    ])
-  );
+  // Use fuzzy matching to find profile by manager name
+  const findMatchingProfile = (managerName: string): PublicManagerData | undefined => {
+    if (!managerProfiles || !managerName) return undefined;
+    return managerProfiles.find(p => 
+      managerNamesMatch(managerName, p.company_name || '')
+    );
+  };
 
   const verifiedFunds = funds
     .filter((f) => f.isVerified)
@@ -110,7 +111,7 @@ const VerifiedFundsCarousel: React.FC<VerifiedFundsCarouselProps> = ({ funds }) 
                   {/* Manager with Logo */}
                   <div className="flex items-center gap-2 mb-4">
                     <ManagerLogo
-                      logoUrl={profileLookup.get(fund.managerName?.toLowerCase().trim() || '')?.logo_url}
+                      logoUrl={findMatchingProfile(fund.managerName || '')?.logo_url}
                       managerName={fund.managerName || 'Unknown'}
                       size="sm"
                       showInitialsFallback={false}

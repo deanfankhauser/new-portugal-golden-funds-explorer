@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { ArrowRight, Flag, List, GitCompare, ChevronRight } from 'lucide-react';
+import { ArrowRight, List, GitCompare, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Header';
@@ -152,14 +152,6 @@ const USCitizensFundsPage: React.FC<USCitizensFundsPageProps> = ({ initialFunds 
             
             {/* Hero Section */}
             <section className="mb-10">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Flag className="h-6 w-6 text-primary" />
-                </div>
-                <Badge variant="secondary" className="text-xs">
-                  Updated {lastUpdated}
-                </Badge>
-              </div>
               
               <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
                 Portugal Golden Visa Funds for US Citizens ({currentYear})
@@ -176,7 +168,6 @@ const USCitizensFundsPage: React.FC<USCitizensFundsPageProps> = ({ initialFunds 
                   onClick={() => setFilters(prev => ({ ...prev, showConfirmedOnly: true }))}
                   variant={filters.showConfirmedOnly ? 'default' : 'outline'}
                 >
-                  <Flag className="h-4 w-4 mr-2" />
                   Show Confirmed US-Eligible
                 </Button>
                 <Button variant="outline" asChild>

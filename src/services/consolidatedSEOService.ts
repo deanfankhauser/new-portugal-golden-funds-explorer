@@ -381,22 +381,37 @@ export class ConsolidatedSEOService {
       case 'managers-hub':
         return {
           title: this.optimizeText('Portugal Golden Visa Fund Managers (2026) | Movingto Funds', this.MAX_TITLE_LENGTH),
-          description: this.optimizeText('Browse fund manager profiles, their eligible funds, and key terms. Compare fees and governance disclosures to build a shortlist.', this.MAX_DESCRIPTION_LENGTH),
+          description: this.optimizeText('Explore Portugal Golden Visa fund managers. Compare strategies, track records, and connect directly with investment professionals offering eligible funds.', this.MAX_DESCRIPTION_LENGTH),
           url: URL_CONFIG.buildUrl('managers'),
           canonical: URL_CONFIG.buildUrl('managers'),
           keywords: [
-            'fund managers Portugal',
-            'Golden Visa fund managers',
-            'investment professionals Portugal',
-            'fund management companies',
+            'Portugal Golden Visa fund managers',
+            'Golden Visa investment managers',
+            'fund management companies Portugal',
             'Portuguese fund managers directory',
             'investment fund professionals',
-            'best Golden Visa fund managers',
-            'top rated fund managers Portugal',
+            'Golden Visa fund managers',
             'verified fund management companies',
-            'experienced Golden Visa managers'
+            'Portugal investment managers'
           ],
           structuredData: this.getManagersHubStructuredData()
+        };
+
+      case 'team-directory':
+        return {
+          title: this.optimizeText('Portugal Golden Visa Fund Professionals (2026) | Movingto Funds', this.MAX_TITLE_LENGTH),
+          description: this.optimizeText('Explore investment professionals managing Portugal Golden Visa funds. Search by company, role, or name to find fund experts and team members.', this.MAX_DESCRIPTION_LENGTH),
+          url: URL_CONFIG.buildUrl('team'),
+          canonical: URL_CONFIG.buildUrl('team'),
+          keywords: [
+            'Portugal Golden Visa fund professionals',
+            'fund team directory 2026',
+            'Golden Visa investment experts',
+            'investment professionals Portugal',
+            'fund management team',
+            'Portuguese fund experts'
+          ],
+          structuredData: this.getTeamDirectoryStructuredData()
         };
 
       case 'categories-hub':
@@ -1637,6 +1652,37 @@ export class ConsolidatedSEOService {
               'position': 2,
               'name': 'Fund Managers',
               'item': URL_CONFIG.buildUrl('managers')
+            }
+          ]
+        }
+      ]
+    };
+  }
+
+  private static getTeamDirectoryStructuredData(): any {
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'CollectionPage',
+          'name': 'Portugal Golden Visa Fund Professionals Directory',
+          'description': 'Explore investment professionals managing Portugal Golden Visa funds. Search by company, role, or name to find fund experts and team members.',
+          'url': URL_CONFIG.buildUrl('team')
+        },
+        {
+          '@type': 'BreadcrumbList',
+          'itemListElement': [
+            {
+              '@type': 'ListItem',
+              'position': 1,
+              'name': 'Home',
+              'item': URL_CONFIG.BASE_URL
+            },
+            {
+              '@type': 'ListItem',
+              'position': 2,
+              'name': 'Fund Professionals Directory',
+              'item': URL_CONFIG.buildUrl('team')
             }
           ]
         }

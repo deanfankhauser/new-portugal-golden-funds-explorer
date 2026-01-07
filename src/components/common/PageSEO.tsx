@@ -74,12 +74,15 @@ const seoData = ConsolidatedSEOService.getSEOData(
         }
         robots.setAttribute('content', 'noindex, follow');
       }
-      // Handle noindex for 404/410 pages, zero-fund tag/category/manager pages, and low-value comparisons
+      // Handle noindex for 404/410 pages, zero-fund tag/category/manager pages, user-authenticated pages, and low-value comparisons
       else {
         const isZeroFundPage = (pageType === 'tag' || pageType === 'category' || pageType === 'manager') && 
                                 (!funds || funds.length === 0);
+        const isUserAuthenticatedPage = pageType === 'saved-funds' || 
+                                        pageType === 'account' || 
+                                        pageType === 'dashboard';
         
-        if (pageType === '404' || pageType === '410' || isZeroFundPage) {
+        if (pageType === '404' || pageType === '410' || isZeroFundPage || isUserAuthenticatedPage) {
           let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
           if (!robots) {
             robots = document.createElement('meta');

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
 import { findAlternativeFunds } from '../data/services/alternative-funds-service';
 import { PageSEO } from '../components/common/PageSEO';
-import VerificationFilterChip from '../components/common/VerificationFilterChip';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -27,20 +26,13 @@ interface AlternativesHubProps {
 }
 
 const AlternativesHub: React.FC<AlternativesHubProps> = ({ initialFunds }) => {
-  const [showOnlyVerified, setShowOnlyVerified] = useState(false);
   const [displayCount, setDisplayCount] = useState(10);
   const { funds: fundsData = [], loading: isLoading } = useRealTimeFunds({
     initialData: initialFunds
   });
   
-  // Filter funds by verification status
-  const filteredFunds = useMemo(() => {
-    if (!showOnlyVerified) return fundsData;
-    return fundsData.filter(fund => fund.isVerified);
-  }, [showOnlyVerified, fundsData]);
-  
   // Filter out any invalid fund entries
-  const allFunds = filteredFunds.filter((f): f is typeof f & { name: string; id: string } => 
+  const allFunds = fundsData.filter((f): f is typeof f & { name: string; id: string } =>
     !!f && typeof f === 'object' && 
     typeof f.name === 'string' && 
     typeof f.id === 'string' &&
@@ -199,18 +191,12 @@ const AlternativesHub: React.FC<AlternativesHubProps> = ({ initialFunds }) => {
         </div>
       </section>
 
-      {/* Verification Filter */}
-      <div className="mb-8 flex items-center justify-between flex-wrap gap-4" role="toolbar" aria-label="Filter controls">
-        <div>
-          <h2 className="text-xl font-semibold text-foreground mb-1">Browse Fund Alternatives</h2>
-          <p className="text-sm text-muted-foreground" aria-live="polite">
-            {showOnlyVerified ? `Showing ${verifiedCount} verified funds` : `Showing all ${allFunds.length} funds`}
-          </p>
-        </div>
-        <VerificationFilterChip 
-          showOnlyVerified={showOnlyVerified}
-          setShowOnlyVerified={setShowOnlyVerified}
-        />
+      {/* Section Header */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold text-foreground mb-1">Browse Fund Alternatives</h2>
+        <p className="text-sm text-muted-foreground">
+          Showing all {allFunds.length} funds
+        </p>
       </div>
 
       {/* Funds with Alternatives */}
