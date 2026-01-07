@@ -77,8 +77,8 @@ export const useFundMatcherQuery = (answers: QuizAnswers) => {
 
       // Apply strategy filter (category-based)
       if (answers.strategy === 'safety') {
-        // Safety: Real Estate, Debt, Infrastructure
-        query = query.in('category', ['Real Estate', 'Debt', 'Infrastructure']);
+        // Safety: Debt, Infrastructure, Clean Energy
+        query = query.in('category', ['Debt', 'Infrastructure', 'Clean Energy']);
       } else if (answers.strategy === 'growth') {
         // Growth: Private Equity, Venture Capital, Crypto
         query = query.in('category', ['Private Equity', 'Venture Capital', 'Crypto']);
@@ -127,9 +127,9 @@ export const useFundMatcherQuery = (answers: QuizAnswers) => {
 
       // Apply risk tolerance as soft preference (sort by risk-appropriate categories)
       if (answers.riskTolerance === 'conservative') {
-        // Sort safer categories to top: Debt, Real Estate, Infrastructure
+        // Sort safer categories to top: Debt, Infrastructure, Clean Energy
         filteredFunds.sort((a, b) => {
-          const safeCategories = ['Debt', 'Real Estate', 'Infrastructure'];
+          const safeCategories = ['Debt', 'Infrastructure', 'Clean Energy'];
           const aIsSafe = safeCategories.includes(a.category) ? 1 : 0;
           const bIsSafe = safeCategories.includes(b.category) ? 1 : 0;
           return bIsSafe - aIsSafe;
