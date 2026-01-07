@@ -1,5 +1,5 @@
 import React from 'react';
-import FAQSection from '../common/FAQSection';
+import UniversalFAQ, { FAQItem } from '@/components/ui/UniversalFAQ';
 import { Fund } from '../../data/types/funds';
 import { getCategoryFAQs } from '../../utils/categoryFaqs';
 
@@ -11,10 +11,10 @@ interface CategoryPageFAQProps {
 }
 
 const CategoryPageFAQ: React.FC<CategoryPageFAQProps> = ({ categoryName, categorySlug, fundsCount, funds }) => {
-  const faqs = getCategoryFAQs(categoryName, funds);
+  const faqs = getCategoryFAQs(categoryName, funds) as FAQItem[];
 
   return (
-    <FAQSection 
+    <UniversalFAQ 
       faqs={faqs}
       title={`Frequently Asked Questions about ${categoryName} Portugal Golden Visa Investment Funds`}
       schemaId="category-faq"

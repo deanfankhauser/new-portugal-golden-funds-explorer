@@ -1,14 +1,9 @@
 import React from 'react';
-import FAQSection from '../common/FAQSection';
-
-interface FAQ {
-  question: string;
-  answer: string;
-}
+import UniversalFAQ, { FAQItem } from '@/components/ui/UniversalFAQ';
 
 interface ManagerFAQsSectionProps {
   managerName: string;
-  faqs: FAQ[];
+  faqs: FAQItem[];
 }
 
 const ManagerFAQsSection: React.FC<ManagerFAQsSectionProps> = ({ 
@@ -16,11 +11,12 @@ const ManagerFAQsSection: React.FC<ManagerFAQsSectionProps> = ({
   faqs 
 }) => {
   return (
-    <FAQSection 
+    <UniversalFAQ 
       faqs={faqs} 
       title="Frequently Asked Questions"
       schemaId="manager-faq"
-      noWrapper={true}
+      variant="compact"
+      skipStructuredData={true}
     />
   );
 };

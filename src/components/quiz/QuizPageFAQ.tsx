@@ -1,7 +1,7 @@
 import React from 'react';
-import FAQSection from '@/components/common/FAQSection';
+import UniversalFAQ, { FAQItem } from '@/components/ui/UniversalFAQ';
 
-const quizFAQs = [
+const quizFAQs: FAQItem[] = [
   {
     question: 'How long does the Fund Matcher quiz take?',
     answer: 'The quiz takes about 2 minutes to complete. It consists of 5 simple questions about your investment preferences, including your budget, risk tolerance, nationality, timeline, and income needs.'
@@ -38,11 +38,12 @@ const quizFAQs = [
 
 const QuizPageFAQ: React.FC = () => {
   return (
-    <FAQSection 
+    <UniversalFAQ 
       faqs={quizFAQs}
       title="Frequently Asked Questions"
       schemaId="fund-matcher-faq"
-      noWrapper={true}
+      variant="compact"
+      skipStructuredData={true}
     />
   );
 };
