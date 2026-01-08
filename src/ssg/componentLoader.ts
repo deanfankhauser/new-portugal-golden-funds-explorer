@@ -65,6 +65,7 @@ export const loadComponents = async (only?: string[]) => {
       USCitizensFundsPage: () => import('../pages/USCitizensFundsPage').then(m => m.default),
       FeesHub: () => import('../pages/FeesHub').then(m => m.default),
       FeeTypePage: () => import('../pages/FeeTypePage').then(m => m.default),
+      USInvestorTaxGuide: () => import('../pages/USInvestorTaxGuide').then(m => m.default),
     };
 
     const names = only && only.length ? only : Object.keys(loaders);

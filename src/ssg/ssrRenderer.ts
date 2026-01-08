@@ -363,6 +363,7 @@ export class SSRRenderer {
         case 'us-citizens-funds': return ['USCitizensFundsPage'];
         case 'fees-hub': return ['FeesHub'];
         case 'fee-type': return ['FeeTypePage'];
+        case 'us-tax-guide': return ['USInvestorTaxGuide'];
         
         default: return ['Index'];
       }
@@ -546,6 +547,10 @@ export class SSRRenderer {
                         feeTypeSlug: route.params?.feeTypeSlug 
                       })
                     : React.createElement(getComponent('FeeTypePage'))
+                }),
+                React.createElement(Route, { 
+                  path: '/funds/us-tax-guide', 
+                  element: React.createElement(getComponent('USInvestorTaxGuide'))
                 }),
                 
                 // Auth page
