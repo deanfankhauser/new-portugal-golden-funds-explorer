@@ -35,6 +35,7 @@ import {
   getFeeTypeSeo,
   optimizeText
 } from '../lib/seo';
+import { getUSTaxGuideSeo } from '../lib/seo/pages/us-tax-guide';
 
 
 export class ConsolidatedSEOService {
@@ -376,6 +377,9 @@ export class ConsolidatedSEOService {
         // Delegate to centralized SEO helper for fee-type landing pages
         // Accept both feeTypeSlug (from SSR params) and tagName (from PageSEO props)
         return getFeeTypeSeo(params.feeTypeSlug || params.tagName || '');
+
+      case 'us-tax-guide':
+        return getUSTaxGuideSeo();
 
       case 'managers-hub':
         return {
