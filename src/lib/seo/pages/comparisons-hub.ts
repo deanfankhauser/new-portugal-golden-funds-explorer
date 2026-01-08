@@ -16,7 +16,7 @@ export function getComparisonsHubSeo(): SEOData {
     description: optimizeDescription('Compare Portugal Golden Visa investment funds with 100+ side-by-side comparisons. Filter by strategy, fees, and terms to build your shortlist.'),
     url: URL_CONFIG.buildUrl('/comparisons'),
     canonical: URL_CONFIG.buildUrl('/comparisons'),
-    robots: 'index, follow',
+    robots: 'noindex, follow',
     keywords: [
       'Portugal Golden Visa fund comparisons',
       'compare Golden Visa funds',
