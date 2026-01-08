@@ -1,5 +1,5 @@
-import React from 'react';
-import { Fund } from '../../data/funds';
+import React, { useState, useEffect } from 'react';
+import { Fund } from '../../data/types/funds';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Info } from 'lucide-react';
 
@@ -8,10 +8,14 @@ interface EligibilityBasisInfoProps {
 }
 
 const EligibilityBasisInfo: React.FC<EligibilityBasisInfoProps> = ({ fund }) => {
-  const currentDate = new Date().toLocaleDateString('en-US', { 
-    month: 'long', 
-    year: 'numeric' 
-  });
+  const [currentDate, setCurrentDate] = useState('2025');
+
+  useEffect(() => {
+    setCurrentDate(new Date().toLocaleDateString('en-US', { 
+      month: 'long', 
+      year: 'numeric' 
+    }));
+  }, []);
 
   const formatBasisField = (value: any, label: string) => {
     if (value === 'Not provided' || value === undefined || value === null) {

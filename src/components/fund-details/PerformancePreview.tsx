@@ -1,5 +1,5 @@
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 
 interface PerformancePreviewProps {
   fund: Fund;
@@ -63,19 +63,32 @@ const PerformancePreview: React.FC<PerformancePreviewProps> = ({ fund }) => {
 
   if (!hasPerformance) return null;
 
+  const getValueClassName = (value: string) => {
+    if (value === '—') return 'text-muted-foreground';
+    return value.startsWith('+') ? 'text-green-600 dark:text-green-500' : 'text-red-600 dark:text-red-500';
+  };
+
   return (
-    <div className="text-sm space-y-1">
-      <div className="flex items-center justify-between">
-        <span className="text-muted-foreground">YTD</span>
-        <span className="font-semibold text-foreground">{ytd}</span>
-      </div>
-      <div className="flex items-center justify-between">
-        <span className="text-muted-foreground">1 Year</span>
-        <span className="font-semibold text-foreground">{oneYear}</span>
-      </div>
-      <div className="flex items-center justify-between">
-        <span className="text-muted-foreground">Since Inception</span>
-        <span className="font-semibold text-foreground">{sinceInception}</span>
+    <div className="bg-gradient-to-br from-green-500/5 to-green-500/[0.02] border border-green-500/15 rounded-xl p-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="flex flex-col gap-1.5">
+          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">YTD</div>
+          <div className={`text-sm font-bold tracking-tight ${getValueClassName(ytd)}`}>
+            {ytd}
+          </div>
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">1 Year</div>
+          <div className={`text-sm font-bold tracking-tight ${getValueClassName(oneYear)}`}>
+            {oneYear}
+          </div>
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Since Inception</div>
+          <div className={`text-sm font-bold tracking-tight ${getValueClassName(sinceInception)}`}>
+            {sinceInception}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -9,32 +9,30 @@ const __dirname = path.dirname(__filename);
 // Generate production sitemap immediately for deployment
 async function generateProductionSitemap() {
   try {
-    console.log('🗺️  Starting production sitemap generation...');
-    
-    // Use comprehensive sitemap service
-    const { ComprehensiveSitemapService } = await import('../src/services/comprehensiveSitemapService.js');
+    // Import the enhanced sitemap service
+    const { EnhancedSitemapService } = await import('../src/services/enhancedSitemapService.js');
     
     const publicDir = path.join(process.cwd(), 'public');
     
-    // Generate comprehensive sitemaps
-    const result = ComprehensiveSitemapService.generateSitemaps(publicDir);
+    // Generate enhanced sitemap
+    const enhancedSitemapXML = EnhancedSitemapService.generateEnhancedSitemapXML();
+    fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), enhancedSitemapXML);
+    
+    // Generate sitemap index
+    const sitemapIndex = EnhancedSitemapService.generateSitemapIndex();
+    fs.writeFileSync(path.join(publicDir, 'sitemap-index.xml'), sitemapIndex);
+    
+    // Update robots.txt
+    const robotsTxt = EnhancedSitemapService.generateRobotsTxt();
+    fs.writeFileSync(path.join(publicDir, 'robots.txt'), robotsTxt);
     
     console.log('✅ Production sitemap files generated successfully');
-    console.log(`   📊 Total URLs: ${result.totalURLs}`);
-    console.log(`   📁 Files: ${result.sitemapFiles.join(', ')}`);
-    console.log(`   🤖 Robots.txt: ${result.robotsTxtGenerated ? 'Generated' : 'Failed'}`);
-    
-    // Verify comprehensive coverage
-    if (result.totalURLs < 1000) {
-      console.warn(`⚠️  WARNING: Only ${result.totalURLs} URLs generated, expected 1500+`);
-      console.warn('⚠️  This indicates missing comparison, alternatives, or manager pages');
-    } else {
-      console.log(`✅ Comprehensive sitemap with ${result.totalURLs} URLs generated!`);
-    }
+    console.log('   - sitemap.xml');
+    console.log('   - sitemap-index.xml');
+    console.log('   - robots.txt updated');
     
   } catch (error) {
     console.error('❌ Failed to generate production sitemap:', error.message);
-    console.error(error);
     process.exit(1);
   }
 }

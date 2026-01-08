@@ -1,22 +1,9 @@
-
-import React, { useEffect } from 'react';
-import { Fund } from '../../data/funds';
+import React from 'react';
+import { Fund } from '../../data/types/funds';
 import { getFundType } from '../../utils/fundTypeUtils';
-import { FAQSchemaService } from '../../services/faqSchemaService';
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import UniversalFAQ, { FAQItem } from '@/components/ui/UniversalFAQ';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
-
-interface FAQItem {
-  question: string;
-  answer: string;
-}
 
 interface FundManagerFAQsProps {
   fund: Fund;
@@ -58,65 +45,30 @@ const FundManagerFAQs: React.FC<FundManagerFAQsProps> = ({ fund }) => {
 
   const faqs = generateFAQs(fund);
 
-  useEffect(() => {
-    // Register FAQs with unified schema service
-    const cleanup = FAQSchemaService.registerFAQs({
-      schemaId: `manager-faq-${fund.id}`,
-      faqs: faqs,
-      pageContext: `${fund.name} Fund by ${fund.managerName}`
-    });
-
-    return cleanup;
-  }, [faqs, fund.id, fund.name, fund.managerName]);
-
   return (
-    <Card className="border border-gray-100 shadow-sm" itemScope itemType="https://schema.org/FAQPage">
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-gray-900">
-            FAQs about {fund.name}
-          </h3>
-          <Link 
-            to={`/${fund.id}`}
-            className="text-primary hover:text-primary/80 transition-colors flex items-center gap-1 text-sm"
-          >
-            View full details
-            <ExternalLink className="w-3 h-3" />
-          </Link>
-        </div>
-
-        <Accordion type="single" collapsible className="w-full">
-          {faqs.map((faq, index) => (
-            <AccordionItem 
-              key={index} 
-              value={`item-${index}`}
-              itemScope 
-              itemType="https://schema.org/Question"
-            >
-              <AccordionTrigger 
-                className="text-left hover:no-underline py-3 text-sm"
-                itemProp="name"
-              >
-                <span className="font-medium text-gray-900">{faq.question}</span>
-              </AccordionTrigger>
-              <AccordionContent 
-                className="text-sm text-gray-700 leading-relaxed"
-                itemScope 
-                itemType="https://schema.org/Answer"
-              >
-                <div itemProp="text">{faq.answer}</div>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-
-        <div className="mt-6 p-4 bg-muted rounded-lg border border-border">
-          <p className="text-sm text-muted-foreground">
-            <strong>Need personalized information?</strong> Our team can help you determine if {fund.name} is right for your Golden Visa investment strategy.
-          </p>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8">
+        <h3 className="text-2xl font-semibold text-foreground">Frequently Asked Questions</h3>
+        <Link 
+          to={`/${fund.id}`}
+          className="text-sm text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+        >
+          View full details
+          <ExternalLink className="h-3 w-3" />
+        </Link>
+      </div>
+      
+      <UniversalFAQ 
+        faqs={faqs} 
+        schemaId="fund-manager-faq"
+        variant="compact"
+        skipStructuredData={true}
+      />
+      
+      <p className="text-sm text-muted-foreground text-center px-4 sm:px-6 lg:px-8">
+        Need more information? Contact our team for personalized assistance.
+      </p>
+    </div>
   );
 };
 

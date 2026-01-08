@@ -1,16 +1,20 @@
-import { ComprehensiveSitemapService } from '../../src/services/comprehensiveSitemapService';
+import { ComprehensiveSitemapService } from './services/comprehensiveSitemapService';
 import path from 'path';
+import { execSync } from 'child_process';
+import fs from 'fs';
 
 /**
  * Generate comprehensive sitemaps for the application
  * This replaces the existing problematic sitemap generation
+ * 
+ * NOTE: This is a BUILD-TIME ONLY script and uses Node.js modules (fs, path)
  */
-export function generateComprehensiveSitemaps(distDir: string): void {
-  console.log('🗺️  Starting comprehensive sitemap generation...');
+export async function generateComprehensiveSitemaps(distDir: string): Promise<void> {
+  console.log('🗺️  Starting comprehensive sitemap generation from database...');
   
   try {
-    // Generate sitemaps
-    const result = ComprehensiveSitemapService.generateSitemaps(distDir);
+    // Generate sitemaps (now async)
+    const result = await ComprehensiveSitemapService.generateSitemaps(distDir);
     
     console.log(`✅ Sitemap generation completed successfully!`);
     console.log(`   📊 Total URLs: ${result.totalURLs}`);
@@ -31,8 +35,6 @@ export function generateComprehensiveSitemaps(distDir: string): void {
     // Copy to public directory for preview/development
     try {
       const publicDir = path.join(process.cwd(), 'public');
-      const { execSync } = require('child_process');
-      const fs = require('fs');
       
       result.sitemapFiles.forEach(filename => {
         const src = path.join(distDir, filename);
@@ -66,7 +68,7 @@ export function generateComprehensiveSitemaps(distDir: string): void {
         const hasTags = content.includes('/tags/');
         if (!hasCategories || !hasTags) {
           console.warn('⚠️  Public sitemap missing categories/tags. Regenerating sitemap directly into /public...');
-          const direct = ComprehensiveSitemapService.generateSitemaps(publicDir);
+          const direct = await ComprehensiveSitemapService.generateSitemaps(publicDir);
           console.log(`✅ Regenerated ${direct.sitemapFiles.length} sitemap file(s) directly in /public with full categories/tags coverage`);
         }
       }

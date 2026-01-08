@@ -1,30 +1,13 @@
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { DollarSign, Users, Calendar, Clock, Lock, TrendingUp } from 'lucide-react';
+import { formatMinimumInvestment, formatFundSize } from '../../utils/currencyFormatters';
 
 interface KeyFactsChipsProps {
   fund: Fund;
 }
 
 const KeyFactsChips: React.FC<KeyFactsChipsProps> = ({ fund }) => {
-  const formatCurrency = (amount: number): string => {
-    if (amount >= 1000000) {
-      return `€${(amount / 1000000).toFixed(0)}m`;
-    }
-    if (amount >= 1000) {
-      return `€${(amount / 1000).toFixed(0)}k`;
-    }
-    return `€${amount}`;
-  };
-
-  const formatFundSize = (aum: number | undefined): string => {
-    if (!aum) return 'N/A';
-    if (aum >= 1000000) {
-      return `€${(aum / 1000000).toFixed(0)}m`;
-    }
-    return `€${(aum / 1000).toFixed(0)}k`;
-  };
-
   const isOpenToUS = fund.tags?.some(tag => 
     tag.toLowerCase().includes('us') && !tag.toLowerCase().includes('restrict')
   );
@@ -34,15 +17,15 @@ const KeyFactsChips: React.FC<KeyFactsChipsProps> = ({ fund }) => {
   const lockUpPeriod = fund.redemptionTerms?.minimumHoldingPeriod ? 
     `${fund.redemptionTerms.minimumHoldingPeriod}-month` : 
     (fund.term ? `${fund.term * 12}-month` : 'None');
-  const fundSize = formatFundSize(fund.fundSize);
+  const fundSizeDisplay = formatFundSize(fund.fundSize);
 
   const chips = [
-    { icon: DollarSign, label: `Min ${formatCurrency(fund.minimumInvestment)}` },
+    { icon: DollarSign, label: `Min ${formatMinimumInvestment(fund.minimumInvestment)}` },
     { icon: Users, label: isOpenToUS ? 'Open to US' : 'Not open to US' },
     { icon: Calendar, label: `${redemptionFrequency} redemptions` },
     { icon: Clock, label: `${noticePeriod} notice` },
     { icon: Lock, label: `${lockUpPeriod} lock-up` },
-    { icon: TrendingUp, label: `${fundSize} fund size` },
+    { icon: TrendingUp, label: `${fundSizeDisplay} fund size` },
   ];
 
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
 
 interface EligibilityBasisDisplayLineProps {

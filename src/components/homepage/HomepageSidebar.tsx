@@ -1,29 +1,37 @@
 
 import React from 'react';
-import CompactFilter from './CompactFilter';
-import { FundTag } from '../../data/funds';
+import StreamlinedFilter from './StreamlinedFilter';
+import CategoryFilter from './CategoryFilter';
+import { FundTag, FundCategory } from '../../data/types/funds';
 
 interface HomepageSidebarProps {
   selectedTags: FundTag[];
   setSelectedTags: (tags: FundTag[]) => void;
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
+  selectedCategory: FundCategory | null;
+  setSelectedCategory: (category: FundCategory | null) => void;
 }
 
 const HomepageSidebar: React.FC<HomepageSidebarProps> = ({
   selectedTags,
   setSelectedTags,
-  searchQuery,
-  setSearchQuery
+  selectedCategory,
+  setSelectedCategory
 }) => {
   return (
-    <aside className="lg:col-span-1 order-2 lg:order-1 hidden lg:block" aria-label="Sidebar tools">
-      <CompactFilter
-        selectedTags={selectedTags}
-        setSelectedTags={setSelectedTags}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
+    <aside className="lg:col-span-1 order-2 lg:order-1" aria-label="Sidebar tools">
+      <div className="lg:sticky lg:top-4 space-y-4 hidden md:block">
+        <div className="bg-card rounded-lg shadow-sm border p-4">
+          <CategoryFilter
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+        </div>
+        
+        <StreamlinedFilter
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+        />
+      </div>
     </aside>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
@@ -17,7 +17,6 @@ type ChartType = 'cumulative' | 'drawdown' | 'rolling' | 'heatmap';
 const PerformanceModule: React.FC<PerformanceModuleProps> = ({ fund }) => {
   const [selectedRange, setSelectedRange] = useState<TimeRange>('MAX');
   const [chartType, setChartType] = useState<ChartType>('cumulative');
-  const [benchmark, setBenchmark] = useState('3M EUR Cash');
 
   // Process historical performance data
   const processPerformanceData = (range: TimeRange) => {
@@ -56,21 +55,11 @@ const PerformanceModule: React.FC<PerformanceModuleProps> = ({ fund }) => {
         returns: data.returns,
         aum: data.aum,
         nav: data.nav,
-        benchmark: generateBenchmarkData(date), // Mock benchmark data
         formattedDate: new Date(date).toLocaleDateString('en-US', { 
           month: 'short', 
           year: '2-digit' 
         })
       }));
-  };
-
-  // Generate mock benchmark data
-  const generateBenchmarkData = (date: string) => {
-    // Simple 3M EUR cash rate simulation (around 3-4% annually)
-    const baseRate = 3.5;
-    const monthlyRate = baseRate / 12;
-    const daysSinceEpoch = new Date(date).getTime() / (1000 * 60 * 60 * 24);
-    return (daysSinceEpoch * monthlyRate / 30) % 100; // Simplified calculation
   };
 
   // Calculate drawdown data
@@ -129,7 +118,7 @@ const PerformanceModule: React.FC<PerformanceModuleProps> = ({ fund }) => {
           <div>
             <CardTitle>Performance Analysis</CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
-              Cumulative return (net of fees) vs benchmark
+              Cumulative return (net of fees)
             </p>
           </div>
           
@@ -147,22 +136,6 @@ const PerformanceModule: React.FC<PerformanceModuleProps> = ({ fund }) => {
               </Button>
             ))}
           </div>
-        </div>
-
-        {/* Benchmark Selector */}
-        <div className="flex items-center gap-4 pt-2">
-          <span className="text-sm text-muted-foreground">Benchmark:</span>
-          <Select value={benchmark} onValueChange={setBenchmark}>
-            <SelectTrigger className="w-[200px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="3M EUR Cash">3M EUR Cash</SelectItem>
-              <SelectItem value="MSCI Europe">MSCI Europe</SelectItem>
-              <SelectItem value="STOXX Europe 600">STOXX Europe 600</SelectItem>
-              <SelectItem value="Euro Gov Bonds">Euro Gov Bonds</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       </CardHeader>
 
@@ -205,16 +178,6 @@ const PerformanceModule: React.FC<PerformanceModuleProps> = ({ fund }) => {
                     fill="url(#returnsGradient)"
                     strokeWidth={2}
                     name="Fund Returns"
-                  />
-                  
-                  <Line
-                    type="monotone"
-                    dataKey="benchmark"
-                    stroke="hsl(var(--muted-foreground))"
-                    strokeWidth={1}
-                    strokeDasharray="5 5"
-                    dot={false}
-                    name={benchmark}
                   />
                 </ComposedChart>
               </ResponsiveContainer>

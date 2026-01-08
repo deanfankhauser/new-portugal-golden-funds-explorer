@@ -1,17 +1,17 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 const ROICalculatorHeader: React.FC = () => {
   return (
-    <div className="text-center mb-8">
-      <h1 className="text-4xl font-bold text-gray-900 mb-4">
-        Portugal Golden Visa Fund ROI Calculator
+    <div className="max-w-2xl mx-auto text-center mb-12">
+      <h1 className="text-3xl md:text-4xl font-semibold text-foreground tracking-tight mb-4">
+        Portugal Golden Visa ROI Calculator
       </h1>
-      <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-        Calculate potential returns on your Portuguese Golden Visa fund investment. 
-        Select a fund and adjust parameters to see projected returns over your investment timeline.
-        Browse our <Link to="/index" className="text-primary hover:underline">Portugal Golden Visa Investment Fund Index</Link> to compare all available options.
+      <p className="text-base text-muted-foreground leading-relaxed">
+        Estimate potential returns on Portugal Golden Visa investment funds. Select a fund, adjust parameters, and calculate projected ROI.{' '}
+        <Link to="/funds" className="text-primary hover:underline underline-offset-4">
+          Browse funds
+        </Link>
       </p>
     </div>
   );

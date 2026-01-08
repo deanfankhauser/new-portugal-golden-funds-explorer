@@ -1,32 +1,8 @@
+# Development robots.txt - Production version is generated at build time
+# This file ensures robots.txt is available in preview/development environments
 
 User-agent: *
 Allow: /
 
-# Enhanced crawling directives
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 2
-
-# Sitemap location
-Sitemap: https://funds.movingto.com/sitemap.xml
-
-# Disallow admin and auth pages only
-Disallow: /admin
-Disallow: /auth
-Disallow: /manager-auth
-Disallow: /investor-auth
-Disallow: /account-settings
-Disallow: /reset-password
-Disallow: /email-confirmation
-
-# Allow important pages
-Allow: /index
-Allow: /categories
-Allow: /tags
-Allow: /managers
-Allow: /comparisons
-Allow: /alternatives
+# Sitemap location (production)
+Sitemap: https://funds.movingto.com/sitemap-index.xml

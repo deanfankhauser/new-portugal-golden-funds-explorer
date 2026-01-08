@@ -1,23 +1,44 @@
 
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { getFundsByTag, getAllTags } from '../data/funds';
+import { useParams, Navigate } from 'react-router-dom';
+import NotFound from './NotFound';
+import { getFundsByTag } from '../data/services/tags-service';
+import { getAllTags } from '../data/services/tags-service';
+import { getAllCategories } from '../data/services/categories-service';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import TagBreadcrumbs from '../components/tag/TagBreadcrumbs';
-import TagPageHeader from '../components/tag/TagPageHeader';
-import TagPageFundSummary from '../components/tag/TagPageFundSummary';
+import TagThemeHero from '../components/tag/TagThemeHero';
 import TagPageFundList from '../components/tag/TagPageFundList';
 import TagPageEmptyState from '../components/tag/TagPageEmptyState';
 import TagPageFAQ from '../components/tag/TagPageFAQ';
 import RelatedTags from '../components/tag/RelatedTags';
 import { FundTag } from '../data/types/funds';
-import { slugToTag, tagToSlug } from '../lib/utils';
+import { slugToTag, tagToSlug, categoryToSlug, normalizeTagSlug } from '../lib/utils';
+import { FloatingActionButton } from '../components/common/FloatingActionButton';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
+import FundListSkeleton from '../components/common/FundListSkeleton';
+import { Fund } from '../data/types/funds';
 
-const TagPage = () => {
+interface TagPageProps {
+  tagData?: {
+    tagName: string;
+    tagSlug: string;
+    funds: Fund[];
+  };
+  initialFunds?: Fund[];
+}
+
+const TagPage: React.FC<TagPageProps> = ({ tagData: ssrData, initialFunds }) => {
   const { tag: tagSlug } = useParams<{ tag: string }>();
-  const allTags = getAllTags();
+  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds({
+    initialData: initialFunds || (ssrData ? ssrData.funds : undefined)
+  });
+  
+  // Use SSR data if available, otherwise fetch from hook
+  const allDatabaseFunds = ssrData ? ssrData.funds : (allFundsData || []);
+  const allTags = getAllTags(allDatabaseFunds);
   
   // Processing tag slug and available tags
   
@@ -26,16 +47,9 @@ const TagPage = () => {
   let displayTagName = '';
   
   if (tagSlug) {
-    // Strategy 1: Direct special case matching for management fees
-    if (tagSlug === '-15-management-fee' || tagSlug === '15-management-fee') {
-      matchingTag = allTags.find(tag => tag.includes('> 1.5% management')) || null;
-      // Special case match for > 1.5% management fee
-    } else if (tagSlug === '-1-management-fee' || tagSlug === '1-management-fee') {
-      matchingTag = allTags.find(tag => tag.includes('< 1% management')) || null;
-      // Special case match for < 1% management fee
-    } else if (tagSlug === '-1-1-5-management-fee' || tagSlug === '1-1-5-management-fee') {
-      matchingTag = allTags.find(tag => tag.includes('1-1.5% management')) || null;
-      // Special case match for 1-1.5% management fee
+    // Strategy 1: Direct special case matching for low fees tag
+    if (tagSlug === 'low-fees') {
+      matchingTag = allTags.find(tag => tag.includes('Low fees')) || null;
     }
     
     // Strategy 2: Exact slug match
@@ -61,13 +75,22 @@ const TagPage = () => {
       // Fuzzy match attempted
     }
     
+    // Strategy 5: Normalized slug matching (handle u-s vs us, u-k vs uk, etc.)
+    if (!matchingTag) {
+      const normalizedInputSlug = normalizeTagSlug(tagSlug);
+      matchingTag = allTags.find(tag => {
+        const normalizedTagSlug = normalizeTagSlug(tagToSlug(tag));
+        return normalizedTagSlug === normalizedInputSlug;
+      }) || null;
+    }
+    
     displayTagName = matchingTag || slugToTag(tagSlug);
     
     // Final matching results processed
   }
   
   const tagExists = !!matchingTag;
-  const funds = tagExists ? getFundsByTag(matchingTag as FundTag) : [];
+  const funds = tagExists ? getFundsByTag(allDatabaseFunds, matchingTag as FundTag) : [];
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -75,20 +98,36 @@ const TagPage = () => {
     // Final processing completed
   }, [tagSlug, matchingTag, displayTagName, tagExists]);
 
-  if (!tagExists) {
-    // Tag not found, showing empty state
+  // Show loading state only when no initial data provided
+  if (isLoading && !initialFunds && !ssrData) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <TagPageEmptyState tagName={displayTagName} />
+        <main className="flex-1 py-8">
+          <div className="container mx-auto px-4">
+            <FundListSkeleton count={6} />
+          </div>
         </main>
         <Footer />
       </div>
     );
   }
 
-  // Rendering tag page with SEO
+  // Check if this slug is actually a category (redirect to category page)
+  const allCategories = getAllCategories(allDatabaseFunds);
+  const matchingCategory = allCategories.find(cat => categoryToSlug(cat) === tagSlug);
+  
+  if (!tagExists && matchingCategory) {
+    // This slug is a category, not a tag - redirect to the category page
+    return <Navigate to={`/categories/${tagSlug}`} replace />;
+  }
+
+  // Show 404 for non-existent tags
+  if (!tagExists) {
+    return <NotFound />;
+  }
+
+  // Rendering standard tag page with SEO
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -98,22 +137,23 @@ const TagPage = () => {
       
       <main className="container mx-auto px-4 py-8 flex-1" itemScope itemType="https://schema.org/CollectionPage">
         <TagBreadcrumbs tagName={displayTagName} tagSlug={tagSlug || ''} />
-        <TagPageHeader tagName={displayTagName} />
+        <TagThemeHero tagName={displayTagName} funds={funds} />
         
         {funds.length > 0 ? (
           <>
-            <TagPageFundSummary count={funds.length} tagName={displayTagName} />
             <TagPageFundList funds={funds} />
           </>
         ) : (
-          <TagPageEmptyState tagName={displayTagName} />
+          <TagPageEmptyState tagName={displayTagName} allFunds={allDatabaseFunds} />
         )}
         
-        <TagPageFAQ tagName={displayTagName} tagSlug={tagSlug || ''} fundsCount={funds.length} />
+        <TagPageFAQ tagName={displayTagName} tagSlug={tagSlug || ''} fundsCount={funds.length} funds={funds} />
         <RelatedTags allTags={allTags} currentTag={displayTagName} />
       </main>
       
       <Footer />
+      
+      <FloatingActionButton />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import DecisionBandHeader from './DecisionBandHeader';
 import FundSnapshotCard from './FundSnapshotCard';
 import HistoricalPerformanceChart from './HistoricalPerformanceChart';
@@ -17,12 +17,17 @@ import RelatedFunds from './RelatedFunds';
 import FundComparisonSuggestions from './FundComparisonSuggestions';
 import { isFundGVEligible } from '../../data/services/gv-eligibility-service';
 import { Button } from '@/components/ui/button';
-import { Calculator, TrendingUp } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Calculator, TrendingUp, MessageSquare, Mail } from 'lucide-react';
 import { tagToSlug } from '@/lib/utils';
+import { FundEnquiryModal } from './FundEnquiryModal';
+import ContradictionWarningBanner from './ContradictionWarningBanner';
+import { useFundContradictions } from '@/hooks/useFundContradictions';
+import { useFundEditing } from '@/hooks/useFundEditing';
 
 import FundBreadcrumbs from './FundBreadcrumbs';
-import { FundEditButton } from '../fund-editing/FundEditButton';
-import FundSideNavigation from './FundSideNavigation';
+import TechnicalSummaryBar from './TechnicalSummaryBar';
+
 
 // Import tab components directly
 import FundDescription from './FundDescription';
@@ -36,175 +41,200 @@ import RedemptionTerms from './RedemptionTerms';
 import RegulatoryComplianceInfo from './RegulatoryComplianceInfo';
 import TeamSection from './TeamSection';
 import { formatPercentage } from './utils/formatters';
+import { FundEnquirySection } from './FundEnquirySection';
+import ContactSidebar from './ContactSidebar';
+import FundSocialMediaSection from './FundSocialMediaSection';
+import FundVideoSection from './FundVideoSection';
+import FundNewsSection from './FundNewsSection';
+import { useCompanyProfile, getCompanySocialMedia } from '@/hooks/useCompanyProfile';
+
+interface TeamMemberSSR {
+  id: string;
+  slug: string;
+  name: string;
+  role: string;
+  profile_id: string;
+  linkedin_url?: string;
+  photo_url?: string;
+  bio?: string;
+  company_name?: string;
+}
 
 interface FundDetailsContentProps {
   fund: Fund;
+  initialFunds?: Fund[]; // For SSR internal linking
+  initialTeamMembers?: TeamMemberSSR[]; // For SSR team member links
 }
 
-const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund }) => {
+const FundDetailsContent: React.FC<FundDetailsContentProps> = ({ fund, initialFunds, initialTeamMembers }) => {
   const isGVEligible = isFundGVEligible(fund);
   
-  // Filter out "Golden Visa Eligible" tag for non-GV funds
+  // Fetch company profile to get social media
+  const { data: companyProfile } = useCompanyProfile(fund.managerName);
+  const companySocialMedia = getCompanySocialMedia(companyProfile);
+  
+  // Check if user has edit access to show contradiction warnings
+  const { user, canEditFund } = useFundEditing();
+  const [hasEditAccess, setHasEditAccess] = React.useState(false);
+  
+  React.useEffect(() => {
+    if (user) {
+      canEditFund(fund.id).then(setHasEditAccess);
+    }
+  }, [user, fund.id, canEditFund]);
+  
+  // Contradiction detection for admin/manager users
+  const contradictionResult = useFundContradictions(fund);
+  
+  // Filter out "Golden Visa Eligible" tag for non-GV-intended funds (display will show compliance-safe label)
   const displayTags = fund.tags.filter(tag => 
-    tag !== 'Golden Visa Eligible' || isGVEligible
+    tag !== 'Golden Visa Eligible' || (isGVEligible && fund.isVerified)
   );
   return (
     <>
       {/* Sticky Navigation */}
       <StickyNavigation fund={fund} />
       
-      <div className="space-y-8">
+      <div className="space-y-6 md:space-y-8">
+        {/* Contradiction Warning Banner - Only visible to admins/managers */}
+        {hasEditAccess && contradictionResult.hasContradictions && (
+          <ContradictionWarningBanner result={contradictionResult} />
+        )}
+        
         {/* Breadcrumbs */}
         <FundBreadcrumbs fund={fund} />
-
-        {/* Two Column Layout */}
-        <div className="grid lg:grid-cols-[1fr_400px] gap-8 items-start">
-          {/* Left: Main Header */}
-          <DecisionBandHeader fund={fund} />
-          
-          {/* Right: Snapshot Card */}
-          <div className="lg:sticky lg:top-24">
-            <FundSnapshotCard fund={fund} />
-          </div>
+        
+        {/* Header - Full Width */}
+        <DecisionBandHeader fund={fund} />
+        
+        {/* Technical Summary Bar - Institutional Data Standard */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <TechnicalSummaryBar fund={fund} variant="full" />
         </div>
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 md:gap-8">
+          {/* Left Column - Main Content */}
+          <div className="space-y-6 md:space-y-8">
+            <FundSnapshotCard fund={fund} />
         
-        {/* Historical Performance Chart - Full Width */}
-        <HistoricalPerformanceChart historicalPerformance={fund.historicalPerformance} />
-        
-        {/* Just Below the Fold - Trust + Practicality */}
-        <TrustPracticalityCards fund={fund} />
-        
-        {/* Main Content Layout with Side Navigation */}
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-          {/* Side Navigation */}
-          <div className="xl:block">
-            <FundSideNavigation />
+            <HistoricalPerformanceChart historicalPerformance={fund.historicalPerformance} />
+            
+            {/* Main Content Card - Full Width */}
+            <div className="bg-card rounded-xl md:rounded-2xl shadow-md border border-border overflow-hidden transition-shadow duration-300 hover:shadow-lg">
+                  <div className="p-4 md:p-6 lg:p-10 space-y-6 md:space-y-8 lg:space-y-12">
+                    
+                    {/* Fund Overview Section */}
+                    <section id="fund-overview" className="scroll-mt-28 md:scroll-mt-24">
+                      <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Fund Overview</h2>
+                      <div className="space-y-4 md:space-y-6">
+                        <FundDescription description={fund.detailedDescription} />
+                        <RegulatoryIdentifiers fund={fund} />
+                        <FundManager managerName={fund.managerName} />
+                      </div>
+                    </section>
+
+                    {/* Key Terms Section */}
+                    <section id="key-terms-strategy" className="scroll-mt-28 md:scroll-mt-24">
+                      <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Key Terms</h2>
+                      <KeyTermsTable fund={fund} />
+                    </section>
+
+
+                    {/* Financial Details Section */}
+                    <section id="financial-details" className="scroll-mt-28 md:scroll-mt-24">
+                      <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Financial Details</h2>
+                      <div className="space-y-6 md:space-y-8">
+                        <FeeStructure fund={fund} formatPercentage={formatPercentage} />
+                        <GeographicAllocation allocations={fund.geographicAllocation} formatPercentage={formatPercentage} />
+                        <RedemptionTerms redemptionTerms={fund.redemptionTerms} />
+                      </div>
+                    </section>
+
+                    {/* Fund Structure Section */}
+                    <section id="fund-structure" className="scroll-mt-28 md:scroll-mt-24">
+                      <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Fund Structure</h2>
+                      <div className="space-y-4 md:space-y-6">
+                        <FundCategory category={fund.category} />
+                        <RegulatoryComplianceInfo fund={fund} />
+                      </div>
+                    </section>
+
+                    {/* Team Information Section */}
+                    <section id="team-information" className="scroll-mt-28 md:scroll-mt-24">
+                      <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">Team Information</h2>
+                      <TeamSection team={fund.team} managerName={fund.managerName} initialTeamMembers={initialTeamMembers} />
+                    </section>
+
+                    {/* Social Media Section - inherits from company profile with fund override */}
+                    <FundSocialMediaSection
+                      youtubeUrl={fund.youtubeUrl}
+                      instagramUrl={fund.instagramUrl}
+                      tiktokUrl={fund.tiktokUrl}
+                      facebookUrl={fund.facebookUrl}
+                      twitterUrl={fund.twitterUrl}
+                      linkedinUrl={fund.linkedinUrl}
+                      companySocialMedia={companySocialMedia}
+                    />
+
+                    {/* Featured Video Section */}
+                    <FundVideoSection videoUrl={fund.youtubeVideoUrl} />
+
+                    {/* News RSS Feed Section */}
+                    <FundNewsSection rssFeedUrl={fund.newsRssFeedUrl} />
+
+                    {/* Enquiry Form Section */}
+                    <section id="contact-fund" className="scroll-mt-28 md:scroll-mt-24">
+                      <FundEnquirySection fund={fund} />
+                    </section>
+                    
+                    {/* PREMIUM CTA DISABLED - Uncomment to re-enable */}
+                    {/* <PremiumCTA variant="full" location={`fund-details-${fund.id}`} /> */}
+                    
+                    {/* Legal and Administrative - Bottom */}
+                    <InvestorNotice />
+                    
+                    {/* Tags Section - Bottom */}
+                    <div className="border-t border-border pt-6">
+                      <h3 className="text-lg font-semibold mb-4 text-foreground">Fund Tags</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {displayTags.map(tag => (
+                          <Button
+                            key={tag}
+                            variant="outline"
+                            size="sm"
+                            className="rounded-full"
+                            asChild
+                          >
+                            <Link to={`/tags/${tagToSlug(tag)}`}>
+                              {tag}
+                            </Link>
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
           </div>
           
-          {/* Main Content Area */}
-          <div className="xl:col-span-3">
-            <div className="bg-card rounded-xl md:rounded-2xl shadow-md border border-border overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-              <div className="p-4 md:p-6 lg:p-10 space-y-8 md:space-y-12">
-                
-                {/* Fund Overview Section */}
-                <section id="fund-overview" className="scroll-mt-24">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">
-                    About {fund.name}
-                  </h2>
-                  <div className="space-y-6">
-                    <FundDescription description={fund.detailedDescription} />
-                    <RegulatoryIdentifiers fund={fund} />
-                    <FundManager managerName={fund.managerName} />
-                  </div>
-                </section>
-
-                {/* Key Terms Section */}
-                <section id="key-terms-strategy" className="scroll-mt-24">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">
-                    Investment Terms & Strategy
-                  </h2>
-                  <KeyTermsTable fund={fund} />
-                </section>
-
-
-                {/* Financial Details Section */}
-                <section id="financial-details" className="scroll-mt-24">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">
-                    Fees, Returns & Geographic Allocation
-                  </h2>
-                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                    <div className="space-y-6">
-                      <FeeStructure fund={fund} formatPercentage={formatPercentage} />
-                      <RedemptionTerms redemptionTerms={fund.redemptionTerms} />
-                    </div>
-                    <div className="space-y-6">
-                      <GeographicAllocation allocations={fund.geographicAllocation} formatPercentage={formatPercentage} />
-                    </div>
-                  </div>
-                </section>
-
-                {/* Fund Structure Section */}
-                <section id="fund-structure" className="scroll-mt-24">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">
-                    Legal Structure & Regulatory Compliance
-                  </h2>
-                  <div className="space-y-6">
-                    <FundCategory category={fund.category} />
-                    <RegulatoryComplianceInfo fund={fund} />
-                  </div>
-                </section>
-
-                {/* Team Information Section */}
-                <section id="team-information" className="scroll-mt-24">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 border-b border-border pb-3">
-                    Fund Management Team
-                  </h2>
-                  <TeamSection team={fund.team} />
-                </section>
-
-
-                {/* CTA Section */}
-                <div className="bg-gradient-to-r from-success/10 to-success/5 p-4 md:p-6 rounded-lg border border-success/30">
-                  <div className="text-center">
-                    <h3 className="font-semibold text-foreground mb-2 text-sm md:text-base">Want to calculate your potential returns?</h3>
-                    <p className="text-xs md:text-sm text-muted-foreground mb-4">Use our ROI calculator to estimate potential returns based on historical performance</p>
-                    <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                      <Button asChild className="bg-success hover:bg-success/90 text-success-foreground">
-                        <Link to="/roi-calculator">
-                          <Calculator className="mr-2 h-4 w-4" />
-                          Calculate Returns
-                        </Link>
-                      </Button>
-                      <Button asChild variant="outline" className="border-success text-success hover:bg-success/10">
-                        <Link to="/index">
-                          <TrendingUp className="mr-2 h-4 w-4" />
-                          View Fund Index
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-                
-                <PremiumCTA variant="full" location={`fund-details-${fund.id}`} />
-                
-                {/* Legal and Administrative - Bottom */}
-                <InvestorNotice />
-                
-                {/* Tags Section - Bottom */}
-                <div className="border-t border-border pt-6">
-                  <h3 className="text-lg font-semibold mb-4 text-foreground">Fund Tags</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {displayTags.map(tag => (
-                      <Link 
-                        key={tag} 
-                        to={`/tags/${tagToSlug(tag)}`}
-                        className="bg-card hover:bg-primary hover:text-primary-foreground text-primary border border-primary px-2 py-1 md:px-3 md:py-1 rounded-full transition-all duration-300 shadow-sm text-xs md:text-sm font-medium"
-                      >
-                        {tag}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Right Column - Contact Sidebar (Desktop Only) */}
+          <ContactSidebar fund={fund} />
         </div>
       </div>
       
+      {/* ROI Calculator - Below Main Content */}
+      <div className="mt-8 md:mt-12">
+        <ROICalculator fund={fund} />
+      </div>
       
       {/* Bottom Sections with Proper Spacing */}
-      <div className="space-y-8 md:space-y-12">
+      <div className="space-y-8 md:space-y-12 mt-8 md:mt-12">
         {/* Related Funds Section */}
-        <RelatedFunds currentFund={fund} />
+        <RelatedFunds currentFund={fund} initialFunds={initialFunds} />
         
         {/* Alternative Funds Section */}
-        <AlternativeFunds currentFund={fund} />
+        <AlternativeFunds currentFund={fund} initialFunds={initialFunds} />
         
         {/* Fund Comparison Suggestions */}
-        <FundComparisonSuggestions currentFund={fund} />
-        
-        {/* ROI Calculator */}
-        <ROICalculator fund={fund} />
+        <FundComparisonSuggestions currentFund={fund} initialFunds={initialFunds} />
         
         {/* FAQ Section */}
         <FundFAQSection fund={fund} />

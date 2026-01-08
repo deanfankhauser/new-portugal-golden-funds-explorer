@@ -9,7 +9,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Home, ChevronRight } from 'lucide-react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { URL_CONFIG } from '../../utils/urlConfig';
 
 interface FundBreadcrumbsProps {
@@ -20,7 +20,7 @@ const FundBreadcrumbs: React.FC<FundBreadcrumbsProps> = ({ fund }) => {
   // Get primary category from fund tags
   const getPrimaryCategory = (fund: Fund) => {
     const categoryTags = fund.tags.filter(tag => 
-      ['Real Estate', 'Tech', 'Healthcare', 'Energy', 'Infrastructure', 'Tourism'].includes(tag)
+      ['Tech', 'Healthcare & life sciences', 'Energy', 'Infrastructure', 'Tourism'].includes(tag)
     );
     return categoryTags[0] || null;
   };
@@ -45,7 +45,7 @@ const FundBreadcrumbs: React.FC<FundBreadcrumbsProps> = ({ fund }) => {
         
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link to="/index">Fund Index</Link>
+            <Link to="/">Browse Funds</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
 

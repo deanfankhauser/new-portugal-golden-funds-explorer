@@ -1,20 +1,25 @@
-
 import React, { useState, useEffect } from 'react';
 import { Fund } from '../../data/types/funds';
 import { useRealTimeFunds } from '../../hooks/useRealTimeFunds';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calculator, AlertTriangle, TrendingUp } from 'lucide-react';
+import { Switch } from "@/components/ui/switch";
 import { getReturnTargetNumbers, getReturnTargetDisplay } from '../../utils/returnTarget';
+import { calculateROIWithFees } from '../../utils/roiCalculator';
 
 interface ROICalculatorFormProps {
   onResultsCalculated: (results: {
-    totalValue: number;
-    totalReturn: number;
-    annualizedReturn: number;
+    grossTotalValue: number;
+    grossTotalReturn: number;
+    grossAnnualizedReturn: number;
+    netTotalValue: number;
+    netTotalReturn: number;
+    netAnnualizedReturn: number;
+    totalFeesPaid: number;
+    managementFeesPaid: number;
+    performanceFeesPaid: number;
   }) => void;
   selectedFund: Fund | null;
   setSelectedFund: (fund: Fund | null) => void;
@@ -26,58 +31,63 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
   setSelectedFund
 }) => {
   const { funds } = useRealTimeFunds();
-  const [investmentAmount, setInvestmentAmount] = useState<number>(350000);
+  const [investmentAmount, setInvestmentAmount] = useState<number | null>(null);
   const [holdingPeriod, setHoldingPeriod] = useState<number>(5);
   const [expectedReturn, setExpectedReturn] = useState<number>(0);
+  const [showNetReturns, setShowNetReturns] = useState<boolean>(true);
+
+  // Check if fund has incomplete data
+  const hasIncompleteReturnData = selectedFund && expectedReturn === 0;
+  const hasIncompleteFeeData = selectedFund && 
+    (selectedFund.managementFee === 0 || selectedFund.managementFee === null || selectedFund.managementFee === undefined) && 
+    (selectedFund.performanceFee === 0 || selectedFund.performanceFee === null || selectedFund.performanceFee === undefined);
+  const hasMissingHurdleRate = selectedFund && 
+    selectedFund.performanceFee && selectedFund.performanceFee > 0 && 
+    (!selectedFund.hurdleRate || selectedFund.hurdleRate === 0);
+
+  const hasDataWarnings = hasIncompleteReturnData || hasIncompleteFeeData || hasMissingHurdleRate;
 
   // Enhanced function to extract return rate using utility
   const extractReturnRate = (fund: Fund): number => {
     const { min, max } = getReturnTargetNumbers(fund);
     
     if (min != null && max != null) {
-      const rate = (min + max) / 2;
-      console.log('ROI Form - Using return target average:', rate);
-      return rate;
+      return (min + max) / 2;
     }
     
-    if (min != null) {
-      console.log('ROI Form - Using return target min:', min);
-      return min;
-    }
+    if (min != null) return min;
+    if (max != null) return max;
     
-    if (max != null) {
-      console.log('ROI Form - Using return target max:', max);
-      return max;
-    }
-    
-    console.log('ROI Form - No parseable return found for fund, using default 8%');
-    return 8;
+    return 0;
   };
 
   // Update expected return and investment amount when selected fund changes
   useEffect(() => {
     if (selectedFund) {
       setExpectedReturn(extractReturnRate(selectedFund));
-      setInvestmentAmount(selectedFund.minimumInvestment);
+      setInvestmentAmount(selectedFund.minimumInvestment || null);
+    } else {
+      setInvestmentAmount(null);
+      setExpectedReturn(0);
     }
   }, [selectedFund]);
 
   const calculateROI = () => {
-    if (investmentAmount <= 0 || holdingPeriod <= 0 || expectedReturn < 0) {
+    if (!investmentAmount || investmentAmount <= 0 || holdingPeriod <= 0 || expectedReturn < 0) {
       return;
     }
 
-    const annualReturnRate = expectedReturn / 100;
-    const totalValue = investmentAmount * Math.pow(1 + annualReturnRate, holdingPeriod);
-    const totalReturn = totalValue - investmentAmount;
-    const annualizedReturn = ((totalValue / investmentAmount) ** (1 / holdingPeriod) - 1) * 100;
+    const results = calculateROIWithFees(
+      investmentAmount,
+      holdingPeriod,
+      expectedReturn,
+      selectedFund
+    );
 
-    onResultsCalculated({
-      totalValue,
-      totalReturn,
-      annualizedReturn
-    });
+    onResultsCalculated(results);
   };
+
+  const canCalculate = investmentAmount && investmentAmount > 0 && holdingPeriod > 0 && expectedReturn > 0;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -89,60 +99,82 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
   };
 
   return (
-    <Card className="bg-card border border-border shadow-sm">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-2xl">
-          <Calculator className="w-6 h-6 text-primary" />
-          Investment Calculator
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Fund Selection */}
-        <div className="space-y-2">
-          <Label htmlFor="fund-select">Select Fund</Label>
-          <Select onValueChange={(value) => {
-            const fund = funds.find(f => f.id === value);
-            setSelectedFund(fund || null);
-          }}>
-            <SelectTrigger>
-              <SelectValue placeholder="Choose a Golden Visa fund..." />
-            </SelectTrigger>
-            <SelectContent>
-              {funds.map((fund) => (
-                <SelectItem key={fund.id} value={fund.id}>
-                  {fund.name} - {getReturnTargetDisplay(fund)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {selectedFund && (
-            <p className="text-sm text-muted-foreground">
-              Selected: {selectedFund.name} | Min Investment: {formatCurrency(selectedFund.minimumInvestment)}
-            </p>
-          )}
-        </div>
+    <div className="space-y-8">
+      {/* Fund Selection */}
+      <div className="space-y-3">
+        <Label htmlFor="fund-select" className="text-sm font-medium text-foreground">
+          Select a fund
+        </Label>
+        <Select onValueChange={(value) => {
+          const fund = funds.find(f => f.id === value);
+          setSelectedFund(fund || null);
+        }}>
+          <SelectTrigger className="h-12 text-base">
+            <SelectValue placeholder="Choose a fund to calculate returns..." />
+          </SelectTrigger>
+          <SelectContent>
+            {funds.map((fund) => (
+              <SelectItem key={fund.id} value={fund.id}>
+                {fund.name}{getReturnTargetDisplay(fund) ? ` · ${getReturnTargetDisplay(fund)}` : ''}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
-        {selectedFund && (
-          <>
-            {/* Input Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="investment-amount">Investment Amount (€)</Label>
+      {selectedFund && (
+        <>
+          {/* Data Quality Notice */}
+          {hasDataWarnings && (
+            <div className="rounded-lg border border-border bg-muted/30 p-4">
+              <p className="text-sm font-medium text-foreground mb-2">Incomplete data</p>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                {hasIncompleteReturnData && (
+                  <li>• No expected return target — enter a manual estimate below</li>
+                )}
+                {hasIncompleteFeeData && (
+                  <li>• Fee data may be incomplete — actual fees may differ</li>
+                )}
+                {hasMissingHurdleRate && (
+                  <li>• Hurdle rate not specified — performance fees calculated on all gains</li>
+                )}
+              </ul>
+            </div>
+          )}
+
+          {/* Input Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="investment-amount" className="text-sm font-medium text-foreground">
+                Investment amount
+              </Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
                 <Input
                   id="investment-amount"
                   type="number"
-                  value={investmentAmount}
-                  onChange={(e) => setInvestmentAmount(Number(e.target.value))}
-                  min={selectedFund.minimumInvestment}
+                  value={investmentAmount ?? ''}
+                  onChange={(e) => setInvestmentAmount(e.target.value ? Number(e.target.value) : null)}
+                  min={selectedFund.minimumInvestment || 0}
                   step="1000"
+                  placeholder="500,000"
+                  className="pl-8 h-11"
                 />
-                <p className="text-xs text-muted-foreground">
-                  Minimum: {formatCurrency(selectedFund.minimumInvestment)}
-                </p>
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="holding-period">Holding Period (years)</Label>
+              {selectedFund.minimumInvestment ? (
+                <p className="text-xs text-muted-foreground">
+                  Min: {formatCurrency(selectedFund.minimumInvestment)}
+                </p>
+              ) : (
+                <p className="text-xs text-muted-foreground">Minimum not specified</p>
+              )}
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="holding-period" className="text-sm font-medium text-foreground">
+                Holding period
+              </Label>
+              <div className="relative">
                 <Input
                   id="holding-period"
                   type="number"
@@ -151,11 +183,17 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
                   min="1"
                   max="30"
                   step="1"
+                  className="h-11 pr-14"
                 />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">years</span>
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="expected-return">Expected Annual Return (%)</Label>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="expected-return" className="text-sm font-medium text-foreground">
+                Expected annual return
+              </Label>
+              <div className="relative">
                 <Input
                   id="expected-return"
                   type="number"
@@ -164,64 +202,91 @@ const ROICalculatorForm: React.FC<ROICalculatorFormProps> = ({
                   min="0"
                   max="50"
                   step="0.1"
+                  className="h-11 pr-8"
                 />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span>
+              </div>
+              {getReturnTargetDisplay(selectedFund) && (
                 <p className="text-xs text-muted-foreground">
                   Fund target: {getReturnTargetDisplay(selectedFund)}
                 </p>
-              </div>
+              )}
             </div>
-
-            {/* Calculate Button */}
-            <Button 
-              onClick={calculateROI}
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-            >
-              <TrendingUp className="w-4 h-4 mr-2" />
-              Calculate ROI
-            </Button>
-
-            {/* Fund Information Card */}
-            <Card className="bg-secondary border-border">
-              <CardContent className="pt-4">
-                <h3 className="font-semibold text-foreground mb-2">{selectedFund.name}</h3>
-                <p className="text-sm text-muted-foreground mb-2">{selectedFund.description}</p>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="font-medium">Fund Size:</span> €{selectedFund.fundSize}M
-                  </div>
-                  <div>
-                    <span className="font-medium">Management Fee:</span> {selectedFund.managementFee}%
-                  </div>
-                  <div>
-                    <span className="font-medium">Term:</span> {selectedFund.term} years
-                  </div>
-                  <div>
-                    <span className="font-medium">Manager:</span> {selectedFund.managerName}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </>
-        )}
-
-        {/* Legal Disclaimer */}
-        <div className="bg-warning/10 border border-warning/20 rounded-lg p-4 flex items-start space-x-3">
-          <AlertTriangle className="text-warning w-5 h-5 mt-0.5 flex-shrink-0" />
-          <div className="text-sm text-warning-foreground">
-            <h4 className="font-medium mb-2">Important Legal Disclaimer</h4>
-            <p className="leading-relaxed">
-              This calculator is for illustrative purposes only and does not constitute investment guidance. 
-              Actual returns may vary significantly and are not guaranteed. Past performance does not 
-              predict future results. Investment in funds involves risk, including the possible loss of 
-              principal. Please consult with qualified financial guidance professionals before making investment decisions.
-              The expected returns shown are targets only and may not be achieved. This tool is designed 
-              to help you understand potential scenarios but should not be the sole basis for investment 
-              decisions related to the Portuguese Golden Visa program.
-            </p>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+
+          {/* Net Returns Toggle */}
+          <div className="flex items-center justify-between py-4 border-y border-border">
+            <div>
+              <p className="text-sm font-medium text-foreground">Calculate net returns</p>
+              <p className="text-sm text-muted-foreground">Deduct management and performance fees from projections</p>
+            </div>
+            <Switch
+              id="show-net-returns"
+              checked={showNetReturns}
+              onCheckedChange={setShowNetReturns}
+            />
+          </div>
+
+          {/* Fund Details */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Category</p>
+              <p className="text-sm font-medium text-foreground">{selectedFund.category || 'N/A'}</p>
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Management fee</p>
+              <p className="text-sm font-medium text-foreground">
+                {selectedFund.managementFee != null ? `${selectedFund.managementFee}% p.a.` : 'N/A'}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Performance fee</p>
+              <p className="text-sm font-medium text-foreground">
+                {selectedFund.performanceFee != null ? `${selectedFund.performanceFee}%` : 'N/A'}
+              </p>
+            </div>
+            {selectedFund.hurdleRate != null && selectedFund.hurdleRate > 0 ? (
+              <div>
+                <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Hurdle rate</p>
+                <p className="text-sm font-medium text-foreground">{selectedFund.hurdleRate}%</p>
+              </div>
+            ) : (
+              <div>
+                <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Manager</p>
+                <p className="text-sm font-medium text-foreground">{selectedFund.managerName || 'N/A'}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Calculate Button */}
+          <Button 
+            onClick={calculateROI}
+            className="w-full h-12 text-base font-medium"
+            disabled={!canCalculate}
+          >
+            {canCalculate ? 'Calculate projection' : 'Enter valid data to calculate'}
+          </Button>
+
+          {selectedFund.updatedAt && (
+            <p className="text-xs text-muted-foreground text-center">
+              Fund data last updated {new Date(selectedFund.updatedAt).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
+            </p>
+          )}
+        </>
+      )}
+
+      {/* Legal Disclaimer */}
+      <div className="rounded-lg border border-border bg-muted/20 p-5">
+        <p className="text-xs font-medium text-foreground mb-2">Important disclaimer</p>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          This calculator is for illustrative purposes only and does not constitute investment advice. 
+          Actual returns may vary significantly and are not guaranteed. Past performance does not 
+          predict future results. Investment in funds involves risk, including the possible loss of 
+          principal. The expected returns shown are targets only and may not be achieved. Fee calculations 
+          are estimates based on current fund fee structures.
+        </p>
+      </div>
+    </div>
   );
 };
 

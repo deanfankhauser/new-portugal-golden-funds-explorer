@@ -16,6 +16,10 @@ const TagBreadcrumbs = ({ tagName, tagSlug }: TagBreadcrumbsProps) => {
         </li>
         <li className="mx-2">/</li>
         <li>
+          <Link to="/" className="hover:text-primary">Funds</Link>
+        </li>
+        <li className="mx-2">/</li>
+        <li>
           <Link to="/tags" className="hover:text-primary">Tags</Link>
         </li>
         <li className="mx-2">/</li>

@@ -33,7 +33,8 @@ export class EnhancedSEOValidationService {
     const preloadValidation = this.validatePreloadDirectives();
     
     // Dev-only: Check for multiple FAQ schemas
-    if (import.meta.env.DEV) {
+    const isDev = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false;
+    if (isDev) {
       const faqSchemas = document.querySelectorAll('script[type="application/ld+json"]');
       const faqCount = Array.from(faqSchemas).filter(script => {
         try {
@@ -108,7 +109,7 @@ export class EnhancedSEOValidationService {
     return Array.from(new Set(duplicates));
   }
 
-  // Enhanced image validation
+  // Enhanced image validation - optimized to avoid forced reflows
   private static validateImagesEnhanced(): {
     missingAltImages: HTMLImageElement[];
     nonOptimizedImages: HTMLImageElement[];
@@ -117,14 +118,21 @@ export class EnhancedSEOValidationService {
     const missingAltImages: HTMLImageElement[] = [];
     const nonOptimizedImages: HTMLImageElement[] = [];
 
+    // Batch all DOM reads together to avoid forced reflows
     images.forEach((img) => {
+      // Only read attributes, don't trigger layout
+      const hasAlt = img.hasAttribute('alt');
+      const altText = hasAlt ? img.getAttribute('alt') : null;
+      const hasOptimized = img.hasAttribute('data-optimized');
+      const hasLoading = img.hasAttribute('loading');
+
       // Check for missing alt text
-      if (!img.alt || img.alt.trim().length === 0) {
+      if (!altText || altText.trim().length === 0) {
         missingAltImages.push(img);
       }
 
-      // Check if using OptimizedImage component (has data-optimized attribute)
-      if (!img.hasAttribute('data-optimized') && !img.loading) {
+      // Check if using OptimizedImage component
+      if (!hasOptimized && !hasLoading) {
         nonOptimizedImages.push(img);
       }
     });
@@ -171,64 +179,36 @@ export class EnhancedSEOValidationService {
 
   // Auto-fix common SEO issues
   static autoFixSEOIssues(): void {
-    try {
-      const validation = this.validatePageSEO();
+    const validation = this.validatePageSEO();
 
-      // Fix missing alt text with generic descriptions (only for decorative images)
-      validation.missingAltImages.forEach((img, index) => {
-        if (!img.alt && img.getAttribute('data-decorative') !== 'false') {
-          // Check if it's a logo or icon
-          const src = img.src?.toLowerCase() || '';
-          if (src.includes('logo') || src.includes('icon')) {
-            img.alt = 'Logo';
-          } else {
-            img.alt = `Image ${index + 1}`;
-          }
-        }
-      });
-
-      // Remove duplicate meta tags (keep the first occurrence)
-      // Be careful not to remove managed tags
-      validation.duplicateMetaTags.forEach(tagName => {
-        const duplicates = document.querySelectorAll(`meta[name="${tagName}"], meta[property="${tagName}"]`);
-        // Skip if only one or if it's a managed tag
-        if (duplicates.length <= 1) return;
-
-        for (let i = 1; i < duplicates.length; i++) {
-          // Don't remove if it has specific attributes that might be important
-          const meta = duplicates[i] as HTMLMetaElement;
-          if (!meta.hasAttribute('data-managed') && !meta.hasAttribute('data-react-helmet')) {
-            duplicates[i].remove();
-          }
-        }
-      });
-
-      // Add missing preconnect for common domains (only if not in SSR)
-      if (typeof window !== 'undefined' && document.fonts) {
-        const commonDomains = ['fonts.googleapis.com', 'fonts.gstatic.com'];
-        const existingPreconnects = Array.from(document.querySelectorAll('link[rel="preconnect"]'))
-          .map(link => {
-            try {
-              return new URL(link.getAttribute('href') || '').hostname;
-            } catch {
-              return '';
-            }
-          })
-          .filter(Boolean);
-
-        commonDomains.forEach(domain => {
-          if (!existingPreconnects.includes(domain)) {
-            const preconnect = document.createElement('link');
-            preconnect.rel = 'preconnect';
-            preconnect.href = `https://${domain}`;
-            preconnect.crossOrigin = 'anonymous';
-            document.head.appendChild(preconnect);
-          }
-        });
+    // Fix missing alt text with generic descriptions
+    validation.missingAltImages.forEach((img, index) => {
+      if (!img.alt) {
+        img.alt = `Image ${index + 1}`;
       }
-    } catch (error) {
-      console.error('[EnhancedSEOValidation] Error in autoFixSEOIssues:', error);
-    }
+    });
+
+    // Remove duplicate meta tags (keep the first occurrence)
+    validation.duplicateMetaTags.forEach(tagName => {
+      const duplicates = document.querySelectorAll(`meta[name="${tagName}"], meta[property="${tagName}"]`);
+      for (let i = 1; i < duplicates.length; i++) {
+        duplicates[i].remove();
+      }
+    });
+
+    // Add missing preconnect for common domains
+    const commonDomains = ['fonts.googleapis.com', 'fonts.gstatic.com'];
+    const existingPreconnects = Array.from(document.querySelectorAll('link[rel="preconnect"]'))
+      .map(link => new URL(link.getAttribute('href') || '').hostname);
+
+    commonDomains.forEach(domain => {
+      if (!existingPreconnects.includes(domain)) {
+        const preconnect = document.createElement('link');
+        preconnect.rel = 'preconnect';
+        preconnect.href = `https://${domain}`;
+        document.head.appendChild(preconnect);
+      }
+    });
   }
 
   // Basic validations from original service

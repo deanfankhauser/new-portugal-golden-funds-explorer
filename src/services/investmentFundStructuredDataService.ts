@@ -1,5 +1,11 @@
 import { Fund } from '../data/types/funds';
 import { URL_CONFIG } from '../utils/urlConfig';
+import { MOVINGTO_ORGANIZATION_ID } from '../lib/seo/schemas/sitewideSchemas';
+
+// Unique @id generator for fund entities
+const generateFundId = (fundId: string) => `${URL_CONFIG.BASE_URL}/${fundId}#fund`;
+const generateManagerId = (managerName: string | undefined) => 
+  managerName ? `${URL_CONFIG.buildManagerUrl(managerName)}#organization` : undefined;
 
 export class InvestmentFundStructuredDataService {
   static generateInvestmentFundSchema(fund: Fund): any {
@@ -16,31 +22,103 @@ export class InvestmentFundStructuredDataService {
       fund.redemptionFee ? `Exit Fee: ${cleanFeeString(fund.redemptionFee)}% on redemption` : ''
     ].filter(Boolean).join('; ');
 
-    // Build enhanced schema with additional properties
+    // Generate keyword-rich description matching subheader pattern
+    const getLiquidityText = () => {
+      if (!fund.redemptionTerms?.frequency) return '';
+      
+      if (fund.redemptionTerms.frequency.toLowerCase().includes('daily')) {
+        return ' with daily liquidity for investors';
+      }
+      
+      if (fund.redemptionTerms.minimumHoldingPeriod) {
+        return ` with ${fund.redemptionTerms.minimumHoldingPeriod}-month minimum holding period`;
+      }
+      
+      return '';
+    };
+
+    const schemaDescription = fund.managerName && fund.category
+      ? `${fund.name} is a CMVM-regulated Portugal Golden Visa investment fund managed by ${fund.managerName}, investing primarily in ${fund.category.toLowerCase()}${getLiquidityText()}.`
+      : fund.description || `${fund.name} is a professionally managed investment fund in Portugal.`;
+
+    // Build enhanced schema with @id linking for SEO authority consolidation
+    const managerId = generateManagerId(fund.managerName);
+    
     const schema: any = {
       "@context": "https://schema.org",
       "@type": "InvestmentFund",
+      "@id": generateFundId(fund.id),
       "name": fund.name,
       "url": URL_CONFIG.buildFundUrl(fund.id),
       "fundLegalName": fund.name,
-      "description": fund.description,
+      "description": schemaDescription,
       "category": fund.category,
+      "fundType": fund.tags?.some(tag => tag.toLowerCase().includes('open-end')) ? "Open-end fund" : "Investment Fund",
       "feesAndCommissionsSpecification": feesSpec || "Contact fund for details",
-      "auditor": fund.auditor || "Not specified",
-      "custodian": fund.custodian || "Not specified",
       "areaServed": {
         "@type": "Country",
         "name": "Portugal",
         "alternateName": "PT"
       },
-      "isAccessibleForFree": true,
+      "isAccessibleForFree": false,
       "provider": {
         "@type": "Organization",
+        ...(managerId && { "@id": managerId }),
         "name": fund.managerName,
         "url": URL_CONFIG.buildManagerUrl(fund.managerName),
-        "sameAs": fund.websiteUrl || URL_CONFIG.buildManagerUrl(fund.managerName)
+        "sameAs": fund.websiteUrl || URL_CONFIG.buildManagerUrl(fund.managerName),
+        "parentOrganization": {
+          "@type": "Organization",
+          "@id": MOVINGTO_ORGANIZATION_ID,
+          "name": "Movingto"
+        }
       },
-      "offers": {
+      // ISIN identifier for financial data standards
+      ...(fund.isin && {
+        "identifier": {
+          "@type": "PropertyValue",
+          "propertyID": "ISIN",
+          "value": fund.isin
+        }
+      }),
+      // Interest rate / expected return as QuantitativeValue
+      ...(fund.expectedReturnMin && fund.expectedReturnMax && {
+        "interestRate": {
+          "@type": "QuantitativeValue",
+          "minValue": fund.expectedReturnMin,
+          "maxValue": fund.expectedReturnMax,
+          "unitText": "percent per annum"
+        }
+      })
+    };
+
+    // Add location/domicile if available
+    if (fund.location) {
+      schema.location = {
+        "@type": "Place",
+        "name": fund.location,
+        "addressCountry": fund.location.includes('Portugal') ? 'PT' : undefined
+      };
+    }
+
+    // Add offers section with holding period information
+    const offerAdditionalProperties: any[] = [];
+    
+    if (fund.redemptionTerms?.minimumHoldingPeriod) {
+      offerAdditionalProperties.push({
+        "@type": "PropertyValue",
+        "name": "Minimum Holding Period",
+        "value": `${fund.redemptionTerms.minimumHoldingPeriod} months`
+      });
+    } else if (fund.redemptionTerms?.frequency?.toLowerCase().includes('daily')) {
+      offerAdditionalProperties.push({
+        "@type": "PropertyValue",
+        "name": "Liquidity",
+        "value": "Daily liquidity"
+      });
+    }
+
+    schema.offers = {
         "@type": "Offer",
         "price": fund.minimumInvestment || 0,
         "priceCurrency": "EUR",
@@ -56,9 +134,9 @@ export class InvestmentFundStructuredDataService {
           "@type": "Organization",
           "name": fund.managerName,
           "url": URL_CONFIG.buildManagerUrl(fund.managerName)
-        }
-      }
-    };
+        },
+        ...(offerAdditionalProperties.length > 0 && { "additionalProperty": offerAdditionalProperties })
+      };
     
     // Add sameAs for fund website if available
     if (fund.websiteUrl) {
@@ -92,9 +170,19 @@ export class InvestmentFundStructuredDataService {
       });
     }
 
-    // Add fund performance data if available
+    // Add fund performance data if available - validate it's meaningful
     if (fund.returnTarget) {
-      schema.expectedReturn = fund.returnTarget;
+      const isInvalidReturn = 
+        fund.returnTarget === '0-0%' ||
+        fund.returnTarget === '0-0% p.a.' ||
+        fund.returnTarget === 'Not disclosed' ||
+        fund.returnTarget === 'Unspecified' ||
+        fund.returnTarget.trim() === '' ||
+        /^0+[-–]0+/.test(fund.returnTarget); // matches "0-0", "00-00", etc.
+      
+      if (!isInvalidReturn) {
+        schema.expectedReturn = fund.returnTarget;
+      }
     }
 
     // Add compliance and regulatory info
@@ -121,6 +209,12 @@ export class InvestmentFundStructuredDataService {
     if (fund.datePublished) {
       schema.datePublished = fund.datePublished;
     }
+    
+    // Add lastReviewed for freshness signals (uses lastDataReviewDate or dateModified)
+    const lastReviewedDate = fund.lastDataReviewDate || fund.dateModified;
+    if (lastReviewedDate) {
+      schema.lastReviewed = lastReviewedDate;
+    }
 
     // Add potentialAction for investment process
     schema.potentialAction = {
@@ -141,26 +235,72 @@ export class InvestmentFundStructuredDataService {
         "description": `Minimum investment required: €${fund.minimumInvestment?.toLocaleString()}`
       }
     };
+
+    // Build additionalProperty array for fund characteristics
+    const additionalProperties: any[] = [];
+
+    // Lock-up period
+    if (fund.redemptionTerms?.minimumHoldingPeriod) {
+      additionalProperties.push({
+        "@type": "PropertyValue",
+        "name": "Lock-up Period",
+        "value": `${fund.redemptionTerms.minimumHoldingPeriod} months`
+      });
+    } else if (fund.tags?.includes('No Lock-Up')) {
+      additionalProperties.push({
+        "@type": "PropertyValue",
+        "name": "Lock-up Period",
+        "value": "No lock-up"
+      });
+    }
+
+    // US investor eligibility
+    const isUSInvestorFriendly = fund.tags?.some(tag => 
+      tag === 'PFIC-Compliant' || 
+      tag === 'QEF Eligible'
+    );
+    additionalProperties.push({
+      "@type": "PropertyValue",
+      "name": "Open to US investors",
+      "value": isUSInvestorFriendly ? "Yes" : "No"
+    });
+
+    // Golden Visa intended (manager-stated)
+    const isGoldenVisaIntended = fund.tags?.includes('Golden Visa Eligible');
+    additionalProperties.push({
+      "@type": "PropertyValue",
+      "name": "GV-intended (manager-stated)",
+      "value": isGoldenVisaIntended ? "Yes" : "No"
+    });
+
+    // Fund status
+    additionalProperties.push({
+      "@type": "PropertyValue",
+      "name": "Fund Status",
+      "value": fund.fundStatus || "Open"
+    });
+
+    // Redemption frequency
+    if (fund.redemptionTerms?.frequency) {
+      additionalProperties.push({
+        "@type": "PropertyValue",
+        "name": "Redemption Frequency",
+        "value": fund.redemptionTerms.frequency
+      });
+    }
+
+    // Add to schema
+    if (additionalProperties.length > 0) {
+      schema.additionalProperty = additionalProperties;
+    }
     
-    // Add aggregateRating if we have performance data
-    if (fund.historicalPerformance && typeof fund.historicalPerformance === 'object') {
-      const performanceYears = Object.keys(fund.historicalPerformance).length;
-      if (performanceYears > 0) {
-        // Calculate a performance-based rating (simplified)
-        const avgPerformance = Object.values(fund.historicalPerformance)
-          .reduce((sum: number, data: any) => sum + (data?.returns || 0), 0) / performanceYears;
-        
-        const rating = Math.min(5, Math.max(1, 3 + (avgPerformance / 10))); // Base 3, adjusted by performance
-        
-        schema.aggregateRating = {
-          "@type": "AggregateRating",
-          "ratingValue": rating.toFixed(1),
-          "bestRating": "5",
-          "worstRating": "1",
-          "ratingCount": performanceYears,
-          "description": `Based on ${performanceYears} years of historical performance data`
-        };
-      }
+    // Conditionally add auditor and custodian only if meaningful values exist
+    if (fund.auditor && fund.auditor !== 'Not specified' && fund.auditor.trim() !== '') {
+      schema.auditor = fund.auditor;
+    }
+    
+    if (fund.custodian && fund.custodian !== 'Not specified' && fund.custodian.trim() !== '') {
+      schema.custodian = fund.custodian;
     }
 
     return schema;

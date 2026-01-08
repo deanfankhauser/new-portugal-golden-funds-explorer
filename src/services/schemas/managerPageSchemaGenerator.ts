@@ -1,7 +1,7 @@
-
 import { StructuredDataSchema } from '../structuredDataService';
 import { FundManagerData } from '../../types/fundManagerTypes';
 import { URL_CONFIG } from '../../utils/urlConfig';
+import { formatFundSize } from '../../utils/currencyFormatters';
 
 export class ManagerPageSchemaGenerator {
   
@@ -15,7 +15,7 @@ export class ManagerPageSchemaGenerator {
         '@id': URL_CONFIG.buildManagerUrl(managerData.name)
       },
       'name': `${managerData.name} Golden Visa Investment Funds`,
-      'description': `Explore all Golden Visa investment funds managed by ${managerData.name}. Compare ${managerData.fundsCount} funds with combined assets of €${managerData.totalFundSize} million.`,
+      'description': `Explore all Golden Visa investment funds managed by ${managerData.name}. Compare ${managerData.fundsCount} funds with combined assets of ${formatFundSize(managerData.totalFundSize)}.`,
       'numberOfItems': managerData.fundsCount,
       'author': {
         '@type': 'Person',
@@ -57,13 +57,13 @@ export class ManagerPageSchemaGenerator {
               {
                 '@type': 'PropertyValue',
                 'name': 'Fund Size',
-                'value': `${fund.fundSize} Million EUR`
+                'value': formatFundSize(fund.fundSize)
               },
-              {
+              ...(fund.returnTarget && fund.returnTarget !== '0' && fund.returnTarget !== '0%' && fund.returnTarget !== 'Unspecified' && !fund.returnTarget.includes('0-0') ? [{
                 '@type': 'PropertyValue',
                 'name': 'Target Return',
                 'value': fund.returnTarget
-              }
+              }] : [])
             ]
           }
         }))
@@ -100,7 +100,7 @@ export class ManagerPageSchemaGenerator {
       '@context': 'https://schema.org',
       '@type': 'WebPage',
       'name': `${managerData.name} | Fund Manager Profile`,
-      'description': `Learn about ${managerData.name}, managing ${managerData.fundsCount} Golden Visa investment funds with €${managerData.totalFundSize} million in combined assets.`,
+      'description': `Learn about ${managerData.name}, managing ${managerData.fundsCount} Golden Visa investment funds with ${formatFundSize(managerData.totalFundSize)} in combined assets.`,
       'url': URL_CONFIG.buildManagerUrl(managerData.name),
       'mainEntity': {
         '@type': 'Organization',
@@ -143,7 +143,7 @@ export class ManagerPageSchemaGenerator {
       '@context': 'https://schema.org',
       '@type': 'Article',
       'headline': `${managerData.name} Fund Manager Profile`,
-      'description': `Learn about ${managerData.name}, managing ${managerData.fundsCount} Golden Visa investment funds with €${managerData.totalFundSize} million in combined assets.`,
+      'description': `Learn about ${managerData.name}, managing ${managerData.fundsCount} Golden Visa investment funds with ${formatFundSize(managerData.totalFundSize)} in combined assets.`,
       'author': {
         '@type': 'Person',
         'name': 'Dean Fankhauser',

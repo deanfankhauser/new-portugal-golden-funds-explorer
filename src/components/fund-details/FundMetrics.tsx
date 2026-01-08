@@ -1,10 +1,12 @@
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { getFundType } from '../../utils/fundTypeUtils';
 import { Card, CardContent } from "@/components/ui/card";
 import FeeDisclaimer from './FeeDisclaimer';
 import { DATA_AS_OF_LABEL } from '../../utils/constants';
 import { getReturnTargetDisplay } from '../../utils/returnTarget';
+import { formatManagementFee, formatPerformanceFee, formatSubscriptionFee, formatRedemptionFee } from '../../utils/feeFormatters';
+import { formatFundSize as formatFundSizeUtil } from '../../utils/currencyFormatters';
 
 interface FundMetricsProps {
   fund: Fund;
@@ -19,49 +21,51 @@ interface MetricItem {
 }
 
 const FundMetrics: React.FC<FundMetricsProps> = ({ fund, formatCurrency, formatFundSize }) => {
+  const targetReturn = getReturnTargetDisplay(fund);
+  
   const metrics: MetricItem[] = [
     {
       label: "Minimum Investment",
-      value: fund.minimumInvestment <= 0 ? "Not provided" : formatCurrency(fund.minimumInvestment),
-      subtitle: fund.id === '3cc-golden-income' ? 'Class A (€300,000 for Class D)' : undefined,
+      value: fund.minimumInvestment && fund.minimumInvestment > 0 ? formatCurrency(fund.minimumInvestment) : null,
     },
-    {
-      label: "Target Annual Return", 
-      value: `${getReturnTargetDisplay(fund)} ${DATA_AS_OF_LABEL}`,
-    },
+    // Only include target return if it exists and is meaningful
+    ...(targetReturn ? [{
+      label: "Target Return", 
+      value: `${targetReturn} ${DATA_AS_OF_LABEL}`,
+    }] : []),
     {
       label: "Fund Size",
-      value: formatFundSize ? formatFundSize() : `${fund.fundSize} Million EUR`,
+      value: formatFundSize ? formatFundSize() : formatFundSizeUtil(fund.fundSize),
     },
     {
       label: "Management Fee",
-      value: `${fund.managementFee}%`,
+      value: formatManagementFee(fund.managementFee),
     },
     {
       label: "Performance Fee",
-      value: `${fund.performanceFee}%`,
+      value: formatPerformanceFee(fund.performanceFee),
     },
     {
       label: "Term",
-      value: getFundType(fund) === 'Open-Ended' ? "Perpetual" : `${fund.term} years`,
+      value: getFundType(fund) === 'Open-Ended' ? "Perpetual" : (fund.term ? `${fund.term} years` : null),
     },
     {
       label: "Established",
-      value: fund.established,
+      value: fund.established || null,
     }
-  ];
+  ].filter(metric => metric.value !== null && metric.value !== 'Not disclosed');
 
   if (fund.subscriptionFee !== undefined) {
     metrics.push({
       label: "Subscription Fee",
-      value: `${fund.subscriptionFee}%`
+      value: formatSubscriptionFee(fund.subscriptionFee)
     });
   }
 
   if (fund.redemptionFee !== undefined) {
     metrics.push({
       label: "Redemption Fee",
-      value: `${fund.redemptionFee}%`
+      value: formatRedemptionFee(fund.redemptionFee)
     });
   }
 

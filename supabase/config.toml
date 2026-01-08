@@ -1,5 +1,17 @@
 project_id = "bkmvydnfhmkjnuszroim"
 
+[functions.send-magic-link]
+verify_jwt = false
+
+[functions.notify-fund-assignment]
+verify_jwt = false
+
+[functions.track-fund-event]
+verify_jwt = false
+
+[functions.track-performance-metrics]
+verify_jwt = false
+
 [auth]
 # Enable custom email templates
 enable_signup = true
@@ -23,13 +35,7 @@ verify_jwt = false
 [functions.delete-account]
 verify_jwt = false
 
-[functions.send-password-reset]
-verify_jwt = false
-
 [functions.sync-production-to-develop]
-verify_jwt = false
-
-[functions.send-confirmation-email]
 verify_jwt = false
 
 [functions.send-welcome-email]
@@ -66,4 +72,55 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.get-develop-funds]
+verify_jwt = false
+
+[functions.submit-fund-enquiry]
+verify_jwt = false
+
+[functions.notify-lead-status-change]
+verify_jwt = false
+
+[functions.weekly-lead-digest]
+verify_jwt = false
+
+[functions.request-advertising-access]
+verify_jwt = false
+
+[functions.backfill-company-assignments]
+verify_jwt = false
+
+[functions.create-company-profiles]
+verify_jwt = false
+
+[functions.request-lead-status-check]
+verify_jwt = false
+
+[functions.weekly-fund-digest]
+verify_jwt = false
+
+[functions.monthly-performance-reminder]
+verify_jwt = false
+
+[functions.postmark-webhook]
+verify_jwt = false
+
+[functions.weekly-stale-lead-reminder]
+verify_jwt = false
+
+[functions.invite-team-member]
+verify_jwt = false
+
+[functions.remove-team-member]
+verify_jwt = false
+
+[functions.create-admin-company-profile]
+verify_jwt = false
+
+[functions.fetch-rss-feed]
+verify_jwt = false
+
+[functions.notify-fund-submission]
+verify_jwt = false
+
+[functions.process-fund-submission]
 verify_jwt = false

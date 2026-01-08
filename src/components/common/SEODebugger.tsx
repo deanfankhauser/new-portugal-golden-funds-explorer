@@ -6,7 +6,8 @@ import { RotateCcw, MapPin } from 'lucide-react';
 const SEODebugger: React.FC = () => {
   const { validationResult, performanceMetrics, currentRoute, runValidation, generateReport, generatePerformanceReport } = useSEOValidation();
 
-  if (!import.meta.env.DEV || !validationResult) return null;
+  const isDev = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false;
+  if (!isDev || !validationResult) return null;
 
   const getScoreColor = (score: number) => {
     if (score >= 90) return 'text-green-600';

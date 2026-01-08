@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Edit3 } from 'lucide-react';
+// import { Edit3 } from 'lucide-react';
 import { useFundEditing } from '@/hooks/useFundEditing';
-import { AuthRequiredModal } from './AuthRequiredModal';
 import { FundEditModal } from './FundEditModal';
-import { Fund } from '@/data/funds';
+import { Fund } from '@/data/types/funds';
 
 interface FundEditButtonProps {
   fund: Fund;
@@ -19,26 +18,47 @@ export const FundEditButton: React.FC<FundEditButtonProps> = ({
   size = 'sm',
   className = ''
 }) => {
-  const { isAuthenticated, isHydrated, checkHydration } = useFundEditing();
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const { isAuthenticated, isHydrated, checkHydration, canDirectEditAssigned, canEditFund } = useFundEditing();
   const [showEditModal, setShowEditModal] = useState(false);
+  const [canDirectEdit, setCanDirectEdit] = useState(false);
+  const [checkingPermission, setCheckingPermission] = useState(false);
 
   useEffect(() => {
     checkHydration();
   }, [checkHydration]);
 
-  const handleEditClick = () => {
-    if (!isHydrated) {
-      // During SSG build or before hydration, do nothing
-      return;
-    }
+  useEffect(() => {
+    const checkPermission = async () => {
+      if (!isAuthenticated || !isHydrated) {
+        setCanDirectEdit(false);
+        return;
+      }
 
-    if (!isAuthenticated) {
-      setShowAuthModal(true);
-    } else {
-      setShowEditModal(true);
-    }
+      setCheckingPermission(true);
+      try {
+        const canEdit = await canDirectEditAssigned(fund.id);
+        setCanDirectEdit(canEdit);
+      } catch (error) {
+        console.error('Error checking edit permission:', error);
+        setCanDirectEdit(false);
+      } finally {
+        setCheckingPermission(false);
+      }
+    };
+
+    checkPermission();
+  }, [isAuthenticated, isHydrated, fund.id, canDirectEditAssigned]);
+
+  // Only show button for authenticated users with edit permission
+  if (!isHydrated || !isAuthenticated || !canDirectEdit) {
+    return null;
+  }
+
+  const handleEditClick = () => {
+    setShowEditModal(true);
   };
+
+  const buttonText = checkingPermission ? 'Loading...' : 'Edit Fund';
 
   return (
     <>
@@ -46,20 +66,11 @@ export const FundEditButton: React.FC<FundEditButtonProps> = ({
         variant={variant}
         size={size}
         onClick={handleEditClick}
-        disabled={!isHydrated}
-        className={`gap-2 ${className}`}
+        disabled={checkingPermission}
+        className={`${className}`}
       >
-        <Edit3 className="h-4 w-4" />
-        <span className="hidden sm:inline">
-          {isHydrated ? 'Edit Fund Info' : 'Loading...'}
-        </span>
-        <span className="sm:hidden">Edit</span>
+        <span>{buttonText}</span>
       </Button>
-
-      <AuthRequiredModal 
-        open={showAuthModal}
-        onOpenChange={setShowAuthModal}
-      />
 
       <FundEditModal
         fund={fund}

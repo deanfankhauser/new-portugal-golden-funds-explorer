@@ -1,9 +1,12 @@
 
-import { funds, getAllCategories, getAllTags } from '../data/funds';
+import { getAllCategories } from '../data/services/categories-service';
+import { getAllTags } from '../data/services/tags-service';
 import { getAllFundManagers } from '../data/services/managers-service';
 import { categoryToSlug, tagToSlug, managerToSlug } from '../lib/utils';
 import { URL_CONFIG } from '../utils/urlConfig';
 import { DateManagementService } from './dateManagementService';
+import { Fund } from '../data/types/funds';
+
 
 export interface SitemapEntry {
   url: string;
@@ -31,83 +34,99 @@ export class SitemapService {
       },
       // Hub Pages
       {
-        url: `${URL_CONFIG.BASE_URL}/categories`,
+        url: URL_CONFIG.buildUrl('/categories'),
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: 0.8
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/tags`,
+        url: URL_CONFIG.buildUrl('/tags'),
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: 0.8
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/managers`,
+        url: URL_CONFIG.buildUrl('/managers'),
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: 0.8
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/comparisons`,
+        url: URL_CONFIG.buildUrl('/team'),
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: 0.7
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/compare`,
+        url: URL_CONFIG.buildUrl('/comparisons'),
         lastmod: currentDate,
         changefreq: 'weekly',
-        priority: 0.6
+        priority: 0.7
       },
+      // Note: /compare is noindex (tool page), excluded from sitemap
+      // Note: /funds is noindex (tool page), excluded from sitemap
       {
-        url: `${URL_CONFIG.BASE_URL}/alternatives`,
+        url: URL_CONFIG.buildUrl('/alternatives'),
         lastmod: currentDate,
         changefreq: 'weekly',
         priority: 0.7
       },
       // Static Pages
       {
-        url: `${URL_CONFIG.BASE_URL}/about`,
+        url: URL_CONFIG.buildUrl('/about'),
         lastmod: currentDate,
         changefreq: 'monthly',
         priority: 0.6
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/disclaimer`,
+        url: URL_CONFIG.buildUrl('/disclaimer'),
         lastmod: currentDate,
         changefreq: 'monthly',
         priority: 0.3
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/privacy`,
+        url: URL_CONFIG.buildUrl('/privacy'),
         lastmod: currentDate,
         changefreq: 'monthly',
         priority: 0.3
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/faqs`,
+        url: URL_CONFIG.buildUrl('/faqs'),
         lastmod: currentDate,
         changefreq: 'monthly',
         priority: 0.7
       },
       {
-        url: `${URL_CONFIG.BASE_URL}/roi-calculator`,
+        url: URL_CONFIG.buildUrl('/roi-calculator'),
         lastmod: currentDate,
         changefreq: 'monthly',
         priority: 0.6
       },
+      // Legal pages
       {
-        url: `${URL_CONFIG.BASE_URL}/saved-funds`,
+        url: URL_CONFIG.buildUrl('/terms'),
+        lastmod: currentDate,
+        changefreq: 'monthly',
+        priority: 0.3
+      },
+      {
+        url: URL_CONFIG.buildUrl('/cookie-policy'),
+        lastmod: currentDate,
+        changefreq: 'monthly',
+        priority: 0.3
+      },
+      // High-value SEO pages
+      {
+        url: URL_CONFIG.buildUrl('/ira-401k-eligible-funds'),
         lastmod: currentDate,
         changefreq: 'weekly',
-        priority: 0.6
+        priority: 0.8
       }
     ];
   }
 
   // Generate fund detail pages with actual modification dates
-  private static getFundPages(): SitemapEntry[] {
+  private static getFundPages(funds: Fund[]): SitemapEntry[] {
     return funds.map(fund => {
       const contentDates = DateManagementService.getFundContentDates(fund);
       return {
@@ -121,8 +140,8 @@ export class SitemapService {
   }
 
   // Generate category pages with content-aware dates
-  private static getCategoryPages(): SitemapEntry[] {
-    const categories = getAllCategories();
+  private static getCategoryPages(funds: Fund[]): SitemapEntry[] {
+    const categories = getAllCategories(funds);
     
     return categories.map(category => {
       const contentDates = DateManagementService.getContentDates('category', category);
@@ -136,8 +155,8 @@ export class SitemapService {
   }
 
   // Generate tag pages with content-aware dates
-  private static getTagPages(): SitemapEntry[] {
-    const tags = getAllTags();
+  private static getTagPages(funds: Fund[]): SitemapEntry[] {
+    const tags = getAllTags(funds);
     
     return tags.map(tag => {
       const contentDates = DateManagementService.getContentDates('tag', tag);
@@ -151,8 +170,8 @@ export class SitemapService {
   }
 
   // Generate manager pages with content-aware dates
-  private static getManagerPages(): SitemapEntry[] {
-    const managers = getAllFundManagers();
+  private static getManagerPages(funds: Fund[]): SitemapEntry[] {
+    const managers = getAllFundManagers(funds);
     
     return managers.map(manager => {
       const contentDates = DateManagementService.getContentDates('manager', manager.name);
@@ -166,19 +185,19 @@ export class SitemapService {
   }
 
   // Generate complete sitemap entries
-  static generateSitemapEntries(): SitemapEntry[] {
+  static generateSitemapEntries(funds: Fund[]): SitemapEntry[] {
     return [
       ...this.getStaticPages(),
-      ...this.getFundPages(),
-      ...this.getCategoryPages(),
-      ...this.getTagPages(),
-      ...this.getManagerPages()
+      ...this.getFundPages(funds),
+      ...this.getCategoryPages(funds),
+      ...this.getTagPages(funds),
+      ...this.getManagerPages(funds)
     ];
   }
 
   // Convert entries to XML format
-  static generateSitemapXML(): string {
-    const entries = this.generateSitemapEntries();
+  static generateSitemapXML(funds: Fund[]): string {
+    const entries = this.generateSitemapEntries(funds);
     
     const urlElements = entries.map(entry => `  <url>
     <loc>${entry.url}</loc>
@@ -194,8 +213,8 @@ ${urlElements}
   }
 
   // Update the sitemap file
-  static updateSitemap(): void {
-    const sitemapXML = this.generateSitemapXML();
+  static updateSitemap(funds: Fund[]): void {
+    const sitemapXML = this.generateSitemapXML(funds);
     // In a real application, this would write to the public/sitemap.xml file
     // For now, we'll just return the XML content
     // Sitemap generated with entries

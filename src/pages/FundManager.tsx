@@ -1,49 +1,258 @@
-
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { getFundsByManager, getAllFundManagers } from '../data/services/managers-service';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getAllApprovedManagers } from '../data/services/managers-service';
+import { slugToManager, managerToSlug } from '../lib/utils';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import FundManagerContent from '../components/fund-manager/FundManagerContent';
 import FundManagerNotFound from '../components/fund-manager/FundManagerNotFound';
 import FundManagerBreadcrumbs from '../components/fund-manager/FundManagerBreadcrumbs';
-import { slugToManager, managerToSlug } from '../lib/utils';
+import { Profile } from '@/types/profile';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
+import { Fund } from '../data/types/funds';
+import { FloatingActionButton } from '../components/common/FloatingActionButton';
 
-const FundManager = () => {
+const isSSG = typeof window === 'undefined';
+
+interface SSRTeamMember {
+  id: string;
+  slug: string;
+  name: string;
+  role: string;
+  bio?: string;
+  photo_url?: string;
+  linkedin_url?: string;
+  company_name?: string;
+}
+
+interface FundManagerProps {
+  managerData?: {
+    name: string;
+    profile?: Profile;
+    funds: Fund[];
+    isVerified: boolean;
+    teamMembers?: SSRTeamMember[];
+  };
+  initialFunds?: Fund[];
+}
+
+const FundManager: React.FC<FundManagerProps> = ({ managerData, initialFunds }) => {
   const { name } = useParams<{ name: string }>();
+  const navigate = useNavigate();
   const slugName = name || '';
   const managerName = slugToManager(slugName);
-  const allManagers = getAllFundManagers();
+  const [isManagerVerified, setIsManagerVerified] = useState(false);
+  const [managerProfile, setManagerProfile] = useState<Profile | null>(null);
+  const [displayManagerName, setDisplayManagerName] = useState(managerName);
+  const [managerFunds, setManagerFunds] = useState<Fund[]>([]);
   
-  // Find matching manager by checking if any manager matches when converted to slug
-  const matchingManager = allManagers.find(manager => 
-    managerToSlug(manager.name) === slugName
-  );
-  
-  const displayManagerName = matchingManager ? matchingManager.name : managerName;
-  const managerFunds = matchingManager ? getFundsByManager(matchingManager.name) : [];
+  // Fetch all funds from database
+  const { funds: allFunds, loading: isLoading } = useRealTimeFunds({
+    initialData: initialFunds || (managerData ? managerData.funds : undefined)
+  });
+
+  // Normalize manager name by removing common suffixes for matching
+  const normalizeForMatching = (name: string): string => {
+    return name
+      .toLowerCase()
+      .replace(/[,\.]/g, '')
+      .replace(/\b(s\.?a\.?|scr|sgoic|sgps|llc|ltd|limited|inc|incorporated)\b/gi, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  };
+
+  // Find matching manager and their funds from database
+  useEffect(() => {
+    if (!allFunds || allFunds.length === 0) return;
+    
+    // Get all unique managers from database funds
+    const managersMap = new Map<string, string>();
+    allFunds.forEach(fund => {
+      const normalizedKey = fund.managerName.toLowerCase();
+      if (!managersMap.has(normalizedKey)) {
+        managersMap.set(normalizedKey, fund.managerName);
+      }
+    });
+    
+    // First try exact slug match
+    let matchingManagers = Array.from(managersMap.values()).filter(manager => 
+      managerToSlug(manager) === slugName
+    );
+    
+    // If no exact match, try normalized matching
+    if (matchingManagers.length === 0) {
+      const normalizedSlugName = slugName.replace(/-/g, ' ');
+      
+      matchingManagers = Array.from(managersMap.values()).filter(manager => {
+        const normalizedManager = normalizeForMatching(manager);
+        const managerSlugNormalized = managerToSlug(normalizedManager);
+        
+        // Check if normalized slug matches
+        return managerSlugNormalized === slugName ||
+               normalizedManager === normalizedSlugName ||
+               normalizedManager.startsWith(normalizedSlugName) ||
+               normalizedSlugName.startsWith(normalizedManager);
+      });
+    }
+    
+    // Group all manager name variations that share the same normalized base
+    if (matchingManagers.length > 0) {
+      const baseNormalized = normalizeForMatching(matchingManagers[0]);
+      
+      // Find all managers that normalize to similar names
+      const allRelatedManagers = Array.from(managersMap.values()).filter(manager => {
+        const normalized = normalizeForMatching(manager);
+        return normalized === baseNormalized ||
+               normalized.startsWith(baseNormalized) ||
+               baseNormalized.startsWith(normalized);
+      });
+      
+      // Use the longest/most complete manager name for display
+      const bestDisplayName = allRelatedManagers.reduce((longest, current) => 
+        current.length > longest.length ? current : longest
+      , allRelatedManagers[0]);
+      
+      setDisplayManagerName(bestDisplayName);
+      
+      // Get all funds for all related manager variations
+      const funds = allFunds.filter(fund =>
+        allRelatedManagers.some(m => 
+          fund.managerName.toLowerCase() === m.toLowerCase()
+        )
+      );
+      setManagerFunds(funds);
+    } else {
+      setManagerFunds([]);
+    }
+  }, [allFunds, slugName]);
+
+  useEffect(() => {
+    const checkManagerVerification = async () => {
+      const approvedManagers = await getAllApprovedManagers();
+      
+      // Normalize manager name by removing common suffixes and punctuation
+      const normalizeCompanyName = (name: string) => {
+        return name
+          .toLowerCase()
+          .replace(/[,\.]/g, '') // Remove commas and periods
+          .replace(/\b(s\.?a\.?|llc|ltd|limited|inc|incorporated|scr|sgps)\b/gi, '') // Remove company suffixes
+          .trim();
+      };
+      
+      const normalizedManagerName = normalizeCompanyName(displayManagerName);
+      
+      const matchingProfile = approvedManagers.find(m => {
+        const normalizedCompanyName = normalizeCompanyName(m.company_name);
+        const normalizedDbManagerName = m.manager_name ? normalizeCompanyName(m.manager_name) : '';
+        
+        // Check if either company name or manager name matches
+        return normalizedCompanyName === normalizedManagerName || 
+               normalizedDbManagerName === normalizedManagerName ||
+               normalizedCompanyName.includes(normalizedManagerName) ||
+               normalizedManagerName.includes(normalizedCompanyName);
+      });
+      
+      if (matchingProfile) {
+        setIsManagerVerified(true);
+        // Use the complete profile from getAllApprovedManagers - no need for second fetch
+        setManagerProfile(matchingProfile as unknown as Profile);
+      }
+    };
+    
+    if (displayManagerName) {
+      checkManagerVerification();
+    }
+  }, [displayManagerName]);
+
+  // Canonicalize manager slug
+  useEffect(() => {
+    if (!name || isSSG) return;
+    const expected = managerToSlug(slugToManager(name));
+    if (name !== expected) {
+      navigate(`/manager/${expected}`, { replace: true });
+    }
+  }, [name, navigate]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [name]);
 
-  if (!matchingManager || managerFunds.length === 0) {
+  // Use SSR data if available during SSG
+  if (isSSG && managerData) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <PageSEO 
+          pageType="manager" 
+          managerName={managerData.name}
+          managerProfile={managerData.profile}
+          funds={managerData.funds}
+        />
+        <Header />
+        <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
+          <FundManagerBreadcrumbs managerName={managerData.name} />
+          <FundManagerContent 
+            managerFunds={managerData.funds} 
+            managerName={managerData.name} 
+            isManagerVerified={managerData.isVerified}
+            managerProfile={managerData.profile}
+            initialTeamMembers={managerData.teamMembers}
+          />
+        </main>
+        <Footer />
+        <FloatingActionButton />
+      </div>
+    );
+  }
+
+  // Show loading state only when no initial data provided
+  if (isLoading && !initialFunds && !managerData) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Header />
+        <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading fund manager...</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (managerFunds.length === 0) {
     return <FundManagerNotFound managerName={displayManagerName} />;
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <PageSEO pageType="manager" managerName={displayManagerName} />
+    <div className="min-h-screen flex flex-col bg-background">
+      <PageSEO 
+        pageType="manager" 
+        managerName={displayManagerName}
+        managerProfile={managerProfile}
+        funds={managerFunds}
+      />
       
       <Header />
       
       <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 flex-1">
         <FundManagerBreadcrumbs managerName={displayManagerName} />
-        <FundManagerContent managerFunds={managerFunds} managerName={displayManagerName} />
+        
+        
+        <FundManagerContent 
+          managerFunds={managerFunds} 
+          managerName={displayManagerName} 
+          isManagerVerified={isManagerVerified}
+          managerProfile={managerProfile}
+        />
       </main>
       
       <Footer />
+      
+      <FloatingActionButton />
     </div>
   );
 };

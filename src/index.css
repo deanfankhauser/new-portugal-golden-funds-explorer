@@ -3,11 +3,35 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Cheltenham';
+  src: url('/fonts/Cheltenham-BT-Roman.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
+  /* Smooth scroll behavior globally */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 100px; /* Account for fixed headers */
+  }
+  
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  
+  h1 {
+    font-family: 'Cheltenham', serif;
+  }
   :root {
     /* Brand Color System - Warm Premium Heritage */
     --brand-bordeaux: 340 66% 18%;      /* Rich Bordeaux #4B0F23 */
-    --brand-bronze: 20 33% 50%;         /* Matte Bronze #A97155 */
+    --brand-bronze: 20 33% 42%;         /* Matte Bronze (darkened for accessibility) */
     --brand-bone: 36 16% 92%;           /* Bone White #EDEAE6 */
     
     /* Core Design Tokens */
@@ -22,7 +46,7 @@
     --secondary: 36 12% 96%;
     --secondary-foreground: 340 20% 20%;
     --muted: 36 12% 90%;
-    --muted-foreground: 340 15% 45%;
+    --muted-foreground: 340 15% 40%;
     --accent: var(--brand-bronze);
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
@@ -69,12 +93,16 @@
     --gray-900: 210 15% 12%;
     
     /* Success colors */
-    --success: 142 76% 36%;
+    --success: 142 76% 28%;
     --success-foreground: 0 0% 100%;
     
     /* Warning colors */
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
+    
+    /* Institutional Data Standard tokens */
+    --slate-900: 222 47% 11%;
+    --gold-verified: 43 74% 49%;
     
     /* Enhanced shadows */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -82,6 +110,16 @@
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    
+    /* Sidebar tokens */
+    --sidebar-background: 36 15% 97%;
+    --sidebar-foreground: 340 20% 16%;
+    --sidebar-primary: var(--brand-bordeaux);
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 36 12% 96%;
+    --sidebar-accent-foreground: 340 20% 20%;
+    --sidebar-border: 20 10% 80%;
+    --sidebar-ring: var(--brand-bordeaux);
   }
 
   .dark {
@@ -105,6 +143,16 @@
     --border: 340 15% 25%;
     --input: 340 15% 25%;
     --ring: var(--brand-bronze);
+    
+    /* Sidebar tokens for dark mode */
+    --sidebar-background: 340 25% 12%;
+    --sidebar-foreground: 36 22% 92%;
+    --sidebar-primary: var(--brand-bronze);
+    --sidebar-primary-foreground: 0 0% 10%;
+    --sidebar-accent: 340 22% 16%;
+    --sidebar-accent-foreground: 36 22% 92%;
+    --sidebar-border: 340 15% 25%;
+    --sidebar-ring: var(--brand-bronze);
   }
 }
 
@@ -267,33 +315,6 @@
     @apply shadow-lg border-accent transform -translate-y-1;
   }
 
-  /* Enhanced button styles */
-  .btn-primary-enhanced {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 
-           transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg
-           focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:outline-none
-           font-semibold px-6 py-3 rounded-xl;
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%);
-  }
-
-  .btn-primary-enhanced:hover {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-600)) 100%);
-  }
-
-  .btn-secondary-enhanced {
-    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 border border-border hover:border-accent
-           transition-all duration-300 ease-out hover:scale-105 hover:shadow-md
-           focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:outline-none
-           font-semibold px-6 py-3 rounded-xl;
-  }
-
-  .btn-outline-enhanced {
-    @apply bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-primary-foreground
-           transition-all duration-300 ease-out hover:scale-105 hover:shadow-md
-           focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:outline-none
-           font-semibold px-6 py-3 rounded-xl;
-  }
-
   /* Interactive hover effects */
   .interactive-hover {
     @apply transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg;
@@ -343,12 +364,6 @@
   .card-modern {
     @apply rounded-xl;
   }
-
-  .btn-primary-enhanced,
-  .btn-secondary-enhanced,
-  .btn-outline-enhanced {
-    @apply px-4 py-2.5 text-sm rounded-lg;
-  }
 }
 
 /* Accessibility improvements */
@@ -369,6 +384,12 @@
   }
 }
 
+/* Mobile table scroll improvements */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .card-modern {
@@ -387,4 +408,20 @@
   .interactive-hover-subtle {
     @apply shadow-none transform-none;
   }
+}
+
+/* Accessibility: Lovable Badge Close Button - Meet WCAG touch target size */
+#lovable-badge-close {
+  min-width: 24px !important;
+  min-height: 24px !important;
+  width: 24px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
+  top: -6px !important;
+  right: 2px !important;
 }

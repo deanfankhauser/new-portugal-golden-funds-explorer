@@ -1,100 +1,95 @@
 export type FundTag = 
-  | 'Real Estate'
-  | 'Private Equity'
-  | 'Venture Capital'
-  | 'Tourism'
-  | 'Infrastructure'
-  | 'Technology'
-  | 'Healthcare'
-  | 'Energy'
-  | 'Sustainability'
-  | 'Golden Visa Eligible'
-  | 'Bonds'
-  | 'Crypto'
-  | 'Liquid'
-  | 'Regulated'
+  // Fees & Yield
+  | 'No Fees'
+  | 'Low fees (<1% management fee)'
+  | 'Target yield 3–5%'
+  | 'Target yield 5%+'
+  | 'Dividend paying'
+  | 'Income-focused'
+  // Risk & Objective
+  | 'Capital Preservation'
+  | 'Capital Growth'
+  | 'Balanced'
+  | 'High-risk'
+  | 'Low-risk'
+  | 'Medium-risk'
+  | 'Diversified'
+  | 'Alternative Investments'
+  | 'Special Situations'
+  | 'Mixed'
+  // Structure & Liquidity
   | 'Open Ended'
-  | 'Closed Ended'
+  | 'Closed-end Fund'
+  | 'UCITS'
+  | 'Regulated'
+  | 'Secondary Market'
+  | 'Daily NAV'
+  | 'Liquid'
+  | 'No Lock-Up'
+  | 'Short lock-up (<5 years)'
+  | 'Long lock-up (5–10 years)'
+  | 'Long Term'
+  | 'Golden Visa Eligible'
+  // Sector / Theme
+  | 'Bonds'
+  | 'Fixed Income'
+  | 'Credit'
+  | 'Deposits'
+  | 'Digital Assets'
   | 'Bitcoin'
   | 'Ethereum'
   | 'Solana'
-  | 'Equities'
-  | 'Balanced'
-  | 'UCITS'
-  | 'PFIC-Compliant'
-  | 'QEF Eligible'
-  | 'Daily NAV'
-  | 'No Lock-Up'
-  | 'Capital Preservation'
-  | 'Special Situations'
-  | 'SMEs'
-  | 'Mid-Cap'
-  | 'Lock-Up'
-  | 'No Fees'
-  | 'Tax Free'
-  | 'Capital Growth'
-  | 'Gold'
-  | 'Deposits'
-  | 'AI-Driven'
-  | 'Diversified'
+  | 'Private Markets'
   | 'Industrial'
-  | 'Circular Economy'
-  | 'Equity'
-  | 'Debt'
-  | 'Secondary Market'
-  | 'Long Term'
-  | 'Hybrid'
-  | 'Dividends'
-  | '5 % Yield'
+  | 'Infrastructure'
+  | 'Technology'
+  | 'Energy'
   | 'Renewable Energy'
   | 'Solar'
   | 'Battery Storage'
   | 'Energy-as-a-Service'
-  | '12% Return'
-  | '5% Dividend'
+  | 'Cleantech'
   | 'Climate'
-  | 'Fund subscription minimums'
-  | '€250k-€350k (subscription min only; GV still requires €500k total)'
-  | '€300k-€400k (subscription min only; GV still requires €500k total)'
-  | '€350k-€500k (subscription min only; GV still requires €500k total)'
-  | '€400k-€600k (subscription min only; GV still requires €500k total)'
-  | '€500k+'
-  | 'Low-risk'
-  | 'Medium-risk'
-  | 'High-risk'
-  | '< 3% annual yield'
-  | '3-5% annual yield'
-  | '> 5% annual yield'
-  | '< 5-year lock-up'
-  | '5-10 year lock-up'
-  | '> 10-year lock-up'
-  | '< 1% management fee'
-  | '1-1.5% management fee'
-  | '> 1.5% management fee'
-  | 'Small-cap < €50M'
-  | 'Mid-cap €50-100M'
-  | 'Large-cap > €100M'
+  | 'Circular Economy'
+  | 'Gold'
+  | 'SMEs'
+  | 'Tourism'
+  | 'Sustainability'
+  | 'ESG'
+  | 'AI-Driven'
+  | 'Healthcare & life sciences'
+  | 'Logistics & warehouses'
+  | 'Hospitality & hotels'
+  // Tax / Legal
+  | 'Tax Free'
+  | 'PFIC-Compliant'
+  | 'QEF Eligible'
+  // Min Subscription
+  | 'Min. subscription €100k–250k'
+  | 'Min. subscription €250k–€350k'
+  | 'Min. subscription €350k–€500k'
+  | 'Min. subscription €500k+'
+  // Investor Nationality
   | 'Golden Visa funds for U.S. citizens'
-  | 'Golden Visa funds for Australian citizens'
   | 'Golden Visa funds for UK citizens'
-  | 'Golden Visa funds for Canadian citizens'
   | 'Golden Visa funds for Chinese citizens'
-  | 'Portugal';
+  | 'Golden Visa funds for Canadian citizens'
+  | 'Golden Visa funds for Australian citizens';
 
 export type FundCategory =
   | 'Venture Capital'
   | 'Private Equity'
-  | 'Real Estate'
-  | 'Mixed'
   | 'Infrastructure'
   | 'Debt'
-  | 'Fixed Income & Digital Assets'
-  | 'Balanced'
-  | 'Multi-Asset'
-  | 'Private Equity & Venture Capital'
-  | 'Private Debt & Hybrid Instruments'
-  | 'Clean Energy (Solar & Battery Storage)'
-  | 'Private Equity & Debt';
+  | 'Credit'
+  | 'Fund-of-Funds'
+  | 'Bitcoin'
+  | 'Crypto'
+  | 'Clean Energy'
+  | 'Mixed'
+  | 'Other';
+
+export type RiskBand = 'Conservative' | 'Balanced' | 'Aggressive';
 
 export type RedemptionFrequency =
   | 'Monthly'
@@ -112,12 +107,31 @@ export interface GeographicAllocation {
   percentage: number;
 }
 
+// Company team member structure (stored in profiles.team_members)
+export interface CompanyTeamMember {
+  member_id: string; // UUID for linking
+  name: string;
+  role: string;
+  bio?: string;
+  photoUrl?: string;
+  email?: string;
+  linkedinUrl?: string;
+}
+
+// Fund team member reference (stored in funds.team_members)
+export interface FundTeamMemberReference {
+  member_id: string; // References CompanyTeamMember
+  fund_role?: string; // Optional fund-specific role override
+}
+
+// Legacy team member structure (for backward compatibility during migration)
 export interface TeamMember {
   name: string;
   position: string;
   bio?: string;
   photoUrl?: string;
   linkedinUrl?: string;
+  member_id?: string; // Optional for migration compatibility
 }
 
 export interface PdfDocument {
@@ -145,8 +159,8 @@ export interface Fund {
   description: string;
   tags: FundTag[];
   category: FundCategory;
-  minimumInvestment: number; // in EUR
-  fundSize: number; // in EUR millions
+  minimumInvestment: number; // in EUR (base units)
+  fundSize: number | null; // in EUR (base units) - null means not disclosed
   managementFee: number; // percentage
   performanceFee: number; // percentage
   subscriptionFee?: number; // percentage
@@ -156,7 +170,7 @@ export interface Fund {
   returnTarget: string; // e.g., "8-10% annually"
   expectedReturnMin?: number; // Direct access to min return percentage
   expectedReturnMax?: number; // Direct access to max return percentage
-  fundStatus: 'Open' | 'Closed' | 'Closing Soon';
+  fundStatus: 'Open' | 'Soft-closed' | 'Closed' | 'Closing Soon' | 'Liquidated';
   websiteUrl?: string;
   established: number; // year
   regulatedBy: string;
@@ -195,4 +209,44 @@ export interface Fund {
     nav?: number;
   }>;
   hurdleRate?: number; // Performance fee hurdle rate percentage
+  
+  // Ranking (admin-controlled, invisible to end users)
+  finalRank?: number;
+  updatedAt?: string; // ISO 8601 date when fund was last updated
+  
+  // Admin-controlled verification (manual)
+  isVerified?: boolean;
+  verifiedAt?: string; // ISO 8601
+  verifiedBy?: string; // Admin user ID
+  
+  // New data model fields (Phase 1)
+  isin?: string; // International Securities Identification Number
+  typicalTicket?: number; // Typical investment ticket size in EUR
+  aumAsOfDate?: string; // ISO 8601 date when AUM was measured
+  realisedExits?: number; // Number of realised exits from portfolio
+  totalDistributions?: number; // Total distributions paid to investors in EUR
+  lastDataReviewDate?: string; // ISO 8601 date when data was last manually reviewed
+  riskBand?: RiskBand; // 3-band risk classification (Conservative/Balanced/Aggressive)
+  
+  // Quiz system fields
+  isQuizEligible?: boolean; // Controls whether fund appears in Fund Matcher Quiz
+  usCompliant?: boolean; // Indicates if fund is compliant for US citizens/residents (PFIC/QEF)
+  
+  // US Person Eligibility fields
+  acceptsUsPersonsStatus?: 'confirmed_yes' | 'confirmed_no' | 'unknown';
+  acceptsUsPersonsSourceUrl?: string;
+  fatcaStated?: boolean;
+  fatcaSourceUrl?: string;
+  
+  // Social media links
+  youtubeUrl?: string;
+  instagramUrl?: string;
+  tiktokUrl?: string;
+  facebookUrl?: string;
+  twitterUrl?: string;
+  linkedinUrl?: string;
+  youtubeVideoUrl?: string;
+  
+  // News RSS feed
+  newsRssFeedUrl?: string;
 }

@@ -1,22 +1,27 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Fund } from '../data/funds';
+import { Fund } from '../data/types/funds';
 import { isFundGVEligible } from '../data/services/gv-eligibility-service';
 import { getFundType } from '../utils/fundTypeUtils';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GitCompare, PieChart, Globe, Tag, User, Euro } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { GVBadge } from "@/components/ui/GVBadge";
+import { Mail, CheckCircle2, GitCompare, ChevronRight } from 'lucide-react';
 import { useComparison } from '../contexts/ComparisonContext';
-import IntroductionButton from './fund-details/IntroductionButton';
 import { formatPercentage } from './fund-details/utils/formatters';
 import { tagToSlug, categoryToSlug, managerToSlug } from '@/lib/utils';
-import DataFreshnessIndicator from './common/DataFreshnessIndicator';
 import { getReturnTargetDisplay } from '../utils/returnTarget';
-
 import { DATA_AS_OF_LABEL } from '../utils/constants';
 import { SaveFundButton } from './common/SaveFundButton';
+import { CompanyLogo } from './shared/CompanyLogo';
+import { formatManagementFee, formatPerformanceFee } from '../utils/feeFormatters';
+import { formatMinimumInvestment } from '../utils/currencyFormatters';
+import { calculateRiskBand, getRiskBandLabel, getRiskBandBgColor } from '../utils/riskCalculation';
+import DataVerifiedBadge from './common/DataVerifiedBadge';
+import VerificationTooltip from './common/VerificationTooltip';
+import TechnicalSummaryBar from './fund-details/TechnicalSummaryBar';
 
 interface FundListItemProps {
   fund: Fund;
@@ -24,12 +29,15 @@ interface FundListItemProps {
 
 const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
   const { addToComparison, removeFromComparison, isInComparison } = useComparison();
-  
   const isSelected = isInComparison(fund.id);
   const isGVEligible = isFundGVEligible(fund);
-  
+  const riskBand = calculateRiskBand(fund);
+  const riskBandLabel = getRiskBandLabel(riskBand);
+  const riskBandBgColor = getRiskBandBgColor(riskBand);
+
   const handleCompareClick = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigation to fund details
+    e.preventDefault();
+    e.stopPropagation();
     
     if (isSelected) {
       removeFromComparison(fund.id);
@@ -38,125 +46,177 @@ const FundListItem: React.FC<FundListItemProps> = ({ fund }) => {
     }
   };
 
-  // Get the main geographic allocation (first one)
-  const mainGeoAllocation = fund.geographicAllocation && fund.geographicAllocation.length > 0 
-    ? fund.geographicAllocation[0] 
-    : null;
+  // Smart middle column logic: Target Return > Lock-up Period > Risk Profile
+  const getMiddleColumnContent = () => {
+    const returnDisplay = getReturnTargetDisplay(fund);
+    if (returnDisplay) {
+      return (
+        <>
+          <span className="text-[11px] uppercase tracking-wider text-muted-foreground block mb-1">
+            Target Return
+          </span>
+          <span className="text-lg font-semibold text-foreground">{returnDisplay}</span>
+        </>
+      );
+    }
+    
+    if (fund.term && fund.term > 0) {
+      return (
+        <>
+          <span className="text-[11px] uppercase tracking-wider text-muted-foreground block mb-1">
+            Lock-up Period
+          </span>
+          <span className="text-lg font-semibold text-foreground">{fund.term} years</span>
+        </>
+      );
+    }
+    
+    return (
+      <>
+        <span className="text-[11px] uppercase tracking-wider text-muted-foreground block mb-1">
+          Risk Profile
+        </span>
+        <span className="text-lg font-semibold text-foreground">{riskBandLabel}</span>
+      </>
+    );
+  };
 
   return (
-    <Card className="border rounded-xl hover:shadow-lg transition-all duration-200 bg-card w-full group">
-      <CardContent className="p-6">
+    <Card className="border border-border/60 rounded-xl bg-card w-full group">
+      <CardContent className="p-6 lg:p-10">
         {/* Header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex-1 min-w-0">
-            <h3 className="text-xl font-bold leading-tight mb-2 group-hover:text-primary transition-colors">
-              <Link to={`/${fund.id}`} className="block" onClick={() => window.scrollTo(0, 0)}>
-                {fund.name}
-              </Link>
-            </h3>
-            <div className="flex items-center gap-2">
-              {isGVEligible && (
-                <Badge variant="default" className="text-xs font-medium">
-                  GV Eligible
-                </Badge>
-              )}
-              <Badge 
-                variant={fund.fundStatus === 'Open' ? 'default' : fund.fundStatus === 'Closing Soon' ? 'destructive' : 'secondary'} 
-                className="text-xs"
-              >
-                {fund.fundStatus}
-              </Badge>
-            </div>
-          </div>
-          <DataFreshnessIndicator fund={fund} variant="compact" />
+        <div className="flex items-start justify-between mb-3">
+      <div className="flex items-start gap-4 flex-1">
+        <CompanyLogo managerName={fund.managerName} size="sm" className="mt-1" />
+        <div className="flex-1">
+          <Link to={`/${fund.id}`} className="block" onClick={() => window.scrollTo(0, 0)}>
+            <h2 className="text-[28px] font-semibold text-foreground mb-3 tracking-tight">
+              {fund.name}
+            </h2>
+          </Link>
+        <div className="flex items-center gap-2 flex-wrap">
+          {fund.isVerified && (
+            <VerificationTooltip isVerified={true} />
+          )}
+          {fund.isVerified && isGVEligible && (
+            <TooltipProvider>
+              <GVBadge variant="card" />
+            </TooltipProvider>
+          )}
+          <Badge 
+            variant="outline"
+            className="bg-muted/40 text-muted-foreground border-border/50 px-2.5 py-0.5 text-[12px] font-medium"
+          >
+            {fund.fundStatus}
+          </Badge>
+          <DataVerifiedBadge 
+            lastVerifiedDate={fund.lastDataReviewDate || fund.dateModified} 
+            variant="inline" 
+          />
+        </div>
+        </div>
+      </div>
         </div>
         
-        {/* Description */}
-        <p className="text-muted-foreground mb-6 line-clamp-2">{fund.description}</p>
-        
-        {/* Key Metrics Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-          {/* Minimum Investment */}
-          <div className="bg-gradient-to-br from-primary/10 to-primary/5 p-4 rounded-xl border border-primary/20">
-            <div className="flex items-center gap-2 mb-2">
-              <Euro className="w-4 h-4 text-primary" />
-              <span className="text-xs font-semibold text-muted-foreground tracking-wide">MINIMUM INVESTMENT</span>
-            </div>
-            <p className="text-2xl font-bold text-primary">
-              €{fund.minimumInvestment?.toLocaleString() || 'Not specified'}
-            </p>
-          </div>
-          
-          {/* Target Return */}
-          <div className="bg-gradient-to-br from-accent/10 to-accent/5 p-4 rounded-xl border border-accent/20">
-            <div className="flex items-center gap-2 mb-2">
-              <PieChart className="w-4 h-4 text-accent" />
-              <span className="text-xs font-semibold text-muted-foreground tracking-wide">TARGET ANNUAL RETURN</span>
-            </div>
-            <p className="text-2xl font-bold text-accent">
-              {getReturnTargetDisplay(fund)}
-            </p>
-          </div>
-        </div>
+        {/* Strategy Tag */}
+        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/80 mb-2 block">
+          {fund.category}
+        </span>
 
-        {/* Structure & Redemption */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div>
-            <h4 className="text-xs font-semibold text-muted-foreground tracking-wide mb-2">FUND STRUCTURE</h4>
-            <div className="flex items-center gap-2">
-              <Badge variant={getFundType(fund) === 'Closed-End' ? "outline" : "secondary"} className="font-medium">
-                {getFundType(fund) === 'Open-Ended' ? "Open-ended" : "Closed-ended"}
-              </Badge>
-              {getFundType(fund) === 'Closed-End' && fund.term > 0 && (
-                <span className="text-sm text-muted-foreground">({fund.term} years)</span>
-              )}
-            </div>
+        {/* Description */}
+        <p className="text-[14px] leading-relaxed text-muted-foreground mb-4 line-clamp-2 max-w-[85%]">
+          {fund.description}
+        </p>
+        
+        {/* Technical Summary Bar - Compact version for list view */}
+        <div className="mb-4">
+          <TechnicalSummaryBar fund={fund} variant="compact" />
+        </div>
+        {/* Key Metrics Row - 3 Equal Columns */}
+        <div className="grid grid-cols-3 divide-x divide-border/40 border border-border/40 rounded-lg bg-muted/10 mb-6">
+          {/* Column 1: Minimum Investment */}
+          <div className="p-4 text-center">
+            <span className="text-[11px] uppercase tracking-wider text-muted-foreground block mb-1">
+              Min. Investment
+            </span>
+            <span className="text-lg font-semibold text-foreground">
+              {formatMinimumInvestment(fund.minimumInvestment)}
+            </span>
           </div>
           
-          <div>
-            <h4 className="text-xs font-semibold text-muted-foreground tracking-wide mb-2">REDEMPTION TERMS</h4>
-            {fund.redemptionTerms ? (
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium text-foreground">{fund.redemptionTerms.frequency}</span>
-                  {!fund.redemptionTerms.redemptionOpen && (
-                    <Badge variant="destructive" className="text-xs">Closed</Badge>
-                  )}
-                </div>
-                {fund.redemptionTerms.noticePeriod && fund.redemptionTerms.noticePeriod > 0 && (
-                  <p className="text-xs text-muted-foreground">
-                    {fund.redemptionTerms.noticePeriod} days notice required
-                  </p>
-                )}
-              </div>
-            ) : (
-              <span className="text-sm text-muted-foreground">End of term only</span>
-            )}
+          {/* Column 2: Dynamic - Target Return OR Lock-up OR Risk */}
+          <div className="p-4 text-center">
+            {getMiddleColumnContent()}
+          </div>
+          
+          {/* Column 3: Redemption Terms */}
+          <div className="p-4 text-center">
+            <span className="text-[11px] uppercase tracking-wider text-muted-foreground block mb-1">
+              Redemption
+            </span>
+            <span className="text-lg font-semibold text-foreground">
+              {fund.redemptionTerms?.frequency || 'End of Term'}
+            </span>
           </div>
         </div>
 
         {/* Footer: Fees & Actions */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-4 border-t border-border/50">
-          {/* Fees */}
-          <div className="text-sm text-muted-foreground">
-            <span>Management: <strong className="text-foreground">{fund.managementFee}%</strong></span>
-            <span className="mx-3">•</span>
-            <span>Performance: <strong className="text-foreground">{fund.performanceFee}%</strong></span>
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          {/* Fees - Cleaner format */}
+          <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
+            <span className="font-medium">Fees:</span>
+            <span>
+              <span className="font-semibold text-foreground">{formatManagementFee(fund.managementFee)}</span>
+              <span className="mx-1">Mgmt</span>
+              <span className="text-muted-foreground/60">·</span>
+              <span className="ml-1 font-semibold text-foreground">{formatPerformanceFee(fund.performanceFee)}</span>
+              <span className="mx-1">Perf</span>
+            </span>
           </div>
           
           {/* Action Buttons */}
-          <div className="flex items-center gap-2">
-            <SaveFundButton fundId={fund.id} showText={false} size="sm" />
-            <IntroductionButton variant="compact" />
-            <Button 
-              variant={isSelected ? "default" : "outline"}
-              size="sm"
-              className="font-medium"
-              onClick={handleCompareClick}
-            >
-              <GitCompare className="mr-1.5 h-3.5 w-3.5" />
-              {isSelected ? 'Added' : 'Compare'}
-            </Button>
+          <div className="flex items-center gap-3">
+            <Link to={`/${fund.id}#enquiry-form`} onClick={() => window.scrollTo(0, 0)}>
+              <Button className="font-medium h-11">
+                <Mail className="mr-1.5 h-4 w-4" />
+                Get in Touch
+              </Button>
+            </Link>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <SaveFundButton fundId={fund.id} showText={false} size="md" variant="outline" className="h-11 w-11" />
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>Save fund</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="outline"
+                  size="icon"
+                  onClick={handleCompareClick}
+                  className={`h-11 w-11 ${isSelected ? 'bg-primary text-primary-foreground' : ''}`}
+                >
+                  <GitCompare className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{isSelected ? 'Remove from comparison' : 'Add to comparison'}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link to={`/${fund.id}`} onClick={() => window.scrollTo(0, 0)}>
+                  <Button 
+                    variant="outline"
+                    size="icon"
+                    className="h-11 w-11"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>View details</TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </CardContent>

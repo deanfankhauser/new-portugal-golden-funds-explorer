@@ -1,5 +1,129 @@
 import { SEOData } from '../types/seo';
 
+/**
+ * Generate comprehensive meta tags HTML for SSR/SSG
+ * This function creates all SEO-critical meta tags that will be injected into static HTML
+ * 
+ * @param seoData - SEO data from ConsolidatedSEOService
+ * @returns HTML string containing all meta tags
+ */
+/**
+ * Extract FAQ data from structured data (handles both single schema and @graph arrays)
+ * @param structuredData - Structured data from SEOData
+ * @returns FAQ data or null if no FAQPage found
+ */
+function extractFAQData(structuredData: any): { mainEntity: any[] } | null {
+  if (!structuredData) return null;
+  
+  // Handle @graph array (Phase 2 breadcrumb implementation)
+  if (structuredData['@graph'] && Array.isArray(structuredData['@graph'])) {
+    const faqPage = structuredData['@graph'].find((schema: any) => schema['@type'] === 'FAQPage');
+    if (faqPage && faqPage.mainEntity) {
+      return { mainEntity: faqPage.mainEntity };
+    }
+  }
+  
+  // Handle array of schemas (Phase 1 implementation)
+  if (Array.isArray(structuredData)) {
+    const faqPage = structuredData.find((schema: any) => schema['@type'] === 'FAQPage');
+    if (faqPage && faqPage.mainEntity) {
+      return { mainEntity: faqPage.mainEntity };
+    }
+  }
+  
+  // Handle single FAQPage schema
+  if (structuredData['@type'] === 'FAQPage' && structuredData.mainEntity) {
+    return { mainEntity: structuredData.mainEntity };
+  }
+  
+  return null;
+}
+
+/**
+ * Generate hidden FAQ HTML content for search engine crawlers
+ * DISABLED: We only use JSON-LD FAQPage schema in <head>, duplicate microdata removed
+ * @param faqData - FAQ data extracted from structured data
+ * @returns Empty string (duplicate microdata no longer needed)
+ */
+function generateFAQContentHTML(faqData: { mainEntity: any[] }): string {
+  // Return empty string - JSON-LD FAQPage schema in head is sufficient
+  // Duplicate microdata can confuse crawlers and is unnecessary
+  return '';
+}
+
+export function generateMetaTagsHTML(seoData: SEOData): string {
+  const title = seoData.title || 'Portugal Golden Visa Investment Funds | Eligible Investments 2025';
+  const description = seoData.description || 'Compare and discover the best Golden Visa-eligible investment funds in Portugal. Expert analysis, comprehensive data, and personalized recommendations.';
+  const url = seoData.url || 'https://funds.movingto.com';
+  
+  // Strip query params from canonical URL for clean indexing
+  const canonicalUrl = (() => {
+    try {
+      const rawCanonical = seoData.canonical || url;
+      const urlObj = new URL(rawCanonical);
+      urlObj.search = ''; // Remove query params
+      urlObj.hash = ''; // Remove fragment
+      // Remove trailing slashes (except homepage)
+      if (urlObj.pathname.endsWith('/') && urlObj.pathname !== '/') {
+        urlObj.pathname = urlObj.pathname.slice(0, -1);
+      }
+      return urlObj.toString();
+    } catch {
+      return seoData.canonical || url;
+    }
+  })();
+  
+  const keywords = seoData.keywords?.join(', ') || 'Portugal Golden Visa, investment funds, Portuguese residency, Golden Visa funds 2025, fund comparison, investment migration';
+  const robots = seoData.robots || 'index, follow, max-image-preview:large';
+  
+  // Determine Open Graph type based on URL and structured data
+  const ogType = (() => {
+    if (url.includes('/compare/') && url.includes('-vs-')) return 'article';
+    
+    // Fund pages use 'website' type (not 'product') per SEO requirements
+    // Only Person schemas use 'profile' type
+    const structuredData = seoData.structuredData;
+    if (structuredData) {
+      if (Array.isArray(structuredData)) {
+        const hasPerson = structuredData.some((s: any) => s['@type'] === 'Person');
+        if (hasPerson) return 'profile';
+      } else {
+        if (structuredData['@type'] === 'Person') return 'profile';
+      }
+    }
+    
+    // All fund pages default to 'website' type
+    return 'website';
+  })();
+  
+  return `
+  <!-- Critical SEO Meta Tags - Injected during SSR/SSG Build -->
+  <title>${title}</title>
+  <meta name="description" content="${description}" />
+  
+  <!-- Open Graph Meta Tags for Social Sharing -->
+  <meta property="og:title" content="${title}" />
+  <meta property="og:description" content="${description}" />
+  <meta property="og:url" content="${url}" />
+  <meta property="og:type" content="${ogType}" />
+  <meta property="og:site_name" content="Movingto Funds" />
+  <meta property="og:image" content="https://funds.movingto.com/og-default.png" />
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@movingtoio" />
+  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:description" content="${description}" />
+  <meta name="twitter:image" content="https://funds.movingto.com/og-default.png" />
+  
+  <!-- SEO Enhancement Meta Tags -->
+  <link rel="canonical" href="${canonicalUrl}" />
+  <meta name="keywords" content="${keywords}" />
+  <meta name="author" content="Dean Fankhauser, CEO - Movingto" />
+  <meta name="robots" content="${robots}" />
+  `;
+}
+
 export function generateHTMLTemplate(
   appHtml: string, 
   seoData: SEOData, 
@@ -38,39 +162,27 @@ export function generateHTMLTemplate(
   const validatedCssFiles = cssFiles;
   const validatedJsFiles = jsFiles;
 
+  // Ensure a single H1 exists for SEO if the app content lacks one (SSR fallback)
+  const contentWithH1 = appHtml && appHtml.includes('<h1')
+    ? appHtml
+    : `<main><h1 class="text-2xl font-bold text-foreground mb-4">${title}</h1>${appHtml || ''}</main>`;
+
+  // Generate comprehensive meta tags using the dedicated function
+  const metaTagsHTML = generateMetaTagsHTML(seoData);
+  
+  // Extract and generate FAQ content for crawlers if FAQPage schema exists
+  const faqData = extractFAQData(structuredData);
+  const faqContentHTML = faqData ? generateFAQContentHTML(faqData) : '';
+  
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <base href="/" />
+  ${metaTagsHTML}
   
-  <!-- Critical SEO Meta Tags -->
-  <title>${title}</title>
-  <meta name="description" content="${description}" />
-  <meta property="og:title" content="${title}" />  
-  <meta property="og:description" content="${description}" />
-  <meta property="og:url" content="${url}" />
-  <meta property="og:type" content="${(() => {
-    // Align og:type logic with ConsolidatedSEOService
-    if (url.includes('/compare/') && url.includes('-vs-')) return 'article';
-    if (seoData.structuredData?.['@type'] === 'FinancialProduct') return 'product';
-    if (seoData.structuredData?.['@type'] === 'Person') return 'profile';
-    return 'website';
-  })()}" />
-  <meta property="og:site_name" content="Movingto - Portugal Golden Visa Funds" />
-  <meta property="og:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@movingtoio" />
-  <meta name="twitter:title" content="${title}" />
-  <meta name="twitter:description" content="${description}" />
-  <meta name="twitter:image" content="https://pbs.twimg.com/profile_images/1763893053666766848/DnlafcQV_400x400.jpg" />
-  <link rel="canonical" href="${url}" />
-  
-  <!-- Enhanced Meta Tags -->
-  <meta name="keywords" content="${seoData.keywords?.join(', ') || 'Portugal Golden Visa, investment funds, Portuguese residency, Golden Visa funds 2025, fund comparison, investment migration'}" />
-  <meta name="author" content="Dean Fankhauser, CEO - Movingto" />
-  <meta name="robots" content="${seoData.robots || 'index, follow, max-image-preview:large'}" />
+  <!-- Additional Meta Tags -->
   <meta name="theme-color" content="#C5A46D" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -84,17 +196,20 @@ export function generateHTMLTemplate(
   ${seoData.helmetData?.link || ''}
   ${seoData.helmetData?.script || ''}
   
-  <!-- Critical Resource Preconnects -->
+  <!-- Critical Resource Preconnects - Establish early connections to improve LCP -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="preconnect" href="https://server.fillout.com" crossorigin>
+  <link rel="preconnect" href="https://bkmvydnfhmkjnuszroim.supabase.co" crossorigin>
   
   <!-- Asset Preloads -->
   ${validatedCssFiles.length > 0 ? `<link rel="preload" href="/assets/${validatedCssFiles[0]}" as="style" />` : ''}
   ${validatedJsFiles.map(js => `  <link rel="modulepreload" href="/assets/${js}" />`).join('\n')}
   
-  <!-- Google Fonts - Load immediately -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Google Fonts - Non-blocking load with fallback -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"></noscript>
   
   <!-- Favicon -->
   <link rel="icon" href="/lovable-uploads/3965a727-dc95-4cfe-bc27-546bdd2397f3.png" type="image/png">
@@ -211,7 +326,8 @@ export function generateHTMLTemplate(
   ${validatedCssFiles.map(css => `  <link rel="stylesheet" href="/assets/${css}" />`).join('\n')}
 </head>
 <body>
-  <div id="root">${appHtml}</div>
+  <div id="root">${contentWithH1}</div>
+  ${faqContentHTML}
   
   <!-- Built JavaScript Files - Only load main entry -->
   ${(() => {
@@ -219,10 +335,19 @@ export function generateHTMLTemplate(
     return mainEntry ? `  <script type="module" src="/assets/${mainEntry}"></script>` : '';
   })()}
   
-  <!-- Google tag (gtag.js) - Load only in production -->
+  <!-- Google tag (gtag.js) - Deferred load after page interactive -->
   <script>
     if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-      (function() {
+      // Defer analytics until after page is interactive to avoid blocking FCP
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(function() { loadGoogleAnalytics(); }, { timeout: 2000 });
+      } else {
+        window.addEventListener('load', function() {
+          setTimeout(loadGoogleAnalytics, 1000);
+        });
+      }
+      
+      function loadGoogleAnalytics() {
         var script = document.createElement('script');
         script.async = true;
         script.src = 'https://www.googletagmanager.com/gtag/js?id=G-BE3HZBVG9D';
@@ -238,7 +363,7 @@ export function generateHTMLTemplate(
         gtag('config', 'G-BE3HZBVG9D', {
           transport_type: 'beacon'
         });
-      })();
+      }
     }
   </script>
 </body>

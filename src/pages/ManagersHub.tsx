@@ -1,20 +1,100 @@
-
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PageSEO from '../components/common/PageSEO';
 import ManagersList from '../components/managers-hub/ManagersList';
 import ManagersHubHeader from '../components/managers-hub/ManagersHubHeader';
 import ManagersHubBreadcrumbs from '../components/managers-hub/ManagersHubBreadcrumbs';
-import { getAllFundManagers } from '../data/services/managers-service';
+import ManagersSearch from '../components/managers-hub/ManagersSearch';
+import { getAllFundManagers, getAllApprovedManagers } from '../data/services/managers-service';
+import { useRealTimeFunds } from '../hooks/useRealTimeFunds';
+import FundListSkeleton from '../components/common/FundListSkeleton';
+import { Fund } from '../data/types/funds';
+import { EnrichedManager } from '../components/managers-hub/ManagerCard';
+import { getTotalFundSizeByManager } from '../data/services/managers-service';
+interface ManagersHubProps {
+  initialFunds?: Fund[];
+}
 
-const ManagersHub = () => {
+const ManagersHub: React.FC<ManagersHubProps> = ({ initialFunds }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const { funds: allFundsData, loading: isLoading } = useRealTimeFunds({
+    initialData: initialFunds
+  });
+  const allDatabaseFunds = allFundsData || [];
+  
   useEffect(() => {
     // Scroll to top on page load
     window.scrollTo(0, 0);
   }, []);
 
-  const managers = getAllFundManagers();
+  const basicManagers = getAllFundManagers(allDatabaseFunds);
+
+  // Fetch manager profiles for logos and additional data
+  const { data: managerProfiles } = useQuery({
+    queryKey: ['approved-managers'],
+    queryFn: getAllApprovedManagers,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Create lookup map from profiles by company_name
+  const profileLookup = useMemo(() => {
+    const map = new Map<string, NonNullable<typeof managerProfiles>[number]>();
+    (managerProfiles || []).forEach(profile => {
+      if (profile.company_name) {
+        map.set(profile.company_name.toLowerCase().trim(), profile);
+      }
+    });
+    return map;
+  }, [managerProfiles]);
+
+  // Enrich managers with profile data
+  const enrichedManagers: EnrichedManager[] = useMemo(() => {
+    return basicManagers.map(manager => {
+      const profile = profileLookup.get(manager.name.toLowerCase().trim());
+      const totalFundSize = getTotalFundSizeByManager(allDatabaseFunds, manager.name);
+      
+      return {
+        name: manager.name,
+        fundsCount: manager.fundsCount,
+        totalFundSize,
+        logoUrl: profile?.logo_url || undefined,
+        description: profile?.description || undefined,
+        city: profile?.city || undefined,
+        country: profile?.country || undefined,
+        aum: profile?.assets_under_management || undefined,
+        foundedYear: profile?.founded_year || undefined,
+        isVerified: !!profile,
+      };
+    });
+  }, [basicManagers, profileLookup, allDatabaseFunds]);
+
+  // Filter managers by search query
+  const filteredManagers = useMemo(() => {
+    if (!searchQuery.trim()) return enrichedManagers;
+    
+    const query = searchQuery.toLowerCase().trim();
+    return enrichedManagers.filter(manager => 
+      manager.name.toLowerCase().includes(query) ||
+      manager.city?.toLowerCase().includes(query) ||
+      manager.country?.toLowerCase().includes(query)
+    );
+  }, [enrichedManagers, searchQuery]);
+
+  // Only show loading when no initial data was provided
+  if (isLoading && !initialFunds) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header />
+        <main className="container mx-auto px-4 py-8 flex-1">
+          <FundListSkeleton count={6} />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -25,7 +105,13 @@ const ManagersHub = () => {
       <main className="container mx-auto px-4 py-8 flex-1">
         <ManagersHubBreadcrumbs />
         <ManagersHubHeader />
-        <ManagersList managers={managers} />
+        <ManagersSearch 
+          value={searchQuery}
+          onChange={setSearchQuery}
+          resultCount={filteredManagers.length}
+          totalCount={enrichedManagers.length}
+        />
+        <ManagersList managers={filteredManagers} />
       </main>
       
       <Footer />

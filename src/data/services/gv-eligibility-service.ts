@@ -1,11 +1,10 @@
 import { Fund, FundCategory, FundTag } from '../types/funds';
 
 // Golden Visa eligibility rules as of October 2023
-const GV_INELIGIBLE_CATEGORIES: FundCategory[] = ['Real Estate'];
+// Real Estate category removed from FundCategory type entirely
+const GV_INELIGIBLE_CATEGORIES: FundCategory[] = [];
 
-const GV_INELIGIBLE_TAGS: FundTag[] = [
-  'Real Estate'
-];
+const GV_INELIGIBLE_TAGS: FundTag[] = [];
 
 // Check if a fund is Golden Visa eligible
 export const isFundGVEligible = (fund: Fund): boolean => {
@@ -30,9 +29,9 @@ export const getGVEligibleFunds = (funds: Fund[]): Fund[] => {
   return funds.filter(isFundGVEligible);
 };
 
-// Get GV eligibility status message
+// Get GV eligibility status message (compliance-safe language)
 export const getGVEligibilityMessage = (isEligible: boolean): string => {
-  return isEligible ? 'Golden Visa Eligible' : 'Not Golden Visa Eligible';
+  return isEligible ? 'GV-intended (manager-stated)' : 'Not marketed for Golden Visa';
 };
 
 // Get GV eligibility warning for categories/tags

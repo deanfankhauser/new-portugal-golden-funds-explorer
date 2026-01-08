@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ClipboardCheck, Search, Lightbulb, ArrowRight, Filter, Sparkles, X, Calculator } from 'lucide-react';
-import { FundTag } from '../../data/funds';
+import { FundTag } from '../../data/types/funds';
 
 interface EmptyFundsStateProps {
   setSelectedTags: (tags: FundTag[]) => void;
@@ -19,10 +19,10 @@ const EmptyFundsState: React.FC<EmptyFundsStateProps> = ({
   searchQuery = ''
 }) => {
   const popularSuggestions = [
-    { label: 'Real Estate Funds', tag: 'Real Estate' as FundTag },
+    { label: 'Infrastructure Funds', tag: 'Infrastructure' as FundTag },
     { label: 'Low Risk Options', tag: 'Low-risk' as FundTag },
-    { label: 'Fund minimums', tag: 'Fund subscription minimums' as FundTag },
-    { label: 'Currently Open', tag: 'Open' as FundTag },
+    { label: 'Low Minimums (€100k-250k)', tag: 'Min. subscription €100k–250k' as FundTag },
+    { label: 'Open-Ended Funds', tag: 'Open Ended' as FundTag },
   ];
 
   const handleSuggestionClick = (tag: FundTag) => {
@@ -69,15 +69,37 @@ const EmptyFundsState: React.FC<EmptyFundsStateProps> = ({
 
         {/* Action Buttons */}
         <div className="space-y-4">
-          <Link to="/roi-calculator">
-            <Button className="w-full btn-primary-enhanced text-base h-14 font-semibold text-lg
-                             bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary
-                             shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-                    aria-label="Use ROI calculator for investment calculations">
+          {hasActiveFilters && (
+            <Button 
+              variant="default"
+              size="lg"
+              className="w-full shadow-lg hover:shadow-xl"
+              onClick={handleClearAll}
+            >
               <div className="flex items-center gap-3">
-                 <div className="p-1 bg-primary-foreground/20 rounded-lg">
-                   <Calculator className="h-6 w-6" aria-hidden="true" />
-                 </div>
+                <div className="p-1 bg-primary-foreground/20 rounded-lg">
+                  <X className="h-6 w-6" aria-hidden="true" />
+                </div>
+                <div className="text-left">
+                  <div className="font-bold">View All Funds</div>
+                  <div className="text-sm opacity-90">Clear all filters and see everything</div>
+                </div>
+              </div>
+              <ArrowRight className="h-5 w-5 ml-auto" />
+            </Button>
+          )}
+          
+          <Link to="/roi-calculator">
+            <Button 
+              variant={hasActiveFilters ? "outline" : "default"}
+              size="lg"
+              className="w-full shadow-lg hover:shadow-xl"
+              aria-label="Use ROI calculator for investment calculations"
+            >
+              <div className="flex items-center gap-3">
+                <div className={`p-1 rounded-lg ${hasActiveFilters ? 'bg-muted' : 'bg-primary-foreground/20'}`}>
+                  <Calculator className="h-6 w-6" aria-hidden="true" />
+                </div>
                 <div className="text-left">
                   <div className="font-bold">Calculate Returns</div>
                   <div className="text-sm opacity-90">Investment planning tool</div>
@@ -86,17 +108,6 @@ const EmptyFundsState: React.FC<EmptyFundsStateProps> = ({
               <ArrowRight className="h-5 w-5 ml-auto" />
             </Button>
           </Link>
-          
-          {hasActiveFilters && (
-            <Button 
-              variant="outline" 
-              className="w-full text-base h-12 font-medium btn-secondary-enhanced border-2"
-              onClick={handleClearAll}
-            >
-              <X className="mr-2 h-5 w-5" />
-              Clear All Filters & Start Over
-            </Button>
-          )}
         </div>
 
         {/* Smart Suggestions */}

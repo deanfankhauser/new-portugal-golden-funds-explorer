@@ -11,9 +11,11 @@ const RecentlyViewedContext = React.createContext<RecentlyViewedContextType | un
 
 export const RecentlyViewedProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [recentlyViewed, setRecentlyViewed] = React.useState<Fund[]>([]);
+  const [isHydrated, setIsHydrated] = React.useState(false);
 
-  // Load from localStorage on mount
+  // Load from localStorage only after hydration
   React.useEffect(() => {
+    setIsHydrated(true);
     const stored = localStorage.getItem('recentlyViewedFunds');
     if (stored) {
       try {
@@ -24,10 +26,12 @@ export const RecentlyViewedProvider: React.FC<{ children: React.ReactNode }> = (
     }
   }, []);
 
-  // Save to localStorage whenever recentlyViewed changes
+  // Save to localStorage whenever recentlyViewed changes (but only after hydration)
   React.useEffect(() => {
-    localStorage.setItem('recentlyViewedFunds', JSON.stringify(recentlyViewed));
-  }, [recentlyViewed]);
+    if (isHydrated) {
+      localStorage.setItem('recentlyViewedFunds', JSON.stringify(recentlyViewed));
+    }
+  }, [recentlyViewed, isHydrated]);
 
   const addToRecentlyViewed = (fund: Fund) => {
     setRecentlyViewed(prev => {
@@ -47,7 +51,16 @@ export const RecentlyViewedProvider: React.FC<{ children: React.ReactNode }> = (
 
 export const useRecentlyViewed = () => {
   const context = React.useContext(RecentlyViewedContext);
+  
+  // SSR-safe: Return empty state if no provider (during SSR)
   if (context === undefined) {
+    if (typeof window === 'undefined') {
+      // During SSR, return empty recently viewed
+      return {
+        recentlyViewed: [],
+        addToRecentlyViewed: () => {}
+      };
+    }
     throw new Error('useRecentlyViewed must be used within a RecentlyViewedProvider');
   }
   return context;

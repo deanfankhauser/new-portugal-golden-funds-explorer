@@ -5,9 +5,10 @@ import { buildContactUrl } from "../utils/urlHelpers";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Menu, Calculator, ClipboardCheck, Mail, ExternalLink, Users, FileText, Heart, User, Settings, LogOut, Building, TrendingUp, Shield, LogIn } from 'lucide-react';
+import { Menu, Calculator, ClipboardCheck, Mail, ExternalLink, Users, FileText, Star, User, Settings, LogOut, Building, TrendingUp, Shield, LogIn, Sparkles, Trophy } from 'lucide-react';
 import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
-import { supabase } from '@/integrations/supabase/client';
+
+const getSupabase = async () => (await import('@/integrations/supabase/client')).supabase;
 
 const MobileNavigation = () => {
   const [open, setOpen] = React.useState(false);
@@ -27,12 +28,13 @@ const MobileNavigation = () => {
   // Check admin status
   useEffect(() => {
     const checkAdminStatus = async () => {
-      if (!user?.id) {
+      if (!user?.id || typeof window === 'undefined') {
         setIsAdmin(false);
         return;
       }
 
       try {
+        const supabase = await getSupabase();
         const { data, error } = await supabase
           .from('admin_users')
           .select('role')
@@ -121,7 +123,7 @@ const MobileNavigation = () => {
                 Account
               </h3>
               <div className="space-y-2">
-                <Link to="/investor-auth" onClick={closeMenu}>
+                <Link to="/auth" onClick={closeMenu}>
                   <Button variant="ghost" className="w-full justify-start gap-3 h-12">
                     <LogIn className="h-5 w-5" />
                     <span>Login / Sign Up</span>
@@ -159,8 +161,8 @@ const MobileNavigation = () => {
               <div className="space-y-2">
                 <Link to="/saved-funds" onClick={closeMenu}>
                   <Button variant="ghost" className="w-full justify-start gap-3 h-12">
-                    <Heart className="h-5 w-5" />
-                    <span>Saved Funds</span>
+                    <Star className="h-5 w-5" />
+                    <span>Shortlist</span>
                   </Button>
                 </Link>
                 <Link to="/account-settings" onClick={closeMenu}>
@@ -204,6 +206,12 @@ const MobileNavigation = () => {
               Tools
             </h3>
             <div className="space-y-2">
+              <Link to="/fund-matcher" onClick={closeMenu}>
+                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
+                  <Sparkles className="h-5 w-5" />
+                  <span>Fund Matcher</span>
+                </Button>
+              </Link>
               <Link to="/roi-calculator" onClick={closeMenu}>
                 <Button variant="ghost" className="w-full justify-start gap-3 h-12">
                   <Calculator className="h-5 w-5" />
@@ -239,6 +247,41 @@ const MobileNavigation = () => {
                   <span>Tags</span>
                 </Button>
               </Link>
+              <Link to="/verified-funds" onClick={closeMenu}>
+                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
+                  <ClipboardCheck className="h-5 w-5 text-success" />
+                  <span>Verified Funds</span>
+                </Button>
+              </Link>
+              <Link to="/best-portugal-golden-visa-funds" onClick={closeMenu}>
+                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
+                  <Trophy className="h-5 w-5 text-amber-500" />
+                  <span>Best Funds 2026</span>
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Compare & Shortlist Section */}
+          <div>
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+              Compare & Save
+            </h3>
+            <div className="space-y-2">
+              <Link to="/compare" onClick={closeMenu}>
+                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
+                  <FileText className="h-5 w-5" />
+                  <span>Compare Funds</span>
+                </Button>
+              </Link>
+              <Link to="/saved-funds" onClick={closeMenu}>
+                <Button variant="ghost" className="w-full justify-start gap-3 h-12">
+                  <Star className="h-5 w-5" />
+                  <span>Shortlist</span>
+                </Button>
+              </Link>
             </div>
           </div>
 
@@ -249,21 +292,29 @@ const MobileNavigation = () => {
             <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
               Support
             </h3>
-            <Button 
-              asChild
-              variant="ghost" 
-              className="w-full justify-start gap-3 h-12"
-            >
-              <a 
-                href={buildContactUrl('mobile-nav')}
-                target="_blank" 
-                rel="noopener noreferrer"
-                onClick={closeMenu}
+            <div className="space-y-2">
+              <Link to="/contact" onClick={closeMenu}>
+                <Button variant="default" className="w-full justify-start gap-3 h-12">
+                  <Mail className="h-5 w-5" />
+                  <span>Request an Intro</span>
+                </Button>
+              </Link>
+              <Button 
+                asChild
+                variant="ghost" 
+                className="w-full justify-start gap-3 h-12"
               >
-                <Mail className="h-5 w-5" />
-                <span>Get in Touch</span>
-              </a>
-            </Button>
+                <a 
+                  href={buildContactUrl('mobile-nav')}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  onClick={closeMenu}
+                >
+                  <Mail className="h-5 w-5" />
+                  <span>Get in Touch</span>
+                </a>
+              </Button>
+            </div>
           </div>
         </div>
       </SheetContent>

@@ -12,131 +12,94 @@ if (typeof window !== 'undefined' && !window.React) {
 
 export { TooltipProvider };
 
-export const loadComponents = async () => {
+export const loadComponents = async (only?: string[]) => {
   try {
-    const isDev = typeof process !== 'undefined' && process.env.NODE_ENV === 'development';
-    if (isDev) {
-      console.log('🔥 ComponentLoader: Starting component loading...');
+    const isSSG = typeof process !== 'undefined';
+    const isDebug = isSSG && process.env.SSG_DEBUG === '1';
+    
+    if (isDebug) {
+      console.log('\n🔥 ComponentLoader: Starting component loading...');
+      console.log('🔥 ComponentLoader: Environment:', {
+        isSSG,
+        nodeEnv: process.env.NODE_ENV,
+        ssgDebug: process.env.SSG_DEBUG
+      });
     }
     
-    const componentPromises = {
-      Index: import('../pages/Index').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load Index:', err.message);
-        return null;
-      }),
-      FundIndex: import('../pages/FundIndex').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load FundIndex:', err.message);
-        return null;
-      }),
-      FundDetails: import('../pages/FundDetails').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load FundDetails:', err.message);
-        return null;
-      }),
-      TagsHub: import('../pages/TagsHub').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load TagsHub:', err.message);
-        return null;
-      }),
-      TagPage: import('../pages/TagPage').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load TagPage:', err.message);
-        return null;
-      }),
-      CategoriesHub: import('../pages/CategoriesHub').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load CategoriesHub:', err.message);
-        return null;
-      }),
-      CategoryPage: import('../pages/CategoryPage').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load CategoryPage:', err.message);
-        return null;
-      }),
-      ManagersHub: import('../pages/ManagersHub').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load ManagersHub:', err.message);
-        return null;
-      }),
-      FundManager: import('../pages/FundManager').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load FundManager:', err.message);
-        return null;
-      }),
-      About: import('../pages/About').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load About:', err.message);
-        return null;
-      }),
-      Disclaimer: import('../pages/Disclaimer').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load Disclaimer:', err.message);
-        return null;
-      }),
-      Privacy: import('../pages/Privacy').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load Privacy:', err.message);
-        return null;
-      }),
-      ComparisonPage: import('../pages/ComparisonPage').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load ComparisonPage:', err.message);
-        return null;
-      }),
-      ComparisonsHub: import('../pages/ComparisonsHub').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load ComparisonsHub:', err.message);
-        return null;
-      }),
-      FAQs: import('../pages/FAQs').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load FAQs:', err.message);
-        return null;
-      }),
-      ROICalculator: import('../pages/ROICalculator').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load ROICalculator:', err.message);
-        return null;
-      }),
-      FundComparison: import('../pages/FundComparison').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load FundComparison:', err.message);
-        return null;
-      }),
-      FundAlternatives: import('../pages/FundAlternatives').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load FundAlternatives:', err.message);
-        return null;
-      }),
-      AlternativesHub: import('../pages/AlternativesHub').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load AlternativesHub:', err.message);
-        return null;
-      }),
-      ManagerAuth: import('../pages/ManagerAuth').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load ManagerAuth:', err.message);
-        return null;
-      }),
-      InvestorAuth: import('../pages/InvestorAuth').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load InvestorAuth:', err.message);
-        return null;
-      }),
-      AccountSettings: import('../pages/AccountSettings').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load AccountSettings:', err.message);
-        return null;
-      }),
-      ResetPassword: import('../pages/ResetPassword').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load ResetPassword:', err.message);
-        return null;
-      }),
-      EmailConfirmation: import('../pages/EmailConfirmation').then(m => m.default).catch(err => {
-        console.warn('ComponentLoader: Failed to load EmailConfirmation:', err.message);
-        return null;
-      }),
+    const loaders: Record<string, () => Promise<any>> = {
+      Index: () => import('../pages/Index').then(m => m.default),
+      FundDetails: () => import('../pages/FundDetails').then(m => m.default),
+      TagsHub: () => import('../pages/TagsHub').then(m => m.default),
+      TagPage: () => import('../pages/TagPage').then(m => m.default),
+      CategoriesHub: () => import('../pages/CategoriesHub').then(m => m.default),
+      CategoryPage: () => import('../pages/CategoryPage').then(m => m.default),
+      ManagersHub: () => import('../pages/ManagersHub').then(m => m.default),
+      FundManager: () => import('../pages/FundManager').then(m => m.default),
+      About: () => import('../pages/About').then(m => m.default),
+      Disclaimer: () => import('../pages/Disclaimer').then(m => m.default),
+      Privacy: () => import('../pages/Privacy').then(m => m.default),
+      Terms: () => import('../pages/Terms').then(m => m.default),
+      CookiePolicy: () => import('../pages/CookiePolicy').then(m => m.default),
+      Contact: () => import('../pages/Contact').then(m => m.default),
+      ComparisonPage: () => import('../pages/ComparisonPage').then(m => m.default),
+      ComparisonsHub: () => import('../pages/ComparisonsHub').then(m => m.default),
+      FAQs: () => import('../pages/FAQs').then(m => m.default),
+      ROICalculator: () => import('../pages/ROICalculator').then(m => m.default),
+      FundComparison: () => import('../pages/FundComparison').then(m => m.default),
+      FundAlternatives: () => import('../pages/FundAlternatives').then(m => m.default),
+      AlternativesHub: () => import('../pages/AlternativesHub').then(m => m.default),
+      Auth: () => import('../pages/Auth').then(m => m.default),
+      AccountSettings: () => import('../pages/AccountSettings').then(m => m.default),
+      SavedFunds: () => import('../pages/SavedFunds').then(m => m.default),
+      EmailConfirmation: () => import('../pages/EmailConfirmation').then(m => m.default),
+      VerifiedFunds: () => import('../pages/VerifiedFunds').then(m => m.default),
+      VerificationProgram: () => import('../pages/VerificationProgram').then(m => m.default),
+      IRAEligibleFunds: () => import('../pages/IRAEligibleFunds').then(m => m.default),
+      TeamMemberProfile: () => import('../pages/TeamMemberProfile').then(m => m.default),
+      TeamDirectory: () => import('../pages/TeamDirectory').then(m => m.default),
+      NotFound: () => import('../pages/NotFound').then(m => m.default),
+      GonePage: () => import('../pages/GonePage').then(m => m.default),
+      FundMatcher: () => import('../pages/FundMatcher').then(m => m.default),
+      FundsPage: () => import('../pages/FundsPage').then(m => m.default),
+      BestFundsPage: () => import('../pages/BestFundsPage').then(m => m.default),
+      USCitizensFundsPage: () => import('../pages/USCitizensFundsPage').then(m => m.default),
+      FeesHub: () => import('../pages/FeesHub').then(m => m.default),
+      FeeTypePage: () => import('../pages/FeeTypePage').then(m => m.default),
+      USInvestorTaxGuide: () => import('../pages/USInvestorTaxGuide').then(m => m.default),
     };
 
-    const components = await Promise.all(Object.values(componentPromises));
-    const componentKeys = Object.keys(componentPromises);
-    
-    const loadedComponents: any = {};
-    componentKeys.forEach((key, index) => {
-      loadedComponents[key] = components[index];
-    });
+    const names = only && only.length ? only : Object.keys(loaders);
 
-    if (isDev) {
-      console.log('🔥 ComponentLoader: Component loading summary:', 
-        Object.fromEntries(
-          Object.entries(loadedComponents).map(([key, component]) => [key, !!component])
-        )
+    const loadedComponents: Record<string, any> = {};
+
+    for (const key of names) {
+      try {
+        loadedComponents[key] = await loaders[key]();
+      } catch (err: any) {
+        console.error(`❌ ComponentLoader: Failed to load ${key}`);
+        console.error('   Error:', err?.message);
+        if (isDebug) console.error('   Stack:', err?.stack);
+        loadedComponents[key] = null;
+      }
+    }
+
+    if (isDebug) {
+      const summary = Object.fromEntries(
+        names.map((key) => [key, loadedComponents[key] ? '✅' : '❌'])
       );
+      console.log('🔥 ComponentLoader: Component loading summary:');
+      Object.entries(summary).forEach(([name, status]) => {
+        console.log(`   ${status} ${name}`);
+      });
 
       const successCount = Object.values(loadedComponents).filter(Boolean).length;
-      const totalCount = Object.keys(loadedComponents).length;
+      const totalCount = names.length;
       
-      console.log(`🔥 ComponentLoader: Successfully loaded ${successCount}/${totalCount} components`);
+      console.log(`🔥 ComponentLoader: Successfully loaded ${successCount}/${totalCount} components\n`);
+      
+      if (successCount < totalCount) {
+        console.warn('⚠️  ComponentLoader: Some components failed to load - will use fallback');
+      }
     }
 
     return loadedComponents;

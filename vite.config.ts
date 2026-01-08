@@ -19,10 +19,28 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // Ensure Node.js built-in modules are not bundled for client
+  optimizeDeps: {
+    exclude: ['fs', 'path', 'crypto', 'child_process']
+  },
   build: {
     // Increase chunk size warning limit to 1000kb
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
+      // Mark Node.js modules as external to prevent CommonJS leakage
+      external: [
+        'fs',
+        'path', 
+        'crypto',
+        'child_process',
+        'stream',
+        'util',
+        'os',
+        'http',
+        'https',
+        'url',
+        'buffer'
+      ],
       output: {
         // Disable manual chunking to prevent module evaluation issues
         manualChunks: undefined,

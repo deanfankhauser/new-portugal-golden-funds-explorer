@@ -3,19 +3,67 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install",
-  "framework": "vite",
+  "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/sitemap.xml",
-      "destination": "/sitemap.xml"
+      "source": "/admin/(.*)",
+      "destination": "/index.html"
     },
     {
-      "source": "/robots.txt",
-      "destination": "/robots.txt"
+      "source": "/account/(.*)",
+      "destination": "/index.html"
     },
     {
-      "source": "/((?!assets|api|_next|favicon.ico|sitemap.xml|robots.txt).*)",
+      "source": "/auth",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/auth/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/fund-matcher",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/fund-matcher/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/my-funds",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/manage-fund/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/manage-profile/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/dashboard/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/submit-fund",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/submit-fund/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/saved-funds",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/email-confirmation",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/((?!api|_next|assets|funds/us-tax-guide|funds/us-citizens|funds/for-us-investors|funds/low-risk|funds/high-liquidity|contact|terms|cookie-policy|privacy|disclaimer|verified-funds|about|ira-401k-eligible-funds|best-portugal-golden-visa-funds|team|categories|tags|manager|compare/|comparisons|[^/]+\\.[^/]+$).*)",
       "destination": "/index.html"
     }
   ],
@@ -43,13 +91,463 @@
       ]
     },
     {
+      "source": "/tags/min.-subscription-100k250k",
+      "destination": "/tags/min-subscription-100k-250k",
+      "permanent": true
+    },
+    {
+      "source": "/tags/min.-subscription-250k350k",
+      "destination": "/tags/min-subscription-250k-350k",
+      "permanent": true
+    },
+    {
+      "source": "/tags/min.-subscription-350k500k",
+      "destination": "/tags/min-subscription-350k-500k",
+      "permanent": true
+    },
+    {
+      "source": "/tags/min.-subscription-500kplus",
+      "destination": "/tags/min-subscription-500k-plus",
+      "permanent": true
+    },
+    {
+      "source": "/tags/long-lock-up-510-years",
+      "destination": "/tags/long-lock-up-5-10-years",
+      "permanent": true
+    },
+    {
+      "source": "/tags/target-yield-35",
+      "destination": "/tags/target-yield-3-5-percent",
+      "permanent": true
+    },
+    {
+      "source": "/tags/target-yield-5",
+      "destination": "/tags/target-yield-5-percent-plus",
+      "permanent": true
+    },
+    {
+      "source": "/tags/5-dividend",
+      "destination": "/tags/dividend-paying",
+      "permanent": true
+    },
+    {
+      "source": "/tags/5-annual-yield",
+      "destination": "/tags/target-yield-5-percent-plus",
+      "permanent": true
+    },
+    {
+      "source": "/tags/3-annual-yield",
+      "destination": "/tags/target-yield-3-5-percent",
+      "permanent": true
+    },
+    {
+      "source": "/tags/1-1-5-management-fee",
+      "destination": "/tags/low-fees-less-than-1-percent-management-fee",
+      "permanent": true
+    },
+    {
+      "source": "/tags/1-1.5-management-fee",
+      "destination": "/tags/low-fees-less-than-1-percent-management-fee",
+      "permanent": true
+    },
+    {
+      "source": "/tags/1-management-fee",
+      "destination": "/tags/low-fees-less-than-1-percent-management-fee",
+      "permanent": true
+    },
+    {
+      "source": "/tags/5-year-lock-up",
+      "destination": "/tags/long-lock-up-5-10-years",
+      "permanent": true
+    },
+    {
+      "source": "/tags/dividends",
+      "destination": "/tags/dividend-paying",
+      "permanent": true
+    },
+    {
+      "source": "/tags/pfic-compliant",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/qef-eligible",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tags/bitcoin",
+      "destination": "/categories/crypto",
+      "permanent": true
+    },
+    {
+      "source": "/tags/solana",
+      "destination": "/categories/crypto",
+      "permanent": true
+    },
+    {
+      "source": "/tags/healthcare",
+      "destination": "/tags/hospitality-and-hotels",
+      "permanent": true
+    },
+    {
+      "source": "/categories/clean-energy-solar--battery-storage",
+      "destination": "/categories/clean-energy",
+      "permanent": true
+    },
+    {
+      "source": "/categories/private-equity--venture-capital",
+      "destination": "/categories/private-equity",
+      "permanent": true
+    },
+    {
+      "source": "/categories/private-debt--hybrid-instruments",
+      "destination": "/categories/debt",
+      "permanent": true
+    },
+    {
+      "source": "/manager/oxy-capital-sgoic-sa",
+      "destination": "/manager/oxy-capital",
+      "permanent": true
+    },
+    {
+      "source": "/manager/heed-capital-sgoic-sa",
+      "destination": "/manager/heed-capital",
+      "permanent": true
+    },
+    {
+      "source": "/manager/biz-capital-sgoic",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/manager/saratoga-capital-partners",
+      "destination": "/manager/saratoga-capital",
+      "permanent": true
+    },
+    {
+      "source": "/manager/Tejo%20Ventures%20%26%20Green%20One%20Capital",
+      "destination": "/manager/tejo-ventures",
+      "permanent": true
+    },
+    {
+      "source": "/fund-quiz",
+      "destination": "/fund-matcher",
+      "permanent": true
+    },
+    {
+      "source": "/team/sofia-lapa",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/team/diogo-saraiva-ponte",
+      "destination": "/team/diogo-saraiva-de-ponte",
+      "permanent": true
+    },
+    {
+      "source": "/team/antonio-pereira",
+      "destination": "/team/antnio-pereira",
+      "permanent": true
+    },
+    {
+      "source": "/team/francisco-giao",
+      "destination": "/team/francisco-gio",
+      "permanent": true
+    },
+    {
+      "source": "/team/goncalo-mendes",
+      "destination": "/team/gonalo-mendes",
+      "permanent": true
+    },
+    {
+      "source": "/team/ines-borges-de-carvalho",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/team/miguel-realista",
+      "destination": "/team/miguel-bicker-realista",
+      "permanent": true
+    },
+    {
+      "source": "/team/antonio-ferreira",
+      "destination": "/team/afonso-ferreira",
+      "permanent": true
+    },
+    {
+      "source": "/team/mariana-mello-e-castro",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/team/tomas-sa",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/privacy-policy",
+      "destination": "/privacy",
+      "permanent": true
+    },
+    {
       "source": "/funds",
-      "destination": "/index",
+      "destination": "/",
       "permanent": true
     },
     {
       "source": "/funds/",
-      "destination": "/index",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/manager/tejo-ventures-green-one-capital",
+      "destination": "/manager/tejo-ventures",
+      "permanent": true
+    },
+    {
+      "source": "/:num(\\d+)-return",
+      "destination": "/tags/:num-percent-return",
+      "permanent": true
+    },
+    {
+      "source": "/:num(\\d+)-annual-yield",
+      "destination": "/tags/:num-percent-yield",
+      "permanent": true
+    },
+    {
+      "source": "/:num(\\d+)-dividend",
+      "destination": "/tags/:num-percent-dividend",
+      "permanent": true
+    },
+    {
+      "source": "/small-cap-50m",
+      "destination": "/tags/small-cap-less-than-50m",
+      "permanent": true
+    },
+    {
+      "source": "/mid-cap",
+      "destination": "/tags/mid-cap-50-100m",
+      "permanent": true
+    },
+    {
+      "source": "/large-cap",
+      "destination": "/tags/large-cap-100m-plus",
+      "permanent": true
+    },
+    {
+      "source": "/categories/mixed",
+      "destination": "/tags/mixed",
+      "permanent": true
+    },
+    {
+      "source": "/categories/mixed-fixed-income-digital-assets",
+      "destination": "/tags/mixed",
+      "permanent": true
+    },
+    {
+      "source": "/categories/multi-asset",
+      "destination": "/tags/mixed",
+      "permanent": true
+    },
+    {
+      "source": "/categories/balanced",
+      "destination": "/tags/balanced",
+      "permanent": true
+    },
+    {
+      "source": "/categories/private-debt-hybrid-instruments",
+      "destination": "/categories/debt",
+      "permanent": true
+    },
+    {
+      "source": "/categories/private-equity-debt",
+      "destination": "/categories/debt",
+      "permanent": true
+    },
+    {
+      "source": "/categories/fixed-income-digital-assets",
+      "destination": "/tags/fixed-income",
+      "permanent": true
+    },
+    {
+      "source": "/categories/clean-energy-solar-battery-storage",
+      "destination": "/categories/clean-energy",
+      "permanent": true
+    },
+    {
+      "source": "/categories/private-equity-venture-capital",
+      "destination": "/categories/private-equity",
+      "permanent": true
+    },
+    {
+      "source": "/tags/crypto",
+      "destination": "/categories/crypto",
+      "permanent": true
+    },
+    {
+      "source": "/tags/debt",
+      "destination": "/categories/debt",
+      "permanent": true
+    },
+    {
+      "source": "/tags/private-equity",
+      "destination": "/categories/private-equity",
+      "permanent": true
+    },
+    {
+      "source": "/tags/real-estate",
+      "destination": "/categories",
+      "permanent": true
+    },
+    {
+      "source": "/categories/real-estate",
+      "destination": "/categories",
+      "permanent": true
+    },
+    {
+      "source": "/tags/venture-capital",
+      "destination": "/categories/venture-capital",
+      "permanent": true
+    },
+    {
+      "source": "/tags/golden-visa",
+      "destination": "/tags/golden-visa-eligible",
+      "permanent": true
+    },
+    {
+      "source": "/tags/equity",
+      "destination": "/tags/equities",
+      "permanent": true
+    },
+    {
+      "source": "/tags/closed-ended",
+      "destination": "/tags/closed-end-fund",
+      "permanent": true
+    },
+    {
+      "source": "/tags/lock-up",
+      "destination": "/tags/long-lock-up-5-10-years",
+      "permanent": true
+    },
+    {
+      "source": "/tags/less-than-1-percent-management-fee",
+      "destination": "/tags/low-fees-less-than-1-percent-management-fee",
+      "permanent": true
+    },
+    {
+      "source": "/tags/3-5-percent-annual-yield",
+      "destination": "/tags/target-yield-3-5-percent",
+      "permanent": true
+    },
+    {
+      "source": "/tags/greater-than-5-percent-annual-yield",
+      "destination": "/tags/target-yield-5-percent-plus",
+      "permanent": true
+    },
+    {
+      "source": "/tags/5-percent-dividend",
+      "destination": "/tags/dividend-paying",
+      "permanent": true
+    },
+    {
+      "source": "/tags/less-than-5-year-lock-up",
+      "destination": "/tags/short-lock-up-less-than-5-years",
+      "permanent": true
+    },
+    {
+      "source": "/tags/5-10-year-lock-up",
+      "destination": "/tags/long-lock-up-5-10-years",
+      "permanent": true
+    },
+    {
+      "source": "/tags/greater-than-10-year-lock-up",
+      "destination": "/tags/long-lock-up-5-10-years",
+      "permanent": true
+    },
+    {
+      "source": "/tags/100k-250k",
+      "destination": "/tags/min-subscription-100k-250k",
+      "permanent": true
+    },
+    {
+      "source": "/tags/250k-350k-subscription-min-only-gv-still-requires-500k-total",
+      "destination": "/tags/min-subscription-250k-350k",
+      "permanent": true
+    },
+    {
+      "source": "/tags/300k-400k-subscription-min-only-gv-still-requires-500k-total",
+      "destination": "/tags/min-subscription-250k-350k",
+      "permanent": true
+    },
+    {
+      "source": "/tags/350k-500k-subscription-min-only-gv-still-requires-500k-total",
+      "destination": "/tags/min-subscription-350k-500k",
+      "permanent": true
+    },
+    {
+      "source": "/tags/400k-600k-subscription-min-only-gv-still-requires-500k-total",
+      "destination": "/tags/min-subscription-500k-plus",
+      "permanent": true
+    },
+    {
+      "source": "/tags/500k-plus",
+      "destination": "/tags/min-subscription-500k-plus",
+      "permanent": true
+    },
+    {
+      "source": "/:slug(bitcoin|clean-energy|crypto|debt|infrastructure|other|private-equity|private-equity-venture-capital|venture-capital)",
+      "destination": "/categories/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/:slug(bitcoin|clean-energy|crypto|debt|infrastructure|other|private-equity|private-equity-venture-capital|venture-capital)/",
+      "destination": "/categories/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/:slug(3-5-percent-annual-yield|5-10-year-lock-up|5-percent-dividend|5-percent-yield|12-percent-return|1-1-5-percent-management-fee|250k-350k-subscription-min-only-gv-still-requires-500k-total|300k-400k-subscription-min-only-gv-still-requires-500k-total|350k-500k-subscription-min-only-gv-still-requires-500k-total|400k-600k-subscription-min-only-gv-still-requires-500k-total|500k-plus|ai-driven|balanced|battery-storage|bitcoin|bonds|capital-growth|capital-preservation|circular-economy|climate|closed-ended|crypto|daily-nav|debt|deposits|diversified|dividends|energy|energy-as-a-service|equities|equity|ethereum|fund-subscription-minimums|gold|golden-visa-eligible|golden-visa-funds-for-australian-citizens|golden-visa-funds-for-canadian-citizens|golden-visa-funds-for-chinese-citizens)",
+      "destination": "/tags/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/:slug(3-5-percent-annual-yield|5-10-year-lock-up|5-percent-dividend|5-percent-yield|12-percent-return|1-1-5-percent-management-fee|250k-350k-subscription-min-only-gv-still-requires-500k-total|300k-400k-subscription-min-only-gv-still-requires-500k-total|350k-500k-subscription-min-only-gv-still-requires-500k-total|400k-600k-subscription-min-only-gv-still-requires-500k-total|500k-plus|ai-driven|balanced|battery-storage|bitcoin|bonds|capital-growth|capital-preservation|circular-economy|climate|closed-ended|crypto|daily-nav|debt|deposits|diversified|dividends|energy|energy-as-a-service|equities|equity|ethereum|fund-subscription-minimums|gold|golden-visa-eligible|golden-visa-funds-for-australian-citizens|golden-visa-funds-for-canadian-citizens|golden-visa-funds-for-chinese-citizens)/",
+      "destination": "/tags/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/tags/golden-visa-funds-for-u-s-citizens",
+      "destination": "/funds/us-citizens",
+      "permanent": true
+    },
+    {
+      "source": "/tags/golden-visa-funds-for-us-citizens",
+      "destination": "/funds/us-citizens",
+      "permanent": true
+    },
+    {
+      "source": "/tags/golden-visa-funds-for-u-k-citizens",
+      "destination": "/tags/golden-visa-funds-for-uk-citizens",
+      "permanent": true
+    },
+    {
+      "source": "/:slug(golden-visa-funds-for-uk-citizens|greater-than-1-5-percent-management-fee|greater-than-10-year-lock-up|greater-than-5-annual-yield|greater-than-5-percent-annual-yield|healthcare|high-risk|hybrid|industrial|infrastructure|large-cap-greater-than-100m|less-than-1-percent-management-fee|less-than-3-percent-annual-yield|less-than-5-year-lock-up|liquid|lock-up|long-term|low-risk|medium-risk|mid-cap|mid-cap-50-100m|no-fees|no-lock-up|open-ended|pfic-compliant|private-equity|qef-eligible|regulated|renewable-energy|secondary-market|small-cap-less-than-50m|smes|solar|solana|special-situations)",
+      "destination": "/tags/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/:slug(golden-visa-funds-for-uk-citizens|greater-than-1-5-percent-management-fee|greater-than-10-year-lock-up|greater-than-5-annual-yield|greater-than-5-percent-annual-yield|healthcare|high-risk|hybrid|industrial|infrastructure|large-cap-greater-than-100m|less-than-1-percent-management-fee|less-than-3-percent-annual-yield|less-than-5-year-lock-up|liquid|lock-up|long-term|low-risk|medium-risk|mid-cap|mid-cap-50-100m|no-fees|no-lock-up|open-ended|pfic-compliant|private-equity|qef-eligible|regulated|renewable-energy|secondary-market|small-cap-less-than-50m|smes|solar|solana|special-situations)/",
+      "destination": "/tags/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/:slug(sustainability|tax-free|technology|tourism|ucits|venture-capital)",
+      "destination": "/tags/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/:slug(sustainability|tax-free|technology|tourism|ucits|venture-capital)/",
+      "destination": "/tags/:slug",
       "permanent": true
     }
   ],
@@ -133,6 +631,32 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/sitemap(.*).xml",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=86400"
+        }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=86400"
         }
       ]
     },

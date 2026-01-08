@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { verifyAdminAuth, createUnauthorizedResponse } from '../_shared/adminAuth.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -20,8 +21,7 @@ const TABLES: string[] = [
   'fund_edit_history',
   'fund_edit_suggestions',
   'funds',
-  'investor_profiles',
-  'manager_profiles',
+  'profiles',
   'saved_funds',
   'security_audit_access_log',
   'security_audit_log',
@@ -72,6 +72,18 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // ========== ADMIN AUTHENTICATION CHECK ==========
+    const authResult = await verifyAdminAuth(req)
+    if (!authResult.isAdmin) {
+      console.warn(`Unauthorized access attempt to sync-database-dump: ${authResult.error}`)
+      return createUnauthorizedResponse(
+        authResult.error || 'Admin privileges required to access this function',
+        corsHeaders
+      )
+    }
+    console.log(`Admin access verified for user: ${authResult.userId}`)
+    // ================================================
+
     console.log('Starting safe data sync (no schema changes)...')
 
     const prodUrl = Deno.env.get('SUPABASE_URL')!

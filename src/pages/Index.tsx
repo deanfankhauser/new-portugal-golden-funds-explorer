@@ -1,49 +1,76 @@
-
-import React, { lazy, Suspense } from 'react';
+import React from 'react';
 import { useFundFiltering } from '../hooks/useFundFiltering';
 import PageSEO from '../components/common/PageSEO';
 import HomepageLayout from '../components/homepage/HomepageLayout';
-import HomepageHero from '../components/homepage/HomepageHero';
-import HomepageContent from '../components/homepage/HomepageContent';
+import SearchFirstHero from '../components/homepage-v2/SearchFirstHero';
+import BestShortlistPreview from '../components/homepage-v2/BestShortlistPreview';
+import VerifiedFundsCarousel from '../components/homepage-v2/VerifiedFundsCarousel';
+import ManagersCarousel from '../components/homepage-v2/ManagersCarousel';
+import TeamMembersCarousel from '../components/homepage-v2/TeamMembersCarousel';
+import PrimaryActionsStrip from '../components/homepage-v2/PrimaryActionsStrip';
+import HowVerificationWorks from '../components/homepage-v2/HowVerificationWorks';
+import HomepageFAQAccordion from '../components/homepage-v2/HomepageFAQAccordion';
+import ResourceLinkGrid from '../components/homepage-v2/ResourceLinkGrid';
 import FundListSkeleton from '../components/common/FundListSkeleton';
+import { FloatingActionButton } from '../components/common/FloatingActionButton';
+import type { Fund } from '../data/types/funds';
 
-// Lazy load non-critical components
-const HomepageInfoSections = lazy(() => import('../components/homepage/HomepageInfoSections'));
+interface IndexPageProps {
+  initialFunds?: Fund[];
+}
 
-const IndexPage = () => {
+const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
   const {
-    selectedTags,
-    setSelectedTags,
-    searchQuery,
-    setSearchQuery,
-    filteredFunds,
     allFunds,
     loading,
-    error
-  } = useFundFiltering();
+  } = useFundFiltering({ initialFunds });
+
+  // Show loading skeleton only during initial load when no data exists and no initial data was provided
+  if (loading && !initialFunds && (!allFunds || allFunds.length === 0)) {
+    return (
+      <HomepageLayout>
+        <PageSEO pageType="homepage" />
+        <div className="container mx-auto px-4 py-8">
+          <FundListSkeleton />
+        </div>
+      </HomepageLayout>
+    );
+  }
+
+  const fundCount = allFunds?.length || initialFunds?.length || 30;
 
   return (
     <HomepageLayout>
-      <PageSEO pageType="homepage" />
+      <PageSEO pageType="homepage" funds={allFunds || initialFunds} />
       
-      <HomepageHero />
+      {/* 1. Search-First Hero */}
+      <SearchFirstHero fundCount={fundCount} />
 
-      <HomepageContent
-        filteredFunds={filteredFunds}
-        selectedTags={selectedTags}
-        setSelectedTags={setSelectedTags}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        allFunds={allFunds}
-        loading={loading}
-        error={error}
-      />
+      {/* 2. Verified Funds Carousel */}
+      <VerifiedFundsCarousel funds={allFunds || []} />
 
-      <section className="mt-12 sm:mt-16 lg:mt-20" aria-label="Additional resources">
-        <Suspense fallback={<FundListSkeleton />}>
-          <HomepageInfoSections />
-        </Suspense>
-      </section>
+      {/* 3. Fund Managers Carousel */}
+      <ManagersCarousel funds={allFunds || []} />
+
+      {/* 4. Team Members Carousel */}
+      <TeamMembersCarousel />
+
+      {/* 4. Best Funds Teaser */}
+      <BestShortlistPreview funds={allFunds || []} />
+
+      {/* 5. Primary Actions (Compare / Shortlist / Matcher) */}
+      <PrimaryActionsStrip fundCount={fundCount} />
+
+      {/* 6. How Verification Works */}
+      <HowVerificationWorks />
+
+      {/* 7. Curated FAQ */}
+      <HomepageFAQAccordion />
+
+      {/* 8. Resource Links */}
+      <ResourceLinkGrid fundCount={fundCount} />
+
+      <FloatingActionButton />
     </HomepageLayout>
   );
 };

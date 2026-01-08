@@ -251,7 +251,7 @@ serve(async (req) => {
     ];
     
     // PROTECTED TABLES: Never sync these as they control authentication
-    const protectedTables = ['admin_users', 'manager_profiles', 'investor_profiles'];
+    const protectedTables = ['admin_users', 'profiles'];
     console.log(`⚠️ PROTECTION: Excluding auth tables: ${protectedTables.join(', ')}`);
     console.log(`✅ SYNCING: Safe data tables: ${safeTables.join(', ')}`);
 
@@ -287,7 +287,7 @@ serve(async (req) => {
         }
 
         // Clear existing data in development table (protect auth-critical tables)
-        const protectedTables = ['admin_users', 'manager_profiles', 'investor_profiles'];
+        const protectedTables = ['admin_users', 'profiles'];
         if (!protectedTables.includes(tableName)) {
           console.log(`Clearing existing data from ${tableName}...`);
           const { error: deleteError } = await devSupabase

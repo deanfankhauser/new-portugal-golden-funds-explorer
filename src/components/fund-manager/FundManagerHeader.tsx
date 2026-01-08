@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import { User } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { formatFundSize } from '../../utils/currencyFormatters';
 
 interface FundManagerData {
   name: string;
@@ -28,10 +28,7 @@ const FundManagerHeader: React.FC<FundManagerHeaderProps> = ({ managerData }) =>
   return (
     <Card className="border border-gray-100 shadow-md mb-10">
       <CardContent className="p-6">
-        <div className="flex items-center mb-5">
-          <User className="w-6 h-6 mr-2 text-primary" />
-          <h1 className="text-3xl font-bold">{managerData.name} | Portugal Golden Visa Fund Manager</h1>
-        </div>
+        <h1 className="text-3xl font-bold mb-5">{managerData.name} | Portugal Golden Visa Fund Manager</h1>
         
         <div className="bg-slate-50 p-5 rounded-lg border border-slate-100">
           {managerData.logo && (
@@ -43,8 +40,8 @@ const FundManagerHeader: React.FC<FundManagerHeaderProps> = ({ managerData }) =>
           )}
           <p className="text-lg text-gray-600">
             {managerData.name} manages {managerData.fundsCount} fund{managerData.fundsCount > 1 ? 's' : ''} with a combined 
-            size of {managerData.totalFundSize} million EUR. Compare their funds in our{' '}
-            <Link to="/index" className="text-primary hover:text-primary/80 underline">
+            size of {formatFundSize(managerData.totalFundSize)}. Compare their funds in our{' '}
+            <Link to="/" className="text-primary hover:text-primary/80 underline">
               fund database
             </Link> or explore other{' '}
             <Link to="/managers" className="text-primary hover:text-primary/80 underline">

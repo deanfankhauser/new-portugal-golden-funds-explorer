@@ -1,9 +1,14 @@
 import fs from 'fs';
 import path from 'path';
-import { funds } from '../../src/data/services/funds-service';
+import { fetchAllFundsForBuild } from '../../src/lib/build-data-fetcher';
 import { DateManagementService } from '../../src/services/dateManagementService';
 
-export function generateFundsSitemap(distDir: string): void {
+export async function generateFundsSitemap(distDir: string): Promise<void> {
+  console.log('🗺️  Generating funds sitemap from database...');
+  
+  // Fetch all funds from database
+  const funds = await fetchAllFundsForBuild();
+  
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${funds.map(fund => {
@@ -20,5 +25,5 @@ ${funds.map(fund => {
 </urlset>`;
 
   fs.writeFileSync(path.join(distDir, 'sitemap-funds.xml'), sitemap);
-  console.log(`✅ Funds Sitemap: Generated sitemap-funds.xml with ${funds.length} fund URLs`);
+  console.log(`✅ Funds Sitemap: Generated sitemap-funds.xml with ${funds.length} fund URLs from database`);
 }

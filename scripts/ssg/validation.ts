@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { getBaseUrl } from '../../src/lib/ssr-env';
 
 export interface ValidationChecks {
   hasTitle: boolean;
@@ -23,6 +24,7 @@ export function validateGeneratedFile(
   validJs: string[]
 ): ValidationChecks {
   const generatedContent = fs.readFileSync(filePath, 'utf8');
+  const expectedBaseUrl = getBaseUrl();
   
   // Helper function to check structured data presence for both objects and arrays
   const hasStructuredData = Array.isArray(seoData.structuredData) 
@@ -48,10 +50,10 @@ export function validateGeneratedFile(
       generatedContent.includes(`href="/assets/${css}"`) || generatedContent.includes(`href="./assets/${css}"`)),
     hasRelativeJS: validJs.length === 0 || validJs.every(js => 
       generatedContent.includes(`src="/assets/${js}"`) || generatedContent.includes(`src="./assets/${js}"`)),
-    noAbsolutePaths: !generatedContent.includes('https://funds.movingto.com/assets/'),
+    noAbsolutePaths: !generatedContent.includes(`${expectedBaseUrl}/assets/`),
     hasCorrectCanonical: generatedContent.includes(`href="${seoData.url}"`),
     hasCorrectOgUrl: generatedContent.includes(`content="${seoData.url}"`),
-    hasCorrectDomain: seoData.url.includes('https://funds.movingto.com'),
+    hasCorrectDomain: seoData.url.includes(expectedBaseUrl),
     hasMultipleTitles: titleCount <= 1
   };
   
@@ -92,9 +94,9 @@ export function validateGeneratedFile(
 }
 
 export function verifyCriticalPages(distDir: string): void {
+  const expectedBaseUrl = getBaseUrl();
   const criticalPages = [
     { file: 'index.html', name: 'Homepage' },
-    { file: 'index/index.html', name: 'Fund Index' },
     { file: 'about/index.html', name: 'About Page' }
   ];
   
@@ -102,9 +104,9 @@ export function verifyCriticalPages(distDir: string): void {
     const pagePath = path.join(distDir, file);
     if (fs.existsSync(pagePath)) {
       const content = fs.readFileSync(pagePath, 'utf8');
-      const hasCorrectDomain = content.includes('https://funds.movingto.com');
-      const hasCorrectCanonical = content.includes('rel="canonical" href="https://funds.movingto.com');
-      const hasCorrectOgUrl = content.includes('property="og:url" content="https://funds.movingto.com');
+      const hasCorrectDomain = content.includes(expectedBaseUrl);
+      const hasCorrectCanonical = content.includes(`rel="canonical" href="${expectedBaseUrl}`);
+      const hasCorrectOgUrl = content.includes(`property="og:url" content="${expectedBaseUrl}`);
       
       // Silent validation - only log critical errors if needed
     }

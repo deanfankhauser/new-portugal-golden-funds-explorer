@@ -1,60 +1,63 @@
 import React, { useState, useEffect } from 'react';
-import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
+import { Link } from 'react-router-dom';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Settings, LogOut, Building, TrendingUp, Shield, Heart } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Star, User, Settings, LogOut, Shield, Building, TrendingUp } from 'lucide-react';
+import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
 import UniversalAuthButton from './UniversalAuthButton';
-import { supabase } from '@/integrations/supabase/client';
+import { getDisplayName, getAvatarUrl, isManagerProfile } from '@/types/profile';
+import { toast } from '@/hooks/use-toast';
 
-const AuthAwareButton = () => {
-  const [isAdmin, setIsAdmin] = useState(false);
-  
-  // Add error boundary and safe fallback
-  let authState;
+const getSupabase = async () => (await import('@/integrations/supabase/client')).supabase;
+
+const AuthAwareButton: React.FC = () => {
+  // Safely access auth context with SSR guard
+  let auth;
   try {
-    authState = useEnhancedAuth();
-  } catch (error) {
-    console.error('Auth context error:', error);
-    return <UniversalAuthButton />;
+    auth = useEnhancedAuth();
+  } catch {
+    // During SSG, provider isn't mounted - fall back to guest state
+    auth = { user: null, profile: null, signOut: async () => {}, loading: false };
   }
+  const { user, profile, signOut, loading } = auth;
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [hasAssignedFunds, setHasAssignedFunds] = useState(false);
 
-  const { user, profile, userType, signOut, loading } = authState;
-
-  console.log('🔐 AuthAwareButton state:', { user: !!user, profile: !!profile, loading, userType });
-
-  // Check admin status
   useEffect(() => {
     const checkAdminStatus = async () => {
-      if (!user?.id) {
+      if (!user?.id || typeof window === 'undefined') {
         setIsAdmin(false);
         return;
       }
 
+      console.log('🔐 Checking admin status for user:', user.id);
+      
       try {
+        const supabase = await getSupabase();
         const { data, error } = await supabase
           .from('admin_users')
-          .select('role')
+          .select('id')
           .eq('user_id', user.id)
-          .maybeSingle();
+          .single();
 
-        if (error) {
-          console.error('Error checking admin status:', error);
-          setIsAdmin(false);
-          return;
-        }
-
-        // Only set admin if we actually have a record with a valid role
-        setIsAdmin(data && data.role ? true : false);
+        const adminStatus = !!data && !error;
+        console.log('🔐 Admin check result:', { 
+          userId: user.id, 
+          isAdmin: adminStatus,
+          hasData: !!data,
+          error: error?.message 
+        });
+        setIsAdmin(adminStatus);
       } catch (error) {
-        console.error('Error checking admin status:', error);
+        console.error('🔐 Error checking admin status:', error);
         setIsAdmin(false);
       }
     };
@@ -62,93 +65,147 @@ const AuthAwareButton = () => {
     checkAdminStatus();
   }, [user?.id]);
 
-  // Show login button during loading (hydration) or if no user
-  if (loading || !user) {
-    return <UniversalAuthButton />;
-  }
+  useEffect(() => {
+    const checkManagerAccess = async () => {
+      if (!user?.id || typeof window === 'undefined') {
+        setHasAssignedFunds(false);
+        return;
+      }
 
-  const getDisplayName = () => {
-    if (userType === 'manager' && profile && 'manager_name' in profile && (profile as any).manager_name) {
-      return (profile as any).manager_name as string;
-    }
-    if (userType === 'investor' && profile && 'first_name' in profile && (profile as any).first_name) {
-      const p: any = profile;
-      return `${p.first_name} ${p.last_name || ''}`.trim();
-    }
-    return user.email?.split('@')[0] || 'User';
-  };
+      try {
+        const supabase = await getSupabase();
+        // Primary: Check company-level assignments
+        const { count: companyCount, error: companyErr } = await supabase
+          .from('manager_profile_assignments')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+          .eq('status', 'active');
 
-  const getInitials = () => {
-    const name = getDisplayName();
-    return name
-      .split(' ')
-      .map(word => word[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
+        let hasAccess = (companyCount || 0) > 0;
 
-  const getAvatarUrl = () => {
-    if (!profile) return undefined;
-    if (userType === 'manager' && 'logo_url' in (profile as any)) {
-      return (profile as any).logo_url as string | undefined;
-    }
-    if (userType === 'investor' && 'avatar_url' in (profile as any)) {
-      return (profile as any).avatar_url as string | undefined;
-    }
-    return undefined;
-  };
+        // Legacy fallback: Check fund-level assignments
+        if (!hasAccess) {
+          const { count: fundCount } = await supabase
+            .from('fund_managers' as any)
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', user.id)
+            .eq('status', 'active');
+
+          hasAccess = (fundCount || 0) > 0;
+        }
+
+        // Grant access to all admins
+        if (!hasAccess && isAdmin) {
+          hasAccess = true;
+          console.log('🔐 Admin user detected - granting access to all funds');
+        }
+
+        setHasAssignedFunds(hasAccess);
+      } catch (error) {
+        console.error('Error checking manager access:', error);
+        setHasAssignedFunds(false);
+      }
+    };
+
+  checkManagerAccess();
+  }, [user?.id, isAdmin]);
 
   const handleSignOut = async () => {
     try {
+      console.log('🔐 AuthAwareButton: Initiating sign-out...');
+      
       await signOut();
+      
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out of your account",
+      });
+      
+      // Force redirect to homepage and reload (browser only)
+      if (typeof window !== 'undefined') {
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
+      }
     } catch (error) {
-      console.error('Sign out error:', error);
+      console.error('🔐 AuthAwareButton sign-out error:', error);
+      toast({
+        title: "Signed out",
+        description: "You have been signed out",
+      });
+      
+      // Force redirect anyway (browser only)
+      if (typeof window !== 'undefined') {
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
+      }
     }
   };
+
+  console.log('🔐 AuthAwareButton state:', {
+    hasUser: !!user,
+    hasProfile: !!profile,
+    isAdmin,
+    loading
+  });
+
+  if (loading || !user || !profile) {
+    return <UniversalAuthButton />;
+  }
+
+  const displayName = getDisplayName(profile);
+  const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  const avatarUrl = getAvatarUrl(profile);
+  const isManager = isManagerProfile(profile);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+        <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-transparent">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={getAvatarUrl()} alt={getDisplayName()} />
+            {avatarUrl && <AvatarImage src={avatarUrl} alt={displayName} />}
             <AvatarFallback className="bg-primary text-primary-foreground">
-              {getInitials()}
+              {initials}
             </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
-        <div className="flex items-center justify-start gap-2 p-2">
-          <div className="flex flex-col space-y-1 leading-none">
-            <div className="flex items-center gap-1">
-              {userType === 'manager' ? (
-                <Building className="h-3 w-3 text-muted-foreground" />
-              ) : (
-                <TrendingUp className="h-3 w-3 text-muted-foreground" />
-              )}
-              <p className="font-medium text-sm">{getDisplayName()}</p>
+        <DropdownMenuLabel>
+          <div className="flex items-center justify-start gap-2">
+            <div className="flex flex-col space-y-1 leading-none">
+              <div className="flex items-center gap-1">
+                {isManager ? (
+                  <Building className="h-3 w-3 text-muted-foreground" />
+                ) : (
+                  <TrendingUp className="h-3 w-3 text-muted-foreground" />
+                )}
+                <p className="font-medium text-sm">{displayName}</p>
+              </div>
+              <p className="w-[200px] truncate text-xs text-muted-foreground">
+                {user.email}
+              </p>
             </div>
-            <p className="w-[200px] truncate text-xs text-muted-foreground">
-              {user.email}
-            </p>
           </div>
-        </div>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        
         <DropdownMenuItem asChild>
           <Link to="/saved-funds" className="w-full cursor-pointer">
-            <Heart className="mr-2 h-4 w-4" />
-            Saved Funds
+            <Star className="mr-2 h-4 w-4" />
+            Watchlist
           </Link>
         </DropdownMenuItem>
+        
         <DropdownMenuItem asChild>
           <Link to="/account-settings" className="w-full cursor-pointer">
             <User className="mr-2 h-4 w-4" />
             Profile Settings
           </Link>
         </DropdownMenuItem>
-        {userType === 'manager' && (
+        
+        {isManager && (
           <DropdownMenuItem asChild>
             <Link to="/account-settings?tab=edits" className="w-full cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
@@ -156,6 +213,16 @@ const AuthAwareButton = () => {
             </Link>
           </DropdownMenuItem>
         )}
+
+        {hasAssignedFunds && (
+          <DropdownMenuItem asChild>
+            <Link to="/dashboard" className="w-full cursor-pointer">
+              <Building className="mr-2 h-4 w-4" />
+              Manage funds
+            </Link>
+          </DropdownMenuItem>
+        )}
+        
         {isAdmin && (
           <>
             <DropdownMenuSeparator />
@@ -167,6 +234,7 @@ const AuthAwareButton = () => {
             </DropdownMenuItem>
           </>
         )}
+        
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />

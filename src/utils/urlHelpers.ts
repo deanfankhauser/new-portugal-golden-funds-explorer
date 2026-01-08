@@ -7,7 +7,7 @@ export const UTM_PARAMS = {
 };
 
 export const buildContactUrl = (utmContent?: string) => {
-  const baseUrl = 'https://movingto.com/contact';
+  const baseUrl = 'https://www.movingto.com/contact/contact-movingto';
   const params = new URLSearchParams({
     utm_source: UTM_PARAMS.source,
     utm_medium: UTM_PARAMS.medium,
@@ -28,7 +28,7 @@ export const buildBookingUrl = (fundId?: string, fundName?: string) => {
     ...(fundName && { fund_name: fundName })
   });
   
-  return `https://movingto.com/contact?${params.toString()}`;
+  return `https://www.movingto.com/contact/contact-movingto?${params.toString()}`;
 };
 
 export const buildShareUrl = (fundName: string, fundUrl: string, fundDescription?: string) => {

@@ -9,43 +9,53 @@ interface FloatingTableOfContentsProps {
 }
 
 const FloatingTableOfContents: React.FC<FloatingTableOfContentsProps> = ({ fund }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+
+  // SSR-safe: Don't render during server-side rendering
+  if (typeof window === 'undefined') return null;
 
   // Table of contents sections
   const sections = [
-    { id: 'decision-header', title: 'Fund Overview', icon: '📊' },
-    { id: 'performance-module', title: 'Performance', icon: '📈' },
-    { id: 'key-terms', title: 'Key Terms', icon: '📋' },
-    { id: 'risk-assessment', title: 'Risk Assessment', icon: '⚖️' },
-    { id: 'fund-tabs', title: 'Fund Details', icon: '📄' },
-    { id: 'related-funds', title: 'Similar Funds', icon: '🔗' },
-    { id: 'alternatives', title: 'Alternatives', icon: '🔄' },
+    { id: 'fund-overview', title: 'Fund Overview', icon: '📊' },
+    { id: 'key-terms-strategy', title: 'Key Terms', icon: '📋' },
+    { id: 'financial-details', title: 'Financial Details', icon: '💰' },
+    { id: 'fund-structure', title: 'Fund Structure', icon: '🏗️' },
+    { id: 'team-information', title: 'Team Information', icon: '👥' },
+    { id: 'enquiry-form', title: 'Get in Touch', icon: '✉️' },
   ];
 
   // Show TOC only on mobile when user scrolls past header
+  const [isVisible, setIsVisible] = useState(false);
+  
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      const isMobile = window.innerWidth < 768;
+      const isMobile = window.innerWidth < 1024; // Changed from 768 to match lg breakpoint
       
       // Show after scrolling 300px on mobile only
       setIsVisible(isMobile && scrollY > 300);
       
-      // Update active section based on scroll position
-      for (const section of sections) {
+      // Update active section based on scroll position with improved detection
+      let currentSection = '';
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
         const element = document.getElementById(section.id);
         if (element) {
           const rect = element.getBoundingClientRect();
-          if (rect.top <= 100 && rect.bottom >= 100) {
-            setActiveSection(section.id);
+          // Section is active if it's in the top third of the viewport
+          if (rect.top <= 150) {
+            currentSection = section.id;
             break;
           }
         }
       }
+      if (currentSection) {
+        setActiveSection(currentSection);
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll(); // Check initial state
     
     return () => window.removeEventListener('scroll', handleScroll);
@@ -54,54 +64,77 @@ const FloatingTableOfContents: React.FC<FloatingTableOfContentsProps> = ({ fund 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      const yOffset = -80; // Account for sticky header
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      // Calculate offset accounting for fixed headers and padding
+      const headerOffset = 100; // Offset for sticky headers and padding
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      
+      // Smooth scroll with better performance
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+      
+      // Close the sheet after clicking
+      setIsOpen(false);
+      
+      // Update active section immediately
+      setActiveSection(sectionId);
     }
   };
 
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 md:hidden">
-      <Sheet>
+    <div className="fixed bottom-20 right-4 z-50 lg:hidden">
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
           <Button 
-            size="sm" 
-            className="rounded-full w-12 h-12 p-0 bg-primary/90 hover:bg-primary shadow-lg backdrop-blur-sm"
+            size="lg"
+            className="rounded-full w-14 h-14 p-0 bg-primary hover:bg-primary/90 shadow-xl hover:shadow-2xl transition-all duration-200 hover:scale-105 active:scale-95"
+            aria-label="Open navigation menu"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-6 w-6" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="right" className="w-80">
+        <SheetContent side="right" className="w-[85vw] max-w-sm">
           <SheetHeader>
-            <SheetTitle className="flex items-center gap-2">
+            <SheetTitle className="flex items-center gap-2 text-lg">
               <Menu className="h-5 w-5" />
-              Navigate Fund Details
+              Navigate Sections
             </SheetTitle>
           </SheetHeader>
           
-          <div className="mt-6 space-y-2">
-            {sections.map((section) => (
-              <button
-                key={section.id}
-                onClick={() => scrollToSection(section.id)}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${
-                  activeSection === section.id
-                    ? 'bg-primary/10 text-primary border border-primary/20'
-                    : 'hover:bg-muted text-foreground'
-                }`}
-              >
-                <span className="text-lg">{section.icon}</span>
-                <span className="font-medium flex-1">{section.title}</span>
-                <ChevronRight className="h-4 w-4 opacity-50" />
-              </button>
-            ))}
+          <div className="mt-6 space-y-2 max-h-[calc(100vh-180px)] overflow-y-auto">
+            {sections.map((section) => {
+              const isActive = activeSection === section.id;
+              return (
+                <button
+                  key={section.id}
+                  onClick={() => scrollToSection(section.id)}
+                  className={`w-full flex items-center gap-3 p-4 rounded-xl text-left transition-all duration-200 ${
+                    isActive
+                      ? 'bg-primary/10 text-primary border-2 border-primary/30 shadow-sm scale-[1.02]'
+                      : 'hover:bg-muted text-foreground border-2 border-transparent hover:border-border/50'
+                  }`}
+                  aria-label={`Navigate to ${section.title}`}
+                  aria-current={isActive ? 'location' : undefined}
+                >
+                  <span className="text-xl">{section.icon}</span>
+                  <span className="font-medium flex-1 text-[15px]">{section.title}</span>
+                  <ChevronRight 
+                    className={`h-5 w-5 transition-all duration-200 ${
+                      isActive ? 'opacity-100 translate-x-0' : 'opacity-50 -translate-x-1'
+                    }`} 
+                  />
+                </button>
+              );
+            })}
           </div>
           
           <div className="mt-6 pt-4 border-t border-border">
-            <p className="text-xs text-muted-foreground text-center">
-              Tap any section to jump directly to it
+            <p className="text-xs text-muted-foreground text-center leading-relaxed">
+              Tap any section to jump directly to it.<br />Menu closes automatically.
             </p>
           </div>
         </SheetContent>

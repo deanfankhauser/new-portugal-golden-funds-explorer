@@ -1,0 +1,191 @@
+import fs from 'fs';
+import path from 'path';
+import { parseString } from 'xml2js';
+import { promisify } from 'util';
+import { fetchAllTagsForBuild, fetchAllCategoriesForBuild } from '../../src/lib/build-data-fetcher';
+import { tagToSlug, categoryToSlug } from '../../src/lib/utils';
+
+const parseXml = promisify(parseString);
+
+interface ValidationIssue {
+  type: 'error' | 'warning';
+  message: string;
+  url?: string;
+}
+
+/**
+ * Get all URLs from sitemap-index and individual sitemaps
+ */
+async function getAllSitemapUrls(distDir: string): Promise<string[]> {
+  const allUrls: string[] = [];
+  
+  // Check for sitemap-index.xml first
+  const indexPath = path.join(distDir, 'sitemap-index.xml');
+  if (fs.existsSync(indexPath)) {
+    const indexXml = fs.readFileSync(indexPath, 'utf-8');
+    const parsed = await parseXml(indexXml);
+    
+    const sitemaps = parsed.sitemapindex?.sitemap || [];
+    for (const sitemap of sitemaps) {
+      const loc = sitemap.loc?.[0];
+      if (loc) {
+        const filename = loc.split('/').pop();
+        const sitemapPath = path.join(distDir, filename);
+        if (fs.existsSync(sitemapPath)) {
+          const sitemapXml = fs.readFileSync(sitemapPath, 'utf-8');
+          const sitemapParsed = await parseXml(sitemapXml);
+          const urls = sitemapParsed.urlset?.url?.map((entry: any) => entry.loc[0]) || [];
+          allUrls.push(...urls);
+        }
+      }
+    }
+    return allUrls;
+  }
+  
+  // Fallback to single sitemap.xml
+  const sitemapPath = path.join(distDir, 'sitemap.xml');
+  if (fs.existsSync(sitemapPath)) {
+    const sitemapContent = fs.readFileSync(sitemapPath, 'utf-8');
+    const urlMatches = sitemapContent.matchAll(/<loc>(.*?)<\/loc>/g);
+    return Array.from(urlMatches).map(match => match[1]);
+  }
+  
+  return [];
+}
+
+export async function validateSitemapURLs(distDir: string): Promise<{ valid: boolean; issues: ValidationIssue[] }> {
+  const issues: ValidationIssue[] = [];
+  
+  // Check that at least sitemap-index.xml or sitemap.xml exists
+  const indexPath = path.join(distDir, 'sitemap-index.xml');
+  const sitemapPath = path.join(distDir, 'sitemap.xml');
+  
+  if (!fs.existsSync(indexPath) && !fs.existsSync(sitemapPath)) {
+    issues.push({
+      type: 'error',
+      message: 'No sitemap files found in dist directory (neither sitemap-index.xml nor sitemap.xml)'
+    });
+    return { valid: false, issues };
+  }
+
+  // Get all URLs from all sitemaps
+  const urls = await getAllSitemapUrls(distDir);
+  
+  console.log(`\n🔍 Validating ${urls.length} URLs across all sitemaps...\n`);
+  
+  try {
+    // Get all valid tag and category slugs from database
+    const tags = await fetchAllTagsForBuild();
+    const tagSlugs = tags.map(tag => tagToSlug(tag));
+    const categories = await fetchAllCategoriesForBuild();
+    const categorySlugs = categories.map(cat => categoryToSlug(cat));
+  
+    // Check for incorrect bare slug URLs
+    const baseUrl = 'https://funds.movingto.com';
+    
+    urls.forEach(url => {
+      const urlPath = url.replace(baseUrl, '');
+      
+      // Check for duplicate /index
+      if (urlPath === '/index') {
+        issues.push({
+          type: 'error',
+          message: 'Duplicate /index entry found (should only have homepage /)',
+          url
+        });
+      }
+      
+      // Check for bare tag slugs (should be /tags/{slug})
+      const bareSlug = urlPath.substring(1); // remove leading /
+      if (tagSlugs.includes(bareSlug) && !urlPath.startsWith('/tags/')) {
+        issues.push({
+          type: 'error',
+          message: `Tag URL missing /tags/ prefix: should be /tags/${bareSlug}`,
+          url
+        });
+      }
+      
+      // Check for bare category slugs (should be /categories/{slug})
+      if (categorySlugs.includes(bareSlug) && !urlPath.startsWith('/categories/')) {
+        issues.push({
+          type: 'error',
+          message: `Category URL missing /categories/ prefix: should be /categories/${bareSlug}`,
+          url
+        });
+      }
+    });
+    
+    // Check for missing essential URLs
+    const essentialPaths = [
+      '/',
+      '/categories',
+      '/tags',
+      '/managers',
+      '/about',
+      '/faqs'
+    ];
+    
+    essentialPaths.forEach(essentialPath => {
+      const fullUrl = `${baseUrl}${essentialPath === '/' ? '' : essentialPath}`;
+      if (!urls.includes(fullUrl)) {
+        issues.push({
+          type: 'warning',
+          message: `Essential URL missing: ${essentialPath}`,
+          url: fullUrl
+        });
+      }
+    });
+  
+  // Report results
+    const errors = issues.filter(i => i.type === 'error');
+    const warnings = issues.filter(i => i.type === 'warning');
+    
+    if (errors.length > 0) {
+      console.error('❌ Sitemap validation FAILED:\n');
+      errors.forEach(issue => {
+        console.error(`   ❌ ${issue.message}`);
+        if (issue.url) console.error(`      URL: ${issue.url}`);
+      });
+    }
+    
+    if (warnings.length > 0) {
+      console.warn('\n⚠️  Sitemap validation warnings:\n');
+      warnings.forEach(issue => {
+        console.warn(`   ⚠️  ${issue.message}`);
+        if (issue.url) console.warn(`      URL: ${issue.url}`);
+      });
+    }
+    
+    if (errors.length === 0 && warnings.length === 0) {
+      console.log('✅ Sitemap validation passed - all URLs are correctly formatted\n');
+    }
+    
+    return {
+      valid: errors.length === 0,
+      issues
+    };
+  } catch (error) {
+    console.error('❌ Sitemap validation failed with error:', error);
+    issues.push({
+      type: 'error',
+      message: `Validation error: ${error instanceof Error ? error.message : 'Unknown error'}`
+    });
+    return { valid: false, issues };
+  }
+}
+
+// Allow direct execution
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const distDir = path.join(process.cwd(), 'dist');
+  validateSitemapURLs(distDir).then(result => {
+    if (!result.valid) {
+      console.error('\n💥 Sitemap validation failed. Build should not proceed.\n');
+      process.exit(1);
+    }
+    
+    console.log('🎉 Sitemap validation complete!\n');
+  }).catch(error => {
+    console.error('\n💥 Sitemap validation crashed:', error);
+    process.exit(1);
+  });
+}

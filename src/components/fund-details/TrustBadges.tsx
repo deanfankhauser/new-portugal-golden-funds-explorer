@@ -1,8 +1,9 @@
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { Badge } from '../ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
-import { Shield, CheckCircle, Award } from 'lucide-react';
+import { Shield, CheckCircle } from 'lucide-react';
+import { GVBadge } from '../ui/GVBadge';
 
 interface TrustBadgesProps {
   fund: Fund;
@@ -10,7 +11,7 @@ interface TrustBadgesProps {
 
 const TrustBadges: React.FC<TrustBadgesProps> = ({ fund }) => {
   const isUCITS = fund.tags?.includes('UCITS');
-  const isGVEligible = fund.tags?.includes('Golden Visa Eligible');
+  const isGVIntended = fund.tags?.includes('Golden Visa Eligible');
   const cmvmId = fund.cmvmId;
 
   return (
@@ -44,18 +45,8 @@ const TrustBadges: React.FC<TrustBadgesProps> = ({ fund }) => {
           </Tooltip>
         )}
 
-        {isGVEligible && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Badge className="bg-white/10 text-white border-white/30 flex items-center gap-1.5">
-                <Award className="h-3.5 w-3.5" />
-                GV Eligible
-              </Badge>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>No real-estate exposure, 60%+ PT assets, UCITS compliant</p>
-            </TooltipContent>
-          </Tooltip>
+        {isGVIntended && fund.isVerified && (
+          <GVBadge variant="card" className="bg-white/10 text-white border-white/30" />
         )}
       </div>
     </TooltipProvider>

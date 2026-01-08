@@ -19,7 +19,7 @@ export interface SEOMetrics {
 
 export class SEOMonitoringService {
   private static config: SEOMonitoringConfig = {
-    enabled: import.meta.env.DEV,
+    enabled: typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false,
     intervalMinutes: 30,
     alertThreshold: 70,
     trackingEnabled: true
@@ -77,7 +77,8 @@ export class SEOMonitoringService {
       this.checkAlerts(metrics);
 
       // Log in development
-      if (import.meta.env.DEV) {
+      const isDev = typeof process !== 'undefined' ? process.env.NODE_ENV === 'development' : false;
+      if (isDev) {
         this.logMetrics(metrics);
       }
 
@@ -229,7 +230,7 @@ export class SEOMonitoringService {
     return audit;
   }
 
-  // Sitemap health check
+  // Sitemap health check (browser-safe - only validates accessibility)
   static async checkSitemapHealth(): Promise<{
     accessible: boolean;
     lastModified?: string;
@@ -238,11 +239,10 @@ export class SEOMonitoringService {
   }> {
     try {
       const validation = await EnhancedSitemapService.validateSitemapAccess();
-      const entries = EnhancedSitemapService.generateEnhancedSitemapEntries();
       
       return {
         accessible: validation.accessible,
-        size: entries.length,
+        size: 0, // Size not available in browser context
         error: validation.error,
         lastModified: new Date().toISOString()
       };

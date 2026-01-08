@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FundTag } from '../../../data/funds';
+import { FundTag } from '../../../data/types/funds';
 import { tagToSlug } from '../../../lib/utils';
 import ComparisonCell from './ComparisonCell';
 

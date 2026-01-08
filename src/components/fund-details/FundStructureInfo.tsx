@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Fund } from '../../data/funds';
+import { Fund } from '../../data/types/funds';
 import { getFundType } from '../../utils/fundTypeUtils';
 
 interface FundStructureInfoProps {
@@ -17,12 +17,12 @@ const FundStructureInfo: React.FC<FundStructureInfoProps> = ({ fund }) => {
       return "(Flexible, with monthly subscriptions & redemptions)";
     }
     if (fund.redemptionTerms?.frequency === 'Daily' && isOpenEnded) {
-      if (fund.tags.includes('No Lock-Up')) {
-        return "(Open-ended, with daily liquidity; no lock-up)";
-      }
+    if (fund.tags.includes('No Lock-Up')) {
+      return "(Open-ended, with daily liquidity; no lock-up)";
+    }
       return "(Open-ended, with daily liquidity)";
     }
-    if (fund.tags.includes('Lock-Up') && fund.redemptionTerms?.minimumHoldingPeriod) {
+    if (fund.redemptionTerms?.minimumHoldingPeriod) {
       const lockupYears = Math.floor(fund.redemptionTerms.minimumHoldingPeriod / 12);
       const lockupMonths = fund.redemptionTerms.minimumHoldingPeriod % 12;
       const lockupText = lockupYears > 0 

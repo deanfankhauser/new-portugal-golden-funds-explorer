@@ -2,57 +2,19 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { getEmailRedirectUrl } from '@/utils/authRedirect';
-
-interface UserProfile {
-  id: string;
-  user_id: string;
-  email: string;
-  avatar_url?: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface ManagerProfile extends UserProfile {
-  company_name: string;
-  manager_name: string;
-  phone?: string;
-  website?: string;
-  description?: string;
-  address?: string;
-  city?: string;
-  country?: string;
-  registration_number?: string;
-  license_number?: string;
-  status: 'pending' | 'approved' | 'rejected';
-  assets_under_management?: number;
-  founded_year?: number;
-  logo_url?: string;
-}
-
-interface InvestorProfile extends UserProfile {
-  first_name: string;
-  last_name: string;
-  phone?: string;
-  date_of_birth?: string;
-  address?: string;
-  city?: string;
-  country?: string;
-  investment_experience?: 'beginner' | 'intermediate' | 'advanced' | 'professional';
-  risk_tolerance?: 'conservative' | 'moderate' | 'aggressive';
-  annual_income_range?: string;
-  net_worth_range?: string;
-}
+import { Profile } from '@/types/profile';
+import { queryClient } from '@/providers/QueryProvider';
 
 interface EnhancedAuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  userType: 'manager' | 'investor' | null;
-  profile: ManagerProfile | InvestorProfile | null;
-  signUp: (email: string, password: string, userType: 'manager' | 'investor', metadata?: any) => Promise<{ error: any }>;
+  profile: Profile | null;
+  sendMagicLink: (email: string, metadata?: any) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, metadata?: any) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<{ error: any }>;
-  updateProfile: (updates: Partial<ManagerProfile | InvestorProfile>) => Promise<{ error: any }>;
+  updateProfile: (updates: Partial<Profile>) => Promise<{ error: any }>;
   uploadAvatar: (file: File) => Promise<{ error: any; url?: string }>;
   refreshProfile: () => Promise<void>;
 }
@@ -62,14 +24,13 @@ const EnhancedAuthContext = createContext<EnhancedAuthContextType | undefined>(u
 export const useEnhancedAuth = () => {
   const context = useContext(EnhancedAuthContext);
   if (context === undefined) {
-    // During SSR, return a safe default instead of throwing
     if (typeof window === 'undefined') {
       return {
         user: null,
         session: null,
         loading: true,
-        userType: null,
         profile: null,
+        sendMagicLink: async () => ({ error: null }),
         signUp: async () => ({ error: null }),
         signIn: async () => ({ error: null }),
         signOut: async () => ({ error: null }),
@@ -87,154 +48,137 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const [userType, setUserType] = useState<'manager' | 'investor' | null>(null);
-  const [profile, setProfile] = useState<ManagerProfile | InvestorProfile | null>(null);
-  // Add hydration state to prevent hydration mismatches
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // Ensure proper hydration on client-side
   useEffect(() => {
-    console.log('🔐 Setting hydrated to true');
     setIsHydrated(true);
   }, []);
 
-  // Only run auth initialization after hydration
   useEffect(() => {
-    if (!isHydrated) {
-      console.log('🔐 Skipping auth init - not hydrated yet');
-      return;
-    }
+    if (!isHydrated) return;
 
-    console.log('🔐 Auth useEffect starting after hydration...');
     let subscription: any = null;
     let timeoutId: NodeJS.Timeout;
     
-    // For SSG/SSR compatibility, ensure loading is cleared even without sessions
     const initializeAuth = async () => {
       try {
-        console.log('🔐 Initializing auth...');
-        
-        // Set up auth state listener FIRST
-        const authListener = supabase.auth.onAuthStateChange(
-          (event, session) => {
-            console.log('🔐 Auth state change:', event, session?.user?.email || 'no user');
-            setSession(session);
-            setUser(session?.user ?? null);
-            
-            if (session?.user) {
-            // Defer Supabase calls to prevent deadlocks
-            setTimeout(() => {
-              console.log('🔐 Fetching profile for user:', session.user?.id);
-              fetchProfile(session.user!.id).catch((err) => {
-                console.error('🔐 Error fetching profile on auth state change:', err);
-              });
-            }, 100);
-            } else {
-              console.log('🔐 No user, clearing profile data');
-              setUserType(null);
-              setProfile(null);
-            }
-            
-            console.log('🔐 Setting loading to false from auth state change');
-            setLoading(false);
+    const authListener = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('🔐 Auth state change:', event, session?.user?.email || 'no user');
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        setTimeout(() => {
+          fetchProfile(session.user!.id).catch(console.error);
+          // Check for pending invitations after auth
+          if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+            checkPendingInvitations(session.user.email!, session.user.id).catch(console.error);
           }
-        );
+        }, 100);
+      } else {
+        setProfile(null);
+      }
+      
+      setLoading(false);
+    });
 
         subscription = authListener.data.subscription;
-        console.log('🔐 Auth listener set up');
 
-        // THEN check for existing session
-        console.log('🔐 Getting initial session...');
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('🔐 Error getting initial session:', error);
-        } else {
-          console.log('🔐 Initial session check complete:', session?.user?.email || 'no user');
-        }
-        
+        const { data: { session } } = await supabase.auth.getSession();
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          console.log('🔐 Fetching profile for initial session user:', session.user.id);
-          // Defer Supabase calls to prevent deadlocks
           setTimeout(() => {
-            fetchProfile(session.user!.id).catch((err) => {
-              console.error('🔐 Error fetching profile for initial session:', err);
-            });
+            fetchProfile(session.user!.id).catch(console.error);
           }, 100);
         } else {
-          console.log('🔐 No initial session user, clearing profile');
-          setUserType(null);
           setProfile(null);
         }
         
-        // Always ensure loading is cleared
-        console.log('🔐 Setting loading to false from initial session check');
         setLoading(false);
-
       } catch (error) {
         console.error('🔐 Auth initialization error:', error);
-        console.log('🔐 Setting loading to false due to error');
         setLoading(false);
       }
     };
 
-    // Fallback timeout to ensure loading is never stuck
     timeoutId = setTimeout(() => {
-      console.log('🔐 Timeout fallback: Setting loading to false');
       setLoading(false);
-    }, 5000); // 5 second timeout
+    }, 5000);
 
     initializeAuth();
 
-    // Cleanup function
     return () => {
-      console.log('🔐 Cleaning up auth listener');
-      if (subscription) {
-        subscription.unsubscribe();
-      }
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
+      if (subscription) subscription.unsubscribe();
+      if (timeoutId) clearTimeout(timeoutId);
     };
   }, [isHydrated]);
 
+  const checkPendingInvitations = async (email: string, userId: string) => {
+    try {
+      console.log('🎫 Checking pending invitations for:', email, 'userId:', userId);
+      
+      const { data, error } = await supabase.functions.invoke('check-pending-invitations', {
+        body: { email, userId },
+      });
+
+      if (error) {
+        console.error('🎫 Error checking invitations:', error);
+        return;
+      }
+
+      if (data?.acceptedInvitations && data.acceptedInvitations.length > 0) {
+        console.log('🎫 Auto-accepted invitations:', data.acceptedInvitations);
+        
+        // Show success toast for each accepted invitation
+        const companies = data.acceptedInvitations.map((inv: any) => inv.companyName);
+        
+        // Invalidate team member queries for all affected companies
+        companies.forEach((companyName: string) => {
+          queryClient.invalidateQueries({ queryKey: ['team-members', companyName] });
+        });
+        
+        if (typeof window !== 'undefined') {
+          const { toast } = await import('@/hooks/use-toast');
+          toast({
+            title: companies.length === 1 ? 'Team Access Granted!' : 'Multiple Team Invitations Accepted!',
+            description: companies.length === 1 
+              ? `You now have access to ${companies[0]}.`
+              : `You now have access to: ${companies.join(', ')}`,
+          });
+        }
+
+        // Refresh profile to get updated permissions
+        if (user?.id) {
+          await fetchProfile(user.id);
+        }
+      }
+    } catch (error) {
+      console.error('🎫 Error in checkPendingInvitations:', error);
+    }
+  };
+
   const fetchProfile = async (userId: string) => {
     try {
-      // Try to fetch manager profile first
-      const { data: managerData, error: managerError } = await supabase
-        .from('manager_profiles')
+      console.log('🔐 Fetching profile for user:', userId);
+      
+      const { data, error } = await supabase
+        .from('profiles')
         .select('*')
         .eq('user_id', userId)
         .single();
 
-      if (managerData && !managerError) {
-        setUserType('manager');
-        setProfile(managerData as ManagerProfile);
-        return;
+      if (data && !error) {
+        console.log('🔐 Found profile:', data.email);
+        setProfile(data as Profile);
+      } else {
+        console.warn('🔐 No profile found for user:', userId);
+        setProfile(null);
       }
-
-      // If no manager profile, try investor profile
-      const { data: investorData, error: investorError } = await supabase
-        .from('investor_profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
-
-      if (investorData && !investorError) {
-        setUserType('investor');
-        setProfile(investorData as InvestorProfile);
-        return;
-      }
-
-      // No profile found
-      setUserType(null);
-      setProfile(null);
     } catch (error) {
-      console.error('Error fetching profile:', error);
-      setUserType(null);
+      console.error('🔐 Error fetching profile:', error);
       setProfile(null);
     }
   };
@@ -245,81 +189,116 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
   };
 
-
-  const signUp = async (email: string, password: string, userType: 'manager' | 'investor', metadata?: any) => {
-    // In development environments (e.g., develop.movingto.com using funds_develop),
-    // avoid setting is_manager/is_investor flags to prevent auth triggers from firing
-    // which may cause duplicate key errors if seed data already exists.
-    const devEnv = typeof window !== 'undefined' ? window.location.hostname.includes('develop') || window.location.hostname === 'localhost' : false;
-
-    const enhancedMetadata = (() => {
-      const base = { ...(metadata || {}) } as Record<string, any>;
-      if (devEnv) {
-        // Do not include flags that trigger DB-side profile creation in dev
-        delete base.is_manager;
-        delete base.is_investor;
-        return base;
-      }
-      return {
-        ...base,
-        [userType === 'manager' ? 'is_manager' : 'is_investor']: true,
-      };
-    })();
-    
-    // Use domain-specific redirect URL
+  const signUp = async (email: string, password: string, metadata?: any) => {
     const redirectUrl = getEmailRedirectUrl();
     
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: enhancedMetadata,
+        data: {
+          first_name: metadata?.first_name || '',
+          last_name: metadata?.last_name || '',
+          invitation_token: metadata?.invitation_token || undefined,
+        },
       },
     });
+
+    // Check for pending invitations after signup
+    if (!error && email && data?.user?.id) {
+      setTimeout(() => {
+        checkPendingInvitations(email, data.user!.id).catch(console.error);
+      }, 1000);
+    }
 
     return { error };
   };
 
   const signIn = async (email: string, password: string) => {
-    console.log('🔐 SignIn called with email:', email);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
     
+    // Check for pending invitations after signin
+    if (!error && email && data?.user?.id) {
+      setTimeout(() => {
+        checkPendingInvitations(email, data.user!.id).catch(console.error);
+      }, 500);
+    }
+    
+    return { error };
+  };
+
+  const sendMagicLink = async (email: string, metadata?: any) => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      console.log('🔐 Sending magic link to:', email);
+      
+      const { data, error } = await supabase.functions.invoke('send-magic-link', {
+        body: { 
+          email,
+          metadata: {
+            first_name: metadata?.first_name || '',
+            last_name: metadata?.last_name || '',
+            invitation_token: metadata?.invitation_token || undefined,
+          }
+        }
       });
-      
-      console.log('🔐 SignIn response - data:', data);
-      console.log('🔐 SignIn response - error:', error);
-      
+
+      if (error) {
+        console.error('❌ Magic link error:', error);
+        return { error };
+      }
+
+      console.log('✅ Magic link sent successfully');
+      return { error: null };
+    } catch (error: any) {
+      console.error('❌ Magic link exception:', error);
       return { error };
-    } catch (err) {
-      console.error('🔐 SignIn exception:', err);
-      return { error: err };
     }
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (!error) {
+    try {
+      console.log('🔐 Signing out user...');
+      
+      // Always clear local state first
       setUser(null);
       setSession(null);
-      setUserType(null);
       setProfile(null);
+      
+      // Attempt to sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('🔐 Sign-out error (clearing session anyway):', error);
+        // Clear localStorage as fallback for stale sessions
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('sb-bkmvydnfhmkjnuszroim-auth-token');
+        }
+      } else {
+        console.log('🔐 Successfully signed out');
+      }
+      
+      return { error: null }; // Always return success to UI
+    } catch (error) {
+      console.error('🔐 Sign-out exception:', error);
+      // Clear localStorage as fallback
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('sb-bkmvydnfhmkjnuszroim-auth-token');
+      }
+      return { error: null }; // Always return success to UI
     }
-    return { error };
   };
 
-  const updateProfile = async (updates: Partial<ManagerProfile | InvestorProfile>) => {
-    if (!user || !userType) {
+  const updateProfile = async (updates: Partial<Profile>) => {
+    if (!user) {
       return { error: new Error('Not authenticated') };
     }
-
-    const tableName = userType === 'manager' ? 'manager_profiles' : 'investor_profiles';
     
     const { error } = await supabase
-      .from(tableName)
+      .from('profiles')
       .update(updates)
       .eq('user_id', user.id);
 
@@ -335,7 +314,6 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       return { error: new Error('Not authenticated') };
     }
 
-    // Helper to crop to centered square using canvas
     const cropToSquare = (input: File): Promise<File> => {
       return new Promise((resolve, reject) => {
         const img = new Image();
@@ -366,7 +344,7 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     try {
       fileToUpload = await cropToSquare(file);
     } catch (_e) {
-      // If cropping fails, fall back to original file
+      // Fall back to original
     }
 
     const fileExt = file.name.split('.').pop();
@@ -386,9 +364,11 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
     const avatarUrl = `${data.publicUrl}?t=${Date.now()}`;
 
-    // Update profile with new avatar URL
-    const updateField = userType === 'manager' ? { logo_url: avatarUrl } : { avatar_url: avatarUrl };
-    const { error: updateError } = await updateProfile(updateField);
+    // Update both avatar_url and logo_url for backwards compatibility
+    const { error: updateError } = await updateProfile({ 
+      avatar_url: avatarUrl,
+      logo_url: avatarUrl
+    });
 
     return { error: updateError, url: avatarUrl };
   };
@@ -397,8 +377,8 @@ export const EnhancedAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     user: isHydrated ? user : null,
     session: isHydrated ? session : null,
     loading: !isHydrated || loading,
-    userType: isHydrated ? userType : null,
     profile: isHydrated ? profile : null,
+    sendMagicLink,
     signUp,
     signIn,
     signOut,
