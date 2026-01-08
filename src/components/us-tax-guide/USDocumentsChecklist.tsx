@@ -98,7 +98,7 @@ export const USDocumentsChecklist: React.FC = () => {
                   <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h4 className="font-semibold text-foreground">{doc.name}</h4>
+                      <h4 className="font-medium text-sm text-foreground">{doc.name}</h4>
                       {doc.required ? (
                         <Badge variant="default" className="text-xs">Required</Badge>
                       ) : (
@@ -136,7 +136,7 @@ export const USDocumentsChecklist: React.FC = () => {
                 >
                   <FileText className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-foreground">{doc.name}</h4>
+                    <h4 className="font-medium text-sm text-foreground">{doc.name}</h4>
                     <p className="text-sm text-muted-foreground mt-1">{doc.description}</p>
                     <p className="text-xs text-muted-foreground mt-1">
                       <strong>Purpose:</strong> {doc.purpose}
