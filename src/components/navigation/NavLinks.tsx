@@ -47,6 +47,12 @@ const NavLinks: React.FC<NavLinksProps> = ({ className = '', onLinkClick }) => {
               For US Citizens
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/funds/us-tax-guide" className="flex items-center gap-2 cursor-pointer" onClick={onLinkClick}>
+              <DollarSign className="h-4 w-4" />
+              PFIC & FATCA Guide
+            </Link>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
