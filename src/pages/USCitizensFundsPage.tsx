@@ -162,27 +162,6 @@ const USCitizensFundsPage: React.FC<USCitizensFundsPageProps> = ({ initialFunds 
                 Filter by fees, strategy and liquidity terms, with US-eligibility notes and sources where available.
               </p>
               
-              {/* CTA Row */}
-              <div className="flex flex-wrap gap-3">
-                <Button 
-                  onClick={() => setFilters(prev => ({ ...prev, showConfirmedOnly: true }))}
-                  variant={filters.showConfirmedOnly ? 'default' : 'outline'}
-                >
-                  Show Confirmed US-Eligible
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link to="/">
-                    <List className="h-4 w-4 mr-2" />
-                    Browse All Funds
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link to="/compare">
-                    <GitCompare className="h-4 w-4 mr-2" />
-                    Compare Funds
-                  </Link>
-                </Button>
-              </div>
             </section>
 
             {/* Definition Block */}
