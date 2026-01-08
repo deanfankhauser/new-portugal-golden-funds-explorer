@@ -1,12 +1,7 @@
 import React from 'react';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import UniversalFAQ, { FAQItem } from '@/components/ui/UniversalFAQ';
 
-const faqItems = [
+const faqItems: FAQItem[] = [
   {
     question: 'Do Portugal Golden Visa funds accept US citizens?',
     answer: 'Yes, some funds explicitly accept US persons, though fewer than for other nationalities. This page shows confirmed eligibility where available based on fund disclosures or manager confirmations. Always verify directly with the fund before proceeding.'
@@ -43,24 +38,13 @@ const faqItems = [
 
 export const USFundsFAQ: React.FC = () => {
   return (
-    <section className="mb-12">
-      <h2 className="text-2xl font-semibold text-foreground mb-6">
-        FAQs for US citizens
-      </h2>
-      
-      <Accordion type="single" collapsible className="w-full">
-        {faqItems.map((item, index) => (
-          <AccordionItem key={index} value={`item-${index}`}>
-            <AccordionTrigger className="text-left hover:no-underline">
-              <span className="font-medium text-foreground">{item.question}</span>
-            </AccordionTrigger>
-            <AccordionContent className="text-muted-foreground">
-              {item.answer}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-    </section>
+    <UniversalFAQ
+      faqs={faqItems}
+      title="FAQs for US citizens"
+      schemaId="us-funds-faq"
+      variant="compact"
+      skipStructuredData={true}
+    />
   );
 };
 
