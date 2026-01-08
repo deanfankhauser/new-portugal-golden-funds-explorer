@@ -1,5 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ArrowRight, BookOpen } from 'lucide-react';
 
 export const USTaxTopics: React.FC = () => {
   return (
@@ -33,6 +36,17 @@ export const USTaxTopics: React.FC = () => {
                 Before investing, speak with a US-qualified tax professional who understands foreign fund investments and FATCA reporting requirements.
               </p>
             </div>
+          </div>
+          
+          {/* CTA to detailed tax guide */}
+          <div className="border-t border-amber-500/20 pt-4 mt-4">
+            <Link to="/funds/us-tax-guide">
+              <Button variant="outline" className="gap-2 border-amber-500/30 hover:bg-amber-500/10">
+                <BookOpen className="h-4 w-4" />
+                Read our detailed PFIC & FATCA Guide
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
           </div>
           
           <p className="text-sm text-muted-foreground border-t border-border/50 pt-4 mt-4">
