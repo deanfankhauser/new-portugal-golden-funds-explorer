@@ -11,11 +11,15 @@ interface LinkColumn {
   links: LinkItem[];
 }
 
-const LINK_COLUMNS: LinkColumn[] = [
+interface ResourceLinkGridProps {
+  fundCount?: number;
+}
+
+const getLinkColumns = (fundCountDisplay: string): LinkColumn[] => [
   {
     title: 'Funds',
     links: [
-      { href: '/', label: 'Browse All Funds' },
+      { href: '/', label: `Browse All ${fundCountDisplay} Funds` },
       { href: '/verified-funds', label: 'Verified Funds' },
       { href: '/best-portugal-golden-visa-funds', label: 'Best Funds 2026' },
       { href: '/funds/us-citizens', label: 'US Citizen Funds' },
@@ -54,7 +58,10 @@ const LINK_COLUMNS: LinkColumn[] = [
   }
 ];
 
-const ResourceLinkGrid: React.FC = () => {
+const ResourceLinkGrid: React.FC<ResourceLinkGridProps> = ({ fundCount = 30 }) => {
+  const fundCountDisplay = `${fundCount}+`;
+  const linkColumns = getLinkColumns(fundCountDisplay);
+  
   return (
     <section className="py-10 sm:py-12 bg-muted/40">
       <div className="container mx-auto px-4">
@@ -66,7 +73,7 @@ const ResourceLinkGrid: React.FC = () => {
 
           {/* Link Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {LINK_COLUMNS.map((column) => (
+            {linkColumns.map((column) => (
               <div key={column.title}>
                 <h3 className="text-xs font-medium text-muted-foreground mb-4 uppercase tracking-wider">
                   {column.title}

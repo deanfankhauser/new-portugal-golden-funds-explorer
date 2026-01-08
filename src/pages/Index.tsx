@@ -59,7 +59,7 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
       <BestShortlistPreview funds={allFunds || []} />
 
       {/* 5. Primary Actions (Compare / Shortlist / Matcher) */}
-      <PrimaryActionsStrip />
+      <PrimaryActionsStrip fundCount={fundCount} />
 
       {/* 6. How Verification Works */}
       <HowVerificationWorks />
@@ -68,7 +68,7 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
       <HomepageFAQAccordion />
 
       {/* 8. Resource Links */}
-      <ResourceLinkGrid />
+      <ResourceLinkGrid fundCount={fundCount} />
 
       <FloatingActionButton />
     </HomepageLayout>
