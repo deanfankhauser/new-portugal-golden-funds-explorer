@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { Facebook, Linkedin, ExternalLink } from "lucide-react";
 import { COMPANY_INFO } from '@/config/company';
+import CommunityBanner from './CommunityBanner';
 
 const Footer: React.FC = () => {
   const [currentYear, setCurrentYear] = useState(2025);
@@ -21,9 +22,17 @@ const Footer: React.FC = () => {
   }, []);
 
   return (
-    <footer className="bg-secondary py-12 border-t border-border">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
+    <>
+      {/* Community Banner Section - Above Footer */}
+      <section className="bg-background py-12 md:py-16">
+        <div className="container mx-auto px-4">
+          <CommunityBanner />
+        </div>
+      </section>
+
+      <footer className="bg-secondary py-12 border-t border-border pb-28 md:pb-24">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="inline-block mb-4">
@@ -177,6 +186,7 @@ const Footer: React.FC = () => {
         </div>
       </div>
     </footer>
+    </>
   );
 };
 
