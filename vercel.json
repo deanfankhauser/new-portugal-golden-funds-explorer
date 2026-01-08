@@ -63,19 +63,7 @@
       "destination": "/index.html"
     },
     {
-      "source": "/contact",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/terms",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/cookie-policy",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/((?!api|_next|assets|[^/]+\\.[^/]+$).*)",
+      "source": "/((?!api|_next|assets|funds/us-tax-guide|funds/us-citizens|funds/for-us-investors|funds/low-risk|funds/high-liquidity|contact|terms|cookie-policy|privacy|disclaimer|verified-funds|about|ira-401k-eligible-funds|best-portugal-golden-visa-funds|team|categories|tags|manager|compare/|comparisons|[^/]+\\.[^/]+$).*)",
       "destination": "/index.html"
     }
   ],
