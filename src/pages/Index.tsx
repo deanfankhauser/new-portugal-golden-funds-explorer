@@ -37,12 +37,14 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
     );
   }
 
+  const fundCount = allFunds?.length || initialFunds?.length || 30;
+
   return (
     <HomepageLayout>
-      <PageSEO pageType="homepage" />
+      <PageSEO pageType="homepage" funds={allFunds || initialFunds} />
       
       {/* 1. Search-First Hero */}
-      <SearchFirstHero />
+      <SearchFirstHero fundCount={fundCount} />
 
       {/* 2. Verified Funds Carousel */}
       <VerifiedFundsCarousel funds={allFunds || []} />
