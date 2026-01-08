@@ -1,7 +1,6 @@
 import { CheckCircle2, AlertCircle, FileCheck, Shield, Clock, Users, Database, Eye, XCircle, AlertTriangle, ArrowRight, Mail, ChevronRight, Check, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import FAQSection from "@/components/common/FAQSection";
 import {
   Breadcrumb,
@@ -564,70 +563,41 @@ const VerificationProgram = () => {
             </p>
           </div>
           
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="item-1" className="border-t border-gray-200">
-              <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
-                Not Investment Advice
-              </AccordionTrigger>
-              <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
-                Nothing on this site — including our verification badges — constitutes investment advice, a recommendation, or a solicitation to buy or sell any security or investment product. You must conduct your own due diligence and consult with qualified financial, legal, and tax advisors before making any investment decision.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-2" className="border-t border-gray-200">
-              <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
-                No Guarantee of Accuracy
-              </AccordionTrigger>
-              <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
-                While we strive for accuracy, we cannot guarantee that all information is complete, current, or error-free. Fund details may change, and documents may be outdated or misinterpreted. We are not liable for any errors, omissions, or reliance on the information provided.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-3" className="border-t border-gray-200">
-              <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
-                No Endorsement
-              </AccordionTrigger>
-              <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
-                A verification badge does not imply endorsement, approval, or recommendation of any fund, fund manager, or investment strategy. It simply indicates that certain basic information has been cross-checked against available documentation.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-4" className="border-t border-gray-200">
-              <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
-                Investment Risks
-              </AccordionTrigger>
-              <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
-                All investments carry risk, including the potential loss of principal. Past performance is not indicative of future results. Alternative investments (such as private funds) may be illiquid, complex, and subject to limited regulation. They may not be suitable for all investors.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-5" className="border-t border-gray-200">
-              <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
-                Third-Party Information
-              </AccordionTrigger>
-              <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
-                We rely on documents and data provided by fund managers, regulatory filings, and other third-party sources. We do not independently audit financial statements or validate performance claims. Our verification process is limited in scope.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-6" className="border-t border-gray-200">
-              <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
-                Changes and Revocation
-              </AccordionTrigger>
-              <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
-                We reserve the right to update, suspend, or revoke any verification badge at any time, for any reason, without prior notice. Verification status may change as new information becomes available.
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="item-7" className="border-t border-b border-gray-200">
-              <AccordionTrigger className="text-base font-semibold text-gray-900 hover:no-underline py-6">
-                Limitation of Liability
-              </AccordionTrigger>
-              <AccordionContent className="text-base text-gray-600 leading-relaxed pb-6">
-                To the fullest extent permitted by law, we disclaim all liability for any damages, losses, or claims arising from your use of this verification service or reliance on any information provided. This includes, but is not limited to, direct, indirect, incidental, or consequential damages.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <FAQSection 
+            faqs={[
+              {
+                question: 'Not Investment Advice',
+                answer: 'Nothing on this site — including our verification badges — constitutes investment advice, a recommendation, or a solicitation to buy or sell any security or investment product. You must conduct your own due diligence and consult with qualified financial, legal, and tax advisors before making any investment decision.'
+              },
+              {
+                question: 'No Guarantee of Accuracy',
+                answer: 'While we strive for accuracy, we cannot guarantee that all information is complete, current, or error-free. Fund details may change, and documents may be outdated or misinterpreted. We are not liable for any errors, omissions, or reliance on the information provided.'
+              },
+              {
+                question: 'No Endorsement',
+                answer: 'A verification badge does not imply endorsement, approval, or recommendation of any fund, fund manager, or investment strategy. It simply indicates that certain basic information has been cross-checked against available documentation.'
+              },
+              {
+                question: 'Investment Risks',
+                answer: 'All investments carry risk, including the potential loss of principal. Past performance is not indicative of future results. Alternative investments (such as private funds) may be illiquid, complex, and subject to limited regulation. They may not be suitable for all investors.'
+              },
+              {
+                question: 'Third-Party Information',
+                answer: 'We rely on documents and data provided by fund managers, regulatory filings, and other third-party sources. We do not independently audit financial statements or validate performance claims. Our verification process is limited in scope.'
+              },
+              {
+                question: 'Changes and Revocation',
+                answer: 'We reserve the right to update, suspend, or revoke any verification badge at any time, for any reason, without prior notice. Verification status may change as new information becomes available.'
+              },
+              {
+                question: 'Limitation of Liability',
+                answer: 'To the fullest extent permitted by law, we disclaim all liability for any damages, losses, or claims arising from your use of this verification service or reliance on any information provided. This includes, but is not limited to, direct, indirect, incidental, or consequential damages.'
+              }
+            ]}
+            title=""
+            schemaId="verification-disclaimers"
+            noWrapper={true}
+          />
         </div>
       </section>
 
