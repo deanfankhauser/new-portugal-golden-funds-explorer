@@ -37,12 +37,14 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
     );
   }
 
+  const fundCount = allFunds?.length || initialFunds?.length || 30;
+
   return (
     <HomepageLayout>
-      <PageSEO pageType="homepage" />
+      <PageSEO pageType="homepage" funds={allFunds || initialFunds} />
       
       {/* 1. Search-First Hero */}
-      <SearchFirstHero />
+      <SearchFirstHero fundCount={fundCount} />
 
       {/* 2. Verified Funds Carousel */}
       <VerifiedFundsCarousel funds={allFunds || []} />
@@ -57,7 +59,7 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
       <BestShortlistPreview funds={allFunds || []} />
 
       {/* 5. Primary Actions (Compare / Shortlist / Matcher) */}
-      <PrimaryActionsStrip />
+      <PrimaryActionsStrip fundCount={fundCount} />
 
       {/* 6. How Verification Works */}
       <HowVerificationWorks />
@@ -66,7 +68,7 @@ const IndexPage: React.FC<IndexPageProps> = ({ initialFunds }) => {
       <HomepageFAQAccordion />
 
       {/* 8. Resource Links */}
-      <ResourceLinkGrid />
+      <ResourceLinkGrid fundCount={fundCount} />
 
       <FloatingActionButton />
     </HomepageLayout>

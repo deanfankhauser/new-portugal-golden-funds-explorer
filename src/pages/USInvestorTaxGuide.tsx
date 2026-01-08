@@ -13,6 +13,7 @@ import FATCAExplainer from '@/components/us-tax-guide/FATCAExplainer';
 import USDocumentsChecklist from '@/components/us-tax-guide/USDocumentsChecklist';
 import TaxAdvisorGuidance from '@/components/us-tax-guide/TaxAdvisorGuidance';
 import USTaxGuideFAQ from '@/components/us-tax-guide/USTaxGuideFAQ';
+import PFICCalculator from '@/components/us-tax-guide/PFICCalculator';
 
 // Breadcrumbs component
 const Breadcrumbs: React.FC = () => (
@@ -29,6 +30,7 @@ const Breadcrumbs: React.FC = () => (
 const TableOfContents: React.FC = () => {
   const sections = [
     { id: 'pfic', label: 'Understanding PFIC' },
+    { id: 'calculator', label: 'Tax Impact Calculator' },
     { id: 'fatca', label: 'Understanding FATCA' },
     { id: 'documents', label: 'Required Documents' },
     { id: 'advisors', label: 'Working With Advisors' },
@@ -38,7 +40,7 @@ const TableOfContents: React.FC = () => {
   return (
     <Card className="sticky top-24">
       <CardContent className="pt-6">
-        <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+        <h3 className="font-medium text-sm text-foreground mb-4 flex items-center gap-2">
           <BookOpen className="h-4 w-4" />
           On this page
         </h3>
@@ -135,6 +137,7 @@ const USInvestorTaxGuide: React.FC = () => {
           {/* Main Content */}
           <div className="flex-1 space-y-16 max-w-4xl">
             <PFICExplainer />
+            <PFICCalculator />
             <FATCAExplainer />
             <USDocumentsChecklist />
             <TaxAdvisorGuidance />

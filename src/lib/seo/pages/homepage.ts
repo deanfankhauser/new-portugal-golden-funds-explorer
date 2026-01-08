@@ -7,18 +7,21 @@ import { getSitewideSchemas } from '../schemas/sitewideSchemas';
 import { BREADCRUMB_CONFIGS } from '../schemas/breadcrumbSchema';
 
 export function getHomeSeo(funds?: Fund[]): SEOData {
+  const fundCount = funds?.length || 30;
+  const fundCountDisplay = `${fundCount}+`;
+  
   return {
-    title: 'Portugal Golden Visa Funds Directory (2026) | Movingto',
+    title: `Compare ${fundCountDisplay} Portugal Golden Visa Funds (2026)`,
     keywords: [
+      'compare Portugal Golden Visa funds',
       'Portugal Golden Visa funds',
       'CMVM funds',
       'Golden Visa investment funds',
       'Portugal investment funds',
-      'compare Golden Visa funds',
       'CMVM regulated funds',
       'investment immigration Portugal'
     ],
-    description: 'Explore Portugal Golden Visa investment funds and key terms in one place. Disclosure-led profiles, filters, and tools to help you shortlist.',
+    description: `Compare ${fundCountDisplay} Portugal Golden Visa funds side-by-side. Filter by fees, risk, lock-up, and strategy to build your shortlist.`,
     url: URL_CONFIG.buildUrl('/'),
     canonical: URL_CONFIG.buildUrl('/'),
     structuredData: getHomepageStructuredData(funds)

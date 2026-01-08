@@ -2,7 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, BarChart3, Star, Sparkles } from 'lucide-react';
 
-const PrimaryActionsStrip: React.FC = () => {
+interface PrimaryActionsStripProps {
+  fundCount?: number;
+}
+
+const PrimaryActionsStrip: React.FC<PrimaryActionsStripProps> = ({ fundCount = 30 }) => {
+  const fundCountDisplay = `${fundCount}+`;
+  
   return (
     <section className="py-12 sm:py-16 border-y border-border/50">
       <div className="container mx-auto px-4">
@@ -12,7 +18,7 @@ const PrimaryActionsStrip: React.FC = () => {
             <ActionCard
               icon={<BarChart3 className="h-5 w-5" />}
               title="Compare Funds"
-              description="See funds side-by-side on fees, risk, and liquidity"
+              description={`Compare ${fundCountDisplay} funds side-by-side on fees, risk, and liquidity`}
               href="/compare"
               iconBg="bg-blue-500/10 text-blue-600"
             />
