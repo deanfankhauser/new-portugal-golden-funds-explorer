@@ -40,7 +40,7 @@ const TableOfContents: React.FC = () => {
   return (
     <Card className="sticky top-24">
       <CardContent className="pt-6">
-        <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+        <h3 className="font-medium text-sm text-foreground mb-4 flex items-center gap-2">
           <BookOpen className="h-4 w-4" />
           On this page
         </h3>

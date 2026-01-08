@@ -48,28 +48,28 @@ export const FATCAExplainer: React.FC = () => {
             
             <div className="grid gap-4 md:grid-cols-2 mt-4">
               <div className="bg-muted/50 rounded-lg p-4">
-                <h4 className="font-semibold text-foreground mb-2">FFI Classification</h4>
+                <h4 className="font-medium text-sm text-foreground mb-2">FFI Classification</h4>
                 <p className="text-sm text-muted-foreground">
                   Fund managers must register with the IRS as a Foreign Financial Institution (FFI) and 
                   obtain a Global Intermediary Identification Number (GIIN).
                 </p>
               </div>
               <div className="bg-muted/50 rounded-lg p-4">
-                <h4 className="font-semibold text-foreground mb-2">Due Diligence</h4>
+                <h4 className="font-medium text-sm text-foreground mb-2">Due Diligence</h4>
                 <p className="text-sm text-muted-foreground">
                   Funds must identify U.S. account holders through self-certification forms and 
                   documentary evidence.
                 </p>
               </div>
               <div className="bg-muted/50 rounded-lg p-4">
-                <h4 className="font-semibold text-foreground mb-2">Reporting</h4>
+                <h4 className="font-medium text-sm text-foreground mb-2">Reporting</h4>
                 <p className="text-sm text-muted-foreground">
                   Account information (balance, income, gains) must be reported annually to the IRS 
                   or local tax authority under an intergovernmental agreement.
                 </p>
               </div>
               <div className="bg-muted/50 rounded-lg p-4">
-                <h4 className="font-semibold text-foreground mb-2">Why Some Funds Decline</h4>
+                <h4 className="font-medium text-sm text-foreground mb-2">Why Some Funds Decline</h4>
                 <p className="text-sm text-muted-foreground">
                   The compliance burden leads some fund managers to simply not accept U.S. persons, 
                   rather than set up the required infrastructure.
@@ -96,7 +96,7 @@ export const FATCAExplainer: React.FC = () => {
               {/* Form 8938 */}
               <div className="border border-border rounded-lg p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-semibold text-foreground">Form 8938 (FATCA Form)</h4>
+                  <h4 className="font-medium text-sm text-foreground">Form 8938 (FATCA Form)</h4>
                   <Badge variant="secondary">Filed with Tax Return</Badge>
                 </div>
                 <p className="text-sm text-muted-foreground mb-2">
@@ -113,7 +113,7 @@ export const FATCAExplainer: React.FC = () => {
               {/* FBAR */}
               <div className="border border-border rounded-lg p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-semibold text-foreground">FBAR (FinCEN Form 114)</h4>
+                  <h4 className="font-medium text-sm text-foreground">FBAR (FinCEN Form 114)</h4>
                   <Badge variant="secondary">Filed Separately</Badge>
                 </div>
                 <p className="text-sm text-muted-foreground mb-2">
@@ -129,7 +129,7 @@ export const FATCAExplainer: React.FC = () => {
               {/* Form 8621 */}
               <div className="border border-border rounded-lg p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-semibold text-foreground">Form 8621 (PFIC Form)</h4>
+                  <h4 className="font-medium text-sm text-foreground">Form 8621 (PFIC Form)</h4>
                   <Badge variant="secondary">Filed with Tax Return</Badge>
                 </div>
                 <p className="text-sm text-muted-foreground">
