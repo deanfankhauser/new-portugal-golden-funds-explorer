@@ -2,7 +2,7 @@ import { SEOData } from '../types';
 import { getSitewideSchemas } from '../schemas';
 
 export function getUSTaxGuideSeo(): SEOData {
-  const baseUrl = 'https://funds.movingto.io';
+  const baseUrl = 'https://funds.movingto.com';
   const pageUrl = `${baseUrl}/funds/us-tax-guide`;
   
   return {
@@ -26,7 +26,7 @@ export function getUSTaxGuideSeo(): SEOData {
 }
 
 export function getUSTaxGuideStructuredData(): any {
-  const baseUrl = 'https://funds.movingto.io';
+  const baseUrl = 'https://funds.movingto.com';
   const pageUrl = `${baseUrl}/funds/us-tax-guide`;
 
   const breadcrumbSchema = {
@@ -65,15 +65,15 @@ export function getUSTaxGuideStructuredData(): any {
     author: {
       '@type': 'Organization',
       name: 'Movingto',
-      url: 'https://funds.movingto.io'
+      url: 'https://funds.movingto.com'
     },
     publisher: {
       '@type': 'Organization',
       name: 'Movingto',
-      url: 'https://funds.movingto.io',
+      url: 'https://funds.movingto.com',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://funds.movingto.io/logo.png'
+        url: 'https://funds.movingto.com/logo.png'
       }
     },
     mainEntityOfPage: {
